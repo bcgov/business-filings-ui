@@ -1,0 +1,4 @@
+# Default owner(s) for everything in the repo. Unless a later match takes
+# precedence, will be requested for review when someone opens a pull request.
+
+* @katiemcgoff, @leksmall, @severinbeauvais, @kialj876, @rarmitag, @cameron-freshworks

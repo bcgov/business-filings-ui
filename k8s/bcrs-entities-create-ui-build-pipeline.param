@@ -1,0 +1,14 @@
+#=========================================================
+# Template parameters for:
+# Project: namerequest
+# Component: pipeline
+# Action: build
+# Template File: templates/namerequest-pipeline.json
+#=========================================================
+NAME="bcrs-entities-create-ui"
+PIPELINE_PURPOSE="build"
+GIT_REPO_URL="https://github.com/bcgov/bcrs-entities-create-ui.git"
+GIT_REF="master"
+SOURCE_CONTEXT_DIR="src"
+JENKINS_FILE="Jenkinsfiles/build.groovy"
+WEBHOOK="unknown"
