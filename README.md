@@ -1,16 +1,52 @@
 ---
-description: bcrs-entities-create-ui readme
+description: business-filings-ui readme
 ignore: true
 ---
 
 ## About
+TBD
 
-TBD.
+## Project setup
+```
+npm install
+```
 
-## Usage
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Run your end-to-end tests
+```
+npm run test:e2e
+```
+
+### Run your unit tests
+```
+npm run test:unit
+```
+
+### Run unit tests from Chrome devtools for debugging/ step-through
+```
+npm run test:debug
+```
 
 ### Local Development
-
 1. make sure you have the `.env` file, required contents can be found in `.env.production`
 2. run docker
 
@@ -18,12 +54,13 @@ TBD.
 
 TBD
 
-## Getting Help or Reporting an Issue
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
 
+## Getting Help or Reporting an Issue
 To report bugs/issues/feature requests, please file an [issue](https://github.com/bcgov/bcrs-entities-create-ui/issues/).
 
 ## How to Contribute
-
 If you would like to contribute, please see our [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). 
@@ -34,8 +71,7 @@ Make Suggestions/Issues [here!](https://github.com/bcgov/bcrs-entities-create-ui
 Issues are [markdown supported](https://guides.github.com/features/mastering-markdown/).
 
 ## License
-
-    Copyright 2019 Province of British Columbia
+    Copyright 2020 Province of British Columbia
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
