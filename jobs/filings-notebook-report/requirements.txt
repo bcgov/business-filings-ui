@@ -1,3 +1,0 @@
-# Just installs the production requirements.
-# some setups need a requirements.txt file at the root level
--r requirements/prod.txt
