@@ -176,7 +176,7 @@
                 <h2 id="AR-step-5-header">5. Staff Payment</h2>
               </header>
               <staff-payment
-                :value.sync="routingSlipNumber"
+                :routingSlipNumber.sync="routingSlipNumber"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -444,7 +444,7 @@ export default {
     }
   },
 
-  created () {
+  created (): void {
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -942,7 +942,7 @@ export default {
     }
   },
 
-  mounted () {
+  mounted (): void {
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     this.entityFilter(EntityTypes.BCOMP) && this.toggleFiling('add', FilingCodes.ANNUAL_REPORT_BC)

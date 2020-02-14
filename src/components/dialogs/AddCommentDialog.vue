@@ -1,0 +1,118 @@
+<template>
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-comment-dialog">
+    <v-card>
+      <v-card-title id="dialog-title">Add Detail Comment</v-card-title>
+
+      <v-card-text>
+        <detail-comment
+          ref="detailComment"
+          v-model="comment"
+          label="Add a Detail Comment that will appear on the ledger for this entity"
+          @valid="detailCommentValid=$event"
+        />
+      </v-card-text>
+
+      <v-card-actions class="pt-0">
+        <v-spacer></v-spacer>
+        <div class="form__btns">
+          <v-btn text color="primary"
+            id="dialog-save-button"
+            :disabled="!detailCommentValid || saving"
+            :loading="saving"
+            @click.native="save()"
+          >Save</v-btn>
+          <v-btn text color="secondary"
+            id="dialog-cancel-button"
+            :disabled="saving"
+            :loading="saving"
+            @click.native="close()"
+          >Cancel</v-btn>
+        </div>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import { mapState } from 'vuex'
+import axios from '@/axios-auth'
+import { DetailComment } from '@/components/common'
+
+@Component({
+  computed: {
+    ...mapState(['entityIncNo'])
+  },
+  components: {
+    DetailComment
+  }
+})
+export default class AddCommentDialog extends Vue {
+  readonly entityIncNo!: number
+
+  /** Prop to display the dialog. */
+  @Prop() private dialog: boolean
+
+  /** Prop to display the dialog. */
+  @Prop() private filingId: number
+
+  /** Prop to provide attachment selector. */
+  @Prop() private attach: string
+
+  /** The comment text. */
+  private comment: string = ''
+
+  /** Whether the detail comment component is valid. */
+  private detailCommentValid: boolean = false
+
+  /** Whether this component is currently saving. */
+  private saving: boolean = false
+
+  /** Called when prop changes (ie, dialog is shown/hidden). */
+  @Watch('dialog')
+  private onDialogChanged (val: boolean): void {
+    // when dialog is shown, reset comment and validation
+    if (val) {
+      this.comment = ''
+      const dc = this.$refs.detailComment as any
+      if (dc) {
+        dc.resetValidation()
+      }
+    }
+  }
+
+  /** Emits event to close this dialog. */
+  @Emit() private close () { }
+
+  /** Saves the current comment. */
+  private async save (): Promise<void> {
+    // prevent double saving
+    if (this.saving) return
+    this.saving = true
+
+    const data = {
+      comment: {
+        filingId: this.filingId,
+        comment: this.comment
+      }
+    }
+
+    const url = `${this.entityIncNo}/filings/${this.filingId}/comments`
+    let success = false
+    await axios.post(url, data).then(res => {
+      success = true
+    }).catch(err => {
+      alert('Could not save your comment. Please try again or cancel.')
+      // eslint-disable-next-line no-console
+      console.error('save() error =', err)
+    })
+
+    this.saving = false
+    if (success) this.close()
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+// @import '@/assets/styles/theme.scss';
+</style>

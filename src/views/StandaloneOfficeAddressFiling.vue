@@ -92,7 +92,7 @@
                 <h2 id="AR-step-5-header">Staff Payment</h2>
               </header>
               <staff-payment
-                :value.sync="routingSlipNumber"
+                :routingSlipNumber.sync="routingSlipNumber"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -262,7 +262,7 @@ export default {
     }
   },
 
-  created () {
+  created (): void {
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {

@@ -64,7 +64,7 @@
                 <p>Enter a detail comment that will appear on the ledger for this entity.</p>
               </header>
               <detail-comment
-                :comment.sync="detailComment"
+                v-model="detailComment"
                 @valid="detailCommentValid=$event"
               />
             </section>
@@ -90,7 +90,9 @@
                 <h2 id="correction-step-3-header">3. Staff Payment</h2>
               </header>
               <staff-payment
-                :value.sync="routingSlipNumber"
+                :routingSlipNumber.sync="routingSlipNumber"
+                :priority.sync="priority"
+                :noFee.sync="noFee"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -103,8 +105,8 @@
               <sbc-fee-summary
                 :filingData="[...filingData]"
                 :payURL="payAPIURL"
-                :priority="true"
-                :waiveFees="true"
+                :priority="priority"
+                :waiveFees="noFee"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -218,6 +220,8 @@ export default {
 
       // properties for Staff Payment component
       routingSlipNumber: null,
+      priority: true, // FOR DEBUGGING ONLY
+      noFee: true, // FOR DEBUGGING ONLY
       staffPaymentFormValid: false,
       totalFee: 0,
 
@@ -267,6 +271,7 @@ export default {
           case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
           case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
           case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
+          case FilingTypes.CORRECTION: return FilingNames.CORRECTION
         }
         // fallback for unknown filings
         return this.origFiling.header.name.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
@@ -295,7 +300,7 @@ export default {
     },
 
     validated (): boolean {
-      // TODO: handle Waive Fees
+      // TODO: handle Priority and No Fee
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
       return (staffPaymentValid && this.detailCommentValid && this.certifyFormValid)
     },
@@ -309,7 +314,7 @@ export default {
     },
 
     isPayRequired (): boolean {
-      // TODO: handle Waive Fees
+      // TODO: handle Priority and No Fee
       return (this.totalFee > 0)
     }
   },
@@ -336,8 +341,8 @@ export default {
   },
 
   mounted (): void {
-    // always include the $20 fee
-    this.toggleFiling('add', FilingCodes.RESTORATION_CONVERT_BC)
+    // always include correction code
+    this.toggleFiling('add', FilingCodes.CORRECTION)
   },
 
   beforeRouteLeave (to, from, next): void {
@@ -453,7 +458,7 @@ export default {
         const filingId = +filing.header.filingId
 
         // whether this is a staff or no-fee filing
-        // TODO: handle Waive Fees
+        // TODO: handle Priority and No Fee
         const prePaidFiling = (this.isRoleStaff || !this.isPayRequired)
 
         // if filing needs to be paid, redirect to Pay URL
@@ -499,6 +504,7 @@ export default {
       if (this.routingSlipNumber) {
         header.header['routingSlipNumber'] = this.routingSlipNumber
       }
+      // TODO: handle Priority and No Fee
 
       const business = {
         business: {
@@ -653,12 +659,12 @@ export default {
     },
 
     certifyFormValid (val: boolean): void {
-      console.log('certifyFormValid =', val)
+      console.log('certifyFormValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     },
 
     staffPaymentFormValid (val: boolean): void {
-      console.log('staffPaymentFormValid =', val)
+      console.log('staffPaymentFormValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     }
   }

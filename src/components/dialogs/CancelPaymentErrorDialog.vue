@@ -1,35 +1,35 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="cancel-payment-error-dialog">
-      <v-card>
-        <v-card-title id="dialog-title" data-test-id="cancel-pay-dialog-title">
-          Unable to Cancel Payment
-        </v-card-title>
+    <v-card>
+      <v-card-title id="dialog-title" data-test-id="cancel-pay-dialog-title">
+        Unable to Cancel Payment
+      </v-card-title>
 
-        <v-card-text id="dialog-text" data-test-id="cancel-pay-dialog-text">
-          <p class="genErr" v-if="errors.length < 1">
-            We were unable to cancel your payment.
-          </p>
-          <p class="genErr" v-else>
-            We were unable to cancel your payment due to the following errors:
-          </p>
-          <p class="genErr" v-for="(error, index) in errors" :key="index">
-            {{error.error}}
-          </p>
-          <template v-if="!isRoleStaff">
-            <p class="genErr">If you need help, please contact us.</p>
-            <ErrorContact class="mt-5" />
-          </template>
-        </v-card-text>
+      <v-card-text id="dialog-text" data-test-id="cancel-pay-dialog-text">
+        <p class="genErr" v-if="errors.length < 1">
+          We were unable to cancel your payment.
+        </p>
+        <p class="genErr" v-else>
+          We were unable to cancel your payment due to the following errors:
+        </p>
+        <p class="genErr" v-for="(error, index) in errors" :key="index">
+          {{error.error}}
+        </p>
+        <template v-if="!isRoleStaff">
+          <p class="genErr">If you need help, please contact us.</p>
+          <ErrorContact class="mt-5" />
+        </template>
+      </v-card-text>
 
-        <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0"></v-divider>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn id="dialog-ok-btn" color="primary" text @click="okay()"
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn id="dialog-ok-btn" color="primary" text @click="okay()"
           data-test-id="cancel-pay-dialog-ok-btn">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">

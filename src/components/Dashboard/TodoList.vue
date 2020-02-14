@@ -40,7 +40,7 @@
         <v-expansion-panel-header class="todo-item-toggle no-dropdown">
           <div class="list-item">
             <div class="todo-label">
-              <div class="list-item__title">{{item.title}}</div>
+              <h3 class="list-item__title">{{item.title}}</h3>
 
               <div class="bcorps-ar-subtitle"
                 v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(item.type, item.status)"
@@ -244,6 +244,7 @@
 import axios from '@/axios-auth'
 import { mapState, mapActions } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
+import { withFlags } from 'ld-vue'
 
 // Dialogs
 import { ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -263,7 +264,7 @@ export default {
     CancelPaymentErrorDialog
   },
 
-  mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin],
+  mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin, withFlags],
 
   data () {
     return {
@@ -276,7 +277,7 @@ export default {
       confirmCheckbox: false,
       confirmEnabled: false,
 
-      // Entity Types Enum
+      // enums
       EntityTypes,
       FilingStatus
     }
@@ -291,7 +292,7 @@ export default {
     ...mapState(['tasks', 'entityIncNo'])
   },
 
-  created () {
+  created (): void {
     // load data into this page
     this.loadData()
   },
@@ -370,6 +371,9 @@ export default {
           case FilingTypes.CHANGE_OF_ADDRESS:
             this.loadChangeOfAddress(task)
             break
+          case FilingTypes.CORRECTION:
+            this.loadCorrection(task)
+            break
           default:
             // eslint-disable-next-line no-console
             console.log('ERROR - got unknown filing item =', filing)
@@ -447,6 +451,11 @@ export default {
         // eslint-disable-next-line no-console
         console.log('ERROR - invalid filing or header or changeOfAddress in task =', task)
       }
+    },
+
+    loadCorrection (task) {
+      // eslint-disable-next-line no-console
+      console.log('loading correction not yet implemented, flags =', this.flags)
     },
 
     doFileNow (item) {
@@ -757,5 +766,14 @@ export default {
   margin-right: 0.75rem;
   height: 1rem;
   border-left: 1px solid $gray6;
+}
+
+.v-expansion-panel-header {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+}
+
+.todo-item-toggle h3 {
+  margin-bottom: 0.25rem;
 }
 </style>

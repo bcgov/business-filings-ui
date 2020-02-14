@@ -10,7 +10,7 @@
             id="routing-slip-number-textfield"
             label="Enter the Routing Slip Number "
             hint="Fee Accounting System Routing Slip Number (9 digits)"
-            v-model="routingSlipNumber"
+            v-model="myRoutingSlipNumber"
             :rules="rules"
           />
         </div>
@@ -24,50 +24,73 @@ import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class StaffPayment extends Vue {
-  // Prop passed into this component.
+  /** Routing Slip Number prop. */
   @Prop({ default: null })
-  private value: string
+  private routingSlipNumber: string
+
+  /** Priority prop. */
+  @Prop({ default: null })
+  private priority: boolean
+
+  /** No Fee prop. */
+  @Prop({ default: null })
+  private noFee: boolean
 
   private formValid : boolean = false
 
-  // Local copy of the prop, initialized to initial prop value.
-  private routingSlipNumber: string = this.value
+  // Model properties, initialized to initial prop values.
+  private myRoutingSlipNumber: string = this.routingSlipNumber
+  private myPriority: boolean = this.priority
+  private myNoFee: boolean= this.noFee
 
-  // Vuetify rules, used for error messages and styling.
+  /** Vuetify rules, used for error messages and styling. */
   private readonly rules = [
     v => !!v || 'Routing Slip Number is required',
     v => /^\d{9}$/.test(v) || 'Routing Slip Number must be 9 digits'
   ]
 
-  // Notifies parent of initial state.
+  /** Called when component is created. */
   private created (): void {
-    this.emitUpdateValue(this.routingSlipNumber)
+    // notify parent of initial state
+    this.emitUpdateRoutingSlipNumber(this.myRoutingSlipNumber)
     this.emitValid(this.formValid)
   }
 
-  // Watches for change to prop and updates local copy.
-  @Watch('value')
-  private onValueChanged (val: string): void {
-    this.routingSlipNumber = val
-  }
-
-  // Watches for change to Routing Slip Number and notifies parent.
+  /** Watches for change to prop and updates local copy. */
   @Watch('routingSlipNumber')
   private onRoutingSlipNumberChanged (val: string): void {
-    this.emitUpdateValue(this.routingSlipNumber)
+    this.myRoutingSlipNumber = val
   }
 
-  // Watches for change to form validity and notifies parent.
+  /** Watches for change to prop and updates local copy. */
+  @Watch('priority')
+  private onPriorityChanged (val: boolean): void {
+    this.myPriority = val
+  }
+
+  /** Watches for change to prop and updates local copy. */
+  @Watch('noFee')
+  private onNoFeeChanged (val: boolean): void {
+    this.myNoFee = val
+  }
+
+  /** Watches for change to Routing Slip Number and notifies parent. */
+  @Watch('myRoutingSlipNumber')
+  private onMyRoutingSlipNumberChanged (val: string): void {
+    this.emitUpdateRoutingSlipNumber(this.myRoutingSlipNumber)
+  }
+
+  /** Watches for change to form validity and notifies parent. */
   @Watch('formValid')
   private onValidChanged (val: boolean): void {
     this.emitValid(this.formValid)
   }
 
-  // Emits an event to inform parent of new Routing Slip Number.
-  @Emit('update:value')
-  private emitUpdateValue (val: string): void { }
+  /** Emits an event to inform parent of new Routing Slip Number. */
+  @Emit('update:routingSlipNumber')
+  private emitUpdateRoutingSlipNumber (val: string): void { }
 
-  // Emits an event to inform parent of new validity.
+  /** Emits an event to inform parent of new validity. */
   @Emit('valid')
   private emitValid (val: boolean): void { }
 }
