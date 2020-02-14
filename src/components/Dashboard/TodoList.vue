@@ -750,7 +750,6 @@ export default {
   align-items: center;
   height: 28px; // for consistent height with and without icon button
 }
-
 .vert-pipe {
   margin-top: 0.1rem;
   margin-left: 0.75rem;
