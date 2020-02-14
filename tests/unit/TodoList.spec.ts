@@ -176,7 +176,7 @@ describe('TodoList - UI', () => {
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
-    expect(button.querySelector('.v-btn__content').textContent).toContain('File Now')
+    expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
     wrapper.destroy()
   })
@@ -697,7 +697,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
-    expect(button.querySelector('.v-btn__content').textContent).toContain('File Now')
+    expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
     wrapper.destroy()
   })
@@ -741,7 +741,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(true)
-    expect(button.querySelector('.v-btn__content').textContent).toContain('File Now')
+    expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
     wrapper.destroy()
   })
@@ -1025,7 +1025,7 @@ describe('TodoList - Click Tests', () => {
 
       const item = vm.$el.querySelector('.list-item')
       const button = item.querySelector('.list-item__actions .v-btn')
-      expect(button.querySelector('.v-btn__content').textContent).toContain('File Now')
+      expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
       await button.click()
 
@@ -1258,7 +1258,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       // verify File Now button
       const listItem = vm.$el.querySelector('.list-item')
       const fileNowButton = listItem.querySelector('.list-item__actions .v-btn')
-      expect(fileNowButton.querySelector('.v-btn__content').textContent).toContain('File Now')
+      expect(fileNowButton.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
       expect(fileNowButton.disabled).toBe(true)
 
       // click checkbox to enable File Now button
