@@ -11,7 +11,7 @@ def BUILD_CONFIG = "${APP_NAME}-inter"
 def IMAGESTREAM_NAME = 'coops-ui'
 
 // you'll need to change this to point to your application component's folder within your repository
-def CONTEXT_DIRECTORY = 'coops-ui'
+def CONTEXT_DIRECTORY = '.'
 
 // EDIT LINE BELOW (Add a reference to the CHAINED_BUILD_CONFIG)
 def CHAINED_BUILD_CONFIG = 'coops-ui'
@@ -101,7 +101,7 @@ if( run_pipeline ) {
     {
         node (nodejs_label) {
             checkout scm
-            dir('coops-ui') {
+            dir(CONTEXT_DIRECTORY) {
                 try {
                     sh '''
                         node -v
