@@ -187,7 +187,7 @@
                 <template v-else-if="isPaid(item)">
                   <!-- no action button in this case -->
                 </template>
-
+                
                 <v-btn v-else-if="!isCompleted(item)"
                   class="btn-file-now"
                   color="primary"
