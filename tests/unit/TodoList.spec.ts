@@ -1681,6 +1681,7 @@ describe('TodoList - Cancel Payment', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
+
     Vue.nextTick(async () => {
       const button = wrapper.find('#pending-item-menu-activator')
       await button.trigger('click')
