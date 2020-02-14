@@ -53,7 +53,7 @@ describe('TodoList - UI', () => {
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
 
     wrapper.destroy()
-  })  
+  })
 
   it('displays multiple task items', async () => {
     // init store
