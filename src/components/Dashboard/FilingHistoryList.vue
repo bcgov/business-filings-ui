@@ -37,7 +37,7 @@
                   </v-tooltip>
                 </v-scale-transition>
                 <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
-                <template v-if="item.comments && item.comments.length > 0">
+                <template v-if="item.comments.length > 0">
                   <span>{{item.comments.length}} Detail Comment{{item.comments.length > 1 ? "s" : ""}}</span>
                 </template>
               </div>
@@ -153,7 +153,7 @@
           </div>
 
           <!-- the detail comments section -->
-          <div class="comments-section mt-8" v-if="item.comments && item.comments.length > 0">
+          <div class="comments-section mt-8" v-if="item.comments.length > 0">
             <v-divider></v-divider>
             <div class="title-bar mt-5">
               <h4>Detail Comments ({{item.comments.length}})</h4>
@@ -172,11 +172,11 @@
                   <v-list-item-content>
                     <v-list-item-title class="body-2">
                       <strong v-if="!isRoleStaff">Registry Staff</strong>
-                      <strong v-else>{{comment.comment.submitterDisplayName || 'N/A'}}</strong>
-                      ({{convertUTCTimeToLocalTime(comment.comment.timestamp)}})
+                      <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
+                      ({{convertUTCTimeToLocalTime(comment.timestamp)}})
                     </v-list-item-title>
                     <v-list-item-subtitle class="body-2">
-                      <div class="pre-line">{{comment.comment.comment}}</div>
+                      <div class="pre-line">{{comment.comment}}</div>
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
@@ -344,7 +344,7 @@ export default {
             }],
             paperOnly: false,
             isCorrected: filing.header.isCorrected || false,
-            comments: filing.header.comments
+            comments: this.flattenComments(filing.header.comments)
           }
           this.filedItems.push(item)
         } else {
@@ -389,7 +389,7 @@ export default {
           status: filing.header.status,
           paperOnly: false,
           isCorrected: filing.header.isCorrected || false,
-          comments: filing.header.comments
+          comments: this.flattenComments(filing.header.comments)
         }
         this.filedItems.push(item)
       } else {
@@ -424,9 +424,13 @@ export default {
         }],
         paperOnly: true,
         isCorrected: filing.header.isCorrected || false,
-        comments: filing.header.comments
+        comments: this.flattenComments(filing.header.comments)
       }
       this.filedItems.push(item)
+    },
+
+    flattenComments (comments: any): Array<any> {
+      return (comments && comments.length > 0) ? comments.map(c => c.comment) : []
     },
 
     typeToTitle (type: string, agmYear: string): string {
