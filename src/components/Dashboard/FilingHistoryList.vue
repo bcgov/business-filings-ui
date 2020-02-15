@@ -64,7 +64,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="!flags.allowCorrections">
+                    <v-list-item disabled>
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -77,7 +77,7 @@
                       </v-list-item-title>
                     </v-list-item>
 
-                    <v-list-item :disabled="!flags.allowDetailComments">
+                    <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-comment-plus</v-icon>
                       </v-list-item-icon>
@@ -160,7 +160,6 @@
               <v-btn
                 color="primary"
                 v-if="isRoleStaff"
-                :disabled="!flags.allowDetailComments"
                 @click.stop="currentFilingId=item.filingId;addCommentDialog=true"
                 >
                   <span>Add Detail Comment</span>
@@ -202,7 +201,6 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
-import { withFlags } from 'ld-vue'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -216,7 +214,7 @@ import { DateMixin, EntityFilterMixin } from '@/mixins'
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [DateMixin, EntityFilterMixin, withFlags],
+  mixins: [DateMixin, EntityFilterMixin],
 
   components: {
     AddCommentDialog,
@@ -250,10 +248,6 @@ export default {
   },
 
   created (): void {
-    // TODO: delete these when LaunchDarkly is properly configured
-    this.flags.allowCorrections = true
-    this.flags.allowDetailComments = true
-
     // load data into this page
     this.loadData()
   },

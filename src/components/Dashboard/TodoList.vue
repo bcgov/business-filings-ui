@@ -244,7 +244,6 @@
 import axios from '@/axios-auth'
 import { mapState, mapActions } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
-import { withFlags } from 'ld-vue'
 
 // Dialogs
 import { ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -264,7 +263,7 @@ export default {
     CancelPaymentErrorDialog
   },
 
-  mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin, withFlags],
+  mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin],
 
   data () {
     return {
@@ -455,7 +454,7 @@ export default {
 
     loadCorrection (task) {
       // eslint-disable-next-line no-console
-      console.log('loading correction not yet implemented, flags =', this.flags)
+      console.log('loading correction not yet implemented')
     },
 
     doFileNow (item) {
