@@ -3,7 +3,7 @@
     <add-comment-dialog
       :dialog="addCommentDialog"
       :filingId="currentFilingId"
-      @close="addCommentDialog=false"
+      @close="hideCommentDialog($event)"
       attach="#filing-history-list"
     />
 
@@ -83,7 +83,7 @@
                       </v-list-item-icon>
                       <v-list-item-title
                         class="add-detail-comment-item"
-                        @click="currentFilingId=item.filingId;addCommentDialog=true"
+                        @click="showCommentDialog(item.filingId)"
                       >
                         Add Detail Comment
                       </v-list-item-title>
@@ -160,8 +160,8 @@
               <v-btn
                 color="primary"
                 v-if="isRoleStaff"
-                @click.stop="currentFilingId=item.filingId;addCommentDialog=true"
-                >
+                @click.stop="showCommentDialog(item.filingId)"
+              >
                   <span>Add Detail Comment</span>
                 </v-btn>
             </div>
@@ -200,7 +200,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -253,6 +253,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['setTriggerDashboardReload']),
+
     loadData () {
       this.filedItems = []
 
@@ -614,8 +616,17 @@ export default {
       return this.entityFilter(EntityTypes.BCOMP) &&
         filingType === FilingTypes.CHANGE_OF_ADDRESS &&
         status === FilingStatus.PAID
-    }
+    },
 
+    showCommentDialog (filingId): void {
+      this.currentFilingId = filingId
+      this.addCommentDialog = true
+    },
+
+    hideCommentDialog (needReload): void {
+      this.addCommentDialog = false
+      if (needReload) this.setTriggerDashboardReload(true)
+    }
   },
 
   watch: {

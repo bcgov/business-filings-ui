@@ -25,7 +25,7 @@
             id="dialog-cancel-button"
             :disabled="saving"
             :loading="saving"
-            @click.native="close()"
+            @click.native="emitClose(false)"
           >Cancel</v-btn>
         </div>
       </v-card-actions>
@@ -81,8 +81,12 @@ export default class AddCommentDialog extends Vue {
     }
   }
 
-  /** Emits event to close this dialog. */
-  @Emit() private close () { }
+  /**
+   * Emits event to close this dialog.
+   * @param needReload Whether the dashboard needs to be reloaded.
+   */
+  @Emit('close')
+  private emitClose (needReload: boolean): void { }
 
   /** Saves the current comment. */
   private async save (): Promise<void> {
@@ -108,7 +112,7 @@ export default class AddCommentDialog extends Vue {
     })
 
     this.saving = false
-    if (success) this.close()
+    if (success) this.emitClose(true)
   }
 }
 </script>
