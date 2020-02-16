@@ -62,3 +62,8 @@
     display: none;
   }
 }
+
+// Aside Navigation
+.v-application--is-ltr .v-list-item__icon:first-child {
+  margin-right: 1rem;
+}

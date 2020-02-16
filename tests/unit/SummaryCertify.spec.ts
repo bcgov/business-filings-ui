@@ -36,22 +36,11 @@ function createComponent (
     propsData: {
       certifiedBy,
       isCertified
-    } })
+    }
+  })
 }
 
 describe('SummaryCertified', () => {
-  // let vm
-
-  // beforeEach(done => {
-  //   const Constructor = Vue.extend(SummaryCertify)
-  //   const instance = new Constructor({ store, vuetify })
-  //   vm = instance.$mount()
-
-  //   Vue.nextTick(() => {
-  //     done()
-  //   })
-  // })
-
   it('has date displayed', () => {
     const wrapper: Wrapper<SummaryCertify> = createComponent()
 

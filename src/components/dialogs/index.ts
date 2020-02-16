@@ -1,4 +1,5 @@
 import AccountAuthorizationDialog from './AccountAuthorizationDialog.vue'
+import AddCommentDialog from './AddCommentDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
 import ConfirmDialog from './ConfirmDialog.vue'
 import DashboardUnavailableDialog from './DashboardUnavailableDialog.vue'
@@ -13,6 +14,7 @@ import WarningPopover from './WarningPopover.vue'
 
 export {
   AccountAuthorizationDialog,
+  AddCommentDialog,
   CoaWarningDialog,
   ConfirmDialog,
   DashboardUnavailableDialog,

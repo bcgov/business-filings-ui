@@ -251,7 +251,9 @@ export default {
           this.effectiveDate = filing.filingEffectiveDate
           this.coaPending = true
           this.hasBlockerFiling = true
+          return true
         }
+        return false
       })
     },
 
@@ -272,7 +274,7 @@ export default {
     }
   },
 
-  mounted () {
+  mounted (): void {
     // Launch Darkly flag usage example:
     // console.log('coopsVersion =', this.flags.coopsVersion)
   },

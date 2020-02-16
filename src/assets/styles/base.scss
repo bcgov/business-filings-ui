@@ -69,7 +69,23 @@ p {
 }
 
 .v-application {
-  font-family: 'BCSans', Verdana, Arial, sans-serif;  // BC Government Font
+  // BC Government Font
+  font-family: 'BCSans', Verdana, Arial, sans-serif;
+
+  .body {
+    &-2 {
+      font-family: 'BCSans', Verdana, Arial, sans-serif !important;
+    }
+  }
+
+  .title,
+  .caption {
+    font-family: 'BCSans', Verdana, Arial, sans-serif !important;
+  }
+
+  .caption {
+    letter-spacing: 0 !important;
+  }
 }
 
 .theme--light.v-application {

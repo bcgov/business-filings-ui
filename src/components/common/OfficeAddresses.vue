@@ -295,13 +295,14 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   readonly EntityTypes: {} = EntityTypes
 
   /**
-   * Lifecycle callback to initialize the data when the component when it is created.
+   * Called when component is created.
    */
   private created (): void {
     this.initAddresses()
   }
+
   /**
-   * Lifecycle callback to set up the component when it is mounted.
+   * Called when component is mounted.
    */
   private mounted (): void {
     this.emitValid()

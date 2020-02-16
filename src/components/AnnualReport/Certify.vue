@@ -59,9 +59,10 @@ export default class Certify extends Vue {
   private entityDisplay: string
 
   /**
-   * Lifecycle callback to always give the parent a "valid" event for its property values.
+   * Called when component is created.
    */
   private created (): void {
+    // always give the parent a "valid" event for its property values
     this.emitValid(Boolean(this.trimmedCertifiedBy && this.isCertified))
   }
 
