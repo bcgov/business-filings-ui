@@ -194,7 +194,7 @@
                   :disabled="!item.enabled || coaPending || !confirmCheckbox"
                   @click.native.stop="doFileNow(item)"
                 >
-                  <span>File Annual Report</span>
+                  <span>File Annual  Report</span>
                 </v-btn>
               </div>
             </div>
