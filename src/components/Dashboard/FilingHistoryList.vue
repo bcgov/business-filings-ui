@@ -369,8 +369,7 @@ export default {
         if (filing.header.effectiveDate) effectiveDate = filing.header.effectiveDate.slice(0, 10)
 
         const type = filing.header.name
-        const agmYear = filing.header.date.slice(0, 4)
-        const title = this.typeToTitle(type, agmYear)
+        const title = this.typeToTitle(type)
 
         const item = {
           type: type,
@@ -406,8 +405,14 @@ export default {
       const filingDate = this.formatDate(localDateTime)
 
       const type = filing.header.name
-      const agmYear = filing.header.date.slice(0, 4)
-      const title = this.typeToTitle(type, agmYear)
+
+      let title: string
+      if (filing.annualReport && filing.annualReport.annualReportDate) {
+        const agmYear = +filing.annualReport.annualReportDate.slice(0, 4)
+        title = this.typeToTitle(type, agmYear)
+      } else {
+        title = this.typeToTitle(type)
+      }
 
       const item = {
         type: type,
@@ -433,10 +438,10 @@ export default {
       return (comments && comments.length > 0) ? comments.map(c => c.comment) : []
     },
 
-    typeToTitle (type: string, agmYear: string): string {
+    typeToTitle (type: string, agmYear: string = null): string {
       if (!type) return '' // safety check
       switch (type) {
-        case FilingTypes.ANNUAL_REPORT: return `${FilingNames.ANNUAL_REPORT} (${agmYear})`
+        case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
         case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
         case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
         case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE

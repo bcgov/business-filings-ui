@@ -265,7 +265,7 @@ export default {
     title (): string | null {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
         switch (this.origFiling.header.name) {
-          case FilingTypes.ANNUAL_REPORT: return `${FilingNames.ANNUAL_REPORT} (${this.agmYear})`
+          case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (this.agmYear ? ` (${this.agmYear})` : '')
           case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
           case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
           case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
