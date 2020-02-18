@@ -1,15 +1,13 @@
-FROM registry.access.redhat.com/ubi8/nodejs-10
+FROM node:latest as build-stage
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY ./ .
+RUN npm run build
 
-USER root
-RUN mkdir /opt/app && chmod 755 /opt/app
-WORKDIR /opt/app
-
-COPY package*.json  ./
-
-RUN npm ci
-
-COPY . .
-
-USER 1001
-EXPOSE 8080
-CMD [ "npm", "run", "serve" ]
+FROM nginx:1.17 as production-stage
+COPY nginx.conf /etc/nginx/nginx.conf
+RUN mkdir /app
+COPY --from=build-stage /app/dist /app
+EXPOSE 8080:8080
+CMD ["nginx", "-g", "daemon off;"]

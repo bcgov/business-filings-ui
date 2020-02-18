@@ -1,0 +1,59 @@
+name: Build CI
+
+on:
+  push:
+    branches:
+      - master
+env:
+  IMAGE_NAME: business-filings-ui
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install
+        run: |
+          npm ci
+        env:
+          CI: true
+      - name: lint
+        run: |
+          npm run lint
+        env:
+          CI: true
+      - name: unit test
+        run: |
+          npm run test:unit
+        env:
+          CI: true
+
+      - name: Log into registry
+        run: echo "${{ secrets.OKD_SA_SECRET }}" | docker login ${{ secrets.OKD_REGISTRY }} -u ${{ secrets.OKD_SA_NAME }} --password-stdin
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag image
+
+      - name: Push image
+        run: |
+          #IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          IMAGE_ID=${{ secrets.OKD_REGISTRY }}/${{ secrets.OKD_REPOSITORY }}/$IMAGE_NAME
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=gha
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag image $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
