@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import sinon from 'sinon'
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
+import { createLocalVue, shallowMount, mount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import store from '@/store/store'
@@ -25,7 +25,7 @@ Vue.use(Vuelidate)
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 const sampleDeliveryAddress = {
   'streetAddress': 'delivery street address',
@@ -470,10 +470,10 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = EntityTypes.COOP
 
-    let s = sinon.stub(axios, 'get')
+    let sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    s.withArgs('CP0001191/filings/123')
+    sinonAxiosGet.withArgs('CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -507,7 +507,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
           }
       })))
 
-    s.withArgs('CP0001191/tasks')
+    sinonAxiosGet.withArgs('CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -746,10 +746,10 @@ describe('Standalone Office Address Filing - Part 3B (BCOMP) - Submitting', () =
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = EntityTypes.BCOMP
 
-    let s = sinon.stub(axios, 'get')
+    let sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    s.withArgs('BC0001191/filings/123')
+    sinonAxiosGet.withArgs('BC0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -787,7 +787,7 @@ describe('Standalone Office Address Filing - Part 3B (BCOMP) - Submitting', () =
           }
       })))
 
-    s.withArgs('BC0001191/tasks')
+    sinonAxiosGet.withArgs('BC0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -1026,7 +1026,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     window.location.assign = assign
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
@@ -1061,8 +1061,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
           }
       })))
 
-    let s = sinon.stub(axios, 'get')
-    s.withArgs('CP0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -1156,7 +1155,7 @@ describe('Standalone Office Address Filing - Part 4B (BCOMP) - Saving', () => {
     window.location.assign = assign
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'BC0001191'
     store.state.entityName = 'Legal Name - BC0001191'
@@ -1200,8 +1199,7 @@ describe('Standalone Office Address Filing - Part 4B (BCOMP) - Saving', () => {
           }
       })))
 
-    let s = sinon.stub(axios, 'get')
-    s.withArgs('BC0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('BC0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -1283,16 +1281,22 @@ describe('Standalone Office Address Filing - Part 4B (BCOMP) - Saving', () => {
 })
 
 describe('Standalone Office Address Filing - Part 5 - Data', () => {
-  let wrapper
-  let vm
+  let wrapper: Wrapper<Vue>
+  let vm: any
   let spy
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
 
-    // mock "save draft" endpoint - garbage response data, we aren't testing that
+    // mock "get tasks" endpoint - needed for hasTasks()
+    sinon
+      .stub(axios, 'get')
+      .withArgs('CP0001191/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // mock "save draft" endpoint
     spy = sinon.stub(axios, 'post').withArgs('CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -1322,7 +1326,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, localVue, router, vuetify })
-    vm = wrapper.vm as any
+    vm = wrapper.vm
 
     // stub address data
     vm.addresses = {
@@ -1365,16 +1369,22 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 })
 
 describe('Standalone Office Address Filing - Part 5B (BCOMP) - Data', () => {
-  let wrapper
-  let vm
+  let wrapper: Wrapper<Vue>
+  let vm: any
   let spy
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'BC0001191'
     store.state.entityName = 'Legal Name - BC0001191'
 
-    // mock "save draft" endpoint - garbage response data, we aren't testing that
+    // mock "get tasks" endpoint - needed for hasTasks()
+    sinon
+      .stub(axios, 'get')
+      .withArgs('BC0001191/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // mock "save draft" endpoint
     spy = sinon.stub(axios, 'post').withArgs('BC0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -1408,7 +1418,7 @@ describe('Standalone Office Address Filing - Part 5B (BCOMP) - Data', () => {
     router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, localVue, router, vuetify })
-    vm = wrapper.vm as any
+    vm = wrapper.vm
 
     // stub address data
     vm.addresses = {
@@ -1467,10 +1477,53 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning dialogs', ()
     window.location.assign = assign
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+
+    const sinonAxiosGet = sinon.stub(axios, 'get')
+
+    // mock "get tasks" endpoint - needed for hasTasks()
+    sinonAxiosGet
+      .withArgs('CP0001191/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // mock "fetch a draft filing" endpoint
+    sinonAxiosGet
+      .withArgs('CP0001191/filings/123')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            'filing': {
+              'changeOfAddress': {
+                'offices': {
+                  'registeredOffice': {
+                    'deliveryAddress': sampleDeliveryAddress,
+                    'mailingAddress': sampleMailingAddress
+                  }
+                }
+              },
+              'business': {
+                'cacheId': 1,
+                'foundingDate': '2007-04-08',
+                'identifier': 'CP0001191',
+                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+                'legalName': 'Legal Name - CP0001191'
+              },
+              'header': {
+                'name': 'changeOfAddress',
+                'date': '2017-06-06',
+                'submitter': 'cp0001191',
+                'status': 'DRAFT',
+                'certifiedBy': 'Full Name',
+                'email': 'no_one@never.get',
+                'filingId': 123,
+                'routingSlipNumber': '456'
+              }
+            }
+          }
+      })))
 
     // mock "file post" endpoint
     const p1 = Promise.reject({

@@ -8,21 +8,18 @@ Vue.use(Vuetify)
 // https://vue-test-utils.vuejs.org/api/config.html#silent
 Vue.config.silent = true
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 describe('StaffPayment', () => {
   it('initializes correctly with no prop', async () => {
-    const wrapper = mount(StaffPayment,
-      {
-        propsData: { value: null },
-        vuetify
-      })
+    const wrapper = mount(StaffPayment, { vuetify })
+    await Vue.nextTick()
 
     // check that:
-    // 1. value is initially null
-    // 2. component is initially invalid
-    expect(wrapper.emitted('update:value')).toEqual([[null]])
-    expect(wrapper.emitted('valid')).toEqual([[false]])
+    // 1. routingSlipNumber is null
+    // 2. component is invalid
+    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual([null])
+    expect(wrapper.emitted('valid').pop()).toEqual([false])
 
     wrapper.destroy()
   })
@@ -30,107 +27,86 @@ describe('StaffPayment', () => {
   it('initializes correctly with prop', async () => {
     const wrapper = mount(StaffPayment,
       {
-        propsData: { value: '123456789' },
-        vuetify
+        vuetify,
+        propsData: { routingSlipNumber: '123456789' }
       })
+    await Vue.nextTick()
 
     // check that:
-    // 1. value is initially set
-    // 2. component is initially valid
-    expect(wrapper.emitted('update:value')).toEqual([['123456789']])
-    setTimeout(() => {
-      expect(wrapper.emitted('valid')).toEqual([[true]])
-    }, 100)
+    // 1. routingSlipNumber is set
+    // 2. component is valid
+    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual(['123456789'])
+    expect(wrapper.emitted('valid').pop()).toEqual([true])
 
     wrapper.destroy()
   })
 
   it('becomes valid when prop becomes valid', async () => {
-    const wrapper = mount(StaffPayment,
-      {
-        propsData: { value: null },
-        vuetify
-      })
+    const wrapper = mount(StaffPayment, { vuetify })
 
-    wrapper.setProps({ value: '123456789' })
+    wrapper.setProps({ routingSlipNumber: '123456789' })
+    await Vue.nextTick()
 
     // check that:
-    // 1. value was initially null
-    // 2. value became set
-    // 3. component was initially invalid
-    // 4. component became valid
-    expect(wrapper.emitted('update:value')).toEqual([[null], ['123456789']])
-    setTimeout(() => {
-      expect(wrapper.emitted('valid')).toEqual([[false], [true]])
-    }, 100)
+    // 1. routingSlipNumber is set
+    // 2. component is valid
+    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual(['123456789'])
+    expect(wrapper.emitted('valid').pop()).toEqual([true])
+
     wrapper.destroy()
   })
 
   it('becomes invalid when prop becomes invalid', async () => {
     const wrapper = mount(StaffPayment,
       {
-        propsData: { value: '123456789' },
-        vuetify
+        vuetify,
+        propsData: { routingSlipNumber: '123456789' }
       })
 
-    wrapper.setProps({ value: null })
-
-    // NB: can't check error message because Vuetify renders it outside this component
+    wrapper.setProps({ routingSlipNumber: null })
+    await Vue.nextTick()
 
     // check that:
-    // 1. value was initially set
-    // 2. value became null
-    // 3. component was initially valid
-    // 4. component became invalid
-    expect(wrapper.emitted('update:value')).toEqual([['123456789'], [null]])
-    setTimeout(() => {
-      expect(wrapper.emitted('valid')).toEqual([[true], [false]])
-    }, 100)
+    // 1. routingSlipNumber is null
+    // 2. component is invalid
+    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual([null])
+    expect(wrapper.emitted('valid').pop()).toEqual([false])
 
     wrapper.destroy()
   })
 
   it('becomes valid when input becomes valid', async () => {
-    const wrapper = mount(StaffPayment,
-      {
-        propsData: { value: null },
-        vuetify
-      })
+    const wrapper = mount(StaffPayment, { vuetify })
 
     wrapper.setData({ routingSlipNumber: '123456789' })
+    await Vue.nextTick()
 
     // check that:
-    // 1. value was initially null
-    // 2. value became set
-    // 3. component was initially invalid
-    // 4. component became valid
-    expect(wrapper.emitted('update:value')).toEqual([[null], ['123456789']])
-    setTimeout(() => {
-      expect(wrapper.emitted('valid')).toEqual([[false], [true]])
-    }, 100)
+    // 1. routingSlipNumber is set
+    // 2. component is valid
+    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual(['123456789'])
+    expect(wrapper.emitted('valid').pop()).toEqual([true])
+
     wrapper.destroy()
   })
 
   it('becomes invalid when input becomes invalid', async () => {
     const wrapper = mount(StaffPayment,
       {
-        propsData: { value: '123456789' },
-        vuetify
+        vuetify,
+        propsData: { routingSlipNumber: '123456789' }
       })
 
     wrapper.setData({ routingSlipNumber: null })
+    await Vue.nextTick()
 
     // NB: can't check error message because Vuetify renders it outside this component
 
     // check that:
-    // 1. value was initially set
-    // 2. value became null
-    // 3. component was initially valid
-    // 4. component became invalid
-    expect(wrapper.emitted('update:value')).toEqual([['123456789'], [null]])
-    setTimeout(() => {
-      expect(wrapper.emitted('valid')).toEqual([[true], [false]])
-    }, 100)
+    // 1. routingSlipNumber is null
+    // 2. component is invalid
+    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual([null])
+    expect(wrapper.emitted('valid').pop()).toEqual([false])
 
     wrapper.destroy()
   })

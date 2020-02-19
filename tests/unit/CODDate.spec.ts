@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { mount } from '@vue/test-utils'
+import { mount, Wrapper } from '@vue/test-utils'
 
 import store from '@/store/store'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
@@ -11,7 +11,7 @@ Vue.config.silent = true
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 // get rid of "Download the Vue Devtools extension for a better development experience" console message
 Vue.config.devtools = false
@@ -20,8 +20,8 @@ Vue.config.devtools = false
 Vue.config.productionTip = false
 
 describe('CodDate', () => {
-  let wrapper
-  let vm
+  let wrapper: Wrapper<CodDate>
+  let vm: any
 
   beforeEach(() => {
     // init store
@@ -31,7 +31,7 @@ describe('CodDate', () => {
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
 
     wrapper = mount(CodDate, { store, vuetify })
-    vm = wrapper.vm as any
+    vm = wrapper.vm
   })
 
   afterEach(() => {

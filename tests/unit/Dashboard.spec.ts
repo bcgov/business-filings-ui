@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 
 import mockRouter from './mockRouter'
 import store from '@/store/store'
@@ -28,7 +28,7 @@ Vue.config.silent = true
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -36,12 +36,14 @@ app.setAttribute('data-app', 'true')
 document.body.append(app)
 
 describe('Dashboard - UI', () => {
-  let wrapper
+  let wrapper: Wrapper<Vue>
+  let vm: any
 
   beforeEach(() => {
     // create wrapper for Dashboard
     // this stubs out the 5 sub-components
     wrapper = shallowMount(Dashboard, { store, vuetify })
+    vm = wrapper.vm
   })
 
   afterEach(() => {
@@ -60,27 +62,27 @@ describe('Dashboard - UI', () => {
     wrapper.find(TodoList).vm.$emit('todo-count', 2)
     wrapper.find(FilingHistoryList).vm.$emit('filed-count', 3)
 
-    expect(wrapper.vm.todoCount).toEqual(2)
-    expect(wrapper.vm.filedCount).toEqual(3)
+    expect(vm.todoCount).toEqual(2)
+    expect(vm.filedCount).toEqual(3)
   })
 
   it('enables standalone filing buttons when there are no blocker filings in the to-do list', () => {
     wrapper.find(TodoList).vm.$emit('has-blocker-filing', false)
 
-    expect(wrapper.vm.hasBlockerFiling).toEqual(false)
-    expect(wrapper.vm.$el.querySelector('#standalone-addresses-button')
+    expect(vm.hasBlockerFiling).toEqual(false)
+    expect(vm.$el.querySelector('#standalone-addresses-button')
       .getAttribute('disabled')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#standalone-directors-button')
+    expect(vm.$el.querySelector('#standalone-directors-button')
       .getAttribute('disabled')).toBeNull()
   })
 
   it('disables standalone filing buttons when there is a blocker filing in the to-do list', () => {
     wrapper.find(TodoList).vm.$emit('has-blocker-filing', true)
 
-    expect(wrapper.vm.hasBlockerFiling).toEqual(true)
-    expect(wrapper.vm.$el.querySelector('#standalone-addresses-button')
+    expect(vm.hasBlockerFiling).toEqual(true)
+    expect(vm.$el.querySelector('#standalone-addresses-button')
       .getAttribute('disabled')).toBe('true')
-    expect(wrapper.vm.$el.querySelector('#standalone-directors-button')
+    expect(vm.$el.querySelector('#standalone-directors-button')
       .getAttribute('disabled')).toBe('true')
   })
 
@@ -91,11 +93,11 @@ describe('Dashboard - UI', () => {
       [{ 'name': 'Address Change', 'status': 'PAID' }])
     wrapper.find(TodoList).vm.$emit('has-blocker-filing', true)
 
-    expect(wrapper.vm.hasBlockerFiling).toEqual(true)
-    expect(wrapper.vm.coaPending).toEqual(true)
-    expect(wrapper.vm.$el.querySelector('#standalone-addresses-button')
+    expect(vm.hasBlockerFiling).toEqual(true)
+    expect(vm.coaPending).toEqual(true)
+    expect(vm.$el.querySelector('#standalone-addresses-button')
       .getAttribute('disabled')).toBe('true')
-    expect(wrapper.vm.$el.querySelector('#standalone-directors-button')
+    expect(vm.$el.querySelector('#standalone-directors-button')
       .getAttribute('disabled')).toBe('true')
   })
 

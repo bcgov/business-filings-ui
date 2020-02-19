@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
+import { mount, Wrapper } from '@vue/test-utils'
+import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import store from '@/store/store'
@@ -18,7 +20,7 @@ Vue.config.devtools = false
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -720,6 +722,7 @@ describe('Directors as a BCOMP', () => {
 })
 
 describe('Appoint New Director tests', () => {
+  let wrapper: Wrapper<Directors>
   let vm: any
 
   beforeEach(() => {
@@ -736,13 +739,16 @@ describe('Appoint New Director tests', () => {
           }
       })))
 
-    const Constructor = Vue.extend(Directors)
-    const instance = new Constructor({ store, vuetify })
-    vm = instance.$mount()
-
-    // set props
-    vm.asOfDate = '2019-04-01'
-    vm.componentEnabled = true
+    wrapper = mount(Directors, {
+      sync: false,
+      store,
+      vuetify,
+      propsData: {
+        asOfDate: '2019-04-01',
+        componentEnabled: true
+      }
+    })
+    vm = wrapper.vm
 
     // click Appoint New Director button
     click(vm, '.new-director-btn')
@@ -750,138 +756,128 @@ describe('Appoint New Director tests', () => {
 
   afterEach(() => {
     sinon.restore()
+    wrapper.destroy()
+    wrapper = null
   })
 
-  it('accepts valid First Name', done => {
-    setValue(vm, '#new-director__first-name', 'First First')
+  it('accepts valid First Name', async () => {
+    const inputElement = wrapper.find('#new-director__first-name')
+    inputElement.setValue('First First')
     expect(vm.director.officer.firstName).toBe('First First')
 
     // verify that there are no validation errors
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toBe('')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toBe('')
   })
 
-  it('displays error for invalid First Name - leading spaces', done => {
-    setValue(vm, '#new-director__first-name', '  First')
+  it('displays error for invalid First Name - leading spaces', async () => {
+    const inputElement = wrapper.find('#new-director__first-name')
+    inputElement.setValue('  First')
     expect(vm.director.officer.firstName).toBe('  First')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
   })
 
-  it('displays error for invalid First Name - trailing spaces', done => {
-    setValue(vm, '#new-director__first-name', 'First  ')
+  it('displays error for invalid First Name - trailing spaces', async () => {
+    const inputElement = wrapper.find('#new-director__first-name')
+    inputElement.setValue('First  ')
     expect(vm.director.officer.firstName).toBe('First  ')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
   })
 
-  it('allows First Name with multiple inline spaces', done => {
-    setValue(vm, '#new-director__first-name', 'First  First')
+  it('allows First Name with multiple inline spaces', async () => {
+    const inputElement = wrapper.find('#new-director__first-name')
+    inputElement.setValue('First  First')
     expect(vm.director.officer.firstName).toBe('First  First')
 
     // verify that validation error is not displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toBe('')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toBe('')
   })
 
-  it('accepts valid Middle Initial', done => {
-    setValue(vm, '#new-director__middle-initial', 'M M')
+  it('accepts valid Middle Initial', async () => {
+    const inputElement = wrapper.find('#new-director__middle-initial')
+    inputElement.setValue('M M')
     expect(vm.director.officer.middleInitial).toBe('M M')
 
     // verify that there are no validation errors
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
   })
 
-  it('displays error for invalid Middle Initial - leading spaces', done => {
-    setValue(vm, '#new-director__middle-initial', '  M')
+  it('displays error for invalid Middle Initial - leading spaces', async () => {
+    const inputElement = wrapper.find('#new-director__middle-initial')
+    inputElement.setValue('  M')
     expect(vm.director.officer.middleInitial).toBe('  M')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
   })
 
-  it('displays error for invalid Middle Initial - trailing spaces', done => {
-    setValue(vm, '#new-director__middle-initial', 'M  ')
+  it('displays error for invalid Middle Initial - trailing spaces', async () => {
+    const inputElement = wrapper.find('#new-director__middle-initial')
+    inputElement.setValue('M  ')
     expect(vm.director.officer.middleInitial).toBe('M  ')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
   })
 
-  it('allows Middle Initial with multiple inline spaces', done => {
-    setValue(vm, '#new-director__middle-initial', 'M  M')
+  it('allows Middle Initial with multiple inline spaces', async () => {
+    const inputElement = wrapper.find('#new-director__middle-initial')
+    inputElement.setValue('M  M')
     expect(vm.director.officer.middleInitial).toBe('M  M')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
   })
 
-  it('accepts valid Last Name', done => {
-    setValue(vm, '#new-director__last-name', 'Last')
-    expect(vm.director.officer.lastName).toBe('Last')
+  it('accepts valid Last Name', async () => {
+    const inputElement = wrapper.find('#new-director__last-name')
+    inputElement.setValue('Last Last')
+    expect(vm.director.officer.lastName).toBe('Last Last')
 
     // verify that there are no validation errors
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
   })
 
-  it('displays error for invalid Last Name - leading spaces', done => {
-    setValue(vm, '#new-director__last-name', '  Last')
+  it('displays error for invalid Last Name - leading spaces', async () => {
+    const inputElement = wrapper.find('#new-director__last-name')
+    inputElement.setValue('  Last')
     expect(vm.director.officer.lastName).toBe('  Last')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
   })
 
-  it('displays error for invalid Last Name - trailing spaces', done => {
-    setValue(vm, '#new-director__last-name', 'Last  ')
+  it('displays error for invalid Last Name - trailing spaces', async () => {
+    const inputElement = wrapper.find('#new-director__last-name')
+    inputElement.setValue('Last  ')
     expect(vm.director.officer.lastName).toBe('Last  ')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
   })
 
-  it('allows Last Name with multiple inline spaces', done => {
-    setValue(vm, '#new-director__last-name', 'Last  Last')
+  it('allows Last Name with multiple inline spaces', async () => {
+    const inputElement = wrapper.find('#new-director__last-name')
+    inputElement.setValue('Last  Last')
     expect(vm.director.officer.lastName).toBe('Last  Last')
 
     // verify that validation error is displayed
-    setTimeout(() => {
-      expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
-      done()
-    }, 250)
+    await flushPromises()
+    expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
   })
 
   // todo

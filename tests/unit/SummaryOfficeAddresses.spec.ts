@@ -10,7 +10,7 @@ import { EntityTypes } from '@/enums'
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -18,7 +18,7 @@ app.setAttribute('data-app', 'true')
 document.body.append(app)
 
 describe('OfficeAddresses as a BCOMP', () => {
-  let vm
+  let vm: any
 
   beforeAll(() => {
     // init store

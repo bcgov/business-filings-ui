@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import sinon from 'sinon'
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
+import { createLocalVue, shallowMount, mount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/AnnualReport/Directors.vue'
@@ -24,7 +24,7 @@ Vue.use(Vuelidate)
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 const sampleDirectors = [
   {
@@ -73,7 +73,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
     // set Last Filing Date and verify new Min Date
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
   })
@@ -332,11 +332,11 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
 })
 
 describe('Standalone Directors Filing - Part 2 - Resuming', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('CP0001191/filings/123')
@@ -413,11 +413,11 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     window.location.assign = assign
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     const get = sinon.stub(axios, 'get')
 
@@ -738,11 +738,11 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 })
 
 describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'t need to be paid', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     // mock "save and file" endpoint
     sinon.stub(axios, 'post').withArgs('CP0001191/filings')
@@ -849,11 +849,11 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     window.location.assign = assign
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('CP0001191/filings?draft=true')
@@ -994,15 +994,21 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
 })
 
 describe('Standalone Directors Filing - Part 5 - Data', () => {
-  let wrapper
-  let vm
+  let wrapper: Wrapper<Vue>
+  let vm: any
   let spy
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
+
+    // mock "get tasks" endpoint - needed for hasTasks()
+    sinon
+      .stub(axios, 'get')
+      .withArgs('CP0001191/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint - garbage response data, we aren't testing that
     spy = sinon.stub(axios, 'post').withArgs('CP0001191/filings?draft=true')
@@ -1029,7 +1035,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     router.push({ name: 'standalone-directors', params: { id: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneDirectorsFiling, { store, localVue, router })
-    vm = wrapper.vm as any
+    vm = wrapper.vm
 
     // set up director data
     vm.allDirectors = [
@@ -1151,11 +1157,11 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning dialogs', () => {
     window.location.assign = assign
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     const get = sinon.stub(axios, 'get')
 
