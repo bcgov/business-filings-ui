@@ -28,7 +28,7 @@ export default class DetailComment extends Vue {
     // exclude whitespace in minimum length check
     // include whitespace in maximum length check
     return [
-      val => (val && val.trim().length > 0) || 'Detail Comment is required.',
+      val => (val && val.trim().length > 0) || 'Detail is required.',
       val => (val && val.length <= this.MAXLENGTH) || 'Maximum characters exceeded.'
     ]
   }

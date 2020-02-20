@@ -57,11 +57,11 @@
               </header>
             </article>
 
-            <!-- Detail Comment -->
+            <!-- Detail -->
             <section>
               <header>
-                <h2 id="correction-step-1-header">1. Detail Comment</h2>
-                <p>Enter a detail comment that will appear on the ledger for this entity.</p>
+                <h2 id="correction-step-1-header">1. Detail</h2>
+                <p>Enter a detail that will appear on the ledger for this entity.</p>
               </header>
               <detail-comment
                 v-model="detailComment"
