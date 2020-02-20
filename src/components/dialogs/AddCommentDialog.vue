@@ -1,13 +1,13 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-comment-dialog">
     <v-card>
-      <v-card-title id="dialog-title">Add Detail Comment</v-card-title>
+      <v-card-title id="dialog-title">Add Detail</v-card-title>
 
       <v-card-text>
         <detail-comment
           ref="detailComment"
           v-model="comment"
-          label="Add a Detail Comment that will appear on the ledger for this entity"
+          label="Add a Detail that will appear on the ledger for this entity"
           @valid="detailCommentValid=$event"
         />
       </v-card-text>
@@ -62,7 +62,7 @@ export default class AddCommentDialog extends Vue {
   /** The comment text. */
   private comment: string = ''
 
-  /** Whether the detail comment component is valid. */
+  /** Whether the detail component is valid. */
   private detailCommentValid: boolean = false
 
   /** Whether this component is currently saving. */
