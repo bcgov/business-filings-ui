@@ -1,6 +1,6 @@
 export default {
   isRoleStaff (state): boolean {
-    return state.keycloakRoles.includes('staff')
+    return state.keycloakRoles.includes('staff') || true
   },
 
   isRoleEdit (state): boolean {

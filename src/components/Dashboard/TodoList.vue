@@ -25,7 +25,6 @@
       attach="#todo-list"
       data-test-id="cancel-pay-error-dialog"
     />
-
     <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion>
       <v-expansion-panel
         class="align-items-top todo-item"
@@ -62,6 +61,16 @@
 
                 <div v-if="isDraft(item)" class="todo-status">
                   <div>DRAFT</div>
+                </div>
+
+                <div v-else-if="isCorrection(item)" class="todo-status">
+                  <div>FILING PENDING</div>
+                  <div v-if="isCorrection(item)">
+                    <v-btn x-small icon class="info-btn">
+                      <v-icon>mdi-comment-text</v-icon>
+                    </v-btn>
+                    Detail (1)
+                  </div>
                 </div>
 
                 <div v-else-if="isPending(item)" class="todo-status">
@@ -108,7 +117,7 @@
               </div>
             </div>
 
-            <div class="list-item__actions">
+            <div class="list-item__actions" v-if="!isCorrection(item)">
               <div style="width:100%">
                 <p class="date-subtitle"
                   v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(item.type, item.status)"
@@ -202,6 +211,14 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
+
+          <div v-if="isCorrection(item)" data-test-class="correction-comment">
+            <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
+              Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
+            <hr class="horizon-pipe">
+            <CorrectionComment :filing=item />
+          </div>
+
           <v-card v-if="isPending(item)" data-test-class="payment-incomplete">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Incomplete</p>
@@ -245,6 +262,9 @@ import axios from '@/axios-auth'
 import { mapState, mapActions } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
+// Components
+import { CorrectionComment } from '@/components/common'
+
 // Dialogs
 import { ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
@@ -258,9 +278,10 @@ export default {
   name: 'TodoList',
 
   components: {
-    DeleteErrorDialog,
+    CancelPaymentErrorDialog,
     ConfirmDialog,
-    CancelPaymentErrorDialog
+    CorrectionComment,
+    DeleteErrorDialog
   },
 
   mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin],
@@ -453,8 +474,42 @@ export default {
     },
 
     loadCorrection (task) {
-      // eslint-disable-next-line no-console
-      console.log('loading correction not yet implemented')
+      console.log('Loaded Correction Filing')
+      console.log(task)
+
+      const filing = task.task.filing
+      if (filing && filing.header && filing.correction) {
+        this.taskItems.push({
+          type: filing.header.name,
+          certifiedBy: filing.header.certifiedBy,
+          date: filing.correction.correctedFilingDate,
+          id: filing.correction.correctedFilingId,
+          correctedFilingType: this.formatFilingType(filing.correction.correctedFilingType),
+          title: `Priority Correction - ${this.formatFilingType(filing.correction.correctedFilingType)}`,
+          draftTitle: `Correction Filing`,
+          enabled: Boolean(task.enabled),
+          order: task.order,
+          comment: filing.correction.comment
+        })
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - invalid filing or header or changeOfAddress in task =', task)
+      }
+    },
+
+    formatFilingType (filingType) {
+      switch (filingType) {
+        case FilingTypes.ANNUAL_REPORT:
+          return 'Annual Report'
+        case FilingTypes.CHANGE_OF_DIRECTORS:
+          return 'Director Change'
+        case FilingTypes.CHANGE_OF_ADDRESS:
+          return 'Address Change'
+        default:
+          // eslint-disable-next-line no-console
+          console.log('ERROR - got unknown filing item =', filingType)
+          break
+      }
     },
 
     doFileNow (item) {
@@ -536,6 +591,10 @@ export default {
 
     isCompleted (item) {
       return item.status === FilingStatus.COMPLETED
+    },
+
+    isCorrection (item) {
+      return item.type === FilingTypes.CORRECTION
     },
 
     confirmDeleteDraft (item) {
@@ -765,6 +824,12 @@ export default {
   margin-right: 0.75rem;
   height: 1rem;
   border-left: 1px solid $gray6;
+}
+
+.horizon-pipe {
+  color: #868e96;
+  margin-left: -.5rem;
+  margin-right: -.5rem;
 }
 
 .v-expansion-panel-header {

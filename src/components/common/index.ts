@@ -1,4 +1,5 @@
 import Certify from './Certify.vue'
+import CorrectionComment from '@/components/common/CorrectionComment.vue'
 import DetailComment from './DetailComment.vue'
 import ErrorContact from './ErrorContact.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
@@ -13,6 +14,7 @@ import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
 
 export {
   Certify,
+  CorrectionComment,
   DetailComment,
   ErrorContact,
   OfficeAddresses,
