@@ -38,7 +38,7 @@
                 </v-scale-transition>
                 <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
                 <template v-if="item.comments.length > 0">
-                  <span>{{item.comments.length}} Detail Comment{{item.comments.length > 1 ? "s" : ""}}</span>
+                  <span>{{item.comments.length}} Detail{{item.comments.length > 1 ? "s" : ""}}</span>
                 </template>
               </div>
             </div>
@@ -85,7 +85,7 @@
                         class="add-detail-comment-item"
                         @click="showCommentDialog(item.filingId)"
                       >
-                        Add Detail Comment
+                        Add Detail
                       </v-list-item-title>
                     </v-list-item>
                   </v-list-item-group>
@@ -152,21 +152,21 @@
             </ul>
           </div>
 
-          <!-- the detail comments section -->
+          <!-- the details section -->
           <div class="comments-section mt-8" v-if="item.comments.length > 0">
             <v-divider></v-divider>
             <div class="title-bar mt-5">
-              <h4>Detail Comments ({{item.comments.length}})</h4>
+              <h4>Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})</h4>
               <v-btn
                 color="primary"
                 v-if="isRoleStaff"
                 @click.stop="showCommentDialog(item.filingId)"
               >
-                  <span>Add Detail Comment</span>
+                  <span>Add Detail</span>
                 </v-btn>
             </div>
             <div>
-              <!-- the detail comments list-->
+              <!-- the details list-->
               <v-list>
                 <v-list-item class="pl-0 pr-0" v-for="(comment, index) in item.comments" :key="index">
                   <v-list-item-content>
