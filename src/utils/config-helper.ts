@@ -7,9 +7,6 @@ export default {
    * fetch config from environment and API
    */
   fetchConfig () {
-    const { name, version } = require('../../package.json')
-    console.info(`This is ${name} v${version}`)
-
     const origin = window.location.origin
     const vueAppPath = process.env.VUE_APP_PATH
 
