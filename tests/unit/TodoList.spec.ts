@@ -24,7 +24,7 @@ Vue.config.silent = true
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -1388,7 +1388,7 @@ describe('TodoList - Delete Draft', () => {
   const { assign } = window.location
   let deleteCall
 
-  beforeEach(async () => {
+  beforeEach(() => {
     deleteCall = sinon.stub(axios, 'delete')
   })
 
@@ -1547,7 +1547,7 @@ describe('TodoList - Cancel Payment', () => {
   const { assign } = window.location
   let patchCall
 
-  beforeEach(async () => {
+  beforeEach(() => {
     patchCall = sinon.stub(axios, 'patch')
   })
 

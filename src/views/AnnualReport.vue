@@ -397,8 +397,7 @@ export default {
       if (this.agmDate) return this.agmDate
       // if filing is in past year then use last day in that year
       if (this.ARFilingYear < this.currentYear) return `${this.ARFilingYear}-12-31`
-      // otherwise use current date
-      // (should never happen because either we should have an AGM Date or filing should be in past year)
+      // otherwise use current date (BCOMP only - should never happen for COOP)
       return this.currentDate
     },
 
@@ -455,7 +454,7 @@ export default {
     }
     // NB: filing id of 0 means "new AR"
     // otherwise it's a draft AR filing id
-    this.filingId = this.$route.params.id
+    this.filingId = +this.$route.params.id // number
 
     // if tombstone data isn't set, route to home
     if (!this.entityIncNo || !this.ARFilingYear || (this.filingId === undefined)) {

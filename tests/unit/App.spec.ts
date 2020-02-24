@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 import sinon from 'sinon'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 
 import axios from '@/axios-auth'
 import store from '@/store/store'
@@ -12,11 +12,11 @@ import App from '@/App.vue'
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 describe('App as a COOP', () => {
-  let wrapper
-  let vm
+  let wrapper: Wrapper<Vue>
+  let vm: any
 
   beforeEach(done => {
     // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
@@ -332,8 +332,8 @@ describe('App as a COOP', () => {
 describe('BCOMP APP', () => {
   // just need a token that can get parsed properly (will be expired but doesn't matter for tests)
   // must not include keycloakRoles=["staff"]
-  let wrapper
-  let vm
+  let wrapper: Wrapper<Vue>
+  let vm: any
 
   beforeEach(done => {
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +

@@ -403,7 +403,7 @@ export default {
 
     // NB: filing id of 0 means "new"
     // otherwise it's a draft filing id
-    this.filingId = this.$route.params.id
+    this.filingId = +this.$route.params.id // number
 
     // if tombstone data isn't set, route to home
     if (!this.entityIncNo || (this.filingId === undefined)) {

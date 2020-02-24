@@ -8,7 +8,7 @@ import EntityInfo from '@/components/EntityInfo.vue'
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -16,7 +16,7 @@ app.setAttribute('data-app', 'true')
 document.body.append(app)
 
 describe('EntityInfo', () => {
-  let vm
+  let vm: any
 
   beforeEach(done => {
     const Constructor = Vue.extend(EntityInfo)

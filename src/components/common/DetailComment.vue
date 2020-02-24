@@ -5,11 +5,12 @@
       outlined
       auto-grow
       rows="5"
-      id="detail-comment-textfield"
+      id="detail-comment-textarea"
       :counter="MAXLENGTH"
       :rules="rules"
       :value="value"
       :label="label"
+      :autofocus="autofocus"
       @input="emitInput($event)"
     />
   </v-card>
@@ -45,6 +46,10 @@ export default class DetailComment extends Vue {
   /** Label passed into this component. */
   @Prop({ default: '' })
   private label: string
+
+  /** Autofocus passed into this component. */
+  @Prop({ default: false })
+  private autofocus: boolean
 
   /**
    * Called when prop changes (ie, v-model is updated by parent).

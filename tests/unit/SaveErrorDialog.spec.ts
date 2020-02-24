@@ -7,7 +7,7 @@ import { SaveErrorDialog } from '@/components/dialogs'
 
 Vue.use(Vuetify)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 describe('SaveErrorDialog - Part 1 - Displays Error/Warning messages', () => {
   it('displays generic message for normal users', () => {

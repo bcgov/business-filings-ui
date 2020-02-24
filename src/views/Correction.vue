@@ -329,7 +329,7 @@ export default {
       }
     }
     // NB: this is the id of the filing to correct
-    const origFilingId = this.$route.params.id
+    const origFilingId = +this.$route.params.id // number
 
     // if required data isn't set, route to home
     if (!this.entityIncNo || (origFilingId === undefined) || (origFilingId <= 0)) {
@@ -606,9 +606,7 @@ export default {
         }
       }
       if (setting === 'add' && !added) {
-        // TODO: remove hard-coded entity type when fee codes are available from Pay team
-        // this.filingData.push({ filingTypeCode: filing, entityType: this.entityType })
-        this.filingData.push({ filingTypeCode: filing, entityType: EntityTypes.BCOMP })
+        this.filingData.push({ filingTypeCode: filing, entityType: this.entityType })
       }
     },
 
@@ -654,16 +652,19 @@ export default {
 
   watch: {
     detailCommentValid (val: boolean): void {
+      // eslint-disable-next-line no-console
       console.log('detailCommentValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     },
 
     certifyFormValid (val: boolean): void {
+      // eslint-disable-next-line no-console
       console.log('certifyFormValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     },
 
     staffPaymentFormValid (val: boolean): void {
+      // eslint-disable-next-line no-console
       console.log('staffPaymentFormValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     }

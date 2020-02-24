@@ -7,6 +7,7 @@
         <detail-comment
           ref="detailComment"
           v-model="comment"
+          autofocus
           label="Add a Detail that will appear on the ledger for this entity"
           @valid="detailCommentValid=$event"
         />
@@ -53,7 +54,7 @@ export default class AddCommentDialog extends Vue {
   /** Prop to display the dialog. */
   @Prop() private dialog: boolean
 
-  /** Prop to display the dialog. */
+  /** Prop to provide the Filing ID. */
   @Prop() private filingId: number
 
   /** Prop to provide attachment selector. */
@@ -92,6 +93,14 @@ export default class AddCommentDialog extends Vue {
   private async save (): Promise<void> {
     // prevent double saving
     if (this.saving) return
+
+    // ensure we have a Filing ID
+    if (!this.filingId) {
+      // eslint-disable-next-line no-console
+      console.error('save() error - missing filing ID')
+      return
+    }
+
     this.saving = true
 
     const data = {

@@ -64,6 +64,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
+                    <!-- NB: this menu item is disabled in current release -->
                     <v-list-item disabled>
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
@@ -162,8 +163,8 @@
                 v-if="isRoleStaff"
                 @click.stop="showCommentDialog(item.filingId)"
               >
-                  <span>Add Detail</span>
-                </v-btn>
+                <span>Add Detail</span>
+              </v-btn>
             </div>
             <div>
               <!-- the details list-->
@@ -200,7 +201,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -253,8 +254,6 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setTriggerDashboardReload']),
-
     loadData () {
       this.filedItems = []
 
@@ -313,7 +312,7 @@ export default {
 
     // Method to extract date from a local datetime string
     // Returns "yyyy-mm-dd"
-    formatDate (dateString): string {
+    formatDate (dateString: string): string {
       if (!dateString) return null // safety check
       return dateString.split(' ')[0]
     },
@@ -344,7 +343,7 @@ export default {
             }],
             paperOnly: false,
             isCorrected: filing.header.isCorrected || false,
-            comments: this.flattenComments(filing.header.comments)
+            comments: this.flattenAndSortComments(filing.header.comments)
           }
           this.filedItems.push(item)
         } else {
@@ -388,7 +387,7 @@ export default {
           status: filing.header.status,
           paperOnly: false,
           isCorrected: filing.header.isCorrected || false,
-          comments: this.flattenComments(filing.header.comments)
+          comments: this.flattenAndSortComments(filing.header.comments)
         }
         this.filedItems.push(item)
       } else {
@@ -429,13 +428,20 @@ export default {
         }],
         paperOnly: true,
         isCorrected: filing.header.isCorrected || false,
-        comments: this.flattenComments(filing.header.comments)
+        comments: this.flattenAndSortComments(filing.header.comments)
       }
       this.filedItems.push(item)
     },
 
-    flattenComments (comments: any): Array<any> {
-      return (comments && comments.length > 0) ? comments.map(c => c.comment) : []
+    flattenAndSortComments (comments: any): Array<any> {
+      if (comments && comments.length > 0) {
+        // first use map to change comment.comment to comment
+        const flattened: Array<any> = comments.map(c => c.comment)
+        // then sort newest to oldest
+        const sorted = flattened.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
+        return sorted
+      }
+      return []
     },
 
     typeToTitle (type: string, agmYear: string = null): string {
@@ -453,7 +459,7 @@ export default {
       return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
     },
 
-    highlightFiling (highlightId) {
+    highlightFiling (highlightId: number) {
       // expand the panel of the matching filing
       for (let i = 0; i < this.filedItems.length; i++) {
         // assume there is always a filing document
@@ -627,14 +633,41 @@ export default {
         status === FilingStatus.PAID
     },
 
-    showCommentDialog (filingId): void {
+    showCommentDialog (filingId: number): void {
       this.currentFilingId = filingId
       this.addCommentDialog = true
     },
 
-    hideCommentDialog (needReload): void {
+    async hideCommentDialog (needReload: boolean): Promise<void> {
       this.addCommentDialog = false
-      if (needReload) this.setTriggerDashboardReload(true)
+      // if needed, reload comments for this filing
+      // NB: no spinner or state change, just do it quietly
+      if (needReload) await this.reloadComments(this.currentFilingId)
+    },
+
+    async reloadComments (filingId: number): Promise<void> {
+      // find the filing in the list
+      const filing = this.filedItems.find(item => (item.filingId === filingId))
+
+      if (filing) {
+        // fetch latest comments for this filing
+        const url = this.entityIncNo + '/filings/' + filingId
+        await axios.get(url).then(res => {
+          if (res && res.data && res.data.filing && res.data.filing.header) {
+            // reassign just the comments
+            filing.comments = this.flattenAndSortComments(res.data.filing.header.comments)
+          } else {
+            // eslint-disable-next-line no-console
+            console.log('reloadComments() error - invalid response =', res)
+          }
+        }).catch(error => {
+          // eslint-disable-next-line no-console
+          console.error('reloadComments() error =', error)
+        })
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('reloadComments() error - could not find filing id =', filingId)
+      }
     }
   },
 

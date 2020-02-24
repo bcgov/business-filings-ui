@@ -8,7 +8,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import { SummaryCertify } from '@/components/common'
 
 Vue.use(Vuetify)
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 const statementSelector: string = '.certify-content'
 const someCertifier = 'Some Certifier'

@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { mount } from '@vue/test-utils'
-import flushPromises from 'flush-promises'
+import { mount, Wrapper } from '@vue/test-utils'
 
 import store from '@/store/store'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
@@ -27,10 +26,10 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 
 describe('AgmDate', () => {
-  let wrapper
-  let vm
+  let wrapper: Wrapper<AgmDate>
+  let vm: any
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.currentDate = '2019-07-15'
@@ -39,9 +38,7 @@ describe('AgmDate', () => {
     store.state.lastAnnualReportDate = '2018-07-15'
 
     wrapper = mount(AgmDate, { store, vuetify })
-    vm = wrapper.vm as any
-
-    await flushPromises()
+    vm = wrapper.vm
   })
 
   afterEach(() => {

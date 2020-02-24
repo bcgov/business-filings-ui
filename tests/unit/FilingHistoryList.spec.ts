@@ -9,7 +9,7 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 const sampleFilings = [
   {
@@ -110,7 +110,7 @@ const sampleFilings = [
 ]
 
 describe('FilingHistoryList', () => {
-  it('handles empty data', done => {
+  it('handles empty data', async () => {
     const $route = { query: { 'filingId': null } }
 
     // init store
@@ -120,19 +120,18 @@ describe('FilingHistoryList', () => {
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
 
-    Vue.nextTick(() => {
-      expect(vm.filedItems.length).toEqual(0)
-      expect(vm.$el.querySelectorAll('.filing-item').length).toEqual(0)
-      expect(wrapper.emitted('filed-count')).toEqual([[0]])
-      expect(vm.panel).toBeNull() // no row is expanded
-      expect(vm.$el.querySelector('.no-results')).not.toBeNull()
-      expect(vm.$el.querySelector('.no-results').textContent).toContain('You have no filing history')
-      wrapper.destroy()
-      done()
-    })
+    await Vue.nextTick()
+    expect(vm.filedItems.length).toEqual(0)
+    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(0)
+    expect(wrapper.emitted('filed-count')).toEqual([[0]])
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(vm.$el.querySelector('.no-results')).not.toBeNull()
+    expect(vm.$el.querySelector('.no-results').textContent).toContain('You have no filing history')
+
+    wrapper.destroy()
   })
 
-  it('displays the Filed Items pre/post bob date', done => {
+  it('displays the Filed Items pre/post bob date', async () => {
     const $route = { query: { 'filingId': null } }
 
     // init store
@@ -243,18 +242,17 @@ describe('FilingHistoryList', () => {
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
 
-    Vue.nextTick(() => {
-      expect(vm.filedItems.length).toEqual(store.state.filings.length)
-      expect(vm.$el.querySelectorAll('.filing-item').length).toEqual(store.state.filings.length)
-      expect(wrapper.emitted('filed-count')).toEqual([[store.state.filings.length]])
-      expect(vm.panel).toBeNull() // no row is expanded
-      expect(vm.$el.querySelector('.no-results')).toBeNull()
-      wrapper.destroy()
-      done()
-    })
+    await Vue.nextTick()
+    expect(vm.filedItems.length).toEqual(store.state.filings.length)
+    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(store.state.filings.length)
+    expect(wrapper.emitted('filed-count')).toEqual([[store.state.filings.length]])
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    wrapper.destroy()
   })
 
-  it('expands the specified filing ID for pre/post bob date filings', done => {
+  it('expands the specified filing ID for pre/post bob date filings', async () => {
     const $route = { query: { 'filing_id': '654' } }
 
     // init store
@@ -365,18 +363,17 @@ describe('FilingHistoryList', () => {
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
 
-    Vue.nextTick(() => {
-      expect(vm.filedItems.length).toEqual(store.state.filings.length)
-      expect(vm.$el.querySelectorAll('.filing-item').length).toEqual(store.state.filings.length)
-      expect(wrapper.emitted('filed-count')).toEqual([[store.state.filings.length]])
-      expect(vm.panel).toEqual(1) // second row is expanded
-      expect(vm.$el.querySelector('.no-results')).toBeNull()
-      wrapper.destroy()
-      done()
-    })
+    await Vue.nextTick()
+    expect(vm.filedItems.length).toEqual(store.state.filings.length)
+    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(store.state.filings.length)
+    expect(wrapper.emitted('filed-count')).toEqual([[store.state.filings.length]])
+    expect(vm.panel).toEqual(1) // second row is expanded
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    wrapper.destroy()
   })
 
-  it('shows the filing date in the correct format yyyy-mm-dd', done => {
+  it('shows the filing date in the correct format yyyy-mm-dd', async () => {
     const $route = { query: { 'filing_id': '654' } }
 
     // init store
@@ -386,16 +383,15 @@ describe('FilingHistoryList', () => {
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelectorAll('.filing-item')[0]
-        .querySelector('.list-item__subtitle').textContent)
-        .toContain('2019-06-02')
-      wrapper.destroy()
-      done()
-    })
+    await Vue.nextTick()
+    expect(vm.$el.querySelectorAll('.filing-history-item')[0]
+      .querySelector('.list-item__subtitle').textContent)
+      .toContain('2019-06-02')
+
+    wrapper.destroy()
   })
 
-  it('displays the alert when the filing is future effective', done => {
+  it('displays the alert when the filing is future effective', async () => {
     const $route = { query: { 'filing_id': '9873' } }
 
     // init store
@@ -406,10 +402,10 @@ describe('FilingHistoryList', () => {
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
 
-    expect(vm.$el.querySelectorAll('.filing-item')[5].textContent)
+    await Vue.nextTick()
+    expect(vm.$el.querySelectorAll('.filing-history-item')[5].textContent)
       .toContain('The updated office addresses will be legally effective on 2019-12-13')
 
     wrapper.destroy()
-    done()
   })
 })

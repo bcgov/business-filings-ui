@@ -10,7 +10,7 @@ import { EntityTypes } from '@/enums'
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-let vuetify = new Vuetify({})
+const vuetify = new Vuetify({})
 
 describe('DirectorListSm', () => {
   it('handles empty data as a coop', done => {
