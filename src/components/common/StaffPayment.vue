@@ -1,21 +1,39 @@
 <template>
   <v-card flat id="AR-step-5-container">
-    <v-form class="staff-payment-container" v-model="formValid">
-      <div class="routingslipnumber-container">
-        <label>Routing Slip Number</label>
-        <div class="value routingslipnumber">
+    <div class="payment-container">
+      <label>Payment</label>
+      <v-radio-group
+        class="value mt-0 pt-0"
+        :value="paymentOption"
+        @change="onPaymentOptionChanged($event)"
+      >
+        <!-- Payment Received radio button -->
+        <v-radio id="payment-received-radio" label="Payment Received" />
+        <v-form class="ml-8" ref="form" v-model="formValid">
           <v-text-field
             filled
             persistent-hint
             id="routing-slip-number-textfield"
             label="Enter the Routing Slip Number "
             hint="Fee Accounting System Routing Slip Number (9 digits)"
-            v-model="myRoutingSlipNumber"
+            :value="routingSlipNumber"
             :rules="rules"
+            :disabled="paymentOption !== PAYMENT_RECEIVED"
+            @input="emitRoutingSlipNumber($event)"
           />
-        </div>
-      </div>
-    </v-form>
+          <v-checkbox
+            id="priority-checkbox"
+            label="Priority (add $100.00)"
+            :input-value="isPriority"
+            :disabled="paymentOption !== PAYMENT_RECEIVED"
+            @change="emitIsPriority(!!$event)"
+          />
+        </v-form>
+
+        <!-- No Fee radio button -->
+        <v-radio id="no-fee-radio" label="No Fee" />
+      </v-radio-group>
+    </div>
   </v-card>
 </template>
 
@@ -24,75 +42,72 @@ import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class StaffPayment extends Vue {
+  // payment options:
+  readonly PAYMENT_RECEIVED = 0
+  readonly NO_FEE = 1
+
   /** Routing Slip Number prop. */
-  @Prop({ default: null })
+  @Prop({ default: '' })
   private routingSlipNumber: string
 
-  /** Priority prop. */
-  @Prop({ default: null })
-  private priority: boolean
+  /** Is Priority prop. */
+  @Prop({ default: false })
+  private isPriority: boolean
 
-  /** No Fee prop. */
-  @Prop({ default: null })
-  private noFee: boolean
+  /** Is Waive Fees prop. */
+  @Prop({ default: false })
+  private isWaiveFees: boolean
 
-  private formValid : boolean = false
+  /** Form model property. */
+  private formValid: boolean = false
 
-  // Model properties, initialized to initial prop values.
-  private myRoutingSlipNumber: string = this.routingSlipNumber
-  private myPriority: boolean = this.priority
-  private myNoFee: boolean= this.noFee
-
-  /** Vuetify rules, used for error messages and styling. */
+  /** Array of validation rules for Routing Slip Number. */
   private readonly rules = [
     v => !!v || 'Routing Slip Number is required',
     v => /^\d{9}$/.test(v) || 'Routing Slip Number must be 9 digits'
   ]
 
-  /** Called when component is created. */
-  private created (): void {
-    // notify parent of initial state
-    this.emitUpdateRoutingSlipNumber(this.myRoutingSlipNumber)
-    this.emitValid(this.formValid)
+  /** The payment option (radio group index). */
+  private get paymentOption (): number {
+    return this.isWaiveFees ? this.NO_FEE : this.PAYMENT_RECEIVED
   }
 
-  /** Watches for change to prop and updates local copy. */
-  @Watch('routingSlipNumber')
-  private onRoutingSlipNumberChanged (val: string): void {
-    this.myRoutingSlipNumber = val
+  /** Called when payment option (radio group) has changed. */
+  private onPaymentOptionChanged (val: number): void {
+    if (val === this.PAYMENT_RECEIVED) {
+      // show form errors
+      (this.$refs.form as any).validate()
+    }
+    this.emitIsWaiveFees(val === this.NO_FEE)
+    this.$nextTick(() => this.emitValid())
   }
 
-  /** Watches for change to prop and updates local copy. */
-  @Watch('priority')
-  private onPriorityChanged (val: boolean): void {
-    this.myPriority = val
-  }
-
-  /** Watches for change to prop and updates local copy. */
-  @Watch('noFee')
-  private onNoFeeChanged (val: boolean): void {
-    this.myNoFee = val
-  }
-
-  /** Watches for change to Routing Slip Number and notifies parent. */
-  @Watch('myRoutingSlipNumber')
-  private onMyRoutingSlipNumberChanged (val: string): void {
-    this.emitUpdateRoutingSlipNumber(this.myRoutingSlipNumber)
-  }
-
-  /** Watches for change to form validity and notifies parent. */
+  /**
+   * Watches for change to form validity.
+   * NB: form always becomes valid when mounted
+   */
   @Watch('formValid')
-  private onValidChanged (val: boolean): void {
-    this.emitValid(this.formValid)
+  private onFormValidChanged (): void {
+    this.emitValid()
   }
 
-  /** Emits an event to inform parent of new Routing Slip Number. */
+  /** Emits an event to update the Routing Slip Number prop. */
   @Emit('update:routingSlipNumber')
-  private emitUpdateRoutingSlipNumber (val: string): void { }
+  private emitRoutingSlipNumber (val: string): void { }
 
-  /** Emits an event to inform parent of new validity. */
+  /** Emits an event to update the Is Priority prop. */
+  @Emit('update:isPriority')
+  private emitIsPriority (val: boolean): void { }
+
+  /** Emits an event to update the Is Waive Fees prop. */
+  @Emit('update:isWaiveFees')
+  private emitIsWaiveFees (val: boolean): void { }
+
+  /** Emit an event indicating whether or not the form is valid. */
   @Emit('valid')
-  private emitValid (val: boolean): void { }
+  private emitValid (): boolean {
+    return (this.formValid || this.isWaiveFees)
+  }
 }
 </script>
 
@@ -107,22 +122,20 @@ export default class StaffPayment extends Vue {
   font-size: 0.875rem;
 }
 
-.staff-payment-container {
-  padding: 1.25rem;
-}
-
-.routingslipnumber-container {
+.payment-container {
   display: flex;
   flex-flow: column nowrap;
   position: relative;
+  padding: 1.25rem;
 
   > label:first-child {
     font-weight: 700;
+    margin-bottom: 2rem;
   }
 }
 
 @media (min-width: 768px) {
-  .routingslipnumber-container {
+  .payment-container {
     flex-flow: row nowrap;
 
     > label:first-child {
@@ -133,7 +146,7 @@ export default class StaffPayment extends Vue {
   }
 }
 
-.value.routingslipnumber {
+.value {
   min-width: 35rem;
 }
 </style>

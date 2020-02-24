@@ -1,9 +1,7 @@
 <template>
   <v-card flat class="agm-date-container">
     <div class="meta-container">
-      <label>
-        <span>Annual General<br>Meeting Date</span>
-      </label>
+      <label>Annual General<br>Meeting Date</label>
 
       <v-form ref="form" class="value date">
         <v-menu
@@ -279,6 +277,7 @@ export default class AgmDate extends Mixins(DateMixin) {
 
   > label:first-child {
     font-weight: 700;
+    margin-bottom: 2rem;
   }
 }
 

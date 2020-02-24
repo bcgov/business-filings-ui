@@ -62,9 +62,12 @@
               <header>
                 <h2 id="correction-step-1-header">1. Detail</h2>
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
+                <p class="black--text mb-0">{{defaultComment}}</p>
               </header>
               <detail-comment
                 v-model="detailComment"
+                placeholder="Add a Detail that will appear on the ledger for this entity."
+                :maxLength="maxDetailCommentLength"
                 @valid="detailCommentValid=$event"
               />
             </section>
@@ -85,14 +88,14 @@
             </section>
 
             <!-- Staff Payment -->
-            <section v-if="isRoleStaff && isPayRequired">
+            <section v-if="isRoleStaff">
               <header>
                 <h2 id="correction-step-3-header">3. Staff Payment</h2>
               </header>
               <staff-payment
                 :routingSlipNumber.sync="routingSlipNumber"
-                :priority.sync="priority"
-                :noFee.sync="noFee"
+                :isPriority.sync="isPriority"
+                :isWaiveFees.sync="isWaiveFees"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -105,8 +108,6 @@
               <sbc-fee-summary
                 :filingData="[...filingData]"
                 :payURL="payAPIURL"
-                :priority="priority"
-                :waiveFees="noFee"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -121,7 +122,7 @@
       class="list-item"
     >
       <div class="buttons-left">
-        <!-- NB: no saving in Corrections 1.0 -->
+        <!-- NB: no saving drafts in Corrections 1.0 -->
         <!-- <v-btn id="ar-save-btn" large
           :disabled="!isSaveButtonEnabled || busySaving"
           :loading="saving"
@@ -179,14 +180,13 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, EntityFilterMixin } from '@/mixins'
-import { ResourceLookupMixin } from '../mixins'
+import { DateMixin, EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
 
 // Interfaces
 import { FilingData } from '@/interfaces'
 
 // Enums
-import { FilingCodes, FilingNames, FilingStatus, FilingTypes, EntityTypes } from '@/enums'
+import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
   name: 'Correction',
@@ -209,7 +209,7 @@ export default {
     return {
       // properties for DetailComment component
       detailComment: '',
-      detailCommentValid: false,
+      detailCommentValid: null,
 
       // properties for Certify component
       certifiedBy: '',
@@ -217,10 +217,10 @@ export default {
       certifyFormValid: null,
 
       // properties for Staff Payment component
-      routingSlipNumber: null,
-      priority: true, // FOR DEBUGGING ONLY
-      noFee: true, // FOR DEBUGGING ONLY
-      staffPaymentFormValid: false,
+      routingSlipNumber: '',
+      isPriority: false,
+      isWaiveFees: false,
+      staffPaymentFormValid: null,
       totalFee: 0,
 
       // flags for displaying dialogs
@@ -232,7 +232,8 @@ export default {
       // other program state
       dataLoaded: false,
       loadingMessage: 'Loading...', // initial generic message
-      filingId: null, // id of this correction filing
+      filingId: 0, // id of this correction filing
+      correctedFilingId: 0, // id of filing to correct
       origFiling: null, // copy of original filing
       filingData: [] as Array<FilingData>,
       saving: false,
@@ -246,8 +247,7 @@ export default {
       FilingCodes,
       FilingNames,
       FilingStatus,
-      FilingTypes,
-      EntityTypes
+      FilingTypes
     }
   },
 
@@ -256,10 +256,12 @@ export default {
 
     ...mapGetters(['isRoleStaff']),
 
+    /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
       return !this.dataLoaded && !this.loadCorrectionDialog
     },
 
+    /** Returns title of original filing. */
     title (): string | null {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
         switch (this.origFiling.header.name) {
@@ -277,6 +279,7 @@ export default {
       return null
     },
 
+    /** Returns AGM Year of original filing (AR only). */
     agmYear (): number | null {
       if (this.origFiling && this.origFiling.annualReport && this.origFiling.annualReport.annualReportDate) {
         const date = this.origFiling.annualReport.annualReportDate
@@ -285,6 +288,7 @@ export default {
       return null
     },
 
+    /** Returns date of original filing in format "yyyy-mm-dd". */
     originalFilingDate (): string | null {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.date) {
         const localDateTime = this.convertUTCTimeToLocalTime(this.origFiling.header.date)
@@ -293,30 +297,46 @@ export default {
       return null
     },
 
+    /** Returns default comment (ie, the first line of the detail comment). */
+    defaultComment (): string {
+      return `Correction for ${this.title}. Filed on ${this.originalFilingDate}.`
+    },
+
+    /** Returns maximum length of detail comment. */
+    maxDetailCommentLength (): number {
+      // = (max size in db) - (default comment length) - (Carriage Return)
+      return 4096 - this.defaultComment.length - 1
+    },
+
+    /** Returns Pay API URL. */
     payAPIURL (): string {
       return sessionStorage.getItem('PAY_API_URL')
     },
 
+    /** Returns True if form is valid, else False. */
     validated (): boolean {
       // TODO: handle Priority and No Fee
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
       return (staffPaymentValid && this.detailCommentValid && this.certifyFormValid)
     },
 
+    /** Returns True if page is busy saving, else False. */
     busySaving (): boolean {
       return (this.saving || this.savingResuming || this.filingPaying)
     },
 
+    /** Returns True if Save button should be enabled, else False. */
     isSaveButtonEnabled (): boolean {
       return true // FUTURE: add necessary logic here
     },
 
+    /** Returns True if payment is required, else False. */
     isPayRequired (): boolean {
-      // TODO: handle Priority and No Fee
       return (this.totalFee > 0)
     }
   },
 
+  /** Called when component is created. */
   created (): void {
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
@@ -327,22 +347,24 @@ export default {
       }
     }
     // NB: this is the id of the filing to correct
-    const origFilingId = +this.$route.params.id // number
+    this.correctedFilingId = +this.$route.params.id // number (may be NaN, which is false)
 
     // if required data isn't set, route to home
-    if (!this.entityIncNo || (origFilingId === undefined) || (origFilingId <= 0)) {
+    if (!this.entityIncNo || !this.correctedFilingId) {
       this.$router.push('/')
     } else {
       this.loadingMessage = `Preparing Your Correction`
-      this.fetchOrigFiling(origFilingId)
+      this.fetchOrigFiling()
     }
   },
 
+  /** Called when component is mounted. */
   mounted (): void {
     // always include correction code
     this.toggleFiling('add', FilingCodes.CORRECTION)
   },
 
+  /** Called before routing away from this component. */
   beforeRouteLeave (to, from, next): void {
     if (!this.haveChanges) {
       // no changes -- resolve promise right away
@@ -374,12 +396,11 @@ export default {
   },
 
   methods: {
-    // this is used to fetch the filing to correct
-    // FUTURE: need another method to load the draft correction?
-    fetchOrigFiling (origFilingId: number): void {
+    /** Fetches the original filing to correct. */
+    fetchOrigFiling (): void {
       this.dataLoaded = false
 
-      const url = this.entityIncNo + '/filings/' + origFilingId
+      const url = this.entityIncNo + '/filings/' + this.correctedFilingId
       axios.get(url).then(res => {
         if (res && res.data) {
           this.origFiling = res.data.filing
@@ -392,11 +413,8 @@ export default {
             if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (this.origFiling.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
-            // restore original Certified By name
+            // use original Certified By name
             this.certifiedBy = this.origFiling.header.certifiedBy || ''
-
-            // initialize comment
-            this.detailComment = `[Filing corrected on ${this.currentDate}]\n`
           } catch (err) {
             // eslint-disable-next-line no-console
             console.log(`fetchOrigFiling() error - ${err.message}, origFiling =`, this.origFiling)
@@ -416,34 +434,35 @@ export default {
       })
     },
 
-    // FUTURE
-    // async onClickSave: Promise<void> () {
-    //   // prevent double saving
-    //   if (this.busySaving) return
+    /** Handler for Save click event. */
+    async onClickSave (): Promise<void> {
+      // prevent double saving
+      if (this.busySaving) return
 
-    //   this.saving = true
-    //   const filing = await this.saveFiling(true)
-    //   if (filing) {
-    //     // save Filing ID for future PUTs
-    //     this.filingId = +filing.header.filingId
-    //   }
-    //   this.saving = false
-    // },
+      this.saving = true
+      const filing = await this.saveFiling(true)
+      if (filing) {
+        // save Filing ID for future PUTs
+        this.filingId = +filing.header.filingId
+      }
+      this.saving = false
+    },
 
-    // FUTURE
-    // async onClickSaveResume (): Promise<void> {
-    //   // prevent double saving
-    //   if (this.busySaving) return
+    /** Handler for Save & Resume click event. */
+    async onClickSaveResume (): Promise<void> {
+      // prevent double saving
+      if (this.busySaving) return
 
-    //   this.savingResuming = true
-    //   const filing = await this.saveFiling(true)
-    //   // on success, route to Home URL
-    //   if (filing) {
-    //     this.$router.push('/')
-    //   }
-    //   this.savingResuming = false
-    // },
+      this.savingResuming = true
+      const filing = await this.saveFiling(true)
+      // on success, route to Home URL
+      if (filing) {
+        this.$router.push('/')
+      }
+      this.savingResuming = false
+    },
 
+    /** Handler for File & Pay click event. */
     async onClickFilePay (): Promise<void> {
       // prevent double saving
       if (this.busySaving) return
@@ -455,12 +474,8 @@ export default {
       if (filing && filing.header) {
         const filingId = +filing.header.filingId
 
-        // whether this is a staff or no-fee filing
-        // TODO: handle Priority and No Fee
-        const prePaidFiling = (this.isRoleStaff || !this.isPayRequired)
-
-        // if filing needs to be paid, redirect to Pay URL
-        if (!prePaidFiling) {
+        // if this is a regular user, redirect to Pay URL
+        if (!this.isRoleStaff) {
           const paymentToken = filing.header.paymentToken
           const baseUrl = sessionStorage.getItem('BASE_URL')
           const returnURL = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
@@ -478,6 +493,7 @@ export default {
       this.filingPaying = false
     },
 
+    /** Method to save the filing. */
     async saveFiling (isDraft): Promise<any> {
       this.resetErrors()
 
@@ -493,32 +509,53 @@ export default {
       const header = {
         header: {
           name: 'correction',
-          certifiedBy: this.certifiedBy || '',
+          certifiedBy: this.certifiedBy,
           email: 'no_one@never.get',
           date: this.currentDate
         }
       }
-      // only save this if it's not null
-      if (this.routingSlipNumber) {
+      // only save Routing Slip Number if it's valid
+      if (this.routingSlipNumber && !this.isWaiveFees) {
         header.header['routingSlipNumber'] = this.routingSlipNumber
       }
-      // TODO: handle Priority and No Fee
+      // only save Priority it it's valid
+      if (this.isPriority && !this.isWaiveFees) {
+        header.header['priority'] = true
+      }
+      // only save Waive Fees if it's valid
+      if (this.isWaiveFees) {
+        header.header['waiveFees'] = true
+      }
 
       const business = {
         business: {
           foundingDate: this.entityFoundingDate,
           identifier: this.entityIncNo,
-          legalName: this.entityName
+          legalName: this.entityName,
+          legalType: this.entityType
         }
       }
 
       const correction = {
         correction: {
-          // FUTURE: add more properties here
-          origFilingId: this.origFilingId,
-          name: this.origFiling.header.name, // aka type
-          comment: this.detailComment
+          correctedFilingId: this.correctedFilingId,
+          correctedFilingType: this.origFiling.header.name,
+          correctedFilingDate: this.originalFilingDate,
+          comment: `${this.defaultComment}\n${this.detailComment}`
         }
+      }
+
+      // FUTURE: save new filing data
+      // NB: a correction to a correction is to the original data
+      let annualReport, changeOfDirectors, changeOfAddress
+      if (this.origFiling.annualReport) {
+        annualReport = {}
+      } else if (this.origFiling.changeOfDirectors) {
+        changeOfDirectors = {}
+      } else if (this.origFiling.changeOfAddress) {
+        changeOfAddress = {}
+      } else {
+        throw new Error('Invalid correction type')
       }
 
       const data = {
@@ -526,7 +563,11 @@ export default {
           {},
           header,
           business,
-          correction
+          correction,
+          // TODO: need fallback values for these?
+          annualReport,
+          changeOfDirectors,
+          changeOfAddress
         )
       }
 
@@ -591,39 +632,42 @@ export default {
       }
     },
 
-    toggleFiling (setting, filing): void {
-      let added = false
+    /** Method to add/update or remove the specified filing code. */
+    toggleFiling (addRemove, code): void {
+      // remove code if it already exists
       for (let i = 0; i < this.filingData.length; i++) {
-        if (this.filingData[i].filingTypeCode === filing) {
-          if (setting === 'add') {
-            added = true
-          } else {
-            this.filingData.splice(i, 1)
-          }
+        if (this.filingData[i].filingTypeCode === code) {
+          this.filingData.splice(i, 1)
           break
         }
       }
-      if (setting === 'add' && !added) {
-        this.filingData.push({ filingTypeCode: filing, entityType: this.entityType })
+      // (re)add code
+      if (addRemove === 'add') {
+        this.filingData.push({
+          filingTypeCode: code,
+          entityType: this.entityType,
+          priority: this.isPriority,
+          waiveFees: this.isWaiveFees,
+          futureEffective: false
+        })
       }
     },
 
-    isDataChanged (key): boolean {
-      return this.filingData.find(o => o.filingTypeCode === key)
-    },
-
+    /** Handler for Exit click event. */
     navigateToDashboard (): void {
       this.haveChanges = false
       this.dialog = false
       this.$router.push('/dashboard')
     },
 
+    /** Method to reset all error flags/states. */
     resetErrors (): void {
       this.saveErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []
     },
 
+    /** Returns True if the specified business has any pending tasks, else False. */
     async hasTasks (businessId): Promise<boolean> {
       let hasPendingItems = false
       if (this.filingId === 0) {
@@ -649,22 +693,29 @@ export default {
   },
 
   watch: {
+    /** Called when Detail Comment component validity changes.  */
     detailCommentValid (val: boolean): void {
-      // eslint-disable-next-line no-console
-      console.log('detailCommentValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     },
 
+    /** Called when Certify form validity changes.  */
     certifyFormValid (val: boolean): void {
-      // eslint-disable-next-line no-console
-      console.log('certifyFormValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
     },
 
+    /** Called when Staff Payment form validity changes.  */
     staffPaymentFormValid (val: boolean): void {
-      // eslint-disable-next-line no-console
-      console.log('staffPaymentFormValid =', val) // FOR DEBUGGING ONLY
       this.haveChanges = true
+    },
+
+    /** Called when Is Priority changes. */
+    isPriority (val: boolean): void {
+      this.toggleFiling('add', FilingCodes.CORRECTION)
+    },
+
+    /** Called when Is Waive Fees changes. */
+    isWaiveFees (val: boolean): void {
+      this.toggleFiling('add', FilingCodes.CORRECTION)
     }
   }
 }

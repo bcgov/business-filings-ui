@@ -204,7 +204,7 @@
         <v-expansion-panel-content>
           <v-card v-if="isPending(item)" data-test-class="payment-incomplete">
             <v-card-text>
-              <p class="font-weight-bold black--text">Payment Incomplete</P>
+              <p class="font-weight-bold black--text">Payment Incomplete</p>
               <p>This filing is pending payment. The payment may still be in progress or may have been
                 interrupted for some reason.<p>
               <p>You may continue this filing by selecting "Resume Payment".</p>

@@ -45,37 +45,35 @@ import { mapState } from 'vuex'
 export default class Certify extends Vue {
   readonly currentDate!: string
 
-  // Props passed into this component.
+  /** Certified By prop. */
   @Prop({ default: '' })
   private certifiedBy: string
 
+  /** Is Certified prop. */
   @Prop({ default: false })
   private isCertified: boolean
 
+  /** Message prop. */
   @Prop({ default: '' })
   private message: string
 
+  /** Entity Display prop. */
   @Prop({ default: '' })
   private entityDisplay: string
 
-  /**
-   * Called when component is created.
-   */
+  /** Called when component is created. */
   private created (): void {
-    // always give the parent a "valid" event for its property values
+    // inform parent of initial validity
     this.emitValid(Boolean(this.trimmedCertifiedBy && this.isCertified))
   }
 
-  /**
-   * Computed value.
-   * @returns The trimmed "Certified By" string (may be '').
-   */
+  /** The trimmed "Certified By" string (may be ''). */
   private get trimmedCertifiedBy (): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     return this.certifiedBy && this.certifiedBy.replace(/\s+/g, ' ').trim()
   }
 
-  // Emit an update event when input changes.
+  /** Emits an event to update the Certified By prop. */
   @Emit('update:certifiedBy')
   private emitCertifiedBy (certifiedBy: string): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
@@ -84,14 +82,14 @@ export default class Certify extends Vue {
     return certifiedBy
   }
 
-  // Emit an update event when checkbox changes.
+  /** Emits an event to update the Is Certified prop. */
   @Emit('update:isCertified')
   private emitIsCertified (isCertified: boolean): boolean {
     this.emitValid(Boolean(this.trimmedCertifiedBy && isCertified))
     return isCertified
   }
 
-  // Emit an event indicating whether or not the form is valid.
+  /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
   private emitValid (valid: boolean): void { }
 }
@@ -118,7 +116,8 @@ export default class Certify extends Vue {
   position: relative;
 
   > label:first-child {
-    font-weight: 500;
+    font-weight: 700;
+    margin-bottom: 2rem;
   }
 }
 
@@ -130,7 +129,6 @@ export default class Certify extends Vue {
       flex: 0 0 auto;
       padding-right: 2rem;
       width: 12rem;
-      font-weight: 700;
     }
   }
 }

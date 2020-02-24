@@ -64,8 +64,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <!-- NB: this menu item is disabled in current release -->
-                    <v-list-item disabled>
+                    <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -234,7 +233,10 @@ export default {
       currentFilingId: null,
 
       // enums
-      EntityTypes
+      EntityTypes,
+      FilingNames,
+      FilingStatus,
+      FilingTypes
     }
   },
 
