@@ -100,7 +100,9 @@ describe('Dashboard - UI', () => {
     expect(vm.$el.querySelector('#standalone-directors-button')
       .getAttribute('disabled')).toBe('true')
   })
+})
 
+describe('Dashboard - In Process Tests', () => {
   it('marks filing as PROCESSING when expecting completed filing and dashboard does not reflect this', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -126,6 +128,8 @@ describe('Dashboard - UI', () => {
     wrapper.find(FilingHistoryList).vm.$emit('filings-list', [])
 
     expect(vm.inProcessFiling).toEqual(123)
+
+    wrapper.destroy()
   })
 
   it('does not mark filing as PROCESSING when expecting completed filing and dashboard reflects this', () => {
@@ -154,6 +158,8 @@ describe('Dashboard - UI', () => {
     ])
 
     expect(vm.inProcessFiling).toBeNull()
+
+    wrapper.destroy()
   })
 })
 
