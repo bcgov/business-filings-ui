@@ -16,7 +16,7 @@ import Vuetify from 'vuetify'
 import store from '@/store/store'
 import { mount, Wrapper } from '@vue/test-utils'
 
-import Certify from '@/components/AnnualReport/Certify.vue'
+import { Certify } from '@/components/common'
 
 Vue.use(Vuetify)
 

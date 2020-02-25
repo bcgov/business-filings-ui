@@ -7,7 +7,7 @@ import sinon from 'sinon'
 import axios from '@/axios-auth'
 import store from '@/store/store'
 
-import Directors from '@/components/AnnualReport/Directors.vue'
+import Directors from '@/components/common/Directors.vue'
 import { EntityTypes } from '@/enums'
 import { configJson } from '@/resources/business-config'
 

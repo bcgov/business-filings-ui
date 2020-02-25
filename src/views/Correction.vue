@@ -172,9 +172,7 @@ import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import Certify from '@/components/AnnualReport/Certify.vue'
-import { DetailComment } from '@/components/common'
-import StaffPayment from '@/components/AnnualReport/StaffPayment.vue'
+import { Certify, DetailComment, StaffPayment } from '@/components/common'
 
 // Dialogs
 import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDialog, SaveErrorDialog }

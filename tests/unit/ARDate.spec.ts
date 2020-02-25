@@ -4,7 +4,7 @@ import Vuelidate from 'vuelidate'
 
 import store from '@/store/store'
 import { shallowMount } from '@vue/test-utils'
-import ArDate from '@/components/AnnualReport/BCorp/ARDate.vue'
+import ArDate from '@/components/AnnualReport/ARDate.vue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

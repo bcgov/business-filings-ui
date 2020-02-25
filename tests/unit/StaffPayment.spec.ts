@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import StaffPayment from '@/components/AnnualReport/StaffPayment.vue'
+import { StaffPayment } from '@/components/common'
 
 Vue.use(Vuetify)
 // suppress "avoid mutating a prop directly" warnings

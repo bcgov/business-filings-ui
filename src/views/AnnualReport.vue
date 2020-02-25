@@ -289,12 +289,10 @@ import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
-import ArDate from '@/components/AnnualReport/BCorp/ARDate.vue'
-import Directors from '@/components/AnnualReport/Directors.vue'
+import ArDate from '@/components/AnnualReport/ARDate.vue'
+import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import Certify from '@/components/AnnualReport/Certify.vue'
-import StaffPayment from '@/components/AnnualReport/StaffPayment.vue'
-import { OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 
 // Dialogs
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'

@@ -284,11 +284,9 @@ import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
-import Directors from '@/components/AnnualReport/Directors.vue'
-import Certify from '@/components/AnnualReport/Certify.vue'
-import StaffPayment from '@/components/AnnualReport/StaffPayment.vue'
+import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { SummaryDirectors, SummaryCertify, SummaryStaffPayment } from '@/components/common'
+import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPayment } from '@/components/common'
 
 // Dialog Components
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'

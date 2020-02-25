@@ -503,9 +503,10 @@ import { Component, Mixins, Vue, Prop, Watch, Emit } from 'vue-property-decorato
 import axios from '@/axios-auth'
 import { mapState, mapGetters } from 'vuex'
 import { required, maxLength } from 'vuelidate/lib/validators'
-import { WarningPopover } from '@/components/dialogs'
+
 // Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import { WarningPopover } from '@/components/dialogs'
 
 // Mixins
 import { DateMixin, EntityFilterMixin, CommonMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
