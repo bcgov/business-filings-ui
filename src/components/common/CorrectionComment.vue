@@ -3,13 +3,16 @@
     <div class="comments-section mt-8" v-if="filing.comments.length > 0">
       <v-divider></v-divider>
       <div class="title-bar mt-5">
-        <h4><v-icon>mdi-comment-text</v-icon> Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})</h4>
+        <h4>
+          <v-icon>mdi-comment-text</v-icon>
+          Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
+        </h4>
         <v-btn
           color="primary"
           v-if="isStaff"
           @click.stop="showCommentDialog(filing.filingId)"
         >
-          <span>Add Detail Comment</span>
+          <span>Add Detail</span>
         </v-btn>
       </div>
       <div>
@@ -23,7 +26,7 @@
                 ({{convertUTCTimeToLocalTime(comment.timestamp)}})
               </v-list-item-title>
               <v-list-item-subtitle class="body-2">
-                <div class="pre-line">
+                <div class="pre-line" v-if="filing.correctedFilingType">
                   Correction for {{filing.correctedFilingType}}
                   on {{filing.filingDate}}
                 </div>
@@ -38,7 +41,7 @@
 </template>
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Prop, Vue, Emit } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 
 // Mixins

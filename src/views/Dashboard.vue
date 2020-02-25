@@ -10,7 +10,7 @@
     <v-container id="dashboard-container" class="view-container">
       <article id="dashboard-article">
         <header>
-          <h1 data-test-id="dashboard-title">Dashboard</h1>
+          <h1 data-test-id="dashboard-title">Dashboard</h1>{{hasBlockerFiling}}
         </header>
 
         <v-row>

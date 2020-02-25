@@ -285,7 +285,7 @@ export default {
           console.log('ERROR - invalid filing or filing header =', filing)
         }
       }
-
+      console.log(this.filedItems)
       this.$emit('filed-count', this.filedItems.length)
       this.$emit('filings-list', this.filedItems)
 
@@ -387,7 +387,8 @@ export default {
           filingAuthor: filing.header.certifiedBy,
           type: filing.header.name,
           filingDate: filing.correction.correctedFilingDate,
-          filingId: filing.correction.correctedFilingId,
+          filingId: filing.header.filingId,
+          corrFilingId: filing.correction.correctedFilingId,
           correctedFilingType: this.typeToTitle(filing.correction.correctedFilingType),
           title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
           draftTitle: `Correction Filing`,

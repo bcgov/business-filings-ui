@@ -207,7 +207,7 @@
                 <v-btn v-else-if="!isCompleted(item)"
                   class="btn-file-now"
                   color="primary"
-                  :disabled="!item.enabled || coaPending || !confirmCheckbox"
+                  :disabled="!item.enabled || coaPending || !confirmCheckbox || hasPendingCorrection"
                   @click.native.stop="doFileNow(item)"
                 >
                   <span>File Annual Report</span>
@@ -305,6 +305,7 @@ export default {
       confirmCheckbox: false,
       confirmEnabled: false,
       currentFilingId: null,
+      hasPendingCorrection: false,
 
       // enums
       EntityTypes,
@@ -355,7 +356,8 @@ export default {
       // This indicates that a new filing cannot be started because this one has to be completed first.
       this.$emit('has-blocker-filing',
         this.taskItems.filter(elem => {
-          return this.isDraft(elem) || this.isPending(elem) || this.isError(elem) || this.isPaid(elem)
+          return this.isDraft(elem) || this.isPending(elem) || this.isError(elem) || this.isPaid(elem) ||
+            this.isCorrection(elem)
         }).length > 0
       )
     },
@@ -491,7 +493,8 @@ export default {
           type: filing.header.name,
           certifiedBy: filing.header.certifiedBy,
           filingDate: filing.correction.correctedFilingDate,
-          filingId: filing.correction.correctedFilingId,
+          filingId: filing.header.filingId,
+          corrFilingId: filing.correction.correctedFilingId,
           correctedFilingType: this.formatFilingType(filing.correction.correctedFilingType),
           title: `Priority Correction - ${this.formatFilingType(filing.correction.correctedFilingType)}`,
           draftTitle: `Correction Filing`,
@@ -499,6 +502,7 @@ export default {
           order: task.order,
           comments: filing.header.comments
         })
+        this.hasPendingCorrection = true
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - invalid filing or header or changeOfAddress in task =', task)
@@ -709,13 +713,13 @@ export default {
       })
     },
 
-    showCommentDialog (filingId): void {
+    showCommentDialog (filingId: number): void {
       console.log(filingId)
       this.currentFilingId = filingId
       this.addCommentDialog = true
     },
 
-    hideCommentDialog (needReload): void {
+    hideCommentDialog (needReload: boolean): void {
       this.addCommentDialog = false
       if (needReload) this.setTriggerDashboardReload(true)
     }

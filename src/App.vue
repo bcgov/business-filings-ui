@@ -75,6 +75,7 @@ export default {
           'filing': {
             'header': {
               'name': 'correction',
+              'filingId': 2304,
               'availableOnPaperOnly': false,
               'certifiedBy': 'somePerson',
               'email': 'no_one@never.get',
@@ -177,6 +178,7 @@ export default {
         'filing': {
           'header': {
             'name': 'correction',
+            'filingId': 2304,
             'availableOnPaperOnly': false,
             'certifiedBy': 'somePerson',
             'email': 'no_one@never.get',
@@ -481,8 +483,8 @@ export default {
     },
 
     storeTasks (response) {
-      response.data.tasks.push(this.corrAR)
       if (response && response.data && response.data.tasks) {
+        response.data.tasks.unshift(this.corrAR)
         this.setTasks(response.data.tasks)
       } else {
         throw new Error('Invalid tasks')
