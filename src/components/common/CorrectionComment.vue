@@ -1,37 +1,87 @@
 <template>
-  <div class="comment-block">
-    <h3 class="list-item__title">
-      <v-icon>mdi-comment-text</v-icon>
-      Detail (1)
-    </h3>
-      <p class="list-item__title inner-block">{{filing.certifiedBy}} - ({{filing.date}})</p>
-      <p class="list-item__subtitle inner-block">Correction for {{filing.correctedFilingType}}.
-        Filed on {{filing.date}}.<br />
-        {{filing.comment}}
-      </p>
+  <div id="correction-comment">
+    <div class="comments-section mt-8" v-if="filing.comments.length > 0">
+      <v-divider></v-divider>
+      <div class="title-bar mt-5">
+        <h4><v-icon>mdi-comment-text</v-icon> Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})</h4>
+        <v-btn
+          color="primary"
+          v-if="isStaff"
+          @click.stop="showCommentDialog(filing.filingId)"
+        >
+          <span>Add Detail Comment</span>
+        </v-btn>
+      </div>
+      <div>
+        <!-- the detail comments list-->
+        <v-list>
+          <v-list-item class="pl-0 pr-0" v-for="(comment, index) in filing.comments" :key="index">
+            <v-list-item-content>
+              <v-list-item-title class="body-2">
+                <strong v-if="!isStaff">Registry Staff</strong>
+                <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
+                ({{convertUTCTimeToLocalTime(comment.timestamp)}})
+              </v-list-item-title>
+              <v-list-item-subtitle class="body-2">
+                <div class="pre-line">
+                  Correction for {{filing.correctedFilingType}}
+                  on {{filing.filingDate}}
+                </div>
+                <div class="pre-line">{{comment.comment}}</div>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+// Libraries
+import { Component, Mixins, Prop, Vue, Emit } from 'vue-property-decorator'
+import { mapGetters } from 'vuex'
 
-@Component({})
-export default class CorrectionComment extends Vue {
+// Mixins
+import { DateMixin } from '@/mixins'
+
+@Component({
+  computed: {
+    ...mapGetters(['isRoleStaff'])
+  }
+})
+export default class CorrectionComment extends Mixins(DateMixin) {
   /**
    * Filing Passed from parent container correction information
    */
   @Prop({ default: '' })
   private filing
+
+  /**
+   * Boolean indicating if client has staff role
+   */
+  @Prop()
+  private isStaff
+
+  /**
+   * Emits an event to trigger the comment dialog
+   */
+  @Emit('showCommentDialog')
+  private showCommentDialog (val: string): void { }
 }
 
 </script>
 <style lang="scss" scoped>
-  @import "@/assets/styles/theme.scss";
+@import "@/assets/styles/theme.scss";
 
-.comment-block {
-  margin: .5rem 0;
+.comments-section h4 {
+  letter-spacing: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
 
-  .inner-block {
-    margin: .5rem 0;
-  }
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

@@ -1,5 +1,12 @@
 <template>
   <div id="todo-list">
+    <add-comment-dialog
+      :dialog="addCommentDialog"
+      :filingId="currentFilingId"
+      @close="hideCommentDialog($event)"
+      attach="#todo-list"
+    />
+
     <confirm-dialog
       ref="confirm"
       attach="#todo-list"
@@ -69,7 +76,7 @@
                     <v-btn x-small icon class="info-btn">
                       <v-icon>mdi-comment-text</v-icon>
                     </v-btn>
-                    Detail (1)
+                    Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})
                   </div>
                 </div>
 
@@ -212,11 +219,10 @@
 
         <v-expansion-panel-content>
 
-          <div v-if="isCorrection(item)" data-test-class="correction-comment">
+          <div v-if="isCorrection(item)" data-test-class="correction-comment" class="todo-list-detail">
             <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
               Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
-            <hr class="horizon-pipe">
-            <CorrectionComment :filing=item />
+            <CorrectionComment :filing=item :isStaff="isRoleStaff" @showCommentDialog="showCommentDialog($event)"/>
           </div>
 
           <v-card v-if="isPending(item)" data-test-class="payment-incomplete">
@@ -259,14 +265,14 @@
 
 <script lang="ts">
 import axios from '@/axios-auth'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
 import { CorrectionComment } from '@/components/common'
 
 // Dialogs
-import { ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
+import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
 // Mixins
 import { EntityFilterMixin, DateMixin } from '@/mixins'
@@ -278,6 +284,7 @@ export default {
   name: 'TodoList',
 
   components: {
+    AddCommentDialog,
     CancelPaymentErrorDialog,
     ConfirmDialog,
     CorrectionComment,
@@ -288,6 +295,7 @@ export default {
 
   data () {
     return {
+      addCommentDialog: false,
       taskItems: null,
       deleteErrors: [],
       deleteWarnings: [],
@@ -296,6 +304,7 @@ export default {
       cancelPaymentErrorDialog: false,
       confirmCheckbox: false,
       confirmEnabled: false,
+      currentFilingId: null,
 
       // enums
       EntityTypes,
@@ -309,6 +318,8 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['isRoleStaff']),
+
     ...mapState(['tasks', 'entityIncNo'])
   },
 
@@ -474,22 +485,19 @@ export default {
     },
 
     loadCorrection (task) {
-      console.log('Loaded Correction Filing')
-      console.log(task)
-
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
         this.taskItems.push({
           type: filing.header.name,
           certifiedBy: filing.header.certifiedBy,
-          date: filing.correction.correctedFilingDate,
-          id: filing.correction.correctedFilingId,
+          filingDate: filing.correction.correctedFilingDate,
+          filingId: filing.correction.correctedFilingId,
           correctedFilingType: this.formatFilingType(filing.correction.correctedFilingType),
           title: `Priority Correction - ${this.formatFilingType(filing.correction.correctedFilingType)}`,
           draftTitle: `Correction Filing`,
           enabled: Boolean(task.enabled),
           order: task.order,
-          comment: filing.correction.comment
+          comments: filing.header.comments
         })
       } else {
         // eslint-disable-next-line no-console
@@ -699,6 +707,17 @@ export default {
           this.cancelPaymentErrorDialog = true
         }
       })
+    },
+
+    showCommentDialog (filingId): void {
+      console.log(filingId)
+      this.currentFilingId = filingId
+      this.addCommentDialog = true
+    },
+
+    hideCommentDialog (needReload): void {
+      this.addCommentDialog = false
+      if (needReload) this.setTriggerDashboardReload(true)
     }
   },
 
@@ -720,6 +739,10 @@ export default {
   pointer-events: none;
 
   .todo-list-checkbox {
+    pointer-events: auto;
+  }
+
+  .todo-list-detail {
     pointer-events: auto;
   }
 }
@@ -824,12 +847,6 @@ export default {
   margin-right: 0.75rem;
   height: 1rem;
   border-left: 1px solid $gray6;
-}
-
-.horizon-pipe {
-  color: #868e96;
-  margin-left: -.5rem;
-  margin-right: -.5rem;
 }
 
 .v-expansion-panel-header {

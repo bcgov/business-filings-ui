@@ -67,7 +67,212 @@ export default {
     return {
       dataLoaded: false,
       dashboardUnavailableDialog: false,
-      accountAuthorizationDialog: false
+      accountAuthorizationDialog: false,
+      corrAR: {
+        'enabled': true,
+        'order': 0,
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'correction',
+              'availableOnPaperOnly': false,
+              'certifiedBy': 'somePerson',
+              'email': 'no_one@never.get',
+              'date': '2020-02-18',
+              'routingSlipNumber': '123456789',
+              'comments': [
+                {
+                  comment: 'User selected wrong agm date. ACTION ITEMS: change agm date to \'2018-07-23\'.',
+                  filingId: 2304,
+                  submitterDisplayName: 'idir/scotdavi',
+                  timestamp: '2020-01-01T00:00:00+00:00'
+                },
+                {
+                  comment: 'User input an invalid address. ACTION ITEMS: change agm date to \'2019-05-21\'.',
+                  filingId: 2304,
+                  submitterDisplayName: 'idir/cBowler',
+                  timestamp: '2020-02-01T00:00:00+00:00'
+                }
+              ]
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP1234567',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'lastPreBobFilingTimestamp': '2019-01-01T20:05:49.068272+00:00',
+              'legalName': 'legal name - CP1234567',
+              'legalType': 'CP'
+            },
+            'correction': {
+              'correctedFilingId': 0,
+              'correctedFilingType': 'annualReport',
+              'correctedFilingDate': '2019-04-08',
+              'comment': 'User selected wrong agm date. ACTION ITEMS: change agm date to \'2018-07-23\'.'
+            },
+            'annualReport': {
+              'annualGeneralMeetingDate': '2018-07-23',
+              'annualReportDate': '2018-07-23',
+              'directors': [
+                {
+                  'officer': {
+                    'firstName': 'Peter',
+                    'lastName': 'Griffin',
+                    'prevFirstName': 'Peter',
+                    'prevMiddleInitial': 'G',
+                    'prevLastName': 'Griffin'
+                  },
+                  'deliveryAddress': {
+                    'streetAddress': 'mailing_address - address line one',
+                    'addressCity': 'mailing_address city',
+                    'addressCountry': 'mailing_address country',
+                    'postalCode': 'H0H0H0',
+                    'addressRegion': 'BC'
+                  },
+                  'appointmentDate': '2018-01-01',
+                  'cessationDate': 'None'
+                },
+                {
+                  'officer': {
+                    'firstName': 'Joe',
+                    'middleInitial': 'P',
+                    'lastName': 'Swanson'
+                  },
+                  'deliveryAddress': {
+                    'streetAddress': 'mailing_address - address line #1',
+                    'additionalStreetAddress': 'Kirkintiloch',
+                    'addressCity': 'Glasgow',
+                    'addressCountry': 'UK',
+                    'postalCode': 'H0H 0H0',
+                    'addressRegion': 'SC'
+                  },
+                  'title': 'Treasurer',
+                  'cessationDate': 'None',
+                  'appointmentDate': '2018-01-01'
+                }
+              ],
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': {
+                    'streetAddress': 'delivery_address - address line one',
+                    'addressCity': 'delivery_address city',
+                    'addressCountry': 'delivery_address country',
+                    'postalCode': 'H0H0H0',
+                    'addressRegion': 'BC'
+                  },
+                  'mailingAddress': {
+                    'streetAddress': 'mailing_address - address line one',
+                    'addressCity': 'mailing_address city',
+                    'addressCountry': 'mailing_address country',
+                    'postalCode': 'H0H0H0',
+                    'addressRegion': 'BC'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      corrARFiling: {
+        'filing': {
+          'header': {
+            'name': 'correction',
+            'availableOnPaperOnly': false,
+            'certifiedBy': 'somePerson',
+            'email': 'no_one@never.get',
+            'date': '2020-02-18',
+            'routingSlipNumber': '123456789',
+            'comments': [
+              {
+                comment: 'User selected wrong agm date. ACTION ITEMS: change agm date to \'2018-07-23\'.',
+                filingId: 2304,
+                submitterDisplayName: 'idir/scotdavi',
+                timestamp: '2020-01-01T00:00:00+00:00'
+              },
+              {
+                comment: 'User input an invalid address. ACTION ITEMS: change agm date to \'2019-05-21\'.',
+                filingId: 2304,
+                submitterDisplayName: 'idir/cBowler',
+                timestamp: '2020-02-01T00:00:00+00:00'
+              }]
+          },
+          'business': {
+            'cacheId': 1,
+            'foundingDate': '2007-04-08T00:00:00+00:00',
+            'identifier': 'CP1234567',
+            'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+            'lastPreBobFilingTimestamp': '2019-01-01T20:05:49.068272+00:00',
+            'legalName': 'legal name - CP1234567',
+            'legalType': 'CP'
+          },
+          'correction': {
+            'correctedFilingId': 0,
+            'correctedFilingType': 'annualReport',
+            'correctedFilingDate': '2019-04-08',
+            'comment': 'User selected wrong agm date. ACTION ITEMS: change agm date to \'2018-07-23\'.'
+          },
+          'annualReport': {
+            'annualGeneralMeetingDate': '2018-07-23',
+            'annualReportDate': '2018-07-23',
+            'directors': [
+              {
+                'officer': {
+                  'firstName': 'Peter',
+                  'lastName': 'Griffin',
+                  'prevFirstName': 'Peter',
+                  'prevMiddleInitial': 'G',
+                  'prevLastName': 'Griffin'
+                },
+                'deliveryAddress': {
+                  'streetAddress': 'mailing_address - address line one',
+                  'addressCity': 'mailing_address city',
+                  'addressCountry': 'mailing_address country',
+                  'postalCode': 'H0H0H0',
+                  'addressRegion': 'BC'
+                },
+                'appointmentDate': '2018-01-01',
+                'cessationDate': 'None'
+              },
+              {
+                'officer': {
+                  'firstName': 'Joe',
+                  'middleInitial': 'P',
+                  'lastName': 'Swanson'
+                },
+                'deliveryAddress': {
+                  'streetAddress': 'mailing_address - address line #1',
+                  'additionalStreetAddress': 'Kirkintiloch',
+                  'addressCity': 'Glasgow',
+                  'addressCountry': 'UK',
+                  'postalCode': 'H0H 0H0',
+                  'addressRegion': 'SC'
+                },
+                'title': 'Treasurer',
+                'cessationDate': 'None',
+                'appointmentDate': '2018-01-01'
+              }
+            ],
+            'offices': {
+              'registeredOffice': {
+                'deliveryAddress': {
+                  'streetAddress': 'delivery_address - address line one',
+                  'addressCity': 'delivery_address city',
+                  'addressCountry': 'delivery_address country',
+                  'postalCode': 'H0H0H0',
+                  'addressRegion': 'BC'
+                },
+                'mailingAddress': {
+                  'streetAddress': 'mailing_address - address line one',
+                  'addressCity': 'mailing_address city',
+                  'addressCountry': 'mailing_address country',
+                  'postalCode': 'H0H0H0',
+                  'addressRegion': 'BC'
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
 
@@ -276,101 +481,9 @@ export default {
     },
 
     storeTasks (response) {
-      const corrAR = [{
-        'enabled': true,
-        'order': 0,
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'correction',
-              'availableOnPaperOnly': false,
-              'certifiedBy': 'idir/scotdavi',
-              'email': 'no_one@never.get',
-              'date': '2020-02-18',
-              'routingSlipNumber': '123456789'
-            },
-            'business': {
-              'cacheId': 1,
-              'foundingDate': '2007-04-08T00:00:00+00:00',
-              'identifier': 'CP1234567',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-              'lastPreBobFilingTimestamp': '2019-01-01T20:05:49.068272+00:00',
-              'legalName': 'legal name - CP1234567',
-              'legalType': 'CP'
-            },
-            'correction': {
-              'correctedFilingId': 0,
-              'correctedFilingType': 'annualReport',
-              'correctedFilingDate': '2019-04-08',
-              'comment': 'User selected wrong agm date. ACTION ITEMS: change agm date to \'2018-07-23\'.'
-            },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2018-07-23',
-              'annualReportDate': '2018-07-23',
-              'directors': [
-                {
-                  'officer': {
-                    'firstName': 'Peter',
-                    'lastName': 'Griffin',
-                    'prevFirstName': 'Peter',
-                    'prevMiddleInitial': 'G',
-                    'prevLastName': 'Griffin'
-                  },
-                  'deliveryAddress': {
-                    'streetAddress': 'mailing_address - address line one',
-                    'addressCity': 'mailing_address city',
-                    'addressCountry': 'mailing_address country',
-                    'postalCode': 'H0H0H0',
-                    'addressRegion': 'BC'
-                  },
-                  'appointmentDate': '2018-01-01',
-                  'cessationDate': 'None'
-                },
-                {
-                  'officer': {
-                    'firstName': 'Joe',
-                    'middleInitial': 'P',
-                    'lastName': 'Swanson'
-                  },
-                  'deliveryAddress': {
-                    'streetAddress': 'mailing_address - address line #1',
-                    'additionalStreetAddress': 'Kirkintiloch',
-                    'addressCity': 'Glasgow',
-                    'addressCountry': 'UK',
-                    'postalCode': 'H0H 0H0',
-                    'addressRegion': 'SC'
-                  },
-                  'title': 'Treasurer',
-                  'cessationDate': 'None',
-                  'appointmentDate': '2018-01-01'
-                }
-              ],
-              'offices': {
-                'registeredOffice': {
-                  'deliveryAddress': {
-                    'streetAddress': 'delivery_address - address line one',
-                    'addressCity': 'delivery_address city',
-                    'addressCountry': 'delivery_address country',
-                    'postalCode': 'H0H0H0',
-                    'addressRegion': 'BC'
-                  },
-                  'mailingAddress': {
-                    'streetAddress': 'mailing_address - address line one',
-                    'addressCity': 'mailing_address city',
-                    'addressCountry': 'mailing_address country',
-                    'postalCode': 'H0H0H0',
-                    'addressRegion': 'BC'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }]
-
+      response.data.tasks.push(this.corrAR)
       if (response && response.data && response.data.tasks) {
-        // this.setTasks(response.data.tasks)
-        this.setTasks(corrAR)
+        this.setTasks(response.data.tasks)
       } else {
         throw new Error('Invalid tasks')
       }
@@ -378,6 +491,7 @@ export default {
 
     storeFilings (response) {
       if (response && response.data && response.data.filings) {
+        response.data.filings.unshift(this.corrARFiling)
         this.setFilings(response.data.filings)
       } else {
         throw new Error('Invalid filings')

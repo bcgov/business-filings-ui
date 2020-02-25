@@ -38,7 +38,14 @@
                 </v-scale-transition>
                 <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
                 <template v-if="item.comments.length > 0">
+<<<<<<< HEAD
                   <span>{{item.comments.length}} Detail{{item.comments.length > 1 ? "s" : ""}}</span>
+=======
+                  <span>
+                    <v-icon>mdi-comment-text</v-icon>
+                    Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})
+                  </span>
+>>>>>>> Ongoing UI. ToDo List & Filing History UI portion Done
                 </template>
               </div>
             </div>
@@ -152,37 +159,9 @@
             </ul>
           </div>
 
-          <!-- the details section -->
-          <div class="comments-section mt-8" v-if="item.comments.length > 0">
-            <v-divider></v-divider>
-            <div class="title-bar mt-5">
-              <h4>Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})</h4>
-              <v-btn
-                color="primary"
-                v-if="isRoleStaff"
-                @click.stop="showCommentDialog(item.filingId)"
-              >
-                <span>Add Detail</span>
-              </v-btn>
-            </div>
-            <div>
-              <!-- the details list-->
-              <v-list>
-                <v-list-item class="pl-0 pr-0" v-for="(comment, index) in item.comments" :key="index">
-                  <v-list-item-content>
-                    <v-list-item-title class="body-2">
-                      <strong v-if="!isRoleStaff">Registry Staff</strong>
-                      <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
-                      ({{convertUTCTimeToLocalTime(comment.timestamp)}})
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="body-2">
-                      <div class="pre-line">{{comment.comment}}</div>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </div>
-          </div>
+          <!-- the detail comments section -->
+          <CorrectionComment :filing=item :isStaff="isRoleStaff" @showCommentDialog="showCommentDialog($event)"/>
+
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -202,6 +181,9 @@
 import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
 
+// Components
+import { CorrectionComment } from '@/components/common'
+
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 
@@ -218,6 +200,7 @@ export default {
 
   components: {
     AddCommentDialog,
+    CorrectionComment,
     DownloadErrorDialog
   },
 
@@ -289,7 +272,7 @@ export default {
                 this.loadOtherReport(FilingTypes.VOLUNTARY_DISSOLUTION, filing, filing.voluntaryDissolution)
                 break
               case FilingTypes.CORRECTION:
-                this.loadOtherReport(FilingTypes.CORRECTION, filing.correction)
+                this.loadCorrection(filing, filing.correction)
                 break
               default:
                 // fallback for unknown filings
@@ -389,6 +372,25 @@ export default {
           status: filing.header.status,
           paperOnly: false,
           isCorrected: filing.header.isCorrected || false,
+          comments: this.flattenAndSortComments(filing.header.comments)
+        }
+        this.filedItems.push(item)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(`ERROR - missing section in filing =`, filing)
+      }
+    },
+
+    loadCorrection (filing, section) {
+      if (section) {
+        const item = {
+          filingAuthor: filing.header.certifiedBy,
+          type: filing.header.name,
+          filingDate: filing.correction.correctedFilingDate,
+          filingId: filing.correction.correctedFilingId,
+          correctedFilingType: this.typeToTitle(filing.correction.correctedFilingType),
+          title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          draftTitle: `Correction Filing`,
           comments: this.flattenAndSortComments(filing.header.comments)
         }
         this.filedItems.push(item)
