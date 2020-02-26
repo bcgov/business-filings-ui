@@ -9,7 +9,7 @@
         </h4>
         <v-btn
           color="primary"
-          v-if="isStaff"
+          v-if="isStaff && !isTask"
           @click.stop="showCommentDialog(filing.filingId)"
         >
           <span>Add Detail</span>
@@ -52,22 +52,20 @@ import { DateMixin } from '@/mixins'
     ...mapGetters(['isRoleStaff'])
   }
 })
-export default class CorrectionComment extends Mixins(DateMixin) {
-  /**
-   * Filing Passed from parent container correction information
-   */
+export default class DetailsList extends Mixins(DateMixin) {
+  /** Filing Passed from parent container correction information */
   @Prop({ default: '' })
   private filing
 
-  /**
-   * Boolean indicating if client has staff role
-   */
+  /** Boolean indicating if client has staff role */
   @Prop()
   private isStaff
 
-  /**
-   * Emits an event to trigger the comment dialog
-   */
+  /** Boolean indicating if comments are appearing in the Task List */
+  @Prop()
+  private isTask
+
+  /** Emits an event to trigger the comment dialog */
   @Emit('showCommentDialog')
   private showCommentDialog (val: string): void { }
 }

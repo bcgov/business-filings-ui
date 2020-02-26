@@ -222,7 +222,13 @@
           <div v-if="isCorrection(item)" data-test-class="correction-comment" class="todo-list-detail">
             <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
               Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
-            <CorrectionComment :filing=item :isStaff="isRoleStaff" @showCommentDialog="showCommentDialog($event)"/>
+            <!-- the detail comments section -->
+            <DetailsList
+              :filing=item
+              :isStaff="isRoleStaff"
+              :isTask="true"
+              @showCommentDialog="showCommentDialog($event)"
+            />
           </div>
 
           <v-card v-if="isPending(item)" data-test-class="payment-incomplete">
@@ -269,7 +275,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
-import { CorrectionComment } from '@/components/common'
+import { DetailsList } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -287,8 +293,8 @@ export default {
     AddCommentDialog,
     CancelPaymentErrorDialog,
     ConfirmDialog,
-    CorrectionComment,
-    DeleteErrorDialog
+    DeleteErrorDialog,
+    DetailsList
   },
 
   mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin],
@@ -502,6 +508,8 @@ export default {
           order: task.order,
           comments: filing.header.comments
         })
+
+        // Flag to disable other filings
         this.hasPendingCorrection = true
       } else {
         // eslint-disable-next-line no-console

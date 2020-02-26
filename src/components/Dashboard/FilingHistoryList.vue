@@ -38,14 +38,10 @@
                 </v-scale-transition>
                 <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
                 <template v-if="item.comments.length > 0">
-<<<<<<< HEAD
-                  <span>{{item.comments.length}} Detail{{item.comments.length > 1 ? "s" : ""}}</span>
-=======
                   <span>
                     <v-icon>mdi-comment-text</v-icon>
                     Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})
                   </span>
->>>>>>> Ongoing UI. ToDo List & Filing History UI portion Done
                 </template>
               </div>
             </div>
@@ -160,7 +156,12 @@
           </div>
 
           <!-- the detail comments section -->
-          <CorrectionComment :filing=item :isStaff="isRoleStaff" @showCommentDialog="showCommentDialog($event)"/>
+          <DetailsList
+            :filing=item
+            :isStaff="isRoleStaff"
+            :isTask="false"
+            @showCommentDialog="showCommentDialog($event)"
+          />
 
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -182,7 +183,7 @@ import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
 
 // Components
-import { CorrectionComment } from '@/components/common'
+import { DetailsList } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -200,7 +201,7 @@ export default {
 
   components: {
     AddCommentDialog,
-    CorrectionComment,
+    DetailsList,
     DownloadErrorDialog
   },
 
@@ -285,7 +286,7 @@ export default {
           console.log('ERROR - invalid filing or filing header =', filing)
         }
       }
-      console.log(this.filedItems)
+
       this.$emit('filed-count', this.filedItems.length)
       this.$emit('filings-list', this.filedItems)
 
@@ -312,7 +313,6 @@ export default {
           const type = filing.header.name
           const agmYear = +date.slice(0, 4)
           const title = this.typeToTitle(type, agmYear)
-
           const item = {
             type: type,
             title: title,
