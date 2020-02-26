@@ -22,8 +22,8 @@
       >
         <template slot="label">
           <div class="certify-stmt">
-            I, <b>{{trimmedCertifiedBy || '[Legal Name]'}}</b>, certify that I have relevant knowledge of the
-            {{entityDisplay || 'association'}} and that I am authorized to make this filing.
+            I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
+            of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
           </div>
         </template>
       </v-checkbox>
