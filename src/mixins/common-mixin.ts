@@ -43,4 +43,20 @@ export default class CommonMixin extends Vue {
   isSame (objA: {}, objB: {}, prop: string = null): boolean {
     return isEqual({ ...this.omitProp(objA, [prop]) }, { ...this.omitProp(objB, [prop]) })
   }
+
+  /**
+   * Deconstructs and sorts an array of comments
+   * @param comments The array of comments to sort and deconstruct
+   * @return The sorted and flattened array of comments
+   */
+  flattenAndSortComments (comments: any): Array<any> {
+    if (comments && comments.length > 0) {
+      // first use map to change comment.comment to comment
+      const flattened: Array<any> = comments.map(c => c.comment)
+      // then sort newest to oldest
+      const sorted = flattened.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
+      return sorted
+    }
+    return []
+  }
 }

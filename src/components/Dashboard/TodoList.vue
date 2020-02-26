@@ -281,7 +281,7 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { EntityFilterMixin, DateMixin } from '@/mixins'
+import { CommonMixin, EntityFilterMixin, DateMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
@@ -297,7 +297,7 @@ export default {
     DetailsList
   },
 
-  mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin],
+  mixins: [CommonMixin, EntityFilterMixin, DateMixin, Vue2Filters.mixin],
 
   data () {
     return {
@@ -497,16 +497,15 @@ export default {
       if (filing && filing.header && filing.correction) {
         this.taskItems.push({
           type: filing.header.name,
-          certifiedBy: filing.header.certifiedBy,
-          filingDate: filing.correction.correctedFilingDate,
           filingId: filing.header.filingId,
+          filingDate: filing.correction.correctedFilingDate,
           corrFilingId: filing.correction.correctedFilingId,
           correctedFilingType: this.formatFilingType(filing.correction.correctedFilingType),
           title: `Priority Correction - ${this.formatFilingType(filing.correction.correctedFilingType)}`,
           draftTitle: `Correction Filing`,
           enabled: Boolean(task.enabled),
           order: task.order,
-          comments: filing.header.comments
+          comments: this.flattenAndSortComments(filing.header.comments)
         })
 
         // Flag to disable other filings

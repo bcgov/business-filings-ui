@@ -192,12 +192,12 @@ import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 
 // Mixins
-import { DateMixin, EntityFilterMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EntityFilterMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [DateMixin, EntityFilterMixin],
+  mixins: [CommonMixin, DateMixin, EntityFilterMixin],
 
   components: {
     AddCommentDialog,
@@ -384,8 +384,8 @@ export default {
     loadCorrection (filing, section) {
       if (section) {
         const item = {
-          filingAuthor: filing.header.certifiedBy,
           type: filing.header.name,
+          filingAuthor: filing.header.certifiedBy,
           filingDate: filing.correction.correctedFilingDate,
           filingId: filing.header.filingId,
           corrFilingId: filing.correction.correctedFilingId,
@@ -436,17 +436,6 @@ export default {
         comments: this.flattenAndSortComments(filing.header.comments)
       }
       this.filedItems.push(item)
-    },
-
-    flattenAndSortComments (comments: any): Array<any> {
-      if (comments && comments.length > 0) {
-        // first use map to change comment.comment to comment
-        const flattened: Array<any> = comments.map(c => c.comment)
-        // then sort newest to oldest
-        const sorted = flattened.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
-        return sorted
-      }
-      return []
     },
 
     typeToTitle (type: string, agmYear: string = null): string {
