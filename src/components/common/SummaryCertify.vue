@@ -1,8 +1,8 @@
 <template>
   <v-card flat id="certify-container">
     <p class="certify-content">
-        I, <b>{{trimmedCertifiedBy || '[Legal Name]'}}</b>, certify that I have relevant knowledge of the
-        {{entityDisplay || 'association'}} and that I am authorized to make this filing.
+        I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
+        of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
     </p>
     <p class="certify-content">Date: {{currentDate}}</p>
     <p class="certify-content">{{message}}</p>

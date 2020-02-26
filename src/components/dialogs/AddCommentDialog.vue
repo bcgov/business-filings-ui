@@ -8,7 +8,7 @@
           ref="detailComment"
           v-model="comment"
           autofocus
-          label="Add a Detail that will appear on the ledger for this entity"
+          placeholder="Add a Detail that will appear on the ledger for this entity."
           @valid="detailCommentValid=$event"
         />
       </v-card-text>

@@ -19,7 +19,7 @@ describe('DetailComment', () => {
     const vm: any = wrapper.vm
 
     expect(vm.value).toBe('')
-    expect(vm.label).toBe('')
+    expect(vm.placeholder).toBe('')
     expect(vm.autofocus).toBe(false)
 
     // verify that there are no initial events
@@ -34,7 +34,7 @@ describe('DetailComment', () => {
       {
         propsData: {
           value: 'Initial comment',
-          label: 'Enter Comment Here',
+          placeholder: 'Enter Comment Here',
           autofocus: true
         },
         store,
@@ -43,7 +43,7 @@ describe('DetailComment', () => {
     const vm: any = wrapper.vm
 
     expect(vm.value).toBe('Initial comment')
-    expect(vm.label).toBe('Enter Comment Here')
+    expect(vm.placeholder).toBe('Enter Comment Here')
     expect(vm.autofocus).toBe(true)
 
     wrapper.destroy()

@@ -170,9 +170,7 @@ import { mapState, mapGetters } from 'vuex'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
 
 // Components
-import { OfficeAddresses } from '@/components/common'
-import Certify from '@/components/AnnualReport/Certify.vue'
-import StaffPayment from '@/components/AnnualReport/StaffPayment.vue'
+import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 
 // Constants

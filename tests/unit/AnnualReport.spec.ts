@@ -15,11 +15,9 @@ import { shallowMount, createLocalVue, mount, Wrapper } from '@vue/test-utils'
 // Components
 import AnnualReport from '@/views/AnnualReport.vue'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
-import Directors from '@/components/AnnualReport/Directors.vue'
-import Certify from '@/components/AnnualReport/Certify.vue'
-import ArDate from '@/components/AnnualReport/BCorp/ARDate.vue'
-import StaffPayment from '@/components/AnnualReport/StaffPayment.vue'
-import { OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import Directors from '@/components/common/Directors.vue'
+import ArDate from '@/components/AnnualReport/ARDate.vue'
+import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { configJson } from '@/resources/business-config'
 
 // Enums

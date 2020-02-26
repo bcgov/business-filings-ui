@@ -64,8 +64,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <!-- NB: this menu item is disabled in current release -->
-                    <v-list-item disabled>
+                    <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -136,8 +135,8 @@
           </v-list>
 
           <div class="paper-filings body-2" v-if="item.paperOnly">
-            <p>Filings completed <b>before March 10, 2019</b> are only available from the BC Registry as paper
-              documents.</p>
+            <p>Filings completed <strong>before March 10, 2019</strong> are only available from the BC Registry
+              as paper documents.</p>
             <p>To request copies of paper documents, contact BC Registry Staff with the document you require and
               the name and incorporation number of your association:</p>
             <ul class="contact-info__list mt-5">
@@ -234,7 +233,10 @@ export default {
       currentFilingId: null,
 
       // enums
-      EntityTypes
+      EntityTypes,
+      FilingNames,
+      FilingStatus,
+      FilingTypes
     }
   },
 

@@ -6,10 +6,10 @@
       auto-grow
       rows="5"
       id="detail-comment-textarea"
-      :counter="MAXLENGTH"
+      :counter="maxLength"
       :rules="rules"
       :value="value"
-      :label="label"
+      :placeholder="placeholder"
       :autofocus="autofocus"
       @input="emitInput($event)"
     />
@@ -22,15 +22,13 @@ import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
 export default class DetailComment extends Vue {
-  private readonly MAXLENGTH = 4096
-
   /** Array of validations rules for the textarea. */
   private get rules (): Array<Function> {
     // exclude whitespace in minimum length check
     // include whitespace in maximum length check
     return [
       val => (val && val.trim().length > 0) || 'Detail is required.',
-      val => (val && val.length <= this.MAXLENGTH) || 'Maximum characters exceeded.'
+      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
     ]
   }
 
@@ -39,17 +37,27 @@ export default class DetailComment extends Vue {
     (this.$refs.textarea as any).resetValidation()
   }
 
-  /** Comment (v-model) passed into this component. */
+  /** Comment (v-model) passed into this component (required). */
   @Prop({ default: '' })
   private value: string
 
-  /** Label passed into this component. */
+  /** Placeholder passed into this component (optional). */
   @Prop({ default: '' })
-  private label: string
+  private placeholder: string
 
-  /** Autofocus passed into this component. */
+  /** Max Length passed into this component (optional). */
+  @Prop({ default: 4096 })
+  private maxLength: number
+
+  /** Autofocus passed into this component (optional). */
   @Prop({ default: false })
   private autofocus: boolean
+
+  /** Called when component is created. */
+  created (): void {
+    // inform parent of initial validity
+    this.emitValid(this.value)
+  }
 
   /**
    * Called when prop changes (ie, v-model is updated by parent).
@@ -58,8 +66,7 @@ export default class DetailComment extends Vue {
   @Watch('value')
   @Debounce(300)
   private onValueChanged (val: string): void {
-    const isValidComment = this.rules.every(rule => rule(val) === true)
-    this.emitValid(isValidComment)
+    this.emitValid(val)
   }
 
   /** Emits an event with the changed comment (ie, updated v-model). */
@@ -68,7 +75,10 @@ export default class DetailComment extends Vue {
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')
-  private emitValid (val: boolean): void { }
+  private emitValid (val: string): boolean {
+    // component is valid if every rule is valid
+    return this.rules.every(rule => rule(val) === true)
+  }
 }
 </script>
 
