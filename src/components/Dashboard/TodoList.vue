@@ -516,7 +516,7 @@ export default {
       }
     },
 
-    formatFilingType (filingType) {
+    formatFilingType (filingType: string): string {
       switch (filingType) {
         case FilingTypes.ANNUAL_REPORT:
           return 'Annual Report'

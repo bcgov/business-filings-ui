@@ -49,7 +49,7 @@ export default class CommonMixin extends Vue {
    * @param comments The array of comments to sort and deconstruct
    * @return The sorted and flattened array of comments
    */
-  flattenAndSortComments (comments: any): Array<any> {
+  flattenAndSortComments (comments: Array<any>): Array<any> {
     if (comments && comments.length > 0) {
       // first use map to change comment.comment to comment
       const flattened: Array<any> = comments.map(c => c.comment)
