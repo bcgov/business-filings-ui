@@ -1170,7 +1170,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
   }
 
   /**
-   * Method to restore the directors name after cancelling a name change.
+   * Restores the directors name after cancelling a name change.
    * @param index Index value of the director currently being edited
    */
   private restoreDirName (index: number): void {

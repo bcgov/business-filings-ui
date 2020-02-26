@@ -15,7 +15,7 @@ export default class ResourceLookupMixin extends Vue {
     readonly configObject
 
     /**
-     * Method to return certify message using the configuration lookup object.
+     * Returns certify message using the configuration lookup object.
      *
      * @param entity The entity type of the component.
      * @return the appropriate message for the certify component for the current filing flow.
@@ -31,7 +31,7 @@ export default class ResourceLookupMixin extends Vue {
     }
 
     /**
-     * Method to return the current entity's full display name.
+     * Returns the current entity's full display name.
      *
      * @return the entity display name (if the configuration has been loaded).
      */
@@ -43,7 +43,7 @@ export default class ResourceLookupMixin extends Vue {
     }
 
     /**
-     * Method to validate directors on edit/cease and return any warning messages.
+     * Validates directors on edit/cease and return any warning messages.
      *
      * @return the compliance message or null (if the configuration has been loaded).
      */
