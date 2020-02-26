@@ -87,12 +87,14 @@
             </section>
 
             <!-- Staff Payment -->
-            <section v-if="isRoleStaff && isPayRequired">
+            <section v-if="isRoleStaff">
               <header>
                 <h2 id="AR-step-5-header">Staff Payment</h2>
               </header>
               <staff-payment
                 :routingSlipNumber.sync="routingSlipNumber"
+                :isPriority.sync="isPriority"
+                :isWaiveFees.sync="isWaiveFees"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -218,9 +220,11 @@ export default {
       saveErrors: [],
       saveWarnings: [],
 
-      // properties for Staff Payment component
+      // properties for StaffPayment component
       routingSlipNumber: null,
-      staffPaymentFormValid: false,
+      isPriority: false,
+      isWaiveFees: false,
+      staffPaymentFormValid: null,
       totalFee: 0,
 
       // enums
@@ -346,8 +350,13 @@ export default {
             if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
+            // load Certified By but not Date
             this.certifiedBy = filing.header.certifiedBy
+
+            // load Staff Payment properties
             this.routingSlipNumber = filing.header.routingSlipNumber
+            this.isPriority = filing.header.priority
+            this.isWaiveFees = filing.header.waiveFees
 
             // load Annual Report fields
             if (!filing.changeOfAddress) throw new Error('Missing change of address')
@@ -365,7 +374,7 @@ export default {
                     mailingAddress: changeOfAddress.recordsOffice.mailingAddress
                   }
                 }
-                this.toggleFiling('add', 'OTADD')
+                this.setFilingData('add', FilingCodes.ADDRESS_CHANGE_OT)
               } else {
                 this.addresses = {
                   registeredOffice: {
@@ -373,7 +382,7 @@ export default {
                     mailingAddress: changeOfAddress.registeredOffice.mailingAddress
                   }
                 }
-                this.toggleFiling('add', 'OTADD')
+                this.setFilingData('add', FilingCodes.ADDRESS_CHANGE_OT)
               }
             }
           } catch (err) {
@@ -403,7 +412,7 @@ export default {
     officeModifiedEventHandler (modified: boolean): void {
       this.haveChanges = true
       // when addresses change, update filing data
-      this.toggleFiling(modified ? 'add' : 'remove', 'OTADD')
+      this.setFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT)
     },
 
     async onClickSave () {
@@ -487,9 +496,17 @@ export default {
           date: this.currentDate
         }
       }
-      // only save this if it's not null
-      if (this.routingSlipNumber) {
+      // only save Routing Slip Number if it's valid
+      if (this.routingSlipNumber && !this.isWaiveFees) {
         header.header['routingSlipNumber'] = this.routingSlipNumber
+      }
+      // only save Priority it it's valid
+      if (this.isPriority && !this.isWaiveFees) {
+        header.header['priority'] = true
+      }
+      // only save Waive Fees if it's valid
+      if (this.isWaiveFees) {
+        header.header['waiveFees'] = true
       }
 
       const business = {
@@ -500,7 +517,7 @@ export default {
         }
       }
 
-      if (this.isDataChanged('OTADD') && this.addresses) {
+      if (this.isDataChanged(FilingCodes.ADDRESS_CHANGE_OT) && this.addresses) {
         if (this.addresses.recordsOffice) {
           changeOfAddress = {
             changeOfAddress: {
@@ -602,20 +619,41 @@ export default {
       }
     },
 
-    toggleFiling (setting, filing) {
-      let added = false
-      for (let i = 0; i < this.filingData.length; i++) {
-        if (this.filingData[i].filingTypeCode === filing) {
-          if (setting === 'add') {
-            added = true
-          } else {
-            this.filingData.splice(i, 1)
-          }
-          break
+    /**
+     * Adds/removes codes or sets flags in the Filing Data object.
+     * @param addRemove Whether to add or remove the specified codes/flags.
+     * @param filingCode The Filing Type Code to add or remove (optional).
+     * @param priority The Priority flag to set or clear (optional).
+     * @param waiveFees The Waive Fees flag to set or clear (optional).
+     * @example setFilingData('add', undefined, undefined, true) -> adds Waive Fees to all codes
+     * @example setFilingData('remove', undefined, true, undefined) - removes Priority from all codes
+     * @example setFilingData('add', 'OTADD') -> adds OTANN code with default flags
+     */
+    setFilingData (
+      addRemove: 'add' | 'remove',
+      filingCode: string = null,
+      priority: boolean = this.isPriority,
+      waiveFees: boolean = this.isWaiveFees
+    ): void {
+      if (filingCode) {
+        // always remove code if it already exists
+        this.filingData = this.filingData.filter(el => el.filingTypeCode !== filingCode)
+
+        // conditionally (re)add the code
+        if (addRemove === 'add') {
+          this.filingData.push({
+            filingTypeCode: filingCode,
+            entityType: this.entityType,
+            priority: priority,
+            waiveFees: waiveFees
+          })
         }
-      }
-      if (setting === 'add' && !added) {
-        this.filingData.push({ filingTypeCode: filing, entityType: this.entityType })
+      } else {
+        // add/remove the flags to/from all codes
+        this.filingData.forEach(element => {
+          if (priority) element.priority = (addRemove === 'add')
+          if (waiveFees) element.waiveFees = (addRemove === 'add')
+        })
       }
     },
 
@@ -660,15 +698,34 @@ export default {
   },
 
   watch: {
+    /** Called when Is Certified changes. */
     isCertified (val) {
       this.haveChanges = true
     },
 
+    /** Called when Certified By changes. */
     certifiedBy (val) {
       this.haveChanges = true
     },
+
+    /** Called when Routing Slip Number changes. */
     routingSlipNumber (val) {
       this.haveChanges = true
+    },
+
+    /** Called when Is Priority changes. */
+    isPriority (val: boolean): void {
+      // apply this flag applies to OTADD code only
+      // if OTADD code exists, simply re-add it with the updated Priority flag
+      if (this.isDataChanged(FilingCodes.ADDRESS_CHANGE_OT)) {
+        this.setFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, val, undefined)
+      }
+    },
+
+    /** Called when Is Waive Fees changes. */
+    isWaiveFees (val: boolean): void {
+      // apply this flag to all filing codes
+      this.setFilingData(val ? 'add' : 'remove', undefined, undefined, true)
     }
   }
 }
