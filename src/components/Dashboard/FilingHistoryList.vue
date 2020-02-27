@@ -38,7 +38,10 @@
                 </v-scale-transition>
                 <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
                 <template v-if="item.comments.length > 0">
-                  <span>{{item.comments.length}} Detail{{item.comments.length > 1 ? "s" : ""}}</span>
+                  <span>
+                    <v-icon>mdi-comment-text</v-icon>
+                    Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})
+                  </span>
                 </template>
               </div>
             </div>
@@ -151,37 +154,13 @@
             </ul>
           </div>
 
-          <!-- the details section -->
-          <div class="comments-section mt-8" v-if="item.comments.length > 0">
-            <v-divider></v-divider>
-            <div class="title-bar mt-5">
-              <h4>Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})</h4>
-              <v-btn
-                color="primary"
-                v-if="isRoleStaff"
-                @click.stop="showCommentDialog(item.filingId)"
-              >
-                <span>Add Detail</span>
-              </v-btn>
-            </div>
-            <div>
-              <!-- the details list-->
-              <v-list>
-                <v-list-item class="pl-0 pr-0" v-for="(comment, index) in item.comments" :key="index">
-                  <v-list-item-content>
-                    <v-list-item-title class="body-2">
-                      <strong v-if="!isRoleStaff">Registry Staff</strong>
-                      <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
-                      ({{convertUTCTimeToLocalTime(comment.timestamp)}})
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="body-2">
-                      <div class="pre-line">{{comment.comment}}</div>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </div>
-          </div>
+          <!-- the detail comments section -->
+          <Details-List
+            :filing=item
+            :isTask="false"
+            @showCommentDialog="showCommentDialog($event)"
+          />
+
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -201,6 +180,9 @@
 import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
 
+// Components
+import { DetailsList } from '@/components/common'
+
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 
@@ -208,15 +190,16 @@ import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 
 // Mixins
-import { DateMixin, EntityFilterMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EntityFilterMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [DateMixin, EntityFilterMixin],
+  mixins: [CommonMixin, DateMixin, EntityFilterMixin],
 
   components: {
     AddCommentDialog,
+    DetailsList,
     DownloadErrorDialog
   },
 
@@ -288,7 +271,7 @@ export default {
                 this.loadOtherReport(FilingTypes.VOLUNTARY_DISSOLUTION, filing, filing.voluntaryDissolution)
                 break
               case FilingTypes.CORRECTION:
-                this.loadOtherReport(FilingTypes.CORRECTION, filing.correction)
+                this.loadCorrection(filing, filing.correction)
                 break
               default:
                 // fallback for unknown filings
@@ -328,7 +311,6 @@ export default {
           const type = filing.header.name
           const agmYear = +date.slice(0, 4)
           const title = this.typeToTitle(type, agmYear)
-
           const item = {
             type: type,
             title: title,
@@ -397,6 +379,26 @@ export default {
       }
     },
 
+    loadCorrection (filing, section) {
+      console.log(filing)
+      if (section) {
+        const item = {
+          type: filing.header.name,
+          filingAuthor: filing.header.certifiedBy,
+          filingDate: filing.correction.correctedFilingDate,
+          filingId: filing.header.filingId,
+          corrFilingId: filing.correction.correctedFilingId,
+          correctedFilingType: filing.correction.correctedFilingType,
+          title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          comments: this.flattenAndSortComments(filing.header.comments)
+        }
+        this.filedItems.push(item)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(`ERROR - missing section in filing =`, filing)
+      }
+    },
+
     loadPaperFiling (filing) {
       // split name on camelcase and capitalize first letters
       if (!filing || !filing.header || !filing.header.name) return // safety check
@@ -432,32 +434,6 @@ export default {
         comments: this.flattenAndSortComments(filing.header.comments)
       }
       this.filedItems.push(item)
-    },
-
-    flattenAndSortComments (comments: any): Array<any> {
-      if (comments && comments.length > 0) {
-        // first use map to change comment.comment to comment
-        const flattened: Array<any> = comments.map(c => c.comment)
-        // then sort newest to oldest
-        const sorted = flattened.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
-        return sorted
-      }
-      return []
-    },
-
-    typeToTitle (type: string, agmYear: string = null): string {
-      if (!type) return '' // safety check
-      switch (type) {
-        case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
-        case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
-        case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
-        case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
-        case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-        case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-        case FilingTypes.CORRECTION: return FilingNames.CORRECTION
-      }
-      // fallback for unknown filings
-      return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
     },
 
     highlightFiling (highlightId: number) {

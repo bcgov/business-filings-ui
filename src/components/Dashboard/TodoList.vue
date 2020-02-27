@@ -1,5 +1,12 @@
 <template>
   <div id="todo-list">
+    <add-comment-dialog
+      :dialog="addCommentDialog"
+      :filingId="currentFilingId"
+      @close="hideCommentDialog($event)"
+      attach="#todo-list"
+    />
+
     <confirm-dialog
       ref="confirm"
       attach="#todo-list"
@@ -25,49 +32,58 @@
       attach="#todo-list"
       data-test-id="cancel-pay-error-dialog"
     />
-
     <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion>
       <v-expansion-panel
         class="align-items-top todo-item"
         expand-icon=""
-        v-for="(item, index) in orderBy(taskItems, 'order')"
+        v-for="(task, index) in orderBy(taskItems, 'order')"
         :key="index"
         :class="{
-          'disabled': !item.enabled,
-          'draft': isDraft(item)
+          'disabled': !task.enabled,
+          'draft': isDraft(task)
         }"
       >
         <v-expansion-panel-header class="todo-item-toggle no-dropdown">
           <div class="list-item">
             <div class="todo-label">
-              <h3 class="list-item__title">{{item.title}}</h3>
+              <h3 class="list-item__title">{{task.title}}</h3>
 
               <div class="bcorps-ar-subtitle"
-                v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(item.type, item.status)"
+                v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(task.type, task.status)"
               >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
-                  :disabled=!item.enabled
+                  :disabled=!task.enabled
                   v-model="confirmCheckbox"
                   @click.native.stop
                 />
               </div>
 
               <div class="list-item__subtitle">
-                <div v-if="entityFilter(EntityTypes.COOP) && item.subtitle" class="todo-status">
-                  <span>{{item.subtitle}}</span>
+                <div v-if="entityFilter(EntityTypes.COOP) && task.subtitle" class="todo-status">
+                  <span>{{task.subtitle}}</span>
                 </div>
 
-                <div v-if="isDraft(item)" class="todo-status">
+                <div v-if="isDraft(task)" class="todo-status">
                   <div>DRAFT</div>
                 </div>
 
-                <div v-else-if="isPending(item)" class="todo-status">
+                <div v-else-if="isCorrection(task)" class="todo-status">
+                  <div>FILING PENDING</div>
+                  <div v-if="isCorrection(task)">
+                    <v-btn x-small icon class="info-btn">
+                      <v-icon>mdi-comment-text</v-icon>
+                    </v-btn>
+                    Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
+                  </div>
+                </div>
+
+                <div v-else-if="isPending(task)" class="todo-status">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === item.id">
+                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -78,10 +94,10 @@
                   </div>
                 </div>
 
-                <div v-else-if="isError(item)" class="todo-status">
+                <div v-else-if="isError(task)" class="todo-status">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === item.id">
+                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -92,10 +108,10 @@
                   </div>
                 </div>
 
-                <div v-else-if="isPaid(item)" class="todo-status">
+                <div v-else-if="isPaid(task)" class="todo-status">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === item.id">
+                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -108,22 +124,22 @@
               </div>
             </div>
 
-            <div class="list-item__actions">
+            <div class="list-item__actions" v-if="!isCorrection(task)">
               <div style="width:100%">
                 <p class="date-subtitle"
-                  v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(item.type, item.status)"
-                >Due {{ item.nextArDate }}</p>
+                  v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(task.type, task.status)"
+                >Due {{ task.nextArDate }}</p>
 
                 <!-- pre-empt any buttons below -->
-                <template v-if="inProcessFiling !== undefined && inProcessFiling === item.id">
+                <template v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
                   <v-btn text loading disabled />
                 </template>
 
-                <template v-else-if="isDraft(item)">
+                <template v-else-if="isDraft(task)">
                   <v-btn class="btn-draft-resume"
                     color="primary"
-                    :disabled="!item.enabled"
-                    @click.native.stop="doResumeFiling(item)"
+                    :disabled="!task.enabled"
+                    @click.native.stop="doResumeFiling(task)"
                   >
                     <span>Resume</span>
                   </v-btn>
@@ -131,24 +147,24 @@
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" class="actions__more-actions__btn px-0"
-                        v-on="on" id="menu-activator" :disabled="!item.enabled"
+                        v-on="on" id="menu-activator" :disabled="!task.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
                     </template>
                     <v-list ref="draft_actions" class="actions__more-actions">
-                      <v-list-item id="btn-delete-draft" @click="confirmDeleteDraft(item)">
+                      <v-list-item id="btn-delete-draft" @click="confirmDeleteDraft(task)">
                         <v-list-item-title>Delete Draft</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
                 </template>
 
-                <template v-else-if="isPending(item)">
+                <template v-else-if="isPending(task)">
                   <v-btn class="btn-resume-payment"
                     color="primary"
-                    :disabled="!item.enabled"
-                    @click.native.stop="doResumePayment(item)"
+                    :disabled="!task.enabled"
+                    @click.native.stop="doResumePayment(task)"
                     data-test-id="btn-resume-payment"
                   >
                     <span>Resume Payment</span>
@@ -157,7 +173,7 @@
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary"
-                        v-on="on" id="pending-item-menu-activator" :disabled="!item.enabled"
+                        v-on="on" id="pending-item-menu-activator" :disabled="!task.enabled"
                         class="actions__more-actions__btn px-0"
                         @click.native.stop
                         data-test-id="btn-pending-filing-menu"
@@ -166,7 +182,7 @@
                       </v-btn>
                     </template>
                     <v-list ref="pending_actions" class="actions__more-actions">
-                      <v-list-item id="btn-cancel-payment" @click="confirmCancelPayment(item)"
+                      <v-list-item id="btn-cancel-payment" @click="confirmCancelPayment(task)"
                         data-test-id="btn-cancel-payment"
                       >
                         <v-list-item-title>Cancel Payment</v-list-item-title>
@@ -175,24 +191,24 @@
                   </v-menu>
                 </template>
 
-                <v-btn v-else-if="isError(item)"
+                <v-btn v-else-if="isError(task)"
                   class="btn-retry-payment"
                   color="primary"
-                  :disabled="!item.enabled"
-                  @click.native.stop="doResumePayment(item)"
+                  :disabled="!task.enabled"
+                  @click.native.stop="doResumePayment(task)"
                 >
                   <span>Retry Payment</span>
                 </v-btn>
 
-                <template v-else-if="isPaid(item)">
+                <template v-else-if="isPaid(task)">
                   <!-- no action button in this case -->
                 </template>
 
-                <v-btn v-else-if="!isCompleted(item)"
+                <v-btn v-else-if="!isCompleted(task)"
                   class="btn-file-now"
                   color="primary"
-                  :disabled="!item.enabled || coaPending || !confirmCheckbox"
-                  @click.native.stop="doFileNow(item)"
+                  :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
+                  @click.native.stop="doFileNow(task)"
                 >
                   <span>File Annual Report</span>
                 </v-btn>
@@ -202,7 +218,19 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <v-card v-if="isPending(item)" data-test-class="payment-incomplete">
+
+          <div v-if="isCorrection(task)" data-test-class="correction-comment" class="todo-list-detail">
+            <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
+              Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
+            <!-- the detail comments section -->
+            <Details-List
+              :filing=task
+              :isTask="true"
+              @showCommentDialog="showCommentDialog($event)"
+            />
+          </div>
+
+          <v-card v-if="isPending(task)" data-test-class="payment-incomplete">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Incomplete</p>
               <p>This filing is pending payment. The payment may still be in progress or may have been
@@ -211,7 +239,7 @@
             </v-card-text>
           </v-card>
 
-          <v-card v-else-if="isError(item)" data-test-class="payment-unsuccessful">
+          <v-card v-else-if="isError(task)" data-test-class="payment-unsuccessful">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Unsuccessful</p>
               <p>This filing is pending payment. The payment appears to have been unsuccessful for some
@@ -220,7 +248,7 @@
             </v-card-text>
           </v-card>
 
-          <v-card v-else-if="isPaid(item)" data-test-class="payment-paid">
+          <v-card v-else-if="isPaid(task)" data-test-class="payment-paid">
             <v-card-text>
               <p class="font-weight-bold black--text">Paid</p>
               <p>This filing is paid but the filing is not yet complete. Please check again later.</p>
@@ -242,14 +270,17 @@
 
 <script lang="ts">
 import axios from '@/axios-auth'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
+// Components
+import { DetailsList } from '@/components/common'
+
 // Dialogs
-import { ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
+import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { EntityFilterMixin, DateMixin } from '@/mixins'
+import { CommonMixin, EntityFilterMixin, DateMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
@@ -258,15 +289,18 @@ export default {
   name: 'TodoList',
 
   components: {
-    DeleteErrorDialog,
+    AddCommentDialog,
+    CancelPaymentErrorDialog,
     ConfirmDialog,
-    CancelPaymentErrorDialog
+    DeleteErrorDialog,
+    DetailsList
   },
 
-  mixins: [EntityFilterMixin, DateMixin, Vue2Filters.mixin],
+  mixins: [CommonMixin, EntityFilterMixin, DateMixin, Vue2Filters.mixin],
 
   data () {
     return {
+      addCommentDialog: false,
       taskItems: null,
       deleteErrors: [],
       deleteWarnings: [],
@@ -275,6 +309,7 @@ export default {
       cancelPaymentErrorDialog: false,
       confirmCheckbox: false,
       confirmEnabled: false,
+      currentFilingId: null,
 
       // enums
       EntityTypes,
@@ -284,10 +319,13 @@ export default {
 
   props: {
     inProcessFiling: null,
-    coaPending: null
+    coaPending: null,
+    hasBlockerFiling: null
   },
 
   computed: {
+    ...mapGetters(['isRoleStaff']),
+
     ...mapState(['tasks', 'entityIncNo'])
   },
 
@@ -323,7 +361,8 @@ export default {
       // This indicates that a new filing cannot be started because this one has to be completed first.
       this.$emit('has-blocker-filing',
         this.taskItems.filter(elem => {
-          return this.isDraft(elem) || this.isPending(elem) || this.isError(elem) || this.isPaid(elem)
+          return this.isDraft(elem) || this.isPending(elem) || this.isError(elem) || this.isPaid(elem) ||
+            this.isCorrection(elem)
         }).length > 0
       )
     },
@@ -453,56 +492,71 @@ export default {
     },
 
     loadCorrection (task) {
-      // eslint-disable-next-line no-console
-      console.log('loading correction not yet implemented, task =', task)
+      const filing = task.task.filing
+      if (filing && filing.header && filing.correction) {
+        this.taskItems.push({
+          type: filing.header.name,
+          filingId: filing.header.filingId,
+          filingDate: filing.correction.correctedFilingDate,
+          corrFilingId: filing.correction.correctedFilingId,
+          correctedFilingType: this.typeToTitle(filing.correction.correctedFilingType),
+          title: `Priority Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          enabled: Boolean(task.enabled),
+          order: task.order,
+          comments: this.flattenAndSortComments(filing.header.comments)
+        })
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - invalid filing or header or changeOfAddress in task =', task)
+      }
     },
 
-    doFileNow (item) {
-      switch (item.type) {
+    doFileNow (task) {
+      switch (task.type) {
         case FilingTypes.ANNUAL_REPORT:
           // file the subject Annual Report
-          this.setARFilingYear(item.ARFilingYear)
+          this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.NEW)
           this.$router.push({ name: 'annual-report', params: { id: 0 } }) // 0 means "new AR"
           break
         default:
           // eslint-disable-next-line no-console
-          console.log('doFileNow(), invalid type for item =', item)
+          console.log('doFileNow(), invalid type for item =', task)
           break
       }
     },
 
-    doResumeFiling (item) {
-      switch (item.type) {
+    doResumeFiling (task) {
+      switch (task.type) {
         case FilingTypes.ANNUAL_REPORT:
           // resume the subject Annual Report
-          this.setARFilingYear(item.ARFilingYear)
+          this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'annual-report', params: { id: item.id } })
+          this.$router.push({ name: 'annual-report', params: { id: task.id } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // resume the subject Change Of Directors
-          this.setARFilingYear(item.ARFilingYear)
+          this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'standalone-directors', params: { id: item.id } })
+          this.$router.push({ name: 'standalone-directors', params: { id: task.id } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // resume the subject Change Of Address
-          this.setARFilingYear(item.ARFilingYear)
+          this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'standalone-addresses', params: { id: item.id } })
+          this.$router.push({ name: 'standalone-addresses', params: { id: task.id } })
           break
         default:
           // eslint-disable-next-line no-console
-          console.log('doFileNow(), invalid type for item =', item)
+          console.log('doFileNow(), invalid type for item =', task)
           break
       }
     },
 
     // this is called for both Resume Payment and Retry Payment
-    doResumePayment (item) {
-      const filingId = item.id
-      const paymentToken = item.paymentToken
+    doResumePayment (task) {
+      const filingId = task.id
+      const paymentToken = task.paymentToken
 
       const baseUrl = sessionStorage.getItem('BASE_URL')
       const returnURL = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
@@ -514,35 +568,39 @@ export default {
       return true
     },
 
-    isNew (item) {
-      return item.status === FilingStatus.NEW
+    isNew (task) {
+      return task.status === FilingStatus.NEW
     },
 
-    isDraft (item) {
-      return item.status === FilingStatus.DRAFT
+    isDraft (task) {
+      return task.status === FilingStatus.DRAFT
     },
 
-    isPending (item) {
-      return item.status === FilingStatus.PENDING
+    isPending (task) {
+      return task.status === FilingStatus.PENDING
     },
 
-    isError (item) {
-      return item.status === FilingStatus.ERROR
+    isError (task) {
+      return task.status === FilingStatus.ERROR
     },
 
-    isPaid (item) {
-      return item.status === FilingStatus.PAID
+    isPaid (task) {
+      return task.status === FilingStatus.PAID
     },
 
-    isCompleted (item) {
-      return item.status === FilingStatus.COMPLETED
+    isCompleted (task) {
+      return task.status === FilingStatus.COMPLETED
     },
 
-    confirmDeleteDraft (item) {
+    isCorrection (task) {
+      return task.type === FilingTypes.CORRECTION
+    },
+
+    confirmDeleteDraft (task) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Delete Draft?',
-        'Delete your ' + item.draftTitle + '? Any changes you\'ve made will be lost.',
+        'Delete your ' + task.draftTitle + '? Any changes you\'ve made will be lost.',
         {
           width: '40rem',
           persistent: true,
@@ -553,7 +611,7 @@ export default {
       ).then(async (confirm) => {
         // if we get here, Yes or No was clicked
         if (confirm) {
-          await this.doDeleteDraft(item)
+          await this.doDeleteDraft(task)
         } else {
           // do nothing
         }
@@ -562,8 +620,8 @@ export default {
       })
     },
 
-    async doDeleteDraft (item) {
-      let url = this.entityIncNo + '/filings/' + item.id
+    async doDeleteDraft (task) {
+      let url = this.entityIncNo + '/filings/' + task.id
       await axios.delete(url).then(res => {
         if (!res) { throw new Error('invalid API response') }
 
@@ -599,11 +657,11 @@ export default {
       return ((type === FilingTypes.ANNUAL_REPORT) && (status === FilingStatus.NEW))
     },
 
-    confirmCancelPayment (item) {
+    confirmCancelPayment (task) {
       // open confirmation dialog and wait for response
       this.$refs.confirmCancelPaymentDialog.open(
         'Cancel Payment?',
-        'Cancel payment for your ' + item.draftTitle + '?',
+        'Cancel payment for your ' + task.draftTitle + '?',
         {
           width: '40rem',
           persistent: true,
@@ -614,7 +672,7 @@ export default {
       ).then(async (confirm) => {
         // if we get here, Yes or No was clicked
         if (confirm) {
-          await this.cancelPaymentAndSetToDraft(item)
+          await this.cancelPaymentAndSetToDraft(task)
         } else {
           // do nothing
         }
@@ -623,8 +681,8 @@ export default {
       })
     },
 
-    async cancelPaymentAndSetToDraft (item) {
-      let url = this.entityIncNo + '/filings/' + item.id
+    async cancelPaymentAndSetToDraft (task) {
+      let url = this.entityIncNo + '/filings/' + task.id
       await axios.patch(url, {}).then(res => {
         if (!res) { throw new Error('invalid API response') }
 
@@ -640,6 +698,17 @@ export default {
           this.cancelPaymentErrorDialog = true
         }
       })
+    },
+
+    showCommentDialog (filingId: number): void {
+      console.log(filingId)
+      this.currentFilingId = filingId
+      this.addCommentDialog = true
+    },
+
+    hideCommentDialog (needReload: boolean): void {
+      this.addCommentDialog = false
+      if (needReload) this.setTriggerDashboardReload(true)
     }
   },
 
@@ -661,6 +730,10 @@ export default {
   pointer-events: none;
 
   .todo-list-checkbox {
+    pointer-events: auto;
+  }
+
+  .todo-list-detail {
     pointer-events: auto;
   }
 }

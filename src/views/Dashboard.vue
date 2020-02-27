@@ -27,6 +27,7 @@
                 @todo-filings="todoListFilings = $event"
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
+                :hasBlockerFiling="hasBlockerFiling"
               />
             </section>
 
@@ -66,7 +67,7 @@
                 <v-btn text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
-                  :disabled="hasBlockerFiling"
+                  :disabled="hasBlockerFiling || coaPending"
                   @click.native.stop="proceedCoa()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -86,7 +87,7 @@
                 <v-btn text small color="primary"
                   id="standalone-directors-button"
                   class="change-btn"
-                  :disabled="hasBlockerFiling"
+                  :disabled="hasBlockerFiling || coaPending"
                   @click.native.stop="goToStandaloneDirectors()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
