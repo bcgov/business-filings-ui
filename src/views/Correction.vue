@@ -216,7 +216,7 @@ export default {
       isCertified: false,
       certifyFormValid: null,
 
-      // properties for Staff Payment component
+      // properties for StaffPayment component
       routingSlipNumber: '',
       isPriority: false,
       isWaiveFees: false,
@@ -361,7 +361,7 @@ export default {
   /** Called when component is mounted. */
   mounted (): void {
     // always include correction code
-    this.toggleFiling('add', FilingCodes.CORRECTION)
+    this.setFilingData('add', FilingCodes.CORRECTION)
   },
 
   /** Called before routing away from this component. */
@@ -493,7 +493,7 @@ export default {
       this.filingPaying = false
     },
 
-    /** Method to save the filing. */
+    /** Actually saves the filing. */
     async saveFiling (isDraft): Promise<any> {
       this.resetErrors()
 
@@ -545,29 +545,17 @@ export default {
         }
       }
 
-      // FUTURE: save new filing data
+      // build filing data
       // NB: a correction to a correction is to the original data
-      let annualReport, changeOfDirectors, changeOfAddress
-      if (this.origFiling.annualReport) {
-        annualReport = {}
-      } else if (this.origFiling.changeOfDirectors) {
-        changeOfDirectors = {}
-      } else if (this.origFiling.changeOfAddress) {
-        changeOfAddress = {}
-      } else {
-        throw new Error('Invalid correction type')
-      }
-
       const data = {
         filing: Object.assign(
           {},
           header,
           business,
           correction,
-          // TODO: need fallback values for these?
-          annualReport,
-          changeOfDirectors,
-          changeOfAddress
+          this.origFiling.annualReport || {},
+          this.origFiling.changeOfDirectors || {},
+          this.origFiling.changeOfAddress || {}
         )
       }
 
@@ -632,23 +620,41 @@ export default {
       }
     },
 
-    /** Method to add/update or remove the specified filing code. */
-    toggleFiling (addRemove, code): void {
-      // remove code if it already exists
-      for (let i = 0; i < this.filingData.length; i++) {
-        if (this.filingData[i].filingTypeCode === code) {
-          this.filingData.splice(i, 1)
-          break
+    /**
+     * Adds/removes codes or sets flags in the Filing Data object.
+     * @param addRemove Whether to add or remove the specified codes/flags.
+     * @param filingCode The Filing Type Code to add or remove (optional).
+     * @param priority The Priority flag to set or clear (optional).
+     * @param waiveFees The Waive Fees flag to set or clear (optional).
+     * @example setFilingData('add', undefined, undefined, true) -> adds Waive Fees to all codes
+     * @example setFilingData('remove', undefined, true, undefined) - removes Priority from all codes
+     * @example setFilingData('add', 'CRCTN', true, true) -> adds Correction code with both flags
+     * @example setFilingData('add', 'CRCTN') -> adds Correction code with default flags
+     */
+    setFilingData (
+      addRemove: 'add' | 'remove',
+      filingCode: string = null,
+      priority: boolean = this.isPriority,
+      waiveFees: boolean = this.isWaiveFees
+    ): void {
+      if (filingCode) {
+        // always remove code if it already exists
+        this.filingData = this.filingData.filter(el => el.filingTypeCode !== filingCode)
+
+        // conditionally (re)add the code
+        if (addRemove === 'add') {
+          this.filingData.push({
+            filingTypeCode: filingCode,
+            entityType: this.entityType,
+            priority: priority,
+            waiveFees: waiveFees
+          })
         }
-      }
-      // (re)add code
-      if (addRemove === 'add') {
-        this.filingData.push({
-          filingTypeCode: code,
-          entityType: this.entityType,
-          priority: this.isPriority,
-          waiveFees: this.isWaiveFees,
-          futureEffective: false
+      } else {
+        // conditionally add/remove the flags to/from all codes
+        this.filingData.forEach(element => {
+          if (priority) element.priority = (addRemove === 'add')
+          if (waiveFees) element.waiveFees = (addRemove === 'add')
         })
       }
     },
@@ -660,7 +666,7 @@ export default {
       this.$router.push('/dashboard')
     },
 
-    /** Method to reset all error flags/states. */
+    /** Reset all error flags/states. */
     resetErrors (): void {
       this.saveErrorDialog = false
       this.saveErrors = []
@@ -710,12 +716,15 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      this.toggleFiling('add', FilingCodes.CORRECTION)
+      // apply this flag applies to CRCTN code only
+      // simply re-add the CRCTN with the updated Priority flag
+      this.setFilingData('add', FilingCodes.CORRECTION, val, undefined)
     },
 
     /** Called when Is Waive Fees changes. */
     isWaiveFees (val: boolean): void {
-      this.toggleFiling('add', FilingCodes.CORRECTION)
+      // apply this flag to all filing codes
+      this.setFilingData(val ? 'add' : 'remove', undefined, undefined, true)
     }
   }
 }

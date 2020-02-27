@@ -64,14 +64,13 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item>
+                    <v-list-item :disabled="hasBlockerFiling || item.isCorrected">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title
                         class="file-correction-item"
                         @click="correctThisItem(item)"
-                        :disabled="hasBlockerFiling || item.isCorrected"
                       >
                         File a Correction
                       </v-list-item-title>
@@ -312,7 +311,7 @@ export default {
       if (highlightId) { this.highlightFiling(highlightId) }
     },
 
-    // Method to extract date from a local datetime string
+    // Extracts date from a local datetime string
     // Returns "yyyy-mm-dd"
     formatDate (dateString: string): string {
       if (!dateString) return null // safety check

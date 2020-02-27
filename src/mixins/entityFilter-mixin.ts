@@ -13,7 +13,7 @@ export default class EntityFilterMixin extends Vue {
   readonly entityType: string
 
   /**
-   * Method to compare the conditional entity to the entityType defined from the Store.
+   * Compares the conditional entity to the entityType defined from the Store.
    *
    * @param entity The entity type of the component.
    * @return boolean A boolean indicating if the entityType given matches the entityType assigned to the component.
