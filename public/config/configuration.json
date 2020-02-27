@@ -1,5 +1,5 @@
 {
-  "SIGNIN_URL": "https://dev.bcregistry.ca/cooperatives/auth/signin/bcsc/",
+  "SIGNIN_URL": "https://dev.bcregistry.ca/cooperatives/auth/",
   "BUSINESSES_URL": "https://dev.bcregistry.ca/cooperatives/auth/business/",
   "AUTH_URL": "https://dev.bcregistry.ca/cooperatives/auth/",
   "API_URL": "https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/businesses/",
