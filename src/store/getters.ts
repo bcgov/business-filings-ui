@@ -1,3 +1,5 @@
+import { FilingTypes } from '@/enums'
+
 export default {
   isRoleStaff (state): boolean {
     return state.keycloakRoles.includes('staff')
@@ -31,7 +33,7 @@ export default {
       let filing = state.filings[i].filing
       let filingDate = filing.header.effectiveDate || filing.header.date
       filingDate = filingDate.slice(0, 10)
-      if (filing.hasOwnProperty('changeOfDirectors')) {
+      if (filing.hasOwnProperty(FilingTypes.CHANGE_OF_DIRECTORS)) {
         if (lastCOD === null || filingDate.split('-').join('') > lastCOD.split('-').join('')) {
           lastCOD = filingDate
         }
@@ -48,7 +50,7 @@ export default {
       let filing = state.filings[i].filing
       let filingDate = filing.header.effectiveDate || filing.header.date
       filingDate = filingDate.slice(0, 10)
-      if (filing.hasOwnProperty('changeOfAddress')) {
+      if (filing.hasOwnProperty(FilingTypes.CHANGE_OF_ADDRESS)) {
         if (lastCOA === null || filingDate.split('-').join('') > lastCOA.split('-').join('')) {
           lastCOA = filingDate
         }

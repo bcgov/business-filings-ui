@@ -143,7 +143,6 @@ describe('AnnualReport - Part 1 - UI', () => {
 
     // confirm that flags are set correctly
     expect(vm.validated).toEqual(false)
-    expect(vm.isSaveButtonEnabled).toEqual(false)
 
     wrapper.destroy()
   })
@@ -162,7 +161,6 @@ describe('AnnualReport - Part 1 - UI', () => {
 
     // confirm that flags are set correctly
     expect(vm.validated).toEqual(false)
-    expect(vm.isSaveButtonEnabled).toEqual(false)
 
     wrapper.destroy()
   })
@@ -295,7 +293,6 @@ describe('AnnualReport - Part 1 - UI', () => {
 
     // confirm that flags are set correctly
     expect(vm.validated).toEqual(false)
-    expect(vm.isSaveButtonEnabled).toEqual(false)
 
     wrapper.destroy()
   })

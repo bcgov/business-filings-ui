@@ -74,9 +74,9 @@ export default class StaffPayment extends Vue {
 
   /** Called when payment option (radio group) has changed. */
   private onPaymentOptionChanged (val: number): void {
-    if (val === this.PAYMENT_RECEIVED) {
-      // show form errors
-      (this.$refs.form as any).validate()
+    if (val === this.NO_FEE) {
+      // clear form and reset validation
+      (this.$refs.form as any).reset()
     }
     this.emitIsWaiveFees(val === this.NO_FEE)
     this.$nextTick(() => this.emitValid())
