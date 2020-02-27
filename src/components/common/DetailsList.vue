@@ -9,7 +9,7 @@
         </h4>
         <v-btn
           color="primary"
-          v-if="isStaff && !isTask"
+          v-if="isRoleStaff && !isTask"
           @click.stop="showCommentDialog(filing.filingId)"
         >
           <span>Add Detail</span>
@@ -21,7 +21,7 @@
           <v-list-item class="pl-0 pr-0" v-for="(comment, index) in filing.comments" :key="index">
             <v-list-item-content>
               <v-list-item-title class="body-2">
-                <strong v-if="!isStaff">Registry Staff</strong>
+                <strong v-if="!isRoleStaff">Registry Staff</strong>
                 <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
                 ({{convertUTCTimeToLocalTime(comment.timestamp)}})
               </v-list-item-title>
@@ -56,10 +56,6 @@ export default class DetailsList extends Mixins(DateMixin) {
   /** Filing Passed from parent container correction information */
   @Prop({ default: '' })
   private filing
-
-  /** Boolean indicating if client has staff role */
-  @Prop()
-  private isStaff
 
   /** Boolean indicating if comments are appearing in the Task List */
   @Prop()

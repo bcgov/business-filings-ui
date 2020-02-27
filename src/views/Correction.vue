@@ -180,7 +180,7 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
 
 // Interfaces
 import { FilingData } from '@/interfaces'
@@ -191,7 +191,7 @@ import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 export default {
   name: 'Correction',
 
-  mixins: [DateMixin, EntityFilterMixin, ResourceLookupMixin],
+  mixins: [CommonMixin, DateMixin, EntityFilterMixin, ResourceLookupMixin],
 
   components: {
     Certify,
@@ -262,21 +262,11 @@ export default {
     },
 
     /** Returns title of original filing. */
-    title (): string | null {
+    title (): string {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
-        switch (this.origFiling.header.name) {
-          case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (this.agmYear ? ` (${this.agmYear})` : '')
-          case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
-          case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
-          case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
-          case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-          case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-          case FilingTypes.CORRECTION: return FilingNames.CORRECTION
-        }
-        // fallback for unknown filings
-        return this.origFiling.header.name.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
+        return this.typeToTitle(this.origFiling.header.name)
       }
-      return null
+      return ''
     },
 
     /** Returns AGM Year of original filing (AR only). */

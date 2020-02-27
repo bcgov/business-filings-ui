@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { omit, isEqual } from 'lodash'
+import { FilingTypes, FilingNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -45,7 +46,8 @@ export default class CommonMixin extends Vue {
   }
 
   /**
-   * Deconstructs and sorts an array of comments
+   * Flattens and sorts an array of comments
+   *
    * @param comments The array of comments to sort and deconstruct
    * @return The sorted and flattened array of comments
    */
@@ -58,5 +60,26 @@ export default class CommonMixin extends Vue {
       return sorted
     }
     return []
+  }
+
+  /**
+   * Format the incoming filing type string for better display.
+   *
+   * @param type The filing type string to be formatted
+   * @param agmYear OPTIONAL: The agmYear string to be appended to the formatted filing type string.
+   */
+  typeToTitle (type: string, agmYear: string = null): string {
+    if (!type) return '' // safety check
+    switch (type) {
+      case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
+      case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
+      case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
+      case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
+      case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
+      case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
+      case FilingTypes.CORRECTION: return FilingNames.CORRECTION
+    }
+    // fallback for unknown filings
+    return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
   }
 }

@@ -156,7 +156,7 @@
           </div>
 
           <!-- the detail comments section -->
-          <DetailsList
+          <Details-List
             :filing=item
             :isStaff="isRoleStaff"
             :isTask="false"
@@ -382,6 +382,7 @@ export default {
     },
 
     loadCorrection (filing, section) {
+      console.log(filing)
       if (section) {
         const item = {
           type: filing.header.name,
@@ -389,9 +390,8 @@ export default {
           filingDate: filing.correction.correctedFilingDate,
           filingId: filing.header.filingId,
           corrFilingId: filing.correction.correctedFilingId,
-          correctedFilingType: this.typeToTitle(filing.correction.correctedFilingType),
+          correctedFilingType: filing.correction.correctedFilingType,
           title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
-          draftTitle: `Correction Filing`,
           comments: this.flattenAndSortComments(filing.header.comments)
         }
         this.filedItems.push(item)
@@ -436,21 +436,6 @@ export default {
         comments: this.flattenAndSortComments(filing.header.comments)
       }
       this.filedItems.push(item)
-    },
-
-    typeToTitle (type: string, agmYear: string = null): string {
-      if (!type) return '' // safety check
-      switch (type) {
-        case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
-        case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
-        case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
-        case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
-        case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-        case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-        case FilingTypes.CORRECTION: return FilingNames.CORRECTION
-      }
-      // fallback for unknown filings
-      return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
     },
 
     highlightFiling (highlightId: number) {

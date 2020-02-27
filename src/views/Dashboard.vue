@@ -27,6 +27,7 @@
                 @todo-filings="todoListFilings = $event"
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
+                :hasBlockerFiling="hasBlockerFiling"
               />
             </section>
 
