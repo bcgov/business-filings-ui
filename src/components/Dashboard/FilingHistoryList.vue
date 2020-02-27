@@ -393,7 +393,7 @@ export default {
         this.filedItems.push(item)
       } else {
         // eslint-disable-next-line no-console
-        console.log(`ERROR - missing section in filing =`, filing)
+        console.log('ERROR - missing section in filing =', filing)
       }
     },
 
@@ -408,7 +408,7 @@ export default {
 
       let title: string
       if (filing.annualReport && filing.annualReport.annualReportDate) {
-        const agmYear = +filing.annualReport.annualReportDate.slice(0, 4)
+        const agmYear: number = +filing.annualReport.annualReportDate.slice(0, 4)
         title = this.typeToTitle(type, agmYear)
       } else {
         title = this.typeToTitle(type)
@@ -475,32 +475,31 @@ export default {
       if (!item || !item.type) return // safety check
       switch (item.type) {
         case FilingTypes.ANNUAL_REPORT:
-          // FUTURE:
+          // FUTURE?
           // this.$router.push({ name: 'annual-report', params: { id: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction', params: { id: item.filingId } })
+          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
-          // FUTURE:
+          // FUTURE?
           // this.$router.push({ name: 'standalone-directors', params: { id: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction', params: { id: item.filingId } })
+          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
-          // FUTURE:
+          // FUTURE?
           // this.$router.push({ name: 'standalone-addresses', params: { id: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction', params: { id: item.filingId } })
+          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CORRECTION:
-          // FUTURE:
-          // this.$router.push({ name: 'correction', params: { id: item.filingId, isCorrection: true } })
-          // FOR NOW:
-          this.$router.push({ name: 'correction', params: { id: item.filingId } })
+          // FUTURE: allow a correction to a correction (design TBD)
+          // this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
+          alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
           break
         default:
           // fallback for all other filings
-          this.$router.push({ name: 'correction', params: { id: item.filingId } })
+          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
           break
       }
     },

@@ -454,7 +454,7 @@ export default {
 
     loadCorrection (task) {
       // eslint-disable-next-line no-console
-      console.log('loading correction not yet implemented')
+      console.log('loading correction not yet implemented, task =', task)
     },
 
     doFileNow (item) {
