@@ -225,7 +225,6 @@
             <!-- the detail comments section -->
             <Details-List
               :filing=task
-              :isStaff="isRoleStaff"
               :isTask="true"
               @showCommentDialog="showCommentDialog($event)"
             />

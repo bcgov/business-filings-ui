@@ -158,7 +158,6 @@
           <!-- the detail comments section -->
           <Details-List
             :filing=item
-            :isStaff="isRoleStaff"
             :isTask="false"
             @showCommentDialog="showCommentDialog($event)"
           />
