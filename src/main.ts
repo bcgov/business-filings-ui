@@ -37,10 +37,8 @@ configHelper.fetchConfig()
     if (!haveKcTokens()) {
       console.info('Redirecting to Signin URL...') // eslint-disable-line no-console
       const signinUrl: string = sessionStorage.getItem('SIGNIN_URL') || ''
-      const businessesUrl: string = sessionStorage.getItem('BUSINESSES_URL') || ''
       // assume Signin URL is always reachable
-      // append Businesses URL to return to
-      signinUrl && businessesUrl && window.location.assign(signinUrl + encodeURIComponent(businessesUrl))
+      signinUrl && window.location.assign(signinUrl)
       return // do not execute remaining code
     }
 
