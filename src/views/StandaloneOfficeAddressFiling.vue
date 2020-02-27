@@ -182,7 +182,7 @@ import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 import { EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes, FilingCodes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
 
 export default {
   name: 'StandaloneOfficeAddressFiling',
@@ -229,7 +229,8 @@ export default {
 
       // enums
       EntityTypes,
-      FilingCodes
+      FilingCodes,
+      FilingTypes
     }
   },
 
@@ -346,7 +347,7 @@ export default {
             if (!filing) throw new Error('missing filing')
             if (!filing.header) throw new Error('missing header')
             if (!filing.business) throw new Error('missing business')
-            if (filing.header.name !== 'changeOfAddress') throw new Error('invalid filing type')
+            if (filing.header.name !== FilingTypes.CHANGE_OF_ADDRESS) throw new Error('invalid filing type')
             if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
@@ -387,7 +388,7 @@ export default {
             }
           } catch (err) {
             // eslint-disable-next-line no-console
-            console.log(`fetchData() error - ${err.message}, filing =`, filing)
+            console.log(`fetchData() error - ${err.message}, filing = ${filing}`)
             this.resumeErrorDialog = true
             throw new Error('invalid change of address')
           }
@@ -423,7 +424,7 @@ export default {
 
       if (filing) {
         // save Filing ID for future PUTs
-        this.filingId = +filing.header.filingId
+        this.filingId = +filing.header.filingId // number
       }
       this.saving = false
     },
@@ -450,7 +451,7 @@ export default {
 
       // on success, redirect to Pay URL
       if (filing && filing.header) {
-        const filingId = +filing.header.filingId
+        const filingId: number = +filing.header.filingId
 
         // whether this is a staff or no-fee filing
         const prePaidFiling = (this.isRoleStaff || !this.isPayRequired)
@@ -490,7 +491,7 @@ export default {
 
       const header = {
         header: {
-          name: 'changeOfAddress',
+          name: FilingTypes.CHANGE_OF_ADDRESS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate

@@ -133,14 +133,14 @@
         <v-container id="standalone-directors-buttons-container" class="list-item">
           <div class="buttons-left">
             <v-btn id="cod-save-btn" large
-              :disabled="!isSaveButtonEnabled || busySaving"
+              :disabled="busySaving"
               :loading="saving"
               @click="onClickSave()"
             >
               <span>Save</span>
             </v-btn>
             <v-btn id="cod-save-resume-btn" large
-              :disabled="!isSaveButtonEnabled || busySaving"
+              :disabled="busySaving"
               :loading="savingResuming"
               @click="onClickSaveResume()"
             >
@@ -297,7 +297,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
 import { EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes, FilingCodes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
 
 // Constants
 import { CEASED, APPOINTED, ADDRESSCHANGED, NAMECHANGED } from '@/constants'
@@ -358,7 +358,8 @@ export default {
 
       // enums
       EntityTypes,
-      FilingCodes
+      FilingCodes,
+      FilingTypes
     }
   },
 
@@ -377,10 +378,6 @@ export default {
 
     busySaving () {
       return (this.saving || this.savingResuming || this.filingPaying)
-    },
-
-    isSaveButtonEnabled () {
-      return (this.directorFormValid && this.filingData.length > 0 && !this.directorEditInProgress && this.codDateValid)
     },
 
     payAPIURL () {
@@ -471,7 +468,7 @@ export default {
       const filing = await this.saveFiling(true)
       if (filing) {
         // save Filing ID for future PUTs
-        this.filingId = +filing.header.filingId
+        this.filingId = +filing.header.filingId // number
       }
       this.saving = false
     },
@@ -498,7 +495,7 @@ export default {
 
       // on success, redirect to Pay URL
       if (filing && filing.header) {
-        const filingId = +filing.header.filingId
+        const filingId: number = +filing.header.filingId
 
         // whether this is a staff or no-fee filing
         const prePaidFiling = (this.isRoleStaff || !this.isPayRequired)
@@ -538,7 +535,7 @@ export default {
 
       const header = {
         header: {
-          name: 'changeOfDirectors',
+          name: FilingTypes.CHANGE_OF_DIRECTORS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate,
@@ -704,7 +701,7 @@ export default {
             if (!filing) throw new Error('missing filing')
             if (!filing.header) throw new Error('missing header')
             if (!filing.business) throw new Error('missing business')
-            if (filing.header.name !== 'changeOfDirectors') throw new Error('invalid filing type')
+            if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('invalid filing type')
             if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
@@ -756,7 +753,7 @@ export default {
             }
           } catch (err) {
             // eslint-disable-next-line no-console
-            console.log(`fetchData() error - ${err.message}, filing =`, filing)
+            console.log(`fetchData() error - ${err.message}, filing = ${filing}`)
             this.resumeErrorDialog = true
           }
         }

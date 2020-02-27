@@ -122,21 +122,20 @@
       class="list-item"
     >
       <div class="buttons-left">
-        <!-- NB: no saving drafts in Corrections 1.0 -->
-        <!-- <v-btn id="ar-save-btn" large
-          :disabled="!isSaveButtonEnabled || busySaving"
+        <v-btn id="correction-save-btn" large
+          :disabled="busySaving"
           :loading="saving"
           @click="onClickSave()"
         >
           <span>Save</span>
-        </v-btn> -->
-        <!-- <v-btn id="ar-save-resume-btn" large
-          :disabled="!isSaveButtonEnabled || busySaving"
+        </v-btn>
+        <v-btn id="correction-save-resume-btn" large
+          :disabled="busySaving"
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
           <span>Save &amp; Resume Later</span>
-        </v-btn> -->
+        </v-btn>
       </div>
 
       <div class="buttons-right">
@@ -144,7 +143,7 @@
           <template v-slot:activator="{ on }">
             <div v-on="on" class="d-inline">
               <v-btn
-                id="ar-file-pay-btn"
+                id="correction-file-pay-btn"
                 color="primary"
                 large
                 :disabled="!validated || busySaving"
@@ -159,7 +158,7 @@
             There is no opportunity to change information beyond this point.</span>
         </v-tooltip>
 
-        <v-btn id="ar-cancel-btn" large to="/dashboard" :disabled="busySaving || filingPaying">Cancel</v-btn>
+        <v-btn id="correction-cancel-btn" large to="/dashboard" :disabled="busySaving || filingPaying">Cancel</v-btn>
       </div>
     </v-container>
   </div>
@@ -282,7 +281,7 @@ export default {
     /** Returns AGM Year of original filing (AR only). */
     agmYear (): number | null {
       if (this.origFiling && this.origFiling.annualReport && this.origFiling.annualReport.annualReportDate) {
-        const date = this.origFiling.annualReport.annualReportDate
+        const date: string = this.origFiling.annualReport.annualReportDate
         return +date.slice(0, 4)
       }
       return null
@@ -291,7 +290,7 @@ export default {
     /** Returns date of original filing in format "yyyy-mm-dd". */
     originalFilingDate (): string | null {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.date) {
-        const localDateTime = this.convertUTCTimeToLocalTime(this.origFiling.header.date)
+        const localDateTime: string = this.convertUTCTimeToLocalTime(this.origFiling.header.date)
         return localDateTime.split(' ')[0]
       }
       return null
@@ -313,21 +312,15 @@ export default {
       return sessionStorage.getItem('PAY_API_URL')
     },
 
-    /** Returns True if form is valid, else False. */
+    /** Returns True if page is valid, else False. */
     validated (): boolean {
-      // TODO: handle Priority and No Fee
-      const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
+      const staffPaymentValid: boolean = (!this.isRoleStaff || this.staffPaymentFormValid)
       return (staffPaymentValid && this.detailCommentValid && this.certifyFormValid)
     },
 
     /** Returns True if page is busy saving, else False. */
     busySaving (): boolean {
       return (this.saving || this.savingResuming || this.filingPaying)
-    },
-
-    /** Returns True if Save button should be enabled, else False. */
-    isSaveButtonEnabled (): boolean {
-      return true // FUTURE: add necessary logic here
     },
 
     /** Returns True if payment is required, else False. */
@@ -337,7 +330,7 @@ export default {
   },
 
   /** Called when component is created. */
-  created (): void {
+  async created (): Promise<void> {
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -346,15 +339,26 @@ export default {
         event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
       }
     }
-    // NB: this is the id of the filing to correct
-    this.correctedFilingId = +this.$route.params.id // number (may be NaN, which is false)
+
+    // this is the id of THIS correction filing
+    // if falsy, this is a new correction filing
+    // otherwise it's a draft correction filing
+    this.filingId = +this.$route.params.id // number (may be NaN)
+
+    // this is the id of the original filing to correct
+    this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
 
     // if required data isn't set, route to home
     if (!this.entityIncNo || !this.correctedFilingId) {
       this.$router.push('/')
     } else {
+      this.dataLoaded = false
       this.loadingMessage = `Preparing Your Correction`
-      this.fetchOrigFiling()
+      if (this.filingId) {
+        await this.fetchDraftFiling()
+      }
+      await this.fetchOrigFiling()
+      this.dataLoaded = true
     }
   },
 
@@ -396,12 +400,55 @@ export default {
   },
 
   methods: {
-    /** Fetches the original filing to correct. */
-    fetchOrigFiling (): void {
-      this.dataLoaded = false
+    /** Fetches the draft correction filing. */
+    async fetchDraftFiling (): Promise<void> {
+      const url: string = this.entityIncNo + '/filings/' + this.filingId
+      await axios.get(url).then(res => {
+        if (res && res.data) {
+          const filing: any = res.data.filing
+          try {
+            // verify data
+            if (!filing) throw new Error('missing filing')
+            if (!filing.header) throw new Error('missing header')
+            if (!filing.business) throw new Error('missing business')
+            if (!filing.correction) throw new Error('missing correction')
+            if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('invalid filing type')
+            if (filing.header.status !== 'DRAFT') throw new Error('invalid filing status')
+            if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
+            if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
-      const url = this.entityIncNo + '/filings/' + this.correctedFilingId
-      axios.get(url).then(res => {
+            // load Certified By but not Date
+            this.certifiedBy = filing.header.certifiedBy
+
+            // load Staff Payment properties
+            this.routingSlipNumber = filing.header.routingSlipNumber
+            this.isPriority = filing.header.priority
+            this.isWaiveFees = filing.header.waiveFees
+
+            // load Detail Comment, removing the first line (default comment)
+            const comment: string = filing.correction.comment || ''
+            this.detailComment = comment.split('\n').slice(1).join('\n')
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.log(`fetchDraftFiling() error - ${err.message}, filing = ${filing}`)
+            this.resumeErrorDialog = true
+          }
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchDraftFiling() error - invalid response =', res)
+          this.resumeErrorDialog = true
+        }
+      }).catch(err => {
+        // eslint-disable-next-line no-console
+        console.error('fetchDraftFiling() error =', err)
+        this.resumeErrorDialog = true
+      })
+    },
+
+    /** Fetches the original filing to correct. */
+    async fetchOrigFiling (): Promise<void> {
+      const url: string = this.entityIncNo + '/filings/' + this.correctedFilingId
+      await axios.get(url).then(res => {
         if (res && res.data) {
           this.origFiling = res.data.filing
           try {
@@ -417,10 +464,8 @@ export default {
             this.certifiedBy = this.origFiling.header.certifiedBy || ''
           } catch (err) {
             // eslint-disable-next-line no-console
-            console.log(`fetchOrigFiling() error - ${err.message}, origFiling =`, this.origFiling)
+            console.log(`fetchOrigFiling() error - ${err.message}, origFiling =${this.origFiling}`)
             this.loadCorrectionDialog = true
-          } finally {
-            this.dataLoaded = true
           }
         } else {
           // eslint-disable-next-line no-console
@@ -440,10 +485,10 @@ export default {
       if (this.busySaving) return
 
       this.saving = true
-      const filing = await this.saveFiling(true)
+      const filing: any = await this.saveFiling(true)
       if (filing) {
         // save Filing ID for future PUTs
-        this.filingId = +filing.header.filingId
+        this.filingId = +filing.header.filingId // number
       }
       this.saving = false
     },
@@ -454,7 +499,7 @@ export default {
       if (this.busySaving) return
 
       this.savingResuming = true
-      const filing = await this.saveFiling(true)
+      const filing: any = await this.saveFiling(true)
       // on success, route to Home URL
       if (filing) {
         this.$router.push('/')
@@ -468,19 +513,19 @@ export default {
       if (this.busySaving) return
 
       this.filingPaying = true
-      const filing = await this.saveFiling(false) // not a draft
+      const filing: any = await this.saveFiling(false) // not a draft
 
       // on success, redirect to Pay URL
       if (filing && filing.header) {
-        const filingId = +filing.header.filingId
+        const filingId: number = +filing.header.filingId
 
         // if this is a regular user, redirect to Pay URL
         if (!this.isRoleStaff) {
-          const paymentToken = filing.header.paymentToken
-          const baseUrl = sessionStorage.getItem('BASE_URL')
-          const returnURL = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
-          const authUrl = sessionStorage.getItem('AUTH_URL')
-          const payURL = authUrl + 'makepayment/' + paymentToken + '/' + returnURL
+          const paymentToken: string = filing.header.paymentToken
+          const baseUrl: string = sessionStorage.getItem('BASE_URL')
+          const returnURL: string = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
+          const authUrl: string = sessionStorage.getItem('AUTH_URL')
+          const payURL: string = authUrl + 'makepayment/' + paymentToken + '/' + returnURL
 
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later
@@ -497,7 +542,7 @@ export default {
     async saveFiling (isDraft): Promise<any> {
       this.resetErrors()
 
-      const hasPendingFilings = await this.hasTasks(this.entityIncNo)
+      const hasPendingFilings: boolean = await this.hasTasks(this.entityIncNo)
       if (hasPendingFilings) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
@@ -506,7 +551,7 @@ export default {
         return null
       }
 
-      const header = {
+      const header: any = {
         header: {
           name: 'correction',
           certifiedBy: this.certifiedBy,
@@ -527,7 +572,7 @@ export default {
         header.header['waiveFees'] = true
       }
 
-      const business = {
+      const business: any = {
         business: {
           foundingDate: this.entityFoundingDate,
           identifier: this.entityIncNo,
@@ -536,7 +581,7 @@ export default {
         }
       }
 
-      const correction = {
+      const correction: any = {
         correction: {
           correctedFilingId: this.correctedFilingId,
           correctedFilingType: this.origFiling.header.name,
@@ -547,25 +592,26 @@ export default {
 
       // build filing data
       // NB: a correction to a correction is to the original data
-      const data = {
+      const data: any = {
         filing: Object.assign(
           {},
           header,
           business,
-          correction,
-          this.origFiling.annualReport || {},
-          this.origFiling.changeOfDirectors || {},
-          this.origFiling.changeOfAddress || {}
+          correction
+          // FUTURE: don't enable this until API is ready for it
+          // this.origFiling.annualReport || {},
+          // this.origFiling.changeOfDirectors || {},
+          // this.origFiling.changeOfAddress || {}
         )
       }
 
       if (this.filingId > 0) {
         // we have a filing id, so we are updating an existing filing
-        let url = this.entityIncNo + '/filings/' + this.filingId
+        let url: string = this.entityIncNo + '/filings/' + this.filingId
         if (isDraft) {
           url += '?draft=true'
         }
-        let filing = null
+        let filing: any = null
         await axios.put(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
             throw new Error('invalid API response')
@@ -590,11 +636,11 @@ export default {
         return filing
       } else {
         // filing id is 0, so we are saving a new filing
-        let url = this.entityIncNo + '/filings'
+        let url: string = this.entityIncNo + '/filings'
         if (isDraft) {
           url += '?draft=true'
         }
-        let filing = null
+        let filing: any = null
         await axios.post(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
             throw new Error('invalid API response')
@@ -659,7 +705,7 @@ export default {
       }
     },
 
-    /** Handler for Exit click event. */
+    /** Handler for dialog Exit click events. */
     navigateToDashboard (): void {
       this.haveChanges = false
       this.dialog = false
@@ -675,7 +721,7 @@ export default {
 
     /** Returns True if the specified business has any pending tasks, else False. */
     async hasTasks (businessId): Promise<boolean> {
-      let hasPendingItems = false
+      let hasPendingItems: boolean = false
       if (this.filingId === 0) {
         await axios.get(businessId + '/tasks')
           .then(response => {
@@ -782,7 +828,7 @@ h2 {
     margin-left: 0.5rem;
   }
 
-  #ar-cancel-btn {
+  #correction-cancel-btn {
     margin-left: 0.5rem;
   }
 }
