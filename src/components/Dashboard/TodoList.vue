@@ -40,13 +40,19 @@
         :key="index"
         :class="{
           'disabled': !task.enabled,
-          'draft': isDraft(task)
+          'draft': isDraft(task) && !isCorrection(task)
         }"
       >
         <v-expansion-panel-header class="todo-item-toggle no-dropdown">
           <div class="list-item">
             <div class="todo-label">
-              <h3 class="list-item__title">{{task.title}}</h3>
+              <h3 class="list-item__title">{{task.title}}
+                <div v-if="isCorrection(task) && isDraft(task)">
+                  <v-btn small icon color="red" class="info-btn">
+                    <v-icon>mdi-information-outline</v-icon>
+                  </v-btn>
+                </div>
+              </h3>
 
               <div class="bcorps-ar-subtitle"
                 v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(task.type, task.status)"
@@ -66,16 +72,31 @@
                   <span>{{task.subtitle}}</span>
                 </div>
 
-                <div v-if="isDraft(task)" class="todo-status">
+                <div v-if="isCorrection(task) && isDraft(task)" class="todo-status">
+                  <div>FILING INCOMPLETE</div>
+                  <div class="vert-pipe">&nbsp;</div>
+                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
+                    PROCESSING...
+                  </div>
+                  <div class="payment-status" v-else>
+                    <span class="before-details">PAYMENT INCOMPLETE</span>
+                  </div>
+                  <v-btn x-small icon class="info-btn">
+                    <v-icon>mdi-message-reply</v-icon>
+                  </v-btn>
+                  Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
+                </div>
+
+                <div v-else-if="isDraft(task)" class="todo-status">
                   <div>DRAFT</div>
                 </div>
 
-                <div v-else-if="isCorrection(task)" class="todo-status">
-                  <div>FILING PENDING</div>
-                    <v-btn x-small icon class="info-btn">
-                      <v-icon>mdi-message-reply</v-icon>
-                    </v-btn>
-                    Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
+                <div v-else-if="isCorrection(task) && isPending(task)" class="todo-status">
+                  <span class="before-details">FILING PENDING</span>
+                  <v-btn x-small icon class="info-btn">
+                    <v-icon>mdi-message-reply</v-icon>
+                  </v-btn>
+                  Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
                 <div v-else-if="isPending(task)" class="todo-status">
@@ -122,7 +143,7 @@
               </div>
             </div>
 
-            <div class="list-item__actions" v-if="!isCorrection(task)">
+            <div class="list-item__actions">
               <div style="width:100%">
                 <p class="date-subtitle"
                   v-if="entityFilter(EntityTypes.BCOMP) && isConfirmEnabled(task.type, task.status)"
@@ -133,76 +154,88 @@
                   <v-btn text loading disabled />
                 </template>
 
-                <template v-else-if="isDraft(task)">
-                  <v-btn class="btn-draft-resume"
-                    color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doResumeFiling(task)"
+                <template v-else-if="isRoleStaff && isCorrection(task) && isDraft(task)">
+                  <v-btn class="btn-corr-draft-resume"
+                     color="primary"
+                     :disabled="!task.enabled"
+                     @click.native.stop="doResumeFiling(task)"
                   >
                     <span>Resume</span>
                   </v-btn>
-                  <!-- more DRAFT actions menu -->
-                  <v-menu offset-y left>
-                    <template v-slot:activator="{ on }">
-                      <v-btn color="primary" class="actions__more-actions__btn px-0"
-                        v-on="on" id="menu-activator" :disabled="!task.enabled"
-                      >
-                        <v-icon>mdi-menu-down</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list ref="draft_actions" class="actions__more-actions">
-                      <v-list-item id="btn-delete-draft" @click="confirmDeleteDraft(task)">
-                        <v-list-item-title>Delete Draft</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
                 </template>
 
-                <template v-else-if="isPending(task)">
-                  <v-btn class="btn-resume-payment"
+                <div v-else-if="!isCorrection(task)">
+
+                  <template v-if="isDraft(task)">
+                    <v-btn class="btn-draft-resume"
+                      color="primary"
+                      :disabled="!task.enabled"
+                      @click.native.stop="doResumeFiling(task)"
+                    >
+                      <span>Resume</span>
+                    </v-btn>
+                    <!-- more DRAFT actions menu -->
+                    <v-menu offset-y left>
+                      <template v-slot:activator="{ on }">
+                        <v-btn color="primary" class="actions__more-actions__btn px-0"
+                          v-on="on" id="menu-activator" :disabled="!task.enabled"
+                        >
+                          <v-icon>mdi-menu-down</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-list ref="draft_actions" class="actions__more-actions">
+                        <v-list-item id="btn-delete-draft" @click="confirmDeleteDraft(task)">
+                          <v-list-item-title>Delete Draft</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </template>
+
+                  <template v-else-if="isPending(task)">
+                    <v-btn class="btn-resume-payment"
+                      color="primary"
+                      :disabled="!task.enabled"
+                      @click.native.stop="doResumePayment(task)"
+                      data-test-id="btn-resume-payment"
+                    >
+                      <span>Resume Payment</span>
+                      <!-- Cancel Payment -->
+                    </v-btn>
+                    <v-menu offset-y left>
+                      <template v-slot:activator="{ on }">
+                        <v-btn color="primary"
+                          v-on="on" id="pending-item-menu-activator" :disabled="!task.enabled"
+                          class="actions__more-actions__btn px-0"
+                          @click.native.stop
+                          data-test-id="btn-pending-filing-menu"
+                        >
+                          <v-icon>mdi-menu-down</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-list ref="pending_actions" class="actions__more-actions">
+                        <v-list-item id="btn-cancel-payment" @click="confirmCancelPayment(task)"
+                          data-test-id="btn-cancel-payment"
+                        >
+                          <v-list-item-title>Cancel Payment</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </template>
+
+                  <v-btn v-else-if="isError(task)"
+                    class="btn-retry-payment"
                     color="primary"
                     :disabled="!task.enabled"
                     @click.native.stop="doResumePayment(task)"
-                    data-test-id="btn-resume-payment"
                   >
-                    <span>Resume Payment</span>
-                    <!-- Cancel Payment -->
+                    <span>Retry Payment</span>
                   </v-btn>
-                  <v-menu offset-y left>
-                    <template v-slot:activator="{ on }">
-                      <v-btn color="primary"
-                        v-on="on" id="pending-item-menu-activator" :disabled="!task.enabled"
-                        class="actions__more-actions__btn px-0"
-                        @click.native.stop
-                        data-test-id="btn-pending-filing-menu"
-                      >
-                        <v-icon>mdi-menu-down</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list ref="pending_actions" class="actions__more-actions">
-                      <v-list-item id="btn-cancel-payment" @click="confirmCancelPayment(task)"
-                        data-test-id="btn-cancel-payment"
-                      >
-                        <v-list-item-title>Cancel Payment</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </template>
 
-                <v-btn v-else-if="isError(task)"
-                  class="btn-retry-payment"
-                  color="primary"
-                  :disabled="!task.enabled"
-                  @click.native.stop="doResumePayment(task)"
-                >
-                  <span>Retry Payment</span>
-                </v-btn>
+                  <template v-else-if="isPaid(task)">
+                    <!-- no action button in this case -->
+                  </template>
 
-                <template v-else-if="isPaid(task)">
-                  <!-- no action button in this case -->
-                </template>
-
-                <v-btn v-else-if="!isCompleted(task)"
+                  <v-btn v-else-if="!isCompleted(task)"
                   class="btn-file-now"
                   color="primary"
                   :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
@@ -210,14 +243,26 @@
                 >
                   <span>File Annual Report</span>
                 </v-btn>
+                </div>
               </div>
             </div>
           </div>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-
-          <div v-if="isCorrection(task)" data-test-class="correction-comment" class="todo-list-detail">
+          <div v-if="isCorrection(task)">
+            <div v-if="isDraft(task)" data-test-class="correction-draft" class="todo-list-detail">
+              <p class="list-item__subtitle">
+                This filing is incomplete. The payment appears to have been unsuccessful for some reason.
+              </p>
+              <!-- the detail comments section -->
+              <details-list
+                :filing=task
+                :isTask="true"
+                @showCommentDialog="showCommentDialog($event)"
+              />
+            </div>
+            <div v-else data-test-class="correction-pending" class="todo-list-detail">
             <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
               Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
             <!-- the detail comments section -->
@@ -227,8 +272,8 @@
               @showCommentDialog="showCommentDialog($event)"
             />
           </div>
-
-          <v-card v-if="isPending(task)" data-test-class="payment-incomplete">
+          </div>
+          <v-card v-else-if="isPending(task)" data-test-class="payment-incomplete">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Incomplete</p>
               <p>This filing is pending payment. The payment may still be in progress or may have been
@@ -499,6 +544,7 @@ export default {
           corrFilingId: filing.correction.correctedFilingId,
           correctedFilingType: this.typeToTitle(filing.correction.correctedFilingType),
           title: `Priority Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
           comments: this.flattenAndSortComments(filing.header.comments)
@@ -543,6 +589,11 @@ export default {
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: 'standalone-addresses', params: { id: task.id } })
+          break
+        case FilingTypes.CORRECTION:
+          // resume the subject Correction Filing
+          this.setCurrentFilingStatus(FilingStatus.DRAFT)
+          this.$router.push({ name: 'correction', params: { id: task.filingId, correctedFilingId: task.corrFilingId } })
           break
         default:
           // eslint-disable-next-line no-console
@@ -777,10 +828,27 @@ export default {
     border-bottom-right-radius: 0;
   }
 
+  .btn-corr-draft-resume {
+    min-width: 103px;
+  }
+
   .btn-resume-payment {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
+}
+
+.before-details {
+    &:after {
+      display: inline-block;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+      content: "•";
+    }
+}
+
+.list-item__title {
+  display: flex;
 }
 
 .list-item__actions {

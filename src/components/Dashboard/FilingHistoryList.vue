@@ -22,7 +22,7 @@
         <v-expansion-panel-header class="filing-item-toggle">
           <div class="list-item">
             <div class="filing-label">
-              <h3>{{item.title}}</h3>
+              <h3>{{item.title}} {{applyCorrectionTag(item)}}</h3>
               <div class="list-item__subtitle">
                 <v-scale-transition v-if="isCoaFutureEffective(item.type, item.status)">
                   <v-tooltip top content-class="pending-tooltip">
@@ -643,6 +643,9 @@ export default {
         // eslint-disable-next-line no-console
         console.error('reloadComments() error - could not find filing id =', filingId)
       }
+    },
+    applyCorrectionTag (item: any): string {
+      return item.isCorrected ? '- Corrected' : item.isCorrectionPending ? '- Correction Pending' : ''
     }
   },
 
