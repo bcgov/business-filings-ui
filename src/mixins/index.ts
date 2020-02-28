@@ -1,15 +1,17 @@
-import CommonMixin from '@/mixins/common-mixin'
-import CountriesProvincesMixin from '@/mixins/countries-provinces-mixin'
+import CommonMixin from './common-mixin'
+import CountriesProvincesMixin from './countries-provinces-mixin'
 import DateMixin from './date-mixin'
-import EntityFilterMixin from '@/mixins/entityFilter-mixin'
-import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
-import DirectorMixin from '@/mixins/director-mixin'
+import DirectorMixin from './director-mixin'
+import EntityFilterMixin from './entityFilter-mixin'
+import FilingMixin from './filing-mixin'
+import ResourceLookupMixin from './resource-lookup-mixin'
 
 export {
   CommonMixin,
   CountriesProvincesMixin,
   DateMixin,
+  DirectorMixin,
   EntityFilterMixin,
-  ResourceLookupMixin,
-  DirectorMixin
+  FilingMixin,
+  ResourceLookupMixin
 }

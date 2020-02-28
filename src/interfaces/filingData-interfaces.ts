@@ -1,9 +1,9 @@
-import Vue from 'vue'
+import { FilingCodes, EntityTypes } from '@/enums'
 
-export interface FilingData extends Vue {
-  filingTypeCode: string
-  entityType: string
+export interface FilingData {
+  filingTypeCode: FilingCodes
+  entityType: EntityTypes
   waiveFees: boolean
   priority: boolean
-  futureEffective: boolean
+  futureEffective?: boolean
 }

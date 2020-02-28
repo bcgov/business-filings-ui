@@ -280,7 +280,7 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, EntityFilterMixin, DateMixin } from '@/mixins'
+import { EntityFilterMixin, DateMixin, FilingMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
@@ -296,7 +296,7 @@ export default {
     DetailsList
   },
 
-  mixins: [CommonMixin, EntityFilterMixin, DateMixin, Vue2Filters.mixin],
+  mixins: [EntityFilterMixin, DateMixin, FilingMixin, Vue2Filters.mixin],
 
   data () {
     return {
@@ -701,7 +701,6 @@ export default {
     },
 
     showCommentDialog (filingId: number): void {
-      console.log(filingId)
       this.currentFilingId = filingId
       this.addCommentDialog = true
     },
