@@ -263,7 +263,7 @@ export default {
     /** Returns title of original filing. */
     title (): string {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
-        return this.typeToTitle(this.origFiling.header.name)
+        return this.typeToTitle(this.origFiling.header.name, this.agmYear)
       }
       return ''
     },

@@ -39,7 +39,7 @@
                 <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
                 <template v-if="item.comments.length > 0">
                   <span>
-                    <v-icon>mdi-comment-text</v-icon>
+                    <v-icon small>mdi-message-reply</v-icon>
                     Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})
                   </span>
                 </template>
@@ -155,7 +155,7 @@
           </div>
 
           <!-- the detail comments section -->
-          <Details-List
+          <details-list
             :filing=item
             :isTask="false"
             @showCommentDialog="showCommentDialog($event)"
@@ -380,7 +380,6 @@ export default {
     },
 
     loadCorrection (filing, section) {
-      console.log(filing)
       if (section) {
         const item = {
           type: filing.header.name,
@@ -395,7 +394,7 @@ export default {
         this.filedItems.push(item)
       } else {
         // eslint-disable-next-line no-console
-        console.log(`ERROR - missing section in filing =`, filing)
+        console.log('ERROR - missing section in filing =', filing)
       }
     },
 

@@ -72,12 +72,10 @@
 
                 <div v-else-if="isCorrection(task)" class="todo-status">
                   <div>FILING PENDING</div>
-                  <div v-if="isCorrection(task)">
                     <v-btn x-small icon class="info-btn">
-                      <v-icon>mdi-comment-text</v-icon>
+                      <v-icon>mdi-message-reply</v-icon>
                     </v-btn>
                     Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
-                  </div>
                 </div>
 
                 <div v-else-if="isPending(task)" class="todo-status">
@@ -223,7 +221,7 @@
             <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
               Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
             <!-- the detail comments section -->
-            <Details-List
+            <details-list
               :filing=task
               :isTask="true"
               @showCommentDialog="showCommentDialog($event)"

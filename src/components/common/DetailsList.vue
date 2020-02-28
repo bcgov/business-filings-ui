@@ -1,10 +1,10 @@
 <template>
-  <div id="correction-comment">
+  <div id="details-list">
     <div class="comments-section mt-8" v-if="filing.comments.length > 0">
       <v-divider></v-divider>
       <div class="title-bar mt-5">
         <h4>
-          <v-icon>mdi-comment-text</v-icon>
+          <v-icon small>mdi-message-reply</v-icon>
           Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
         </h4>
         <v-btn
