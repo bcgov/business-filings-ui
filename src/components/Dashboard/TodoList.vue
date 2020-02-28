@@ -79,7 +79,7 @@
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
-                    <span class="before-details-tag">PAYMENT INCOMPLETE</span>
+                    <span class="before-details">PAYMENT INCOMPLETE</span>
                   </div>
                   <v-btn x-small icon class="info-btn">
                     <v-icon>mdi-message-reply</v-icon>
@@ -92,7 +92,7 @@
                 </div>
 
                 <div v-else-if="isCorrection(task) && isPending(task)" class="todo-status">
-                  <span class="before-details-tag">FILING PENDING</span>
+                  <span class="before-details">FILING PENDING</span>
                   <v-btn x-small icon class="info-btn">
                     <v-icon>mdi-message-reply</v-icon>
                   </v-btn>
@@ -156,9 +156,9 @@
 
                 <template v-else-if="isRoleStaff && isCorrection(task) && isDraft(task)">
                   <v-btn class="btn-corr-draft-resume"
-                         color="primary"
-                         :disabled="!task.enabled"
-                         @click.native.stop="doResumeFiling(task)"
+                     color="primary"
+                     :disabled="!task.enabled"
+                     @click.native.stop="doResumeFiling(task)"
                   >
                     <span>Resume</span>
                   </v-btn>
@@ -838,7 +838,7 @@ export default {
   }
 }
 
-.before-details-tag {
+.before-details {
     &:after {
       display: inline-block;
       margin-left: 0.5rem;
