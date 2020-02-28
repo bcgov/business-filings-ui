@@ -30,10 +30,10 @@ export default class FilingMixin extends Vue {
   flattenAndSortComments (comments: Array<any>): Array<any> {
     if (comments && comments.length > 0) {
       // first use map to change comment.comment to comment
-      const flattened: Array<any> = comments.map(c => c.comment)
+      const temp: Array<any> = comments.map(c => c.comment)
       // then sort newest to oldest
-      const sorted = flattened.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
-      return sorted
+      temp.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
+      return temp
     }
     return []
   }
