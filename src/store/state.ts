@@ -1,3 +1,6 @@
+import { EntityTypes, EntityStatus, FilingStatus } from '@/enums'
+import { FilingData } from '@/interfaces'
+
 export default {
   // tombstone data
   keycloakRoles: [] as Array<string>,
@@ -7,8 +10,8 @@ export default {
 
   // entity info
   entityName: null as string,
-  entityType: null as string,
-  entityStatus: null as string,
+  entityType: null as EntityTypes,
+  entityStatus: null as EntityStatus,
   entityBusinessNo: null as string,
   entityIncNo: null as string,
   lastPreLoadFilingDate: null as string,
@@ -29,6 +32,8 @@ export default {
 
   triggerDashboardReload: false as boolean,
 
-  currentFilingStatus: null as string,
-  configObject: null as object
+  currentFilingStatus: null as FilingStatus,
+  configObject: null as object,
+
+  filingData: [] as Array<FilingData>
 }

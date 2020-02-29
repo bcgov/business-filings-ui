@@ -286,7 +286,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapState, mapGetters } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
@@ -300,13 +300,10 @@ import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOffice
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
+import { DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Constants
 import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED } from '@/constants'
-
-// Interfaces
-import { FilingData } from '@/interfaces'
 
 // Enums
 import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
@@ -314,7 +311,7 @@ import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
 export default {
   name: 'AnnualReport',
 
-  mixins: [DateMixin, EntityFilterMixin, ResourceLookupMixin],
+  mixins: [DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin],
 
   components: {
     ArDate,
@@ -370,7 +367,6 @@ export default {
       // other local properties
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
-      filingData: [] as Array<FilingData>,
       saving: false,
       savingResuming: false,
       filingPaying: false,
@@ -388,7 +384,7 @@ export default {
   computed: {
     ...mapState(['currentDate', 'ARFilingYear', 'nextARDate', 'lastAgmDate', 'entityType', 'entityName',
       'entityIncNo', 'entityFoundingDate', 'registeredAddress', 'recordsAddress', 'lastPreLoadFilingDate',
-      'directors']),
+      'directors', 'filingData']),
 
     ...mapGetters(['isRoleStaff', 'isAnnualReportEditable', 'reportState', 'lastCOAFilingDate', 'lastCODFilingDate']),
 
@@ -443,6 +439,9 @@ export default {
   },
 
   created (): void {
+    // init
+    this.setFilingData([])
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -451,12 +450,13 @@ export default {
         event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
       }
     }
+
     // NB: filing id of 0 means "new AR"
     // otherwise it's a draft AR filing id
-    this.filingId = +this.$route.params.id // number
+    this.filingId = +this.$route.params.id // number (may be NaN)
 
     // if tombstone data isn't set, route to home
-    if (!this.entityIncNo || !this.ARFilingYear || (this.filingId === undefined)) {
+    if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
       this.$router.push('/')
     } else if (this.filingId > 0) {
       // resume draft filing
@@ -499,6 +499,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['setFilingData']),
+
     fetchData () {
       const url = this.entityIncNo + '/filings/' + this.filingId
       axios.get(url).then(response => {
@@ -554,7 +556,7 @@ export default {
                 ).length > 0) {
                   // always set Priority flag to false
                   // use default Waive Fees flag
-                  this.setFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, false, undefined)
+                  this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
                 }
 
                 // add filing code for free changes
@@ -563,7 +565,7 @@ export default {
                 ).length > 0) {
                   // always set Priority flag to false
                   // use default Waive Fees flag
-                  this.setFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false, undefined)
+                  this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
                 }
               } else {
                 throw new Error('invalid change of directors')
@@ -587,7 +589,7 @@ export default {
                 }
                 // always set Priority flag to false
                 // use default Waive Fees flag
-                this.setFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, false, undefined)
+                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, false, this.isWaiveFees)
               } else {
                 throw new Error('invalid change of address')
               }
@@ -620,7 +622,7 @@ export default {
       // when addresses change, update filing data
       // always set Priority flag to false
       // use default Waive Fees flag
-      this.setFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT, false, undefined)
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT, false, this.isWaiveFees)
     },
 
     directorsChange (modified: boolean) {
@@ -628,7 +630,7 @@ export default {
       // when directors change, update filing data
       // always set Priority flag to false
       // use default Waive Fees flag
-      this.setFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT, false, undefined)
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
     },
 
     directorsFreeChange (modified: boolean) {
@@ -636,7 +638,7 @@ export default {
       // when directors change (free filing), update filing data
       // always set Priority flag to false
       // use default Waive Fees flag
-      this.setFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false, undefined)
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
     },
 
     onAgmDateChange (val: string) {
@@ -653,7 +655,7 @@ export default {
       this.agmDateValid = val
       // when validity changes, update filing data
       // use default Priority and Waive Fees flags
-      this.setFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT)
+      this.updateFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT, this.isPriority, this.isWaiveFees)
     },
 
     async onClickSave () {
@@ -796,8 +798,8 @@ export default {
         }
       }
 
-      if (this.isDataChanged(FilingCodes.DIRECTOR_CHANGE_OT) ||
-      this.isDataChanged(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
+      if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
+      this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
         changeOfDirectors = {
           changeOfDirectors: {
             directors: this.allDirectors
@@ -805,7 +807,7 @@ export default {
         }
       }
 
-      if (this.isDataChanged(FilingCodes.ADDRESS_CHANGE_OT) && this.addresses) {
+      if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT) && this.addresses) {
         changeOfAddress = {
           changeOfAddress: {
             legalType: this.entityType,
@@ -891,49 +893,6 @@ export default {
       }
     },
 
-    /**
-     * Adds/removes codes or sets flags in the Filing Data object.
-     * @param addRemove Whether to add or remove the specified codes/flags.
-     * @param filingCode The Filing Type Code to add or remove (optional).
-     * @param priority The Priority flag to set or clear (optional).
-     * @param waiveFees The Waive Fees flag to set or clear (optional).
-     * @example setFilingData('add', undefined, undefined, true) -> adds Waive Fees to all codes
-     * @example setFilingData('remove', undefined, true, undefined) - removes Priority from all codes
-     * @example setFilingData('add', 'OTADD', false, false) -> adds OTADD code with neither flag
-     * @example setFilingData('add', 'OTANN') -> adds OTANN code with default flags
-     */
-    setFilingData (
-      addRemove: 'add' | 'remove',
-      filingCode: string = null,
-      priority: boolean = this.isPriority,
-      waiveFees: boolean = this.isWaiveFees
-    ): void {
-      if (filingCode) {
-        // always remove code if it already exists
-        this.filingData = this.filingData.filter(el => el.filingTypeCode !== filingCode)
-
-        // conditionally (re)add the code
-        if (addRemove === 'add') {
-          this.filingData.push({
-            filingTypeCode: filingCode,
-            entityType: this.entityType,
-            priority: priority,
-            waiveFees: waiveFees
-          })
-        }
-      } else {
-        // add/remove the flags to/from all codes
-        this.filingData.forEach(element => {
-          if (priority) element.priority = (addRemove === 'add')
-          if (waiveFees) element.waiveFees = (addRemove === 'add')
-        })
-      }
-    },
-
-    isDataChanged (key) {
-      return this.filingData.find(o => o.filingTypeCode === key)
-    },
-
     navigateToDashboard () {
       this.haveChanges = false
       this.dialog = false
@@ -991,7 +950,9 @@ export default {
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     // use default Priority and Waive Fees flags
-    this.entityFilter(EntityTypes.BCOMP) && this.setFilingData('add', FilingCodes.ANNUAL_REPORT_BC)
+    if (this.entityFilter(EntityTypes.BCOMP)) {
+      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.isPriority, this.isWaiveFees)
+    }
   },
 
   watch: {
@@ -1012,19 +973,19 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to AR code only
-      // simply re-add the AR code with the updated Priority flag
+      // apply this flag applies to AR filing code only
+      // simply re-add the AR code with the updated Priority flag and default Waive Fees flag
       if (this.entityFilter(EntityTypes.BCOMP)) {
-        this.setFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, undefined)
+        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, this.isWaiveFees)
       } else {
-        this.setFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val, undefined)
+        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val, this.isWaiveFees)
       }
     },
 
     /** Called when Is Waive Fees changes. */
     isWaiveFees (val: boolean): void {
-      // apply this flag to all filing codes
-      this.setFilingData(val ? 'add' : 'remove', undefined, undefined, true)
+      // add/remove this flag to all filing codes
+      this.updateFilingData(val ? 'add' : 'remove', undefined, undefined, true)
     }
   }
 }

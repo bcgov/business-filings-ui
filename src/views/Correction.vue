@@ -167,7 +167,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapState, mapGetters } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
@@ -179,10 +179,7 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DateMixin, EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
-
-// Interfaces
-import { FilingData } from '@/interfaces'
+import { CommonMixin, DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
 import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
@@ -190,7 +187,7 @@ import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 export default {
   name: 'Correction',
 
-  mixins: [CommonMixin, DateMixin, EntityFilterMixin, ResourceLookupMixin],
+  mixins: [CommonMixin, DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin],
 
   components: {
     Certify,
@@ -234,7 +231,6 @@ export default {
       filingId: 0, // id of this correction filing
       correctedFilingId: 0, // id of filing to correct
       origFiling: null, // copy of original filing
-      filingData: [] as Array<FilingData>,
       saving: false,
       savingResuming: false,
       filingPaying: false,
@@ -251,7 +247,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate']),
+    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
     ...mapGetters(['isRoleStaff']),
 
@@ -321,6 +317,9 @@ export default {
 
   /** Called when component is created. */
   async created (): Promise<void> {
+    // init
+    this.setFilingData([])
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -331,20 +330,20 @@ export default {
     }
 
     // this is the id of THIS correction filing
-    // if falsy, this is a new correction filing
+    // if 0, this is a new correction filing
     // otherwise it's a draft correction filing
-    this.filingId = +this.$route.params.id // number (may be NaN)
+    this.filingId = +this.$route.params.id || 0 // number
 
     // this is the id of the original filing to correct
     this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
 
     // if required data isn't set, route to home
-    if (!this.entityIncNo || !this.correctedFilingId) {
+    if (!this.entityIncNo || isNaN(this.correctedFilingId)) {
       this.$router.push('/')
     } else {
       this.dataLoaded = false
       this.loadingMessage = `Preparing Your Correction`
-      if (this.filingId) {
+      if (this.filingId > 0) {
         await this.fetchDraftFiling()
       }
       await this.fetchOrigFiling()
@@ -355,7 +354,8 @@ export default {
   /** Called when component is mounted. */
   mounted (): void {
     // always include correction code
-    this.setFilingData('add', FilingCodes.CORRECTION)
+    // use default Priority and Waive Fees flags
+    this.updateFilingData('add', FilingCodes.CORRECTION, this.isPriority, this.isWaiveFees)
   },
 
   /** Called before routing away from this component. */
@@ -390,6 +390,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['setFilingData']),
+
     /** Fetches the draft correction filing. */
     async fetchDraftFiling (): Promise<void> {
       const url: string = this.entityIncNo + '/filings/' + this.filingId
@@ -656,45 +658,6 @@ export default {
       }
     },
 
-    /**
-     * Adds/removes codes or sets flags in the Filing Data object.
-     * @param addRemove Whether to add or remove the specified codes/flags.
-     * @param filingCode The Filing Type Code to add or remove (optional).
-     * @param priority The Priority flag to set or clear (optional).
-     * @param waiveFees The Waive Fees flag to set or clear (optional).
-     * @example setFilingData('add', undefined, undefined, true) -> adds Waive Fees to all codes
-     * @example setFilingData('remove', undefined, true, undefined) - removes Priority from all codes
-     * @example setFilingData('add', 'CRCTN', true, true) -> adds Correction code with both flags
-     * @example setFilingData('add', 'CRCTN') -> adds Correction code with default flags
-     */
-    setFilingData (
-      addRemove: 'add' | 'remove',
-      filingCode: string = null,
-      priority: boolean = this.isPriority,
-      waiveFees: boolean = this.isWaiveFees
-    ): void {
-      if (filingCode) {
-        // always remove code if it already exists
-        this.filingData = this.filingData.filter(el => el.filingTypeCode !== filingCode)
-
-        // conditionally (re)add the code
-        if (addRemove === 'add') {
-          this.filingData.push({
-            filingTypeCode: filingCode,
-            entityType: this.entityType,
-            priority: priority,
-            waiveFees: waiveFees
-          })
-        }
-      } else {
-        // conditionally add/remove the flags to/from all codes
-        this.filingData.forEach(element => {
-          if (priority) element.priority = (addRemove === 'add')
-          if (waiveFees) element.waiveFees = (addRemove === 'add')
-        })
-      }
-    },
-
     /** Handler for dialog Exit click events. */
     navigateToDashboard (): void {
       this.haveChanges = false
@@ -752,15 +715,15 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to CRCTN code only
-      // simply re-add the CRCTN with the updated Priority flag
-      this.setFilingData('add', FilingCodes.CORRECTION, val, undefined)
+      // apply this flag to CRCTN filing code only
+      // simply re-add the CRCTN code with the updated Priority flag and default Waive Fees flag
+      this.updateFilingData('add', FilingCodes.CORRECTION, val, this.isWaiveFees)
     },
 
     /** Called when Is Waive Fees changes. */
     isWaiveFees (val: boolean): void {
-      // apply this flag to all filing codes
-      this.setFilingData(val ? 'add' : 'remove', undefined, undefined, true)
+      // add/remove this flag to all filing codes
+      this.updateFilingData(val ? 'add' : 'remove', undefined, undefined, true)
     }
   }
 }

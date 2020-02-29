@@ -190,12 +190,12 @@ import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 
 // Mixins
-import { CommonMixin, DateMixin, EntityFilterMixin } from '@/mixins'
+import { DateMixin, EntityFilterMixin, FilingMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [CommonMixin, DateMixin, EntityFilterMixin],
+  mixins: [DateMixin, EntityFilterMixin, FilingMixin],
 
   components: {
     AddCommentDialog,

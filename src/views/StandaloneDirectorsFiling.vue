@@ -281,7 +281,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapState, mapGetters } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
@@ -294,7 +294,7 @@ import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPa
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { EntityFilterMixin, ResourceLookupMixin } from '@/mixins'
+import { EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
@@ -320,12 +320,11 @@ export default {
     SaveErrorDialog
   },
 
-  mixins: [EntityFilterMixin, ResourceLookupMixin],
+  mixins: [EntityFilterMixin, FilingMixin, ResourceLookupMixin],
 
   data () {
     return {
       allDirectors: [],
-      filingData: [],
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
@@ -364,7 +363,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate']),
+    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
     ...mapGetters(['isRoleStaff']),
 
@@ -391,6 +390,9 @@ export default {
   },
 
   created (): void {
+    // init
+    this.setFilingData([])
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -402,10 +404,10 @@ export default {
 
     // NB: filing id of 0 means "new"
     // otherwise it's a draft filing id
-    this.filingId = +this.$route.params.id // number
+    this.filingId = +this.$route.params.id // number (may be NaN)
 
     // if tombstone data isn't set, route to home
-    if (!this.entityIncNo || (this.filingId === undefined)) {
+    if (!this.entityIncNo || isNaN(this.filingId)) {
       this.$router.push('/')
     } else if (this.filingId > 0) {
       // resume draft filing
@@ -449,16 +451,22 @@ export default {
   },
 
   methods: {
+    ...mapActions(['setFilingData']),
+
     directorsChange (modified: boolean) {
       this.haveChanges = true
       // when directors change, update filing data
-      this.setFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT)
+      // use default Priority and Waive Fees flags
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT,
+        this.isPriority, this.isWaiveFees)
     },
 
     directorsFreeChange (modified: boolean) {
       this.haveChanges = true
       // when directors change (free filing), update filing data
-      this.setFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT)
+      // use default Priority and Waive Fees flags
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT,
+        this.isPriority, this.isWaiveFees)
     },
 
     async onClickSave () {
@@ -563,8 +571,8 @@ export default {
         }
       }
 
-      if (this.isDataChanged(FilingCodes.DIRECTOR_CHANGE_OT) ||
-      this.isDataChanged(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
+      if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
+      this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
         changeOfDirectors = {
           changeOfDirectors: {
             directors: this.allDirectors
@@ -572,7 +580,7 @@ export default {
         }
       }
 
-      const filingData = {
+      const data = {
         filing: Object.assign(
           {},
           header,
@@ -588,7 +596,7 @@ export default {
           url += '?draft=true'
         }
         let filing = null
-        await axios.put(url, filingData).then(res => {
+        await axios.put(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
             throw new Error('invalid API response')
           }
@@ -617,7 +625,7 @@ export default {
           url += '?draft=true'
         }
         let filing = null
-        await axios.post(url, filingData).then(res => {
+        await axios.post(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
             throw new Error('invalid API response')
           }
@@ -640,49 +648,6 @@ export default {
         })
         return filing
       }
-    },
-
-    /**
-     * Adds/removes codes or sets flags in the Filing Data object.
-     * @param addRemove Whether to add or remove the specified codes/flags.
-     * @param filingCode The Filing Type Code to add or remove (optional).
-     * @param priority The Priority flag to set or clear (optional).
-     * @param waiveFees The Waive Fees flag to set or clear (optional).
-     * @example setFilingData('add', undefined, undefined, true) -> adds Waive Fees to all codes
-     * @example setFilingData('remove', undefined, true, undefined) - removes Priority from all codes
-     * @example setFilingData('add', 'OTFDR', false, false) -> adds OTFDR code with neither flag
-     * @example setFilingData('add', 'OTCDR') -> adds OTCDR code with default flags
-     */
-    setFilingData (
-      addRemove: 'add' | 'remove',
-      filingCode: string = null,
-      priority: boolean = this.isPriority,
-      waiveFees: boolean = this.isWaiveFees
-    ): void {
-      if (filingCode) {
-        // always remove code if it already exists
-        this.filingData = this.filingData.filter(el => el.filingTypeCode !== filingCode)
-
-        // conditionally (re)add the code
-        if (addRemove === 'add') {
-          this.filingData.push({
-            filingTypeCode: filingCode,
-            entityType: this.entityType,
-            priority: priority,
-            waiveFees: waiveFees
-          })
-        }
-      } else {
-        // add/remove the flags to/from all codes
-        this.filingData.forEach(element => {
-          if (priority) element.priority = (addRemove === 'add')
-          if (waiveFees) element.waiveFees = (addRemove === 'add')
-        })
-      }
-    },
-
-    isDataChanged (key) {
-      return this.filingData.find(o => o.filingTypeCode === key)
     },
 
     navigateToDashboard () {
@@ -732,7 +697,8 @@ export default {
                   director => this.hasAction(director, CEASED) ||
                     this.hasAction(director, APPOINTED)
                 ).length > 0) {
-                  this.setFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT)
+                  // use default Priority and Waive Fees flags
+                  this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, this.isPriority, this.isWaiveFees)
                 }
 
                 // add filing code for free changes
@@ -740,7 +706,8 @@ export default {
                   director => this.hasAction(director, NAMECHANGED) ||
                     this.hasAction(director, ADDRESSCHANGED)
                 ).length > 0) {
-                  this.setFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT)
+                  // use default Priority and Waive Fees flags
+                  this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, this.isPriority, this.isWaiveFees)
                 }
               } else {
                 throw new Error('invalid change of directors')
@@ -835,17 +802,17 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to OTCDR code only
-      // if OTCDR code exists, simply re-add it with the updated Priority flag
-      if (this.isDataChanged(FilingCodes.DIRECTOR_CHANGE_OT)) {
-        this.setFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, val, undefined)
+      // apply this flag applies to OTCDR filing code only
+      // if OTCDR code exists, simply re-add it with the updated Priority flag and default Waive Fees flag
+      if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT)) {
+        this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, val, this.isWaiveFees)
       }
     },
 
     /** Called when Is Waive Fees changes. */
     isWaiveFees (val: boolean): void {
-      // apply this flag to all filing codes
-      this.setFilingData(val ? 'add' : 'remove', undefined, undefined, true)
+      // add/remove this flag to all filing codes
+      this.updateFilingData(val ? 'add' : 'remove', undefined, undefined, true)
     }
   }
 }

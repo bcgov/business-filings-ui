@@ -1,3 +1,6 @@
+import { EntityTypes, EntityStatus, FilingStatus } from '@/enums'
+import { FilingData } from '@/interfaces'
+
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
     commit('keycloakRoles', keycloakRoles)
@@ -23,10 +26,10 @@ export default {
   setEntityName ({ commit }, entityName: string) {
     commit('entityName', entityName)
   },
-  setEntityType ({ commit }, entityType: string) {
+  setEntityType ({ commit }, entityType: EntityTypes) {
     commit('entityType', entityType)
   },
-  setEntityStatus ({ commit }, entityStatus: string) {
+  setEntityStatus ({ commit }, entityStatus: EntityStatus) {
     commit('entityStatus', entityStatus)
   },
   setEntityIncNo ({ commit }, entityIncNo: string) {
@@ -47,7 +50,7 @@ export default {
   setLastPreLoadFilingDate ({ commit }, lastPreLoadFilingDate: string) {
     commit('lastPreLoadFilingDate', lastPreLoadFilingDate)
   },
-  setCurrentFilingStatus ({ commit }, currentFilingStatus: string) {
+  setCurrentFilingStatus ({ commit }, currentFilingStatus: FilingStatus) {
     commit('currentFilingStatus', currentFilingStatus)
   },
   setTasks ({ commit }, tasks: Array<object>) {
@@ -65,13 +68,16 @@ export default {
   setDirectors ({ commit }, directors: Array<object>) {
     commit('directors', directors)
   },
-  setTriggerDashboardReload ({ commit }, value: boolean) {
-    commit('triggerDashboardReload', value)
+  setTriggerDashboardReload ({ commit }, triggerDashboardReload: boolean) {
+    commit('triggerDashboardReload', triggerDashboardReload)
   },
-  setLastAnnualReportDate ({ commit }, value: string) {
-    commit('lastAnnualReportDate', value)
+  setLastAnnualReportDate ({ commit }, lastAnnualReportDate: string) {
+    commit('lastAnnualReportDate', lastAnnualReportDate)
   },
-  setConfigObject ({ commit }, value: object) {
-    commit('configObject', value)
+  setConfigObject ({ commit }, configObject: object) {
+    commit('configObject', configObject)
+  },
+  setFilingData ({ commit }, filingData: Array<FilingData>) {
+    commit('filingData', filingData)
   }
 }

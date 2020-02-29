@@ -12,7 +12,7 @@ import { FilingCodes } from '@/enums'
 })
 
 export default class ResourceLookupMixin extends Vue {
-    readonly configObject
+    readonly configObject!: any
 
     /**
      * Returns certify message using the configuration lookup object.
