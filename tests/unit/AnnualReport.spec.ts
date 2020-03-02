@@ -74,13 +74,8 @@ describe('AnnualReport - Part 1 - UI', () => {
     const $route = { params: { id: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
-    // component should be displayed when totalFee > 0
-    wrapper.setData({ totalFee: 1 })
+    // component should be displayed
     expect(wrapper.find(StaffPayment).exists()).toBe(true)
-
-    // component should not be displayed when totalFee <= 0
-    wrapper.setData({ totalFee: 0 })
-    expect(wrapper.find(StaffPayment).exists()).toBe(false)
 
     // reset store
     // NB: this is important for subsequent tests
@@ -124,7 +119,6 @@ describe('AnnualReport - Part 1 - UI', () => {
 
     // confirm that flags are set correctly
     expect(vm.validated).toEqual(true)
-    expect(vm.isSaveButtonEnabled).toEqual(true)
 
     wrapper.destroy()
   })
@@ -311,7 +305,6 @@ describe('AnnualReport - Part 1 - UI', () => {
 
     // confirm that flags are set correctly
     expect(vm.validated).toEqual(false)
-    expect(vm.isSaveButtonEnabled).toEqual(true)
 
     wrapper.destroy()
   })
@@ -326,6 +319,7 @@ describe('AnnualReport - Part 1 - UI', () => {
     vm.addressesFormValid = true
     vm.directorFormValid = true
     vm.certifyFormValid = true
+
     // set properties to make only staff payment invalid
     store.state.keycloakRoles = ['staff']
     vm.totalFee = 1
@@ -472,13 +466,8 @@ describe('AnnualReport - Part 1B - UI - BCOMP', () => {
     const $route = { params: { id: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
-    // component should be displayed when totalFee > 0
-    wrapper.setData({ totalFee: 1 })
+    // component should be displayed
     expect(wrapper.find(StaffPayment).exists()).toBe(true)
-
-    // component should not be displayed when totalFee <= 0
-    wrapper.setData({ totalFee: 0 })
-    expect(wrapper.find(StaffPayment).exists()).toBe(false)
 
     // reset store
     // NB: this is important for subsequent tests
@@ -903,7 +892,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     vm.directorFormValid = true
     vm.certifyFormValid = true
     vm.directorEditInProgress = false
-    vm.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
 
     // stub address data
     vm.addresses = {
@@ -974,7 +963,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     vm.directorFormValid = true
     vm.certifyFormValid = true
     vm.directorEditInProgress = false
-    vm.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
 
     // stub address data
     vm.addresses = {
@@ -1112,7 +1101,7 @@ describe('AnnualReport - Part 3B - Submitting - BCOMP', () => {
     // make sure form is validated
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{ filingTypeCode: 'ANNBC', entityType: 'BC' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'ANNBC', entityType: 'BC' }] // dummy data
 
     // make sure a fee is required
     vm.totalFee = 100

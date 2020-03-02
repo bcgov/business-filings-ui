@@ -69,13 +69,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const $route = { params: { id: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
 
-    // component should be displayed when totalFee > 0
-    wrapper.setData({ totalFee: 1 })
+    // component should be displayed
     expect(wrapper.find(StaffPayment).exists()).toBe(true)
-
-    // component should not be displayed when totalFee <= 0
-    wrapper.setData({ totalFee: 0 })
-    expect(wrapper.find(StaffPayment).exists()).toBe(false)
 
     // reset store
     // NB: this is important for subsequent tests
@@ -93,7 +88,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeAddressFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(true)
@@ -110,7 +105,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeAddressFormValid = false
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -127,7 +122,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = false
     vm.officeAddressFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -143,7 +138,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set properties
     vm.certifyFormValid = true
     vm.officeAddressFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
+
     // set properties to make only staff payment invalid
     store.state.keycloakRoles = ['staff']
     vm.totalFee = 1
@@ -186,7 +182,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeAddressFormValid = true
-    vm.filingData = [] // no data
+    store.state.filingData = [] // no data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -220,7 +216,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeAddressFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that button is enabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -256,7 +252,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
     vm.officeAddressFormValid = false
-    vm.filingData = [] // dummy data
+    store.state.filingData = [] // no data
 
     // confirm that button is disabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -346,29 +342,27 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
     sinon.restore()
   })
 
-  it('fetches a draft Standalone Office Address filing', done => {
+  it('fetches a draft Standalone Office Address filing', async () => {
     const $route = { params: { id: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
+    await flushPromises()
 
-    Vue.nextTick(() => {
-      // verify that Certified By was restored
-      expect(vm.certifiedBy).toBe('Full Name')
-      expect(vm.isCertified).toBe(false)
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
 
-      // verify that Routing Slip Number was restored
-      expect(vm.routingSlipNumber).toBe('456')
+    // verify that Routing Slip Number was restored
+    expect(vm.routingSlipNumber).toBe('456')
 
-      // verify that we stored the Filing ID
-      expect(+vm.filingId).toBe(123)
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
 
-      // verify that changed addresses were restored
-      expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
-      expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+    // verify that changed addresses were restored
+    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
 
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
   })
 })
 
@@ -423,29 +417,27 @@ describe('Standalone Office Address Filing - Part 2B (BCOMP) - Resuming', () => 
     sinon.restore()
   })
 
-  it('fetches a draft Standalone Office Address filing', done => {
+  it('fetches a draft Standalone Office Address filing', async () => {
     const $route = { params: { id: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
+    await flushPromises()
 
-    Vue.nextTick(() => {
-      // verify that Certified By was restored
-      expect(vm.certifiedBy).toBe('Full Name')
-      expect(vm.isCertified).toBe(false)
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
 
-      // verify that Routing Slip Number was restored
-      expect(vm.routingSlipNumber).toBe('456')
+    // verify that Routing Slip Number was restored
+    expect(vm.routingSlipNumber).toBe('456')
 
-      // verify that we stored the Filing ID
-      expect(+vm.filingId).toBe(123)
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
 
-      // verify that changed addresses were restored
-      expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
-      expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+    // verify that changed addresses were restored
+    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
 
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
   })
 })
 
@@ -634,7 +626,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     vm.officeAddressFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
     expect(vm.validated).toEqual(true)
 
     // make sure a fee is required
@@ -693,7 +685,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     vm.officeAddressFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
     expect(vm.validated).toEqual(true)
 
     // make sure a fee is required
@@ -922,7 +914,7 @@ describe('Standalone Office Address Filing - Part 3B (BCOMP) - Submitting', () =
     vm.officeAddressFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
     expect(vm.validated).toEqual(true)
 
     // make sure a fee is required
@@ -981,7 +973,7 @@ describe('Standalone Office Address Filing - Part 3B (BCOMP) - Submitting', () =
     vm.officeAddressFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
     expect(vm.validated).toEqual(true)
 
     // make sure a fee is required

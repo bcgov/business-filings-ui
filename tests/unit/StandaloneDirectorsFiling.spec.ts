@@ -96,13 +96,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     const $route = { params: { id: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
 
-    // component should be displayed when totalFee > 0
-    wrapper.setData({ totalFee: 1 })
+    // component should be displayed
     expect(wrapper.find(StaffPayment).exists()).toBe(true)
-
-    // component should not be displayed when totalFee <= 0
-    wrapper.setData({ totalFee: 0 })
-    expect(wrapper.find(StaffPayment).exists()).toBe(false)
 
     // reset store
     // NB: this is important for subsequent tests
@@ -121,7 +116,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(true)
@@ -139,7 +134,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -157,7 +152,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = false
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -189,7 +184,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = false
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -206,7 +201,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.codDateValid = true
     vm.directorFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummydata
+    store.state.filingData = [{}] // dummy data
 
     // set properties to make only staff payment invalid
     store.state.keycloakRoles = ['staff']
@@ -251,7 +246,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [] // no data
+    store.state.filingData = [] // no data
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(false)
@@ -286,7 +281,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // confirm that button is enabled
     expect(wrapper.find('#cod-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -321,7 +316,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.directorFormValid = false
     vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
-    vm.filingData = [] // no data
+    store.state.filingData = [] // no data
 
     // confirm that button is disabled
     expect(wrapper.find('#cod-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -575,7 +570,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
 
     expect(vm.validated).toEqual(true)
 
@@ -639,7 +634,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     vm.codDateValid = true
     vm.directorFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'BC' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'BC' }] // dummy data
 
     expect(vm.validated).toEqual(true)
 
@@ -703,7 +698,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     expect(vm.validated).toEqual(true)
 
@@ -817,7 +812,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // NB: can't find button because Vuetify hasn't rendered it
     // const button = wrapper.find('#cod-file-pay-btn')
@@ -922,7 +917,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       vm.directorFormValid = true
       vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
-      vm.filingData = [{}] // dummy data
+      store.state.filingData = [{}] // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -965,7 +960,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     vm.directorFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.filingData = [{}] // dummy data
+    store.state.filingData = [{}] // dummy data
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1325,7 +1320,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning dialogs', () => {
       vm.directorFormValid = true
       vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
-      vm.filingData = [{}] // dummy data
+      store.state.filingData = [{}] // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1361,7 +1356,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning dialogs', () => {
       vm.directorFormValid = true
       vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
-      vm.filingData = [{}] // dummy data
+      store.state.filingData = [{}] // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)

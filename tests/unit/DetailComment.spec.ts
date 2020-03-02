@@ -22,9 +22,11 @@ describe('DetailComment', () => {
     expect(vm.placeholder).toBe('')
     expect(vm.autofocus).toBe(false)
 
-    // verify that there are no initial events
+    // verify that v-model is not updated
     expect(wrapper.emitted('input')).toBeUndefined()
-    expect(wrapper.emitted('valid')).toBeUndefined()
+
+    // verify that component reports initial validity (false)
+    expect(wrapper.emitted('valid').pop()[0]).toEqual(false)
 
     wrapper.destroy()
   })
@@ -62,7 +64,7 @@ describe('DetailComment', () => {
     await sleep(300)
 
     // verify valid event
-    expect(wrapper.emitted('valid').pop()).toEqual([true])
+    expect(wrapper.emitted('valid').pop()[0]).toEqual(true)
 
     wrapper.destroy()
   })
@@ -85,7 +87,7 @@ describe('DetailComment', () => {
     vm.emitInput('testing 4 5 6')
 
     // verify valid and input events
-    expect(wrapper.emitted('valid').pop()).toEqual([true])
+    expect(wrapper.emitted('valid').pop()[0]).toEqual(true)
     expect(wrapper.emitted('input').pop()).toEqual(['testing 4 5 6'])
 
     wrapper.destroy()
