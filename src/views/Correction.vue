@@ -453,8 +453,9 @@ export default {
             if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (this.origFiling.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
+            // FUTURE:
             // use original Certified By name
-            this.certifiedBy = this.origFiling.header.certifiedBy || ''
+            // this.certifiedBy = this.origFiling.header.certifiedBy || ''
           } catch (err) {
             // eslint-disable-next-line no-console
             console.log(`fetchOrigFiling() error - ${err.message}, origFiling =${this.origFiling}`)
