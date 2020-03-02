@@ -5,5 +5,6 @@ export enum FilingStatus {
   ERROR = 'ERROR',
   PAID = 'PAID',
   PENDING = 'PENDING',
-  NEW = 'NEW'
+  NEW = 'NEW',
+  PENDING_CORRECTION = 'PENDING_CORRECTION'
 }
