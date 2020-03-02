@@ -324,7 +324,6 @@ export default {
               name: 'Annual Report',
               documentName: `${this.entityIncNo} - ${title} - ${filingDate}.pdf`
             }],
-            paperOnly: false,
             isCorrected: filing.header.isCorrected || false,
             isCorrectionPending: filing.header.isCorrectionPending || false,
             comments: this.flattenAndSortComments(filing.header.comments)
@@ -369,7 +368,6 @@ export default {
             documentName: `${this.entityIncNo} - ${title} - ${filingDate}.pdf`
           }],
           status: filing.header.status,
-          paperOnly: false,
           isCorrected: filing.header.isCorrected || false,
           isCorrectionPending: filing.header.isCorrectionPending || false,
           comments: this.flattenAndSortComments(filing.header.comments)
@@ -383,14 +381,19 @@ export default {
 
     loadCorrection (filing, section) {
       if (section) {
+        const localDateTime = this.convertUTCTimeToLocalTime(filing.header.date)
+
         const item = {
           type: filing.header.name,
-          filingAuthor: filing.header.certifiedBy,
-          filingDate: filing.correction.correctedFilingDate,
+          title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
           filingId: filing.header.filingId,
+          filingAuthor: filing.header.certifiedBy,
+          filingDateTime: localDateTime,
+          filingDate: filing.correction.correctedFilingDate,
+          isCorrection: true,
+          paymentToken: filing.header.paymentToken,
           corrFilingId: filing.correction.correctedFilingId,
           correctedFilingType: filing.correction.correctedFilingType,
-          title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
           comments: this.flattenAndSortComments(filing.header.comments)
         }
         this.filedItems.push(item)
@@ -535,6 +538,8 @@ export default {
     },
 
     async downloadOneReceipt (filing) {
+      if (!filing.paymentToken || !filing.filingDateTime || !filing.filingDate) return // safety check
+
       const url = filing.paymentToken + '/receipts'
       const data = {
         corpName: this.entityName,
