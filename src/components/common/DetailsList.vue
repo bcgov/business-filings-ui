@@ -27,8 +27,8 @@
               </v-list-item-title>
               <v-list-item-subtitle class="body-2">
                 <div class="pre-line" v-if="filing.correctedFilingType">
-                  Correction for {{filing.correctedFilingType}}
-                  on {{filing.filingDate}}
+                  Correction for {{filing.correctedFilingType}}.
+                  Filed on {{filing.filingDate}}.
                 </div>
                 <div class="pre-line">{{comment.comment}}</div>
               </v-list-item-subtitle>

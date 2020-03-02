@@ -73,14 +73,7 @@
                 </div>
 
                 <div v-if="isCorrection(task) && isDraft(task)" class="todo-status">
-                  <div>FILING INCOMPLETE</div>
-                  <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling === task.id">
-                    PROCESSING...
-                  </div>
-                  <div class="payment-status" v-else>
-                    <span class="before-details">PAYMENT INCOMPLETE</span>
-                  </div>
+                  <div>DRAFT</div>
                   <v-btn x-small icon class="info-btn">
                     <v-icon>mdi-message-reply</v-icon>
                   </v-btn>
@@ -91,7 +84,7 @@
                   <div>DRAFT</div>
                 </div>
 
-                <div v-else-if="isCorrection(task) && isPending(task)" class="todo-status">
+                <div v-else-if="isCorrection(task) && isCorrectionPending(task)" class="todo-status">
                   <span class="before-details">FILING PENDING</span>
                   <v-btn x-small icon class="info-btn">
                     <v-icon>mdi-message-reply</v-icon>
@@ -253,7 +246,8 @@
           <div v-if="isCorrection(task)">
             <div v-if="isDraft(task)" data-test-class="correction-draft" class="todo-list-detail">
               <p class="list-item__subtitle">
-                This filing is incomplete. The payment appears to have been unsuccessful for some reason.
+                This filing is in review and has been saved as a draft.<br />
+                Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.
               </p>
               <!-- the detail comments section -->
               <details-list
@@ -629,6 +623,10 @@ export default {
 
     isPending (task) {
       return task.status === FilingStatus.PENDING
+    },
+
+    isCorrectionPending (task) {
+      return task.status === FilingStatus.PENDING_CORRECTION
     },
 
     isError (task) {
