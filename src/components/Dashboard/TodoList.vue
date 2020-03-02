@@ -75,7 +75,7 @@
                 <div v-if="isCorrection(task) && isDraft(task)" class="todo-status">
                   <div>FILING INCOMPLETE</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
+                  <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -102,7 +102,7 @@
                 <div v-else-if="isPending(task)" class="todo-status">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
+                  <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -116,7 +116,7 @@
                 <div v-else-if="isError(task)" class="todo-status">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
+                  <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -130,7 +130,7 @@
                 <div v-else-if="isPaid(task)" class="todo-status">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe">&nbsp;</div>
-                  <div class="payment-status" v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
+                  <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -150,7 +150,7 @@
                 >Due {{ task.nextArDate }}</p>
 
                 <!-- pre-empt any buttons below -->
-                <template v-if="inProcessFiling !== undefined && inProcessFiling === task.id">
+                <template v-if="inProcessFiling === task.id">
                   <v-btn text loading disabled />
                 </template>
 
@@ -543,7 +543,9 @@ export default {
           filingDate: filing.correction.correctedFilingDate,
           corrFilingId: filing.correction.correctedFilingId,
           correctedFilingType: this.typeToTitle(filing.correction.correctedFilingType),
-          title: `Priority Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          title: `${this.isPriority(filing.header.priority)} -
+            ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          draftTitle: `${this.typeToTitle(filing.correction.correctedFilingType)}`,
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
@@ -757,6 +759,10 @@ export default {
     hideCommentDialog (needReload: boolean): void {
       this.addCommentDialog = false
       if (needReload) this.setTriggerDashboardReload(true)
+    },
+
+    isPriority (priority: boolean): string {
+      return priority ? 'Priority Correction' : 'Correction'
     }
   },
 
