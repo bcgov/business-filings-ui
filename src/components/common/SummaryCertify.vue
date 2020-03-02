@@ -47,7 +47,6 @@ export default class SummaryCertify extends Vue {
 #certify-container {
   margin-top: 1rem;
   padding: 1.25rem 1.25rem 0.25rem 1.25rem;
-  font-size: 0.875rem;
 
   .certify-content {
     color: black;

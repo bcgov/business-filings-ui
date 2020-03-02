@@ -213,12 +213,14 @@
                 </section>
 
                 <!-- Staff Payment -->
-                <section v-if="isRoleStaff && isPayRequired">
+                <section v-if="isRoleStaff">
                   <header>
                     <h2>Staff Payment</h2>
                   </header>
                   <summary-staff-payment
-                    :value="routingSlipNumber"
+                    :routingSlipNumber="routingSlipNumber"
+                    :isPriority.sync="isPriority"
+                    :isWaiveFees.sync="isWaiveFees"
                   />
                 </section>
               </article>
