@@ -67,7 +67,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="hasBlockerFiling || item.isCorrected">
+                    <v-list-item :disabled="hasBlockerFiling || item.isCorrection">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -592,9 +592,11 @@ export default {
 
     async downloadAll (filing) {
       this.loadingAll = true
-      // first download document(s)
-      for (let i = 0; i < filing.filingDocuments.length; i++) {
-        await this.downloadOneDocument(filing.filingDocuments[i])
+      // first download documents (if any)
+      if (filing.filingDocuments) {
+        for (let i = 0; i < filing.filingDocuments.length; i++) {
+          await this.downloadOneDocument(filing.filingDocuments[i])
+        }
       }
       // finally download receipt
       if (filing.paymentToken) {
