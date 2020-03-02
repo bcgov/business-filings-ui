@@ -343,10 +343,11 @@ export default {
     } else {
       this.dataLoaded = false
       this.loadingMessage = `Preparing Your Correction`
+      // first fetch original filing, then fetch draft (which may overwrite some properties)
+      await this.fetchOrigFiling()
       if (this.filingId > 0) {
         await this.fetchDraftFiling()
       }
-      await this.fetchOrigFiling()
       this.dataLoaded = true
     }
   },
