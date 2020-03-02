@@ -48,14 +48,12 @@
     <v-container id="correction-container" class="view-container" v-show="dataLoaded">
       <v-row>
         <v-col cols="12" lg="9">
-          <section>
-            <article class="correction-article">
-              <!-- Page Title -->
-              <header>
-                <h1 id="correction-header">Correction &mdash; {{title}}</h1>
-                <p class="text-black">Original Filing Date: {{originalFilingDate}}</p>
-              </header>
-            </article>
+          <article id="correction-article">
+            <!-- Page Title -->
+            <header>
+              <h1 id="correction-header">Correction &mdash; {{title}}</h1>
+              <p class="text-black">Original Filing Date: {{originalFilingDate}}</p>
+            </header>
 
             <!-- Detail -->
             <section>
@@ -99,12 +97,15 @@
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
-          </section>
+          </article>
         </v-col>
 
         <v-col cols="12" lg="3" style="position: relative">
           <aside>
-            <affix relative-element-selector=".correction-article" :offset="{ top: 120, bottom: 40 }">
+            <affix
+              relative-element-selector="#correction-article"
+              :offset="{ top: 120, bottom: 40 }"
+            >
               <sbc-fee-summary
                 :filingData="[...filingData]"
                 :payURL="payAPIURL"
