@@ -326,6 +326,7 @@ export default {
             }],
             paperOnly: false,
             isCorrected: filing.header.isCorrected || false,
+            isCorrectionPending: filing.header.isCorrectionPending || false,
             comments: this.flattenAndSortComments(filing.header.comments)
           }
           this.filedItems.push(item)
@@ -370,6 +371,7 @@ export default {
           status: filing.header.status,
           paperOnly: false,
           isCorrected: filing.header.isCorrected || false,
+          isCorrectionPending: filing.header.isCorrectionPending || false,
           comments: this.flattenAndSortComments(filing.header.comments)
         }
         this.filedItems.push(item)
@@ -430,6 +432,7 @@ export default {
         }],
         paperOnly: true,
         isCorrected: filing.header.isCorrected || false,
+        isCorrectionPending: filing.header.isCorrectionPending || false,
         comments: this.flattenAndSortComments(filing.header.comments)
       }
       this.filedItems.push(item)
@@ -644,6 +647,7 @@ export default {
         console.error('reloadComments() error - could not find filing id =', filingId)
       }
     },
+
     applyCorrectionTag (item: any): string {
       return item.isCorrected ? '- Corrected' : item.isCorrectionPending ? '- Correction Pending' : ''
     }
