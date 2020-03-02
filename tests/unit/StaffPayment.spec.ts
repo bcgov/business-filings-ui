@@ -15,10 +15,7 @@ describe('StaffPayment', () => {
     const wrapper = mount(StaffPayment, { vuetify })
     await Vue.nextTick()
 
-    // check that:
-    // 1. routingSlipNumber is null
-    // 2. component is invalid
-    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual([null])
+    // check that component is invalid
     expect(wrapper.emitted('valid').pop()).toEqual([false])
 
     wrapper.destroy()
@@ -32,10 +29,7 @@ describe('StaffPayment', () => {
       })
     await Vue.nextTick()
 
-    // check that:
-    // 1. routingSlipNumber is set
-    // 2. component is valid
-    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual(['123456789'])
+    // check that component is valid
     expect(wrapper.emitted('valid').pop()).toEqual([true])
 
     wrapper.destroy()
@@ -47,10 +41,7 @@ describe('StaffPayment', () => {
     wrapper.setProps({ routingSlipNumber: '123456789' })
     await Vue.nextTick()
 
-    // check that:
-    // 1. routingSlipNumber is set
-    // 2. component is valid
-    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual(['123456789'])
+    // check that component is valid
     expect(wrapper.emitted('valid').pop()).toEqual([true])
 
     wrapper.destroy()
@@ -66,10 +57,7 @@ describe('StaffPayment', () => {
     wrapper.setProps({ routingSlipNumber: null })
     await Vue.nextTick()
 
-    // check that:
-    // 1. routingSlipNumber is null
-    // 2. component is invalid
-    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual([null])
+    // check that component is invalid
     expect(wrapper.emitted('valid').pop()).toEqual([false])
 
     wrapper.destroy()
@@ -81,10 +69,7 @@ describe('StaffPayment', () => {
     wrapper.setData({ routingSlipNumber: '123456789' })
     await Vue.nextTick()
 
-    // check that:
-    // 1. routingSlipNumber is set
-    // 2. component is valid
-    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual(['123456789'])
+    // check that component is valid
     expect(wrapper.emitted('valid').pop()).toEqual([true])
 
     wrapper.destroy()
@@ -102,10 +87,7 @@ describe('StaffPayment', () => {
 
     // NB: can't check error message because Vuetify renders it outside this component
 
-    // check that:
-    // 1. routingSlipNumber is null
-    // 2. component is invalid
-    expect(wrapper.emitted('update:routingSlipNumber').pop()).toEqual([null])
+    // check that component is invalid
     expect(wrapper.emitted('valid').pop()).toEqual([false])
 
     wrapper.destroy()
