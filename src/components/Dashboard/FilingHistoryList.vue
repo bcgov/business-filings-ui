@@ -441,11 +441,12 @@ export default {
       this.filedItems.push(item)
     },
 
-    highlightFiling (highlightId: number) {
-      // expand the panel of the matching filing
+    /** Expands the panel of the specified Filing ID. */
+    highlightFiling (filingId: number) {
       for (let i = 0; i < this.filedItems.length; i++) {
-        // assume there is always a filing document
-        if (this.filedItems[i].filingDocuments[0].filingId === highlightId) {
+        const filingDocuments = this.filedItems[i].filingDocuments
+        // NB: this only works if there is a filing document
+        if (filingDocuments && filingDocuments[0].filingId === filingId) {
           this.panel = i
           break
         }
