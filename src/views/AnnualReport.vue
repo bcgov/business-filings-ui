@@ -973,7 +973,7 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to AR filing code only
+      // apply this flag to AR filing code only
       // simply re-add the AR code with the updated Priority flag and default Waive Fees flag
       if (this.entityFilter(EntityTypes.BCOMP)) {
         this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, this.isWaiveFees)

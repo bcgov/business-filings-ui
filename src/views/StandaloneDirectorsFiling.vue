@@ -804,7 +804,7 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to OTCDR filing code only
+      // apply this flag to OTCDR filing code only
       // if OTCDR code exists, simply re-add it with the updated Priority flag and default Waive Fees flag
       if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT)) {
         this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, val, this.isWaiveFees)
