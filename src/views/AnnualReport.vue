@@ -40,7 +40,7 @@
     <v-container id="annual-report-container" class="view-container">
       <v-row>
         <v-col cols="12" lg="9">
-          <section>
+          <section id="annual-report-main-section">
             <!-- COOP only: -->
             <article
               class="annual-report-article"
@@ -187,7 +187,7 @@
 
         <v-col cols="12" lg="3" style="position: relative">
           <aside>
-            <affix relative-element-selector=".annual-report-article" :offset="{ top: 120, bottom: 40 }">
+            <affix relative-element-selector="#annual-report-main-section" :offset="{ top: 120, bottom: 40 }">
               <sbc-fee-summary
                 v-bind:filingData="[...filingData]"
                 v-bind:payURL="payAPIURL"
