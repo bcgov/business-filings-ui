@@ -73,8 +73,8 @@
             <!-- Certify -->
             <section>
               <header>
-                <h2 id="AR-step-4-header">Certify Correct</h2>
-                <p>Enter the legal name of the current director, officer, or lawyer submitting this
+                <h2 id="AR-step-4-header">Certify</h2>
+                <p>Legal name of person authorized to complete and submit this
                   Address Change.</p>
               </header>
               <certify

@@ -84,8 +84,8 @@
                 <!-- Certify -->
                 <section>
                   <header>
-                    <h2 id="AR-step-4-header">Certify Correct</h2>
-                    <p>Enter the legal name of the current director, officer, or lawyer submitting this
+                    <h2 id="AR-step-4-header">Certify</h2>
+                    <p>Legal name of person authorized to complete and submit this
                       Director Change.</p>
                   </header>
                   <certify
@@ -201,7 +201,7 @@
                 <!-- Certify -->
                 <section>
                   <header>
-                    <h2>Certify Correct</h2>
+                    <h2>Certify</h2>
                   </header>
                   <summary-certify
                     :isCertified.sync="isCertified"

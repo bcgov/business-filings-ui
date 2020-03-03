@@ -157,9 +157,9 @@
             <!-- Certify -->
             <section v-show="entityFilter(EntityTypes.BCOMP) || agmDate || noAgm">
               <header>
-                <h2 id="AR-step-4-header" v-if="entityFilter(EntityTypes.BCOMP)">3. Certify Correct</h2>
-                <h2 id="AR-step-4-header" v-else>4. Certify Correct</h2>
-                <p>Enter the legal name of the current director, officer, or lawyer submitting this Annual Report.</p>
+                <h2 id="AR-step-4-header" v-if="entityFilter(EntityTypes.BCOMP)">3. Certify</h2>
+                <h2 id="AR-step-4-header" v-else>4. Certify</h2>
+                <p>Legal name of person authorized to complete and submit this Annual Report.</p>
               </header>
               <certify
                 :isCertified.sync="isCertified"

@@ -9,7 +9,7 @@
             persistent-hint
             id="certified-by-textfield"
             label="Enter Legal Name"
-            hint="Legal name of current director, officer, or lawyer of the association"
+            hint="Legal name of person authorized to complete and submit this filing on behalf of the association"
             :value="certifiedBy"
             :rules="[ v => !!v || 'Legal Name is required.']"
             @input="emitCertifiedBy($event)"
