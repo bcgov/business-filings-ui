@@ -3,7 +3,7 @@
     <div class="payment-container">
       <label>Payment</label>
       <v-radio-group
-        class="value mt-0 pt-0"
+        class="value payments"
         :value="paymentOption"
         @change="onPaymentOptionChanged($event)"
       >
@@ -18,10 +18,12 @@
             hint="Fee Accounting System Routing Slip Number (9 digits)"
             :value="routingSlipNumber"
             :rules="rules"
+            :maxlength="9"
             :disabled="paymentOption !== PAYMENT_RECEIVED"
             @input="emitRoutingSlipNumber($event)"
           />
           <v-checkbox
+            class="mt-2"
             id="priority-checkbox"
             label="Priority (add $100.00)"
             :input-value="isPriority"
@@ -91,6 +93,15 @@ export default class StaffPayment extends Vue {
     this.emitValid()
   }
 
+  /**
+   * Watches for change to prop.
+   * NB: needed to set validity when props are updated
+   */
+  @Watch('isWaiveFees')
+  private onIsWaiveFeesChanged (): void {
+    this.emitValid()
+  }
+
   /** Emits an event to update the Routing Slip Number prop. */
   @Emit('update:routingSlipNumber')
   private emitRoutingSlipNumber (val: string): void { }
@@ -106,7 +117,7 @@ export default class StaffPayment extends Vue {
   /** Emit an event indicating whether or not the form is valid. */
   @Emit('valid')
   private emitValid (): boolean {
-    return (this.formValid || this.isWaiveFees)
+    return Boolean(this.formValid || this.isWaiveFees)
   }
 }
 </script>
@@ -146,7 +157,9 @@ export default class StaffPayment extends Vue {
   }
 }
 
-.value {
-  min-width: 35rem;
+.value.payments {
+  margin-top: 0;
+  padding-top: 0;
+  width: 100%;
 }
 </style>

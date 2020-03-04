@@ -65,7 +65,7 @@ export default class SummaryStaffPayment extends Vue {
 
 .value.payment-received,
 .value.no-fee {
-  min-width: 35rem;
+  min-width: 100%;
   line-height: 1.5rem;
 }
 </style>

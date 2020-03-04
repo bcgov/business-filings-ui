@@ -40,7 +40,7 @@
     <v-container id="annual-report-container" class="view-container">
       <v-row>
         <v-col cols="12" lg="9">
-          <section>
+          <section id="annual-report-main-section">
             <!-- COOP only: -->
             <article
               class="annual-report-article"
@@ -187,7 +187,7 @@
 
         <v-col cols="12" lg="3" style="position: relative">
           <aside>
-            <affix relative-element-selector=".annual-report-article" :offset="{ top: 120, bottom: 40 }">
+            <affix relative-element-selector="#annual-report-main-section" :offset="{ top: 120, bottom: 40 }">
               <sbc-fee-summary
                 v-bind:filingData="[...filingData]"
                 v-bind:payURL="payAPIURL"
@@ -973,7 +973,7 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to AR filing code only
+      // apply this flag to AR filing code only
       // simply re-add the AR code with the updated Priority flag and default Waive Fees flag
       if (this.entityFilter(EntityTypes.BCOMP)) {
         this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, this.isWaiveFees)

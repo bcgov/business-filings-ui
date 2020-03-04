@@ -682,7 +682,7 @@ export default {
 
     /** Called when Is Priority changes. */
     isPriority (val: boolean): void {
-      // apply this flag applies to OTADD filing code only
+      // apply this flag to OTADD filing code only
       // if OTADD code exists, simply re-add it with the updated Priority flag and default Waive Fees flag
       if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
         this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, val, this.isWaiveFees)
