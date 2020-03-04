@@ -91,6 +91,15 @@ export default class StaffPayment extends Vue {
     this.emitValid()
   }
 
+  /**
+   * Watches for change to prop.
+   * NB: needed to set validity when props are updated
+   */
+  @Watch('isWaiveFees')
+  private onIsWaiveFeesChanged (): void {
+    this.emitValid()
+  }
+
   /** Emits an event to update the Routing Slip Number prop. */
   @Emit('update:routingSlipNumber')
   private emitRoutingSlipNumber (val: string): void { }
@@ -106,7 +115,7 @@ export default class StaffPayment extends Vue {
   /** Emit an event indicating whether or not the form is valid. */
   @Emit('valid')
   private emitValid (): boolean {
-    return (this.formValid || this.isWaiveFees)
+    return Boolean(this.formValid || this.isWaiveFees)
   }
 }
 </script>
