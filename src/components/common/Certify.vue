@@ -134,7 +134,7 @@ export default class Certify extends Vue {
 }
 
 .value.certifiedby {
-  min-width: 35rem;
+  width: 100%;
 }
 
 .certify-clause {
