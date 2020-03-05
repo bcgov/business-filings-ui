@@ -16,31 +16,31 @@
     <v-expansion-panels v-if="filedItems.length > 0" v-model="panel">
       <v-expansion-panel
         class="align-items-top filing-history-item"
-        v-for="(item, index) in filedItems"
+        v-for="(filing, index) in filedItems"
         :key="index"
       >
         <v-expansion-panel-header class="filing-item-toggle">
           <div class="list-item">
             <div class="filing-label">
-              <h3>{{item.title}} {{applyCorrectionTag(item)}}</h3>
+              <h3>{{filing.title}} {{applyCorrectionTag(filing)}}</h3>
               <div class="list-item__subtitle">
-                <v-scale-transition v-if="isCoaFutureEffective(item.type, item.status)">
+                <v-scale-transition v-if="isCoaFutureEffective(filing.type, filing.status)">
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
                       <div id="pending-alert" class="list-item__subtitle" v-on="on">
-                        <span>FILED AND PENDING (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
+                        <span>FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                         <v-icon color="yellow" small>mdi-alert</v-icon>
                       </div>
                     </template>
-                    <span>The updated office addresses will be legally effective on {{item.filingEffectiveDate}},
+                    <span>The updated office addresses will be legally effective on {{filing.filingEffectiveDate}},
                       12:01 AM (Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
                 </v-scale-transition>
-                <span v-else>FILED AND PAID (filed by {{item.filingAuthor}} on {{item.filingDate}})</span>
-                <template v-if="item.comments.length > 0">
+                <span v-else>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                <template v-if="filing.comments.length > 0">
                   <span>
                     <v-icon small>mdi-message-reply</v-icon>
-                    Detail{{item.comments.length > 1 ? "s" : ""}} ({{item.comments.length}})
+                    Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
                   </span>
                 </template>
               </div>
@@ -49,11 +49,11 @@
             <div class="filing-item__actions">
               <div class="toggle-info">
                 <template v-if="panel === index">
-                  <span v-if="item.paperOnly">Close</span>
+                  <span v-if="filing.paperOnly">Close</span>
                   <span v-else>Hide Documents</span>
                 </template>
                 <template v-else>
-                  <span v-if="item.paperOnly">Request a Copy</span>
+                  <span v-if="filing.paperOnly">Request a Copy</span>
                   <span v-else>View Documents</span>
                 </template>
               </div>
@@ -67,13 +67,13 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="hasBlockerFiling || item.isCorrection">
+                    <v-list-item :disabled="hasBlockerFiling || filing.isCorrection">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title
                         class="file-correction-item"
-                        @click="correctThisItem(item)"
+                        @click="correctThisItem(filing)"
                       >
                         File a Correction
                       </v-list-item-title>
@@ -85,7 +85,7 @@
                       </v-list-item-icon>
                       <v-list-item-title
                         class="add-detail-comment-item"
-                        @click="showCommentDialog(item.filingId)"
+                        @click="showCommentDialog(filing.filingId)"
                       >
                         Add Detail
                       </v-list-item-title>
@@ -98,8 +98,8 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <v-list dense class="mt-n1 mb-n3 pt-0 pb-0" v-if="!item.paperOnly">
-            <v-list-item class="pl-0 pr-0" v-for="(document, index) in item.filingDocuments" :key="index">
+          <v-list dense class="mt-n1 mb-n3 pt-0 pb-0" v-if="!filing.paperOnly">
+            <v-list-item class="pl-0 pr-0" v-for="(document, index) in filing.filingDocuments" :key="index">
               <v-btn text color="primary"
                 class="download-document-btn pl-1 pr-2"
                 @click="downloadDocument(document)"
@@ -111,10 +111,10 @@
               </v-btn>
             </v-list-item>
 
-            <v-list-item class="pl-0 pr-0" v-if="item.paymentToken">
+            <v-list-item class="pl-0 pr-0" v-if="filing.paymentToken">
               <v-btn text color="primary"
                 class="download-receipt-btn pl-1 pr-2"
-                @click="downloadReceipt(item)"
+                @click="downloadReceipt(filing)"
                 :disabled="loadingReceipt"
                 :loading="loadingReceipt"
               >
@@ -123,10 +123,10 @@
               </v-btn>
             </v-list-item>
 
-            <v-list-item class="pl-0 pr-0" v-if="!item.paperOnly">
+            <v-list-item class="pl-0 pr-0" v-if="!filing.paperOnly">
               <v-btn text color="primary"
                 class="download-all-btn pl-1 pr-2"
-                @click="downloadAll(item)"
+                @click="downloadAll(filing)"
                 :disabled="loadingAll"
                 :loading="loadingAll"
               >
@@ -136,7 +136,7 @@
             </v-list-item>
           </v-list>
 
-          <div class="paper-filings body-2" v-if="item.paperOnly">
+          <div class="paper-filings body-2" v-if="filing.paperOnly">
             <p>Filings completed <strong>before March 10, 2019</strong> are only available from the BC Registry
               as paper documents.</p>
             <p>To request copies of paper documents, contact BC Registry Staff with the document you require and
@@ -156,7 +156,7 @@
 
           <!-- the detail comments section -->
           <details-list
-            :filing=item
+            :filing=filing
             :isTask="false"
             @showCommentDialog="showCommentDialog($event)"
           />
