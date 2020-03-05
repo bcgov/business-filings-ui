@@ -73,8 +73,8 @@
             <!-- Certify -->
             <section>
               <header>
-                <h2 id="correction-step-2-header">2. Certify Correct</h2>
-                <p>Enter the legal name of the current director, officer, or lawyer submitting this correction.</p>
+                <h2 id="correction-step-2-header">2. Certify</h2>
+                <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
               <certify
                 :isCertified.sync="isCertified"
