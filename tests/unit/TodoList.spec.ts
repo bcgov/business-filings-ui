@@ -14,6 +14,9 @@ import flushPromises from 'flush-promises'
 // Enums
 import { EntityTypes } from '@/enums'
 
+// Components
+import { DetailsList } from '@/components/common'
+
 // NB: test util async issue
 // in some cases, the elements are not updated during the test
 // the work-around is to first initialize the property we are changing
@@ -312,6 +315,307 @@ describe('TodoList - UI', () => {
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
     expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT \'Correction\' task for a client', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'correction',
+              'status': 'DRAFT',
+              'filingId': 1,
+              'comments': [
+                {
+                  'comment': {
+                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'filingId': 1,
+                    'id': 123,
+                    'submitterDisplayName': 'cbIdIr1234',
+                    'timestamp': '2020-03-02T20:26:31.697044+00:00'
+                  }
+                }
+              ]
+            },
+            'correction': {
+              'correctedFilingType': 'annualReport'
+            }
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+
+    await flushPromises()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-filing')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
+
+    // Validate the resume button does not exist for NON-staff
+    expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT \'Correction\' task for staff', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'correction',
+              'status': 'DRAFT',
+              'filingId': 1,
+              'comments': [
+                {
+                  'comment': {
+                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'filingId': 1,
+                    'id': 123,
+                    'submitterDisplayName': 'cbIdIr1234',
+                    'timestamp': '2020-03-02T20:26:31.697044+00:00'
+                  }
+                }
+              ]
+            },
+            'correction': {
+              'correctedFilingType': 'annualReport'
+            }
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+    // Only staff may resume drafts
+    store.state.keycloakRoles = ['staff']
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+
+    await flushPromises()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-filing')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
+
+    // Validate the resume button exists and is enabled for Staff
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.disabled).toBe(false)
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DetailsList on a DRAFT \'Correction\' task', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'correction',
+              'status': 'DRAFT',
+              'filingId': 1,
+              'comments': [
+                {
+                  'comment': {
+                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'filingId': 1,
+                    'id': 123,
+                    'submitterDisplayName': 'cbIdIr1234',
+                    'timestamp': '2020-03-02T20:26:31.697044+00:00'
+                  }
+                }
+              ]
+            },
+            'correction': {
+              'correctedFilingType': 'annualReport'
+            }
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    // Only staff may resume drafts
+    store.state.keycloakRoles = ['user']
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+
+    await flushPromises()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-filing')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
+
+    expect(item.querySelector('.list-item__subtitle .todo-status').textContent)
+      .toContain('Detail (1)')
+
+    // Validate the child component does NOT exist on the parent before opening the dropdown
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    // Open the details list dropdown
+    const button = item.querySelector('.list-item__subtitle .todo-status .info-btn')
+    await button.click()
+
+    expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
+      .toContain('This filing is in review and has been saved as a draft.')
+
+    // Validate that the resume button does not exist for NON-Staff
+    expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
+
+    // Validate the child component exists on the parent after opening the dropdown
+    expect(wrapper.find(DetailsList).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('displays a PENDING_CORRECTION \'Correction\' task', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'correction',
+              'ARFilingYear': 2019,
+              'status': 'PENDING_CORRECTION',
+              'paymentToken': 12345678,
+              'filingId': 1
+            },
+            'annualReport': {
+              'annualGeneralMeetingDate': '2019-07-15',
+              'annualReportDate': '2019-07-15'
+            },
+            'correction': {
+              'correctedFilingType': 'annualReport'
+            }
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+
+    await flushPromises()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-filing')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DetailsList on a PENDING \'Correction\' task', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'correction',
+              'status': 'PENDING_CORRECTION',
+              'filingId': 1,
+              'comments': [
+                {
+                  'comment': {
+                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'filingId': 1,
+                    'id': 123,
+                    'submitterDisplayName': 'cbIdIr1234',
+                    'timestamp': '2020-03-02T20:26:31.697044+00:00'
+                  }
+                }
+              ]
+            },
+            'correction': {
+              'correctedFilingType': 'annualReport'
+            }
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+
+    await flushPromises()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-filing')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
+    expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
+
+    expect(item.querySelector('.list-item__subtitle .todo-status').textContent)
+      .toContain('Detail (1)')
+
+    // Validate the child component does NOT exist on the parent before opening the dropdown
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    // Open the details list dropdown
+    const button = item.querySelector('.list-item__subtitle .todo-status .info-btn')
+    await button.click()
+
+    expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
+      .toContain('This filing is pending review by Registry Staff.')
+
+    // Validate that the resume button does not exist for NON-Staff
+    expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
+
+    // Validate the child component exists on the parent after opening the dropdown
+    expect(wrapper.find(DetailsList).exists()).toBe(true)
 
     wrapper.destroy()
   })
