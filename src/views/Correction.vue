@@ -74,7 +74,7 @@
             <section>
               <header>
                 <h2 id="correction-step-2-header">2. Certify</h2>
-                <p>Legal name of person authorized to complete and submit this correction.</p>
+                <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
               <certify
                 :isCertified.sync="isCertified"

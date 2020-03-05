@@ -85,7 +85,7 @@
                 <section>
                   <header>
                     <h2 id="AR-step-4-header">Certify</h2>
-                    <p>Legal name of person authorized to complete and submit this
+                    <p>Enter the legal name of the person authorized to complete and submit this
                       Director Change.</p>
                   </header>
                   <certify
