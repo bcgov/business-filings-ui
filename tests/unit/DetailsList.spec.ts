@@ -16,7 +16,7 @@ describe('Details List', () => {
     'type': 'annualReport',
     'title': 'Annual Report (2018)',
     'filingId': 63958,
-    'filingAuthor': 'Registry Staff',
+    'filingAuthor': 'John Doe',
     'filingDate': '2018-12-12',
     'filingYear': '2018',
     'paymentToken': null,
@@ -30,7 +30,7 @@ describe('Details List', () => {
     'type': 'annualReport',
     'title': 'Annual Report (2018)',
     'filingId': 63958,
-    'filingAuthor': 'Registry Staff',
+    'filingAuthor': 'John Doe',
     'filingDate': '2018-12-12',
     'filingYear': '2018',
     'paymentToken': null,
@@ -54,7 +54,7 @@ describe('Details List', () => {
     'type': 'annualReport',
     'title': 'Annual Report (2018)',
     'filingId': 63958,
-    'filingAuthor': 'Registry Staff',
+    'filingAuthor': 'John Doe',
     'filingDate': '2018-12-12',
     'filingYear': '2018',
     'paymentToken': null,
@@ -73,7 +73,7 @@ describe('Details List', () => {
       },
       {
         'comment': {
-          'comment': 'Correction for Director Change. Filed on 2018-01-08.',
+          'comment': 'Correction for director mailing delivery address. Filed on 2018-01-08.',
           'filingId': 63958,
           'id': 222,
           'submitterDisplayName': 'sevIdiR2020',
@@ -82,7 +82,7 @@ describe('Details List', () => {
       },
       {
         'comment': {
-          'comment': 'Correction for Address Change. Filed on 2018-01-08.',
+          'comment': 'Correction for office delivery address Change. Filed on 2018-01-08.',
           'filingId': 63958,
           'id': 333,
           'submitterDisplayName': 'cbIdIr1234',
@@ -91,10 +91,6 @@ describe('Details List', () => {
       }
     ]
   }
-
-  beforeEach(() => {
-    // init store
-  })
 
   it('Displays nothing if no comments are present in the filing', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockNoCommentsFiling } })
@@ -128,6 +124,17 @@ describe('Details List', () => {
     const vm: any = wrapper.vm
 
     expect(vm.$el.querySelector('.title-bar').textContent).toContain('Details (3)')
+
+    wrapper.destroy()
+  })
+
+  it('Displays the correct amount of comments in the details list', () => {
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
+    const vm: any = wrapper.vm
+
+    const detailsCount = vm.$el.querySelectorAll('.detail-body').length
+
+    expect(detailsCount).toEqual(3)
 
     wrapper.destroy()
   })
@@ -227,7 +234,7 @@ describe('Details List', () => {
       expect(thirdItem.textContent).toContain('sevIdiR2020')
       expect(thirdItem.textContent).toContain('2020-03-05T20:26:31.697044+00:00')
       expect(thirdItem.querySelector('.pre-line').textContent)
-        .toContain('Correction for Director Change. Filed on 2018-01-08.')
+        .toContain('Correction for director mailing delivery address. Filed on 2018-01-08.')
     })
     wrapper.destroy()
   })
