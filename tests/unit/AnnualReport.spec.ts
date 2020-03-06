@@ -1756,7 +1756,6 @@ describe('AnnualReport - Part 5B - Data - BCOMP', () => {
 describe('AnnualReport - Part 6 - Error/Warning dialogs', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
-  const request = require('request')
   const { assign } = window.location
 
   beforeAll(() => {

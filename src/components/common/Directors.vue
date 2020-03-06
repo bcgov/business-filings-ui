@@ -512,7 +512,7 @@ import { WarningPopover } from '@/components/dialogs'
 import { DateMixin, EntityFilterMixin, CommonMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes } from '@/enums'
+import { EntityTypes, FilingStatus } from '@/enums'
 
 // Constants
 import { CEASED, NAMECHANGED, ADDRESSCHANGED, APPOINTED } from '@/constants'
@@ -686,7 +686,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
   readonly entityIncNo!: string
   readonly lastPreLoadFilingDate!: string
   readonly currentDate!: string
-  readonly currentFilingStatus!: string
+  readonly currentFilingStatus!: FilingStatus
   readonly lastCODFilingDate!: string
   readonly lastAnnualReportDate!: string
   readonly entityFoundingDate!: string
@@ -809,9 +809,9 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
    */
   private mounted (): void {
     // load initial data
-    if (['NEW', 'DRAFT'].includes(this.currentFilingStatus)) {
+    if ([FilingStatus.NEW, FilingStatus.DRAFT].includes(this.currentFilingStatus)) {
       // if draft: get original directors but doesn't overwrite this.directors
-      this.getDirectors(this.currentFilingStatus === 'DRAFT')
+      this.getDirectors(this.currentFilingStatus === FilingStatus.DRAFT)
     }
   }
 
@@ -1348,10 +1348,10 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
   @Watch('asOfDate')
   private onAsOfDate (newVal: string, oldVal: string): void {
     // reload the directors list when as-of date changes EXCEPT WHEN...
-    if (this.currentFilingStatus === 'DRAFT' && oldVal === null) {
+    if (this.currentFilingStatus === FilingStatus.DRAFT && oldVal === null) {
       // this is a draft but the component hasn't quite loaded yet - only set original directors
       this.getOriginalDirectors()
-    } else if (this.currentFilingStatus === 'DRAFT' && this.directorsChange && this.draftDate === newVal) {
+    } else if (this.currentFilingStatus === FilingStatus.DRAFT && this.directorsChange && this.draftDate === newVal) {
       // this is a draft, there were director changes loaded, and the date hasn't changed - only set original directors
       this.getOriginalDirectors()
     } else {

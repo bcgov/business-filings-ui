@@ -306,7 +306,7 @@ import { DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '
 import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED } from '@/constants'
 
 // Enums
-import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
   name: 'AnnualReport',
@@ -377,6 +377,7 @@ export default {
       // enums
       EntityTypes,
       FilingCodes,
+      FilingStatus,
       FilingTypes
     }
   },
@@ -512,7 +513,7 @@ export default {
             if (!filing.header) throw new Error('missing header')
             if (!filing.business) throw new Error('missing business')
             if (filing.header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('invalid filing type')
-            if (filing.header.status !== 'DRAFT') throw new Error('invalid filing status')
+            if (filing.header.status !== FilingStatus.DRAFT) throw new Error('invalid filing status')
             if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
@@ -930,7 +931,7 @@ export default {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
                 if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== 'NEW') {
+                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

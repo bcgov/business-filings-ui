@@ -299,7 +299,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
 import { EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
 
 // Constants
 import { CEASED, APPOINTED, ADDRESSCHANGED, NAMECHANGED } from '@/constants'
@@ -360,6 +360,7 @@ export default {
       // enums
       EntityTypes,
       FilingCodes,
+      FilingStatus,
       FilingTypes
     }
   },
@@ -770,7 +771,7 @@ export default {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
                 if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== 'NEW') {
+                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

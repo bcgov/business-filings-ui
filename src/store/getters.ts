@@ -1,4 +1,4 @@
-import { FilingTypes } from '@/enums'
+import { FilingTypes, FilingStatus } from '@/enums'
 
 export default {
   isRoleStaff (state): boolean {
@@ -14,13 +14,13 @@ export default {
   },
 
   isAnnualReportEditable (state): boolean {
-    return (state.currentFilingStatus === 'NEW' || state.currentFilingStatus === 'DRAFT')
+    return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
   },
 
   reportState (state): string {
     switch (state.currentFilingStatus) {
-      case 'NEW': return ''
-      case 'DRAFT': return 'Draft'
+      case FilingStatus.NEW: return ''
+      case FilingStatus.DRAFT: return 'Draft'
       default: return state.currentFilingStatus
     }
   },
