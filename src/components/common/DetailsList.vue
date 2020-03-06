@@ -18,7 +18,7 @@
       <div>
         <!-- the detail comments list-->
         <v-list>
-          <v-list-item class="pl-0 pr-0" v-for="(comment, index) in filing.comments" :key="index">
+          <v-list-item class="pl-0 pr-0 detail-body" v-for="(comment, index) in filing.comments" :key="index">
             <v-list-item-content>
               <v-list-item-title class="body-2">
                 <strong v-if="!isRoleStaff">Registry Staff</strong>

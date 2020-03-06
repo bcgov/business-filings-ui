@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { shallowMount } from '@vue/test-utils'
-
+import { mount, shallowMount } from '@vue/test-utils'
 import store from '@/store/store'
+
+// Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
+import { DetailsList } from '@/components/common'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -104,6 +106,44 @@ const sampleFilings = [
         'status': 'PAID'
       },
       'changeOfAddress': {
+      }
+    }
+  },
+  {
+    'filing': {
+      'header': {
+        'name': 'correction',
+        'date': '2019-04-06T19:22:59.003777+00:00',
+        'paymentToken': 7891,
+        'certifiedBy': 'Cameron',
+        'filingId': 9873,
+        'availableOnPaperOnly': false,
+        'effectiveDate': '2019-12-13T00:00:00+00:00',
+        'status': 'COMPLETE',
+        'comments': [
+          {
+            'comment': {
+              'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+              'filingId': 9873,
+              'id': 1,
+              'submitterDisplayName': 'cbIdIr1234',
+              'timestamp': '2020-03-02T20:26:31.697044+00:00'
+            }
+          },
+          {
+            'comment': {
+              'comment': 'This is an additional comment',
+              'filingId': 9873,
+              'id': 2,
+              'submitterDisplayName': 'cbIdIr1234',
+              'timestamp': '2020-03-03T20:26:31.697044+00:00'
+            }
+          }
+        ]
+      },
+      'correction': {
+        'correctedFilingType': 'annualReport',
+        'correctedFilingDate': '2019-12-31'
       }
     }
   }
@@ -405,6 +445,89 @@ describe('FilingHistoryList', () => {
     await Vue.nextTick()
     expect(vm.$el.querySelectorAll('.filing-history-item')[5].textContent)
       .toContain('The updated office addresses will be legally effective on 2019-12-13')
+
+    wrapper.destroy()
+  })
+
+  it('displays a correction filing with Details Count', async () => {
+    const $route = { query: { 'filingId': null } }
+
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = sampleFilings
+
+    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+
+    await Vue.nextTick()
+    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(7)
+    expect(wrapper.emitted('filed-count')).toEqual([[7]])
+
+    const item = vm.$el.querySelectorAll('.filing-history-item')[6]
+    expect(item.querySelector('.list-item .filing-label').textContent).toContain('Correction')
+    expect(item.querySelector('.list-item .filing-label').textContent).toContain('Annual Report')
+    expect(item.querySelector('.list-item .filing-label .list-item__subtitle').textContent)
+      .toContain('Details (2)')
+
+    wrapper.destroy()
+  })
+
+  it('displays the DetailsList when comments are present on a correction filing', async () => {
+    const $route = { query: { 'filingId': null } }
+
+    // init store
+    store.state.filings = sampleFilings
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+
+    // Validate the Details List does NOT exist on the component until the drop down is selected
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    const item = vm.$el.querySelectorAll('.filing-history-item')[6]
+      .querySelector('.filing-item-toggle')
+    item.click()
+
+    await Vue.nextTick()
+
+    // Validate the Details List component exists when there are comments on the filing.
+    expect(wrapper.find(DetailsList).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Does NOT display the DetailsList when comments are present on a correction filing', async () => {
+    const $route = { query: { 'filingId': null } }
+
+    // init store
+    store.state.filings = [
+      {
+        'filing': {
+          'header': {
+            'name': 'correction',
+            'date': '2019-04-06T19:22:59.003777+00:00',
+            'paymentToken': 7891,
+            'certifiedBy': 'Cameron',
+            'filingId': 9873,
+            'availableOnPaperOnly': false,
+            'effectiveDate': '2019-12-13T00:00:00+00:00',
+            'status': 'COMPLETE'
+          },
+          'correction': {
+            'correctedFilingType': 'annualReport',
+            'correctedFilingDate': '2019-12-31'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+
+    await Vue.nextTick()
+
+    // Validate the Details List component exists when there are comments on the filing.
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     wrapper.destroy()
   })
