@@ -88,7 +88,7 @@ describe('Correction - UI', () => {
     // verify rendered page
     expect(wrapper.find('#correction-header').text()).toBe('Correction —')
     expect(wrapper.find('#correction-step-1-header').text()).toBe('1. Detail')
-    expect(wrapper.find('#correction-step-2-header').text()).toBe('2. Certify Correct') // TODO: update after rebase
+    expect(wrapper.find('#correction-step-2-header').text()).toBe('2. Certify')
     expect(wrapper.find('#correction-step-3-header').text()).toBe('3. Staff Payment')
 
     wrapper.destroy()
