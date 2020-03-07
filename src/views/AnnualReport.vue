@@ -923,6 +923,7 @@ export default {
       return (director.actions.indexOf(action) >= 0)
     },
 
+    /** Returns True if the specified business has any pending tasks, else False. */
     async hasTasks (businessId) {
       let hasPendingItems = false
       if (this.filingId === 0) {

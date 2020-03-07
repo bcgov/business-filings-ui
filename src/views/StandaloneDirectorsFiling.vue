@@ -763,6 +763,7 @@ export default {
       document.documentElement.scrollTop = 0 // For Chrome, Firefox and IE
     },
 
+    /** Returns True if the specified business has any pending tasks, else False. */
     async hasTasks (businessId) {
       let hasPendingItems = false
       if (this.filingId === 0) {

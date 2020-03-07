@@ -1138,7 +1138,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
   })
 })
 
-describe('Standalone Directors Filing - Part 6 - Error/Warning dialogs', () => {
+describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
   const { assign } = window.location
 
   beforeAll(() => {

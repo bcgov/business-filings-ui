@@ -305,36 +305,39 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
-        data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        data: {
+          filing: {
+            changeOfAddress: {
+              offices: {
+                registeredOffice: {
+                  deliveryAddress: sampleDeliveryAddress,
+                  mailingAddress: sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'routingSlipNumber': '456'
               }
+            },
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
+            },
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
+              routingSlipNumber: '456',
+              // NB: it's not valid to have both "priority" and "waiveFees" true
+              // but we're just testing that these values are restored properly
+              priority: true,
+              waiveFees: true
             }
           }
+        }
       })))
   })
 
@@ -352,8 +355,10 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
     expect(vm.certifiedBy).toBe('Full Name')
     expect(vm.isCertified).toBe(false)
 
-    // verify that Routing Slip Number was restored
+    // verify that Staff Payment fields were restored
     expect(vm.routingSlipNumber).toBe('456')
+    expect(vm.isPriority).toBe(true)
+    expect(vm.isWaiveFees).toBe(true)
 
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)
@@ -366,7 +371,7 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 2B (BCOMP) - Resuming', () => {
+describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'BC0001191'
@@ -376,40 +381,43 @@ describe('Standalone Office Address Filing - Part 2B (BCOMP) - Resuming', () => 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('BC0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
-        data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  },
-                  'recordsOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        data: {
+          filing: {
+            changeOfAddress: {
+              offices: {
+                registeredOffice: {
+                  deliveryAddress: sampleDeliveryAddress,
+                  mailingAddress: sampleMailingAddress
+                },
+                recordsOffice: {
+                  deliveryAddress: sampleDeliveryAddress,
+                  mailingAddress: sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'BC0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - BC0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'BC0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'routingSlipNumber': '456'
               }
+            },
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08',
+              identifier: 'BC0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - BC0001191'
+            },
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'BC0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
+              routingSlipNumber: '456',
+              // NB: it's not valid to have both "priority" and "waiveFees" true
+              // but we're just testing that these values are restored properly
+              priority: true,
+              waiveFees: true
             }
           }
+        }
       })))
   })
 
@@ -427,8 +435,10 @@ describe('Standalone Office Address Filing - Part 2B (BCOMP) - Resuming', () => 
     expect(vm.certifiedBy).toBe('Full Name')
     expect(vm.isCertified).toBe(false)
 
-    // verify that Routing Slip Number was restored
+    // verify that Staff Payment fields were restored
     expect(vm.routingSlipNumber).toBe('456')
+    expect(vm.isPriority).toBe(true)
+    expect(vm.isWaiveFees).toBe(true)
 
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)
@@ -717,7 +727,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 3B (BCOMP) - Submitting', () => {
+describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1132,7 +1142,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 4B (BCOMP) - Saving', () => {
+describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1358,7 +1368,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 5B (BCOMP) - Data', () => {
+describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy
@@ -1454,7 +1464,7 @@ describe('Standalone Office Address Filing - Part 5B (BCOMP) - Data', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 6 - Error/Warning dialogs', () => {
+describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', () => {
   const { assign } = window.location
 
   beforeAll(() => {
