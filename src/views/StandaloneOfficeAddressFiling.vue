@@ -182,7 +182,7 @@ import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 import { EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
   name: 'StandaloneOfficeAddressFiling',
@@ -229,6 +229,7 @@ export default {
       // enums
       EntityTypes,
       FilingCodes,
+      FilingStatus,
       FilingTypes
     }
   },
@@ -640,6 +641,7 @@ export default {
       this.saveWarnings = []
     },
 
+    /** Returns True if the specified business has any pending tasks, else False. */
     async hasTasks (businessId) {
       let hasPendingItems = false
       if (this.filingId === 0) {
@@ -648,7 +650,7 @@ export default {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
                 if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== 'NEW') {
+                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

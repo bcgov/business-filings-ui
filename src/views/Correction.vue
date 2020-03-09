@@ -407,7 +407,7 @@ export default {
             if (!filing.business) throw new Error('missing business')
             if (!filing.correction) throw new Error('missing correction')
             if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('invalid filing type')
-            if (filing.header.status !== 'DRAFT') throw new Error('invalid filing status')
+            if (filing.header.status !== FilingStatus.DRAFT) throw new Error('invalid filing status')
             if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
 
@@ -684,7 +684,7 @@ export default {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
                 if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== 'NEW') {
+                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

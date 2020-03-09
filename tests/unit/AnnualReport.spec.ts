@@ -436,7 +436,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 })
 
-describe('AnnualReport - Part 1B - UI - BCOMP', () => {
+describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'BC0007291'
@@ -673,7 +673,11 @@ describe('AnnualReport - Part 2 - Resuming', () => {
                   certifiedBy: 'Full Name',
                   email: 'no_one@never.get',
                   filingId: 123,
-                  routingSlipNumber: '456'
+                  routingSlipNumber: '456',
+                  // NB: it's not valid to have both "priority" and "waiveFees" true
+                  // but we're just testing that these values are restored properly
+                  priority: true,
+                  waiveFees: true
                 }
               }
             }
@@ -702,8 +706,10 @@ describe('AnnualReport - Part 2 - Resuming', () => {
       expect(vm.certifiedBy).toBe('Full Name')
       expect(vm.isCertified).toBe(false)
 
-      // verify that Routing Slip Number was restored
+      // verify that Staff Payment fields were restored
       expect(vm.routingSlipNumber).toBe('456')
+      expect(vm.isPriority).toBe(true)
+      expect(vm.isWaiveFees).toBe(true)
 
       // verify that we stored the Filing ID
       expect(+vm.filingId).toBe(123)
@@ -996,7 +1002,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
   })
 })
 
-describe('AnnualReport - Part 3B - Submitting - BCOMP', () => {
+describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1532,7 +1538,7 @@ describe('AnnualReport - Part 5 - Data', () => {
   })
 })
 
-describe('AnnualReport - Part 5B - Data - BCOMP', () => {
+describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy: any
@@ -1753,10 +1759,9 @@ describe('AnnualReport - Part 5B - Data - BCOMP', () => {
   })
 })
 
-describe('AnnualReport - Part 6 - Error/Warning dialogs', () => {
+describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
-  const request = require('request')
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1985,7 +1990,7 @@ describe('AnnualReport - Part 6 - Error/Warning dialogs', () => {
   })
 })
 
-describe('AnnualReport - Part 7 - Save through multiple tabs', () => {
+describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -2055,7 +2060,7 @@ describe('AnnualReport - Part 7 - Save through multiple tabs', () => {
     wrapper.destroy()
   })
 
-  it('shows duplicate filing popup if a todo not in NEW status exist', async () => {
+  it('prevents saving if a pending task exists', async () => {
     vm.agmDateValid = true
     vm.addressesFormValid = true
     vm.directorFormValid = true
