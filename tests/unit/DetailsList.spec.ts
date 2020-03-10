@@ -5,7 +5,7 @@ import Vuelidate from 'vuelidate'
 import store from '@/store/store'
 import { shallowMount } from '@vue/test-utils'
 import { DetailsList } from '@/components/common'
-import flushPromises from 'flush-promises';
+import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

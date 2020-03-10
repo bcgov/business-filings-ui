@@ -6,7 +6,7 @@ module.exports = {
     'vue-plugin-helper-decorator',
     'vuetify'
   ],
-  publicPath: process.env.VUE_APP_PATH,
+  publicPath: `/${process.env.VUE_APP_PATH}`,
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
