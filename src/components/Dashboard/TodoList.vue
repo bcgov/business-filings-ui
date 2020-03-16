@@ -372,7 +372,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setARFilingYear', 'setCurrentFilingStatus', 'setTriggerDashboardReload']),
+    ...mapActions(['setARFilingYear', 'setCurrentFilingStatus']),
 
     loadData () {
       this.taskItems = []
@@ -674,8 +674,8 @@ export default {
       await axios.delete(url).then(res => {
         if (!res) { throw new Error('invalid API response') }
 
-        // reload dashboard
-        this.setTriggerDashboardReload(true)
+        // emit dashboard reload trigger event
+        this.$root.$emit('triggerDashboardReload')
       }).catch(error => {
         if (error && error.response) {
           if (error.response.data.errors) {
@@ -735,8 +735,8 @@ export default {
       await axios.patch(url, {}).then(res => {
         if (!res) { throw new Error('invalid API response') }
 
-        // reload dashboard
-        this.setTriggerDashboardReload(true)
+        // emit dashboard reload trigger event
+        this.$root.$emit('triggerDashboardReload')
       }).catch(error => {
         if (error && error.response) {
           if (error.response.data.errors) {
@@ -756,7 +756,10 @@ export default {
 
     hideCommentDialog (needReload: boolean): void {
       this.addCommentDialog = false
-      if (needReload) this.setTriggerDashboardReload(true)
+      if (needReload) {
+        // emit dashboard reload trigger event
+        this.$root.$emit('triggerDashboardReload')
+      }
     },
 
     isPriority (priority: boolean): string {

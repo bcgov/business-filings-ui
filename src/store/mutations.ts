@@ -68,9 +68,6 @@ export default {
   directors (state, directors: Array<object>) {
     state.directors = directors
   },
-  triggerDashboardReload (state, triggerDashboardReload: boolean) {
-    state.triggerDashboardReload = triggerDashboardReload
-  },
   lastAnnualReportDate (state, lastAnnualReportDate: string) {
     state.lastAnnualReportDate = lastAnnualReportDate
   },

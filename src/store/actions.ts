@@ -68,9 +68,6 @@ export default {
   setDirectors ({ commit }, directors: Array<object>) {
     commit('directors', directors)
   },
-  setTriggerDashboardReload ({ commit }, triggerDashboardReload: boolean) {
-    commit('triggerDashboardReload', triggerDashboardReload)
-  },
   setLastAnnualReportDate ({ commit }, lastAnnualReportDate: string) {
     commit('lastAnnualReportDate', lastAnnualReportDate)
   },
