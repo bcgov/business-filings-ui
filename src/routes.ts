@@ -1,3 +1,5 @@
+import Signin from '@/views/auth/Signin.vue'
+import Signout from '@/views/auth/Signout.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
@@ -7,10 +9,6 @@ import Correction from '@/views/Correction.vue'
 export default [
   {
     path: '/',
-    redirect: '/dashboard'
-  },
-  {
-    path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
     meta: {
@@ -45,6 +43,25 @@ export default [
     path: '/correction',
     name: 'correction',
     component: Correction,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    // this route is selected by router.beforeEach()
+    path: '/signin',
+    name: 'signin',
+    component: Signin,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    // this route is selected by SbcHeader -> Logout
+    path: '/signout',
+    name: 'signout',
+    component: Signout,
+    props: true,
     meta: {
       requiresAuth: true
     }

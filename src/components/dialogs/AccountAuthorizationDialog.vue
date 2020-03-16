@@ -4,8 +4,8 @@
       <v-card-title>Account Authorization</v-card-title>
 
       <v-card-text>
-        <p class="genErr">This account appears to be unable to access this business. You can
-          retry to access this business now, or you can exit and return to the login page.</p>
+        <p class="genErr">This account appears to be unable to access this business. You can retry to access
+          this business now, or you can exit and try to access this business at another time.</p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
           <ErrorContact />

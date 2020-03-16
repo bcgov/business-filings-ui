@@ -5,9 +5,8 @@ import VueRouter from 'vue-router'
 import { mount, createLocalVue } from '@vue/test-utils'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
-
 import mockRouter from './mockRouter'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import flushPromises from 'flush-promises'
 
@@ -28,6 +27,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -1294,6 +1294,10 @@ describe('TodoList - Click Tests', () => {
   const { assign } = window.location
 
   beforeAll(() => {
+    // init store
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
+
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
@@ -1330,6 +1334,7 @@ describe('TodoList - Click Tests', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+
     const wrapper = mount(TodoList, { localVue, store, router, vuetify, propsData: { inProcessFiling: 0 } })
     const vm = wrapper.vm as any
 
@@ -1347,7 +1352,7 @@ describe('TodoList - Click Tests', () => {
 
       // verify routing to Annual Report page with id=0
       expect(vm.$route.name).toBe('annual-report')
-      expect(vm.$route.params.id).toBe(0)
+      expect(vm.$route.params.filingId).toBe(0)
 
       wrapper.destroy()
       done()
@@ -1383,6 +1388,7 @@ describe('TodoList - Click Tests', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+
     const wrapper = mount(TodoList, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
 
@@ -1400,7 +1406,7 @@ describe('TodoList - Click Tests', () => {
 
       // verify routing to Annual Report page with id=123
       expect(vm.$route.name).toBe('annual-report')
-      expect(vm.$route.params.id).toBe(123)
+      expect(vm.$route.params.filingId).toBe(123)
 
       wrapper.destroy()
       done()
@@ -1451,7 +1457,7 @@ describe('TodoList - Click Tests', () => {
       await button.click()
 
       // verify redirection
-      const payURL = 'auth/makepayment/654/' + encodeURIComponent('cooperatives/dashboard?filing_id=456')
+      const payURL = 'auth/makepayment/654/' + encodeURIComponent('cooperatives/?filing_id=456')
       expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
       wrapper.destroy()
@@ -1501,7 +1507,7 @@ describe('TodoList - Click Tests', () => {
       await button.click()
 
       // verify redirection
-      const payURL = 'auth/makepayment/987/' + encodeURIComponent('cooperatives/dashboard?filing_id=789')
+      const payURL = 'auth/makepayment/987/' + encodeURIComponent('cooperatives/?filing_id=789')
       expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
       wrapper.destroy()
@@ -1514,6 +1520,10 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   const { assign } = window.location
 
   beforeAll(() => {
+    // init store
+    store.state.businessId = 'BC0007291'
+    store.state.entityIncNo = 'BC0007291'
+
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
@@ -1549,6 +1559,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+
     const wrapper = mount(TodoList, { localVue, store, router, vuetify, propsData: { inProcessFiling: 0 } })
     const vm = wrapper.vm as any
 
@@ -1587,7 +1598,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
       // verify routing to Annual Report page with id=0
       expect(vm.$route.name).toBe('annual-report')
-      expect(vm.$route.params.id).toBe(0)
+      expect(vm.$route.params.filingId).toBe(0)
 
       wrapper.destroy()
       done()
@@ -1638,7 +1649,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       await button.click()
 
       // verify redirection
-      const payURL = 'auth/makepayment/654/' + encodeURIComponent('cooperatives/dashboard?filing_id=456')
+      const payURL = 'auth/makepayment/654/' + encodeURIComponent('cooperatives/?filing_id=456')
       expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
       wrapper.destroy()
@@ -1688,7 +1699,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       await button.click()
 
       // verify redirection
-      const payURL = 'auth/makepayment/987/' + encodeURIComponent('cooperatives/dashboard?filing_id=789')
+      const payURL = 'auth/makepayment/987/' + encodeURIComponent('cooperatives/?filing_id=789')
       expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
       wrapper.destroy()

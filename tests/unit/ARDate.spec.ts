@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import { shallowMount } from '@vue/test-utils'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
+
+const store = getVuexStore()
 
 describe('AnnualReport - Part 1 - UI', () => {
   beforeEach(() => {

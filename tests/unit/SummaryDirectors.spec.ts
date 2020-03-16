@@ -8,7 +8,7 @@ import sinon from 'sinon'
 import { SummaryDirectors } from '@/components/common'
 
 // Store
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 
 // Enums
 import { EntityTypes } from '@/enums'
@@ -17,6 +17,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -165,7 +166,7 @@ describe('Directors as a BCOMP', () => {
 
   beforeEach(done => {
     // init store
-    store.state.entityIncNo = 'BC0001191'
+    store.state.entityIncNo = 'BC0007291'
     store.state.entityType = EntityTypes.BCOMP
     const directors = [
       {

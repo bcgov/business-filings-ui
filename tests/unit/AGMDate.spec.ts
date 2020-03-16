@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
-
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import { EntityTypes } from '@/enums'
 
@@ -24,6 +23,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('AgmDate', () => {
   let wrapper: Wrapper<AgmDate>

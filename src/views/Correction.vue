@@ -7,13 +7,13 @@
 
     <load-correction-dialog
       :dialog="loadCorrectionDialog"
-      @exit="navigateToDashboard"
+      @exit="navigateToDashboard(true)"
       attach="#correction"
     />
 
     <resume-error-dialog
       :dialog="resumeErrorDialog"
-      @exit="navigateToDashboard"
+      @exit="navigateToDashboard(true)"
       attach="#correction"
     />
 
@@ -23,15 +23,15 @@
       :disableRetry="busySaving"
       :errors="saveErrors"
       :warnings="saveWarnings"
-      @exit="navigateToDashboard"
-      @retry="onClickFilePay"
-      @okay="resetErrors"
+      @exit="navigateToDashboard(true)"
+      @retry="onClickFilePay()"
+      @okay="resetErrors()"
       attach="#correction"
     />
 
     <payment-error-dialog
       :dialog="paymentErrorDialog"
-      @exit="navigateToDashboard"
+      @exit="navigateToDashboard(true)"
       attach="#correction"
     />
 
@@ -108,7 +108,7 @@
             >
               <sbc-fee-summary
                 :filingData="[...filingData]"
-                :payURL="payAPIURL"
+                :payURL="payApiUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -159,7 +159,9 @@
             There is no opportunity to change information beyond this point.</span>
         </v-tooltip>
 
-        <v-btn id="correction-cancel-btn" large to="/dashboard" :disabled="busySaving || filingPaying">Cancel</v-btn>
+        <v-btn id="correction-cancel-btn" large @click="navigateToDashboard()" :disabled="busySaving || filingPaying">
+          <span>Cancel</span>
+        </v-btn>
       </div>
     </v-container>
   </div>
@@ -295,7 +297,7 @@ export default {
     },
 
     /** Returns Pay API URL. */
-    payAPIURL (): string {
+    payApiUrl (): string {
       return sessionStorage.getItem('PAY_API_URL')
     },
 
@@ -333,14 +335,14 @@ export default {
     // this is the id of THIS correction filing
     // if 0, this is a new correction filing
     // otherwise it's a draft correction filing
-    this.filingId = +this.$route.params.id || 0 // number
+    this.filingId = +this.$route.params.filingId || 0 // number
 
     // this is the id of the original filing to correct
     this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
 
-    // if required data isn't set, route to home
+    // if required data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.correctedFilingId)) {
-      this.$router.push('/')
+      this.$router.push({ name: 'dashboard' })
     } else {
       this.dataLoaded = false
       this.loadingMessage = `Preparing Your Correction`
@@ -402,14 +404,14 @@ export default {
           const filing: any = res.data.filing
           try {
             // verify data
-            if (!filing) throw new Error('missing filing')
-            if (!filing.header) throw new Error('missing header')
-            if (!filing.business) throw new Error('missing business')
-            if (!filing.correction) throw new Error('missing correction')
-            if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('invalid filing type')
-            if (filing.header.status !== FilingStatus.DRAFT) throw new Error('invalid filing status')
-            if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
-            if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
+            if (!filing) throw new Error('Missing filing')
+            if (!filing.header) throw new Error('Missing header')
+            if (!filing.business) throw new Error('Missing business')
+            if (!filing.correction) throw new Error('Missing correction')
+            if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
+            if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
+            if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+            if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
             // load Certified By but not Date
             this.certifiedBy = filing.header.certifiedBy
@@ -447,12 +449,12 @@ export default {
           this.origFiling = res.data.filing
           try {
             // verify data
-            if (!this.origFiling) throw new Error('missing filing')
-            if (!this.origFiling.header) throw new Error('missing header')
-            if (!this.origFiling.business) throw new Error('missing business')
-            if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('invalid filing status')
-            if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
-            if (this.origFiling.business.legalName !== this.entityName) throw new Error('invalid business legal name')
+            if (!this.origFiling) throw new Error('Missing filing')
+            if (!this.origFiling.header) throw new Error('Missing header')
+            if (!this.origFiling.business) throw new Error('Missing business')
+            if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
+            if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+            if (this.origFiling.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
             // FUTURE:
             // use original Certified By name
@@ -495,9 +497,9 @@ export default {
 
       this.savingResuming = true
       const filing: any = await this.saveFiling(true)
-      // on success, route to Home URL
+      // on success, go to dashboard
       if (filing) {
-        this.$router.push('/')
+        this.$router.push({ name: 'dashboard' })
       }
       this.savingResuming = false
     },
@@ -518,16 +520,16 @@ export default {
         if (!this.isRoleStaff) {
           const paymentToken: string = filing.header.paymentToken
           const baseUrl: string = sessionStorage.getItem('BASE_URL')
-          const returnURL: string = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
+          const returnUrl: string = encodeURIComponent(baseUrl + '?filing_id=' + filingId)
           const authUrl: string = sessionStorage.getItem('AUTH_URL')
-          const payURL: string = authUrl + 'makepayment/' + paymentToken + '/' + returnURL
+          const payUrl: string = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later
-          window.location.assign(payURL)
+          window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push('/dashboard?filing_id=' + filingId)
+          this.$router.push({ name: 'dashboard', query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -609,7 +611,7 @@ export default {
         let filing: any = null
         await axios.put(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
-            throw new Error('invalid API response')
+            throw new Error('Invalid API response')
           }
           filing = res.data.filing
           this.haveChanges = false
@@ -638,7 +640,7 @@ export default {
         let filing: any = null
         await axios.post(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
-            throw new Error('invalid API response')
+            throw new Error('Invalid API response')
           }
           filing = res.data.filing
           this.haveChanges = false
@@ -662,10 +664,9 @@ export default {
     },
 
     /** Handler for dialog Exit click events. */
-    navigateToDashboard (): void {
-      this.haveChanges = false
-      this.dialog = false
-      this.$router.push('/dashboard')
+    navigateToDashboard (ignoreChanges: boolean = false) {
+      if (ignoreChanges) this.haveChanges = false
+      this.$router.push({ name: 'dashboard' })
     },
 
     /** Reset all error flags/states. */

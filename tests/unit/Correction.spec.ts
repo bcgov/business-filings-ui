@@ -4,7 +4,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
@@ -17,12 +17,14 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 // Enums
 import { EntityTypes, FilingCodes } from '@/enums'
 
-Vue.use(Vuetify)
 // suppress "avoid mutating a prop directly" warnings
 // https://vue-test-utils.vuejs.org/api/config.html#silent
 Vue.config.silent = true
 
+Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('Correction - UI', () => {
   let sinonAxiosGet
@@ -183,12 +185,12 @@ describe('Correction - UI', () => {
 
   it('initializes and fetches original filing properly', async () => {
     // mock $route
-    const $route = { params: { id: '0', correctedFilingId: '123' } }
+    const $route = { params: { filingId: '0', correctedFilingId: '123' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction', params: { id: '0', correctedFilingId: '123' } })
+    router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
       store,
@@ -243,12 +245,12 @@ describe('Correction - UI', () => {
       ))
 
     // mock $route
-    const $route = { params: { id: '0', correctedFilingId: '123' } }
+    const $route = { params: { filingId: '0', correctedFilingId: '123' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction', params: { id: '0', correctedFilingId: '123' } })
+    router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
       store,
@@ -314,12 +316,12 @@ describe('Correction - UI', () => {
       ))
 
     // mock $route
-    const $route = { params: { id: '456', correctedFilingId: '123' } }
+    const $route = { params: { filingId: '456', correctedFilingId: '123' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction', params: { id: '0', correctedFilingId: '123' } })
+    router.push({ name: 'correction', params: { filingId: '0',correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
       store,

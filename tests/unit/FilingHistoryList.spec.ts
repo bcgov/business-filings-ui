@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, shallowMount } from '@vue/test-utils'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
@@ -12,6 +12,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 const sampleFilings = [
   {
@@ -431,12 +432,12 @@ describe('FilingHistoryList', () => {
     wrapper.destroy()
   })
 
-  it('displays the alert when the filing is future effective', async () => {
+  it('displays the alert when the filing is future effective (BCOMP)', async () => {
     const $route = { query: { 'filing_id': '9873' } }
 
     // init store
     store.state.entityType = 'BC'
-    store.state.entityIncNo = 'BC0001191'
+    store.state.entityIncNo = 'BC0007291'
     store.state.filings = sampleFilings
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
@@ -453,6 +454,7 @@ describe('FilingHistoryList', () => {
     const $route = { query: { 'filingId': null } }
 
     // init store
+    store.state.entityType = 'CP'
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = sampleFilings
 

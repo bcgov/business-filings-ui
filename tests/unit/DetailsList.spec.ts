@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import { shallowMount } from '@vue/test-utils'
 import { DetailsList } from '@/components/common'
 import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
+
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('Details List', () => {
   const mockNoCommentsFiling = {

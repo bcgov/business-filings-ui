@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import store from '@/store/store'
-
+import { getVuexStore } from '@/store'
 import { OfficeAddresses } from '@/components/common'
 import { mount, Wrapper } from '@vue/test-utils'
 import { EntityTypes } from '@/enums'
@@ -11,6 +10,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')

@@ -6,7 +6,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
 import axios from '@/axios-auth'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
 import { BAD_REQUEST } from 'http-status-codes'
@@ -30,10 +30,12 @@ Vue.use(Vuelidate)
 Vue.config.silent = true
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('AnnualReport - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
@@ -41,7 +43,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
     expect(wrapper.find(AgmDate).exists()).toBe(true)
@@ -54,7 +56,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('Verify AR Certify contains correct section codes', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
     store.state.entityType = 'CP'
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
@@ -71,7 +73,7 @@ describe('AnnualReport - Part 1 - UI', () => {
     // init store
     store.state.keycloakRoles = ['staff']
 
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
     // component should be displayed
@@ -88,7 +90,7 @@ describe('AnnualReport - Part 1 - UI', () => {
     // set current date in store
     store.state.currentDate = '2019-03-03'
 
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -106,7 +108,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('enables Validated flag when sub-component flags are valid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -124,7 +126,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when AGM Date is invalid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -142,7 +144,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Addresses form is invalid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -175,7 +177,7 @@ describe('AnnualReport - Part 1 - UI', () => {
         }
       }
     ]
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -197,7 +199,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   it('has no effect on address component when last COA is null and agm date < lastPreLoadFilingDate', () => {
     store.state.lastPreLoadFilingDate = '2019-02-10'
     store.state.filings = []
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -232,7 +234,7 @@ describe('AnnualReport - Part 1 - UI', () => {
         }
       }
     ]
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -254,7 +256,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   it('disables directors component when last COD is null and agm date < lastPreLoadFilingDate', () => {
     store.state.lastPreLoadFilingDate = '2019-02-10'
     store.state.filings = []
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -274,7 +276,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Director form is invalid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -292,7 +294,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Certify form is invalid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -310,7 +312,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -357,7 +359,8 @@ describe('AnnualReport - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -399,7 +402,8 @@ describe('AnnualReport - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -439,6 +443,7 @@ describe('AnnualReport - Part 1 - UI', () => {
 describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
+    store.state.businesId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
@@ -447,7 +452,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 
   it('renders the Annual Report sub-components properly when entity is a BCOMP', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
     expect(wrapper.find(ArDate).exists()).toBe(true)
@@ -463,7 +468,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
     // init store
     store.state.keycloakRoles = ['staff']
 
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
     // component should be displayed
@@ -477,7 +482,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 
   it('initializes the store variables properly', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -494,7 +499,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 
   it('enables Validated flag when sub-component flags are valid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -509,7 +514,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 
   it('disables Validated flag when Certify form is invalid', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -524,7 +529,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 
   it('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { id: '0' } } // new filing id
+    const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -567,7 +572,8 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -605,7 +611,8 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -691,7 +698,7 @@ describe('AnnualReport - Part 2 - Resuming', () => {
   })
 
   it('fetches a draft AR filing', done => {
-    const $route = { params: { id: '123' } } // draft filing id
+    const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
 
@@ -738,6 +745,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = EntityTypes.COOP
     store.state.entityName = 'Legal Name - CP0001191'
@@ -868,7 +876,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -924,7 +933,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     await vm.onClickFilePay()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -939,7 +948,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '123' } }) // existing filing id
+    router.push({ name: 'annual-report', params: { filingId: '123' } }) // existing filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -995,7 +1005,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     await vm.onClickFilePay()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1017,6 +1027,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
     store.state.entityType = EntityTypes.BCOMP
@@ -1082,7 +1093,8 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -1122,7 +1134,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1135,6 +1147,7 @@ describe('AnnualReport - Part 4 - Saving', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = EntityTypes.COOP
     store.state.entityName = 'Legal Name - CP0001191'
@@ -1185,7 +1198,7 @@ describe('AnnualReport - Part 4 - Saving', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(AnnualReport, { store, localVue, router, vuetify })
     vm = wrapper.vm
@@ -1265,7 +1278,7 @@ describe('AnnualReport - Part 4 - Saving', () => {
     // click the Cancel button
     wrapper.find('#ar-cancel-btn').trigger('click')
     // work-around because click trigger isn't working
-    await vm.$router.push('/dashboard')
+    await vm.$router.push({ name: 'dashboard' })
 
     // verify routing back to Dashboard URL
     expect(vm.$route.name).toBe('dashboard')
@@ -1281,6 +1294,7 @@ describe('AnnualReport - Part 5 - Data', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = EntityTypes.COOP
     store.state.entityName = 'Legal Name - CP0001191'
@@ -1317,7 +1331,7 @@ describe('AnnualReport - Part 5 - Data', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(AnnualReport, { store, localVue, router, vuetify })
     vm = wrapper.vm
@@ -1547,6 +1561,7 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
     store.state.entityType = EntityTypes.BCOMP
@@ -1587,7 +1602,8 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -1776,6 +1792,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = EntityTypes.COOP
     store.state.entityName = 'Legal Name - CP0001191'
@@ -1885,7 +1902,8 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     wrapper = mount(AnnualReport, {
       store,
       localVue,
@@ -1998,13 +2016,15 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   store.state.entityType = EntityTypes.COOP
   store.state.ARFilingYear = 2017
   store.state.currentFilingStatus = 'NEW'
+  store.state.businessId = 'CP0001191'
   store.state.entityIncNo = 'CP0001191'
 
   beforeEach(() => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'annual-report', params: { id: '0' } }) // new filing id
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
     wrapper = mount(AnnualReport, {
       store,
       localVue,

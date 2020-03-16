@@ -169,12 +169,12 @@ export default {
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
-      this.$router.push({ name: 'standalone-directors', params: { id: 0 } }) // 0 means "new COD filing"
+      this.$router.push({ name: 'standalone-directors', params: { filingId: 0 } }) // 0 means "new COD filing"
     },
 
     goToStandaloneAddresses () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
-      this.$router.push({ name: 'standalone-addresses', params: { id: 0 } }) // 0 means "new COA filing"
+      this.$router.push({ name: 'standalone-addresses', params: { filingId: 0 } }) // 0 means "new COA filing"
     },
 
     checkToReloadDashboard () {
@@ -248,6 +248,8 @@ export default {
      * @param filings The array of filings in history
      */
     checkPendingFilings (filings: Array<any>) {
+      if (!filings || filings.length === 0) return // safety check
+
       filings.some(filing => {
         if (filing.name === FilingNames.ADDRESS_CHANGE && filing.status === FilingStatus.PAID) {
           this.effectiveDate = filing.filingEffectiveDate

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import { mount } from '@vue/test-utils'
 import { EntityTypes } from '@/enums'
@@ -11,6 +11,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('AddressListSm', () => {
   it('handles empty data', done => {

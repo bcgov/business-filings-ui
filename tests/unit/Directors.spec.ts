@@ -5,8 +5,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import store from '@/store/store'
-
+import { getVuexStore } from '@/store'
 import Directors from '@/components/common/Directors.vue'
 import { EntityTypes } from '@/enums'
 import { configJson } from '@/resources/business-config'
@@ -21,6 +20,7 @@ Vue.config.devtools = false
 Vue.config.productionTip = false
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')

@@ -4,21 +4,22 @@ import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 import sinon from 'sinon'
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
-
+import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import App from '@/App.vue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('App as a COOP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
-  beforeEach(done => {
+  beforeAll(() => {
     // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
     // must not include keycloakRoles=["staff"]
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
@@ -43,13 +44,14 @@ describe('App as a COOP', () => {
       'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
       'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
       'DO3hQoVtPD42j0p3aIy10cnW2g')
-    // set business identified and user full name
-    sessionStorage.setItem('BUSINESS_IDENTIFIER', 'CP0001867')
-    sessionStorage.setItem('USER_FULL_NAME', 'First Last')
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+  })
 
+  beforeEach(done => {
     const get = sinon.stub(axios, 'get')
+
     // GET authorizations (role)
-    get.withArgs('CP0001867/authorizations')
+    get.withArgs('CP0001191/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
             {
@@ -59,7 +61,7 @@ describe('App as a COOP', () => {
 
     // GET entity info
     // NB: contains responses for 2 axios calls with the same signature
-    get.withArgs('CP0001867')
+    get.withArgs('CP0001191')
       .returns(new Promise((resolve) => resolve({
         data:
             {
@@ -76,7 +78,7 @@ describe('App as a COOP', () => {
                 legalName: 'TEST NAME',
                 status: 'GOODSTANDING',
                 taxId: '123456789',
-                identifier: 'CP0001867',
+                identifier: 'CP0001191',
                 lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
                 foundingDate: '2000-07-13T00:00:00+00:00',
                 lastAnnualGeneralMeetingDate: '2019-08-16',
@@ -86,7 +88,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET tasks
-    get.withArgs('CP0001867/tasks')
+    get.withArgs('CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
             {
@@ -135,7 +137,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET filings
-    get.withArgs('CP0001867/filings')
+    get.withArgs('CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
             {
@@ -185,7 +187,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET addresses
-    get.withArgs('CP0001867/addresses')
+    get.withArgs('CP0001191/addresses')
       .returns(new Promise((resolve) => resolve({
         data:
             {
@@ -212,7 +214,7 @@ describe('App as a COOP', () => {
       })))
 
     // GET directors
-    get.withArgs('CP0001867/directors')
+    get.withArgs('CP0001191/directors')
       .returns(new Promise((resolve) => resolve({
         data:
             {
@@ -250,7 +252,9 @@ describe('App as a COOP', () => {
     // create a Local Vue and install router (and store) on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
-    const router = new VueRouter()
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
     wrapper = shallowMount(App, {
       localVue,
       router,
@@ -294,7 +298,7 @@ describe('App as a COOP', () => {
     expect(vm.$store.state.entityName).toBe('TEST NAME')
     expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.state.entityIncNo).toBe('CP0001867')
+    expect(vm.$store.state.entityIncNo).toBe('CP0001191')
     expect(vm.$store.state.lastPreLoadFilingDate).toBe('2019-08-14')
     expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
     expect(vm.$store.state.lastAgmDate).toBe('2019-08-16')
@@ -329,13 +333,13 @@ describe('App as a COOP', () => {
   })
 })
 
-describe('BCOMP APP', () => {
-  // just need a token that can get parsed properly (will be expired but doesn't matter for tests)
-  // must not include keycloakRoles=["staff"]
+describe('App as a BCOMP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
-  beforeEach(done => {
+  beforeAll(() => {
+    // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
+    // must not include keycloakRoles=["staff"]
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
       'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
       'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
@@ -350,7 +354,10 @@ describe('BCOMP APP', () => {
       'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
       'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
       'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg')
-    sessionStorage.setItem('BUSINESS_IDENTIFIER', 'BC0007291')
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+  })
+
+  beforeEach(done => {
     const get = sinon.stub(axios, 'get')
 
     // GET authorizations (role)
@@ -585,7 +592,9 @@ describe('BCOMP APP', () => {
     // create a Local Vue and install router (and store) on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
-    const router = new VueRouter()
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard', params: { businessId: 'BC0007291' } })
+
     wrapper = shallowMount(App, {
       localVue,
       router,
