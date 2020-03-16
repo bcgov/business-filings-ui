@@ -165,7 +165,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setCurrentFilingStatus', 'setTriggerDashboardReload']),
+    ...mapActions(['setCurrentFilingStatus']),
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
@@ -221,7 +221,8 @@ export default {
         // if the filing status is now COMPLETE, reload the dashboard
         if (res && res.data && res.data.filing && res.data.filing.header &&
         res.data.filing.header.status === FilingStatus.COMPLETED) {
-          this.setTriggerDashboardReload(true)
+          // emit dashboard reload trigger event
+          this.$root.$emit('triggerDashboardReload')
         } else {
           // call this function again in 1 second
           let vue = this

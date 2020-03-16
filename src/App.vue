@@ -41,7 +41,7 @@
 
 <script>
 // Libraries
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 import axios from '@/axios-auth'
 
 // Components
@@ -80,8 +80,6 @@ export default {
   },
 
   computed: {
-    ...mapState(['triggerDashboardReload']),
-
     authAPIURL () {
       return sessionStorage.getItem('AUTH_API_URL')
     },
@@ -94,6 +92,9 @@ export default {
   created () {
     // fetch all data
     this.fetchData()
+
+    // listen for dashboard reload trigger event
+    this.$root.$on('triggerDashboardReload', () => this.fetchData())
   },
 
   methods: {
@@ -101,7 +102,7 @@ export default {
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
       'setEntityBusinessNo', 'setEntityIncNo', 'setLastPreLoadFilingDate', 'setEntityFoundingDate', 'setLastAgmDate',
       'setNextARDate', 'setTasks', 'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors',
-      'setTriggerDashboardReload', 'setLastAnnualReportDate', 'setConfigObject']),
+      'setLastAnnualReportDate', 'setConfigObject']),
 
     fetchData () {
       this.dataLoaded = false
@@ -347,13 +348,6 @@ export default {
       // (does not fire on initial dashboard load)
       if (this.$route.name === 'dashboard') {
         this.fetchData()
-      }
-    },
-
-    triggerDashboardReload (val) {
-      if (val) {
-        this.fetchData()
-        this.setTriggerDashboardReload(false)
       }
     }
   }
