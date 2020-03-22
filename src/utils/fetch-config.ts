@@ -6,7 +6,7 @@ import axios from '@/axios-auth'
  * Fetches config from environment and API.
  * Also identifies Business ID.
  */
-export function fetchConfig (): Promise<void> {
+export async function fetchConfig (): Promise<void> {
   //
   // get config from environment
   //
@@ -21,6 +21,7 @@ export function fetchConfig (): Promise<void> {
 
   // get Business ID and validate that it looks OK
   // it should be first token after Base URL in Pathname
+  // FUTURE: improve Business ID validation
   const businessId = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
   if (!businessId?.startsWith('CP') && !businessId?.startsWith('BC') && !businessId?.startsWith('NR')) {
     return Promise.reject(new Error('Missing or invalid Business ID.'))
@@ -49,40 +50,40 @@ export function fetchConfig (): Promise<void> {
     'Cache-Control': 'no-cache'
   }
 
-  return axios
-    .get(url, { headers })
-    .then(response => {
-      const businessesUrl = response.data['BUSINESSES_URL']
-      sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
-      console.log('Set Businesses URL to: ' + businessesUrl)
+  const response = await axios.get(url, { headers }).catch(() => {
+    return Promise.reject(new Error('Could not fetch configuration.json'))
+  })
 
-      const authUrl = response.data['AUTH_URL']
-      sessionStorage.setItem('AUTH_URL', authUrl)
-      console.log('Set Auth URL to: ' + authUrl)
+  const businessesUrl = response.data['BUSINESSES_URL']
+  sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
+  console.log('Set Businesses URL to: ' + businessesUrl)
 
-      const legalApiUrl = response.data['LEGAL_API_URL']
-      // set base URL for axios calls
-      axios.defaults.baseURL = legalApiUrl
-      console.info('Set Legal API URL to: ' + legalApiUrl)
+  const authUrl = response.data['AUTH_URL']
+  sessionStorage.setItem('AUTH_URL', authUrl)
+  console.log('Set Auth URL to: ' + authUrl)
 
-      const authApiUrl = response.data['AUTH_API_URL']
-      sessionStorage.setItem('AUTH_API_URL', authApiUrl)
-      console.info('Set Auth API URL to: ' + authApiUrl)
+  const legalApiUrl = response.data['LEGAL_API_URL']
+  // set base URL for axios calls
+  axios.defaults.baseURL = legalApiUrl
+  console.info('Set Legal API URL to: ' + legalApiUrl)
 
-      const payApiUrl = response.data['PAY_API_URL']
-      sessionStorage.setItem('PAY_API_URL', payApiUrl)
-      console.info('Set Pay API URL to: ' + payApiUrl)
+  const authApiUrl = response.data['AUTH_API_URL']
+  sessionStorage.setItem('AUTH_API_URL', authApiUrl)
+  console.info('Set Auth API URL to: ' + authApiUrl)
 
-      const keycloakConfigPath = response.data['KEYCLOAK_CONFIG_PATH']
-      sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
-      console.info('Set KeyCloak Config Path to: ' + keycloakConfigPath)
+  const payApiUrl = response.data['PAY_API_URL']
+  sessionStorage.setItem('PAY_API_URL', payApiUrl)
+  console.info('Set Pay API URL to: ' + payApiUrl)
 
-      const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY']
-      window['addressCompleteKey'] = addressCompleteKey
-      console.info('Set Address Complete Key.')
+  const keycloakConfigPath = response.data['KEYCLOAK_CONFIG_PATH']
+  sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
+  console.info('Set KeyCloak Config Path to: ' + keycloakConfigPath)
 
-      const ldClientId = response.data['LD_CLIENT_ID']
-      window['ldClientId'] = ldClientId
-      console.info('Set Launch Darkly Client ID.')
-    })
+  const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY']
+  window['addressCompleteKey'] = addressCompleteKey
+  console.info('Set Address Complete Key.')
+
+  const ldClientId = response.data['LD_CLIENT_ID']
+  window['ldClientId'] = ldClientId
+  console.info('Set Launch Darkly Client ID.')
 }

@@ -321,7 +321,7 @@ describe('Correction - UI', () => {
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction', params: { filingId: '0',correctedFilingId: '123' } })
+    router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
       store,

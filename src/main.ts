@@ -26,8 +26,11 @@ Vue.use(Vuelidate)
 Vue.use(Affix)
 Vue.use(Vue2Filters)
 
-// fetch config from environment and API
-fetchConfig().then(async () => {
+// main code
+async function start () {
+  // fetch config from environment and API
+  await fetchConfig()
+
   // configure Keycloak Service
   await KeycloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
 
@@ -43,12 +46,16 @@ fetchConfig().then(async () => {
     mixins: [withFlagProvider({ clientSideId: window['ldClientId'] })],
     render: h => h(App)
   }).$mount('#app')
-}).catch(error => {
+}
+
+// execution and error handling
+start().catch((error) => {
   console.error(error) // eslint-disable-line no-console
   alert('There was an error starting this page. (See console for details.)\n' +
-    'Click OK to go to the Business Registry home page.')
-  // redirect to Business Registry home page
-  const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
-  // assume Businesses URL is always reachable
-  businessesUrl && window.location.assign(businessesUrl)
+    'Click OK to go to the BC Registry home page.')
+  // redirect to BC Registry home page
+  // NB: this is hard-coded URL because we are probably missing necessary config
+  const bcRegUrl = 'https://www.bcregistry.ca/' // TODO: update when new URLs are set up
+  // assume BC Registry URL is always reachable
+  window.location.assign(bcRegUrl)
 })
