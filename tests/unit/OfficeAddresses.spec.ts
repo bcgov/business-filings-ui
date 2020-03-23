@@ -4,7 +4,6 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { OfficeAddresses } from '@/components/common'
 import { mount, Wrapper } from '@vue/test-utils'
-import { EntityTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -22,7 +21,7 @@ describe('OfficeAddresses as a COOP', () => {
 
   beforeAll(() => {
     // init store
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.registeredAddress = {
       deliveryAddress: {
         addressCity: 'delCity',
@@ -264,7 +263,7 @@ describe('OfficeAddresses as a BCOMP', () => {
 
   beforeAll(() => {
     // init store
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
     store.state.registeredAddress = {
       deliveryAddress: {
         addressCity: 'delCity',

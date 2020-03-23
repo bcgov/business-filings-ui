@@ -4,7 +4,6 @@ import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
-import { EntityTypes } from '@/enums'
 
 // NB: test util async issue
 // in some cases, the elements are not updated during the test
@@ -34,7 +33,7 @@ describe('AgmDate', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.currentDate = '2019-07-15'
     store.state.ARFilingYear = 2019
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.lastAnnualReportDate = '2018-07-15'
 
     wrapper = mount(AgmDate, { store, vuetify })

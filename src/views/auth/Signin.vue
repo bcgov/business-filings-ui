@@ -1,5 +1,5 @@
 <template>
-  <sbc-signin @sync-user-profile-ready="redirectOnLogin()" />
+  <sbc-signin @keycloak-session-ready="navigateToDashboard()" />
 </template>
 
 <script lang="ts">
@@ -8,7 +8,9 @@ import { Component, Vue } from 'vue-property-decorator'
 
 // Components
 import SbcSignin from 'sbc-common-components/src/components/SbcSignin.vue'
-import { Route } from 'vue-router/types'
+
+// Constants
+import { DASHBOARD } from '@/constants'
 
 @Component({
   components: {
@@ -16,10 +18,9 @@ import { Route } from 'vue-router/types'
   }
 })
 export default class Signin extends Vue {
-  /* Called when signin has succeeded. **/
-  private redirectOnLogin () {
-    // re-route to dashboard
-    this.$router.push({ name: 'dashboard' })
+  /** Called when signin has succeeded. */
+  private navigateToDashboard () {
+    this.$router.push({ name: DASHBOARD })
   }
 }
 </script>

@@ -296,7 +296,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="taskItems && taskItems.length === 0">
+    <v-card class="no-results" flat v-if="taskItems && !taskItems.length">
       <v-card-text>
         <div class="no-results__title">You don't have anything to do yet</div>
         <div class="no-results__subtitle">Filings that require your attention will appear here</div>
@@ -319,8 +319,9 @@ import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorD
 // Mixins
 import { EntityFilterMixin, DateMixin, FilingMixin } from '@/mixins'
 
-// Enums
+// Enums and Constants
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
+import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 export default {
   name: 'TodoList',
@@ -557,7 +558,7 @@ export default {
           // file the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.NEW)
-          this.$router.push({ name: 'annual-report', params: { filingId: 0 } }) // 0 means "new AR"
+          this.$router.push({ name: ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
           break
         default:
           // eslint-disable-next-line no-console
@@ -572,24 +573,24 @@ export default {
           // resume the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'annual-report', params: { filingId: task.id } })
+          this.$router.push({ name: ANNUAL_REPORT, params: { filingId: task.id } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // resume the subject Change Of Directors
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'standalone-directors', params: { filingId: task.id } })
+          this.$router.push({ name: STANDALONE_DIRECTORS, params: { filingId: task.id } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // resume the subject Change Of Address
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'standalone-addresses', params: { filingId: task.id } })
+          this.$router.push({ name: STANDALONE_ADDRESSES, params: { filingId: task.id } })
           break
         case FilingTypes.CORRECTION:
           // resume the subject Correction Filing
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'correction',
+          this.$router.push({ name: CORRECTION,
             params: { filingId: task.filingId, correctedFilingId: task.corrFilingId }
           })
           break

@@ -4,7 +4,7 @@ import axios from '@/axios-auth'
 
 /**
  * Fetches config from environment and API.
- * Also identifies Business ID.
+ * Also identifies Business ID from initial route.
  */
 export async function fetchConfig (): Promise<void> {
   //

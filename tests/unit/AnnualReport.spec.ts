@@ -20,9 +20,6 @@ import ArDate from '@/components/AnnualReport/ARDate.vue'
 import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { configJson } from '@/resources/business-config'
 
-// Enums
-import { EntityTypes } from '@/enums'
-
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 // suppress update watchers warnings
@@ -39,7 +36,7 @@ describe('AnnualReport - Part 1 - UI', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {
@@ -448,7 +445,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
     store.state.currentFilingStatus = 'NEW'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
   })
 
   it('renders the Annual Report sub-components properly when entity is a BCOMP', () => {
@@ -747,7 +744,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
@@ -1030,7 +1027,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
     store.state.currentFilingStatus = 'NEW'
@@ -1149,7 +1146,7 @@ describe('AnnualReport - Part 4 - Saving', () => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
@@ -1296,7 +1293,7 @@ describe('AnnualReport - Part 5 - Data', () => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = currentFilingYear
     store.state.currentFilingStatus = 'NEW'
@@ -1564,7 +1561,7 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
     store.state.ARFilingYear = 2018
     store.state.currentDate = '2018-09-26'
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
@@ -1794,7 +1791,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
@@ -2013,7 +2010,7 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   let vm: any
 
   store.state.entityName = 'Legal Name - CP0001191'
-  store.state.entityType = EntityTypes.COOP
+  store.state.entityType = 'CP'
   store.state.ARFilingYear = 2017
   store.state.currentFilingStatus = 'NEW'
   store.state.businessId = 'CP0001191'

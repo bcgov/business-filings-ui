@@ -10,9 +10,6 @@ import { getVuexStore } from '@/store'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import flushPromises from 'flush-promises'
 
-// Enums
-import { EntityTypes } from '@/enums'
-
 // Components
 import { DetailsList } from '@/components/common'
 
@@ -36,7 +33,7 @@ document.body.append(app)
 
 describe('TodoList - UI', () => {
   beforeAll(() => {
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
   })
 
   it('handles empty data', async () => {
@@ -855,7 +852,7 @@ describe('TodoList - UI', () => {
 
 describe('TodoList - UI - BCOMP', () => {
   beforeAll(() => {
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
   })
 
   it('handles empty data', async () => {
@@ -1301,7 +1298,7 @@ describe('TodoList - Click Tests', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
   })
 
   afterAll(() => {
@@ -1527,7 +1524,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
   })
 
   afterAll(() => {

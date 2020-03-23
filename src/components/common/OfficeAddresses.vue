@@ -211,11 +211,9 @@ import { CommonMixin, EntityFilterMixin } from '@/mixins'
 // Interfaces
 import { BaseAddressObjIF, BcorpAddressIf, AddressIF } from '@/interfaces'
 
-// Constants
-import { ADDRESSCHANGED } from '@/constants'
-
-// Enums
+// Enums and Constants
 import { EntityTypes } from '@/enums'
+import { ADDRESSCHANGED } from '@/constants'
 
 @Component({
   components: {

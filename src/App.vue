@@ -60,6 +60,9 @@ import { DateMixin, CommonMixin, DirectorMixin } from '@/mixins'
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
 
+// Constants
+import { SIGNIN, DASHBOARD } from '@/constants'
+
 export default {
   name: 'App',
 
@@ -93,27 +96,27 @@ export default {
       return sessionStorage.getItem('BUSINESS_ID')
     },
 
-    /** Is True if loading container should be shown, else False. */
+    /** True if loading container should be shown. */
     showLoadingContainer (): boolean {
       return (!this.dataLoaded && !this.dashboardUnavailableDialog && !this.accountAuthorizationDialog)
     },
 
-    /** Is True if route is Signin, else False. */
+    /** True if route is Signin. */
     isSigninRoute (): boolean {
-      return Boolean(this.$route.name === 'signin')
+      return Boolean(this.$route.name === SIGNIN)
     },
 
-    /** Is True if user is not authenticated, else False. */
-    isNotAuthenticated (): boolean {
+    /** True if user is authenticated. */
+    isAuthenticated (): boolean {
       // FUTURE: also check that token isn't expired!
-      return Boolean(!sessionStorage.getItem('KEYCLOAK_TOKEN'))
+      return Boolean(sessionStorage.getItem('KEYCLOAK_TOKEN'))
     }
   },
 
   created (): void {
     // do not fetch data if we need to authenticate
     // just let signin page do its thing
-    if (this.isNotAuthenticated) {
+    if (!this.isAuthenticated) {
       return
     }
 
@@ -412,7 +415,7 @@ export default {
     '$route' (): void {
       // if we (re)route to the dashboard then re-fetch all data
       // (does not fire on initial dashboard load)
-      if (this.$route.name === 'dashboard') {
+      if (this.$route.name === DASHBOARD) {
         this.fetchData()
       }
     }

@@ -245,7 +245,12 @@
             There is no opportunity to change information beyond this point.</span>
         </v-tooltip>
 
-        <v-btn id="ar-cancel-btn" large @click="navigateToDashboard()" :disabled="busySaving || filingPaying">
+        <v-btn
+          id="ar-cancel-btn"
+          large
+          :disabled="busySaving"
+          @click="navigateToDashboard()"
+        >
           <span>Cancel</span>
         </v-btn>
       </div>
@@ -257,9 +262,7 @@
       class="list-item"
       v-if="entityFilter(EntityTypes.BCOMP)"
     >
-      <div class="buttons-left">
-        <v-btn id="ar-back-btn" large @click="navigateToDashboard()" :loading="filingPaying">Back</v-btn>
-      </div>
+      <div class="buttons-left"></div>
 
       <div class="buttons-right">
         <v-tooltip top color="#3b6cff">
@@ -269,7 +272,7 @@
                 id="ar-file-pay-bc-btn"
                 color="primary"
                 large
-                :disabled="!validated"
+                :disabled="!validated || busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -280,6 +283,15 @@
           <span>Ensure all of your information is entered correctly before you File.<br>
             There is no opportunity to change information beyond this point.</span>
         </v-tooltip>
+
+        <v-btn
+          id="ar-cancel-btn"
+          large
+          :disabled="busySaving"
+          @click="navigateToDashboard()"
+        >
+          <span>Cancel</span>
+        </v-btn>
       </div>
     </v-container>
   </div>
@@ -304,11 +316,9 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
 // Mixins
 import { DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
-// Constants
-import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED } from '@/constants'
-
-// Enums
+// Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
+import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/constants'
 
 export default {
   name: 'AnnualReport',
@@ -369,9 +379,9 @@ export default {
       // other local properties
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
-      saving: false,
-      savingResuming: false,
-      filingPaying: false,
+      saving: false as boolean, // true only when saving
+      savingResuming: false as boolean, // true only when saving and resuming
+      filingPaying: false as boolean, // true only when filing and paying
       haveChanges: false,
       saveErrors: [],
       saveWarnings: [],
@@ -394,7 +404,7 @@ export default {
     /**
      * The As Of date, used to query data, as Effective Date, and as Annual Report Date.
      */
-    asOfDate () {
+    asOfDate (): string {
       // if AGM Date is not empty then use it
       if (this.agmDate) return this.agmDate
       // if filing is in past year then use last day in that year
@@ -410,18 +420,18 @@ export default {
       return this.currentDate ? +this.currentDate.substring(0, 4) : 0
     },
 
-    certifyMessage () {
+    certifyMessage (): string {
       if (this.entityFilter(EntityTypes.BCOMP)) {
         return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
       }
       return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
     },
 
-    payApiUrl () {
+    payApiUrl (): string {
       return sessionStorage.getItem('PAY_API_URL')
     },
 
-    validated () {
+    validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
 
       if (this.entityFilter(EntityTypes.COOP)) {
@@ -431,11 +441,12 @@ export default {
       return (staffPaymentValid && this.certifyFormValid)
     },
 
-    busySaving () {
+    /** True when saving, saving and resuming, or filing and paying. */
+    busySaving (): boolean {
       return (this.saving || this.savingResuming || this.filingPaying)
     },
 
-    isPayRequired () {
+    isPayRequired (): boolean {
       // FUTURE: modify rule here as needed
       return (this.totalFee > 0)
     }
@@ -460,7 +471,7 @@ export default {
 
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: DASHBOARD })
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
@@ -682,7 +693,7 @@ export default {
       const filing = await this.saveFiling(true)
       // on success, go to dashboard
       if (filing) {
-        this.$router.push({ name: 'dashboard' })
+        this.$router.push({ name: DASHBOARD })
       }
       this.savingResuming = false
     },
@@ -714,7 +725,7 @@ export default {
           window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push({ name: 'dashboard', query: { filing_id: filingId } })
+          this.$router.push({ name: DASHBOARD, query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -898,7 +909,7 @@ export default {
 
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: DASHBOARD })
     },
 
     resetErrors () {

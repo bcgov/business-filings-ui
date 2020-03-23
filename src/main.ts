@@ -15,7 +15,7 @@ import '@/registerServiceWorker'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
-import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
+import KeyCloakService from 'sbc-common-components/src/services/keycloak.services'
 import App from '@/App.vue'
 
 // get rid of "You are running Vue in development mode" console message
@@ -32,7 +32,7 @@ async function start () {
   await fetchConfig()
 
   // configure Keycloak Service
-  await KeycloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
+  await KeyCloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
 
   // get Vue objects only after we have config
   const router = getVueRouter()
@@ -54,7 +54,7 @@ start().catch((error) => {
   alert('There was an error starting this page. (See console for details.)\n' +
     'Click OK to go to the BC Registry home page.')
   // redirect to BC Registry home page
-  // NB: this is hard-coded URL because we are probably missing necessary config
+  // NB: this is a hard-coded URL because we are probably missing the config keys
   const bcRegUrl = 'https://www.bcregistry.ca/' // TODO: update when new URLs are set up
   // assume BC Registry URL is always reachable
   window.location.assign(bcRegUrl)

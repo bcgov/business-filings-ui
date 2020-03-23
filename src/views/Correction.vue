@@ -123,14 +123,18 @@
       class="list-item"
     >
       <div class="buttons-left">
-        <v-btn id="correction-save-btn" large
+        <v-btn
+          id="correction-save-btn"
+          large
           :disabled="busySaving"
           :loading="saving"
           @click="onClickSave()"
         >
           <span>Save</span>
         </v-btn>
-        <v-btn id="correction-save-resume-btn" large
+        <v-btn
+          id="correction-save-resume-btn"
+          large
           :disabled="busySaving"
           :loading="savingResuming"
           @click="onClickSaveResume()"
@@ -159,7 +163,12 @@
             There is no opportunity to change information beyond this point.</span>
         </v-tooltip>
 
-        <v-btn id="correction-cancel-btn" large @click="navigateToDashboard()" :disabled="busySaving || filingPaying">
+        <v-btn
+          id="correction-cancel-btn"
+          large
+          :disabled="busySaving"
+          @click="navigateToDashboard()"
+        >
           <span>Cancel</span>
         </v-btn>
       </div>
@@ -184,8 +193,9 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
 // Mixins
 import { CommonMixin, DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
-// Enums
+// Enums and Constants
 import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+import { DASHBOARD } from '@/constants'
 
 export default {
   name: 'Correction',
@@ -234,9 +244,9 @@ export default {
       filingId: 0, // id of this correction filing
       correctedFilingId: 0, // id of filing to correct
       origFiling: null, // copy of original filing
-      saving: false,
-      savingResuming: false,
-      filingPaying: false,
+      saving: false, // true only when saving
+      savingResuming: false, // true only when saving and resuming
+      filingPaying: false, // true only when filing and paying
       haveChanges: false,
       saveErrors: [],
       saveWarnings: [],
@@ -307,7 +317,7 @@ export default {
       return (staffPaymentValid && this.detailCommentValid && this.certifyFormValid)
     },
 
-    /** Returns True if page is busy saving, else False. */
+    /** True when saving, saving and resuming, or filing and paying. */
     busySaving (): boolean {
       return (this.saving || this.savingResuming || this.filingPaying)
     },
@@ -342,7 +352,7 @@ export default {
 
     // if required data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.correctedFilingId)) {
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: DASHBOARD })
     } else {
       this.dataLoaded = false
       this.loadingMessage = `Preparing Your Correction`
@@ -499,7 +509,7 @@ export default {
       const filing: any = await this.saveFiling(true)
       // on success, go to dashboard
       if (filing) {
-        this.$router.push({ name: 'dashboard' })
+        this.$router.push({ name: DASHBOARD })
       }
       this.savingResuming = false
     },
@@ -529,7 +539,7 @@ export default {
           window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push({ name: 'dashboard', query: { filing_id: filingId } })
+          this.$router.push({ name: DASHBOARD, query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -666,7 +676,7 @@ export default {
     /** Handler for dialog Exit click events. */
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: DASHBOARD })
     },
 
     /** Reset all error flags/states. */
