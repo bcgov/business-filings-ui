@@ -50,7 +50,7 @@
           <v-menu bottom left offset-y content-class="v-menu">
             <template v-slot:activator="{ on }">
               <v-btn id="entity-settings-button" small icon color="primary" v-on="on">
-                <v-icon small>mdi-settings</v-icon>
+                <v-icon small>mdi-cog</v-icon>
               </v-btn>
             </template>
             <v-list class="pt-0 pb-0">
