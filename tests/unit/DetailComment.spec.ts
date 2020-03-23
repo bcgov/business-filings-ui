@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import { DetailComment } from '@/components/common'
 import { sleep } from '@/utils/sleep'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('DetailComment', () => {
   it('initializes correctly', () => {

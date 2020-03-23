@@ -833,7 +833,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
 
   /**
    * Function called externally to set the draft date.
-   * TODO: change this to a prop
+   * FUTURE: change this to a prop
    * @param date The draft date to set.
    */
   public setDraftDate (date): void {
@@ -846,7 +846,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
 
   /**
    * Function called internally and externally to fetch the list of directors.
-   * TODO: change this to a prop?
+   * FUTURE: change this to a prop?
    */
   public getDirectors (getOrigOnly: Boolean = false): void {
     if (this.entityIncNo && this.asOfDate) {
@@ -1205,7 +1205,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin,
 
   /**
    * Function called internally and externally to set all directors.
-   * TODO: change this to a prop
+   * FUTURE: change this to a prop
    * @param directors The list of directors to set.
    */
   setAllDirectors (directors): void {

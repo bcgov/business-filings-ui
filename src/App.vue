@@ -1,14 +1,14 @@
 <template>
   <v-app class="app-container theme--light" id="app">
 
-    <DashboardUnavailableDialog
+    <dashboard-unavailable-dialog
       :dialog="dashboardUnavailableDialog"
       @exit="onClickExit"
       @retry="onClickRetry"
       attach="#app"
     />
 
-    <AccountAuthorizationDialog
+    <account-authorization-dialog
       :dialog="accountAuthorizationDialog"
       @exit="onClickExit"
       @retry="onClickRetry"
@@ -28,8 +28,9 @@
     <sbc-header ref="sbcHeader" />
 
     <div class="app-body">
-      <main v-if="dataLoaded">
-        <EntityInfo />
+      <!-- only show pages while signing in or once the data is loaded -->
+      <main v-if="isSigninRoute || dataLoaded">
+        <entity-info />
         <router-view />
       </main>
     </div>
@@ -39,10 +40,11 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 // Libraries
 import { mapActions } from 'vuex'
 import axios from '@/axios-auth'
+import { Route } from 'vue-router/types'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -65,9 +67,10 @@ export default {
 
   data () {
     return {
-      dataLoaded: false,
-      dashboardUnavailableDialog: false,
-      accountAuthorizationDialog: false
+      dataLoaded: false as boolean,
+      dashboardUnavailableDialog: false as boolean,
+      accountAuthorizationDialog: false as boolean,
+      currentDateTimerId: null as number
     }
   },
 
@@ -80,17 +83,44 @@ export default {
   },
 
   computed: {
-    authAPIURL () {
+    /** The Auth API string. */
+    authApiUrl (): string {
       return sessionStorage.getItem('AUTH_API_URL')
     },
 
-    showLoadingContainer () {
-      return !this.dataLoaded && !this.dashboardUnavailableDialog && !this.accountAuthorizationDialog
+    /** The Business ID string. */
+    businessId (): string {
+      return sessionStorage.getItem('BUSINESS_ID')
+    },
+
+    /** Is True if loading container should be shown, else False. */
+    showLoadingContainer (): boolean {
+      return (!this.dataLoaded && !this.dashboardUnavailableDialog && !this.accountAuthorizationDialog)
+    },
+
+    /** Is True if route is Signin, else False. */
+    isSigninRoute (): boolean {
+      return Boolean(this.$route.name === 'signin')
+    },
+
+    /** Is True if user is not authenticated, else False. */
+    isNotAuthenticated (): boolean {
+      // FUTURE: also check that token isn't expired!
+      return Boolean(!sessionStorage.getItem('KEYCLOAK_TOKEN'))
     }
   },
 
-  created () {
-    // fetch all data
+  created (): void {
+    // do not fetch data if we need to authenticate
+    // just let signin page do its thing
+    if (this.isNotAuthenticated) {
+      return
+    }
+
+    // init current date
+    this.updateCurrentDate()
+
+    // fetch business data
     this.fetchData()
 
     // listen for dashboard reload trigger event
@@ -104,36 +134,51 @@ export default {
       'setNextARDate', 'setTasks', 'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors',
       'setLastAnnualReportDate', 'setConfigObject']),
 
-    fetchData () {
+    /** Stores today's date and sets timeout to keep it updated. */
+    updateCurrentDate (): void {
+      // clear previous timeout, if any
+      clearTimeout(this.currentDateTimerId)
+
+      // set current date
+      const now = new Date()
+      const date = this.dateToUsableString(now)
+      this.setCurrentDate(date)
+
+      // set timeout to run this again at midnight
+      const hoursToMidnight = 23 - now.getHours()
+      const minutesToMidnight = 59 - now.getMinutes()
+      const secondsToMidnight = 59 - now.getSeconds()
+      const timeout = ((((hoursToMidnight * 60) + minutesToMidnight) * 60) + secondsToMidnight) * 1000
+      this.currentDateTimerId = setTimeout(this.updateCurrentDate, timeout)
+    },
+
+    fetchData (): void {
       this.dataLoaded = false
-      let businessId
 
       try {
-        // get initial data
+        // get Keycloak roles
         const jwt = this.getJWT()
         const keycloakRoles = this.getKeycloakRoles(jwt)
         this.setKeycloakRoles(keycloakRoles)
-        businessId = this.getBusinessId()
-        this.updateCurrentDate()
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error)
-        this.dashboardUnavailableDialog = true
+        this.accountAuthorizationDialog = true
         return // do not execute remaining code
       }
 
       // check if current user is authorized
-      this.getAuthorizations(businessId).then(data => {
-        this.storeAuthRoles(data) // throws if no role
+      this.getAuthorizations().then(data => {
+        this.storeAuthorizations(data) // throws if no role
 
         // good so far ... fetch the rest of the data
         Promise.all([
-          this.getBusinessInfo(businessId),
-          axios.get(businessId),
-          axios.get(businessId + '/tasks'),
-          axios.get(businessId + '/filings'),
-          axios.get(businessId + '/addresses'),
-          axios.get(businessId + '/directors')
+          this.getBusinessInfo(),
+          this.getEntityInfo(),
+          this.getTasks(),
+          this.getFilings(),
+          this.getAddresses(),
+          this.getDirectors()
         ]).then(data => {
           if (!data || data.length !== 6) throw new Error('Incomplete data')
           this.storeBusinessInfo(data[0])
@@ -155,15 +200,17 @@ export default {
       })
     },
 
-    getJWT () {
+    /** Gets Keycloak JWT and parses it. */
+    getJWT (): any {
       const token = sessionStorage.getItem('KEYCLOAK_TOKEN')
       if (token) {
-        return this.parseJwt(token)
+        return this.parseToken(token)
       }
       throw new Error('Error getting Keycloak token')
     },
 
-    parseJwt (token) {
+    /** Decodes and parses Keycloak token. */
+    parseToken (token: string): any {
       try {
         const base64Url = token.split('.')[1]
         const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {
@@ -171,11 +218,12 @@ export default {
         }).join(''))
         return JSON.parse(base64)
       } catch (error) {
-        throw new Error('Error parsing JWT - ' + error)
+        throw new Error('Error parsing token - ' + error)
       }
     },
 
-    getKeycloakRoles (jwt) {
+    /** Gets Keycloak roles from JWT. */
+    getKeycloakRoles (jwt: any): Array<string> {
       const keycloakRoles = jwt.roles
       if (keycloakRoles && keycloakRoles.length > 0) {
         return keycloakRoles
@@ -183,43 +231,16 @@ export default {
       throw new Error('Error getting Keycloak roles')
     },
 
-    getBusinessId () {
-      const businessId = sessionStorage.getItem('BUSINESS_IDENTIFIER')
-      if (businessId) {
-        return businessId
-      }
-      throw new Error('Error getting business identifier')
-    },
-
-    updateCurrentDate () {
-      const now = new Date()
-      const date = this.dateToUsableString(now)
-      this.setCurrentDate(date)
-      // set timeout to run this again at midnight
-      const hoursToMidnight = 23 - now.getHours()
-      const minutesToMidnight = 59 - now.getMinutes()
-      const secondsToMidnight = 59 - now.getSeconds()
-      const timeout = ((((hoursToMidnight * 60) + minutesToMidnight) * 60) + secondsToMidnight) * 1000
-      setTimeout(this.updateCurrentDate, timeout)
-    },
-
-    getAuthorizations (businessId) {
-      const url = businessId + '/authorizations'
+    /** Gets authorizations from Auth API. */
+    getAuthorizations (): Promise<any> {
+      const url = this.businessId + '/authorizations'
       const config = {
-        baseURL: this.authAPIURL + 'entities/'
+        baseURL: this.authApiUrl + 'entities/'
       }
       return axios.get(url, config)
     },
 
-    getBusinessInfo (businessId) {
-      const url = businessId
-      const config = {
-        baseURL: this.authAPIURL + 'entities/'
-      }
-      return axios.get(url, config)
-    },
-
-    storeAuthRoles (response) {
+    storeAuthorizations (response: any): void {
       // NB: roles array may contain 'view', 'edit' or nothing
       const authRoles = response && response.data && response.data.roles
       if (authRoles && authRoles.length > 0) {
@@ -229,7 +250,16 @@ export default {
       }
     },
 
-    storeBusinessInfo (response) {
+    /** Gets business info from Auth API. */
+    getBusinessInfo (): Promise<any> {
+      const url = this.businessId
+      const config = {
+        baseURL: this.authApiUrl + 'entities/'
+      }
+      return axios.get(url, config)
+    },
+
+    storeBusinessInfo (response: any): void {
       const contacts = response && response.data && response.data.contacts
       // ensure we received the right looking object
       // but allow empty contacts array
@@ -246,7 +276,13 @@ export default {
       }
     },
 
-    storeEntityInfo (response) {
+    /** Gets entity info from Legal API. */
+    getEntityInfo (): Promise<any> {
+      const url = this.businessId
+      return axios.get(url)
+    },
+
+    storeEntityInfo (response: any): void {
       if (response && response.data && response.data.business) {
         this.setEntityName(response.data.business.legalName)
         this.setEntityType(response.data.business.legalType)
@@ -258,7 +294,9 @@ export default {
           ? response.data.business.lastLedgerTimestamp.split('T')[0] : null)
         this.setEntityFoundingDate(response.data.business.foundingDate) // datetime
         this.setLastAnnualReportDate(response.data.business.lastAnnualReport)
+
         this.storeConfigObject(response.data.business.legalType)
+
         const date = response.data.business.lastAnnualGeneralMeetingDate
         if (
           date &&
@@ -276,7 +314,13 @@ export default {
       }
     },
 
-    storeTasks (response) {
+    /** Gets tasks list from Legal API. */
+    getTasks (): Promise<any> {
+      const url = this.businessId + '/tasks'
+      return axios.get(url)
+    },
+
+    storeTasks (response: any): void {
       if (response && response.data && response.data.tasks) {
         this.setTasks(response.data.tasks)
       } else {
@@ -284,7 +328,13 @@ export default {
       }
     },
 
-    storeFilings (response) {
+    /** Gets filings list from Legal API. */
+    getFilings (): Promise<any> {
+      const url = this.businessId + '/filings'
+      return axios.get(url)
+    },
+
+    storeFilings (response: any): void {
       if (response && response.data && response.data.filings) {
         this.setFilings(response.data.filings)
       } else {
@@ -292,7 +342,13 @@ export default {
       }
     },
 
-    storeAddresses (response) {
+    /** Gets addresses from Legal API. */
+    getAddresses (): Promise<any> {
+      const url = this.businessId + '/addresses'
+      return axios.get(url)
+    },
+
+    storeAddresses (response: any): void {
       if (response && response.data) {
         if (response.data.registeredOffice) {
           this.setRegisteredAddress(this.omitProps(response.data.registeredOffice,
@@ -309,7 +365,13 @@ export default {
       }
     },
 
-    storeDirectors (response) {
+    /** Gets directors list from Legal API. */
+    getDirectors (): Promise<any> {
+      const url = this.businessId + '/directors'
+      return axios.get(url)
+    },
+
+    storeDirectors (response: any): void {
       if (response && response.data && response.data.directors) {
         const directorsList = response.data.directors
         const directors = directorsList.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
@@ -324,18 +386,22 @@ export default {
       }
     },
 
-    storeConfigObject (entityType) {
-      const configObject = configJson.find(x => x.typeEnum === entityType)
+    /** Stores config object matching this business' legal type. */
+    storeConfigObject (legalType: string): void {
+      const configObject = configJson.find(x => x.typeEnum === legalType)
       this.setConfigObject(configObject)
     },
 
-    onClickExit () {
-      const businessesUrl = sessionStorage.getItem('BUSINESSES_URL') || ''
+    /** Handles Exit click event from dialogs. */
+    onClickExit (): void {
+      // redirect to Business Registry home page
+      const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
       // assume Businesses URL is always reachable
       businessesUrl && window.location.assign(businessesUrl)
     },
 
-    onClickRetry () {
+    /** Handles Retry click event from dialogs. */
+    onClickRetry (): void {
       this.dashboardUnavailableDialog = false
       this.accountAuthorizationDialog = false
       this.fetchData()
@@ -343,7 +409,7 @@ export default {
   },
 
   watch: {
-    '$route' () {
+    '$route' (): void {
       // if we (re)route to the dashboard then re-fetch all data
       // (does not fire on initial dashboard load)
       if (this.$route.name === 'dashboard') {

@@ -1,5 +1,5 @@
 /**
- * Function that "sleeps" for specified timeout. Must be called from async method.
+ * "Sleeps" for specified timeout. Must be called from async method.
  * @param ms Delay to sleep, in milliseconds.
  * @returns A promise to await upon.
  */

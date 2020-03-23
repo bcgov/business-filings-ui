@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { shallowMount } from '@vue/test-utils'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import axios from '@/axios-auth'
 import { AddCommentDialog } from '@/components/dialogs'
 import { DetailComment } from '@/components/common'
@@ -11,6 +11,7 @@ import { DetailComment } from '@/components/common'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('AddCommentDialog', () => {
   it('renders the page contents correctly', () => {

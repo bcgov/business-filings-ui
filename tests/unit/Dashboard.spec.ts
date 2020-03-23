@@ -2,10 +2,11 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
+import sinon from 'sinon'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
-
 import mockRouter from './mockRouter'
-import store from '@/store/store'
+import axios from '@/axios-auth'
+import { getVuexStore } from '@/store'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -29,6 +30,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
 const app: HTMLDivElement = document.createElement('div')
@@ -103,60 +105,75 @@ describe('Dashboard - UI', () => {
 })
 
 describe('Dashboard - In Process Tests', () => {
-  it('marks filing as PROCESSING when expecting completed filing and dashboard does not reflect this', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeEach(() => {
+    // init store
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
+
+    // mock "get filing" endpoint
+    sinon.stub(axios, 'get').withArgs('CP0001191/filings/123')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            header: {
+              status: 'PENDING'
+            }
+          }
+        }
+      })))
+
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+    // set Filing ID in URL to indicate that we've returned from the dashboard from a filing (file pay, not save draft)
     router.push({ name: 'dashboard', query: { filing_id: '123' } })
-    const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
-    const vm = wrapper.vm as any
 
-    // push filing ID in URL to indicate that we've returned from the dashboard from a filing (file pay, not save draft)
+    wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
+    vm = wrapper.vm as any
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('marks filing as PROCESSING when expecting completed filing and dashboard does not reflect this', () => {
+    // verify Filing ID passed in
     expect(vm.$route.query.filing_id).toBe('123')
 
-    // emit to-do list from to-do component with the filing marked as pending
+    // emit Todo List _with_ the pending filing
     wrapper.find(TodoList).vm.$emit('todo-filings', [
-      {
-        'type': 'changeOfDirectors',
-        'id': 123,
-        'status': 'PENDING',
-        'enabled': true,
-        'order': 1
-      }])
+      { id: 123 }
+    ])
 
-    // emit filing list from Filing History component without the completed filing
+    // emit Filings List _without_ the completed filing
     wrapper.find(FilingHistoryList).vm.$emit('filings-list', [])
 
+    // clear Todo List so test can end
+    wrapper.find(TodoList).vm.$emit('todo-filings', [])
+
+    // verify that filing is "in process"
     expect(vm.inProcessFiling).toEqual(123)
 
     wrapper.destroy()
   })
 
   it('does not mark filing as PROCESSING when expecting completed filing and dashboard reflects this', () => {
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    router.push({ name: 'dashboard', query: { filing_id: '123' } })
-    const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
-    const vm = wrapper.vm as any
-
-    // push filing ID in URL to indicate that we've returned from the dashboard from a filing (file pay, not save draft)
+    // verify Filing ID passed in
     expect(vm.$route.query.filing_id).toBe('123')
 
-    // emit to-do list from to-do component without the filing marked as pending
+    // emit Todo List _without_ the pending filing
     wrapper.find(TodoList).vm.$emit('todo-filings', [])
 
-    // emit filing list from Filing History component with the completed filing
+    // emit Filings List _with_ the completed filing
     wrapper.find(FilingHistoryList).vm.$emit('filings-list', [
-      {
-        'name': 'Director Change',
-        'filingId': 123,
-        'filingAuthor': 'fS',
-        'filingDate': '2019-10-17',
-        'paymentToken': '661'
-      }
+      { id: 123 }
     ])
 
+    // verify that there is no "in process" filing
     expect(vm.inProcessFiling).toBeNull()
 
     wrapper.destroy()
@@ -166,12 +183,16 @@ describe('Dashboard - In Process Tests', () => {
 describe('Dashboard - Click Tests', () => {
   it('routes to Standalone Office Address Filing page when EDIT is clicked', done => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
+
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
     const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
 
@@ -182,7 +203,7 @@ describe('Dashboard - Click Tests', () => {
 
       // verify routing to Standalone Office Address Filing page with id=0
       expect(vm.$route.name).toBe('standalone-addresses')
-      expect(vm.$route.params.id).toBe(0)
+      expect(vm.$route.params.filingId).toBe(0)
 
       wrapper.destroy()
       done()
@@ -191,14 +212,19 @@ describe('Dashboard - Click Tests', () => {
 
   it('displays the change of address warning dialog as a BCOMP', done => {
     // init store
-    store.state.entityIncNo = 'BC0007291'
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
     store.state.entityType = EntityTypes.BCOMP
+
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
     const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
+
     vm.coaWarningDialog = false // initially hidden
 
     Vue.nextTick(async () => {
@@ -213,7 +239,7 @@ describe('Dashboard - Click Tests', () => {
       wrapper.find(CoaWarningDialog).vm.$emit('proceed', true)
 
       expect(vm.$route.name).toBe('standalone-addresses')
-      expect(vm.$route.params.id).toBe(0)
+      expect(vm.$route.params.filingId).toBe(0)
 
       wrapper.destroy()
       done()
@@ -222,6 +248,7 @@ describe('Dashboard - Click Tests', () => {
 
   it('routes to Standalone Directors Filing page when EDIT is clicked', done => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
 
     // create a Local Vue and install router on it
@@ -238,7 +265,7 @@ describe('Dashboard - Click Tests', () => {
 
       // verify routing to Standalone Directors Filing page with id=0
       expect(vm.$route.name).toBe('standalone-directors')
-      expect(vm.$route.params.id).toBe(0)
+      expect(vm.$route.params.filingId).toBe(0)
 
       wrapper.destroy()
       done()

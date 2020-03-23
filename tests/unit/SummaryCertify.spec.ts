@@ -1,14 +1,16 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import { mount, Wrapper } from '@vue/test-utils'
 
 // Components
 import { SummaryCertify } from '@/components/common'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 const statementSelector: string = '.certify-content'
 const someCertifier = 'Some Certifier'

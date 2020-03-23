@@ -457,31 +457,39 @@ export default {
       if (!item || !item.type) return // safety check
       switch (item.type) {
         case FilingTypes.ANNUAL_REPORT:
-          // FUTURE?
-          // this.$router.push({ name: 'annual-report', params: { id: item.filingId, isCorrection: true } })
+          // FUTURE:
+          // this.$router.push({ name: 'annual-report',
+          //   params: { filingId: item.filingId, isCorrection: true }})
           // FOR NOW:
-          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
+          this.$router.push({ name: 'correction',
+            params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
-          // FUTURE?
-          // this.$router.push({ name: 'standalone-directors', params: { id: item.filingId, isCorrection: true } })
+          // FUTURE:
+          // this.$router.push({ name: 'standalone-directors',
+          //   params: { filingId: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
+          this.$router.push({ name: 'correction',
+            params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
-          // FUTURE?
-          // this.$router.push({ name: 'standalone-addresses', params: { id: item.filingId, isCorrection: true } })
+          // FUTURE:
+          // this.$router.push({ name: 'standalone-addresses',
+          //   params: { filingId: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
+          this.$router.push({ name: 'correction',
+            params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CORRECTION:
-          // FUTURE: allow a correction to a correction (design TBD)
-          // this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
+          // FUTURE: allow a correction to a correction?
+          // this.$router.push({ name: 'correction',
+          //   params: { correctedFilingId: item.filingId } })
           alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
           break
         default:
           // fallback for all other filings
-          this.$router.push({ name: 'correction', params: { correctedFilingId: item.filingId } })
+          this.$router.push({ name: 'correction',
+            params: { correctedFilingId: item.filingId } })
           break
       }
     },

@@ -229,13 +229,13 @@
                   </template>
 
                   <v-btn v-else-if="!isCompleted(task)"
-                  class="btn-file-now"
-                  color="primary"
-                  :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
-                  @click.native.stop="doFileNow(task)"
-                >
-                  <span>File Annual Report</span>
-                </v-btn>
+                    class="btn-file-now"
+                    color="primary"
+                    :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
+                    @click.native.stop="doFileNow(task)"
+                  >
+                    <span>File Annual Report</span>
+                  </v-btn>
                 </div>
               </div>
             </div>
@@ -557,7 +557,7 @@ export default {
           // file the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.NEW)
-          this.$router.push({ name: 'annual-report', params: { id: 0 } }) // 0 means "new AR"
+          this.$router.push({ name: 'annual-report', params: { filingId: 0 } }) // 0 means "new AR"
           break
         default:
           // eslint-disable-next-line no-console
@@ -572,24 +572,26 @@ export default {
           // resume the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'annual-report', params: { id: task.id } })
+          this.$router.push({ name: 'annual-report', params: { filingId: task.id } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // resume the subject Change Of Directors
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'standalone-directors', params: { id: task.id } })
+          this.$router.push({ name: 'standalone-directors', params: { filingId: task.id } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // resume the subject Change Of Address
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'standalone-addresses', params: { id: task.id } })
+          this.$router.push({ name: 'standalone-addresses', params: { filingId: task.id } })
           break
         case FilingTypes.CORRECTION:
           // resume the subject Correction Filing
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: 'correction', params: { id: task.filingId, correctedFilingId: task.corrFilingId } })
+          this.$router.push({ name: 'correction',
+            params: { filingId: task.filingId, correctedFilingId: task.corrFilingId }
+          })
           break
         default:
           // eslint-disable-next-line no-console
@@ -604,12 +606,12 @@ export default {
       const paymentToken = task.paymentToken
 
       const baseUrl = sessionStorage.getItem('BASE_URL')
-      const returnURL = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
+      const returnUrl = encodeURIComponent(baseUrl + '?filing_id=' + filingId)
       const authUrl = sessionStorage.getItem('AUTH_URL')
-      const payURL = authUrl + 'makepayment/' + paymentToken + '/' + returnURL
+      const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
       // assume Pay URL is always reachable
-      window.location.assign(payURL)
+      window.location.assign(payUrl)
       return true
     },
 
@@ -672,7 +674,7 @@ export default {
     async doDeleteDraft (task) {
       let url = this.entityIncNo + '/filings/' + task.id
       await axios.delete(url).then(res => {
-        if (!res) { throw new Error('invalid API response') }
+        if (!res) { throw new Error('Invalid API response') }
 
         // emit dashboard reload trigger event
         this.$root.$emit('triggerDashboardReload')
@@ -733,7 +735,7 @@ export default {
     async cancelPaymentAndSetToDraft (task) {
       let url = this.entityIncNo + '/filings/' + task.id
       await axios.patch(url, {}).then(res => {
-        if (!res) { throw new Error('invalid API response') }
+        if (!res) { throw new Error('Invalid API response') }
 
         // emit dashboard reload trigger event
         this.$root.$emit('triggerDashboardReload')

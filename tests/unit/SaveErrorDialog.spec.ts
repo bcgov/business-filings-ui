@@ -2,12 +2,13 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import { SaveErrorDialog } from '@/components/dialogs'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('SaveErrorDialog - Part 1 - Displays Error/Warning messages', () => {
   it('displays generic message for normal users', () => {

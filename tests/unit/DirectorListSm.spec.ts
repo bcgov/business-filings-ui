@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import { EntityTypes } from '@/enums'
 
@@ -11,6 +10,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 describe('DirectorListSm', () => {
   it('handles empty data as a coop', done => {

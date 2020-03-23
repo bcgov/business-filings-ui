@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import { createLocalVue, shallowMount, mount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
 import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
 import VueRouter from 'vue-router'
@@ -24,6 +24,7 @@ Vue.use(Vuelidate)
 Vue.config.silent = true
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 const sampleDeliveryAddress = {
   'streetAddress': 'delivery street address',
@@ -48,11 +49,12 @@ const sampleMailingAddress = {
 describe('Standalone Office Address Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
   })
 
   it('renders the filing sub-components properly', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
 
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
@@ -66,7 +68,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // init store
     store.state.keycloakRoles = ['staff']
 
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
 
     // component should be displayed
@@ -80,7 +82,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('enables Validated flag when properties are valid', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -97,7 +99,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Office Address form is invalid', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -114,7 +116,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Certify form is invalid', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -131,7 +133,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -174,7 +176,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 
   it('disables Validated flag when filing data is invalid', () => {
-    const $route = { params: { id: 0 } } // new filing id
+    const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -192,7 +194,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -228,7 +231,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -264,7 +268,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -299,6 +304,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
 
@@ -346,7 +352,7 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
   })
 
   it('fetches a draft Standalone Office Address filing', async () => {
-    const $route = { params: { id: '123' } } // draft filing id
+    const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
@@ -374,12 +380,13 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
 describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'BC0001191'
+    store.state.businessId = 'BC0007291'
+    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = EntityTypes.BCOMP
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('BC0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('BC0007291/filings/123')
       .returns(new Promise((resolve) => resolve({
         data: {
           filing: {
@@ -398,14 +405,14 @@ describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => 
             business: {
               cacheId: 1,
               foundingDate: '2007-04-08',
-              identifier: 'BC0001191',
+              identifier: 'BC0007291',
               lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - BC0001191'
             },
             header: {
               name: 'changeOfAddress',
               date: '2017-06-06',
-              submitter: 'BC0001191',
+              submitter: 'BC0007291',
               status: 'DRAFT',
               certifiedBy: 'Full Name',
               email: 'no_one@never.get',
@@ -426,7 +433,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => 
   })
 
   it('fetches a draft Standalone Office Address filing', async () => {
-    const $route = { params: { id: '123' } } // draft filing id
+    const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
@@ -466,6 +473,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = EntityTypes.COOP
@@ -612,7 +620,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -656,7 +665,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -671,7 +680,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '123' } }) // existing filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -720,7 +730,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -742,14 +752,15 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'BC0001191'
+    store.state.businessId = 'BC0007291'
+    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = EntityTypes.BCOMP
 
     let sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    sinonAxiosGet.withArgs('BC0001191/filings/123')
+    sinonAxiosGet.withArgs('BC0007291/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -769,14 +780,14 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               'business': {
                 'cacheId': 1,
                 'foundingDate': '2007-04-08',
-                'identifier': 'BC0001191',
+                'identifier': 'BC0007291',
                 'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
                 'legalName': 'Legal Name - BC0001191'
               },
               'header': {
                 'name': 'changeOfAddress',
                 'date': '2017-06-06',
-                'submitter': 'BC0001191',
+                'submitter': 'BC0007291',
                 'status': 'DRAFT',
                 'certifiedBy': 'Full Name',
                 'email': 'no_one@never.get',
@@ -787,7 +798,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
           }
       })))
 
-    sinonAxiosGet.withArgs('BC0001191/tasks')
+    sinonAxiosGet.withArgs('BC0007291/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -809,7 +820,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       })))
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('BC0001191/filings')
+    sinon.stub(axios, 'post').withArgs('BC0007291/filings')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -829,14 +840,14 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               'business': {
                 'cacheId': 1,
                 'foundingDate': '2007-04-08',
-                'identifier': 'BC0001191',
+                'identifier': 'BC0007291',
                 'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
                 'legalName': 'Legal Name - BC0001191'
               },
               'header': {
                 'name': 'changeOfAddress',
                 'date': '2017-06-06',
-                'submitter': 'BC0001191',
+                'submitter': 'BC0007291',
                 'status': 'PENDING',
                 'filingId': 123,
                 'certifiedBy': 'Full Name',
@@ -848,7 +859,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       })))
 
     // mock "update and file" endpoint
-    sinon.stub(axios, 'put').withArgs('BC0001191/filings/123')
+    sinon.stub(axios, 'put').withArgs('BC0007291/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -868,14 +879,14 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               'business': {
                 'cacheId': 1,
                 'foundingDate': '2007-04-08',
-                'identifier': 'BC0001191',
+                'identifier': 'BC0007291',
                 'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
                 'legalName': 'Legal Name - BC0001191'
               },
               'header': {
                 'name': 'changeOfAddress',
                 'date': '2017-06-06',
-                'submitter': 'BC0001191',
+                'submitter': 'BC0007291',
                 'status': 'PENDING',
                 'certifiedBy': 'Full Name',
                 'email': 'no_one@never.get',
@@ -900,7 +911,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -944,7 +956,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -959,7 +971,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '123' } }) // existing filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+
     const wrapper = mount(StandaloneOfficeAddressFiling, {
       store,
       localVue,
@@ -1006,7 +1019,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/dashboard?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1028,6 +1041,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
 
@@ -1089,7 +1103,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
   it('saves a new filing when this is a new filing and the Save button is clicked',
     async () => {
-      const $route = { params: { id: 0 } } // new filing id
+      const $route = { params: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
       const vm = wrapper.vm as any
 
@@ -1120,7 +1134,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
 
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, localVue, router, vuetify })
     const vm = wrapper.vm as any
@@ -1157,12 +1171,13 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'BC0001191'
+    store.state.businessId = 'BC0007291'
+    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = EntityTypes.BCOMP
 
     // mock "save draft" endpoint
-    sinon.stub(axios, 'post').withArgs('BC0001191/filings?draft=true')
+    sinon.stub(axios, 'post').withArgs('BC0007291/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -1182,14 +1197,14 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
               'business': {
                 'cacheId': 1,
                 'foundingDate': '2007-04-08',
-                'identifier': 'BC0001191',
+                'identifier': 'BC0007291',
                 'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
                 'legalName': 'Legal Name - BC0001191'
               },
               'header': {
                 'name': 'changeOfAddress',
                 'date': '2017-06-06',
-                'submitter': 'BC0001191',
+                'submitter': 'BC0007291',
                 'status': 'DRAFT',
                 'certifiedBy': 'Full Name',
                 'email': 'no_one@never.get',
@@ -1199,7 +1214,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
           }
       })))
 
-    sinon.stub(axios, 'get').withArgs('BC0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('BC0007291/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -1227,7 +1242,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
   it('saves a new filing when this is a new filing and the Save button is clicked',
     async () => {
-      const $route = { params: { id: 0 } } // new filing id
+      const $route = { params: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
       const vm = wrapper.vm as any
 
@@ -1258,7 +1273,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
 
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, localVue, router, vuetify })
     const vm = wrapper.vm as any
@@ -1287,6 +1302,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
 
@@ -1323,7 +1339,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, localVue, router, vuetify })
     vm = wrapper.vm
@@ -1375,17 +1391,18 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'BC0001191'
+    store.state.businessId = 'BC0007291'
+    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
 
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('BC0001191/tasks')
+      .withArgs('BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint
-    spy = sinon.stub(axios, 'post').withArgs('BC0001191/filings?draft=true')
+    spy = sinon.stub(axios, 'post').withArgs('BC0007291/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -1415,7 +1432,7 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
 
     wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, localVue, router, vuetify })
     vm = wrapper.vm
@@ -1479,6 +1496,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
   beforeEach(() => {
     // init store
+    store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
 
@@ -1625,7 +1643,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       const localVue = createLocalVue()
       localVue.use(VueRouter)
       const router = mockRouter.mock()
-      router.push({ name: 'standalone-addresses', params: { id: '0' } }) // new filing id
+      router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
       const wrapper = mount(StandaloneOfficeAddressFiling, {
         store,
         localVue,
@@ -1676,7 +1695,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       const localVue = createLocalVue()
       localVue.use(VueRouter)
       const router = mockRouter.mock()
-      router.push({ name: 'standalone-addresses', params: { id: '123' } }) // existing filing id
+      router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+
       const wrapper = mount(StandaloneOfficeAddressFiling, {
         store,
         localVue,

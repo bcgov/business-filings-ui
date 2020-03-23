@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
-
-import store from '@/store/store'
+import { getVuexStore } from '@/store'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 
 Vue.config.silent = true
@@ -12,6 +11,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 // get rid of "Download the Vue Devtools extension for a better development experience" console message
 Vue.config.devtools = false

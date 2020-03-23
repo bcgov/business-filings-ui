@@ -7,7 +7,7 @@
 
     <resume-error-dialog
       :dialog="resumeErrorDialog"
-      @exit="navigateToDashboard"
+      @exit="navigateToDashboard(true)"
       attach="#standalone-directors"
     />
 
@@ -17,15 +17,15 @@
       :disableRetry="busySaving"
       :errors="saveErrors"
       :warnings="saveWarnings"
-      @exit="navigateToDashboard"
-      @retry="onClickFilePay"
-      @okay="resetErrors"
+      @exit="navigateToDashboard(true)"
+      @retry="onClickFilePay()"
+      @okay="resetErrors()"
       attach="#standalone-directors"
     />
 
     <payment-error-dialog
       :dialog="paymentErrorDialog"
-      @exit="navigateToDashboard"
+      @exit="navigateToDashboard(true)"
       attach="#standalone-directors"
     />
 
@@ -120,7 +120,7 @@
                 >
                   <sbc-fee-summary
                     v-bind:filingData="[...filingData]"
-                    v-bind:payURL="payAPIURL"
+                    v-bind:payURL="payApiUrl"
                     @total-fee="totalFee=$event"
                   />
                 </affix>
@@ -129,7 +129,7 @@
           </v-row>
         </v-container>
 
-        <!-- TODO: this container should have some container class not 'list-item' class -->
+        <!-- FUTURE: this container should have some container class not 'list-item' class -->
         <v-container id="standalone-directors-buttons-container" class="list-item">
           <div class="buttons-left">
             <v-btn id="cod-save-btn" large
@@ -167,7 +167,9 @@
               <span>Proceed to Filing Summary</span>
             </v-tooltip>
 
-            <v-btn id="cod-cancel-btn" large to="/dashboard" :disabled="busySaving || filingPaying">Cancel</v-btn>
+            <v-btn id="cod-cancel-btn" large @click="navigateToDashboard()" :disabled="busySaving || filingPaying">
+              <span>Cancel</span>
+            </v-btn>
           </div>
         </v-container>
       </div>
@@ -234,7 +236,7 @@
                 >
                   <sbc-fee-summary
                     v-bind:filingData="[...filingData]"
-                    v-bind:payURL="payAPIURL"
+                    v-bind:payURL="payApiUrl"
                   />
                 </affix>
               </aside>
@@ -242,7 +244,7 @@
           </v-row>
         </v-container>
 
-        <!-- TODO: this container should have some container class not 'list-item' class -->
+        <!-- FUTURE: this container should have some container class not 'list-item' class -->
         <v-container id="standalone-directors-buttons-container-review" class="list-item">
           <div class="buttons-left">
             <v-btn
@@ -382,7 +384,7 @@ export default {
       return (this.saving || this.savingResuming || this.filingPaying)
     },
 
-    payAPIURL () {
+    payApiUrl () {
       return sessionStorage.getItem('PAY_API_URL')
     },
 
@@ -407,11 +409,11 @@ export default {
 
     // NB: filing id of 0 means "new"
     // otherwise it's a draft filing id
-    this.filingId = +this.$route.params.id // number (may be NaN)
+    this.filingId = +this.$route.params.filingId // number (may be NaN)
 
-    // if tombstone data isn't set, route to home
+    // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.filingId)) {
-      this.$router.push('/')
+      this.$router.push({ name: 'dashboard' })
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your Director Change`
@@ -490,9 +492,9 @@ export default {
 
       this.savingResuming = true
       const filing = await this.saveFiling(true)
-      // on success, route to Home URL
+      // on success, go to dashboard
       if (filing) {
-        this.$router.push('/')
+        this.$router.push({ name: 'dashboard' })
       }
       this.savingResuming = false
     },
@@ -515,16 +517,16 @@ export default {
         if (!prePaidFiling) {
           const paymentToken = filing.header.paymentToken
           const baseUrl = sessionStorage.getItem('BASE_URL')
-          const returnURL = encodeURIComponent(baseUrl + 'dashboard?filing_id=' + filingId)
+          const returnUrl = encodeURIComponent(baseUrl + '?filing_id=' + filingId)
           const authUrl = sessionStorage.getItem('AUTH_URL')
-          const payURL = authUrl + 'makepayment/' + paymentToken + '/' + returnURL
+          const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later
-          window.location.assign(payURL)
+          window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push('/dashboard?filing_id=' + filingId)
+          this.$router.push({ name: 'dashboard', query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -601,7 +603,7 @@ export default {
         let filing = null
         await axios.put(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
-            throw new Error('invalid API response')
+            throw new Error('Invalid API response')
           }
           filing = res.data.filing
           this.haveChanges = false
@@ -630,7 +632,7 @@ export default {
         let filing = null
         await axios.post(url, data).then(res => {
           if (!res || !res.data || !res.data.filing) {
-            throw new Error('invalid API response')
+            throw new Error('Invalid API response')
           }
           filing = res.data.filing
           this.haveChanges = false
@@ -653,10 +655,9 @@ export default {
       }
     },
 
-    navigateToDashboard () {
-      this.haveChanges = false
-      this.dialog = false
-      this.$router.push('/dashboard')
+    navigateToDashboard (ignoreChanges: boolean = false) {
+      if (ignoreChanges) this.haveChanges = false
+      this.$router.push({ name: 'dashboard' })
     },
 
     fetchChangeOfDirectors () {
@@ -666,12 +667,12 @@ export default {
           const filing = response.data.filing
           try {
             // verify data
-            if (!filing) throw new Error('missing filing')
-            if (!filing.header) throw new Error('missing header')
-            if (!filing.business) throw new Error('missing business')
-            if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('invalid filing type')
-            if (filing.business.identifier !== this.entityIncNo) throw new Error('invalid business identifier')
-            if (filing.business.legalName !== this.entityName) throw new Error('invalid business legal name')
+            if (!filing) throw new Error('Missing filing')
+            if (!filing.header) throw new Error('Missing header')
+            if (!filing.business) throw new Error('Missing business')
+            if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('Invalid filing type')
+            if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+            if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
             // load Certified By but not Date
             this.certifiedBy = filing.header.certifiedBy
@@ -713,7 +714,7 @@ export default {
                   this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, this.isPriority, this.isWaiveFees)
                 }
               } else {
-                throw new Error('invalid change of directors')
+                throw new Error('Invalid change of directors')
               }
             } else {
               // To handle the condition of save as draft without change of director

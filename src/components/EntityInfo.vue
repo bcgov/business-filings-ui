@@ -131,7 +131,7 @@ export default class EntityInfo extends Vue {
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
-// TODO: Explore how to expose this globally without having to include in each module
+// FUTURE: Explore how to expose this globally without having to include in each module
 // see https://cli.vuejs.org/guide/css.html#automatic-imports
 // see https://vue-loader-v14.vuejs.org/en/features/postcss.html
 @import '@/assets/styles/theme.scss';
