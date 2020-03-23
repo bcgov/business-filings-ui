@@ -13,8 +13,6 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { BAD_REQUEST } from 'http-status-codes'
 import { configJson } from '@/resources/business-config'
-// Entity Enum
-import { EntityTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -383,7 +381,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => 
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('BC0007291/filings/123')
@@ -476,7 +474,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
 
     let sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -755,7 +753,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
 
     let sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -1174,7 +1172,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('BC0007291/filings?draft=true')

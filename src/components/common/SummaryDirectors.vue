@@ -185,10 +185,8 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 // Mixins
 import { DateMixin, EntityFilterMixin, CommonMixin } from '@/mixins'
 
-// Enums
+// Enums and Constants
 import { EntityTypes } from '@/enums'
-
-// Constants
 import { CEASED, APPOINTED, NAMECHANGED, ADDRESSCHANGED } from '@/constants'
 
 // Interfaces

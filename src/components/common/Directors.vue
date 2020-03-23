@@ -511,10 +511,8 @@ import { WarningPopover } from '@/components/dialogs'
 // Mixins
 import { DateMixin, EntityFilterMixin, CommonMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
-// Enums
+// Enums and Constants
 import { EntityTypes, FilingStatus } from '@/enums'
-
-// Constants
 import { CEASED, NAMECHANGED, ADDRESSCHANGED, APPOINTED } from '@/constants'
 
 // Interfaces

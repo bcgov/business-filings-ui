@@ -7,7 +7,6 @@ import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import Directors from '@/components/common/Directors.vue'
-import { EntityTypes } from '@/enums'
 import { configJson } from '@/resources/business-config'
 
 Vue.use(Vuetify)
@@ -49,7 +48,7 @@ describe('Directors as a COOP', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
     // GET directors
@@ -445,11 +444,12 @@ describe('Directors as a BCOMP', () => {
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0002291'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityIncNo = 'BC0007291'
+    store.state.entityType = 'BC'
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
+
     // GET directors
-    sinon.stub(axios, 'get').withArgs('CP0002291/directors?date=2019-04-01')
+    sinon.stub(axios, 'get').withArgs('BC0007291/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -728,7 +728,7 @@ describe('Appoint New Director tests', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
 
     // GET directors
     sinon.stub(axios, 'get').withArgs('CP0001191/directors?date=2019-04-01')

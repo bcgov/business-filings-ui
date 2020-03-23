@@ -1,15 +1,20 @@
-import Signin from '@/views/auth/Signin.vue'
-import Signout from '@/views/auth/Signout.vue'
+// Components
 import Dashboard from '@/views/Dashboard.vue'
 import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
 import Correction from '@/views/Correction.vue'
+import Signin from '@/views/auth/Signin.vue'
+import Signout from '@/views/auth/Signout.vue'
+
+// Constants
+import { ANNUAL_REPORT, CORRECTION, DASHBOARD, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS,
+  SIGNIN, SIGNOUT } from '@/constants'
 
 export default [
   {
     path: '/',
-    name: 'dashboard',
+    name: DASHBOARD,
     component: Dashboard,
     meta: {
       requiresAuth: true
@@ -17,7 +22,7 @@ export default [
   },
   {
     path: '/annual-report',
-    name: 'annual-report',
+    name: ANNUAL_REPORT,
     component: AnnualReport,
     meta: {
       requiresAuth: true
@@ -25,7 +30,7 @@ export default [
   },
   {
     path: '/standalone-directors',
-    name: 'standalone-directors',
+    name: STANDALONE_DIRECTORS,
     component: StandaloneDirectorsFiling,
     meta: {
       requiresAuth: true
@@ -33,7 +38,7 @@ export default [
   },
   {
     path: '/standalone-addresses',
-    name: 'standalone-addresses',
+    name: STANDALONE_ADDRESSES,
     component: StandaloneOfficeAddressFiling,
     meta: {
       requiresAuth: true
@@ -41,7 +46,7 @@ export default [
   },
   {
     path: '/correction',
-    name: 'correction',
+    name: CORRECTION,
     component: Correction,
     meta: {
       requiresAuth: true
@@ -50,7 +55,7 @@ export default [
   {
     // this route is selected by router.beforeEach()
     path: '/signin',
-    name: 'signin',
+    name: SIGNIN,
     component: Signin,
     meta: {
       requiresAuth: false
@@ -59,7 +64,7 @@ export default [
   {
     // this route is selected by SbcHeader -> Logout
     path: '/signout',
-    name: 'signout',
+    name: SIGNOUT,
     component: Signout,
     props: true,
     meta: {

@@ -3,7 +3,6 @@ import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { SummaryOfficeAddresses } from '@/components/common'
-import { EntityTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -21,7 +20,7 @@ describe('Summary Office Addresses (BCOMP)', () => {
 
   beforeAll(() => {
     // init store
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
     store.state.registeredAddress = {
       deliveryAddress: {
         addressCity: 'delCity',

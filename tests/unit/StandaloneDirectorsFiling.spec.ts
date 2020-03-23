@@ -14,7 +14,6 @@ import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { BAD_REQUEST } from 'http-status-codes'
-import { EntityTypes } from '@/enums'
 import { configJson } from '@/resources/business-config'
 
 Vue.use(Vuetify)
@@ -540,7 +539,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a COOP', async () => {
     // init store
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -607,7 +606,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a BCOMP', async () => {
     // init store
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)

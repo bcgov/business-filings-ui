@@ -132,14 +132,18 @@
         <!-- FUTURE: this container should have some container class not 'list-item' class -->
         <v-container id="standalone-directors-buttons-container" class="list-item">
           <div class="buttons-left">
-            <v-btn id="cod-save-btn" large
+            <v-btn
+              id="cod-save-btn"
+              large
               :disabled="busySaving"
               :loading="saving"
               @click="onClickSave()"
             >
               <span>Save</span>
             </v-btn>
-            <v-btn id="cod-save-resume-btn" large
+            <v-btn
+              id="cod-save-resume-btn"
+              large
               :disabled="busySaving"
               :loading="savingResuming"
               @click="onClickSaveResume()"
@@ -157,7 +161,6 @@
                     color="primary"
                     large
                     :disabled="!validated || busySaving"
-                    :loading="filingPaying"
                     @click="showSummary()"
                   >
                     <span>Next</span>
@@ -167,7 +170,12 @@
               <span>Proceed to Filing Summary</span>
             </v-tooltip>
 
-            <v-btn id="cod-cancel-btn" large @click="navigateToDashboard()" :disabled="busySaving || filingPaying">
+            <v-btn
+              id="cod-cancel-btn"
+              large
+              :disabled="busySaving"
+              @click="navigateToDashboard()"
+            >
               <span>Cancel</span>
             </v-btn>
           </div>
@@ -250,6 +258,7 @@
             <v-btn
               id="cod-back-btn"
               large
+              :disabled="busySaving"
               @click="returnToFiling()"
             >
               <span>Back</span>
@@ -276,6 +285,15 @@
                 There is no opportunity to change information beyond this point.</span>
             </v-tooltip>
           </div>
+
+          <v-btn
+            id="cod-cancel-btn"
+            large
+            :disabled="busySaving"
+            @click="navigateToDashboard()"
+          >
+            <span>Cancel</span>
+          </v-btn>
         </v-container>
       </div>
     </v-fade-transition>
@@ -300,11 +318,9 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
 // Mixins
 import { EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
-// Enums
+// Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
-
-// Constants
-import { CEASED, APPOINTED, ADDRESSCHANGED, NAMECHANGED } from '@/constants'
+import { CEASED, APPOINTED, ADDRESSCHANGED, NAMECHANGED, DASHBOARD } from '@/constants'
 
 export default {
   name: 'StandaloneDirectorsFiling',
@@ -341,9 +357,9 @@ export default {
       directorEditInProgress: false,
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
-      saving: false,
-      savingResuming: false,
-      filingPaying: false,
+      saving: false as boolean, // true only when saving
+      savingResuming: false as boolean, // true only when saving and resuming
+      filingPaying: false as boolean, // true only when filing and paying
       haveChanges: false,
       saveErrors: [],
       saveWarnings: [],
@@ -372,7 +388,7 @@ export default {
 
     ...mapGetters(['isRoleStaff']),
 
-    validated () {
+    validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
       const filingDataValid = (this.filingData.length > 0)
 
@@ -380,15 +396,16 @@ export default {
         !this.directorEditInProgress && this.codDateValid)
     },
 
-    busySaving () {
+    /** True when saving, saving and resuming, or filing and paying. */
+    busySaving (): boolean {
       return (this.saving || this.savingResuming || this.filingPaying)
     },
 
-    payApiUrl () {
+    payApiUrl (): string {
       return sessionStorage.getItem('PAY_API_URL')
     },
 
-    isPayRequired () {
+    isPayRequired (): boolean {
       // FUTURE: modify rule here as needed
       return (this.totalFee > 0)
     }
@@ -413,7 +430,7 @@ export default {
 
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.filingId)) {
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: DASHBOARD })
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your Director Change`
@@ -477,6 +494,7 @@ export default {
     async onClickSave () {
       // prevent double saving
       if (this.busySaving) return
+
       this.saving = true
       const filing = await this.saveFiling(true)
       if (filing) {
@@ -494,7 +512,7 @@ export default {
       const filing = await this.saveFiling(true)
       // on success, go to dashboard
       if (filing) {
-        this.$router.push({ name: 'dashboard' })
+        this.$router.push({ name: DASHBOARD })
       }
       this.savingResuming = false
     },
@@ -526,7 +544,7 @@ export default {
           window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push({ name: 'dashboard', query: { filing_id: filingId } })
+          this.$router.push({ name: DASHBOARD, query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -657,7 +675,7 @@ export default {
 
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: DASHBOARD })
     },
 
     fetchChangeOfDirectors () {

@@ -14,9 +14,6 @@ import Correction from '@/views/Correction.vue'
 import { DetailComment, Certify, StaffPayment } from '@/components/common'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 
-// Enums
-import { EntityTypes, FilingCodes } from '@/enums'
-
 // suppress "avoid mutating a prop directly" warnings
 // https://vue-test-utils.vuejs.org/api/config.html#silent
 Vue.config.silent = true
@@ -58,7 +55,7 @@ describe('Correction - UI', () => {
 
     // init store
     store.state.currentDate = '2020-03-04'
-    store.state.entityType = EntityTypes.COOP
+    store.state.entityType = 'CP'
     store.state.entityName = 'My Test Entity'
     store.state.entityIncNo = 'CP1234567'
     store.state.entityFoundingDate = '1971-05-12T00:00:00-00:00'

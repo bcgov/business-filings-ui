@@ -16,9 +16,6 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 
-// Enums
-import { EntityTypes } from '@/enums'
-
 // NB: test util async issue
 // in some cases, the elements are not updated during the test
 // the work-around is to first initialize the property we are changing
@@ -214,7 +211,7 @@ describe('Dashboard - Click Tests', () => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = EntityTypes.BCOMP
+    store.state.entityType = 'BC'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

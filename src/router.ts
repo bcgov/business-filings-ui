@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { Route } from 'vue-router/types'
 import routes from '@/routes'
+import { SIGNIN } from '@/constants'
 
 /**
  * Configures and returns Vue Router.
@@ -22,8 +23,8 @@ export function getVueRouter () {
 
   router.beforeEach((to, from, next) => {
     // check if we need to authenticate
-    if (isNotSigninRoute(to) && requiresAuth(to) && isNotAuthenticated()) {
-      next({ name: 'signin' })
+    if (isNotSigninRoute(to) && requiresAuth(to) && !isAuthenticated()) {
+      next({ name: SIGNIN })
     } else {
       next()
     }
@@ -31,7 +32,7 @@ export function getVueRouter () {
 
   /** Returns True if route is not Signin, else False. */
   function isNotSigninRoute (route: Route): boolean {
-    return Boolean(route.name !== 'signin')
+    return Boolean(route.name !== SIGNIN)
   }
 
   /** Returns True if route requires authentication, else False. */
@@ -39,10 +40,10 @@ export function getVueRouter () {
     return route.matched.some(r => r.meta.requiresAuth)
   }
 
-  /** Returns True if user is not authenticated, else False. */
-  function isNotAuthenticated (): boolean {
+  /** Returns True if user is authenticated, else False. */
+  function isAuthenticated (): boolean {
     // FUTURE: also check that token isn't expired!
-    return Boolean(!sessionStorage.getItem('KEYCLOAK_TOKEN'))
+    return Boolean(sessionStorage.getItem('KEYCLOAK_TOKEN'))
   }
 
   return router

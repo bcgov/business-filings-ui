@@ -125,8 +125,9 @@ import { EntityFilterMixin } from '@/mixins'
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
 
-// Enums
+// Enums and Constants
 import { EntityTypes, FilingNames, FilingStatus } from '@/enums'
+import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 export default {
   name: 'Dashboard',
@@ -169,12 +170,12 @@ export default {
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
-      this.$router.push({ name: 'standalone-directors', params: { filingId: 0 } }) // 0 means "new COD filing"
+      this.$router.push({ name: STANDALONE_DIRECTORS, params: { filingId: 0 } }) // 0 means "new COD filing"
     },
 
     goToStandaloneAddresses () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
-      this.$router.push({ name: 'standalone-addresses', params: { filingId: 0 } }) // 0 means "new COA filing"
+      this.$router.push({ name: STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
     },
 
     checkToReloadDashboard () {
@@ -248,7 +249,7 @@ export default {
      * @param filings The array of filings in history
      */
     checkPendingFilings (filings: Array<any>) {
-      if (!filings || filings.length === 0) return // safety check
+      if (!filings || !filings.length) return // safety check
 
       filings.some(filing => {
         if (filing.name === FilingNames.ADDRESS_CHANGE && filing.status === FilingStatus.PAID) {

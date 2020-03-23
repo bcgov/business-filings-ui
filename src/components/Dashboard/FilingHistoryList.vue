@@ -166,7 +166,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="filedItems.length === 0">
+    <v-card class="no-results" flat v-if="!filedItems.length">
       <v-card-text>
         <div class="no-results__title">You have no filing history</div>
         <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
@@ -186,8 +186,9 @@ import { DetailsList } from '@/components/common'
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 
-// Enums
+// Enums and Constants
 import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 // Mixins
 import { DateMixin, EntityFilterMixin, FilingMixin } from '@/mixins'
@@ -458,37 +459,37 @@ export default {
       switch (item.type) {
         case FilingTypes.ANNUAL_REPORT:
           // FUTURE:
-          // this.$router.push({ name: 'annual-report',
+          // this.$router.push({ name: ANNUAL_REPORT,
           //   params: { filingId: item.filingId, isCorrection: true }})
           // FOR NOW:
-          this.$router.push({ name: 'correction',
+          this.$router.push({ name: CORRECTION,
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // FUTURE:
-          // this.$router.push({ name: 'standalone-directors',
+          // this.$router.push({ name: STANDALONE_DIRECTORS,
           //   params: { filingId: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction',
+          this.$router.push({ name: CORRECTION,
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // FUTURE:
-          // this.$router.push({ name: 'standalone-addresses',
+          // this.$router.push({ name: STANDALONE_ADDRESSES,
           //   params: { filingId: item.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: 'correction',
+          this.$router.push({ name: CORRECTION,
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?
-          // this.$router.push({ name: 'correction',
+          // this.$router.push({ name: CORRECTION,
           //   params: { correctedFilingId: item.filingId } })
           alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
           break
         default:
           // fallback for all other filings
-          this.$router.push({ name: 'correction',
+          this.$router.push({ name: CORRECTION,
             params: { correctedFilingId: item.filingId } })
           break
       }
