@@ -51,11 +51,10 @@ async function start () {
 // execution and error handling
 start().catch((error) => {
   console.error(error) // eslint-disable-line no-console
-  alert('There was an error starting this page. (See console for details.)\n' +
-    'Click OK to go to the BC Registry home page.')
-  // redirect to BC Registry home page
+  // no alert at this time
+  // just redirect to BC Registry home page
   // NB: this is a hard-coded URL because we are probably missing the config keys
-  const bcRegUrl = 'https://www.bcregistry.ca/' // TODO: update when new URLs are set up
+  const bcRegUrl = 'https://www.bcregistry.ca/cooperatives/auth/'
   // assume BC Registry URL is always reachable
   window.location.assign(bcRegUrl)
 })
