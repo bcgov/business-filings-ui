@@ -12,33 +12,12 @@ export async function fetchConfig (): Promise<void> {
   //
   const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, cooperatives
   const processEnvBaseUrl: string = process.env.BASE_URL // eg, /cooperatives/
-  const windowLocationPathname: string = window.location.pathname // eg, /cooperatives/CP0000841/...
-  const windowLocationOrigin: string = window.location.origin // eg, http://localhost:8080
+  const windowLocationPathname = window.location.pathname // eg, /cooperatives/CP0000841/...
+  const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   if (!processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
     return Promise.reject(new Error('Missing environment variables'))
   }
-
-  // get Business ID and validate that it looks OK
-  // it should be first token after Base URL in Pathname
-  // FUTURE: improve Business ID validation
-  const businessId = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
-  if (!businessId?.startsWith('CP') && !businessId?.startsWith('BC') && !businessId?.startsWith('NR')) {
-    return Promise.reject(new Error('Missing or invalid Business ID.'))
-  }
-  sessionStorage.setItem('BUSINESS_ID', businessId)
-
-  // set Base for Vue Router
-  // eg, /cooperatives/CP0000841/
-  const vueRouterBase = processEnvBaseUrl + businessId + '/'
-  sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
-  console.log('Set Vue Router Base to: ' + vueRouterBase)
-
-  // set Base URL for returning from redirects
-  // eg, http://localhost:8080/cooperatives/CP0000841/
-  const baseUrl = windowLocationOrigin + vueRouterBase
-  sessionStorage.setItem('BASE_URL', baseUrl)
-  console.log('Set Base URL to: ' + baseUrl)
 
   //
   // fetch config from API
@@ -86,4 +65,25 @@ export async function fetchConfig (): Promise<void> {
   const ldClientId = response.data['LD_CLIENT_ID']
   window['ldClientId'] = ldClientId
   console.info('Set Launch Darkly Client ID.')
+
+  // get Business ID and validate that it looks OK
+  // it should be first token after Base URL in Pathname
+  // FUTURE: improve Business ID validation
+  const businessId = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
+  if (!businessId?.startsWith('CP') && !businessId?.startsWith('BC') && !businessId?.startsWith('NR')) {
+    return Promise.reject(new Error('Missing or invalid Business ID.'))
+  }
+  sessionStorage.setItem('BUSINESS_ID', businessId)
+
+  // set Base for Vue Router
+  // eg, /cooperatives/CP0000841/
+  const vueRouterBase = processEnvBaseUrl + businessId + '/'
+  sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
+  console.log('Set Vue Router Base to: ' + vueRouterBase)
+
+  // set Base URL for returning from redirects
+  // eg, http://localhost:8080/cooperatives/CP0000841/
+  const baseUrl = windowLocationOrigin + vueRouterBase
+  sessionStorage.setItem('BASE_URL', baseUrl)
+  console.log('Set Base URL to: ' + baseUrl)
 }
