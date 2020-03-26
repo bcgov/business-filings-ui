@@ -93,7 +93,7 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { CommonMixin, EntityFilterMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 
 // Interfaces
 import { BaseAddressObjIF } from '@/interfaces'
@@ -107,7 +107,7 @@ import { EntityTypes } from '@/enums'
     'mailing-address': BaseAddress
   }
 })
-export default class SummaryOfficeAddresses extends Mixins(CommonMixin, EntityFilterMixin) {
+export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
   /**
    * Registered Office address object passed in from the parent which is pulled from store.
    */
@@ -120,8 +120,8 @@ export default class SummaryOfficeAddresses extends Mixins(CommonMixin, EntityFi
   @Prop({ default: null })
   private recordsAddress: BaseAddressObjIF
 
-  // Entity Enum
-  private EntityTypes: {} = EntityTypes
+  // Enum definition for use in template.
+  private EntityTypes = EntityTypes
 }
 </script>
 

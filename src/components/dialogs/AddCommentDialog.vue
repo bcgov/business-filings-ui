@@ -110,7 +110,7 @@ export default class AddCommentDialog extends Vue {
       }
     }
 
-    const url = `${this.entityIncNo}/filings/${this.filingId}/comments`
+    const url = `businesses/${this.entityIncNo}/filings/${this.filingId}/comments`
     let success = false
     await axios.post(url, data).then(res => {
       success = true

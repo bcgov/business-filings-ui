@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mapActions, mapState } from 'vuex'
 import { FilingData } from '@/interfaces'
-import { EntityTypes, FilingCodes, FilingTypes, FilingNames } from '@/enums'
+import { EntityTypes, FilingCodes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -25,7 +25,7 @@ export default class FilingMixin extends Vue {
   /**
    * Flattens and sorts an array of comments.
    * @param comments the array of comments to sort and deconstruct
-   * @return the sorted and flattened array of comments
+   * @returns the sorted and flattened array of comments
    */
   flattenAndSortComments (comments: Array<any>): Array<any> {
     if (comments && comments.length > 0) {
@@ -36,26 +36,6 @@ export default class FilingMixin extends Vue {
       return temp
     }
     return []
-  }
-
-  /**
-   * Converts the filing type to a filing name.
-   * @param type the filing type converted
-   * @param agmYear the AGM Year to be appended to the filing name (optional)
-   */
-  typeToTitle (type: FilingTypes | string, agmYear: string = null): string {
-    if (!type) return '' // safety check
-    switch (type) {
-      case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
-      case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
-      case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
-      case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
-      case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-      case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-      case FilingTypes.CORRECTION: return FilingNames.CORRECTION
-    }
-    // fallback for unknown filings
-    return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
   }
 
   /**
@@ -103,7 +83,7 @@ export default class FilingMixin extends Vue {
   /**
    * Searches the Filing Data for a filing code.
    * @param filingCode the Filing Type Code to search for
-   * @return True if the filing code exists, else False
+   * @returns True if the filing code exists
    */
   hasFilingCode (filingCode: FilingCodes): boolean {
     return !!this.filingData.find(o => o.filingTypeCode === filingCode)

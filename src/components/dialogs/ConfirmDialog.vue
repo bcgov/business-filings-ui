@@ -9,7 +9,7 @@
 
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
-      <v-card-text class="black--text" v-show="!!message">{{ message }}</v-card-text>
+      <v-card-text class="black--text pre-wrap" v-show="!!message">{{ message }}</v-card-text>
       <v-divider class="my-0" v-show="!!options.yes || !!options.no || !!options.cancel"></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -69,20 +69,22 @@ interface OptionsObject {
 
 @Component({})
 export default class ConfirmDialog extends Vue {
-  // Whether the subject dialog is currently displayed
+  /** Whether the subject dialog is currently displayed. */
   private dialog: boolean = false
 
-  // The two handlers for the returned promise
+  /** The Yes/No click handler for the returned promise. */
   private resolve: Function = null
+
+  /** The Cancel click handler for the returned promise. */
   private reject: Function = null
 
-  // The dialog's title
+  /** The dialog's title. */
   private title: string = null
 
-  // The dialog's message
+  /** The dialog's message. */
   private message: string = null
 
-  // The dialog's options
+  /** The dialog's default options. */
   private options: OptionsObject = {
     width: 400,
     zIndex: 200,
@@ -94,10 +96,10 @@ export default class ConfirmDialog extends Vue {
 
   /**
    * Opens the modal with the specified parameters.
-   * @param title   The dialog's title to display.
-   * @param message The dialog's message to display.
-   * @param options The dialog's options to use.
-   * @returns       A promise to subscribe to.
+   * @param title   the dialog's title to display
+   * @param message the dialog's message to display
+   * @param options the dialog's options to use
+   * @returns       a promise to subscribe to
    */
   open (title: string, message: string, options: OptionsObject): Promise<{}> {
     this.dialog = true
@@ -110,25 +112,19 @@ export default class ConfirmDialog extends Vue {
     })
   }
 
-  /**
-   * Handler for Yes button.
-   */
+  /** Handler for Yes button. */
   private onClickYes (): void {
     this.resolve(true)
     this.dialog = false
   }
 
-  /**
-   * Handler for No button.
-   */
+  /** Handler for No button. */
   private onClickNo (): void {
     this.resolve(false)
     this.dialog = false
   }
 
-  /**
-   * Handler for Cancel button.
-   */
+  /** Handler for Cancel button. */
   private onClickCancel (): void {
     this.reject()
     this.dialog = false

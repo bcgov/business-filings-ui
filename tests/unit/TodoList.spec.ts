@@ -201,7 +201,7 @@ describe('TodoList - UI', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -634,7 +634,7 @@ describe('TodoList - UI', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -683,7 +683,7 @@ describe('TodoList - UI', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1071,7 +1071,7 @@ describe('TodoList - UI - BCOMP', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1119,7 +1119,7 @@ describe('TodoList - UI - BCOMP', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1372,7 +1372,7 @@ describe('TodoList - Click Tests', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1431,7 +1431,7 @@ describe('TodoList - Click Tests', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1483,7 +1483,7 @@ describe('TodoList - Click Tests', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1623,7 +1623,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1675,7 +1675,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1727,6 +1727,7 @@ describe('TodoList - Delete Draft', () => {
     window.location.assign = assign
   })
 
+  // TODO: add unit test for Delete Incorporation Application (btn-delete-incorporation)
   it('shows confirmation popup when \'Delete Draft\' is clicked', done => {
     // init store
     store.state.tasks = [
@@ -1743,7 +1744,7 @@ describe('TodoList - Delete Draft', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1785,7 +1786,7 @@ describe('TodoList - Delete Draft', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1832,7 +1833,7 @@ describe('TodoList - Delete Draft', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1903,7 +1904,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1943,7 +1944,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1991,7 +1992,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },

@@ -45,13 +45,12 @@
               <h1 id="filing-header">Address Change</h1>
 
               <p>
-                <span>Please change your Registered Office Address</span>
-                <span v-if="entityFilter(EntityTypes.BCOMP)"> and Records Address</span>
-                <span>.</span>
+                <span v-if="isCoop()">Please change your Registered Office Address.</span>
+                <span v-if="isBComp()">Please change your Registered Office Address and Records Address.</span>
               </p>
 
               <v-alert type="info" outlined
-                v-if="entityFilter(EntityTypes.BCOMP)"
+                v-if="isBComp()"
                 icon="mdi-information"
                 class="white-background"
               >
@@ -191,7 +190,7 @@ import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 import { DASHBOARD } from '@/constants'
 
 // Mixins
-import { EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -209,7 +208,7 @@ export default {
     ResumeErrorDialog,
     SaveErrorDialog
   },
-  mixins: [EntityFilterMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [CommonMixin, FilingMixin, ResourceLookupMixin],
 
   data () {
     return {
@@ -356,7 +355,7 @@ export default {
     },
 
     fetchChangeOfAddressFiling () {
-      const url = this.entityIncNo + '/filings/' + this.filingId
+      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
       axios.get(url).then(response => {
         if (response && response.data) {
           const filing = response.data.filing
@@ -584,7 +583,7 @@ export default {
 
       if (this.filingId > 0) {
         // we have a filing id, so we are updating an existing filing
-        let url = this.entityIncNo + '/filings/' + this.filingId
+        let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
         if (isDraft) {
           url += '?draft=true'
         }
@@ -613,7 +612,7 @@ export default {
         return filing
       } else {
         // filing id is 0, so we are saving a new filing
-        let url = this.entityIncNo + '/filings'
+        let url = `businesses/${this.entityIncNo}/filings`
         if (isDraft) {
           url += '?draft=true'
         }
@@ -658,7 +657,8 @@ export default {
     async hasTasks (businessId) {
       let hasPendingItems = false
       if (this.filingId === 0) {
-        await axios.get(businessId + '/tasks')
+        const url = `businesses/${businessId}/tasks`
+        await axios.get(url)
           .then(response => {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {

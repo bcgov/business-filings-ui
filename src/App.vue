@@ -8,8 +8,23 @@
       attach="#app"
     />
 
-    <account-authorization-dialog
-      :dialog="accountAuthorizationDialog"
+    <business-auth-error-dialog
+      :dialog="businessAuthErrorDialog"
+      @exit="onClickExit"
+      @retry="onClickRetry"
+      attach="#app"
+    />
+
+    <name-request-auth-error-dialog
+      :dialog="nameRequestAuthErrorDialog"
+      @exit="onClickExit"
+      @retry="onClickRetry"
+      attach="#app"
+    />
+
+    <name-request-invalid-dialog
+      :dialog="nameRequestInvalidDialog"
+      :type="nameRequestInvalidType"
       @exit="onClickExit"
       @retry="onClickRetry"
       attach="#app"
@@ -20,12 +35,12 @@
       <div class="loading-container" v-show="showLoadingContainer">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg">Loading Business Dashboard</div>
+          <div class="loading-msg">Loading Dashboard</div>
         </div>
       </div>
     </transition>
 
-    <sbc-header ref="sbcHeader" />
+    <sbc-header />
 
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
@@ -52,34 +67,47 @@ import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
-import { DashboardUnavailableDialog, AccountAuthorizationDialog } from '@/components/dialogs'
+import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErrorDialog,
+  NameRequestInvalidDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, DirectorMixin } from '@/mixins'
+import { DateMixin, CommonMixin, DirectorMixin, NamexApiMixin } from '@/mixins'
 
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
 
-// Constants
-import { SIGNIN, DASHBOARD } from '@/constants'
+// Enums and Constants
+import { EntityStatus, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
+import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
 
 export default {
   name: 'App',
 
-  mixins: [DateMixin, CommonMixin, DirectorMixin],
+  mixins: [DateMixin, CommonMixin, DirectorMixin, NamexApiMixin],
 
   data () {
     return {
       dataLoaded: false as boolean,
       dashboardUnavailableDialog: false as boolean,
-      accountAuthorizationDialog: false as boolean,
-      currentDateTimerId: null as number
+      businessAuthErrorDialog: false as boolean,
+      nameRequestAuthErrorDialog: false as boolean,
+      nameRequestInvalidDialog: false as boolean,
+      nameRequestInvalidType: null as NameRequestStates,
+      currentDateTimerId: null as number,
+      nameRequest: null as object,
+
+      // enums
+      EntityStatus,
+      FilingStatus,
+      FilingTypes
     }
   },
 
   components: {
     DashboardUnavailableDialog,
-    AccountAuthorizationDialog,
+    BusinessAuthErrorDialog,
+    NameRequestAuthErrorDialog,
+    NameRequestInvalidDialog,
     SbcHeader,
     SbcFooter,
     EntityInfo
@@ -96,9 +124,19 @@ export default {
       return sessionStorage.getItem('BUSINESS_ID')
     },
 
+    /** The NR Number string. */
+    nrNumber (): string {
+      // change _ to %20 for query purposes
+      return sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
+    },
+
     /** True if loading container should be shown. */
     showLoadingContainer (): boolean {
-      return (!this.dataLoaded && !this.dashboardUnavailableDialog && !this.accountAuthorizationDialog)
+      return (!this.dataLoaded &&
+        !this.dashboardUnavailableDialog &&
+        !this.businessAuthErrorDialog &&
+        !this.nameRequestAuthErrorDialog &&
+        !this.nameRequestInvalidDialog)
     },
 
     /** True if route is Signin. */
@@ -170,10 +208,13 @@ export default {
         const jwt = this.getJWT()
         const keycloakRoles = this.getKeycloakRoles(jwt)
         this.setKeycloakRoles(keycloakRoles)
+        // safety check
+        if (!this.businessId && !this.nrNumber) throw new Error('Missing Business ID or NR Number')
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error)
-        this.accountAuthorizationDialog = true
+        if (this.businessId) this.businessAuthErrorDialog = true
+        if (this.nrNumber) this.nameRequestAuthErrorDialog = true
         return // do not execute remaining code
       }
 
@@ -181,32 +222,55 @@ export default {
       this.getAuthorizations().then(data => {
         this.storeAuthorizations(data) // throws if no role
 
-        // good so far ... fetch the rest of the data
-        Promise.all([
-          this.getBusinessInfo(),
-          this.getEntityInfo(),
-          this.getTasks(),
-          this.getFilings(),
-          this.getAddresses(),
-          this.getDirectors()
-        ]).then(data => {
-          if (!data || data.length !== 6) throw new Error('Incomplete data')
-          this.storeBusinessInfo(data[0])
-          this.storeEntityInfo(data[1])
-          this.storeTasks(data[2])
-          this.storeFilings(data[3])
-          this.storeAddresses(data[4])
-          this.storeDirectors(data[5])
-          this.dataLoaded = true
-        }).catch(error => {
-          // eslint-disable-next-line no-console
-          console.error(error)
-          this.dashboardUnavailableDialog = true
-        })
+        // good so far ... fetch the business data
+        if (this.businessId) {
+          Promise.all([
+            this.getBusinessInfo(),
+            this.getEntityInfo(),
+            this.getTasks(),
+            this.getFilings(),
+            this.getAddresses(),
+            this.getDirectors()
+          ]).then(data => {
+            if (!data || data.length !== 6) throw new Error('Incomplete data')
+            this.storeBusinessInfo(data[0])
+            this.storeEntityInfo(data[1])
+            this.storeTasks(data[2])
+            this.storeFilings(data[3])
+            this.storeAddresses(data[4])
+            this.storeDirectors(data[5])
+            this.dataLoaded = true
+          }).catch(error => {
+            // eslint-disable-next-line no-console
+            console.error(error)
+            this.dashboardUnavailableDialog = true
+          })
+        }
+
+        // good so far ... fetch the NR data
+        if (this.nrNumber) {
+          this.nameRequestInvalidType = null
+          Promise.all([
+            this.getNrData(),
+            this.getTasks(), // TODO: this apparently fails on new NR
+            this.getFilings() // TODO: this apparently fails on new NR
+          ]).then(data => {
+            if (!data || data.length !== 3) throw new Error('Incomplete data')
+            this.storeNrData(data[0])
+            this.storeTasks(data[1])
+            this.storeFilings(data[2])
+            this.dataLoaded = true
+          }).catch(error => {
+            // eslint-disable-next-line no-console
+            console.error(error)
+            this.nameRequestInvalidDialog = true
+          })
+        }
       }).catch(error => {
         // eslint-disable-next-line no-console
         console.error(error)
-        this.accountAuthorizationDialog = true
+        if (this.businessId) this.businessAuthErrorDialog = true
+        if (this.nrNumber) this.nameRequestAuthErrorDialog = true
       })
     },
 
@@ -243,7 +307,8 @@ export default {
 
     /** Gets authorizations from Auth API. */
     getAuthorizations (): Promise<any> {
-      const url = this.businessId + '/authorizations'
+      const id = this.businessId || this.nrNumber
+      const url = id + '/authorizations'
       const config = {
         baseURL: this.authApiUrl + 'entities/'
       }
@@ -288,7 +353,7 @@ export default {
 
     /** Gets entity info from Legal API. */
     getEntityInfo (): Promise<any> {
-      const url = this.businessId
+      const url = `businesses/${this.businessId}`
       return axios.get(url)
     },
 
@@ -324,23 +389,117 @@ export default {
       }
     },
 
+    // FUTURE: update this when API returns New Incorporation task (#3102)
+    /** Gets NR data from Namex API. */
+    async getNrData (): Promise<any> {
+      await this.intializeNameXToken()
+      return this.queryNameRequest(this.nrNumber)
+    },
+
+    storeNrData (data: any): void {
+      if (!this.isNrValid(data)) {
+        this.nameRequestInvalidDialog = true
+        throw new Error('Invalid NR data')
+      }
+      if (!this.isNrConsumable(data)) {
+        this.nameRequestInvalidDialog = true
+        throw new Error('NR not consumable')
+      }
+
+      // FOR DEBUGGING ONLY
+      data.expirationDate = new Date() // today
+
+      this.nameRequest = data
+      this.setEntityName(data.names[0].name)
+      this.setEntityType(data.requestTypeCd)
+      this.setEntityIncNo(data.nrNum)
+    },
+
+    /** Returns True if NR is valid. */
+    isNrValid (data: any): boolean {
+      return (data && data.expirationDate && data.names[0]?.name && data.nrNum && data.requestTypeCd)
+    },
+
+    // FUTURE: rebase this to latest code from bcrs-business-create-ui
+    // FUTURE: maybe this should be in a mixin
+    /** Returns True if NR is consumable. */
+    isNrConsumable (data: any): boolean {
+      const nr = this.isNRConsumable(data)
+
+      if (nr.expired) {
+        // NR has expired
+        this.nameRequestInvalidType = NameRequestStates.EXPIRED
+        return false
+      }
+      if (!nr.approved) {
+        // NR has not been approved
+        this.nameRequestInvalidType = NameRequestStates.NOT_APPROVED
+        return false
+      }
+      if (!nr.isConsumable) {
+        // NR has already been consumed
+        this.nameRequestInvalidType = NameRequestStates.CONSUMED
+        return false
+      }
+      if (nr.approved && data.consentFlag === false) {
+        // NR is awaiting consent
+        this.nameRequestInvalidType = NameRequestStates.NEED_CONSENT
+        return false
+      }
+
+      return nr.isConsumable
+    },
+
     /** Gets tasks list from Legal API. */
     getTasks (): Promise<any> {
-      const url = this.businessId + '/tasks'
+      const id = this.businessId || this.nrNumber
+      const url = `businesses/${id}/tasks`
       return axios.get(url)
     },
 
     storeTasks (response: any): void {
-      if (response && response.data && response.data.tasks) {
-        this.setTasks(response.data.tasks)
-      } else {
-        throw new Error('Invalid tasks')
+      if (this.businessId) {
+        if (response && response.data && response.data.tasks) {
+          this.setTasks(response.data.tasks)
+        } else {
+          throw new Error('Invalid tasks')
+        }
+      }
+      // FUTURE: update this when API returns New Incorporation task (#3102)
+      if (this.nrNumber) {
+        if (response && response.data && response.data.tasks) {
+          // if we have existing tasks, use them
+          if (response.data.tasks.length > 0) {
+            this.setTasks(response.data.tasks)
+            this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
+          } else {
+            // otherwise create a New Incorporation task
+            response.data.tasks.push({
+              enabled: true,
+              order: 1,
+              task: {
+                todo: {
+                  nameRequest: this.nameRequest,
+                  header: {
+                    name: FilingTypes.INCORPORATION_APPLICATION,
+                    status: FilingStatus.NEW
+                  }
+                }
+              }
+            })
+            this.setTasks(response.data.tasks)
+            this.setEntityStatus(EntityStatus.NAME_REQUEST)
+          }
+        } else {
+          throw new Error('Invalid tasks')
+        }
       }
     },
 
     /** Gets filings list from Legal API. */
     getFilings (): Promise<any> {
-      const url = this.businessId + '/filings'
+      const id = this.businessId || this.nrNumber
+      const url = `businesses/${id}/filings`
       return axios.get(url)
     },
 
@@ -354,7 +513,7 @@ export default {
 
     /** Gets addresses from Legal API. */
     getAddresses (): Promise<any> {
-      const url = this.businessId + '/addresses'
+      const url = `businesses/${this.businessId}/addresses`
       return axios.get(url)
     },
 
@@ -377,7 +536,7 @@ export default {
 
     /** Gets directors list from Legal API. */
     getDirectors (): Promise<any> {
-      const url = this.businessId + '/directors'
+      const url = `businesses/${this.businessId}/directors`
       return axios.get(url)
     },
 
@@ -404,16 +563,18 @@ export default {
 
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
-      // redirect to Business Registry home page
-      const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
-      // assume Businesses URL is always reachable
-      businessesUrl && window.location.assign(businessesUrl)
+      // reroute / redirect to Signout page
+      // this.$router.push({ name: SIGNOUT })
+      const baseUrl = sessionStorage.getItem('BASE_URL')
+      baseUrl && window.location.assign(`${baseUrl}signout`)
     },
 
     /** Handles Retry click event from dialogs. */
     onClickRetry (): void {
       this.dashboardUnavailableDialog = false
-      this.accountAuthorizationDialog = false
+      this.businessAuthErrorDialog = false
+      this.nameRequestAuthErrorDialog = false
+      this.nameRequestInvalidDialog = false
       this.fetchData()
     }
   },

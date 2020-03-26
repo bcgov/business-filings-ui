@@ -43,9 +43,9 @@
           <section id="annual-report-main-section">
             <!-- COOP only: -->
             <article
+              v-if="isCoop()"
               class="annual-report-article"
               :class="agmDate ? 'agm-date-selected' : 'no-agm-date-selected'"
-              v-if="entityFilter(EntityTypes.COOP)"
             >
               <!-- Page Title -->
               <header>
@@ -117,8 +117,8 @@
 
             <!-- BCOMP only: -->
             <article
+              v-if="isBComp()"
               class="annual-report-article"
-              v-if="entityFilter(EntityTypes.BCOMP)"
             >
               <!-- Page Title -->
               <header>
@@ -155,9 +155,9 @@
             <!-- Both COOP and BCOMP: -->
 
             <!-- Certify -->
-            <section v-show="entityFilter(EntityTypes.BCOMP) || agmDate || noAgm">
+            <section v-show="isBComp() || agmDate || noAgm">
               <header>
-                <h2 id="AR-step-4-header" v-if="entityFilter(EntityTypes.BCOMP)">3. Certify</h2>
+                <h2 id="AR-step-4-header" v-if="isBComp()">3. Certify</h2>
                 <h2 id="AR-step-4-header" v-else>4. Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report.</p>
               </header>
@@ -171,7 +171,7 @@
             </section>
 
             <!-- Staff Payment -->
-            <section v-if="isRoleStaff" v-show="entityFilter(EntityTypes.BCOMP) || agmDate || noAgm">
+            <section v-if="isRoleStaff" v-show="isBComp() || agmDate || noAgm">
               <header>
                 <h2 id="AR-step-5-header">5. Staff Payment</h2>
               </header>
@@ -201,9 +201,9 @@
 
     <!-- Buttons ( COOP only ) -->
     <v-container
-      id="coop-buttons-container"
+      v-if="isCoop()"
       class="list-item"
-      v-if="entityFilter(EntityTypes.COOP)"
+      id="coop-buttons-container"
     >
       <div class="buttons-left">
         <v-btn id="ar-save-btn" large
@@ -258,9 +258,9 @@
 
     <!-- Buttons ( BCOMP only ) -->
     <v-container
-      id="bcorp-buttons-container"
+      v-if="isBComp()"
       class="list-item"
-      v-if="entityFilter(EntityTypes.BCOMP)"
+      id="bcorp-buttons-container"
     >
       <div class="buttons-left"></div>
 
@@ -314,7 +314,7 @@ import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOffice
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -323,7 +323,7 @@ import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/con
 export default {
   name: 'AnnualReport',
 
-  mixins: [DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin],
 
   components: {
     ArDate,
@@ -421,7 +421,7 @@ export default {
     },
 
     certifyMessage (): string {
-      if (this.entityFilter(EntityTypes.BCOMP)) {
+      if (this.isBComp()) {
         return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
       }
       return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
@@ -434,7 +434,7 @@ export default {
     validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
 
-      if (this.entityFilter(EntityTypes.COOP)) {
+      if (this.isCoop()) {
         return (staffPaymentValid && this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
           this.certifyFormValid && !this.directorEditInProgress)
       }
@@ -516,7 +516,7 @@ export default {
     ...mapActions(['setFilingData']),
 
     fetchData () {
-      const url = this.entityIncNo + '/filings/' + this.filingId
+      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
       axios.get(url).then(response => {
         if (response && response.data) {
           const filing = response.data.filing
@@ -546,7 +546,7 @@ export default {
               if (this.$refs.directorsList && this.$refs.directorsList.setDraftDate) {
                 this.$refs.directorsList.setDraftDate(annualReport.annualGeneralMeetingDate)
               }
-              if (this.entityFilter(EntityTypes.COOP)) {
+              if (this.isCoop()) {
                 // set the new AGM date in the AGM Date component (may be null or empty)
                 this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
                 // set the new No AGM flag in the AGM Date component (may be undefined)
@@ -777,7 +777,7 @@ export default {
         }
       }
 
-      if (this.entityFilter(EntityTypes.COOP)) {
+      if (this.isCoop()) {
         annualReport = {
           annualReport: {
             annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
@@ -792,7 +792,7 @@ export default {
             directors: this.allDirectors.filter(el => el.cessationDate === null)
           }
         }
-      } else {
+      } else if (this.isBComp()) {
         annualReport = {
           annualReport: {
             annualReportDate: this.asOfDate,
@@ -848,7 +848,7 @@ export default {
 
       if (this.filingId > 0) {
         // we have a filing id, so we are updating an existing filing
-        let url = this.entityIncNo + '/filings/' + this.filingId
+        let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
         if (isDraft) {
           url += '?draft=true'
         }
@@ -877,7 +877,7 @@ export default {
         return filing
       } else {
         // filing id is 0, so we are saving a new filing
-        let url = this.entityIncNo + '/filings'
+        let url = `businesses/${this.entityIncNo}/filings`
         if (isDraft) {
           url += '?draft=true'
         }
@@ -939,7 +939,8 @@ export default {
     async hasTasks (businessId) {
       let hasPendingItems = false
       if (this.filingId === 0) {
-        await axios.get(businessId + '/tasks')
+        const url = `businesses/${businessId}/tasks`
+        await axios.get(url)
           .then(response => {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
@@ -964,7 +965,7 @@ export default {
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     // use default Priority and Waive Fees flags
-    if (this.entityFilter(EntityTypes.BCOMP)) {
+    if (this.isBComp()) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.isPriority, this.isWaiveFees)
     }
   },
@@ -989,9 +990,9 @@ export default {
     isPriority (val: boolean): void {
       // apply this flag to AR filing code only
       // simply re-add the AR code with the updated Priority flag and default Waive Fees flag
-      if (this.entityFilter(EntityTypes.BCOMP)) {
+      if (this.isBComp()) {
         this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, this.isWaiveFees)
-      } else {
+      } else if (this.isCoop()) {
         this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val, this.isWaiveFees)
       }
     },

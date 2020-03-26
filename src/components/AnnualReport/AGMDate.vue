@@ -69,7 +69,7 @@
 <script lang="ts">
 import { Component, Mixins, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 import { mapState, mapGetters } from 'vuex'
-import DateMixin from '@/mixins/date-mixin'
+import { DateMixin } from '@/mixins'
 import { FormType } from '@/interfaces'
 
 @Component({

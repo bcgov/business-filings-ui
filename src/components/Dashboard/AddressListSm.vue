@@ -68,9 +68,9 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
 
-      <!--Records Office-->
+      <!-- Records Office -->
       <v-expansion-panel id="records-office-panel"
-        v-if="entityFilter(EntityTypes.BCOMP)"
+        v-if="isBComp()"
         class="align-items-top"
         :class="{ 'address-overlay': coaPending }"
       >
@@ -145,7 +145,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 // Mixins
-import { EntityFilterMixin, CommonMixin, CountriesProvincesMixin } from '@/mixins'
+import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes } from '@/enums'
@@ -158,7 +158,7 @@ import { BaseAddressObjIF } from '@/interfaces'
     ...mapState(['registeredAddress', 'recordsAddress'])
   }
 })
-export default class AddressListSm extends Mixins(EntityFilterMixin, CommonMixin, CountriesProvincesMixin) {
+export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   // Base Address properties
   private registeredAddress: BaseAddressObjIF
   private recordsAddress: BaseAddressObjIF
@@ -167,8 +167,8 @@ export default class AddressListSm extends Mixins(EntityFilterMixin, CommonMixin
   @Prop({ default: false })
   private coaPending: boolean
 
-  // EntityTypes Enum
-  readonly EntityTypes: {} = EntityTypes
+  // Enum definition for use in template.
+  readonly EntityTypes = EntityTypes
 }
 </script>
 

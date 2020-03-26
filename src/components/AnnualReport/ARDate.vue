@@ -15,7 +15,7 @@ import { Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 // Mixins
-import DateMixin from '@/mixins/date-mixin'
+import { DateMixin } from '@/mixins'
 
 @Component({
   computed: {

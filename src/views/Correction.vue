@@ -191,7 +191,8 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
+  from '@/mixins'
 
 // Enums and Constants
 import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
@@ -200,7 +201,7 @@ import { DASHBOARD } from '@/constants'
 export default {
   name: 'Correction',
 
-  mixins: [CommonMixin, DateMixin, EntityFilterMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin],
 
   components: {
     Certify,
@@ -272,7 +273,7 @@ export default {
     /** Returns title of original filing. */
     title (): string {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
-        return this.typeToTitle(this.origFiling.header.name, this.agmYear)
+        return this.filingTypeToName(this.origFiling.header.name, this.agmYear)
       }
       return ''
     },
@@ -408,7 +409,7 @@ export default {
 
     /** Fetches the draft correction filing. */
     async fetchDraftFiling (): Promise<void> {
-      const url: string = this.entityIncNo + '/filings/' + this.filingId
+      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
       await axios.get(url).then(res => {
         if (res && res.data) {
           const filing: any = res.data.filing
@@ -453,7 +454,7 @@ export default {
 
     /** Fetches the original filing to correct. */
     async fetchOrigFiling (): Promise<void> {
-      const url: string = this.entityIncNo + '/filings/' + this.correctedFilingId
+      const url = `businesses/${this.entityIncNo}/filings/${this.correctedFilingId}`
       await axios.get(url).then(res => {
         if (res && res.data) {
           this.origFiling = res.data.filing
@@ -614,7 +615,7 @@ export default {
 
       if (this.filingId > 0) {
         // we have a filing id, so we are updating an existing filing
-        let url: string = this.entityIncNo + '/filings/' + this.filingId
+        let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
         if (isDraft) {
           url += '?draft=true'
         }
@@ -643,7 +644,7 @@ export default {
         return filing
       } else {
         // filing id is 0, so we are saving a new filing
-        let url: string = this.entityIncNo + '/filings'
+        let url = `businesses/${this.entityIncNo}/filings`
         if (isDraft) {
           url += '?draft=true'
         }
@@ -690,7 +691,8 @@ export default {
     async hasTasks (businessId): Promise<boolean> {
       let hasPendingItems: boolean = false
       if (this.filingId === 0) {
-        await axios.get(businessId + '/tasks')
+        const url = `businesses/${businessId}/tasks`
+        await axios.get(url)
           .then(response => {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
