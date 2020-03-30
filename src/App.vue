@@ -114,20 +114,27 @@ export default {
   },
 
   created (): void {
+    // init current date
+    this.updateCurrentDate()
+
+    // listen for dashboard reload trigger event
+    this.$root.$on('triggerDashboardReload', () => this.fetchData())
+  },
+
+  mounted (): void {
     // do not fetch data if we need to authenticate
     // just let signin page do its thing
     if (!this.isAuthenticated) {
       return
     }
 
-    // init current date
-    this.updateCurrentDate()
-
     // fetch business data
     this.fetchData()
+  },
 
-    // listen for dashboard reload trigger event
-    this.$root.$on('triggerDashboardReload', () => this.fetchData())
+  destroyed (): void {
+    // stop listening for dashboard reload trigger event
+    this.$root.$off('triggerDashboardReload')
   },
 
   methods: {
