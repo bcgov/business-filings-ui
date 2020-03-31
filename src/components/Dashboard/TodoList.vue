@@ -476,12 +476,13 @@ export default {
     },
 
     expiresText (task): string {
+      // NB: if expiration date is today (0) then NR is expired
       const expireDays = this.daysFromToday(task.nameRequest?.expirationDate)
-      if (isNaN(expireDays) || expireDays < 0) {
+      if (isNaN(expireDays) || expireDays < 1) {
         return 'Expired'
-      } else if (expireDays < 1) {
-        return 'Expires today'
       } else if (expireDays < 2) {
+        return 'Expires today'
+      } else if (expireDays < 3) {
         return 'Expires tomorrow'
       } else {
         return `Expires in ${expireDays} days`

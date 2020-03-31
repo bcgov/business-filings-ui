@@ -35,7 +35,7 @@
       <div class="loading-container" v-show="showLoadingContainer">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg">Loading Dashboard</div>
+          <div class="loading-msg" v-if="!isSignoutRoute">Loading Dashboard</div>
         </div>
       </div>
     </transition>
@@ -60,6 +60,7 @@
 import { mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import { Route } from 'vue-router/types'
+import { NOT_FOUND } from 'http-status-codes'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -71,7 +72,7 @@ import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErr
   NameRequestInvalidDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, DirectorMixin, NamexApiMixin } from '@/mixins'
+import { DateMixin, CommonMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
 
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
@@ -83,7 +84,7 @@ import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
 export default {
   name: 'App',
 
-  mixins: [DateMixin, CommonMixin, DirectorMixin, NamexApiMixin],
+  mixins: [DateMixin, CommonMixin, DirectorMixin, NamexRequestMixin],
 
   data () {
     return {
@@ -142,6 +143,11 @@ export default {
     /** True if route is Signin. */
     isSigninRoute (): boolean {
       return Boolean(this.$route.name === SIGNIN)
+    },
+
+    /** True if route is Signout. */
+    isSignoutRoute (): boolean {
+      return Boolean(this.$route.name === SIGNOUT)
     },
 
     /** True if user is authenticated. */
@@ -252,8 +258,8 @@ export default {
           this.nameRequestInvalidType = null
           Promise.all([
             this.getNrData(),
-            this.getTasks(), // TODO: this apparently fails on new NR
-            this.getFilings() // TODO: this apparently fails on new NR
+            this.getTasks(),
+            this.getFilings()
           ]).then(data => {
             if (!data || data.length !== 3) throw new Error('Incomplete data')
             this.storeNrData(data[0])
@@ -317,7 +323,7 @@ export default {
 
     storeAuthorizations (response: any): void {
       // NB: roles array may contain 'view', 'edit' or nothing
-      const authRoles = response && response.data && response.data.roles
+      const authRoles = response?.data?.roles
       if (authRoles && authRoles.length > 0) {
         this.setAuthRoles(authRoles)
       } else {
@@ -335,7 +341,7 @@ export default {
     },
 
     storeBusinessInfo (response: any): void {
-      const contacts = response && response.data && response.data.contacts
+      const contacts = response?.data?.contacts
       // ensure we received the right looking object
       // but allow empty contacts array
       if (contacts) {
@@ -358,21 +364,22 @@ export default {
     },
 
     storeEntityInfo (response: any): void {
-      if (response && response.data && response.data.business) {
-        this.setEntityName(response.data.business.legalName)
-        this.setEntityType(response.data.business.legalType)
-        this.setNextARDate(response.data.business.nextAnnualReport)
-        this.setEntityStatus(response.data.business.status)
-        this.setEntityBusinessNo(response.data.business.taxId)
-        this.setEntityIncNo(response.data.business.identifier)
-        this.setLastPreLoadFilingDate(response.data.business.lastLedgerTimestamp
-          ? response.data.business.lastLedgerTimestamp.split('T')[0] : null)
-        this.setEntityFoundingDate(response.data.business.foundingDate) // datetime
-        this.setLastAnnualReportDate(response.data.business.lastAnnualReport)
+      const business = response?.data?.business
+      if (business) {
+        this.setEntityName(business.legalName)
+        this.setEntityType(business.legalType)
+        this.setNextARDate(business.nextAnnualReport)
+        this.setEntityStatus(business.status)
+        this.setEntityBusinessNo(business.taxId)
+        this.setEntityIncNo(business.identifier)
+        this.setLastPreLoadFilingDate(business.lastLedgerTimestamp
+          ? business.lastLedgerTimestamp.split('T')[0] : null)
+        this.setEntityFoundingDate(business.foundingDate) // datetime
+        this.setLastAnnualReportDate(business.lastAnnualReport)
 
-        this.storeConfigObject(response.data.business.legalType)
+        this.storeConfigObject(business.legalType)
 
-        const date = response.data.business.lastAnnualGeneralMeetingDate
+        const date = business.lastAnnualGeneralMeetingDate
         if (
           date &&
           date.length === 10 &&
@@ -389,26 +396,38 @@ export default {
       }
     },
 
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    /** Gets NR data from Namex API. */
-    async getNrData (): Promise<any> {
-      await this.intializeNameXToken()
-      return this.queryNameRequest(this.nrNumber)
+    /** Gets NR data from Legal API. */
+    getNrData (): Promise<any> {
+      const url = `nameRequests/${this.nrNumber}`
+      return axios.get(url)
+        // FUTURE: should fix this workaround
+        .then(response => Promise.resolve(response.data))
     },
 
     storeNrData (data: any): void {
+      // check if NR is valid
       if (!this.isNrValid(data)) {
         this.nameRequestInvalidDialog = true
+        // eslint-disable-next-line no-console
+        console.log('Invalid NR, data =', data)
         throw new Error('Invalid NR data')
       }
-      if (!this.isNrConsumable(data)) {
-        this.nameRequestInvalidDialog = true
-        throw new Error('NR not consumable')
+
+      // FOR DEBUGGING ONLY - REMOVE WHEN NR DATA IS GOOD
+      const expireDays = this.daysFromToday(data.expirationDate)
+      if (isNaN(expireDays) || expireDays < 1) {
+        const tomorrowMs = Date.now() + this.MS_IN_A_DAY
+        data.expirationDate = new Date(tomorrowMs)
       }
 
-      // FOR DEBUGGING ONLY
-      if (new Date(data.expirationDate) < new Date()) {
-        data.expirationDate = new Date() // today
+      // check if NR is consumable
+      const nrState: NameRequestStates = this.getNrState(data)
+      if (nrState !== NameRequestStates.APPROVED) {
+        this.nameRequestInvalidDialog = true
+        this.nameRequestInvalidType = nrState
+        // eslint-disable-next-line no-console
+        console.log('NR not consumable, state =', nrState)
+        throw new Error('NR not consumable')
       }
 
       this.nameRequest = data
@@ -417,66 +436,39 @@ export default {
       this.setEntityIncNo(data.nrNum)
     },
 
-    /** Returns True if NR is valid. */
-    isNrValid (data: any): boolean {
-      return (data && data.expirationDate && data.names[0]?.name && data.nrNum && data.requestTypeCd)
-    },
-
-    // FUTURE: rebase this to latest code from bcrs-business-create-ui
-    // FUTURE: maybe this should be in a mixin
-    /** Returns True if NR is consumable. */
-    isNrConsumable (data: any): boolean {
-      const nr = this.isNRConsumable(data)
-
-      if (nr.expired) {
-        // NR has expired
-        this.nameRequestInvalidType = NameRequestStates.EXPIRED
-        return false
-      }
-      if (!nr.approved) {
-        // NR has not been approved
-        this.nameRequestInvalidType = NameRequestStates.NOT_APPROVED
-        return false
-      }
-      if (!nr.isConsumable) {
-        // NR has already been consumed
-        this.nameRequestInvalidType = NameRequestStates.CONSUMED
-        return false
-      }
-      if (nr.approved && data.consentFlag === false) {
-        // NR is awaiting consent
-        this.nameRequestInvalidType = NameRequestStates.NEED_CONSENT
-        return false
-      }
-
-      return nr.isConsumable
-    },
-
     /** Gets tasks list from Legal API. */
     getTasks (): Promise<any> {
       const id = this.businessId || this.nrNumber
       const url = `businesses/${id}/tasks`
       return axios.get(url)
+        .catch(error => {
+          // if Business or Name Request is not found, return empty array
+          if (error?.response?.status === NOT_FOUND) {
+            return Promise.resolve({ data: { tasks: [] } })
+          }
+          return Promise.reject(error)
+        })
     },
 
     storeTasks (response: any): void {
+      const tasks = response?.data?.tasks
       if (this.businessId) {
-        if (response && response.data && response.data.tasks) {
-          this.setTasks(response.data.tasks)
+        if (tasks) {
+          this.setTasks(tasks)
         } else {
           throw new Error('Invalid tasks')
         }
       }
       // FUTURE: update this when API returns New Incorporation task (#3102)
       if (this.nrNumber) {
-        if (response && response.data && response.data.tasks) {
+        if (tasks) {
           // if we have existing tasks, use them
-          if (response.data.tasks.length > 0) {
-            this.setTasks(response.data.tasks)
+          if (tasks.length > 0) {
+            this.setTasks(tasks)
             this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
           } else {
             // otherwise create a New Incorporation task
-            response.data.tasks.push({
+            tasks.push({
               enabled: true,
               order: 1,
               task: {
@@ -489,7 +481,7 @@ export default {
                 }
               }
             })
-            this.setTasks(response.data.tasks)
+            this.setTasks(tasks)
             this.setEntityStatus(EntityStatus.NAME_REQUEST)
           }
         } else {
@@ -503,11 +495,19 @@ export default {
       const id = this.businessId || this.nrNumber
       const url = `businesses/${id}/filings`
       return axios.get(url)
+        .catch(error => {
+          // if Business or Name Request is not found, return empty array
+          if (error?.response?.status === NOT_FOUND) {
+            return Promise.resolve({ data: { filings: [] } })
+          }
+          return Promise.reject(error)
+        })
     },
 
     storeFilings (response: any): void {
-      if (response && response.data && response.data.filings) {
-        this.setFilings(response.data.filings)
+      const filings = response?.data?.filings
+      if (filings) {
+        this.setFilings(filings)
       } else {
         throw new Error('Invalid filings')
       }
@@ -520,16 +520,14 @@ export default {
     },
 
     storeAddresses (response: any): void {
-      if (response && response.data) {
+      if (response?.data) {
         if (response.data.registeredOffice) {
           this.setRegisteredAddress(this.omitProps(response.data.registeredOffice,
-            ['deliveryAddress', 'mailingAddress'],
-            ['addressType']))
+            ['deliveryAddress', 'mailingAddress'], ['addressType']))
         }
         if (response.data.recordsOffice) {
           this.setRecordsAddress(this.omitProps(response.data.recordsOffice,
-            ['deliveryAddress', 'mailingAddress'],
-            ['addressType']))
+            ['deliveryAddress', 'mailingAddress'], ['addressType']))
         }
       } else {
         throw new Error('invalid office addresses')
@@ -543,15 +541,15 @@ export default {
     },
 
     storeDirectors (response: any): void {
-      if (response && response.data && response.data.directors) {
-        const directorsList = response.data.directors
-        const directors = directorsList.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
-        for (var i = 0; i < directors.length; i++) {
-          directors[i].id = i + 1
-          directors[i].isNew = false
-          directors[i].isDirectorActive = true
+      const directors = response?.data?.directors
+      if (directors) {
+        const directorsSorted = directors.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
+        for (var i = 0; i < directorsSorted.length; i++) {
+          directorsSorted[i].id = i + 1
+          directorsSorted[i].isNew = false
+          directorsSorted[i].isDirectorActive = true
         }
-        this.setDirectors(directors)
+        this.setDirectors(directorsSorted)
       } else {
         throw new Error('Invalid directors')
       }

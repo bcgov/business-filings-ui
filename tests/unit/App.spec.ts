@@ -717,7 +717,7 @@ describe('App as a Name Request', () => {
     sessionStorage.setItem('NR_NUMBER', 'NR_1234567')
   })
 
-  beforeEach(async ()=> {
+  beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
     // GET authorizations (role)
@@ -729,15 +729,8 @@ describe('App as a Name Request', () => {
           }
       })))
 
-    // GET namex access token
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    sinon.stub(axios, 'post')
-      .withArgs('https://sso-dev.pathfinder.gov.bc.ca/auth/realms/sbc/protocol/openid-connect/token')
-      .returns(new Promise((resolve) => resolve({ data: { access_token: 'abc' } })))
-
     // GET NR data
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    get.withArgs('https://namex-dev.pathfinder.gov.bc.ca/api/v1/requests/NR%201234567')
+    get.withArgs('nameRequests/NR%201234567')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -844,7 +837,7 @@ describe('App as an Incorporation Application', () => {
     sessionStorage.setItem('NR_NUMBER', 'NR_1234567')
   })
 
-  beforeEach(async ()=> {
+  beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
     // GET authorizations (role)
@@ -856,15 +849,8 @@ describe('App as an Incorporation Application', () => {
           }
       })))
 
-    // GET namex access token
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    sinon.stub(axios, 'post')
-      .withArgs('https://sso-dev.pathfinder.gov.bc.ca/auth/realms/sbc/protocol/openid-connect/token')
-      .returns(new Promise((resolve) => resolve({ data: { access_token: 'abc' } })))
-
     // GET NR data
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    get.withArgs('https://namex-dev.pathfinder.gov.bc.ca/api/v1/requests/NR%201234567')
+    get.withArgs('nameRequests/NR%201234567')
       .returns(new Promise((resolve) => resolve({
         data:
           {
