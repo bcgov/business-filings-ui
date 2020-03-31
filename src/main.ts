@@ -15,7 +15,7 @@ import '@/registerServiceWorker'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
-import KeyCloakService from 'sbc-common-components/src/services/keycloak.services'
+import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import App from '@/App.vue'
 
 // get rid of "You are running Vue in development mode" console message
@@ -32,13 +32,15 @@ async function start () {
   await fetchConfig()
 
   // configure Keycloak Service
-  await KeyCloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
+  console.info('Starting Keycloak service...') // eslint-disable-line no-console
+  await KeycloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
 
   // get Vue objects only after we have config
   const router = getVueRouter()
   const store = getVuexStore()
 
   // start Vue application
+  console.info('Starting app...') // eslint-disable-line no-console
   new Vue({
     vuetify: new Vuetify({ iconfont: 'mdi' }),
     router,
