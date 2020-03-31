@@ -334,7 +334,7 @@ describe('Standalone Directors Filing - Part 2 - Resuming', () => {
     store.state.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
-    sinon.stub(axios, 'get').withArgs('CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -413,11 +413,12 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
+    store.state.entityFoundingDate = '2000-01-01'
 
     const get = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    get.withArgs('CP0001191/filings/123')
+    get.withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -447,7 +448,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       })))
 
     // mock "fetch tasks" endpoint
-    get.withArgs('CP0001191/tasks')
+    get.withArgs('businesses/CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -470,7 +471,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       })))
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('CP0001191/filings')
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -501,7 +502,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       })))
 
     // mock "update and file" endpoint
-    sinon.stub(axios, 'put').withArgs('CP0001191/filings/123')
+    sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -741,7 +742,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     store.state.currentDate = '2019-07-15'
 
     // mock "save and file" endpoint
-    sinon.stub(axios, 'post').withArgs('CP0001191/filings')
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -772,7 +773,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
       })))
 
     // mock "fetch tasks" endpoint
-    sinon.stub(axios, 'get').withArgs('CP0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -853,7 +854,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     store.state.currentDate = '2019-07-15'
 
     // mock "save draft" endpoint
-    sinon.stub(axios, 'post').withArgs('CP0001191/filings?draft=true')
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -883,7 +884,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       })))
 
     // mock "fetch tasks" endpoint
-    sinon.stub(axios, 'get').withArgs('CP0001191/tasks')
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -1005,11 +1006,11 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('CP0001191/tasks')
+      .withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint - garbage response data, we aren't testing that
-    spy = sinon.stub(axios, 'post').withArgs('CP0001191/filings?draft=true')
+    spy = sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -1164,7 +1165,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     const get = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
-    get.withArgs('CP0001191/filings/123')
+    get.withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -1194,7 +1195,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       })))
 
     // mock "fetch tasks" endpoint
-    get.withArgs('CP0001191/tasks')
+    get.withArgs('businesses/CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data: {
           'tasks': [
@@ -1259,7 +1260,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'post').withArgs('CP0001191/filings').returns(p1)
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
     const p2 = Promise.reject({
@@ -1305,7 +1306,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
-    sinon.stub(axios, 'put').withArgs('CP0001191/filings/123').returns(p2)
+    sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
   })
 
   afterEach(() => {

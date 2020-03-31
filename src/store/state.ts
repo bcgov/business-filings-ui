@@ -32,6 +32,5 @@ export default {
 
   currentFilingStatus: null as FilingStatus,
   configObject: null as object,
-
   filingData: [] as Array<FilingData>
 }

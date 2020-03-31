@@ -71,7 +71,7 @@ describe('AddCommentDialog', () => {
     // mock "post a comment" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('123/filings/456/comments')
+      .withArgs('businesses/123/filings/456/comments')
       .returns(
         new Promise(resolve =>
           resolve({

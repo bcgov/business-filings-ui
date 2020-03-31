@@ -111,7 +111,7 @@ describe('Dashboard - In Process Tests', () => {
     store.state.entityIncNo = 'CP0001191'
 
     // mock "get filing" endpoint
-    sinon.stub(axios, 'get').withArgs('CP0001191/filings/123')
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data: {
           filing: {

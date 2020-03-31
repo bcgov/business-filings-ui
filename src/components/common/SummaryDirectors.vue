@@ -6,7 +6,7 @@
         <v-subheader class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="entityFilter(EntityTypes.BCOMP)">Mailing Address</span>
+          <span v-if="isBComp()">Mailing Address</span>
           <span class="header-appointed">Appointed/Elected</span>
         </v-subheader>
 
@@ -67,7 +67,7 @@
                     <base-address :address="director.deliveryAddress" />
                   </div>
 
-                  <div class="address same-address" v-if="entityFilter(EntityTypes.BCOMP)">
+                  <div class="address same-address" v-if="isBComp()">
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                       Same as Delivery Address
                     </span>
@@ -153,7 +153,7 @@
                     <div class="address">
                       <base-address :address="director.deliveryAddress" />
                     </div>
-                    <div class="address same-address" v-if="entityFilter(EntityTypes.BCOMP)">
+                    <div class="address same-address" v-if="isBComp()">
                       <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                         Same as Delivery Address
                       </span>
@@ -183,7 +183,7 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { DateMixin, EntityFilterMixin, CommonMixin } from '@/mixins'
+import { DateMixin, CommonMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes } from '@/enums'
@@ -197,7 +197,7 @@ import { Director } from '@/interfaces'
     BaseAddress
   }
 })
-export default class SummaryDirectors extends Mixins(DateMixin, EntityFilterMixin, CommonMixin) {
+export default class SummaryDirectors extends Mixins(DateMixin, CommonMixin) {
   // Directors array passed into this component.
   @Prop({ default: [] })
   private directors: Array<Director>
@@ -207,8 +207,8 @@ export default class SummaryDirectors extends Mixins(DateMixin, EntityFilterMixi
   private directorsCeased: Array<Director> = []
   private expand: boolean = true
 
-  // EntityTypes Enum
-  EntityTypes: {} = EntityTypes
+  // Enum definition for use in template.
+  EntityTypes = EntityTypes
 
   /**
     * Watcher to keep director lists up to date.

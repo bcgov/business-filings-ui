@@ -1,11 +1,19 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="account-authorization-dialog">
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="business-auth-error-dialog">
     <v-card>
-      <v-card-title>Account Authorization</v-card-title>
+      <v-card-title>Unable to Access Business</v-card-title>
 
       <v-card-text>
-        <p class="genErr">This account appears to be unable to access this business. You can retry to access
-          this business now, or you can exit and try to access this business at another time.</p>
+        <p class="genErr">Your account is currently unable to access this Business. This may be
+          because of the following:</p>
+        <ul>
+          <li>Your account is not authorized to access this Business &mdash; contact the Business
+            owner to get access.</li>
+          <li>Your login session has timed out &mdash; please exit and then login again.</li>
+          <li>The specified Business Identifier is not valid.</li>
+          </ul>
+        <p class="mt-4">You can retry now, or you can exit and try to access this Business at
+          another time.</p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
           <ErrorContact />
@@ -35,7 +43,7 @@ import { ErrorContact } from '@/components/common'
   },
   components: { ErrorContact }
 })
-export default class AccountAuthorizationDialog extends Vue {
+export default class BusinessAuthErrorDialog extends Vue {
   // Getter definition for static type checking.
   readonly isRoleStaff!: boolean
 

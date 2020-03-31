@@ -191,12 +191,12 @@ import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 // Mixins
-import { DateMixin, EntityFilterMixin, FilingMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [DateMixin, EntityFilterMixin, FilingMixin],
+  mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin],
 
   components: {
     AddCommentDialog,
@@ -265,14 +265,17 @@ export default {
               case FilingTypes.CHANGE_OF_NAME:
                 this.loadOtherReport(filing, filing.changeOfName)
                 break
+              case FilingTypes.CORRECTION:
+                this.loadCorrection(filing, filing.correction)
+                break
+              case FilingTypes.INCORPORATION_APPLICATION:
+                this.loadOtherReport(filing, filing.incorporationApplication)
+                break
               case FilingTypes.SPECIAL_RESOLUTION:
                 this.loadOtherReport(filing, filing.specialResolution)
                 break
               case FilingTypes.VOLUNTARY_DISSOLUTION:
                 this.loadOtherReport(FilingTypes.VOLUNTARY_DISSOLUTION, filing, filing.voluntaryDissolution)
-                break
-              case FilingTypes.CORRECTION:
-                this.loadCorrection(filing, filing.correction)
                 break
               default:
                 // fallback for unknown filings
@@ -311,7 +314,7 @@ export default {
 
           const type = filing.header.name
           const agmYear = +date.slice(0, 4)
-          const title = this.typeToTitle(type, agmYear)
+          const title = this.filingTypeToName(type, agmYear)
           const item = {
             type: type,
             title: title,
@@ -352,7 +355,7 @@ export default {
         if (filing.header.effectiveDate) effectiveDate = filing.header.effectiveDate.slice(0, 10)
 
         const type = filing.header.name
-        const title = this.typeToTitle(type)
+        const title = this.filingTypeToName(type)
 
         const item = {
           type: type,
@@ -386,7 +389,7 @@ export default {
 
         const item = {
           type: filing.header.name,
-          title: `Correction - ${this.typeToTitle(filing.correction.correctedFilingType)}`,
+          title: `Correction - ${this.filingTypeToName(filing.correction.correctedFilingType)}`,
           filingId: filing.header.filingId,
           filingAuthor: filing.header.certifiedBy,
           filingDateTime: localDateTime,
@@ -416,9 +419,9 @@ export default {
       let title: string
       if (filing.annualReport && filing.annualReport.annualReportDate) {
         const agmYear: number = +filing.annualReport.annualReportDate.slice(0, 4)
-        title = this.typeToTitle(type, agmYear)
+        title = this.filingTypeToName(type, agmYear)
       } else {
-        title = this.typeToTitle(type)
+        title = this.filingTypeToName(type)
       }
 
       const item = {
@@ -502,7 +505,7 @@ export default {
     },
 
     async downloadOneDocument (filingDocument) {
-      const url = this.entityIncNo + '/filings/' + filingDocument.filingId
+      const url = `businesses/${this.entityIncNo}/filings/${filingDocument.filingId}`
       const headers = { 'Accept': 'application/pdf' }
 
       await axios.get(url, { headers: headers, responseType: 'blob' as 'json' }).then(response => {
@@ -550,7 +553,7 @@ export default {
     async downloadOneReceipt (filing) {
       if (!filing.paymentToken || !filing.filingDateTime || !filing.filingDate) return // safety check
 
-      const url = filing.paymentToken + '/receipts'
+      const url = `businesses/${filing.paymentToken}/receipts`
       const data = {
         corpName: this.entityName,
         filingDateTime: filing.filingDateTime,
@@ -620,12 +623,12 @@ export default {
      *
      * @param filingType The type of the filing in the history list.
      * @param status The status of the filing in the history list.
-     * @return A boolean indicating if the filing is future effective.
+     * @returns A boolean indicating if the filing is future effective.
      */
     isCoaFutureEffective (filingType: string, status: string): boolean {
-      return this.entityFilter(EntityTypes.BCOMP) &&
+      return (this.isBComp() &&
         filingType === FilingTypes.CHANGE_OF_ADDRESS &&
-        status === FilingStatus.PAID
+        status === FilingStatus.PAID)
     },
 
     showCommentDialog (filingId: number): void {
@@ -646,7 +649,7 @@ export default {
 
       if (filing) {
         // fetch latest comments for this filing
-        const url = this.entityIncNo + '/filings/' + filingId
+        const url = `businesses/${this.entityIncNo}/filings/${filingId}`
         await axios.get(url).then(res => {
           if (res && res.data && res.data.filing && res.data.filing.header) {
             // reassign just the comments

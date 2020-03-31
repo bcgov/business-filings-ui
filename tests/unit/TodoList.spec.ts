@@ -33,6 +33,7 @@ document.body.append(app)
 
 describe('TodoList - UI', () => {
   beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.entityType = 'CP'
   })
 
@@ -201,7 +202,7 @@ describe('TodoList - UI', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -634,7 +635,7 @@ describe('TodoList - UI', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -683,7 +684,7 @@ describe('TodoList - UI', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -852,6 +853,7 @@ describe('TodoList - UI', () => {
 
 describe('TodoList - UI - BCOMP', () => {
   beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     store.state.entityType = 'BC'
   })
 
@@ -1071,7 +1073,7 @@ describe('TodoList - UI - BCOMP', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1119,7 +1121,7 @@ describe('TodoList - UI - BCOMP', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1292,6 +1294,7 @@ describe('TodoList - Click Tests', () => {
 
   beforeAll(() => {
     // init store
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
 
@@ -1372,7 +1375,7 @@ describe('TodoList - Click Tests', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1431,7 +1434,7 @@ describe('TodoList - Click Tests', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1483,7 +1486,7 @@ describe('TodoList - Click Tests', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1518,6 +1521,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
   beforeAll(() => {
     // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
 
@@ -1623,7 +1627,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1675,7 +1679,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1727,6 +1731,7 @@ describe('TodoList - Delete Draft', () => {
     window.location.assign = assign
   })
 
+  // TODO: add unit test for Delete Incorporation Application (btn-delete-incorporation)
   it('shows confirmation popup when \'Delete Draft\' is clicked', done => {
     // init store
     store.state.tasks = [
@@ -1743,7 +1748,7 @@ describe('TodoList - Delete Draft', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1785,7 +1790,7 @@ describe('TodoList - Delete Draft', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1832,7 +1837,7 @@ describe('TodoList - Delete Draft', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1903,7 +1908,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1943,7 +1948,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },
@@ -1991,7 +1996,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': { },
+            'changeOfAddress': {},
             'changeOfDirectors': { }
           }
         },

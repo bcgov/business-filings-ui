@@ -2,8 +2,9 @@ import CommonMixin from './common-mixin'
 import CountriesProvincesMixin from './countries-provinces-mixin'
 import DateMixin from './date-mixin'
 import DirectorMixin from './director-mixin'
-import EntityFilterMixin from './entityFilter-mixin'
+import EnumMixin from './enum-mixin'
 import FilingMixin from './filing-mixin'
+import NamexApiMixin from './namex-api-mixin'
 import ResourceLookupMixin from './resource-lookup-mixin'
 
 export {
@@ -11,7 +12,8 @@ export {
   CountriesProvincesMixin,
   DateMixin,
   DirectorMixin,
-  EntityFilterMixin,
+  EnumMixin,
   FilingMixin,
+  NamexApiMixin,
   ResourceLookupMixin
 }

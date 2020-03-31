@@ -1,7 +1,8 @@
 {
   "BUSINESSES_URL": "https://dev.bcregistry.ca/cooperatives/auth/",
   "AUTH_URL": "https://dev.bcregistry.ca/cooperatives/auth/",
-  "LEGAL_API_URL": "https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/businesses/",
+  "CREATE_URL": "https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/",
+  "LEGAL_API_URL": "https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "AUTH_API_URL": "https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "PAY_API_URL": "https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",

@@ -2,25 +2,24 @@
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
 
-      <!-- Business Name, Business Status -->
+      <!-- Entity Name, Entity Status -->
       <div class="title-container">
         <div class="mb-1" id="entity-legal-name">
           <span>{{ entityName || 'Not Available' }}</span>
         </div>
-        <v-chip id="entity-status" small label text-color="white"
-          v-if="entityStatus"
-          :class="{
-            'blue' : isGoodStanding,
-            'red' : isPendingDissolution || isNotInCompliance
-          }">
-          <span v-if="isGoodStanding">In Good Standing</span>
-          <span v-else-if="isPendingDissolution">Pending Dissolution</span>
-          <span v-else-if="isNotInCompliance">Not in Compliance</span>
+        <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
+          <span>In Good Standing</span>
+        </v-chip>
+        <v-chip v-else-if="isPendingDissolution" class="red" id="entity-status" small label text-color="white">
+          <span>Pending Dissolution</span>
+        </v-chip>
+        <v-chip v-else-if="isNotInCompliance" class="red" id="entity-status" small label text-color="white">
+          <span>Not in Compliance</span>
         </v-chip>
       </div>
 
       <!-- Business Numbers, Contact Info -->
-      <div class="business-info">
+      <div class="business-info" v-if="businessId">
         <div class="business-info__meta">
           <dl>
             <dt>Business No:</dt>
@@ -62,28 +61,52 @@
         </div>
       </div>
 
+      <!-- NR Subtitle, NR Number -->
+      <div class="nr-info" v-if="nrNumber">
+        <div class="nr-info__meta">
+          <dl>
+            <dt></dt>
+            <dd id="nr-subtitle">
+              <span>{{ nrSubtitle }}</span>
+            </dd>
+            <dt>Name Request No:</dt>
+            <dd class="ml-2" id="nr-number">
+              <span>{{ nrNumber }}</span>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+// Libraries
+import { Component, Mixins, Vue } from 'vue-property-decorator'
 import { mapState, mapGetters } from 'vuex'
-import { EntityStatus } from '@/enums'
+
+// Mixins
+import { EnumMixin } from '@/mixins'
+
+// Enums
+import { EntityStatus, EntityTypes } from '@/enums'
 
 @Component({
+  mixins: [EnumMixin],
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['entityName', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
+    ...mapState(['entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
       'businessEmail', 'businessPhone', 'businessPhoneExtension']),
     ...mapGetters(['isRoleStaff'])
   }
 })
-export default class EntityInfo extends Vue {
+export default class EntityInfo extends Mixins(EnumMixin) {
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
-  readonly entityStatus!: string
+  readonly entityType!: EntityTypes
+  readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
   readonly entityIncNo!: number
   readonly businessEmail!: string
@@ -91,34 +114,50 @@ export default class EntityInfo extends Vue {
   readonly businessPhoneExtension!: string
   readonly isRoleStaff!: boolean
 
-  /**
-   * Computed value.
-   * @returns The business phone number and optional extension, or null.
-   */
-  private get fullPhoneNumber (): string {
+  /** The Business ID string. */
+  private get businessId (): string | null {
+    return sessionStorage.getItem('BUSINESS_ID')
+  }
+
+  /** The NR Number string. */
+  private get nrNumber (): string | null {
+    // change _ to space for display purposes
+    return sessionStorage.getItem('NR_NUMBER')?.replace('_', ' ')
+  }
+
+  /** The NR Subtitle string. */
+  private get nrSubtitle (): string | null {
+    switch (this.entityStatus) {
+      case EntityStatus.NAME_REQUEST:
+        return `${this.entityTypeToName(this.entityType)} Name Request`
+      case EntityStatus.INCORPORATION_APPLICATION:
+        return `${this.entityTypeToName(this.entityType)} Incorporation Application`
+    }
+    return null // should never happen
+  }
+
+  /** The business phone number and optional extension. */
+  private get fullPhoneNumber (): string | null {
     if (!this.businessPhone) return null
     return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
   }
 
-  /**
-   * Computed values.
-   * @returns True if the entity has the subject status.
-   */
+  /** True if the entity has the subject status. */
   private get isGoodStanding (): boolean {
-    return this.entityStatus === EntityStatus.GOODSTANDING
+    return this.entityStatus === EntityStatus.GOOD_STANDING
   }
 
+  /** True if the entity has the subject status. */
   private get isPendingDissolution (): boolean {
-    return this.entityStatus === EntityStatus.PENDINGDISSOLUTION
+    return this.entityStatus === EntityStatus.PENDING_DISSOLUTION
   }
 
+  /** True if the entity has the subject status. */
   private get isNotInCompliance (): boolean {
-    return this.entityStatus === EntityStatus.NOTINCOMPLIANCE
+    return this.entityStatus === EntityStatus.NOT_IN_COMPLIANCE
   }
 
-  /**
-   * Redirects the user to the Auth UI to update their business profile.
-   */
+  /** Redirects the user to the Auth UI to update their business profile. */
   private editBusinessProfile (): void {
     const authUrl = sessionStorage.getItem('AUTH_URL')
     const businessProfileUrl = authUrl + 'businessprofile'
@@ -156,6 +195,7 @@ export default class EntityInfo extends Vue {
   letter-spacing: -0.01rem;
   font-size: 1.125rem;
   font-weight: 700;
+  text-transform: uppercase;
 }
 
 #entity-status {
@@ -164,6 +204,7 @@ export default class EntityInfo extends Vue {
   vertical-align: top;
 }
 
+.nr-info,
 .business-info {
   display: flex;
   direction: row;

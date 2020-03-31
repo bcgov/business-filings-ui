@@ -7,9 +7,7 @@ import axios from '@/axios-auth'
  * Also identifies Business ID from initial route.
  */
 export async function fetchConfig (): Promise<void> {
-  //
   // get config from environment
-  //
   const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, cooperatives
   const processEnvBaseUrl: string = process.env.BASE_URL // eg, /cooperatives/
   const windowLocationPathname = window.location.pathname // eg, /cooperatives/CP0000841/...
@@ -19,10 +17,10 @@ export async function fetchConfig (): Promise<void> {
     return Promise.reject(new Error('Missing environment variables'))
   }
 
-  //
   // fetch config from API
-  //
-  const url = `/${processEnvVueAppPath}/config/configuration.json`
+  // eg, http://localhost:8080/cooperatives/config/configuration.json
+  // eg, https://dev.bcregistry.ca/cooperatives/config/configuration.json
+  const url = `${windowLocationOrigin}${processEnvBaseUrl}config/configuration.json`
   const headers = {
     'Accept': 'application/json',
     'ResponseType': 'application/json',
@@ -40,6 +38,10 @@ export async function fetchConfig (): Promise<void> {
   const authUrl = response.data['AUTH_URL']
   sessionStorage.setItem('AUTH_URL', authUrl)
   console.log('Set Auth URL to: ' + authUrl)
+
+  const createUrl = response.data['CREATE_URL']
+  sessionStorage.setItem('CREATE_URL', createUrl)
+  console.log('Set Create URL to: ' + createUrl)
 
   const legalApiUrl = response.data['LEGAL_API_URL']
   // set base URL for axios calls
@@ -66,18 +68,26 @@ export async function fetchConfig (): Promise<void> {
   window['ldClientId'] = ldClientId
   console.info('Set Launch Darkly Client ID.')
 
-  // get Business ID and validate that it looks OK
+  // get Business ID / NR Number and validate that it looks OK
   // it should be first token after Base URL in Pathname
-  // FUTURE: improve Business ID validation
-  const businessId = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
-  if (!businessId?.startsWith('CP') && !businessId?.startsWith('BC') && !businessId?.startsWith('NR')) {
-    return Promise.reject(new Error('Missing or invalid Business ID.'))
+  // FUTURE: improve Business ID / NR Number validation
+  const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
+  if (id?.startsWith('CP') || id?.startsWith('BC')) {
+    sessionStorage.setItem('BUSINESS_ID', id)
+    // ensure we don't already have a NR Number in scope
+    sessionStorage.removeItem('NR_NUMBER')
+  } else if (id?.startsWith('NR')) {
+    sessionStorage.setItem('NR_NUMBER', id)
+    // ensure we don't already have a Business ID in scope
+    sessionStorage.removeItem('BUSINESS_ID')
+  } else {
+    return Promise.reject(new Error('Missing or invalid Business ID or NR Number.'))
   }
-  sessionStorage.setItem('BUSINESS_ID', businessId)
 
   // set Base for Vue Router
-  // eg, /cooperatives/CP0000841/
-  const vueRouterBase = processEnvBaseUrl + businessId + '/'
+  // if needed, change %20 to _ for routing purposes
+  // eg, /cooperatives/CP0000841/ or /cooperatives/NR_9431175/
+  const vueRouterBase = processEnvBaseUrl + id.replace('%20', '_') + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
   console.log('Set Vue Router Base to: ' + vueRouterBase)
 
