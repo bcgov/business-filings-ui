@@ -635,7 +635,7 @@ export default {
           this.setCurrentFilingStatus(FilingStatus.NEW)
           this.$router.push({ name: ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
           break
-        case FilingTypes.INCORPORATION_APPLICATION:
+        case FilingTypes.NAME_REQUEST:
           // redirect to Create web app to create this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
           // change _ to space for query purposes
