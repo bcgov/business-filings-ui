@@ -653,7 +653,7 @@ describe('AnnualReport - Part 2 - Resuming', () => {
     // mock "fetch a draft filing" endpoint
     sinon
       .stub(axios, 'get')
-      .withArgs('CP0001191/filings/123')
+      .withArgs('businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -753,12 +753,12 @@ describe('AnnualReport - Part 3 - Submitting', () => {
 
     // mock "get tasks" endpoint - needed for hasTasks()
     sinonAxiosGet
-      .withArgs('CP0001191/tasks')
+      .withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "fetch a draft filing" endpoint
     sinonAxiosGet
-      .withArgs('CP0001191/filings/123')
+      .withArgs('businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -792,7 +792,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('CP0001191/filings')
+      .withArgs('businesses/CP0001191/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -827,7 +827,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     // mock "update and file" endpoint
     sinon
       .stub(axios, 'put')
-      .withArgs('CP0001191/filings/123')
+      .withArgs('businesses/CP0001191/filings/123')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1037,13 +1037,13 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('BC0007291/tasks')
+      .withArgs('businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('BC0007291/filings')
+      .withArgs('businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1154,13 +1154,13 @@ describe('AnnualReport - Part 4 - Saving', () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('CP0001191/tasks')
+      .withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint
     sinon
       .stub(axios, 'post')
-      .withArgs('CP0001191/filings?draft=true')
+      .withArgs('businesses/CP0001191/filings?draft=true')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1301,13 +1301,13 @@ describe('AnnualReport - Part 5 - Data', () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('CP0001191/tasks')
+      .withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint - garbage response data, we aren't testing that
     spy = sinon
       .stub(axios, 'post')
-      .withArgs('CP0001191/filings?draft=true')
+      .withArgs('businesses/CP0001191/filings?draft=true')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1572,13 +1572,13 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('BC0007291/tasks')
+      .withArgs('businesses/BC0007291/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save" endpoint - garbage response data, we aren't testing that
     spy = sinon
       .stub(axios, 'post')
-      .withArgs('BC0007291/filings')
+      .withArgs('businesses/BC0007291/filings')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -1799,7 +1799,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
       .stub(axios, 'get')
-      .withArgs('CP0001191/tasks')
+      .withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "file post" endpoint
@@ -1846,7 +1846,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon
       .stub(axios, 'post')
-      .withArgs('CP0001191/filings')
+      .withArgs('businesses/CP0001191/filings')
       .returns(p1)
 
     // mock "file put" endpoint
@@ -1893,7 +1893,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon
       .stub(axios, 'put')
-      .withArgs('CP0001191/filings/123')
+      .withArgs('businesses/CP0001191/filings/123')
       .returns(p2)
 
     const localVue = createLocalVue()
@@ -2046,7 +2046,7 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
     // mock "get tasks" endpoint
     sinon
       .stub(axios, 'get')
-      .withArgs('CP0001191/tasks')
+      .withArgs('businesses/CP0001191/tasks')
       .returns(
         new Promise(resolve =>
           resolve({

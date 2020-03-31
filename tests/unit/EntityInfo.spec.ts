@@ -18,6 +18,10 @@ document.body.append(app)
 describe('EntityInfo', () => {
   let vm: any
 
+  beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+  })
+
   beforeEach(done => {
     const Constructor = Vue.extend(EntityInfo)
     const instance = new Constructor({ store, vuetify })

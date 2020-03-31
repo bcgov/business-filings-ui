@@ -33,6 +33,7 @@ document.body.append(app)
 
 describe('TodoList - UI', () => {
   beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.entityType = 'CP'
   })
 
@@ -852,6 +853,7 @@ describe('TodoList - UI', () => {
 
 describe('TodoList - UI - BCOMP', () => {
   beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     store.state.entityType = 'BC'
   })
 
@@ -1292,6 +1294,7 @@ describe('TodoList - Click Tests', () => {
 
   beforeAll(() => {
     // init store
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
 
@@ -1518,6 +1521,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
   beforeAll(() => {
     // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
 

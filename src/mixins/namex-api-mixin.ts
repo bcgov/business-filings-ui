@@ -19,18 +19,16 @@ export default class NamexApiMixin extends Vue {
    * This will be removed in the future when supporting dependencies are in place
    */
   async intializeNameXToken () : Promise<any> {
-    return axios.request({
-      url: this.tokenUrl,
-      method: 'post',
+    const config = {
       headers: {
         'content-type': 'application/x-www-form-urlencoded'
       },
       auth: {
         username: this.accountId,
         password: this.accountSecret
-      },
-      data: 'grant_type=client_credentials'
-    }).then(res => {
+      }
+    }
+    return axios.post(this.tokenUrl, 'grant_type=client_credentials', config).then(res => {
       this.token = res.data['access_token']
       return res
     })

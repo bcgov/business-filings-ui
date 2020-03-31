@@ -51,8 +51,10 @@ describe('Directors as a COOP', () => {
     store.state.entityType = 'CP'
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
+
     // GET directors
-    sinon.stub(axios, 'get').withArgs('CP0001191/directors?date=2019-04-01')
+    sinon.stub(axios, 'get')
+      .withArgs('businesses/CP0001191/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -449,7 +451,8 @@ describe('Directors as a BCOMP', () => {
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
 
     // GET directors
-    sinon.stub(axios, 'get').withArgs('BC0007291/directors?date=2019-04-01')
+    sinon.stub(axios, 'get')
+      .withArgs('businesses/BC0007291/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -731,7 +734,8 @@ describe('Appoint New Director tests', () => {
     store.state.entityType = 'CP'
 
     // GET directors
-    sinon.stub(axios, 'get').withArgs('CP0001191/directors?date=2019-04-01')
+    sinon.stub(axios, 'get')
+      .withArgs('businesses/CP0001191/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
           {

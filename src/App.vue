@@ -407,7 +407,9 @@ export default {
       }
 
       // FOR DEBUGGING ONLY
-      data.expirationDate = new Date() // today
+      if (new Date(data.expirationDate) < new Date()) {
+        data.expirationDate = new Date() // today
+      }
 
       this.nameRequest = data
       this.setEntityName(data.names[0].name)
@@ -481,7 +483,7 @@ export default {
                 todo: {
                   nameRequest: this.nameRequest,
                   header: {
-                    name: FilingTypes.INCORPORATION_APPLICATION,
+                    name: FilingTypes.NAME_REQUEST,
                     status: FilingStatus.NEW
                   }
                 }

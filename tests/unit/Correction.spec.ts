@@ -31,7 +31,7 @@ describe('Correction - UI', () => {
 
     // mock "get orig filing" endpoint
     sinonAxiosGet
-      .withArgs('CP1234567/filings/123')
+      .withArgs('businesses/CP1234567/filings/123')
       .returns(new Promise(resolve =>
         resolve({
           data: {
@@ -221,13 +221,13 @@ describe('Correction - UI', () => {
   it('saves draft correction properly', async () => {
     // mock "get tasks" endpoint - needed for hasTasks()
     sinonAxiosGet
-      .withArgs('CP1234567/tasks')
+      .withArgs('businesses/CP1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint (garbage response data - we aren't testing that)
     const spy = sinon
       .stub(axios, 'post')
-      .withArgs('CP1234567/filings?draft=true')
+      .withArgs('businesses/CP1234567/filings?draft=true')
       .returns(new Promise(resolve =>
         resolve({
           data: {
@@ -284,7 +284,7 @@ describe('Correction - UI', () => {
   it('resumes draft correction properly', async () => {
     // mock "get draft correction" endpoint
     sinonAxiosGet
-      .withArgs('CP1234567/filings/456')
+      .withArgs('businesses/CP1234567/filings/456')
       .returns(new Promise(resolve =>
         resolve({
           data: {

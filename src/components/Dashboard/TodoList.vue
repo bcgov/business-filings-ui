@@ -247,7 +247,7 @@
                     <span>File Annual Report</span>
                   </v-btn>
 
-                  <v-btn v-else-if="!isStatusCompleted(task) && isTypeIncorporation(task)"
+                  <v-btn v-else-if="!isStatusCompleted(task) && isTypeNameRequest(task)"
                     class="btn-file-now"
                     color="primary"
                     :disabled="!task.enabled"
@@ -454,9 +454,9 @@ export default {
             })
             break
           }
-          case FilingTypes.INCORPORATION_APPLICATION:
+          case FilingTypes.NAME_REQUEST:
             this.taskItems.push({
-              type: FilingTypes.INCORPORATION_APPLICATION,
+              type: FilingTypes.NAME_REQUEST,
               title: `Name Request ${this.nrNumber} - ${this.entityName}`,
               subtitle: `APPROVED - ${this.expiresText(todo)}`,
               status: todo.header.status || FilingStatus.NEW,
@@ -865,9 +865,9 @@ export default {
       return (task.type === FilingTypes.ANNUAL_REPORT)
     },
 
-    /** Returns True if task type is Incorporation Application. */
-    isTypeIncorporation (task: any): boolean {
-      return (task.type === FilingTypes.INCORPORATION_APPLICATION)
+    /** Returns True if task type is Name Request. */
+    isTypeNameRequest (task: any): boolean {
+      return (task.type === FilingTypes.NAME_REQUEST)
     }
   },
 
