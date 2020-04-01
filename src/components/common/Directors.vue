@@ -456,6 +456,14 @@
                     >
                       <span>Remove</span>
                     </v-btn>
+                    <v-btn color="error"
+                     class="reset-btn"
+                     v-show="!isNew(director) && editFormShowHide.showName"
+                     @click="restoreDirName(director.id, true)"
+                     :disabled="!isNameChanged(director)"
+                    >
+                      <span>Reset</span>
+                    </v-btn>
                     <v-btn color="primary"
                       class="form-primary-btn done-edit-btn"
                       @click="saveEditDirector(index, director.id)"
@@ -558,6 +566,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
   // Local properties.
   private directors = []
   private directorsOriginal = []
+  private directorPreEdit = null
   private showNewDirectorForm = false
   private draftDate = null
   private showPopup = false
@@ -1063,6 +1072,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
    * @param index The index of the director to edit.
    */
   private editDirectorName (index): void {
+    this.directorPreEdit = { ...this.directors[index].officer }
     this.editFormShowHide = {
       showAddress: false,
       showName: true,
@@ -1151,8 +1161,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
    * @param id Id of the director being edited.
    */
   private cancelEditDirector (id = null): void {
-    this.restoreDirName(id - 1)
-
+    if (id) this.restoreDirName(id, false)
     this.activeIndex = -1
     this.directorEditInProgress = false
 
@@ -1166,17 +1175,26 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
 
   /**
    * Restores the directors name after cancelling a name change.
-   * @param index Index value of the director currently being edited
+   * @param id Id value of the director currently being edited.
+   * @param isRestore Boolean indicating a hard or soft name reset.
    */
-  private restoreDirName (index: number): void {
-    if (index >= 0) {
-      const director = this.directors[index]
+  private restoreDirName (id: number, isRestore: boolean): void {
+    const index = this.directors.findIndex(director => director.id === id)
+    const director = this.directors[index]
+
+    if (isRestore && id >= 0) {
       this.removeAction(director, NAMECHANGED)
 
       if (director.officer.prevFirstName && director.officer.prevLastName) {
         director.officer.firstName = director.officer.prevFirstName
         director.officer.middleInitial = director.officer.prevMiddleInitial
         director.officer.lastName = director.officer.prevLastName
+      }
+      this.cancelEditDirector()
+    } else {
+      if (this.directorPreEdit && !this.isNew(director)) {
+        director.officer = { ...this.directorPreEdit }
+        this.directorPreEdit = null
       }
     }
   }
