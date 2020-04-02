@@ -121,8 +121,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 
   /** The NR Number string. */
   private get nrNumber (): string | null {
-    // change _ to space for display purposes
-    return sessionStorage.getItem('NR_NUMBER')?.replace('_', ' ')
+    return sessionStorage.getItem('NR_NUMBER')
   }
 
   /** The NR Subtitle string. */

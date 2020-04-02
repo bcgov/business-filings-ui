@@ -393,8 +393,7 @@ export default {
 
     /** The NR Number string. */
     nrNumber (): string {
-      // change _ to space for display purposes
-      return sessionStorage.getItem('NR_NUMBER')?.replace('_', ' ')
+      return sessionStorage.getItem('NR_NUMBER')
     }
   },
 
@@ -639,9 +638,7 @@ export default {
         case FilingTypes.NAME_REQUEST:
           // redirect to Create web app to create this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
-          // change _ to space for query purposes
-          const num = sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
-          const url = `${createUrl}?nrNumber=${num}`
+          const url = `${createUrl}?nrNumber=${this.nrNumber}`
           // assume Create URL is always reachable
           window.location.assign(url)
           break
@@ -682,9 +679,7 @@ export default {
         case FilingTypes.INCORPORATION_APPLICATION:
           // redirect to Create web app to resume this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
-          // change _ to space for query purposes
-          const num = sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
-          const url = `${createUrl}?nrNumber=${num}`
+          const url = `${createUrl}?nrNumber=${this.nrNumber}`
           // assume Create URL is always reachable
           window.location.assign(url)
           break
@@ -761,9 +756,7 @@ export default {
     },
 
     async doDeleteDraft (task) {
-      // change _ to space for query purposes
-      const num = sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
-      const id = this.entityIncNo || num
+      const id = this.entityIncNo || this.nrNumber
       let url = `businesses/${id}/filings/${task.id}`
       await axios.delete(url).then(res => {
         if (!res) { throw new Error('Invalid API response') }

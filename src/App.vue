@@ -127,8 +127,7 @@ export default {
 
     /** The NR Number string. */
     nrNumber (): string {
-      // change _ to %20 for query purposes
-      return sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
+      return sessionStorage.getItem('NR_NUMBER')
     },
 
     /** True if loading container should be shown. */

@@ -10,7 +10,7 @@ export async function fetchConfig (): Promise<void> {
   // get config from environment
   const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, cooperatives
   const processEnvBaseUrl: string = process.env.BASE_URL // eg, /cooperatives/
-  const windowLocationPathname = window.location.pathname // eg, /cooperatives/CP0000841/...
+  const windowLocationPathname = window.location.pathname // eg, /cooperatives/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   if (!processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
@@ -70,8 +70,9 @@ export async function fetchConfig (): Promise<void> {
 
   // get Business ID / NR Number and validate that it looks OK
   // it should be first token after Base URL in Pathname
+  // also change %20 to space for display and routing purposes
   // FUTURE: improve Business ID / NR Number validation
-  const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
+  const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0].replace(/(%20)/g, ' ')
   if (id?.startsWith('CP') || id?.startsWith('BC')) {
     sessionStorage.setItem('BUSINESS_ID', id)
     // ensure we don't already have a NR Number in scope
@@ -85,9 +86,8 @@ export async function fetchConfig (): Promise<void> {
   }
 
   // set Base for Vue Router
-  // if needed, change %20 to _ for routing purposes
-  // eg, /cooperatives/CP0000841/ or /cooperatives/NR_9431175/
-  const vueRouterBase = processEnvBaseUrl + id.replace('%20', '_') + '/'
+  // eg, "/cooperatives/CP1234567/" or "/cooperatives/NR 1234567/"
+  const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
   console.log('Set Vue Router Base to: ' + vueRouterBase)
 
