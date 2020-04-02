@@ -1087,6 +1087,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
    * @param index The index of the director to edit.
    */
   private editDirectorAddress (index): void {
+    this.directorPreEdit = null
     this.editFormShowHide = {
       showAddress: true,
       showName: false,
