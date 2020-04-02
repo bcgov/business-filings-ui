@@ -393,8 +393,7 @@ export default {
 
     /** The NR Number string. */
     nrNumber (): string {
-      // change _ to space for display purposes
-      return sessionStorage.getItem('NR_NUMBER')?.replace('_', ' ')
+      return sessionStorage.getItem('NR_NUMBER')
     }
   },
 
@@ -476,12 +475,13 @@ export default {
     },
 
     expiresText (task): string {
+      // NB: if expiration date is today (0) then NR is expired
       const expireDays = this.daysFromToday(task.nameRequest?.expirationDate)
-      if (isNaN(expireDays) || expireDays < 0) {
+      if (isNaN(expireDays) || expireDays < 1) {
         return 'Expired'
-      } else if (expireDays < 1) {
-        return 'Expires today'
       } else if (expireDays < 2) {
+        return 'Expires today'
+      } else if (expireDays < 3) {
         return 'Expires tomorrow'
       } else {
         return `Expires in ${expireDays} days`
@@ -638,9 +638,7 @@ export default {
         case FilingTypes.NAME_REQUEST:
           // redirect to Create web app to create this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
-          // change _ to space for query purposes
-          const num = sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
-          const url = `${createUrl}?nrNumber=${num}`
+          const url = `${createUrl}?nrNumber=${this.nrNumber}`
           // assume Create URL is always reachable
           window.location.assign(url)
           break
@@ -681,9 +679,7 @@ export default {
         case FilingTypes.INCORPORATION_APPLICATION:
           // redirect to Create web app to resume this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
-          // change _ to space for query purposes
-          const num = sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
-          const url = `${createUrl}?nrNumber=${num}`
+          const url = `${createUrl}?nrNumber=${this.nrNumber}`
           // assume Create URL is always reachable
           window.location.assign(url)
           break
@@ -760,9 +756,7 @@ export default {
     },
 
     async doDeleteDraft (task) {
-      // change _ to space for query purposes
-      const num = sessionStorage.getItem('NR_NUMBER')?.replace('_', '%20')
-      const id = this.entityIncNo || num
+      const id = this.entityIncNo || this.nrNumber
       let url = `businesses/${id}/filings/${task.id}`
       await axios.delete(url).then(res => {
         if (!res) { throw new Error('Invalid API response') }

@@ -2,8 +2,9 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { AlertMessageIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
+
 /**
- * Mixin for components to retrieve text/settings from json resource.
+ * Mixin for components to retrieve text/settings from JSON resource.
  */
 @Component({
   computed: {

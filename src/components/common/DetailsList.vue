@@ -35,6 +35,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Emit } from 'vue-property-decorator'
@@ -61,8 +62,8 @@ export default class DetailsList extends Mixins(DateMixin) {
   @Emit('showCommentDialog')
   private showCommentDialog (val: string): void { }
 }
-
 </script>
+
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 

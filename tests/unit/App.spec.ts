@@ -714,14 +714,14 @@ describe('App as a Name Request', () => {
       'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
       'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
       'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg')
-    sessionStorage.setItem('NR_NUMBER', 'NR_1234567')
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
   })
 
-  beforeEach(async ()=> {
+  beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
     // GET authorizations (role)
-    get.withArgs('NR%201234567/authorizations')
+    get.withArgs('NR 1234567/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -729,15 +729,8 @@ describe('App as a Name Request', () => {
           }
       })))
 
-    // GET namex access token
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    sinon.stub(axios, 'post')
-      .withArgs('https://sso-dev.pathfinder.gov.bc.ca/auth/realms/sbc/protocol/openid-connect/token')
-      .returns(new Promise((resolve) => resolve({ data: { access_token: 'abc' } })))
-
     // GET NR data
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    get.withArgs('https://namex-dev.pathfinder.gov.bc.ca/api/v1/requests/NR%201234567')
+    get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -745,6 +738,7 @@ describe('App as a Name Request', () => {
             names: [
               {
                 name: 'My Name Request',
+                state: 'APPROVED',
                 consumptionDate: null
               }
             ],
@@ -755,7 +749,7 @@ describe('App as a Name Request', () => {
       })))
 
     // GET tasks
-    get.withArgs('businesses/NR%201234567/tasks')
+    get.withArgs('businesses/NR 1234567/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -764,7 +758,7 @@ describe('App as a Name Request', () => {
       })))
 
     // GET filings
-    get.withArgs('businesses/NR%201234567/filings')
+    get.withArgs('businesses/NR 1234567/filings')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -841,14 +835,14 @@ describe('App as an Incorporation Application', () => {
       'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
       'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
       'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg')
-    sessionStorage.setItem('NR_NUMBER', 'NR_1234567')
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
   })
 
-  beforeEach(async ()=> {
+  beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
     // GET authorizations (role)
-    get.withArgs('NR%201234567/authorizations')
+    get.withArgs('NR 1234567/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -856,15 +850,8 @@ describe('App as an Incorporation Application', () => {
           }
       })))
 
-    // GET namex access token
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    sinon.stub(axios, 'post')
-      .withArgs('https://sso-dev.pathfinder.gov.bc.ca/auth/realms/sbc/protocol/openid-connect/token')
-      .returns(new Promise((resolve) => resolve({ data: { access_token: 'abc' } })))
-
     // GET NR data
-    // FUTURE: update this when API returns New Incorporation task (#3102)
-    get.withArgs('https://namex-dev.pathfinder.gov.bc.ca/api/v1/requests/NR%201234567')
+    get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -872,6 +859,7 @@ describe('App as an Incorporation Application', () => {
             names: [
               {
                 name: 'My Name Request',
+                state: 'APPROVED',
                 consumptionDate: null
               }
             ],
@@ -882,7 +870,7 @@ describe('App as an Incorporation Application', () => {
       })))
 
     // GET tasks
-    get.withArgs('businesses/NR%201234567/tasks')
+    get.withArgs('businesses/NR 1234567/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -907,7 +895,7 @@ describe('App as an Incorporation Application', () => {
       })))
 
     // GET filings
-    get.withArgs('businesses/NR%201234567/filings')
+    get.withArgs('businesses/NR 1234567/filings')
       .returns(new Promise((resolve) => resolve({
         data:
           {
