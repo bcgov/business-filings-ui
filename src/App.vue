@@ -429,8 +429,11 @@ export default {
         throw new Error('NR not consumable')
       }
 
+      // save data for later use (FOR DEBUGGING)
       this.nameRequest = data
-      this.setEntityName(data.names[0].name)
+
+      // save the approved name, etc
+      this.setEntityName(data.names.find(name => name.state === NameRequestStates.APPROVED).name)
       this.setEntityType(data.requestTypeCd)
       this.setEntityIncNo(data.nrNum)
     },

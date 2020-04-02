@@ -10,15 +10,14 @@ import { DateMixin } from '@/mixins'
  */
 @Component
 export default class NamexRequestMixin extends Mixins(DateMixin) {
-  /** Returns True if the Name Request is valid. */
+  /** Returns True if the Name Request data is valid. */
   isNrValid (nr: any): boolean {
-    return (
-      nr?.state &&
-      nr?.expirationDate &&
-      nr?.names[0]?.name &&
-      nr?.nrNum &&
-      nr?.requestTypeCd
-    )
+    return (nr &&
+      nr.state &&
+      nr.expirationDate &&
+      nr.names?.length > 0 &&
+      nr.nrNum &&
+      nr.requestTypeCd)
   }
 
   /** Returns the Name Request's state. */
