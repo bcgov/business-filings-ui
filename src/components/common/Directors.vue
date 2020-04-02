@@ -457,7 +457,7 @@
                       <span>Remove</span>
                     </v-btn>
                     <v-btn color="error"
-                     class="reset-btn"
+                     class="reset-edit-btn"
                      v-show="!isNew(director) && editFormShowHide.showName"
                      @click="restoreDirName(director.id, true)"
                      :disabled="!isNameChanged(director)"

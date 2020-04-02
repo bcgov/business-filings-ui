@@ -297,6 +297,82 @@ describe('Directors as a COOP', () => {
     expect(vm.editFormShowHide.showDates).toEqual(true)
   })
 
+  it('director reset button is disabled prior to any editing', async () => {
+    // Open the edit director
+    await vm.editDirectorName(0)
+
+    // Verify the reset is disabled prior to any director edit
+    const resetBtn = vm.$el.querySelectorAll('.reset-edit-btn')[0]
+    expect(resetBtn.disabled).toBe(true)
+  })
+
+  it('director reset button is enabled once a director name is edited', async () => {
+    // Open the edit director
+    await vm.editDirectorName(0)
+
+    // Verify the correct data in the text input field
+    expect(vm.$el.querySelectorAll('.edit-director__first-name input')[0].value).toBe('Peter')
+
+    // Change the text input
+    setValue(vm, '.edit-director__first-name input', 'Steve')
+
+    // Verify the name is updated
+    expect(vm.directors[0].officer.firstName).toBe('Steve')
+
+    // Verify the reset is disabled prior to any director edit
+    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(true)
+
+    // Click Done btn and update the directors name
+    await vm.$el.querySelectorAll('.done-edit-btn')[0].click()
+
+    // Re Open the edit director
+    await vm.editDirectorName(0)
+
+    expect(vm.$el.querySelectorAll('.edit-director__first-name input')[0].value).toBe('Steve')
+
+    // Verify the reset is now enabled post director name edit
+    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(false)
+  })
+
+  it('restores the directors name to its value original pre-editing when reset is clicked', async () => {
+    // Open the edit director
+    await vm.editDirectorName(0)
+
+    // Verify the correct data in the text input field
+    expect(vm.$el.querySelectorAll('.edit-director__first-name input')[0].value).toBe('Peter')
+
+    // Change the text input
+    setValue(vm, '.edit-director__first-name input', 'Steve')
+
+    // Verify the name is updated
+    expect(vm.directors[0].officer.firstName).toBe('Steve')
+
+    // Verify the reset is disabled prior to any director edit
+    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(true)
+
+    // Click Done btn and update the directors name
+    await vm.$el.querySelectorAll('.done-edit-btn')[0].click()
+
+    // Verify Updated Data in the directors list
+    expect(vm.directors[0].officer.firstName).toEqual('Steve')
+    expect(vm.directors[0].actions[0]).toEqual('nameChanged')
+
+    // Re Open the edit director
+    await vm.editDirectorName(0)
+
+    expect(vm.$el.querySelectorAll('.edit-director__first-name input')[0].value).toBe('Steve')
+
+    // Verify the reset is now enabled post director name edit
+    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(false)
+
+    // Click the reset btn
+    await vm.$el.querySelectorAll('.reset-edit-btn')[0].click()
+
+    // Verify reset Data in the directors list
+    expect(vm.directors[0].officer.firstName).toEqual('Peter')
+    expect(vm.directors[0].actions[0]).toBeUndefined()
+  })
+
   it('disables buttons/actions when instructed by parent component', done => {
     // clear enabled prop
     vm.componentEnabled = false
