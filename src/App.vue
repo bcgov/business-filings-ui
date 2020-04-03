@@ -61,6 +61,7 @@ import { mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import { Route } from 'vue-router/types'
 import { NOT_FOUND } from 'http-status-codes'
+import TokenService from 'sbc-common-components/src/services/token.services'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -72,7 +73,7 @@ import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErr
   NameRequestInvalidDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
+import { CommonMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
 
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
@@ -84,7 +85,7 @@ import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
 export default {
   name: 'App',
 
-  mixins: [DateMixin, CommonMixin, DirectorMixin, NamexRequestMixin],
+  mixins: [CommonMixin, DirectorMixin, NamexRequestMixin],
 
   data () {
     return {
@@ -96,6 +97,12 @@ export default {
       nameRequestInvalidType: null as NameRequestStates,
       currentDateTimerId: null as number,
       nameRequest: null as object,
+
+      /**
+       * Instance of the token refresh service.
+       * Needs to exist for lifetime of app.
+       */
+      tokenService: null as TokenService,
 
       // enums
       EntityStatus,
@@ -153,6 +160,11 @@ export default {
     isAuthenticated (): boolean {
       // FUTURE: also check that token isn't expired!
       return Boolean(sessionStorage.getItem('KEYCLOAK_TOKEN'))
+    },
+
+    /** True if Jest is running the code. */
+    isJestRunning (): boolean {
+      return (process.env.JEST_WORKER_ID !== undefined)
     }
   },
 
@@ -164,14 +176,14 @@ export default {
     this.$root.$on('triggerDashboardReload', () => this.fetchData())
   },
 
-  mounted (): void {
+  async mounted (): Promise<void> {
     // do not fetch data if we need to authenticate
     // just let signin page do its thing
     if (!this.isAuthenticated) {
       return
     }
 
-    // fetch business data
+    await this.startTokenService()
     this.fetchData()
   },
 
@@ -205,6 +217,19 @@ export default {
       this.currentDateTimerId = setTimeout(this.updateCurrentDate, timeout)
     },
 
+    /** Starts token service to refresh KC token periodically. */
+    async startTokenService (): Promise<void> {
+      // only initialize once
+      // don't start during Jest tests as it messes up the test JWT
+      if (this.tokenService || this.isJestRunning) return Promise.resolve()
+
+      console.info('Starting token refresh service...') // eslint-disable-line no-console
+      this.tokenService = new TokenService()
+      await this.tokenService.init()
+      this.tokenService.scheduleRefreshTimer()
+    },
+
+    /** Fetches business data / NR data. */
     fetchData (): void {
       this.dataLoaded = false
 
@@ -412,13 +437,6 @@ export default {
         throw new Error('Invalid NR data')
       }
 
-      // FOR DEBUGGING ONLY - REMOVE WHEN NR DATA IS GOOD
-      const expireDays = this.daysFromToday(data.expirationDate)
-      if (isNaN(expireDays) || expireDays < 1) {
-        const tomorrowMs = Date.now() + this.MS_IN_A_DAY
-        data.expirationDate = new Date(tomorrowMs)
-      }
-
       // check if NR is consumable
       const nrState: NameRequestStates = this.getNrState(data)
       if (nrState !== NameRequestStates.APPROVED) {
@@ -582,10 +600,12 @@ export default {
   },
 
   watch: {
-    '$route' (): void {
+    async '$route' (): Promise<void> {
       // if we (re)route to the dashboard then re-fetch all data
-      // (does not fire on initial dashboard load)
+      // - does not fire on initial dashboard load
+      // - fires after successful signin
       if (this.$route.name === DASHBOARD) {
+        await this.startTokenService()
         this.fetchData()
       }
     }
