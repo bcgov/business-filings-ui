@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import { Route } from 'vue-router/types'
+import VueRouter, { Route } from 'vue-router'
 import routes from '@/routes'
 import { SIGNIN } from '@/constants'
 
@@ -23,21 +22,16 @@ export function getVueRouter () {
 
   router.beforeEach((to, from, next) => {
     // check if we need to authenticate
-    if (isNotSigninRoute(to) && requiresAuth(to) && !isAuthenticated()) {
+    if (requiresAuth(to) && !isAuthenticated()) {
       next({ name: SIGNIN })
     } else {
       next()
     }
   })
 
-  /** Returns True if route is not Signin, else False. */
-  function isNotSigninRoute (route: Route): boolean {
-    return Boolean(route.name !== SIGNIN)
-  }
-
   /** Returns True if route requires authentication, else False. */
   function requiresAuth (route: Route): boolean {
-    return route.matched.some(r => r.meta.requiresAuth)
+    return route.matched.some(r => r.meta?.requiresAuth)
   }
 
   /** Returns True if user is authenticated, else False. */

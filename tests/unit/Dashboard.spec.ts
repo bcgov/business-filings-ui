@@ -17,7 +17,7 @@ import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 
 // NB: test util async issue
-// in some cases, the elements are not updated during the test
+// in some cases, the elements are not updated during the test (eg, "ld")
 // the work-around is to first initialize the property we are changing
 // suppress update watchers warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -28,11 +28,6 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
-
-// Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
-const app: HTMLDivElement = document.createElement('div')
-app.setAttribute('data-app', 'true')
-document.body.append(app)
 
 describe('Dashboard - UI', () => {
   let wrapper: Wrapper<Vue>
