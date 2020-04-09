@@ -59,7 +59,6 @@
 // Libraries
 import { mapActions } from 'vuex'
 import axios from '@/axios-auth'
-import { Route } from 'vue-router/types'
 import { NOT_FOUND } from 'http-status-codes'
 import TokenService from 'sbc-common-components/src/services/token.services'
 
@@ -179,10 +178,9 @@ export default {
   async mounted (): Promise<void> {
     // do not fetch data if we need to authenticate
     // just let signin page do its thing
-    if (!this.isAuthenticated) {
-      return
-    }
+    if (!this.isAuthenticated) return
 
+    // if we are already authenticated from another session...
     await this.startTokenService()
     this.fetchData()
   },
@@ -424,7 +422,7 @@ export default {
     getNrData (): Promise<any> {
       const url = `nameRequests/${this.nrNumber}`
       return axios.get(url)
-        // FUTURE: should fix this workaround
+        // workaround because data is at "response.data.data"
         .then(response => Promise.resolve(response.data))
     },
 
@@ -451,7 +449,7 @@ export default {
       this.nameRequest = data
 
       // save the approved name, etc
-      this.setEntityName(data.names.find(name => name.state === NameRequestStates.APPROVED).name)
+      this.setEntityName(data.names.find(name => name.state === NameRequestStates.APPROVED)?.name)
       this.setEntityType(data.requestTypeCd)
       this.setEntityIncNo(data.nrNum)
     },
@@ -583,10 +581,10 @@ export default {
 
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
-      // reroute / redirect to Signout page
-      // this.$router.push({ name: SIGNOUT })
-      const baseUrl = sessionStorage.getItem('BASE_URL')
-      baseUrl && window.location.assign(`${baseUrl}signout`)
+      // redirect to Business Registry home page
+      const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
+      // assume Businesses URL is always reachable
+      window.location.assign(businessesUrl)
     },
 
     /** Handles Retry click event from dialogs. */

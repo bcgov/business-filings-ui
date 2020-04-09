@@ -15,7 +15,7 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
    * @param nr the name request response payload
    */
   isNrValid (nr: any): boolean {
-    return (nr &&
+    return Boolean(nr &&
       nr.state &&
       nr.expirationDate &&
       nr.names?.length > 0 &&

@@ -51,7 +51,7 @@ async function start () {
 }
 
 // execution and error handling
-start().catch((error) => {
+start().catch(error => {
   console.error(error) // eslint-disable-line no-console
   // try to redirect to Business Registry home page
   const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')

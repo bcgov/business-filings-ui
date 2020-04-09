@@ -115,45 +115,47 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   readonly isRoleStaff!: boolean
 
   /** The Business ID string. */
-  private get businessId (): string | null {
+  private get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
   /** The NR Number string. */
-  private get nrNumber (): string | null {
+  private get nrNumber (): string {
     return sessionStorage.getItem('NR_NUMBER')
   }
 
   /** The NR Subtitle string. */
-  private get nrSubtitle (): string | null {
+  private get nrSubtitle (): string {
     switch (this.entityStatus) {
       case EntityStatus.NAME_REQUEST:
         return `${this.entityTypeToName(this.entityType)} Name Request`
       case EntityStatus.INCORPORATION_APPLICATION:
         return `${this.entityTypeToName(this.entityType)} Incorporation Application`
     }
-    return null // should never happen
+    return '' // should never happen
   }
 
   /** The business phone number and optional extension. */
-  private get fullPhoneNumber (): string | null {
-    if (!this.businessPhone) return null
-    return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
+  private get fullPhoneNumber (): string {
+    if (this.businessPhone) {
+      return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
+    }
+    return ''
   }
 
   /** True if the entity has the subject status. */
   private get isGoodStanding (): boolean {
-    return this.entityStatus === EntityStatus.GOOD_STANDING
+    return (this.entityStatus === EntityStatus.GOOD_STANDING)
   }
 
   /** True if the entity has the subject status. */
   private get isPendingDissolution (): boolean {
-    return this.entityStatus === EntityStatus.PENDING_DISSOLUTION
+    return (this.entityStatus === EntityStatus.PENDING_DISSOLUTION)
   }
 
   /** True if the entity has the subject status. */
   private get isNotInCompliance (): boolean {
-    return this.entityStatus === EntityStatus.NOT_IN_COMPLIANCE
+    return (this.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
   }
 
   /** Redirects the user to the Auth UI to update their business profile. */

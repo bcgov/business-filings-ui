@@ -68,7 +68,7 @@ export default [
     component: Signout,
     props: true,
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     }
   },
   // {
