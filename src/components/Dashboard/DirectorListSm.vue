@@ -1,6 +1,9 @@
 <template>
   <div id="director-list-sm">
-    <v-expansion-panels accordion multiple>
+    <div v-if="completedFilingRequired" class="pt-4 pb-4">
+        <span class="complete-filing">Complete your filing to display</span>
+    </div>
+    <v-expansion-panels v-else accordion multiple>
       <v-expansion-panel class="align-items-top address-panel"
         v-for="director in directors"
         :key="director.id"
@@ -63,7 +66,7 @@
 
 <script lang="ts">
 // Vue Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 // Mixins
@@ -76,6 +79,10 @@ import { CountriesProvincesMixin, CommonMixin } from '@/mixins'
 })
 export default class DirectorListSm extends Mixins(CountriesProvincesMixin, CommonMixin) {
   readonly directors: Array<object>
+
+  // Used to hide address info and show required completed filing message
+  @Prop({ default: false })
+  private completedFilingRequired: boolean
 }
 </script>
 
@@ -84,6 +91,14 @@ export default class DirectorListSm extends Mixins(CountriesProvincesMixin, Comm
 
 // Variables
 $avatar-width: 2.75rem;
+
+// Complete filing required styling
+.complete-filing {
+  padding: 2rem;
+  color: $gray6;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
 
 // Expansion Panel Customization
 .v-expansion-panel-header {

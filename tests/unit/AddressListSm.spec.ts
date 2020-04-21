@@ -259,4 +259,64 @@ describe('AddressListSm', () => {
       done()
     })
   })
+
+  it('displays complete your filing to display', async () => {
+    store.state.entityType = 'BC'
+    const wrapper = mount(AddressListSm,
+      {
+        store,
+        vuetify,
+        propsData: {
+          completedFilingRequired: true
+        }
+      })
+    const expectedMessage = 'Complete your filing to display'
+    const vm = wrapper.vm as any
+    // Click the records office tab to display the addresses
+    const button = vm.$el.querySelector('#records-office-panel-toggle')
+    await button.click()
+    await Vue.nextTick()
+
+    expect(vm.$el.querySelector('#registered-office-panel .delivery-address-list-item .complete-filing')
+      .textContent).toBe(expectedMessage)
+
+    expect(vm.$el.querySelector('#registered-office-panel .mailing-address-list-item .complete-filing')
+      .textContent).toBe(expectedMessage)
+
+    expect(vm.$el.querySelector('#records-office-panel .delivery-address-list-item .complete-filing')
+      .textContent).toBe(expectedMessage)
+
+    expect(vm.$el.querySelector('#records-office-panel .mailing-address-list-item .complete-filing')
+      .textContent).toBe(expectedMessage)
+
+    wrapper.destroy()
+  })
+
+  it('does not display complete your filing to display', async () => {
+    store.state.entityType = 'BC'
+    const wrapper = mount(AddressListSm,
+      {
+        store,
+        vuetify,
+        propsData: {
+          completedFilingRequired: false
+        }
+      })
+    const vm = wrapper.vm as any
+    // Click the records office tab to display the addresses
+    const button = vm.$el.querySelector('#records-office-panel-toggle')
+    await button.click()
+    await Vue.nextTick()
+
+    expect(wrapper.find('#registered-office-panel .delivery-address-list-item .complete-filing')
+      .exists()).toBe(false)
+    expect(wrapper.find('#registered-office-panel .mailing-address-list-item .complete-filing').exists())
+      .toBe(false)
+    expect(wrapper.find('#records-office-panel .delivery-address-list-item .complete-filing')
+      .exists()).toBe(false)
+    expect(wrapper.find('#records-office-panel .mailing-address-list-item .complete-filing').exists())
+      .toBe(false)
+
+    wrapper.destroy()
+  })
 })

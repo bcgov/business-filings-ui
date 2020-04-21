@@ -263,4 +263,46 @@ describe('Dashboard - Click Tests', () => {
       done()
     })
   })
+
+  it('address/director change should be disabled', done => {
+    const wrapper = shallowMount(Dashboard,
+      {
+        store,
+        vuetify,
+        computed: {
+          disableChanges () {
+            return true
+          }
+        }
+      })
+
+    Vue.nextTick(async () => {
+      expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+      expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
+
+      wrapper.destroy()
+      done()
+    })
+  })
+
+  it('address/director change should be enabled', done => {
+    const wrapper = shallowMount(Dashboard,
+      {
+        store,
+        vuetify,
+        computed: {
+          disableChanges () {
+            return false
+          }
+        }
+      })
+
+    Vue.nextTick(async () => {
+      expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
+      expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
+
+      wrapper.destroy()
+      done()
+    })
+  })
 })

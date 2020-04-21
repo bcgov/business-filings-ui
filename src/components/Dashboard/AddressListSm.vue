@@ -9,8 +9,40 @@
         <v-expansion-panel-header id="registered-office-panel-toggle">
           <div class="list-item__title">Registered Office</div>
         </v-expansion-panel-header>
+        <!-- A completed filing is required; Don't show address information -->
+        <v-expansion-panel-content class="panel-wrapper pt-0 pb-0" v-if="completedFilingRequired">
+          <v-list class="pt-0 pb-0">
+            <v-list-item class="delivery-address-list-item">
+              <v-list-item-icon class="address-icon mr-0">
+                <v-icon color="primary">mdi-truck</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-subtitle>
+                  <div>
+                    <span class="complete-filing">Complete your filing to display</span>
+                  </div>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
-        <v-expansion-panel-content class="panel-wrapper pt-0 pb-0">
+            <v-list-item class="mailing-address-list-item pt-10">
+              <v-list-item-icon class="address-icon mr-0">
+                <v-icon color="primary">mdi-email-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-subtitle>
+                  <div>
+                    <span class="complete-filing">Complete your filing to display</span>
+                  </div>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-expansion-panel-content>
+        <!-- A completed filing is NOT required - Show address information -->
+        <v-expansion-panel-content class="panel-wrapper pt-0 pb-0" v-else>
           <v-list class="pt-0 pb-0" v-if="registeredAddress">
             <v-list-item class="delivery-address-list-item"
               v-if="registeredAddress.deliveryAddress"
@@ -77,8 +109,40 @@
         <v-expansion-panel-header id="records-office-panel-toggle">
           <div class="list-item__title">Records Office</div>
         </v-expansion-panel-header>
+        <!-- A completed filing is required; Don't show address information -->
+        <v-expansion-panel-content class="panel-wrapper" v-if="completedFilingRequired">
+          <v-list class="pt-0 pb-0">
+            <v-list-item class="delivery-address-list-item">
+              <v-list-item-icon class="address-icon mr-0">
+                <v-icon color="primary">mdi-truck</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-subtitle>
+                  <div>
+                    <span class="complete-filing">Complete your filing to display</span>
+                  </div>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
-        <v-expansion-panel-content class="panel-wrapper">
+            <v-list-item class="mailing-address-list-item pt-10">
+              <v-list-item-icon class="address-icon mr-0">
+                <v-icon color="primary">mdi-email-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-subtitle>
+                  <div>
+                    <span class="complete-filing">Complete your filing to display</span>
+                  </div>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-expansion-panel-content>
+        <!-- A completed filing is NOT required - Show address information -->
+        <v-expansion-panel-content class="panel-wrapper" v-else>
           <v-list class="pt-0 pb-0" v-if="recordsAddress">
             <v-list-item class="delivery-address-list-item"
               v-if="recordsAddress.deliveryAddress"
@@ -167,6 +231,10 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   @Prop({ default: false })
   private coaPending: boolean
 
+  // Used to hide address info and show required completed filing message
+  @Prop({ default: false })
+  private completedFilingRequired: boolean
+
   // Enum definition for use in template.
   readonly EntityTypes = EntityTypes
 }
@@ -177,6 +245,13 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
 
 // Variables
 $icon-width: 2.75rem;
+
+// Complete filing required styling
+.complete-filing {
+  color: $gray6;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
 
 .panel-wrapper {
   margin-left: -1.5rem;
