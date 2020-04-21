@@ -553,7 +553,7 @@ export default {
     async downloadOneReceipt (filing) {
       if (!filing.paymentToken || !filing.filingDateTime || !filing.filingDate) return // safety check
 
-      const url = `businesses/${filing.paymentToken}/receipts`
+      const url = `${filing.paymentToken}/receipts`
       const data = {
         corpName: this.entityName,
         filingDateTime: filing.filingDateTime,
