@@ -273,21 +273,21 @@ describe('AddressListSm', () => {
     const expectedMessage = 'Complete your filing to display'
     const vm = wrapper.vm as any
     // Click the records office tab to display the addresses
-    const button = vm.$el.querySelector('#records-office-panel-toggle')
-    await button.click()
+    const button = wrapper.find('#records-office-panel-toggle')
+    button.trigger('click')
     await Vue.nextTick()
 
-    expect(vm.$el.querySelector('#registered-office-panel .delivery-address-list-item .complete-filing')
-      .textContent).toBe(expectedMessage)
+    expect(wrapper.find('#registered-office-panel .delivery-address-list-item .complete-filing')
+      .text()).toBe(expectedMessage)
 
-    expect(vm.$el.querySelector('#registered-office-panel .mailing-address-list-item .complete-filing')
-      .textContent).toBe(expectedMessage)
+    expect(wrapper.find('#registered-office-panel .mailing-address-list-item .complete-filing')
+      .text()).toBe(expectedMessage)
 
-    expect(vm.$el.querySelector('#records-office-panel .delivery-address-list-item .complete-filing')
-      .textContent).toBe(expectedMessage)
+    expect(wrapper.find('#records-office-panel .delivery-address-list-item .complete-filing')
+      .text()).toBe(expectedMessage)
 
-    expect(vm.$el.querySelector('#records-office-panel .mailing-address-list-item .complete-filing')
-      .textContent).toBe(expectedMessage)
+    expect(wrapper.find('#records-office-panel .mailing-address-list-item .complete-filing')
+      .text()).toBe(expectedMessage)
 
     wrapper.destroy()
   })
@@ -304,8 +304,8 @@ describe('AddressListSm', () => {
       })
     const vm = wrapper.vm as any
     // Click the records office tab to display the addresses
-    const button = vm.$el.querySelector('#records-office-panel-toggle')
-    await button.click()
+    const button = wrapper.find('#records-office-panel-toggle')
+    button.trigger('click')
     await Vue.nextTick()
 
     expect(wrapper.find('#registered-office-panel .delivery-address-list-item .complete-filing')

@@ -290,15 +290,9 @@ export default {
     checkCompletedIncorporationFilings (filings: Array<any>) {
       if (!filings || !filings.length) return // safety check
 
-      const completedFiling = filings.find(filing => {
+      this.hasCompletedIncorporationFiling = filings.find(filing => {
         return filing.name === FilingNames.INCORPORATION_APPLICATION && filing.status === FilingStatus.COMPLETED
       })
-
-      if (completedFiling) {
-        this.hasCompletedIncorporationFiling = true
-      } else {
-        this.hasCompletedIncorporationFiling = false
-      }
     },
 
     /**
@@ -328,7 +322,9 @@ export default {
         this.checkPendingFilings(this.historyFilings)
       }
       // check for completed filing on an incoporation application
-      this.checkCompletedIncorporationFilings(this.historyFilings)
+      if (this.nrNumber) {
+        this.checkCompletedIncorporationFilings(this.historyFilings)
+      }
 
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()

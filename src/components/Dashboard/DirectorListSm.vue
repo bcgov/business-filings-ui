@@ -94,7 +94,7 @@ $avatar-width: 2.75rem;
 
 // Complete filing required styling
 .complete-filing {
-  padding: 2rem;
+  padding: 0rem 2rem;
   color: $gray6;
   font-size: 0.85rem;
   white-space: pre-wrap;
