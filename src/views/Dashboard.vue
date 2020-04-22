@@ -149,7 +149,7 @@ export default {
     return {
       todoCount: 0,
       hasBlockerFiling: false,
-      hasCompletedIncorporationFiling: false,
+      completedFilingRequired: false,
       filedCount: 0,
       historyFilings: [],
       todoListFilings: [],
@@ -175,12 +175,7 @@ export default {
 
     /** Checks if changes need to be disabled */
     disableChanges () : boolean {
-      return this.nrNumber ? !this.hasCompletedIncorporationFiling : this.hasBlockerFiling
-    },
-
-    /** Checks if a completed filing is required */
-    completedFilingRequired () : boolean {
-      return this.nrNumber && !this.hasCompletedIncorporationFiling
+      return this.nrNumber ? this.completedFilingRequired : this.hasBlockerFiling
     }
   },
 
@@ -290,7 +285,7 @@ export default {
     checkCompletedIncorporationFilings (filings: Array<any>) {
       if (!filings || !filings.length) return // safety check
 
-      this.hasCompletedIncorporationFiling = filings.find(filing => {
+      this.completedFilingRequired = !filings.some(filing => {
         return filing.name === FilingNames.INCORPORATION_APPLICATION && filing.status === FilingStatus.COMPLETED
       })
     },
