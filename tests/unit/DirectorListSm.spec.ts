@@ -159,4 +159,29 @@ describe('DirectorListSm', () => {
       done()
     })
   })
+
+  it('displays complete your filing to display', () => {
+    const wrapper = mount(DirectorListSm,
+      {
+        store,
+        vuetify,
+        propsData: {
+          completedFilingRequired: true
+        }
+      })
+    expect(wrapper.find('.complete-filing').exists()).toBe(true)
+    expect(wrapper.find('.complete-filing').text()).toBe('Complete your filing to display')
+  })
+
+  it('does not display complete your filing to display', () => {
+    const wrapper = mount(DirectorListSm,
+      {
+        store,
+        vuetify,
+        propsData: {
+          completedFilingRequired: false
+        }
+      })
+    expect(wrapper.find('.complete-filing').exists()).toBe(false)
+  })
 })

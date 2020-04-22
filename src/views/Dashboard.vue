@@ -46,7 +46,7 @@
           </v-col>
 
           <v-col cols="12" md="3" style="position: relative">
-            <section v-show="!nrNumber">
+            <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-addresses-subtitle">Office Addresses</h2>
                 <v-scale-transition>
@@ -67,7 +67,7 @@
                 <v-btn text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
-                  :disabled="hasBlockerFiling"
+                  :disabled="disableChanges"
                   @click.native.stop="proceedCoa()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -77,17 +77,18 @@
               <v-card flat>
                 <address-list-sm
                   :coaPending="coaPending"
+                  :completedFilingRequired="completedFilingRequired"
                 />
               </v-card>
             </section>
 
-            <section v-show="!nrNumber">
+            <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
                 <v-btn text small color="primary"
                   id="standalone-directors-button"
                   class="change-btn"
-                  :disabled="hasBlockerFiling"
+                  :disabled="disableChanges"
                   @click.native.stop="goToStandaloneDirectors()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -95,7 +96,9 @@
                 </v-btn>
               </header>
               <v-card flat>
-                <director-list-sm />
+                <director-list-sm
+                  :completedFilingRequired="completedFilingRequired"
+                />
               </v-card>
             </section>
           </v-col>
@@ -146,6 +149,7 @@ export default {
     return {
       todoCount: 0,
       hasBlockerFiling: false,
+      completedFilingRequired: false,
       filedCount: 0,
       historyFilings: [],
       todoListFilings: [],
@@ -167,6 +171,11 @@ export default {
     /** The NR Number string. */
     nrNumber (): string {
       return sessionStorage.getItem('NR_NUMBER')
+    },
+
+    /** Checks if changes need to be disabled */
+    disableChanges () : boolean {
+      return this.nrNumber ? this.completedFilingRequired : this.hasBlockerFiling
     }
   },
 
@@ -268,6 +277,20 @@ export default {
     },
 
     /**
+     * Searches the filings history for a completed incorporation application
+     * Used to disable the ability to change directors and addresses for NRs
+     *
+     * @param filings The array of filings in history
+     */
+    checkCompletedIncorporationFilings (filings: Array<any>) {
+      if (!filings || !filings.length) return // safety check
+
+      this.completedFilingRequired = !filings.some(filing => {
+        return filing.name === FilingNames.INCORPORATION_APPLICATION && filing.status === FilingStatus.COMPLETED
+      })
+    },
+
+    /**
      * Toggle the Change of address warning dialog.
      */
     toggleCoaWarning () {
@@ -293,6 +316,11 @@ export default {
       if (this.isBComp()) {
         this.checkPendingFilings(this.historyFilings)
       }
+      // check for completed filing on an incoporation application
+      if (this.nrNumber) {
+        this.checkCompletedIncorporationFilings(this.historyFilings)
+      }
+
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
     },
