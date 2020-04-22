@@ -1,7 +1,7 @@
 <template>
   <div id="director-list-sm">
-    <div v-if="completedFilingRequired" class="pt-4 pb-4">
-        <span class="complete-filing">Complete your filing to display</span>
+    <div v-if="completedFilingRequired">
+        <span v-if="completedFilingRequired" class="complete-filing">Complete your filing to display</span>
     </div>
     <v-expansion-panels v-else accordion multiple>
       <v-expansion-panel class="align-items-top address-panel"
@@ -94,10 +94,11 @@ $avatar-width: 2.75rem;
 
 // Complete filing required styling
 .complete-filing {
-  padding: 0rem 2rem;
+  padding: 2rem;
   color: $gray6;
   font-size: 0.85rem;
   white-space: pre-wrap;
+  display:inline-block;
 }
 
 // Expansion Panel Customization
