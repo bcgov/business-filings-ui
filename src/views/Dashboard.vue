@@ -175,11 +175,7 @@ export default {
 
     /** Checks if changes need to be disabled */
     disableChanges () : boolean {
-      if (this.nrNumber) {
-        return !this.hasCompletedIncorporationFiling
-      } else {
-        return this.hasBlockerFiling
-      }
+      return this.nrNumber ? !this.hasCompletedIncorporationFiling : this.hasBlockerFiling
     },
 
     /** Checks if a completed filing is required */
