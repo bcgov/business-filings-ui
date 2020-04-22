@@ -101,7 +101,7 @@
                   <div class="payment-status" v-else>
                     <span>PAYMENT INCOMPLETE</span>
                     <v-btn small icon color="black" class="info-btn">
-                      <v-icon>mdi-information-outline</v-icon>
+                      <v-icon color="orange">mdi-alert</v-icon>
                     </v-btn>
                   </div>
                 </div>
@@ -115,7 +115,7 @@
                   <div class="payment-status" v-else>
                     <span>PAYMENT UNSUCCESSFUL</span>
                     <v-btn small icon color="black" class="info-btn">
-                      <v-icon>mdi-information-outline</v-icon>
+                      <v-icon color="red darken-4">mdi-information-outline</v-icon>
                     </v-btn>
                   </div>
                 </div>
@@ -129,7 +129,7 @@
                   <div class="payment-status" v-else>
                     <span>PAID</span>
                     <v-btn small icon color="black" class="info-btn">
-                      <v-icon>mdi-information-outline</v-icon>
+                      <v-icon color="red darken-4">mdi-information-outline</v-icon>
                     </v-btn>
                   </div>
                 </div>
@@ -601,6 +601,7 @@ export default {
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
+          paymentToken: filing.header.paymentToken || null,
           comments: this.flattenAndSortComments(filing.header.comments)
         })
       } else {
@@ -619,7 +620,8 @@ export default {
           draftTitle: 'Incorporation Application',
           status: filing.header.status,
           enabled: Boolean(task.enabled),
-          order: task.order
+          order: task.order,
+          paymentToken: filing.header.paymentToken || null
         })
       } else {
         // eslint-disable-next-line no-console
@@ -744,14 +746,14 @@ export default {
           cancel: 'Don\'t delete'
         }
       ).then(async (confirm) => {
-        // if we get here, Delete was clicked
+        // if we get here, "Delete" was clicked
         if (confirm) {
           await this.doDeleteDraft(task)
         } else {
           // do nothing
         }
       }).catch(() => {
-        // if we get here, Don't Delete was clicked - do nothing
+        // if we get here, "Don't Delete" was clicked - do nothing
       })
     },
 
