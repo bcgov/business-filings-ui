@@ -283,11 +283,14 @@ export default {
      * @param filings The array of filings in history
      */
     checkCompletedIncorporationFilings (filings: Array<any>) {
-      if (!filings || !filings.length) return // safety check
-
-      this.completedFilingRequired = !filings.some(filing => {
-        return filing.name === FilingNames.INCORPORATION_APPLICATION && filing.status === FilingStatus.COMPLETED
-      })
+      if (!filings || !filings.length) {
+        // No filings, set completed filing required to true
+        this.completedFilingRequired = true
+      } else {
+        this.completedFilingRequired = !filings.some(filing => {
+          return filing.name === FilingNames.INCORPORATION_APPLICATION && filing.status === FilingStatus.COMPLETED
+        })
+      }
     },
 
     /**
