@@ -203,7 +203,7 @@ describe('TodoList - UI', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -245,7 +245,7 @@ describe('TodoList - UI', () => {
               'status': 'DRAFT',
               'filingId': 1
             },
-            'changeOfAddress': { }
+            'changeOfAddress': {}
           }
         },
         'enabled': true,
@@ -287,7 +287,7 @@ describe('TodoList - UI', () => {
               'status': 'DRAFT',
               'filingId': 1
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -429,7 +429,7 @@ describe('TodoList - UI', () => {
     wrapper.destroy()
   })
 
-  it('displays a DetailsList on a DRAFT \'Correction\' task', async () => {
+  it('displays details on a DRAFT \'Correction\' task', async () => {
     // init store
     store.state.tasks = [
       {
@@ -548,7 +548,7 @@ describe('TodoList - UI', () => {
     wrapper.destroy()
   })
 
-  it('displays a DetailsList on a PENDING \'Correction\' task', async () => {
+  it('displays details on a PENDING \'Correction\' task', async () => {
     // init store
     store.state.tasks = [
       {
@@ -636,7 +636,7 @@ describe('TodoList - UI', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -685,7 +685,7 @@ describe('TodoList - UI', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -728,7 +728,7 @@ describe('TodoList - UI', () => {
               'paymentToken': 12345678,
               'filingId': 1
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -769,7 +769,7 @@ describe('TodoList - UI', () => {
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -816,7 +816,7 @@ describe('TodoList - UI', () => {
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1074,7 +1074,7 @@ describe('TodoList - UI - BCOMP', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1122,7 +1122,7 @@ describe('TodoList - UI - BCOMP', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1164,7 +1164,7 @@ describe('TodoList - UI - BCOMP', () => {
               'status': 'PAID',
               'paymentToken': 12345678
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1205,7 +1205,7 @@ describe('TodoList - UI - BCOMP', () => {
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1254,7 +1254,7 @@ describe('TodoList - UI - BCOMP', () => {
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1376,7 +1376,7 @@ describe('TodoList - Click Tests', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1435,7 +1435,7 @@ describe('TodoList - Click Tests', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1487,7 +1487,7 @@ describe('TodoList - Click Tests', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1606,6 +1606,60 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     })
   })
 
+  it('routes to Annual Report page when \'Resume\' is clicked', done => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'annualReport',
+              'ARFilingYear': 2019,
+              'status': 'DRAFT',
+              'filingId': 123
+            },
+            'annualReport': {
+              'annualReportDate': '2019-07-15',
+              'nextARDate': '2020-07-15'
+            },
+            'changeOfAddress': {},
+            'changeOfDirectors': {}
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+    const vm = wrapper.vm as any
+
+    Vue.nextTick(async () => {
+      expect(vm.taskItems.length).toEqual(1)
+
+      const item = vm.$el.querySelector('.list-item')
+      const button = item.querySelector('.list-item__actions .v-btn')
+      expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
+
+      await button.click()
+
+      // verify that filing status was set
+      expect(vm.$store.state.currentFilingStatus).toBe('DRAFT')
+
+      // verify routing to Annual Report page with id=123
+      expect(vm.$route.name).toBe('annual-report')
+      expect(vm.$route.params.filingId).toBe(123)
+
+      wrapper.destroy()
+      done()
+    })
+  })
+
   it('redirects to Pay URL when \'Resume Payment\' is clicked', done => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -1628,7 +1682,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1680,7 +1734,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1709,6 +1763,103 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   })
 })
 
+describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // init store
+    sessionStorage.setItem('CREATE_URL', `${process.env.VUE_APP_PATH}/create/`)
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
+    store.state.entityName = 'My Business Inc'
+    store.state.entityType = 'BC'
+
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Create URL when \'Incorporate using this NR\' is clicked', async () => {
+    // init Name Request todo task
+    store.state.tasks = [
+      {
+        task: {
+          todo: {
+            header: {
+              name: 'nameRequest',
+              status: 'NEW'
+            },
+            nameRequest: {
+              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT'
+            }
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    store.state.entityStatus = 'NAMEREQUEST'
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+
+    const button = wrapper.find('.list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.find('.v-btn__content').text()).toContain('Incorporate using this NR')
+    button.trigger('click')
+
+    // verify redirection
+    const createUrl = 'cooperatives/create/?nrNumber=NR 1234567'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+
+    wrapper.destroy()
+  })
+
+  it('redirects to Create URL when \'Resume\' is clicked', async () => {
+    // init Incorporation Application filing task
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'incorporationApplication',
+              status: 'DRAFT',
+              filingId: 789
+            },
+            incorporationApplication: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    store.state.entityStatus = 'INCORPORATIONAPPLICATION'
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+
+    const button = wrapper.find('.list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.find('.v-btn__content').text()).toContain('Resume')
+    button.trigger('click')
+
+    // verify redirection
+    const createUrl = 'cooperatives/create/?nrNumber=NR 1234567'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+
+    wrapper.destroy()
+  })
+})
+
 describe('TodoList - Delete Draft', () => {
   const { assign } = window.location
   let deleteCall
@@ -1731,9 +1882,9 @@ describe('TodoList - Delete Draft', () => {
     window.location.assign = assign
   })
 
-  // TODO: add unit test for Delete Incorporation Application (btn-delete-incorporation)
-  it('shows confirmation popup when \'Delete Draft\' is clicked', done => {
+  it('shows confirmation popup when \'Delete Draft\' is clicked', async () => {
     // init store
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.tasks = [
       {
         'task': {
@@ -1749,7 +1900,7 @@ describe('TodoList - Delete Draft', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1758,40 +1909,31 @@ describe('TodoList - Delete Draft', () => {
     ]
 
     const wrapper = mount(TodoList, { store, vuetify })
-    const vm = wrapper.vm as any
 
-    Vue.nextTick(async () => {
-      const button = wrapper.find('#menu-activator')
-      await button.trigger('click')
-      const button1 = wrapper.find('#btn-delete-draft')
-      await button1.trigger('click')
-      // verify confirmation popup is showing
-      expect(wrapper.vm.$refs.confirm).toBeTruthy()
+    const button = wrapper.find('#menu-activator')
+    await button.trigger('click')
+    const button1 = wrapper.find('#btn-delete-draft')
+    await button1.trigger('click')
 
-      await flushPromises()
+    // verify confirmation popup is showing
+    expect(wrapper.vm.$refs.confirm).toBeTruthy()
 
-      done()
-    })
+    wrapper.destroy()
   })
 
-  it('calls DELETE API call when user clicks confirmation OK', done => {
+  it('shows confirmation popup when \'Delete Incorporation Application\' is clicked', async () => {
     // init store
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
     store.state.tasks = [
       {
         'task': {
           'filing': {
             'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
+              'name': 'incorporationApplication',
               'status': 'DRAFT',
               'filingId': 789
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
-            },
-            'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'incorporationApplication': {}
           }
         },
         'enabled': true,
@@ -1800,28 +1942,19 @@ describe('TodoList - Delete Draft', () => {
     ]
 
     const wrapper = mount(TodoList, { store, vuetify })
-    const vm = wrapper.vm as any
 
-    Vue.nextTick(async () => {
-      const button = wrapper.find('#menu-activator')
-      await button.trigger('click')
-      const button1 = wrapper.find('#btn-delete-draft')
-      await button1.trigger('click')
-      // verify confirmation popup is showing
-      expect(vm.$refs.confirm.dialog).toBeTruthy()
+    const button = wrapper.find('#menu-activator')
+    await button.trigger('click')
+    const button1 = wrapper.find('#btn-delete-incorporation')
+    await button1.trigger('click')
 
-      // click the OK button (call the 'yes' callback function)
-      await vm.$refs.confirm.onClickYes()
+    // verify confirmation popup is showing
+    expect(wrapper.vm.$refs.confirm).toBeTruthy()
 
-      // confirm that delete API was called
-      expect(deleteCall.called).toBeTruthy()
-
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
   })
 
-  it('does not call DELETE API call when user clicks confirmation cancel', done => {
+  it('calls DELETE endpoint when user clicks confirmation OK', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1838,7 +1971,7 @@ describe('TodoList - Delete Draft', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1849,23 +1982,66 @@ describe('TodoList - Delete Draft', () => {
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
 
-    Vue.nextTick(async () => {
-      const button = wrapper.find('#menu-activator')
-      await button.trigger('click')
-      const button1 = wrapper.find('#btn-delete-draft')
-      await button1.trigger('click')
-      // verify confirmation popup is showing
-      expect(vm.$refs.confirm.dialog).toBeTruthy()
+    const button = wrapper.find('#menu-activator')
+    await button.trigger('click')
+    const button1 = wrapper.find('#btn-delete-draft')
+    await button1.trigger('click')
 
-      // click the cancel button (call the 'cancel' callback function)
-      await vm.$refs.confirm.onClickCancel()
+    // verify confirmation popup is showing
+    expect(vm.$refs.confirm.dialog).toBeTruthy()
 
-      // confirm that delete API was not called
-      expect(deleteCall.called).toBeFalsy()
+    // click the OK button (call the 'yes' callback function)
+    await vm.$refs.confirm.onClickYes()
 
-      wrapper.destroy()
-      done()
-    })
+    // confirm that delete API was called
+    expect(deleteCall.called).toBeTruthy()
+
+    wrapper.destroy()
+  })
+
+  it('does not call DELETE endpoint when user clicks confirmation Cancel', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'annualReport',
+              'ARFilingYear': 2019,
+              'status': 'DRAFT',
+              'filingId': 789
+            },
+            'annualReport': {
+              'annualGeneralMeetingDate': '2019-07-15',
+              'annualReportDate': '2019-07-15'
+            },
+            'changeOfAddress': {},
+            'changeOfDirectors': {}
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+
+    const button = wrapper.find('#menu-activator')
+    await button.trigger('click')
+    const button1 = wrapper.find('#btn-delete-draft')
+    await button1.trigger('click')
+
+    // verify confirmation popup is showing
+    expect(vm.$refs.confirm.dialog).toBeTruthy()
+
+    // click the cancel button (call the 'cancel' callback function)
+    await vm.$refs.confirm.onClickCancel()
+
+    // confirm that delete API was not called
+    expect(deleteCall.called).toBeFalsy()
+
+    wrapper.destroy()
   })
 })
 
@@ -1909,7 +2085,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1931,7 +2107,7 @@ describe('TodoList - Cancel Payment', () => {
     })
   })
 
-  it('calls PATCH endpoint of the API when user clicks confirmation OK', done => {
+  it('calls PATCH endpoint when user clicks confirmation OK', done => {
     // init store
     store.state.tasks = [
       {
@@ -1949,7 +2125,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
@@ -1979,7 +2155,7 @@ describe('TodoList - Cancel Payment', () => {
     })
   })
 
-  it('does not call the PATCH endpoint when user clicks confirmation cancel', done => {
+  it('does not call the PATCH endpoint when user clicks confirmation Cancel', done => {
     // init store
     store.state.tasks = [
       {
@@ -1997,7 +2173,7 @@ describe('TodoList - Cancel Payment', () => {
               'annualReportDate': '2019-07-15'
             },
             'changeOfAddress': {},
-            'changeOfDirectors': { }
+            'changeOfDirectors': {}
           }
         },
         'enabled': true,
