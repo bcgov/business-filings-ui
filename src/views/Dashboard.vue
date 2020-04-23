@@ -277,20 +277,6 @@ export default {
     },
 
     /**
-     * Searches the filings history for a completed incorporation application
-     * Used to disable the ability to change directors and addresses for NRs
-     *
-     * @param filings The array of filings in history
-     */
-    checkCompletedIncorporationFilings (filings: Array<any>) {
-      if (!filings || !filings.length) return // safety check
-
-      this.completedFilingRequired = !filings.some(filing => {
-        return filing.name === FilingNames.INCORPORATION_APPLICATION && filing.status === FilingStatus.COMPLETED
-      })
-    },
-
-    /**
      * Toggle the Change of address warning dialog.
      */
     toggleCoaWarning () {
@@ -316,9 +302,10 @@ export default {
       if (this.isBComp()) {
         this.checkPendingFilings(this.historyFilings)
       }
-      // check for completed filing on an incoporation application
+      // Set completed filing required to show address since this is an NR
+      // once transitioned to the business id, addresses/directors will be available
       if (this.nrNumber) {
-        this.checkCompletedIncorporationFilings(this.historyFilings)
+        this.completedFilingRequired = true
       }
 
       // check whether to reload the dashboard with updated data
