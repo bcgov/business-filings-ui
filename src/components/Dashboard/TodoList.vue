@@ -70,6 +70,13 @@
               <div class="list-item__subtitle">
                 <div v-if="task.subtitle" class="todo-status">
                   <span>{{task.subtitle}}</span>
+                  <div  v-if="isTypeNameRequest(task)">
+                    <v-btn icon class="nr-info-btn" color="blue darken-2" :ripple="false"
+                    @click="isNRDetailsVisible=!isNRDetailsVisible">
+                        <v-icon>mdi-information-outline</v-icon>
+                        {{!isNRDetailsVisible ?'View Details' : 'Hide Details'}}
+                    </v-btn>
+                  </div>
                 </div>
 
                 <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-status">
@@ -313,6 +320,10 @@
               <p>This filing is paid but the filing is not yet complete. Please check again later.</p>
             </v-card-text>
           </v-card>
+
+          <div v-else-if="isStatusNew(task) && isTypeNameRequest(task)" data-test-class="nr-details">
+            <name-request-info :nameRequest="task.nameRequest" />
+          </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -333,7 +344,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
-import { DetailsList } from '@/components/common'
+import { DetailsList, NameRequestInfo } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -353,7 +364,8 @@ export default {
     CancelPaymentErrorDialog,
     ConfirmDialog,
     DeleteErrorDialog,
-    DetailsList
+    DetailsList,
+    NameRequestInfo
   },
 
   mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
@@ -370,6 +382,7 @@ export default {
       confirmCheckbox: false,
       confirmEnabled: false,
       currentFilingId: null,
+      isNRDetailsVisible: false,
 
       // enums
       EntityTypes,
@@ -464,7 +477,8 @@ export default {
               subtitle: `APPROVED - ${this.expiresText(todo)}`,
               status: todo.header.status || FilingStatus.NEW,
               enabled: Boolean(task.enabled),
-              order: task.order
+              order: task.order,
+              nameRequest: todo.nameRequest
             })
             break
           default:
@@ -1023,5 +1037,16 @@ export default {
 
 .todo-item-toggle h3 {
   margin-bottom: 0.25rem;
+}
+
+.nr-info-btn {
+  padding-left:4rem;
+  padding-top: 0.2rem;
+
+  ::before{
+    color: transparent !important;
+    background-color: transparent !important;
+    transition: none !important;
+  }
 }
 </style>

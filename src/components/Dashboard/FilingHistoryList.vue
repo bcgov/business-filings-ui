@@ -168,8 +168,11 @@
     <!-- No Results Message -->
     <v-card class="no-results" flat v-if="!filedItems.length">
       <v-card-text>
-        <div class="no-results__title">You have no filing history</div>
-        <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
+        <div class="no-results__subtitle"  v-if="nrNumber">Complete your filing to display</div>
+        <div v-else>
+          <div class="no-results__title">You have no filing history</div>
+          <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -230,7 +233,12 @@ export default {
   computed: {
     ...mapGetters(['isRoleStaff']),
 
-    ...mapState(['entityIncNo', 'filings', 'entityName'])
+    ...mapState(['entityIncNo', 'filings', 'entityName']),
+
+    /** The NR Number string. */
+    nrNumber (): string {
+      return sessionStorage.getItem('NR_NUMBER')
+    }
   },
 
   created (): void {

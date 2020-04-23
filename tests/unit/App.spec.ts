@@ -801,12 +801,7 @@ describe('App as a Name Request', () => {
   })
 
   it('fetches Tasks properly', () => {
-    expect(vm.$store.state.tasks.length).toBe(1)
-    expect(vm.$store.state.tasks[0].enabled).toBe(true)
-    expect(vm.$store.state.tasks[0].order).toBe(1)
-    expect(vm.$store.state.tasks[0].task.todo.nameRequest).not.toBeUndefined()
-    expect(vm.$store.state.tasks[0].task.todo.header.name).toBe('nameRequest')
-    expect(vm.$store.state.tasks[0].task.todo.header.status).toBe('NEW')
+    expect(vm.$store.state.tasks.length).toBe(0)
   })
 
   it('fetches Filings properly', () => {

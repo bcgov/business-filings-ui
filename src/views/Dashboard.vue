@@ -31,7 +31,7 @@
               />
             </section>
 
-            <section v-show="!nrNumber">
+            <section>
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-filing-history-subtitle">
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{filedCount}})</span>
