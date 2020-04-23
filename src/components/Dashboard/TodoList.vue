@@ -68,7 +68,7 @@
               </div>
 
               <div class="list-item__subtitle">
-                <div v-if="(isCoop() || isCorp()) && task.subtitle" class="todo-status">
+                <div v-if="task.subtitle" class="todo-status">
                   <span>{{task.subtitle}}</span>
                 </div>
 
@@ -277,16 +277,18 @@
             </div>
 
             <div v-else data-test-class="correction-pending" class="todo-list-detail">
-            <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
-              Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.</p>
-            <!-- the detail comments section -->
-            <details-list
-              :filing=task
-              :isTask="true"
-              @showCommentDialog="showCommentDialog($event)"
-            />
+              <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
+                Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.
+              </p>
+              <!-- the detail comments section -->
+              <details-list
+                :filing=task
+                :isTask="true"
+                @showCommentDialog="showCommentDialog($event)"
+              />
+            </div>
           </div>
-          </div>
+
           <v-card v-else-if="isStatusPending(task)" data-test-class="payment-incomplete">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Incomplete</p>
@@ -442,6 +444,7 @@ export default {
           case FilingTypes.ANNUAL_REPORT: {
             const ARFilingYear = todo.header.ARFilingYear
             this.taskItems.push({
+              id: -1, // not falsy
               type: FilingTypes.ANNUAL_REPORT,
               title: `File ${ARFilingYear} Annual Report`,
               subtitle: task.enabled ? '(including Address and/or Director Change)' : null,
@@ -455,6 +458,7 @@ export default {
           }
           case FilingTypes.NAME_REQUEST:
             this.taskItems.push({
+              id: -1, // not falsy
               type: FilingTypes.NAME_REQUEST,
               title: `Name Request ${this.nrNumber} - ${this.entityName}`,
               subtitle: `APPROVED - ${this.expiresText(todo)}`,

@@ -1763,6 +1763,103 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   })
 })
 
+describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // init store
+    sessionStorage.setItem('CREATE_URL', `${process.env.VUE_APP_PATH}/create/`)
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
+    store.state.entityName = 'My Business Inc'
+    store.state.entityType = 'BC'
+
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Create URL when \'Incorporate using this NR\' is clicked', async () => {
+    // init Name Request todo task
+    store.state.tasks = [
+      {
+        task: {
+          todo: {
+            header: {
+              name: 'nameRequest',
+              status: 'NEW'
+            },
+            nameRequest: {
+              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT'
+            }
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    store.state.entityStatus = 'NAMEREQUEST'
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+
+    const button = wrapper.find('.list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.find('.v-btn__content').text()).toContain('Incorporate using this NR')
+    button.trigger('click')
+
+    // verify redirection
+    const createUrl = 'cooperatives/create/?nrNumber=NR 1234567'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+
+    wrapper.destroy()
+  })
+
+  it('redirects to Create URL when \'Resume\' is clicked', async () => {
+    // init Incorporation Application filing task
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'incorporationApplication',
+              status: 'DRAFT',
+              filingId: 789
+            },
+            incorporationApplication: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    store.state.entityStatus = 'INCORPORATIONAPPLICATION'
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+
+    const button = wrapper.find('.list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.find('.v-btn__content').text()).toContain('Resume')
+    button.trigger('click')
+
+    // verify redirection
+    const createUrl = 'cooperatives/create/?nrNumber=NR 1234567'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+
+    wrapper.destroy()
+  })
+})
+
 describe('TodoList - Delete Draft', () => {
   const { assign } = window.location
   let deleteCall
