@@ -151,10 +151,6 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Name
     list-style-type: none;
   }
 
-  li.name-request-title {
-    font-size: 1.25rem;
-  }
-
   #name-request-summary {
     font-size: 0.9rem;
   }

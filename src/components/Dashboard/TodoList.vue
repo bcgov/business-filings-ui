@@ -1042,11 +1042,11 @@ export default {
 .nr-info-btn {
   padding-left:4rem;
   padding-top: 0.2rem;
+}
 
-  ::before{
+.nr-info-btn:hover:before {
     color: transparent !important;
     background-color: transparent !important;
     transition: none !important;
-  }
 }
 </style>
