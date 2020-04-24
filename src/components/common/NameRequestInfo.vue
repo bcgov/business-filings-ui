@@ -48,20 +48,21 @@ import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
 
 // Enums
-import { NameRequestStates } from '@/enums'
+import { EntityTypes, NameRequestStates } from '@/enums'
 
 // Interfaces
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
 
 // Mixins
-import { CommonMixin, DateMixin, NamexRequestMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin, NamexRequestMixin } from '@/mixins'
 
 @Component({
   filters: { 'VMask': VueMaskFilter }
 })
-export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, NamexRequestMixin) {
+export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, EnumMixin, NamexRequestMixin) {
   // Template Enums
   readonly NameRequestStates = NameRequestStates
+  readonly EntityTypes = EntityTypes
   readonly RECEIVED_STATE = 'Received'
   readonly NOT_RECEIVED_STATE= 'Not Received'
   readonly NOT_REQUIRED = 'Not Required'
@@ -85,9 +86,9 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Name
   private entityTypeDescription () :string {
     const entityType = this.parsedNameRequest.entityType
     if (entityType === 'BC') {
-      return 'Benefit Company'
+      return this.entityTypeToName(EntityTypes.BCOMP)
     } else if (entityType === 'CP') {
-      return 'Cooperative Association'
+      return this.entityTypeToName(EntityTypes.COOP)
     }
     return ''
   }

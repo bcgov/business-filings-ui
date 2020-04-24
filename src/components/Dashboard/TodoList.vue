@@ -73,12 +73,12 @@
                   <v-btn
                     class="nr-info-btn"
                     tile
-                    color="blue"
+                    color="blue darken-2"
                     @click="isNRDetailsVisible = !isNRDetailsVisible"
                     v-if="isTypeNameRequest(task)"
                     :outlined="true"
                     :ripple="false">
-                      <v-icon left>mdi-information-outline</v-icon>
+                      <v-icon color="blue darken-2" left>mdi-information-outline</v-icon>
                       {{ !isNRDetailsVisible ? "View Details" : "Hide Details" }}
                   </v-btn>
                 </div>
