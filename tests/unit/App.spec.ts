@@ -753,7 +753,42 @@ describe('App as a Name Request', () => {
       .returns(new Promise((resolve) => resolve({
         data:
           {
-            tasks: []
+            tasks: [
+              {
+                'enabled': true,
+                'order': 1,
+                'task': {
+                  'todo': {
+                    'header': {
+                      'name': 'nameRequest',
+                      'status': 'NEW'
+                    },
+                    'nameRequest': {
+                      'applicants': {
+                        'addrLine1': '1234 Fake Street',
+                        'addrLine2': 'Block 3',
+                        'addrLine3': 'Suite 11',
+                        'city': 'Victoria',
+                        'clientFirstName': 'Connor',
+                        'clientLastName': 'Horton',
+                        'contact': 'James Bond',
+                        'countryTypeCd': 'CA',
+                        'declineNotificationInd': 'N',
+                        'emailAddress': 'abc@test.com',
+                        'faxNumber': null,
+                        'firstName': 'Adam',
+                        'lastName': 'Smith',
+                        'middleName': 'Jane',
+                        'partyId': 1657726,
+                        'phoneNumber': '7777777777',
+                        'postalCd': 'V9E 3S2',
+                        'stateProvinceCd': 'BC'
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
       })))
 
@@ -801,7 +836,12 @@ describe('App as a Name Request', () => {
   })
 
   it('fetches Tasks properly', () => {
-    expect(vm.$store.state.tasks.length).toBe(0)
+    expect(vm.$store.state.tasks.length).toBe(1)
+    expect(vm.$store.state.tasks[0].enabled).toBe(true)
+    expect(vm.$store.state.tasks[0].order).toBe(1)
+    expect(vm.$store.state.tasks[0].task.todo.nameRequest).not.toBeUndefined()
+    expect(vm.$store.state.tasks[0].task.todo.header.name).toBe('nameRequest')
+    expect(vm.$store.state.tasks[0].task.todo.header.status).toBe('NEW')
   })
 
   it('fetches Filings properly', () => {

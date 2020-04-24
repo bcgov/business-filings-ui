@@ -67,7 +67,7 @@
                 />
               </div>
 
-               <div class="list-item__subtitle">
+              <div class="list-item__subtitle">
                 <div v-if="task.subtitle" class="todo-status">
                   <div>{{ task.subtitle }}</div>
                   <v-btn

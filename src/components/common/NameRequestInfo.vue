@@ -41,6 +41,7 @@
     </v-row>
   </div>
 </template>
+
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Vue, Prop } from 'vue-property-decorator'
