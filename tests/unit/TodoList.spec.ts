@@ -12,6 +12,7 @@ import flushPromises from 'flush-promises'
 
 // Components
 import { DetailsList } from '@/components/common'
+import Vue2Filters from 'vue2-filters'
 
 // NB: test util async issue
 // in some cases, the elements are not updated during the test
@@ -21,6 +22,7 @@ import { DetailsList } from '@/components/common'
 Vue.config.silent = true
 
 Vue.use(Vuetify)
+Vue.use(Vue2Filters)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
@@ -2201,5 +2203,138 @@ describe('TodoList - Cancel Payment', () => {
       wrapper.destroy()
       done()
     })
+  })
+
+  it('displays the Name Request details in the Todo list', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'enabled': true,
+        'order': 1,
+        'task': {
+          'todo': {
+            'header': {
+              'name': 'nameRequest',
+              'status': 'NEW'
+            },
+            'nameRequest': {
+              'additionalInfo': '',
+              'applicants': {
+                'addrLine1': '1234 Fake Street',
+                'addrLine2': 'Block 3',
+                'addrLine3': 'Suite 1001',
+                'city': 'Victoria',
+                'clientFirstName': 'Connor',
+                'clientLastName': 'Horton',
+                'contact': 'James Bond',
+                'countryTypeCd': 'CA',
+                'declineNotificationInd': 'N',
+                'emailAddress': 'abc@test.com',
+                'faxNumber': null,
+                'firstName': 'Adam',
+                'lastName': 'Smith',
+                'middleName': 'Jane',
+                'partyId': 1657726,
+                'phoneNumber': '7777777777',
+                'postalCd': 'V9E 3S2',
+                'stateProvinceCd': 'BC'
+              },
+              'comments': [],
+              'consentFlag': null,
+              'consent_dt': null,
+              'corpNum': null,
+              'entity_type_cd': 'CR',
+              'expirationDate': 'Mon, 21 Nov 2022 08:00:00 GMT',
+              'furnished': 'Y',
+              'hasBeenReset': false,
+              'id': 2258180,
+              'lastUpdate': 'Fri, 03 Apr 2020 20:07:10 GMT',
+              'names': [
+                {
+                  'choice': 1,
+                  'designation': 'INC.',
+                  'name': 'Test Name 1 INC.',
+                  'name_type_cd': null,
+                  'state': 'APPROVED'
+                },
+                {
+                  'choice': 3,
+                  'designation': 'INCORPORATED',
+                  'name': 'Test Name 2 INC.',
+                  'name_type_cd': null,
+                  'state': 'NE'
+                },
+                {
+                  'choice': 2,
+                  'designation': 'INCORPORATED',
+                  'name': 'Test Name 3 INC.',
+                  'name_type_cd': null,
+                  'state': 'NE'
+                }
+              ],
+              'nrNum': 'NR 1234567',
+              'priorityCd': 'Y',
+              'priorityDate': 'Wed, 25 Sep 2019 17:48:58 GMT',
+              'requestTypeCd': 'CR',
+              'request_action_cd': 'NRO-NEWAML',
+              'state': 'APPROVED',
+              'submitCount': 1,
+              'submittedDate': 'Wed, 25 Sep 2019 17:48:00 GMT',
+              'submitter_userid': '',
+              'userId': 'abc',
+              'xproJurisdiction': null
+            }
+          }
+        }
+      }
+    ]
+
+    store.state.entityStatus = 'NAMEREQUEST'
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+
+    const button = wrapper.find('.nr-info-btn')
+    button.trigger('click')
+    await Vue.nextTick()
+
+    const nrListSelector = '#name-request-info ul li'
+    const itemCount = vm.$el.querySelectorAll(nrListSelector).length
+
+    expect(itemCount).toEqual(6)
+
+    const title = vm.$el.querySelectorAll(nrListSelector)[0]
+    const entityType = vm.$el.querySelectorAll(nrListSelector)[1]
+    const requestType = vm.$el.querySelectorAll(nrListSelector)[2]
+    const expiryDate = vm.$el.querySelectorAll(nrListSelector)[3]
+    const status = vm.$el.querySelectorAll(nrListSelector)[4]
+    const conditionConsent = vm.$el.querySelectorAll(nrListSelector)[5]
+
+    expect(title.textContent).toContain('Name Request')
+    expect(entityType.textContent).toContain('Entity Type: BC Benefit Company')
+    expect(requestType.textContent).toContain('Request Type: New Business')
+    expect(expiryDate.textContent).toContain('Expiry Date: Nov 21, 2022')
+    expect(status.textContent).toContain('Status: Approved')
+    expect(conditionConsent.textContent).toContain('Condition/Consent: Not Required')
+
+    const applicantInfoListSelector = '#name-request-applicant-info ul li'
+    const applicantInfoListCount = vm.$el.querySelectorAll(applicantInfoListSelector).length
+    const name = vm.$el.querySelectorAll(applicantInfoListSelector)[1]
+    const address = vm.$el.querySelectorAll(applicantInfoListSelector)[2]
+    const email = vm.$el.querySelectorAll(applicantInfoListSelector)[3]
+    const phone = vm.$el.querySelectorAll(applicantInfoListSelector)[4]
+
+    expect(applicantInfoListCount).toEqual(5)
+    expect(name.textContent).toContain('Name: Adam Jane Smith')
+    expect(address.textContent)
+      .toContain('Address: 1234 Fake Street, Block 3, Suite 1001, Victoria, BC, V9E 3S2, Canada')
+    expect(email.textContent).toContain('Email: abc@test.com')
+    expect(phone.textContent).toContain('Phone: (777) 777-7777')
+
+    wrapper.destroy()
   })
 })

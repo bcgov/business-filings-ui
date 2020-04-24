@@ -459,52 +459,21 @@ export default {
       const id = this.businessId || this.nrNumber
       const url = `businesses/${id}/tasks`
       return axios.get(url)
-        .catch(error => {
-          // if Business or Name Request is not found, return empty array
-          if (error?.response?.status === NOT_FOUND) {
-            return Promise.resolve({ data: { tasks: [] } })
-          }
-          return Promise.reject(error)
-        })
     },
 
     storeTasks (response: any): void {
       const tasks = response?.data?.tasks
-      if (this.businessId) {
-        if (tasks) {
-          this.setTasks(tasks)
-        } else {
-          throw new Error('Invalid tasks')
-        }
-      }
-      // FUTURE: update this when API returns New Incorporation task (#3102)
-      if (this.nrNumber) {
-        if (tasks) {
-          // if we have existing tasks, use them
-          if (tasks.length > 0) {
-            this.setTasks(tasks)
-            this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
-          } else {
-            // otherwise create a New Incorporation task
-            tasks.push({
-              enabled: true,
-              order: 1,
-              task: {
-                todo: {
-                  nameRequest: this.nameRequest,
-                  header: {
-                    name: FilingTypes.NAME_REQUEST,
-                    status: FilingStatus.NEW
-                  }
-                }
-              }
-            })
-            this.setTasks(tasks)
+      if (tasks) {
+        this.setTasks(tasks)
+        if (this.nrNumber && tasks.length > 0) {
+          if (tasks[0].task?.todo) {
             this.setEntityStatus(EntityStatus.NAME_REQUEST)
+          } else {
+            this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
           }
-        } else {
-          throw new Error('Invalid tasks')
         }
+      } else {
+        throw new Error('Invalid tasks')
       }
     },
 
@@ -513,13 +482,6 @@ export default {
       const id = this.businessId || this.nrNumber
       const url = `businesses/${id}/filings`
       return axios.get(url)
-        .catch(error => {
-          // if Business or Name Request is not found, return empty array
-          if (error?.response?.status === NOT_FOUND) {
-            return Promise.resolve({ data: { filings: [] } })
-          }
-          return Promise.reject(error)
-        })
     },
 
     storeFilings (response: any): void {

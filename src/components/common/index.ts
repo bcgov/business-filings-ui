@@ -8,6 +8,7 @@ import SummaryCertify from './SummaryCertify.vue'
 import SummaryDirectors from './SummaryDirectors.vue'
 import SummaryStaffPayment from './SummaryStaffPayment.vue'
 import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
+import NameRequestInfo from './NameRequestInfo.vue'
 
 // NB: importing/exporting Directors gives us weird errors,
 // possibly due to some circular dependency, so don't do it
@@ -22,5 +23,6 @@ export {
   SummaryCertify,
   SummaryDirectors,
   SummaryStaffPayment,
-  SummaryOfficeAddresses
+  SummaryOfficeAddresses,
+  NameRequestInfo
 }

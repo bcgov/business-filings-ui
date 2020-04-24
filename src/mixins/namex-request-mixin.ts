@@ -1,6 +1,7 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { NameRequestStates } from '@/enums'
+import { NameRequestStates, EntityTypes } from '@/enums'
+import { NameRequestIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin } from '@/mixins'
@@ -55,5 +56,45 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
 
     // Otherwise, the NR is consumable.
     return NameRequestStates.APPROVED
+  }
+
+  /**
+   * Generate name request state for the store
+   * @param nr the name request response payload
+   * @param filingId the filing id
+   */
+  generateNameRequestState (nr: any, filingId: number): NameRequestIF {
+    const approvedName = nr.names.find(name => name.state === NameRequestStates.APPROVED).name
+    return {
+      nrNumber: nr.nrNum,
+      // TODO: Update entityType to use nr.requestTypeCd when namex supports our entity types
+      entityType: EntityTypes.BCOMP,
+      filingId: filingId,
+      applicant: {
+        // Address Information
+        addressLine1: nr.applicants.addrLine1,
+        addressLine2: nr.applicants.addrLine2,
+        addressLine3: nr.applicants.addrLine3,
+        city: nr.applicants.city,
+        countryTypeCode: nr.applicants.countryTypeCd,
+        postalCode: nr.applicants.postalCd,
+        stateProvinceCode: nr.applicants.stateProvinceCd,
+
+        // Application contact information
+        emailAddress: nr.applicants.emailAddress,
+        phoneNumber: nr.applicants.phoneNumber,
+
+        // Application name information
+        firstName: nr.applicants.firstName,
+        middleName: nr.applicants.middleName,
+        lastName: nr.applicants.lastName
+      },
+      details: {
+        approvedName: approvedName,
+        consentFlag: nr.consentFlag,
+        expirationDate: nr.expirationDate,
+        status: nr.state
+      }
+    }
   }
 }
