@@ -14,7 +14,7 @@
           <li>
             <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED"
               color="green" class="nr-status-icon">mdi-check</v-icon>
-            Status: {{ formatStatusText(nameRequestDetails.status) }}
+            Status: {{  nameRequestDetails.status | capitalize }}
           </li>
           <li id="condition-consent">
             <v-icon v-if="conditionConsent() === RECEIVED_STATE || conditionConsent() === NOT_REQUIRED"
@@ -142,10 +142,6 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
     }
 
     return `${address}, ${city}, ${stateProvince}, ${postal}, ${country}`
-  }
-
-  private formatStatusText (status: string) : string {
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
   }
 }
 </script>
