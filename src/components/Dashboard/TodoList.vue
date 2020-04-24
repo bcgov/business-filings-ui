@@ -67,16 +67,20 @@
                 />
               </div>
 
-              <div class="list-item__subtitle">
+               <div class="list-item__subtitle">
                 <div v-if="task.subtitle" class="todo-status">
-                  <span>{{task.subtitle}}</span>
-                  <div  v-if="isTypeNameRequest(task)">
-                    <v-btn icon class="nr-info-btn" color="blue darken-2" :ripple="false"
-                    @click="isNRDetailsVisible=!isNRDetailsVisible">
-                        <v-icon>mdi-information-outline</v-icon>
-                        {{!isNRDetailsVisible ?'View Details' : 'Hide Details'}}
-                    </v-btn>
-                  </div>
+                  <div>{{ task.subtitle }}</div>
+                  <v-btn
+                    class="nr-info-btn"
+                    tile
+                    color="blue"
+                    @click="isNRDetailsVisible = !isNRDetailsVisible"
+                    v-if="isTypeNameRequest(task)"
+                    :outlined="true"
+                    :ripple="false">
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ !isNRDetailsVisible ? "View Details" : "Hide Details" }}
+                  </v-btn>
                 </div>
 
                 <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-status">
@@ -1040,8 +1044,8 @@ export default {
 }
 
 .nr-info-btn {
-  padding-left:4rem;
-  padding-top: 0.2rem;
+  margin-left: 0.25rem;
+  border: none
 }
 
 .nr-info-btn:hover:before {

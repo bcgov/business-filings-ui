@@ -169,10 +169,10 @@
     <v-card class="no-results" flat v-if="!filedItems.length">
       <v-card-text>
         <div class="no-results__subtitle"  v-if="nrNumber">Complete your filing to display</div>
-        <div v-else>
+        <template v-else>
           <div class="no-results__title">You have no filing history</div>
           <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
-        </div>
+        </template>
       </v-card-text>
     </v-card>
   </div>

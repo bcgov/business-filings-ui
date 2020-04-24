@@ -459,13 +459,6 @@ export default {
       const id = this.businessId || this.nrNumber
       const url = `businesses/${id}/tasks`
       return axios.get(url)
-        .catch(error => {
-          // if Business or Name Request is not found, return empty array
-          if (error?.response?.status === NOT_FOUND) {
-            return Promise.resolve({ data: { tasks: [] } })
-          }
-          return Promise.reject(error)
-        })
     },
 
     storeTasks (response: any): void {
@@ -473,7 +466,7 @@ export default {
       if (tasks) {
         this.setTasks(tasks)
         if (this.nrNumber && tasks.length > 0) {
-          if (tasks[0].task.todo) {
+          if (tasks[0].task?.todo) {
             this.setEntityStatus(EntityStatus.NAME_REQUEST)
           } else {
             this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
@@ -489,13 +482,6 @@ export default {
       const id = this.businessId || this.nrNumber
       const url = `businesses/${id}/filings`
       return axios.get(url)
-        .catch(error => {
-          // if Business or Name Request is not found, return empty array
-          if (error?.response?.status === NOT_FOUND) {
-            return Promise.resolve({ data: { filings: [] } })
-          }
-          return Promise.reject(error)
-        })
     },
 
     storeFilings (response: any): void {

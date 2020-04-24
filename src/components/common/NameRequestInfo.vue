@@ -1,43 +1,46 @@
 <template>
   <div id="name-request-summary">
-    <v-row >
+    <v-row>
       <v-col id="name-request-info" cols="4">
         <ul>
-          <li> <label>
-          <strong>Name Request</strong>
-        </label></li>
+          <li>
+            <label>
+              <strong>Name Request</strong>
+            </label>
+          </li>
           <li>Entity Type: {{ entityTypeDescription() }}</li>
-          <li> Request Type: {{ requestType() }}</li>
+          <li>Request Type: {{ requestType() }}</li>
           <li>Expiry Date: {{ formattedExpirationDate() }}</li>
           <li>
-            <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED" color="green"
-            class="nr-status-icon">mdi-check</v-icon>
+            <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED"
+              color="green" class="nr-status-icon">mdi-check</v-icon>
             Status: {{ formatStatusText(nameRequestDetails.status) }}
           </li>
           <li id="condition-consent">
-            <v-icon v-if="conditionConsent() === 'Received' || conditionConsent() === 'Not Required'"
-            color="green" class="nr-status-icon">mdi-check</v-icon>
-            <v-icon v-if="conditionConsent() === 'Not Received'"
-            color="red" class="nr-status-icon">mdi-close</v-icon>
+            <v-icon v-if="conditionConsent() === RECEIVED_STATE || conditionConsent() === NOT_REQUIRED"
+              color="green" class="nr-status-icon">mdi-check</v-icon>
+            <v-icon v-if="conditionConsent() === NOT_RECEIVED_STATE" color="red"
+              class="nr-status-icon">mdi-close</v-icon>
             Condition/Consent: {{ conditionConsent() }}
           </li>
         </ul>
       </v-col>
       <v-col id="name-request-applicant-info" cols="8">
         <ul>
-          <li><label>
-          <strong>Name Request Applicant</strong>
-        </label></li>
+          <li>
+            <label>
+              <strong>Name Request Applicant</strong>
+            </label>
+          </li>
           <li>Name: {{ applicantName() }}</li>
           <li>Address: {{ applicantAddress() }}</li>
           <li>Email: {{ nameRequestApplicant.emailAddress }}</li>
-          <li>Phone: {{ nameRequestApplicant.phoneNumber | VMask('(###) ###-####')}}</li>
+          <li>Phone: {{ nameRequestApplicant.phoneNumber | VMask("(###) ###-####") }}</li>
         </ul>
       </v-col>
     </v-row>
   </div>
 </template>
-
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Vue, Prop } from 'vue-property-decorator'
@@ -59,6 +62,9 @@ import { CommonMixin, DateMixin, NamexRequestMixin } from '@/mixins'
 export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, NamexRequestMixin) {
   // Template Enums
   readonly NameRequestStates = NameRequestStates
+  readonly RECEIVED_STATE = 'Received'
+  readonly NOT_RECEIVED_STATE= 'Not Received'
+  readonly NOT_REQUIRED = 'Not Required'
 
   @Prop()
   private nameRequest: any
@@ -99,9 +105,9 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Name
   /** Return consent received string by checking if conditional and if consent has been received */
   private conditionConsent (): string {
     if (this.nameRequestDetails.status === NameRequestStates.CONDITIONAL) {
-      return this.nameRequestDetails.consentFlag === 'R' ? 'Received' : 'Not Received'
+      return this.nameRequestDetails.consentFlag === 'R' ? this.RECEIVED_STATE : this.NOT_RECEIVED_STATE
     } else {
-      return 'Not Required'
+      return this.NOT_REQUIRED
     }
   }
 
@@ -144,7 +150,6 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Name
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/theme.scss";
   ul {
     margin: 0;
     padding: 0;
