@@ -48,7 +48,7 @@
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
                 <div v-if="isTypeCorrection(task) && isStatusDraft(task)">
-                  <v-btn small icon color="red" class="info-btn">
+                  <v-btn small icon color="red" class="expand-btn">
                     <v-icon>mdi-information-outline</v-icon>
                   </v-btn>
                 </div>
@@ -70,22 +70,23 @@
               <div class="list-item__subtitle">
                 <div v-if="task.subtitle" class="todo-status">
                   <div>{{ task.subtitle }}</div>
-                  <v-btn
-                    class="nr-info-btn"
-                    tile
-                    color="blue darken-2"
-                    @click="isNRDetailsVisible = !isNRDetailsVisible"
-                    v-if="isTypeNameRequest(task)"
-                    :outlined="true"
-                    :ripple="false">
-                      <v-icon color="blue darken-2" left>mdi-information-outline</v-icon>
-                      {{ !isNRDetailsVisible ? "View Details" : "Hide Details" }}
-                  </v-btn>
+                  <div class="payment-status" v-if="isTypeNameRequest(task)">
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="blue darken-2"
+                      :ripple=false
+                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
+                    </v-btn>
+                  </div>
                 </div>
 
                 <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-status">
                   <div>DRAFT</div>
-                  <v-btn x-small icon class="info-btn">
+                  <v-btn x-small icon class="expand-btn">
                     <v-icon>mdi-message-reply</v-icon>
                   </v-btn>
                   Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
@@ -97,7 +98,7 @@
 
                 <div v-else-if="isTypeCorrection(task) && isStatusCorrectionPending(task)" class="todo-status">
                   <span class="before-details">FILING PENDING</span>
-                  <v-btn x-small icon class="info-btn">
+                  <v-btn x-small icon class="expand-btn">
                     <v-icon>mdi-message-reply</v-icon>
                   </v-btn>
                   Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
@@ -111,8 +112,15 @@
                   </div>
                   <div class="payment-status" v-else>
                     <span>PAYMENT INCOMPLETE</span>
-                    <v-btn small icon color="black" class="info-btn">
-                      <v-icon color="orange">mdi-alert</v-icon>
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="orange"
+                      :ripple=false
+                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                    >
+                      <v-icon left>mdi-alert</v-icon>
+                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
                     </v-btn>
                   </div>
                 </div>
@@ -125,8 +133,15 @@
                   </div>
                   <div class="payment-status" v-else>
                     <span>PAYMENT UNSUCCESSFUL</span>
-                    <v-btn small icon color="black" class="info-btn">
-                      <v-icon color="red darken-4">mdi-information-outline</v-icon>
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="red darken-4"
+                      :ripple=false
+                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
                     </v-btn>
                   </div>
                 </div>
@@ -139,8 +154,15 @@
                   </div>
                   <div class="payment-status" v-else>
                     <span>PAID</span>
-                    <v-btn small icon color="black" class="info-btn">
-                      <v-icon color="red darken-4">mdi-information-outline</v-icon>
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="red darken-4"
+                      :ripple=false
+                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
                     </v-btn>
                   </div>
                 </div>
@@ -386,7 +408,6 @@ export default {
       confirmCheckbox: false,
       confirmEnabled: false,
       currentFilingId: null,
-      isNRDetailsVisible: false,
 
       // enums
       EntityTypes,
@@ -461,6 +482,7 @@ export default {
           case FilingTypes.ANNUAL_REPORT: {
             const ARFilingYear = todo.header.ARFilingYear
             this.taskItems.push({
+              isDetailsVisible: false,
               id: -1, // not falsy
               type: FilingTypes.ANNUAL_REPORT,
               title: `File ${ARFilingYear} Annual Report`,
@@ -475,6 +497,7 @@ export default {
           }
           case FilingTypes.NAME_REQUEST:
             this.taskItems.push({
+              isDetailsVisible: false,
               id: -1, // not falsy
               type: FilingTypes.NAME_REQUEST,
               title: `Name Request ${this.nrNumber} - ${this.entityName}`,
@@ -550,6 +573,7 @@ export default {
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
           this.taskItems.push({
+            isDetailsVisible: false,
             type: FilingTypes.ANNUAL_REPORT,
             id: filing.header.filingId,
             title: `File ${ARFilingYear} Annual Report`,
@@ -574,6 +598,7 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfDirectors) {
         this.taskItems.push({
+          isDetailsVisible: false,
           type: FilingTypes.CHANGE_OF_DIRECTORS,
           id: filing.header.filingId,
           title: `File Director Change`,
@@ -593,6 +618,7 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfAddress) {
         this.taskItems.push({
+          isDetailsVisible: false,
           type: FilingTypes.CHANGE_OF_ADDRESS,
           id: filing.header.filingId,
           title: `File Address Change`,
@@ -612,6 +638,7 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
         this.taskItems.push({
+          isDetailsVisible: false,
           type: FilingTypes.CORRECTION,
           id: filing.header.filingId,
           filingDate: filing.correction.correctedFilingDate,
@@ -636,6 +663,7 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.incorporationApplication) {
         this.taskItems.push({
+          isDetailsVisible: false,
           type: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
           title: `${this.entityTypeToName(this.entityType)}  Incorporation Application - ${this.entityName}`,
@@ -918,7 +946,7 @@ export default {
 .todo-list.disabled {
   opacity: 0.6;
 
-  .info-btn {
+  .expand-btn {
     // enable expansion button
     pointer-events: auto;
   }
@@ -1010,8 +1038,9 @@ export default {
   flex: 1 1 auto;
 }
 
-.info-btn {
+.expand-btn {
   margin-left: 0.25rem;
+  border: none;
 }
 
 .todo-status {
@@ -1041,16 +1070,5 @@ export default {
 
 .todo-item-toggle h3 {
   margin-bottom: 0.25rem;
-}
-
-.nr-info-btn {
-  margin-left: 0.25rem;
-  border: none
-}
-
-.nr-info-btn:hover:before {
-    color: transparent !important;
-    background-color: transparent !important;
-    transition: none !important;
 }
 </style>

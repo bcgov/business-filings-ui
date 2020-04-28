@@ -489,7 +489,7 @@ describe('TodoList - UI', () => {
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // Open the details list dropdown
-    const button = item.querySelector('.list-item__subtitle .todo-status .info-btn')
+    const button = item.querySelector('.list-item__subtitle .todo-status .expand-btn')
     await button.click()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
@@ -605,7 +605,7 @@ describe('TodoList - UI', () => {
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // Open the details list dropdown
-    const button = item.querySelector('.list-item__subtitle .todo-status .info-btn')
+    const button = item.querySelector('.list-item__subtitle .todo-status .expand-btn')
     await button.click()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
@@ -2298,7 +2298,7 @@ describe('TodoList - Cancel Payment', () => {
 
     expect(vm.taskItems.length).toEqual(1)
 
-    const button = wrapper.find('.nr-info-btn')
+    const button = wrapper.find('.expand-btn')
     button.trigger('click')
     await Vue.nextTick()
 
