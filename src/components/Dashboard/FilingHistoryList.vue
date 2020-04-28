@@ -24,6 +24,7 @@
             <div class="filing-label">
               <h3>{{filing.title}} {{applyCorrectionTag(filing)}}</h3>
               <div class="list-item__subtitle">
+
                 <v-scale-transition v-if="isCoaFutureEffective(filing.type, filing.status)">
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
@@ -36,13 +37,21 @@
                       12:01 AM (Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
                 </v-scale-transition>
+
+                <template v-else-if="isPaid(filing.status)">
+                  <span>FILING PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                </template>
+
+                <!-- else filing is COMPLETED -->
                 <span v-else>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+
                 <template v-if="filing.comments.length > 0">
                   <span>
                     <v-icon small>mdi-message-reply</v-icon>
                     Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
                   </span>
                 </template>
+
               </div>
             </div>
 
@@ -168,7 +177,7 @@
     <!-- No Results Message -->
     <v-card class="no-results" flat v-if="!filedItems.length">
       <v-card-text>
-        <div class="no-results__subtitle"  v-if="nrNumber">Complete your filing to display</div>
+        <div class="no-results__subtitle" v-if="nrNumber">Complete your filing to display</div>
         <template v-else>
           <div class="no-results__title">You have no filing history</div>
           <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
@@ -627,16 +636,24 @@ export default {
     },
 
     /**
-     * Function to return a boolean if this specific filing is future affective.
-     *
+     * Whether this specific filing is a future affective COA.
      * @param filingType The type of the filing in the history list.
      * @param status The status of the filing in the history list.
-     * @returns A boolean indicating if the filing is future effective.
      */
     isCoaFutureEffective (filingType: string, status: string): boolean {
-      return (this.isBComp() &&
+      return (
+        this.isBComp() &&
         filingType === FilingTypes.CHANGE_OF_ADDRESS &&
-        status === FilingStatus.PAID)
+        this.isPaid(status)
+      )
+    },
+
+    /**
+     * Whether this specific filing is paid.
+     * @param status The status of the filing in the history list.
+     */
+    isPaid (status: string): boolean {
+      return (status === FilingStatus.PAID)
     },
 
     showCommentDialog (filingId: number): void {

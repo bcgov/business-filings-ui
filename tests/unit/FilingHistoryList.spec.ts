@@ -151,8 +151,8 @@ const sampleFilings = [
 ]
 
 describe('FilingHistoryList', () => {
-  it('handles empty data', async () => {
-    const $route = { query: { 'filingId': null } }
+  it('handles empty data - as a business', async () => {
+    const $route = { query: { } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -160,20 +160,94 @@ describe('FilingHistoryList', () => {
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
     await Vue.nextTick()
+
     expect(vm.filedItems.length).toEqual(0)
-    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(0)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
     expect(wrapper.emitted('filed-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
-    expect(vm.$el.querySelector('.no-results')).not.toBeNull()
-    expect(vm.$el.querySelector('.no-results').textContent).toContain('You have no filing history')
+    expect(wrapper.find('.no-results').exists()).toBe(true)
+    expect(wrapper.find('.no-results').text()).toContain('You have no filing history')
+
+    wrapper.destroy()
+  })
+
+  it('handles empty data - as a NR or incorp app', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
+    store.state.entityIncNo = 'NR 1234567'
+    store.state.filings = []
+
+    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.filedItems.length).toEqual(0)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
+    expect(wrapper.emitted('filed-count')).toEqual([[0]])
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(true)
+    expect(wrapper.find('.no-results').text()).toContain('Complete your filing to display')
+
+    sessionStorage.removeItem('NR_NUMBER')
+    wrapper.destroy()
+  })
+
+  it('displays a filing pending incorporation application filing and documents', async () => {
+    const $route = { query: { filing_id: '85114' } }
+
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            availableOnPaperOnly: false,
+            certifiedBy: 'Full Name',
+            date: '2020-04-28T19:14:45.589328+00:00',
+            effectiveDate: '2020-05-08T19:00:00+00:00',
+            filingId: 85114,
+            name: 'incorporationApplication',
+            paymentToken: 1971,
+            status: 'PAID' // FUTURE: also verify COMPLETED
+          },
+          incorporationApplication: { }
+        }
+      }
+    ]
+
+    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.filedItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.find('.list-item__subtitle').text()).toContain('FILING PENDING')
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Incorporation Application button
+    const button = wrapper.find('.download-document-btn')
+    expect(button.exists()).toBe(true)
+    expect(button.text()).toContain('Incorporation Application')
+
+    // FUTURE: verify Notice Of Articles button
+    // FUTURE: verify Certificate button
+
+    // verify Receipt button
+    expect(wrapper.find('.download-receipt-btn').exists()).toBe(true)
+
+    // verify Download All button
+    expect(wrapper.find('.download-all-btn').exists()).toBe(true)
 
     wrapper.destroy()
   })
 
   it('displays the Filed Items pre/post bob date', async () => {
-    const $route = { query: { 'filingId': null } }
+    const $route = { query: { } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -282,19 +356,19 @@ describe('FilingHistoryList', () => {
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
     await Vue.nextTick()
-    expect(vm.filedItems.length).toEqual(store.state.filings.length)
-    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(store.state.filings.length)
-    expect(wrapper.emitted('filed-count')).toEqual([[store.state.filings.length]])
+
+    expect(vm.filedItems.length).toEqual(6)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(6)
+    expect(wrapper.emitted('filed-count')).toEqual([[6]])
     expect(vm.panel).toBeNull() // no row is expanded
-    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    expect(wrapper.find('.no-results').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
   it('expands the specified filing ID for pre/post bob date filings', async () => {
-    const $route = { query: { 'filing_id': '654' } }
+    const $route = { query: { filing_id: '654' } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -403,19 +477,19 @@ describe('FilingHistoryList', () => {
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
     await Vue.nextTick()
-    expect(vm.filedItems.length).toEqual(store.state.filings.length)
-    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(store.state.filings.length)
-    expect(wrapper.emitted('filed-count')).toEqual([[store.state.filings.length]])
+
+    expect(vm.filedItems.length).toEqual(6)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(6)
+    expect(wrapper.emitted('filed-count')).toEqual([[6]])
     expect(vm.panel).toEqual(1) // second row is expanded
-    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    expect(wrapper.find('.no-results').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
   it('shows the filing date in the correct format yyyy-mm-dd', async () => {
-    const $route = { query: { 'filing_id': '654' } }
+    const $route = { query: { filing_id: '654' } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -423,17 +497,17 @@ describe('FilingHistoryList', () => {
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
     await Vue.nextTick()
-    expect(vm.$el.querySelectorAll('.filing-history-item')[0]
-      .querySelector('.list-item__subtitle').textContent)
+
+    expect(vm.filedItems.length).toEqual(7)
+    expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle').text())
       .toContain('2019-06-02')
 
     wrapper.destroy()
   })
 
   it('displays the alert when the filing is future effective (BCOMP)', async () => {
-    const $route = { query: { 'filing_id': '9873' } }
+    const $route = { query: { filing_id: '9873' } }
 
     // init store
     store.state.entityType = 'BC'
@@ -442,16 +516,17 @@ describe('FilingHistoryList', () => {
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
     await Vue.nextTick()
-    expect(vm.$el.querySelectorAll('.filing-history-item')[5].textContent)
+
+    expect(vm.filedItems.length).toEqual(7)
+    expect(wrapper.findAll('.filing-history-item').at(5).text())
       .toContain('The updated office addresses will be legally effective on 2019-12-13')
 
     wrapper.destroy()
   })
 
   it('displays a correction filing with Details Count', async () => {
-    const $route = { query: { 'filingId': null } }
+    const $route = { query: { } }
 
     // init store
     store.state.entityType = 'CP'
@@ -460,47 +535,45 @@ describe('FilingHistoryList', () => {
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
     await Vue.nextTick()
+
     expect(vm.filedItems.length).toEqual(7)
-    expect(vm.$el.querySelectorAll('.filing-history-item').length).toEqual(7)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(7)
     expect(wrapper.emitted('filed-count')).toEqual([[7]])
 
-    const item = vm.$el.querySelectorAll('.filing-history-item')[6]
-    expect(item.querySelector('.list-item .filing-label').textContent).toContain('Correction')
-    expect(item.querySelector('.list-item .filing-label').textContent).toContain('Annual Report')
-    expect(item.querySelector('.list-item .filing-label .list-item__subtitle').textContent)
-      .toContain('Details (2)')
+    const item = wrapper.findAll('.filing-history-item').at(6)
+    expect(item.find('.list-item .filing-label').text()).toContain('Correction')
+    expect(item.find('.list-item .filing-label').text()).toContain('Annual Report')
+    expect(item.find('.list-item .filing-label .list-item__subtitle').text()).toContain('Details (2)')
 
     wrapper.destroy()
   })
 
   it('displays the DetailsList when comments are present on a correction filing', async () => {
-    const $route = { query: { 'filingId': null } }
+    const $route = { query: { } }
 
     // init store
     store.state.filings = sampleFilings
 
     const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-
-    // Validate the Details List does NOT exist on the component until the drop down is selected
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
-
-    const item = vm.$el.querySelectorAll('.filing-history-item')[6]
-      .querySelector('.filing-item-toggle')
-    item.click()
-
     await Vue.nextTick()
 
-    // Validate the Details List component exists when there are comments on the filing.
+    // Verify the Details List does not exist on the component until the drop down is selected
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    const button = wrapper.findAll('.filing-history-item').at(6).find('.filing-item-toggle')
+    button.trigger('click')
+    await Vue.nextTick()
+
+    // Verify the Details List component exists when there are comments on the filing.
     expect(wrapper.find(DetailsList).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('Does NOT display the DetailsList when comments are present on a correction filing', async () => {
-    const $route = { query: { 'filingId': null } }
+  it('does not display the DetailsList when no comments are present on a correction filing', async () => {
+    const $route = { query: { } }
 
     // init store
     store.state.filings = [
@@ -525,10 +598,9 @@ describe('FilingHistoryList', () => {
     ]
 
     const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-
     await Vue.nextTick()
 
-    // Validate the Details List component exists when there are comments on the filing.
+    // Verify the Details List component does not exist when there are no comments on the filing.
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     wrapper.destroy()
