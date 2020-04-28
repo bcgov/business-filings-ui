@@ -156,9 +156,11 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
 
   #name-request-summary {
     font-size: 0.9rem;
+    margin-left: 0.875rem
   }
 
   .nr-status-icon {
-    margin-left:-2rem
+    margin-left:-2rem;
+    margin-right:0.2 rem
   }
 </style>
