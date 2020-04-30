@@ -10,7 +10,6 @@ import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import { fetchConfig } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
-import { withFlagProvider } from 'ld-vue'
 import '@/registerServiceWorker'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
@@ -45,7 +44,6 @@ async function start () {
     vuetify: new Vuetify({ iconfont: 'mdi' }),
     router,
     store,
-    mixins: [withFlagProvider({ clientSideId: window['ldClientId'] })],
     render: h => h(App)
   }).$mount('#app')
 }

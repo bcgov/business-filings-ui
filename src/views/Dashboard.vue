@@ -113,9 +113,6 @@
 import axios from '@/axios-auth'
 import { mapState, mapActions } from 'vuex'
 
-// Mixins
-import { withFlags } from 'ld-vue'
-
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
@@ -135,7 +132,7 @@ import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 export default {
   name: 'Dashboard',
 
-  mixins: [withFlags, CommonMixin],
+  mixins: [CommonMixin],
 
   components: {
     TodoList,
@@ -293,7 +290,8 @@ export default {
 
   mounted (): void {
     // Launch Darkly flag usage example:
-    // console.log('coopsVersion =', this.flags.coopsVersion)
+    // First import common class FeatureFlags
+    // console.log('bcrs-create-ui-enabled =', featureFlags.getFlag('bcrs-create-ui-enabled'))
   },
 
   watch: {
