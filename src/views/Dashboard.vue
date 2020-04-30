@@ -288,12 +288,6 @@ export default {
     }
   },
 
-  mounted (): void {
-    // Launch Darkly flag usage example:
-    // First import common class FeatureFlags
-    // console.log('bcrs-create-ui-enabled =', featureFlags.getFlag('bcrs-create-ui-enabled'))
-  },
-
   watch: {
     historyFilings () {
       // check if a filing has a paid but pending state ( Currently BCOMPS )
