@@ -48,7 +48,6 @@ export const initLDClient = () : Promise<any> => {
 
   return new Promise((resolve) => {
     ldClient.on('initialized', () => {
-      console.log('flags', ldClient.allFlags())
       featureFlags.setFlags(ldClient.allFlags())
       resolve()
     })
