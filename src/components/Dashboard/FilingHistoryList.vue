@@ -19,11 +19,12 @@
         v-for="(filing, index) in filedItems"
         :key="index"
       >
-        <v-expansion-panel-header class="filing-item-toggle">
+        <v-expansion-panel-header class="filing-item-toggle no-dropdown-icon">
           <div class="list-item">
             <div class="filing-label">
               <h3>{{filing.title}} {{applyCorrectionTag(filing)}}</h3>
-              <div class="list-item__subtitle">
+
+              <div class="list-item__subtitle d-flex">
 
                 <v-scale-transition v-if="isCoaFutureEffective(filing.type, filing.status)">
                   <v-tooltip top content-class="pending-tooltip">
@@ -39,38 +40,56 @@
                 </v-scale-transition>
 
                 <template v-else-if="isPaid(filing.status)">
-                  <span>FILING PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <div>
+                    <span class="orange--text text--darken-2">FILING PENDING</span>
+                    <span class="vert-pipe"></span>
+                    <span>PAID</span>
+                  </div>
+                  <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="orange darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-alert</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
                 </template>
 
                 <!-- else filing is COMPLETED -->
                 <span v-else>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
 
                 <template v-if="filing.comments.length > 0">
-                  <span>
-                    <v-icon small>mdi-message-reply</v-icon>
+                  <v-btn
+                    class="comments-btn"
+                    outlined
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon small left>mdi-message-reply</v-icon>
                     Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
-                  </span>
+                  </v-btn>
                 </template>
 
               </div>
             </div>
 
             <div class="filing-item__actions">
-              <div class="toggle-info">
-                <template v-if="panel === index">
-                  <span v-if="filing.paperOnly">Close</span>
-                  <span v-else>Hide Documents</span>
-                </template>
-                <template v-else>
-                  <span v-if="filing.paperOnly">Request a Copy</span>
-                  <span v-else>View Documents</span>
-                </template>
-              </div>
+              <v-btn
+                class="expand-btn"
+                outlined
+                :ripple=false
+                @click.stop="togglePanel(index)"
+              >
+                <span v-if="(panel === index)">{{ filing.paperOnly ? "Close" : "Hide Documents" }}</span>
+                <span v-else>{{ filing.paperOnly ? "Request a Copy" : "View Documents" }}</span>
+              </v-btn>
 
               <!-- the drop-down menu -->
-              <v-menu bottom left transition="slide-y-transition" v-if="isRoleStaff">
+              <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff">
                 <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on">
+                  <v-btn text v-on="on" class="menu-btn">
                     <v-icon>mdi-menu-down</v-icon>
                   </v-btn>
                 </template>
@@ -107,10 +126,18 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <v-list dense class="mt-n1 mb-n3 pt-0 pb-0" v-if="!filing.paperOnly">
-            <v-list-item class="pl-0 pr-0" v-for="(document, index) in filing.filingDocuments" :key="index">
+          <pending-filing v-if="isPaid(filing.status)" :title=filing.title />
+
+          <paper-filing v-if="filing.paperOnly" />
+
+          <v-list dense class="py-0" v-else>
+            <v-list-item
+              class="px-0"
+              v-for="(document, index) in filing.filingDocuments"
+              :key="index"
+            >
               <v-btn text color="primary"
-                class="download-document-btn pl-1 pr-2"
+                class="download-document-btn"
                 @click="downloadDocument(document)"
                 :disabled="loadingDocument"
                 :loading="loadingDocument"
@@ -120,9 +147,9 @@
               </v-btn>
             </v-list-item>
 
-            <v-list-item class="pl-0 pr-0" v-if="filing.paymentToken">
+            <v-list-item class="px-0" v-if="filing.paymentToken">
               <v-btn text color="primary"
-                class="download-receipt-btn pl-1 pr-2"
+                class="download-receipt-btn"
                 @click="downloadReceipt(filing)"
                 :disabled="loadingReceipt"
                 :loading="loadingReceipt"
@@ -132,9 +159,9 @@
               </v-btn>
             </v-list-item>
 
-            <v-list-item class="pl-0 pr-0" v-if="!filing.paperOnly">
+            <v-list-item class="px-0" v-if="!filing.paperOnly">
               <v-btn text color="primary"
-                class="download-all-btn pl-1 pr-2"
+                class="download-all-btn"
                 @click="downloadAll(filing)"
                 :disabled="loadingAll"
                 :loading="loadingAll"
@@ -145,26 +172,9 @@
             </v-list-item>
           </v-list>
 
-          <div class="paper-filings body-2" v-if="filing.paperOnly">
-            <p>Filings completed <strong>before March 10, 2019</strong> are only available from the BC Registry
-              as paper documents.</p>
-            <p>To request copies of paper documents, contact BC Registry Staff with the document you require and
-              the name and incorporation number of your association:</p>
-            <ul class="contact-info__list mt-5">
-              <li>
-                <span>Toll Free:</span> <a href="tel:+1-877-526-1526">1 877 526-1526</a>
-              </li>
-              <li>
-                <span>Phone:</span> <a href="tel:+1-250-387-7848">250 387-7848</a>
-              </li>
-              <li>
-                <span>Email:</span> <a href="mailto:bcregistries@gov.bc.ca">bcregistries@gov.bc.ca</a>
-              </li>
-            </ul>
-          </div>
-
           <!-- the detail comments section -->
           <details-list
+             v-if="filing.comments.length > 0"
             :filing=filing
             :isTask="false"
             @showCommentDialog="showCommentDialog($event)"
@@ -194,6 +204,8 @@ import { mapGetters, mapState } from 'vuex'
 
 // Components
 import { DetailsList } from '@/components/common'
+import PaperFiling from './PaperFiling.vue'
+import PendingFiling from './PendingFiling.vue'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -211,8 +223,10 @@ export default {
   mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin],
 
   components: {
-    AddCommentDialog,
     DetailsList,
+    PaperFiling,
+    PendingFiling,
+    AddCommentDialog,
     DownloadErrorDialog
   },
 
@@ -220,7 +234,7 @@ export default {
     return {
       addCommentDialog: false,
       downloadErrorDialog: false,
-      panel: null, // currently expanded panel
+      panel: null as number, // currently expanded panel
       filedItems: [],
       loadingDocument: false,
       loadingReceipt: false,
@@ -695,6 +709,11 @@ export default {
 
     applyCorrectionTag (item: any): string {
       return item.isCorrected ? '- Corrected' : item.isCorrectionPending ? '- Correction Pending' : ''
+    },
+
+    /** Closes current panel or opens new panel. */
+    togglePanel (index: number) {
+      this.panel = (this.panel === index) ? null : index
     }
   },
 
@@ -710,6 +729,18 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
+
+.filing-history-item {
+  // disable expansion in general
+  pointer-events: none;
+}
+
+// specifically enable anchors and buttons
+// for this page and sub-components
+::v-deep a,
+::v-deep .v-btn {
+  pointer-events: auto;
+}
 
 .list-item {
   align-items: flex-start;
@@ -730,23 +761,34 @@ export default {
   max-width: 16rem;
 }
 
-.pending-icon {
-  background-color: black;
+// .pending-icon {
+//   background-color: black;
+// }
+
+// vertical pipe for separating subtitle statuses
+.vert-pipe {
+  margin-top: 0.1rem;
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+  height: 1rem;
+  border-left: 1px solid $gray6;
 }
 
-.list-item__subtitle {
-  span + span {
-    &:before {
-      display: inline-block;
-      margin-left: 0.5rem;
-      margin-right: 0.5rem;
-      content: "•";
-    }
+.comments-btn {
+  border: none;
+
+  // bullet for separating subtitle and comments button
+  &:before {
+    display: inline-block;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    content: "•";
   }
 }
 
-.form__btns {
-  justify-content: flex-end;
+.expand-btn {
+  margin-left: 0.25rem;
+  border: none;
 }
 
 .v-expansion-panel-header {
@@ -754,16 +796,10 @@ export default {
   padding-bottom: 1.25rem !important;
 }
 
-.title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-::v-deep {
-  .v-expansion-panel-header__icon {
-    display: none !important;
-  }
+::v-deep .v-expansion-panel-content__wrap {
+  padding-right: 1.5rem;
+  padding-left: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .filing-history-item h3 {
@@ -771,21 +807,20 @@ export default {
 }
 
 .filing-item__actions {
-  margin-top: -0.5rem;
-  white-space: nowrap;
+  display: inline-block;
+  margin-right: 0.5rem;
 
-  .toggle-info {
-    display: inline-block;
+  .expand-btn {
     letter-spacing: -0.01rem;
     font-size: 0.875rem;
     font-weight: 700;
-    margin-right: 0.5rem;
   }
-}
 
-.comments-section h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
+  // make menu button slightly smaller
+  .menu-btn {
+    height: unset !important;
+    min-width: unset !important;
+    padding: 0.25rem !important;
+  }
 }
 </style>

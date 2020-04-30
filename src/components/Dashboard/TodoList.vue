@@ -32,10 +32,9 @@
       attach="#todo-list"
     />
 
-    <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion>
+    <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item"
-        expand-icon=""
         v-for="(task, index) in orderBy(taskItems, 'order')"
         :key="index"
         :class="{
@@ -43,7 +42,7 @@
           'draft': isStatusDraft(task) && !isTypeCorrection(task)
         }"
       >
-        <v-expansion-panel-header class="todo-item-toggle no-dropdown">
+        <v-expansion-panel-header class="todo-item-toggle no-dropdown-icon">
           <div class="list-item">
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
@@ -76,10 +75,10 @@
                       outlined
                       color="blue darken-2"
                       :ripple=false
-                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                      @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
+                      {{ (panel === index) ? "View Details" : "Hide Details" }}
                     </v-btn>
                   </div>
                 </div>
@@ -106,7 +105,7 @@
 
                 <div v-else-if="isStatusPending(task)" class="todo-status">
                   <div>FILING PENDING</div>
-                  <div class="vert-pipe">&nbsp;</div>
+                  <div class="vert-pipe"></div>
                   <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
@@ -115,19 +114,19 @@
                     <v-btn
                       class="expand-btn"
                       outlined
-                      color="orange"
+                      color="orange darken-2"
                       :ripple=false
-                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                      @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-alert</v-icon>
-                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
                     </v-btn>
                   </div>
                 </div>
 
                 <div v-else-if="isStatusError(task)" class="todo-status">
                   <div>FILING PENDING</div>
-                  <div class="vert-pipe">&nbsp;</div>
+                  <div class="vert-pipe"></div>
                   <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
@@ -138,17 +137,17 @@
                       outlined
                       color="red darken-4"
                       :ripple=false
-                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                      @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
                     </v-btn>
                   </div>
                 </div>
 
                 <div v-else-if="isStatusPaid(task)" class="todo-status">
                   <div>FILING PENDING</div>
-                  <div class="vert-pipe">&nbsp;</div>
+                  <div class="vert-pipe"></div>
                   <div class="payment-status" v-if="inProcessFiling === task.id">
                     PROCESSING...
                   </div>
@@ -159,10 +158,10 @@
                       outlined
                       color="red darken-4"
                       :ripple=false
-                      @click="task.isDetailsVisible = !task.isDetailsVisible"
+                      @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ !task.isDetailsVisible ? "View Details" : "Hide Details" }}
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
                     </v-btn>
                   </div>
                 </div>
@@ -408,6 +407,7 @@ export default {
       confirmCheckbox: false,
       confirmEnabled: false,
       currentFilingId: null,
+      panel: null as number, // currently expanded panel
 
       // enums
       EntityTypes,
@@ -482,7 +482,6 @@ export default {
           case FilingTypes.ANNUAL_REPORT: {
             const ARFilingYear = todo.header.ARFilingYear
             this.taskItems.push({
-              isDetailsVisible: false,
               id: -1, // not falsy
               type: FilingTypes.ANNUAL_REPORT,
               title: `File ${ARFilingYear} Annual Report`,
@@ -497,7 +496,6 @@ export default {
           }
           case FilingTypes.NAME_REQUEST:
             this.taskItems.push({
-              isDetailsVisible: false,
               id: -1, // not falsy
               type: FilingTypes.NAME_REQUEST,
               title: `Name Request ${this.nrNumber} - ${this.entityName}`,
@@ -573,7 +571,6 @@ export default {
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
           this.taskItems.push({
-            isDetailsVisible: false,
             type: FilingTypes.ANNUAL_REPORT,
             id: filing.header.filingId,
             title: `File ${ARFilingYear} Annual Report`,
@@ -598,7 +595,6 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfDirectors) {
         this.taskItems.push({
-          isDetailsVisible: false,
           type: FilingTypes.CHANGE_OF_DIRECTORS,
           id: filing.header.filingId,
           title: `File Director Change`,
@@ -618,7 +614,6 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfAddress) {
         this.taskItems.push({
-          isDetailsVisible: false,
           type: FilingTypes.CHANGE_OF_ADDRESS,
           id: filing.header.filingId,
           title: `File Address Change`,
@@ -638,7 +633,6 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
         this.taskItems.push({
-          isDetailsVisible: false,
           type: FilingTypes.CORRECTION,
           id: filing.header.filingId,
           filingDate: filing.correction.correctedFilingDate,
@@ -663,7 +657,6 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.incorporationApplication) {
         this.taskItems.push({
-          isDetailsVisible: false,
           type: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
           title: `${this.entityTypeToName(this.entityType)}  Incorporation Application - ${this.entityName}`,
@@ -914,6 +907,11 @@ export default {
     /** Returns True if task type is Name Request. */
     isTypeNameRequest (task: any): boolean {
       return (task.type === FilingTypes.NAME_REQUEST)
+    },
+
+    /** Closes current panel or opens new panel. */
+    togglePanel (index: number) {
+      this.panel = (this.panel === index) ? null : index
     }
   },
 
@@ -931,30 +929,32 @@ export default {
 @import "@/assets/styles/theme.scss";
 
 .todo-item {
-  // disable expansion
+  // disable expansion in general
   pointer-events: none;
+}
 
-  .todo-list-checkbox {
-    pointer-events: auto;
-  }
+// specifically enable COA checkbox
+.todo-list-checkbox {
+  pointer-events: auto;
+}
 
-  .todo-list-detail {
-    pointer-events: auto;
-  }
+// specifically enable events on this div
+.todo-list-detail {
+  pointer-events: auto;
 }
 
 .todo-list.disabled {
   opacity: 0.6;
 
+  // enable just the expansion button
   .expand-btn {
-    // enable expansion button
     pointer-events: auto;
   }
 }
 
 .todo-item:not(.disabled) {
+  // enable all buttons
   .v-btn {
-    // enable action buttons
     pointer-events: auto;
   }
 }

@@ -97,7 +97,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockNoCommentsFiling } })
     const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.comments-section')).toBeNull()
+    expect(vm.$el.querySelector('.details-list')).toBeNull()
 
     wrapper.destroy()
   })
@@ -106,7 +106,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
     const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.comments-section')).not.toBeNull()
+    expect(vm.$el.querySelector('.details-list')).not.toBeNull()
 
     wrapper.destroy()
   })
