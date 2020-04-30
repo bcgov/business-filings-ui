@@ -7,5 +7,5 @@
   "PAY_API_URL": "https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",
   "ADDRESS_COMPLETE_KEY": "RH99-RN99-GB72-FW86",
-  "LD_CLIENT_ID": "5dc1c5fd1d213d087f9e1024"
+  "LD_CLIENT_ID": "5e5d5af4574f7e09ab53d03b"
 }
