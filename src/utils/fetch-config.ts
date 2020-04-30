@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import axios from '@/axios-auth'
-import { initLDClient, featureFlags } from '@/common/FeatureFlags'
 
 /**
  * Fetches config from environment and API.
@@ -69,9 +68,6 @@ export async function fetchConfig (): Promise<void> {
   window['ldClientId'] = ldClientId
   console.info('Set Launch Darkly Client ID.')
 
-  // initialize Launch Darkly
-  await initLDClient()
-
   // get Business ID / NR Number and validate that it looks OK
   // it should be first token after Base URL in Pathname
   // also change %20 to space for display and routing purposes
@@ -81,7 +77,7 @@ export async function fetchConfig (): Promise<void> {
     sessionStorage.setItem('BUSINESS_ID', id)
     // ensure we don't already have a NR Number in scope
     sessionStorage.removeItem('NR_NUMBER')
-  } else if (id?.startsWith('NR') && featureFlags.getFlag('bcrs-create-ui-enabled')) {
+  } else if (id?.startsWith('NR')) {
     sessionStorage.setItem('NR_NUMBER', id)
     // ensure we don't already have a Business ID in scope
     sessionStorage.removeItem('BUSINESS_ID')
