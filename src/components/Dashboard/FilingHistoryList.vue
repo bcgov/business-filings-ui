@@ -19,13 +19,12 @@
         v-for="(filing, index) in filedItems"
         :key="index"
       >
-        <v-expansion-panel-header class="filing-item-toggle no-dropdown-icon">
+        <v-expansion-panel-header class="no-dropdown-icon">
           <div class="list-item">
             <div class="filing-label">
-              <h3>{{filing.title}} {{applyCorrectionTag(filing)}}</h3>
+              <h3>{{filing.title}}{{applyCorrectionTag(filing)}}</h3>
 
               <div class="list-item__subtitle d-flex">
-
                 <v-scale-transition v-if="isCoaFutureEffective(filing.type, filing.status)">
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
@@ -39,14 +38,12 @@
                   </v-tooltip>
                 </v-scale-transition>
 
-                <template v-else-if="isPaid(filing.status)">
-                  <div>
-                    <span class="orange--text text--darken-2">FILING PENDING</span>
-                    <span class="vert-pipe"></span>
-                    <span>PAID</span>
-                  </div>
+                <div v-else-if="isPaid(filing.status)" class="filing-subtitle">
+                  <span class="orange--text text--darken-2">FILING PENDING</span>
+                  <span class="vert-pipe"></span>
+                  <span>PAID</span>
                   <v-btn
-                      class="expand-btn"
+                      class="details-btn"
                       outlined
                       color="orange darken-2"
                       :ripple=false
@@ -55,12 +52,14 @@
                       <v-icon left>mdi-alert</v-icon>
                       {{ (panel === index) ? "Hide Details" : "View Details" }}
                     </v-btn>
-                </template>
+                </div>
 
                 <!-- else filing is COMPLETED -->
-                <span v-else>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                <div v-else class="filing-subtitle">
+                  <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                </div>
 
-                <template v-if="filing.comments.length > 0">
+                <div v-if="filing.comments.length > 0" class="filing-subtitle">
                   <v-btn
                     class="comments-btn"
                     outlined
@@ -70,9 +69,8 @@
                     <v-icon small left>mdi-message-reply</v-icon>
                     Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
                   </v-btn>
-                </template>
-
-              </div>
+                </div>
+              </div> <!-- end of subtitle -->
             </div>
 
             <div class="filing-item__actions">
@@ -708,7 +706,7 @@ export default {
     },
 
     applyCorrectionTag (item: any): string {
-      return item.isCorrected ? '- Corrected' : item.isCorrectionPending ? '- Correction Pending' : ''
+      return item.isCorrected ? ' - Corrected' : item.isCorrectionPending ? ' - Correction Pending' : ''
     },
 
     /** Closes current panel or opens new panel. */
@@ -761,9 +759,11 @@ export default {
   max-width: 16rem;
 }
 
-// .pending-icon {
-//   background-color: black;
-// }
+.filing-subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
 
 // vertical pipe for separating subtitle statuses
 .vert-pipe {
@@ -786,6 +786,7 @@ export default {
   }
 }
 
+.details-btn,
 .expand-btn {
   margin-left: 0.25rem;
   border: none;

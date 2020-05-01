@@ -8,7 +8,7 @@
     <li class="contact-container">
       <v-icon small class="contact-icon">mdi-phone</v-icon>
       <span class="font-weight-bold contact-key">Victoria Office:</span>
-      <a href="tel:+1-250-952-0568" class="contact-value">250 952-0568</a>
+      <a href="tel:+1-250-952-0568" class="contact-value">250-952-0568</a>
     </li>
     <li class="contact-container">
       <v-icon small class="contact-icon">mdi-email</v-icon>
@@ -41,7 +41,7 @@ li {
   }
 
   .contact-key {
-    width: 11rem;
+    width: 12rem;
   }
 
   .contact-value {

@@ -4,7 +4,6 @@ import Vuelidate from 'vuelidate'
 import { getVuexStore } from '@/store'
 import { shallowMount } from '@vue/test-utils'
 import { DetailsList } from '@/components/common'
-import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -93,25 +92,25 @@ describe('Details List', () => {
     ]
   }
 
-  it('Displays nothing if no comments are present in the filing', () => {
+  it('Displays no details if filing contains no comments', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockNoCommentsFiling } })
     const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.details-list')).toBeNull()
+    expect(vm.$el.querySelector('.detail-body')).toBeNull()
 
     wrapper.destroy()
   })
 
-  it('Displays the comments section when comments are present in the filing', () => {
+  it('Displays details if filing contains comments', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
     const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.details-list')).not.toBeNull()
+    expect(vm.$el.querySelector('.detail-body')).not.toBeNull()
 
     wrapper.destroy()
   })
 
-  it('Displays the correct detail count in the title', () => {
+  it('Displays the correct count in the title - single detail', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
     const vm: any = wrapper.vm
 
@@ -120,7 +119,7 @@ describe('Details List', () => {
     wrapper.destroy()
   })
 
-  it('Displays the correct detail count for multiple comments in the title', () => {
+  it('Displays the correct count in the title - multiple details', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
     const vm: any = wrapper.vm
 
@@ -129,12 +128,11 @@ describe('Details List', () => {
     wrapper.destroy()
   })
 
-  it('Displays the correct amount of comments in the details list', () => {
+  it('Displays the correct number of details in the list', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
     const vm: any = wrapper.vm
 
     const detailsCount = vm.$el.querySelectorAll('.detail-body').length
-
     expect(detailsCount).toEqual(3)
 
     wrapper.destroy()
@@ -142,6 +140,7 @@ describe('Details List', () => {
 
   it('Does NOT display the add detail btn when the user is NOT staff', () => {
     store.state.keycloakRoles = ['user']
+
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
@@ -156,8 +155,9 @@ describe('Details List', () => {
     wrapper.destroy()
   })
 
-  it('Does NOT display the add detail btn when the item is a TASK', () => {
+  it('Does NOT display the add detail btn when the item is a task', () => {
     store.state.keycloakRoles = ['staff']
+
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
@@ -172,8 +172,9 @@ describe('Details List', () => {
     wrapper.destroy()
   })
 
-  it('Displays the Add Detail button if Staff and NOT a task item', () => {
+  it('Displays the Add Detail button if staff user and NOT a task item', () => {
     store.state.keycloakRoles = ['staff']
+
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
@@ -188,8 +189,9 @@ describe('Details List', () => {
     wrapper.destroy()
   })
 
-  it('Displays the correct filing data if NOT Staff', () => {
+  it('Displays the correct filing data if NOT staff user', () => {
     store.state.keycloakRoles = ['user']
+
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
@@ -208,8 +210,9 @@ describe('Details List', () => {
     wrapper.destroy()
   })
 
-  it('Displays the correct filing data if Staff', () => {
+  it('Displays the correct filing data if staff user', async () => {
     store.state.keycloakRoles = ['staff']
+
     const wrapper = shallowMount(DetailsList, {
       store,
       vuetify,
@@ -219,24 +222,24 @@ describe('Details List', () => {
       }
     })
     const vm: any = wrapper.vm
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.title-bar').textContent).toContain('Details (3)')
-      expect(vm.$el.querySelector('.title-bar').textContent).toContain('Add Detail')
+    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Details (3)')
+    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Add Detail')
 
-      const firstItem = vm.$el.querySelectorAll('.body-2')[1]
-      const thirdItem = vm.$el.querySelectorAll('.body-2')[3]
+    const firstItem = vm.$el.querySelectorAll('.body-2')[1]
+    const thirdItem = vm.$el.querySelectorAll('.body-2')[3]
 
-      expect(firstItem.textContent).toContain('cbIdIr1234')
-      expect(firstItem.textContent).toContain('2020-03-02T20:26:31.697044+00:00')
-      expect(firstItem.querySelector('.pre-line').textContent)
-        .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
+    expect(firstItem.textContent).toContain('cbIdIr1234')
+    expect(firstItem.textContent).toContain('2020-03-02T20:26:31.697044+00:00')
+    expect(firstItem.querySelector('.pre-line').textContent)
+      .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
 
-      expect(thirdItem.textContent).toContain('sevIdiR2020')
-      expect(thirdItem.textContent).toContain('2020-03-05T20:26:31.697044+00:00')
-      expect(thirdItem.querySelector('.pre-line').textContent)
-        .toContain('Correction for director mailing delivery address. Filed on 2018-01-08.')
-    })
+    expect(thirdItem.textContent).toContain('sevIdiR2020')
+    expect(thirdItem.textContent).toContain('2020-03-05T20:26:31.697044+00:00')
+    expect(thirdItem.querySelector('.pre-line').textContent)
+      .toContain('Correction for director mailing delivery address. Filed on 2018-01-08.')
+
     wrapper.destroy()
   })
 })

@@ -54,11 +54,8 @@ export default class CancelPaymentErrorDialog extends Vue {
   @Prop() private attach: string
 
   // Prop containing error messages.
-  @Prop({ default: () => {
-    return [ ]
-  }
-  })
-    private errors: object[]
+  @Prop({ default: () => { return [ ] } })
+  private errors: object[]
 
   // Pass click event to parent.
   @Emit() private okay () { }

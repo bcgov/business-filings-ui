@@ -50,11 +50,11 @@ import { DateMixin } from '@/mixins'
 })
 export default class DetailsList extends Mixins(DateMixin) {
   /** Filing containing correction information. */
-  @Prop()
+  @Prop({ default: () => { return { comments: [] } } })
   private filing: object
 
   /** Whether this filing is a task (and therefore whether to disallow new detail comments). */
-  @Prop()
+  @Prop({ default: false })
   private isTask: boolean
 
   /** Emits an event to trigger the comment dialog */

@@ -67,7 +67,7 @@
               </div>
 
               <div class="list-item__subtitle">
-                <div v-if="task.subtitle" class="todo-status">
+                <div v-if="task.subtitle" class="todo-subtitle">
                   <div>{{ task.subtitle }}</div>
                   <div class="payment-status" v-if="isTypeNameRequest(task)">
                     <v-btn
@@ -83,7 +83,7 @@
                   </div>
                 </div>
 
-                <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-status">
+                <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
                   <div>DRAFT</div>
                   <v-btn x-small icon class="expand-btn">
                     <v-icon>mdi-message-reply</v-icon>
@@ -91,11 +91,11 @@
                   Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
-                <div v-else-if="isStatusDraft(task)" class="todo-status">
+                <div v-else-if="isStatusDraft(task)" class="todo-subtitle">
                   <div>DRAFT</div>
                 </div>
 
-                <div v-else-if="isTypeCorrection(task) && isStatusCorrectionPending(task)" class="todo-status">
+                <div v-else-if="isTypeCorrection(task) && isStatusCorrectionPending(task)" class="todo-subtitle">
                   <span class="before-details">FILING PENDING</span>
                   <v-btn x-small icon class="expand-btn">
                     <v-icon>mdi-message-reply</v-icon>
@@ -103,7 +103,7 @@
                   Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
-                <div v-else-if="isStatusPending(task)" class="todo-status">
+                <div v-else-if="isStatusPending(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
                   <div class="payment-status" v-if="inProcessFiling === task.id">
@@ -124,7 +124,7 @@
                   </div>
                 </div>
 
-                <div v-else-if="isStatusError(task)" class="todo-status">
+                <div v-else-if="isStatusError(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
                   <div class="payment-status" v-if="inProcessFiling === task.id">
@@ -145,7 +145,7 @@
                   </div>
                 </div>
 
-                <div v-else-if="isStatusPaid(task)" class="todo-status">
+                <div v-else-if="isStatusPaid(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
                   <div class="payment-status" v-if="inProcessFiling === task.id">
@@ -165,7 +165,7 @@
                     </v-btn>
                   </div>
                 </div>
-              </div>
+              </div> <!-- end of subtitle -->
             </div>
 
             <div class="list-item__actions">
@@ -1043,7 +1043,7 @@ export default {
   border: none;
 }
 
-.todo-status {
+.todo-subtitle {
   display: flex;
   align-items: center;
   justify-content: flex-start;

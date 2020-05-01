@@ -6,6 +6,8 @@ import { getVuexStore } from '@/store'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
+import PaperFiling from '@/components/Dashboard/PaperFiling.vue'
+import PendingFiling from '@/components/Dashboard/PendingFiling.vue'
 import { DetailsList } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -150,7 +152,7 @@ const sampleFilings = [
   }
 ]
 
-describe('FilingHistoryList', () => {
+describe('Filing History List', () => {
   it('handles empty data - as a business', async () => {
     const $route = { query: { } }
 
@@ -166,7 +168,6 @@ describe('FilingHistoryList', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
     expect(wrapper.emitted('filed-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
-    expect(wrapper.find('.no-results').exists()).toBe(true)
     expect(wrapper.find('.no-results').text()).toContain('You have no filing history')
 
     wrapper.destroy()
@@ -188,18 +189,18 @@ describe('FilingHistoryList', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
     expect(wrapper.emitted('filed-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
-    expect(wrapper.find('.no-results').exists()).toBe(true)
     expect(wrapper.find('.no-results').text()).toContain('Complete your filing to display')
 
     sessionStorage.removeItem('NR_NUMBER')
     wrapper.destroy()
   })
 
-  it('displays a filing pending incorporation application filing and documents', async () => {
-    const $route = { query: { filing_id: '85114' } }
+  it('displays a Filing Pending incorporation application filing and documents', async () => {
+    const $route = { query: { } }
 
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
+    store.state.entityIncNo = 'NR 1234567'
     store.state.filings = [
       {
         filing: {
@@ -211,14 +212,14 @@ describe('FilingHistoryList', () => {
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            status: 'PAID' // FUTURE: also verify COMPLETED
+            status: 'PAID'
           },
           incorporationApplication: { }
         }
       }
     ]
 
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -226,27 +227,52 @@ describe('FilingHistoryList', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('filed-count')).toEqual([[1]])
     expect(wrapper.find('.list-item__subtitle').text()).toContain('FILING PENDING')
-    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
+    // verify View Details button and expand details
+    // NB: only this filing has a View Details button
+    const detailsBtn = wrapper.find('.details-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await Vue.nextTick()
+
+    // verify Hide Details button
+    // NB: only this filing has a Hide Details button
+    expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(PendingFiling).exists()).toBe(true)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
     // verify Incorporation Application button
-    const button = wrapper.find('.download-document-btn')
-    expect(button.exists()).toBe(true)
-    expect(button.text()).toContain('Incorporation Application')
+    const documentBtns = wrapper.findAll('.download-document-btn')
+    expect(documentBtns.at(0).text()).toBe('Incorporation Application')
+    expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
 
     // FUTURE: verify Notice Of Articles button
-    // FUTURE: verify Certificate button
+    // NB: may be disabled while PAID instead of COMPLETED
+    // expect(documentBtns.at(1).text()).toContain('Notice of Articles')
+    // expect(documentBtns.at(1).attributes('disabled')).toBeUndefined()
+
+    // FUTURE: verify Incorporation Certificate button
+    // NB: may be disabled while PAID instead of COMPLETED
+    // expect(documentBtns.at(2).text()).toContain('Incorporation Certificate')
+    // expect(documentBtns.at(2).attributes('disabled')).toBeUndefined()
 
     // verify Receipt button
-    expect(wrapper.find('.download-receipt-btn').exists()).toBe(true)
+    expect(wrapper.find('.download-receipt-btn').text()).toContain('Receipt')
 
     // verify Download All button
-    expect(wrapper.find('.download-all-btn').exists()).toBe(true)
+    expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
 
+    sessionStorage.removeItem('NR_NUMBER')
     wrapper.destroy()
   })
 
-  it('displays the Filed Items pre/post bob date', async () => {
+  it('displays the filing items pre/post bob date', async () => {
     const $route = { query: { } }
 
     // init store
@@ -367,8 +393,8 @@ describe('FilingHistoryList', () => {
     wrapper.destroy()
   })
 
-  it('expands the specified filing ID for pre/post bob date filings', async () => {
-    const $route = { query: { filing_id: '654' } }
+  it('expands the specified filing id for a pre-Bob date (paper only) filing', async () => {
+    const $route = { query: { } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -401,25 +427,68 @@ describe('FilingHistoryList', () => {
             'certifiedBy': 'Full Name 2',
             'filingId': 654,
             'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+            'availableOnPaperOnly': true
           },
           'changeOfDirectors': {
           }
         }
-      },
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify initial state
+    expect(vm.filedItems.length).toEqual(2)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
+    expect(wrapper.emitted('filed-count')).toEqual([[2]])
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button
+    const buttons = wrapper.findAll('.expand-btn')
+    expect(buttons.length).toBe(2)
+    expect(buttons.at(1).text()).toContain('Request a Copy')
+
+    // expand details
+    buttons.at(1).trigger('click')
+    await Vue.nextTick()
+
+    // verify Close button
+    expect(wrapper.findAll('.expand-btn').at(1).text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toBe(1) // second row is expanded
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(true)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find('.download-document-btn').exists()).toBe(false)
+    expect(wrapper.find('.download-receipt-btn').exists()).toBe(false)
+    expect(wrapper.find('.download-all-btn').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('expands the specified filing id for a post-Bob date (regular) filing', async () => {
+    const $route = { query: {  } }
+
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = [
       {
         'filing': {
           'header': {
-            'name': 'changeOfAddress',
-            'date': '2019-05-06',
+            'name': 'changeOfDirectors',
+            'date': '2019-03-09',
             'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 789,
-            'certifiedBy': 'Full Name 3',
-            'filingId': 987,
+            'paymentToken': 456,
+            'certifiedBy': 'Full Name 2',
+            'filingId': 654,
             'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+            'availableOnPaperOnly': true
           },
-          'changeOfAddress': {
+          'changeOfDirectors': {
           }
         }
       },
@@ -427,63 +496,53 @@ describe('FilingHistoryList', () => {
         'filing': {
           'header': {
             'name': 'annualReport',
-            'date': '2019-03-02',
+            'date': '2019-06-02',
             'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 100,
+            'paymentToken': 123,
             'certifiedBy': 'Full Name 1',
-            'filingId': 3212,
+            'filingId': 321,
             'status': 'COMPLETED',
-            'availableOnPaperOnly': true
+            'availableOnPaperOnly': false
           },
           'annualReport': {
-            'annualGeneralMeetingDate': '2019-01-01',
-            'annualReportDate': '2019-01-01'
-          }
-        }
-      },
-      {
-        'filing': {
-          'header': {
-            'name': 'changeOfDirectors',
-            'date': '2019-02-04',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 4561,
-            'certifiedBy': 'Full Name 2',
-            'filingId': 6541,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
-          },
-          'changeOfDirectors': {
-          }
-        }
-      },
-      {
-        'filing': {
-          'header': {
-            'name': 'changeOfAddress',
-            'date': '2019-01-06',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 7891,
-            'certifiedBy': 'Full Name 3',
-            'filingId': 9871,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
-          },
-          'changeOfAddress': {
+            'annualGeneralMeetingDate': '2019-12-31',
+            'annualReportDate': '2019-12-31'
           }
         }
       }
     ]
 
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(6)
-    expect(wrapper.findAll('.filing-history-item').length).toEqual(6)
-    expect(wrapper.emitted('filed-count')).toEqual([[6]])
-    expect(vm.panel).toEqual(1) // second row is expanded
+    // verify initial state
+    expect(vm.filedItems.length).toEqual(2)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
+    expect(wrapper.emitted('filed-count')).toEqual([[2]])
+    expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify View Documents button
+    const buttons = wrapper.findAll('.expand-btn')
+    expect(buttons.length).toBe(2)
+    expect(buttons.at(1).text()).toContain('View Documents')
+
+    // expand details
+    buttons.at(1).trigger('click')
+    await Vue.nextTick()
+
+    // verify Hide Documents button
+    expect(wrapper.findAll('.expand-btn').at(1).text()).toContain('Hide Documents')
+
+    // verify details
+    expect(vm.panel).toBe(1) // second row is expanded
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find('.download-document-btn').exists()).toBe(true)
+    expect(wrapper.find('.download-receipt-btn').exists()).toBe(true)
+    expect(wrapper.find('.download-all-btn').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -549,31 +608,37 @@ describe('FilingHistoryList', () => {
     wrapper.destroy()
   })
 
-  it('displays the DetailsList when comments are present on a correction filing', async () => {
+  it('displays the Details List when comments are present on a correction filing', async () => {
     const $route = { query: { } }
 
     // init store
     store.state.filings = sampleFilings
 
     const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // Verify the Details List does not exist on the component until the drop down is selected
+    // verify that Details List component does not exist until the item is expanded
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
-    const button = wrapper.findAll('.filing-history-item').at(6).find('.filing-item-toggle')
+    // verify detail comments button and expand 
+    // NB: only this filing has a detail comments button
+    const button = wrapper.find('.comments-btn')
+    expect(button.text()).toContain('Details (2)')
     button.trigger('click')
     await Vue.nextTick()
 
-    // Verify the Details List component exists when there are comments on the filing.
+    // verify that Details List component is displayed after the item is expanded
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('does not display the DetailsList when no comments are present on a correction filing', async () => {
-    const $route = { query: { } }
+  it('does not display the Details List when no comments are present on a correction filing', async () => {
+    const $route = { query: { filing_id: '9873' } }
 
     // init store
     store.state.filings = [
@@ -600,7 +665,12 @@ describe('FilingHistoryList', () => {
     const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     await Vue.nextTick()
 
-    // Verify the Details List component does not exist when there are no comments on the filing.
+    // verify that detail comments button does not exist
+    expect(wrapper.find('.comments-btn').exists()).toBe(false)
+
+    // verify that Details List component does not exist
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     wrapper.destroy()
