@@ -471,7 +471,7 @@ describe('Filing History List', () => {
   })
 
   it('expands the specified filing id for a post-Bob date (regular) filing', async () => {
-    const $route = { query: {  } }
+    const $route = { query: { } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -622,7 +622,7 @@ describe('Filing History List', () => {
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
-    // verify detail comments button and expand 
+    // verify detail comments button and expand
     // NB: only this filing has a detail comments button
     const button = wrapper.find('.comments-btn')
     expect(button.text()).toContain('Details (2)')
