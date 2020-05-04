@@ -94,46 +94,40 @@ describe('Details List', () => {
 
   it('Displays no details if filing contains no comments', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockNoCommentsFiling } })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.detail-body')).toBeNull()
+    expect(wrapper.find('.detail-body').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
   it('Displays details if filing contains comments', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.detail-body')).not.toBeNull()
+    expect(wrapper.find('.detail-body').exists()).toBe(true)
 
     wrapper.destroy()
   })
 
   it('Displays the correct count in the title - single detail', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Detail (1)')
+    expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
 
     wrapper.destroy()
   })
 
   it('Displays the correct count in the title - multiple details', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Details (3)')
+    expect(wrapper.find('.title-bar').text()).toContain('Details (3)')
 
     wrapper.destroy()
   })
 
   it('Displays the correct number of details in the list', () => {
     const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
-    const vm: any = wrapper.vm
 
-    const detailsCount = vm.$el.querySelectorAll('.detail-body').length
-    expect(detailsCount).toEqual(3)
+    expect(wrapper.findAll('.detail-body').length).toEqual(3)
 
     wrapper.destroy()
   })
@@ -148,9 +142,8 @@ describe('Details List', () => {
         isTask: false
       }
     })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.title-bar').textContent).not.toContain('Add Detail')
+    expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
 
     wrapper.destroy()
   })
@@ -165,9 +158,8 @@ describe('Details List', () => {
         isTask: true
       }
     })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.title-bar').textContent).not.toContain('Add Detail')
+    expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
 
     wrapper.destroy()
   })
@@ -182,9 +174,8 @@ describe('Details List', () => {
         isTask: false
       }
     })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Add Detail')
+    expect(wrapper.find('.title-bar').text()).toContain('Add Detail')
 
     wrapper.destroy()
   })
@@ -199,12 +190,11 @@ describe('Details List', () => {
         isTask: false
       }
     })
-    const vm: any = wrapper.vm
 
-    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Detail (1)')
-    expect(vm.$el.querySelector('.title-bar').textContent).not.toContain('Add Detail')
-    expect(vm.$el.querySelector('.body-2').textContent).toContain('Registry Staff')
-    expect(vm.$el.querySelector('.body-2 .pre-line').textContent)
+    expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
+    expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
+    expect(wrapper.find('.body-2').text()).toContain('Registry Staff')
+    expect(wrapper.find('.body-2 .pre-line').text())
       .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
 
     wrapper.destroy()
@@ -221,23 +211,22 @@ describe('Details List', () => {
         isTask: false
       }
     })
-    const vm: any = wrapper.vm
     await Vue.nextTick()
 
-    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Details (3)')
-    expect(vm.$el.querySelector('.title-bar').textContent).toContain('Add Detail')
+    expect(wrapper.find('.title-bar').text()).toContain('Details (3)')
+    expect(wrapper.find('.title-bar').text()).toContain('Add Detail')
 
-    const firstItem = vm.$el.querySelectorAll('.body-2')[1]
-    const thirdItem = vm.$el.querySelectorAll('.body-2')[3]
+    const firstItem = wrapper.findAll('.body-2').at(1)
+    const thirdItem = wrapper.findAll('.body-2').at(3)
 
-    expect(firstItem.textContent).toContain('cbIdIr1234')
-    expect(firstItem.textContent).toContain('2020-03-02T20:26:31.697044+00:00')
-    expect(firstItem.querySelector('.pre-line').textContent)
+    expect(firstItem.text()).toContain('cbIdIr1234')
+    expect(firstItem.text()).toContain('2020-03-02T20:26:31.697044+00:00')
+    expect(firstItem.find('.pre-line').text())
       .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
 
-    expect(thirdItem.textContent).toContain('sevIdiR2020')
-    expect(thirdItem.textContent).toContain('2020-03-05T20:26:31.697044+00:00')
-    expect(thirdItem.querySelector('.pre-line').textContent)
+    expect(thirdItem.text()).toContain('sevIdiR2020')
+    expect(thirdItem.text()).toContain('2020-03-05T20:26:31.697044+00:00')
+    expect(thirdItem.find('.pre-line').text())
       .toContain('Correction for director mailing delivery address. Filed on 2018-01-08.')
 
     wrapper.destroy()
