@@ -78,7 +78,7 @@
                       @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "View Details" : "Hide Details" }}
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
                     </v-btn>
                   </div>
                 </div>
