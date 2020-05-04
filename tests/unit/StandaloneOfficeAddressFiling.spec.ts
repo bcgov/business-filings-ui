@@ -659,7 +659,6 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // click the File & Pay button
     button.trigger('click')
-
     await flushPromises()
 
     // verify redirection
@@ -719,8 +718,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // click the File & Pay button
     button.trigger('click')
-    // work-around because click trigger isn't working
-    await vm.onClickFilePay()
+    await flushPromises()
 
     // verify v-tooltip text - Todo: How to get the tool tip rendered outside the wrapper
     // const tooltipText = wrapper.find('#coa-file-pay-btn + span').text()
@@ -950,7 +948,6 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // click the File & Pay button
     button.trigger('click')
-
     await flushPromises()
 
     // verify redirection
@@ -1010,6 +1007,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // click the File & Pay button
     button.trigger('click')
+    await flushPromises()
 
     // verify v-tooltip text - Todo: How to get the tool tip rendered outside the wrapper
     // const tooltipText = wrapper.find('#coa-file-pay-btn + span').text()

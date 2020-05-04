@@ -59,7 +59,6 @@
 // Libraries
 import { mapActions } from 'vuex'
 import axios from '@/axios-auth'
-import { NOT_FOUND } from 'http-status-codes'
 import TokenService from 'sbc-common-components/src/services/token.services'
 
 // Components

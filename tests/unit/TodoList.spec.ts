@@ -482,14 +482,14 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
 
-    expect(item.querySelector('.list-item__subtitle .todo-status').textContent)
+    expect(item.querySelector('.list-item__subtitle .todo-subtitle').textContent)
       .toContain('Detail (1)')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // Open the details list dropdown
-    const button = item.querySelector('.list-item__subtitle .todo-status .expand-btn')
+    const button = item.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
     await button.click()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
@@ -598,14 +598,14 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
 
-    expect(item.querySelector('.list-item__subtitle .todo-status').textContent)
+    expect(item.querySelector('.list-item__subtitle .todo-subtitle').textContent)
       .toContain('Detail (1)')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // Open the details list dropdown
-    const button = item.querySelector('.list-item__subtitle .todo-status .expand-btn')
+    const button = item.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
     await button.click()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)

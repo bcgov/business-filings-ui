@@ -191,7 +191,6 @@ describe('Dashboard - Click Tests', () => {
     const button = wrapper.find('#standalone-addresses-button')
     expect(button.text()).toContain('Change')
     button.trigger('click')
-
     await Vue.nextTick()
 
     // verify routing to Standalone Office Address Filing page with id=0
@@ -221,7 +220,6 @@ describe('Dashboard - Click Tests', () => {
     const button = wrapper.find('#standalone-addresses-button')
     expect(button.text()).toContain('Change')
     button.trigger('click')
-
     await Vue.nextTick()
 
     expect(vm.coaWarningDialog).toBe(true)
@@ -251,8 +249,8 @@ describe('Dashboard - Click Tests', () => {
     const button = wrapper.find('#standalone-directors-button')
     expect(button.text()).toContain('Change')
     button.trigger('click')
-
     await Vue.nextTick()
+
     // verify routing to Standalone Directors Filing page with id=0
     expect(vm.$route.name).toBe('standalone-directors')
     expect(vm.$route.params.filingId).toBe(0)
