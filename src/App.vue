@@ -79,6 +79,7 @@ import { configJson } from '@/resources'
 // Enums and Constants
 import { EntityStatus, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
 import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
   name: 'App',
@@ -219,11 +220,36 @@ export default {
       // only initialize once
       // don't start during Jest tests as it messes up the test JWT
       if (this.tokenService || this.isJestRunning) return Promise.resolve()
-
       console.info('Starting token refresh service...') // eslint-disable-line no-console
       this.tokenService = new TokenService()
       await this.tokenService.init()
       this.tokenService.scheduleRefreshTimer()
+      try {
+        console.info('Starting token refresh service...') // eslint-disable-line no-console
+        this.tokenService = new TokenService()
+        await this.tokenService.init()
+        this.tokenService.scheduleRefreshTimer()
+      } catch (error) {
+        // Happens when the refresh token has expired in session storage
+        // reload to get new tokens
+
+        // eslint-disable-next-line no-console
+        console.log('Could not initialize token refresher: ', error)
+        this.clearKeycloakSession()
+        location.reload()
+      }
+    },
+
+    /**
+     * Clears Keycloak token information from session storage
+     */
+    clearKeycloakSession () : void {
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
+      sessionStorage.removeItem(SessionStorageKeys.UserFullName)
+      sessionStorage.removeItem(SessionStorageKeys.UserKcId)
+      sessionStorage.removeItem(SessionStorageKeys.UserAccountType)
     },
 
     /** Fetches business data / NR data. */
