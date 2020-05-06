@@ -24,7 +24,10 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
       nr.requestTypeCd)
   }
 
-  /** Returns the Name Request's state. */
+  /**
+   * Returns the Name Request's state.
+   * @param nr the name request response payload
+   */
   getNrState (nr: any): NameRequestStates {
     // Ensure a NR payload is provided.
     if (!nr) {
@@ -35,6 +38,11 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
     const expireDays = this.daysFromToday(nr.expirationDate)
     if (isNaN(expireDays) || expireDays < 1) {
       return NameRequestStates.EXPIRED
+    }
+
+    // If the NR is awaiting consent, it is not consumable.
+    if (nr.state === NameRequestStates.CONDITIONAL && nr.consentFlag !== 'R') {
+      return NameRequestStates.NEED_CONSENT
     }
 
     // If the NR's root state is not APPROVED, it is not consumable.
@@ -49,17 +57,12 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
       return NameRequestStates.CONSUMED
     }
 
-    // If the NR is awaiting consent, it is not consumable.
-    if (nr.consentFlag === false) {
-      return NameRequestStates.NEED_CONSENT
-    }
-
     // Otherwise, the NR is consumable.
     return NameRequestStates.APPROVED
   }
 
   /**
-   * Generate name request state for the store
+   * Generates name request state for the store.
    * @param nr the name request response payload
    * @param filingId the filing id
    */
