@@ -158,7 +158,7 @@ export default {
     /** True if user is authenticated. */
     isAuthenticated (): boolean {
       // FUTURE: also check that token isn't expired!
-      return Boolean(sessionStorage.getItem('KEYCLOAK_TOKEN'))
+      return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
     },
 
     /** True if Jest is running the code. */
@@ -329,7 +329,7 @@ export default {
 
     /** Gets Keycloak JWT and parses it. */
     getJWT (): any {
-      const token = sessionStorage.getItem('KEYCLOAK_TOKEN')
+      const token = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
       if (token) {
         return this.parseToken(token)
       }
