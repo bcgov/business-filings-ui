@@ -12,24 +12,23 @@ const vuetify = new Vuetify({})
 const store = getVuexStore()
 
 describe('DirectorListSm', () => {
-  it('handles empty data as a coop', done => {
+  it('handles empty data as a COOP', async () => {
     // init store
     store.state.directors = []
     store.state.entityType = 'CP'
 
     const wrapper = mount(DirectorListSm, { store, vuetify })
     const vm = wrapper.vm as any
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      expect(vm.directors.length).toEqual(0)
-      expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(0)
+    expect(vm.directors.length).toEqual(0)
+    expect(vm.directors.mailingAddress).toBeUndefined()
+    expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(0)
 
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
   })
 
-  it('displays multiple directors as a coop', done => {
+  it('displays multiple directors as a COOP', async () => {
     // init store
     store.state.entityType = 'CP'
     store.state.directors = [
@@ -63,36 +62,30 @@ describe('DirectorListSm', () => {
 
     const wrapper = mount(DirectorListSm, { store, vuetify })
     const vm = wrapper.vm as any
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      expect(vm.directors.length).toEqual(2)
-      expect(vm.directors[0].mailingAddress).toBeUndefined()
-      expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(2)
+    expect(vm.directors.length).toEqual(2)
+    expect(vm.directors[0].mailingAddress).toBeUndefined()
+    expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(2)
 
-      wrapper.destroy()
-      done()
-    })
+    // verify that "complete your filing" message isn't displayed
+    expect(wrapper.find('.complete-filing').exists()).toBe(false)
+
+    // verify that component doesn't have "disabled" class
+    expect(wrapper.classes()).not.toContain('disabled')
+
+    // verify that expansion buttons are clickable
+    expect(wrapper.findAll('.v-expansion-panel-header').at(0).attributes('tabindex')).toBeUndefined()
+    expect(wrapper.findAll('.v-expansion-panel-header').at(1).attributes('tabindex')).toBeUndefined()
+
+    // verify that expansion icons are displayed
+    expect(wrapper.findAll('.v-expansion-panel-header__icon').at(0).isVisible()).toBe(true)
+    expect(wrapper.findAll('.v-expansion-panel-header__icon').at(1).isVisible()).toBe(true)
+
+    wrapper.destroy()
   })
 
-  it('handles empty data as a coop', done => {
-    // init store
-    store.state.directors = []
-    store.state.entityType = 'CP'
-
-    const wrapper = mount(DirectorListSm, { store, vuetify })
-    const vm = wrapper.vm as any
-
-    Vue.nextTick(() => {
-      expect(vm.directors.length).toEqual(0)
-      expect(vm.directors.mailingAddress).toBeUndefined()
-      expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(0)
-
-      wrapper.destroy()
-      done()
-    })
-  })
-
-  it('displays multiple directors as a BCOMP', done => {
+  it('displays multiple directors as a BCOMP', async () => {
     function click (id) {
       const button = vm.$el.querySelector(id)
       const window = button.ownerDocument.defaultView
@@ -147,41 +140,76 @@ describe('DirectorListSm', () => {
 
     const wrapper = mount(DirectorListSm, { store, vuetify })
     const vm = wrapper.vm as any
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      click('.address-panel-toggle')
-      expect(vm.directors.length).toEqual(2)
-      expect(vm.directors[0].mailingAddress).toBeDefined()
-      expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(2)
-      expect(vm.$el.querySelector('.address-panel').textContent).toContain('Same as above')
+    click('.address-panel-toggle')
+    expect(vm.directors.length).toEqual(2)
+    expect(vm.directors[0].mailingAddress).toBeDefined()
+    expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(2)
+    expect(vm.$el.querySelector('.address-panel').textContent).toContain('Same as above')
 
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
   })
 
-  it('displays complete your filing to display', () => {
+  it('displays "complete your filing" message', async () => {
+    // init store
+    store.state.entityType = 'BC'
+
     const wrapper = mount(DirectorListSm,
       {
         store,
         vuetify,
         propsData: {
-          completedFilingRequired: true
+          showCompleteYourFilingMessage: true
         }
       })
-    expect(wrapper.find('.complete-filing').exists()).toBe(true)
+    await Vue.nextTick()
+
+    // verify that "complete your filing" message is displayed
     expect(wrapper.find('.complete-filing').text()).toBe('Complete your filing to display')
+
+    wrapper.destroy()
   })
 
-  it('does not display complete your filing to display', () => {
+  it('displays "grayed out" mode', async () => {
+    // init store
+    store.state.entityType = 'BC'
+    store.state.directors = [
+      {
+        'officer': {
+          'firstName': 'Peter',
+          'lastName': 'Griffin'
+        }
+      },
+      {
+        'officer': {
+          'firstName': 'Joe',
+          'lastName': 'Swanson'
+        }
+      }
+    ]
+
     const wrapper = mount(DirectorListSm,
       {
         store,
         vuetify,
         propsData: {
-          completedFilingRequired: false
+          showGrayedOut: true
         }
       })
-    expect(wrapper.find('.complete-filing').exists()).toBe(false)
+    await Vue.nextTick()
+
+    // verify that component has "disabled" class
+    expect(wrapper.classes()).toContain('disabled')
+
+    // verify that expansion buttons aren't clickable
+    expect(wrapper.findAll('.v-expansion-panel-header').at(0).attributes('tabindex')).toBe('-1')
+    expect(wrapper.findAll('.v-expansion-panel-header').at(1).attributes('tabindex')).toBe('-1')
+
+    // verify that expansion icons aren't displayed
+    expect(wrapper.findAll('.v-expansion-panel-header__icon').at(0).isVisible()).toBe(false)
+    expect(wrapper.findAll('.v-expansion-panel-header__icon').at(1).isVisible()).toBe(false)
+
+    wrapper.destroy()
   })
 })

@@ -84,7 +84,7 @@ describe('Dashboard - UI', () => {
     store.state.entityType = 'BC'
 
     wrapper.find(FilingHistoryList).vm.$emit('filings-list',
-      [{ 'name': 'Address Change', 'status': 'PAID' }])
+      [{ name: 'Address Change', isPaid: true }])
     wrapper.find(TodoList).vm.$emit('has-blocker-filing', true)
 
     expect(vm.hasBlockerFiling).toEqual(true)

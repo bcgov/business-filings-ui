@@ -1,16 +1,23 @@
 <template>
   <div id="address-list-sm">
-    <v-expansion-panels accordion multiple :value=[0]>
+    <!-- when grayed out, expand all panels and disable expansion -->
+    <v-expansion-panels accordion multiple
+      :value="(showGrayedOut || showCompleteYourFilingMessage) ? [0,1] : [0]"
+      :disabled="(showGrayedOut || showCompleteYourFilingMessage)"
+    >
       <!-- Registered Office -->
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
-        :class="{ 'address-overlay': coaPending }"
+        :class="{
+          'address-overlay': coaPending,
+          'disabled': showGrayedOut
+        }"
       >
         <v-expansion-panel-header id="registered-office-panel-toggle">
           <div class="list-item__title">Registered Office</div>
         </v-expansion-panel-header>
-        <!-- A completed filing is required; Don't show address information -->
-        <v-expansion-panel-content class="panel-wrapper pt-0 pb-0" v-if="completedFilingRequired">
+
+        <v-expansion-panel-content v-if="showCompleteYourFilingMessage" class="panel-wrapper pt-0 pb-0">
           <v-list class="pt-0 pb-0">
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
@@ -19,30 +26,26 @@
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div>
-                    <span class="complete-filing">Complete your filing to display</span>
-                  </div>
+                  <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item pt-10">
+            <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-email-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div>
-                    <span class="complete-filing">Complete your filing to display</span>
-                  </div>
+                  <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-expansion-panel-content>
-        <!-- A completed filing is NOT required - Show address information -->
-        <v-expansion-panel-content class="panel-wrapper pt-0 pb-0" v-else>
+
+        <v-expansion-panel-content v-else class="panel-wrapper pt-0 pb-0">
           <v-list class="pt-0 pb-0" v-if="registeredAddress">
             <v-list-item class="delivery-address-list-item"
               v-if="registeredAddress.deliveryAddress"
@@ -100,17 +103,20 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
 
-      <!-- Records Office -->
+      <!-- Records Office (BCOMPs and CORPs) -->
       <v-expansion-panel id="records-office-panel"
-        v-if="isBComp()"
+        v-if="isBComp() || isCorp()"
         class="align-items-top"
-        :class="{ 'address-overlay': coaPending }"
+        :class="{
+          'address-overlay': coaPending,
+          'disabled': showGrayedOut
+        }"
       >
         <v-expansion-panel-header id="records-office-panel-toggle">
           <div class="list-item__title">Records Office</div>
         </v-expansion-panel-header>
-        <!-- A completed filing is required; Don't show address information -->
-        <v-expansion-panel-content class="panel-wrapper" v-if="completedFilingRequired">
+
+        <v-expansion-panel-content v-if="showCompleteYourFilingMessage" class="panel-wrapper">
           <v-list class="pt-0 pb-0">
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
@@ -119,29 +125,25 @@
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div>
-                    <span class="complete-filing">Complete your filing to display</span>
-                  </div>
+                  <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item pt-10">
+            <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-email-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div>
-                    <span class="complete-filing">Complete your filing to display</span>
-                  </div>
+                  <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-expansion-panel-content>
-        <!-- A completed filing is NOT required - Show address information -->
+
         <v-expansion-panel-content class="panel-wrapper" v-else>
           <v-list class="pt-0 pb-0" v-if="recordsAddress">
             <v-list-item class="delivery-address-list-item"
@@ -227,15 +229,19 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   private registeredAddress: BaseAddressObjIF
   private recordsAddress: BaseAddressObjIF
 
-  // Pending Prop
+  /** Whether a COA filing is pending. */
   @Prop({ default: false })
   private coaPending: boolean
 
-  // Used to hide address info and show required completed filing message
+  /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false })
-  private completedFilingRequired: boolean
+  private showCompleteYourFilingMessage: boolean
 
-  // Enum definition for use in template.
+  /** Whether to gray out (disable) the director list. */
+  @Prop({ default: false })
+  private showGrayedOut: boolean
+
+  /** Enum definition for use in template */
   readonly EntityTypes = EntityTypes
 }
 </script>
@@ -245,6 +251,10 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
 
 // Variables
 $icon-width: 2.75rem;
+
+.v-expansion-panel.disabled {
+  opacity: 0.6;
+}
 
 // Complete filing required styling
 .complete-filing {

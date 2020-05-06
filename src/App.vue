@@ -490,11 +490,17 @@ export default {
       const tasks = response?.data?.tasks
       if (tasks) {
         this.setTasks(tasks)
+        // special cases for Name Request or Incorp App
         if (this.nrNumber && tasks.length > 0) {
-          if (tasks[0].task?.todo) {
-            this.setEntityStatus(EntityStatus.NAME_REQUEST)
-          } else {
-            this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
+          switch (tasks[0].task?.todo?.header?.name) {
+            case FilingTypes.NAME_REQUEST:
+              // this is a Name Request
+              this.setEntityStatus(EntityStatus.NAME_REQUEST)
+              break
+            case FilingTypes.INCORPORATION_APPLICATION:
+              // this is a Draft Incorporation Application
+              this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
+              break
           }
         }
       } else {
@@ -513,6 +519,21 @@ export default {
       const filings = response?.data?.filings
       if (filings) {
         this.setFilings(filings)
+        // special case for Incorp App
+        if (this.nrNumber && filings.length > 0) {
+          const incorporationApplication = filings[0].filing?.incorporationApplication
+          if (incorporationApplication) {
+            // this is a Pending Incorporation Application
+            this.setEntityStatus(EntityStatus.PENDING_INCORP_APP)
+            // set temporary addresses and directors
+            if (incorporationApplication.offices) {
+              this.storeAddresses({ data: incorporationApplication.offices })
+            }
+            if (incorporationApplication.parties?.length > 0) {
+              this.storeDirectors({ data: { directors: [...incorporationApplication.parties] } })
+            }
+          }
+        }
       } else {
         throw new Error('Invalid filings')
       }

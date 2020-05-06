@@ -1,12 +1,15 @@
 <template>
-  <div id="director-list-sm">
-    <div v-if="completedFilingRequired">
-        <span v-if="completedFilingRequired" class="complete-filing">Complete your filing to display</span>
+  <div id="director-list-sm" :class="{ 'disabled': showGrayedOut }">
+    <div v-if="showCompleteYourFilingMessage">
+      <span class="complete-filing">Complete your filing to display</span>
     </div>
+
     <v-expansion-panels v-else accordion multiple>
+      <!-- when grayed out, disable expansion -->
       <v-expansion-panel class="align-items-top address-panel"
         v-for="director in directors"
         :key="director.id"
+        :disabled=showGrayedOut
       >
         <v-expansion-panel-header class="address-panel-toggle">
           <div class="avatar-container">
@@ -80,9 +83,13 @@ import { CountriesProvincesMixin, CommonMixin } from '@/mixins'
 export default class DirectorListSm extends Mixins(CountriesProvincesMixin, CommonMixin) {
   readonly directors: Array<object>
 
-  // Used to hide address info and show required completed filing message
+  /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false })
-  private completedFilingRequired: boolean
+  private showCompleteYourFilingMessage: boolean
+
+  /** Whether to gray out (disable) the director list. */
+  @Prop({ default: false })
+  private showGrayedOut: boolean
 }
 </script>
 
@@ -92,13 +99,17 @@ export default class DirectorListSm extends Mixins(CountriesProvincesMixin, Comm
 // Variables
 $avatar-width: 2.75rem;
 
+#director-list-sm.disabled {
+  opacity: 0.6;
+}
+
 // Complete filing required styling
 .complete-filing {
   padding: 2rem;
   color: $gray6;
   font-size: 0.85rem;
   white-space: pre-wrap;
-  display:inline-block;
+  display: inline-block;
 }
 
 // Expansion Panel Customization

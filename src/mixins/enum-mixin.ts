@@ -56,7 +56,7 @@ export default class EnumMixin extends Vue {
       case EntityTypes.BCOMP: return EntityNames.BCOMP
       case EntityTypes.CORP: return EntityNames.CORP
     }
-    return null // should never happen
+    return 'Unknown' // should never happen
   }
 
   /**

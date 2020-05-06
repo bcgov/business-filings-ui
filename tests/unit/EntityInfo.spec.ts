@@ -46,7 +46,7 @@ describe('EntityInfo', () => {
     sessionStorage.removeItem('BUSINESS_ID')
 
     store.state.entityName = 'My Name Request'
-    store.state.entityStatus = 'NAMEREQUEST'
+    store.state.entityStatus = 'NAME_REQUEST'
     store.state.entityType = 'BC'
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify })
@@ -62,12 +62,33 @@ describe('EntityInfo', () => {
     expect(wrapper.find('#nr-number').text()).toBe('NR 1234567')
   })
 
-  it('displays Incorporation Application entity info properly', async () => {
+  it('displays Draft Incorp App entity info properly', async () => {
     sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
     sessionStorage.removeItem('BUSINESS_ID')
 
     store.state.entityName = 'My Incorporation Application'
-    store.state.entityStatus = 'INCORPORATIONAPPLICATION'
+    store.state.entityStatus = 'DRAFT_INCORP_APP'
+    store.state.entityType = 'BC'
+
+    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#entity-legal-name').text()).toBe('My Incorporation Application')
+    expect(wrapper.find('#entity-status').exists()).toBeFalsy()
+    expect(wrapper.find('#entity-business-number').exists()).toBeFalsy()
+    expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
+    expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
+    expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
+    expect(wrapper.find('#nr-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#nr-number').text()).toBe('NR 1234567')
+  })
+
+  it('displays Pending Incorp App entity info properly', async () => {
+    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
+    sessionStorage.removeItem('BUSINESS_ID')
+
+    store.state.entityName = 'My Incorporation Application'
+    store.state.entityStatus = 'PENDING_INCORP_APP'
     store.state.entityType = 'BC'
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify })
