@@ -908,9 +908,19 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            if (error.response.data && error.response.data.errors) {
+              const msgCode = error.response.data.errors.find(x => x.payment_error_type.startsWith('BCOL'))
+              if (msgCode) {
+                const errObj = await this.getErrorObj(msgCode.payment_error_type)
+                this.bcolErrMsg = errObj.detail
+                this.bcolTitle = errObj.title
+              }
+              this.bcolErrorDialog = true
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors

@@ -1132,7 +1132,7 @@ export default {
   border-top: solid #a94442 3px;
 }
 
-::v-deep .bcol-todo-list-detail {
+.bcol-todo-list-detail {
   background-color: #f1f1f1 !important;
 }
 </style>
