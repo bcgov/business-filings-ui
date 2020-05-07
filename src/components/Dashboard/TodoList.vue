@@ -39,7 +39,8 @@
         :key="index"
         :class="{
           'disabled': !task.enabled,
-          'draft': isStatusDraft(task) && !isTypeCorrection(task)
+          'draft': isStatusDraft(task) && !isTypeCorrection(task) && !isBcolError(task),
+          'bcol-error': isBcolError(task)
         }"
       >
         <v-expansion-panel-header class="todo-item-toggle no-dropdown-icon">
@@ -83,12 +84,33 @@
                   </div>
                 </div>
 
-                <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
+                <div v-else-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
                   <div>DRAFT</div>
                   <v-btn x-small icon class="expand-btn">
                     <v-icon>mdi-message-reply</v-icon>
                   </v-btn>
                   Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
+                </div>
+
+                 <div v-else-if="isBcolError(task)" class="todo-subtitle">
+                  <div>FILING PENDING</div>
+                  <div class="vert-pipe"></div>
+                  <div class="payment-status" v-if="inProcessFiling === task.id">
+                    PROCESSING...
+                  </div>
+                  <div class="payment-status" v-else>
+                    <span>PAYMENT UNSUCCESSFUL</span>
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="red darken-4"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
                 </div>
 
                 <div v-else-if="isStatusDraft(task)" class="todo-subtitle">
@@ -294,7 +316,13 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <div v-if="isTypeCorrection(task)">
+          <v-card v-if="isBcolError(task)" class="todo-list-detail bcol-todo-list-detail">
+            <v-card-text>
+            <p class="font-weight-bold black--text">Payment Incomplete - {{task.bcolErrObj.title}}</p>
+            <span v-html="task.bcolErrObj.detail"/>
+            </v-card-text>
+          </v-card>
+          <div v-else-if="isTypeCorrection(task)">
             <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail">
               <p class="list-item__subtitle">
                 This filing is in review and has been saved as a draft.<br />
@@ -330,7 +358,7 @@
             </v-card-text>
           </v-card>
 
-          <v-card v-else-if="isStatusError(task)" data-test-class="payment-unsuccessful">
+          <v-card v-else-if="isBcolError(task)" data-test-class="payment-unsuccessful">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Unsuccessful</p>
               <p>This filing is pending payment. The payment appears to have been unsuccessful for some
@@ -445,17 +473,17 @@ export default {
   methods: {
     ...mapActions(['setARFilingYear', 'setCurrentFilingStatus']),
 
-    loadData () {
+    async loadData () {
       this.taskItems = []
       // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
       if (this.isCoop()) this.confirmCheckbox = true
 
       // create task items
-      this.tasks.forEach(task => {
+      this.tasks.forEach(async task => {
         if (task && task.task && task.task.todo) {
           this.loadTodoItem(task)
         } else if (task && task.task && task.task.filing) {
-          this.loadFilingItem(task)
+          await this.loadFilingItem(task)
         } else {
           // eslint-disable-next-line no-console
           console.log('ERROR - got unknown task =', task)
@@ -531,24 +559,24 @@ export default {
       }
     },
 
-    loadFilingItem (task) {
+    async loadFilingItem (task) {
       const filing = task.task.filing
       if (filing && filing.header) {
         switch (filing.header.name) {
           case FilingTypes.ANNUAL_REPORT:
-            this.loadAnnualReport(task)
+            await this.loadAnnualReport(task)
             break
           case FilingTypes.CHANGE_OF_DIRECTORS:
-            this.loadChangeOfDirectors(task)
+            await this.loadChangeOfDirectors(task)
             break
           case FilingTypes.CHANGE_OF_ADDRESS:
-            this.loadChangeOfAddress(task)
+            await this.loadChangeOfAddress(task)
             break
           case FilingTypes.CORRECTION:
-            this.loadCorrection(task)
+            await this.loadCorrection(task)
             break
           case FilingTypes.INCORPORATION_APPLICATION:
-            this.loadIncorporationApplication(task)
+            await this.loadIncorporationApplication(task)
             break
           default:
             // eslint-disable-next-line no-console
@@ -561,13 +589,15 @@ export default {
       }
     },
 
-    loadAnnualReport (task) {
+    async loadAnnualReport (task) {
       let date
       const filing = task.task.filing
       if (filing && filing.header && filing.annualReport) {
         filing.annualReport.annualReportDate
           ? date = filing.annualReport.annualReportDate
           : date = filing.annualReport.nextARDate
+        const bcolErr = filing.header.paymentErrorType || null
+        const bcolObj = await this.getBcolMessage(bcolErr)
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
           this.taskItems.push({
@@ -579,7 +609,9 @@ export default {
             status: filing.header.status || FilingStatus.NEW,
             enabled: Boolean(task.enabled),
             order: task.order,
-            paymentToken: filing.header.paymentToken || null
+            paymentToken: filing.header.paymentToken || null,
+            paymentErrorType: bcolErr,
+            bcolErrObj: bcolObj
           })
         } else {
           // eslint-disable-next-line no-console
@@ -591,9 +623,11 @@ export default {
       }
     },
 
-    loadChangeOfDirectors (task) {
+    async loadChangeOfDirectors (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfDirectors) {
+        const bcolErr = filing.header.paymentErrorType || null
+        const bcolObj = await this.getBcolMessage(bcolErr)
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_DIRECTORS,
           id: filing.header.filingId,
@@ -602,7 +636,9 @@ export default {
           status: filing.header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentToken: filing.header.paymentToken || null
+          paymentToken: filing.header.paymentToken || null,
+          paymentErrorType: bcolErr,
+          bcolErrObj: bcolObj
         })
       } else {
         // eslint-disable-next-line no-console
@@ -610,9 +646,11 @@ export default {
       }
     },
 
-    loadChangeOfAddress (task) {
+    async loadChangeOfAddress (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfAddress) {
+        const bcolErr = filing.header.paymentErrorType || null
+        const bcolObj = await this.getBcolMessage(bcolErr)
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_ADDRESS,
           id: filing.header.filingId,
@@ -621,7 +659,9 @@ export default {
           status: filing.header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentToken: filing.header.paymentToken || null
+          paymentToken: filing.header.paymentToken || null,
+          paymentErrorType: bcolErr,
+          bcolErrObj: bcolObj
         })
       } else {
         // eslint-disable-next-line no-console
@@ -629,9 +669,11 @@ export default {
       }
     },
 
-    loadCorrection (task) {
+    async loadCorrection (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
+        const bcolErr = filing.header.paymentErrorType || null
+        const bcolObj = await this.getBcolMessage(bcolErr)
         this.taskItems.push({
           type: FilingTypes.CORRECTION,
           id: filing.header.filingId,
@@ -653,9 +695,11 @@ export default {
       }
     },
 
-    loadIncorporationApplication (task) {
+    async loadIncorporationApplication (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.incorporationApplication) {
+        const bcolErr = filing.header.paymentErrorType || null
+        const bcolObj = await this.getBcolMessage(bcolErr)
         this.taskItems.push({
           type: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
@@ -664,7 +708,9 @@ export default {
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentToken: filing.header.paymentToken || null
+          paymentToken: filing.header.paymentToken || null,
+          paymentErrorType: bcolErr,
+          bcolErrObj: bcolObj
         })
       } else {
         // eslint-disable-next-line no-console
@@ -877,6 +923,12 @@ export default {
       })
     },
 
+    async getBcolMessage (errCode: string): Promise<any> {
+      const fetchUrl = sessionStorage.getItem('PAY_API_URL') + 'codes/errors/' + errCode
+      const errObj = await axios.get(fetchUrl)
+      return errObj.data
+    },
+
     showCommentDialog (filingId: number): void {
       this.currentFilingId = filingId
       this.addCommentDialog = true
@@ -888,6 +940,10 @@ export default {
         // emit dashboard reload trigger event
         this.$root.$emit('triggerDashboardReload')
       }
+    },
+
+    isBcolError (task: any): boolean {
+      return task.paymentErrorType && task.paymentErrorType.startsWith('BCOL')
     },
 
     isPriority (priority: boolean): string {
@@ -1070,5 +1126,13 @@ export default {
 
 .todo-item-toggle h3 {
   margin-bottom: 0.25rem;
+}
+
+.bcol-error {
+  border-top: solid #a94442 3px;
+}
+
+::v-deep .bcol-todo-list-detail {
+  background-color: #f1f1f1 !important;
 }
 </style>

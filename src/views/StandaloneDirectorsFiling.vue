@@ -29,6 +29,13 @@
       attach="#standalone-directors"
     />
 
+    <bcol-error-dialog
+      :dialog="bcolErrorDialog"
+      :title="bcolTitle"
+      :errMsg="bcolErrMsg"
+      filingType="Change of Directors"
+      @exit="navigateToDashboard(true)"/>
+
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">
       <div class="loading__content">
@@ -313,7 +320,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPayment } from '@/components/common'
 
 // Dialog Components
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Mixins
 import { CommonMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -337,7 +344,8 @@ export default {
     ConfirmDialog,
     PaymentErrorDialog,
     ResumeErrorDialog,
-    SaveErrorDialog
+    SaveErrorDialog,
+    BcolErrorDialog
   },
 
   mixins: [CommonMixin, FilingMixin, ResourceLookupMixin],
@@ -375,6 +383,10 @@ export default {
       staffPaymentFormValid: null,
       totalFee: 0,
 
+      // bcol error variables
+      bcolErrorDialog: false,
+      bcolErrMsg: null,
+      bcolTitle: null,
       // enums
       EntityTypes,
       FilingCodes,
@@ -625,9 +637,19 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            if (error.response.data && error.response.data.errors) {
+              const msgCode = error.response.data.errors.find(x => x.payment_error_type.startsWith('BCOL'))
+              if (msgCode) {
+                const errObj = await this.getErrorObj(msgCode.payment_error_type)
+                this.bcolErrMsg = errObj.detail
+                this.bcolTitle = errObj.title
+              }
+              this.bcolErrorDialog = true
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors
@@ -654,9 +676,19 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            if (error.response.data && error.response.data.errors) {
+              const msgCode = error.response.data.errors.find(x => x.payment_error_type.startsWith('BCOL'))
+              if (msgCode) {
+                const errObj = await this.getErrorObj(msgCode.payment_error_type)
+                this.bcolErrMsg = errObj.detail
+                this.bcolTitle = errObj.title
+              }
+              this.bcolErrorDialog = true
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors
@@ -671,6 +703,13 @@ export default {
         })
         return filing
       }
+    },
+
+    async getErrorObj (errCode) {
+      const fetchUrl = this.payApiUrl + 'codes/errors/BCOL_ERROR'
+      const errObj = await axios.get(fetchUrl)
+      console.log(errObj)
+      return errObj.data
     },
 
     navigateToDashboard (ignoreChanges: boolean = false) {
