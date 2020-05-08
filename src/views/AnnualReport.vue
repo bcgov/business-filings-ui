@@ -321,7 +321,7 @@ import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOffice
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -330,7 +330,7 @@ import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/con
 export default {
   name: 'AnnualReport',
 
-  mixins: [DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
 
   components: {
     ArDate,
@@ -871,14 +871,14 @@ export default {
           this.haveChanges = false
         }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            if (error.response.data && error.response.data.errors) {
-              const msgCode = error.response.data.errors.find(x => x.payment_error_type.startsWith('BCOL'))
-              if (msgCode) {
-                const errObj = await this.getErrorObj(msgCode.payment_error_type)
+            const errCode = this.getErrorCode(error)
+            if (errCode) {
+              const errObj = await this.getErrorObj(this.payApiUrl, errCode.payment_error_type)
+              if (errObj) {
                 this.bcolErrMsg = errObj.detail
                 this.bcolTitle = errObj.title
+                this.bcolErrorDialog = true
               }
-              this.bcolErrorDialog = true
             } else {
               this.paymentErrorDialog = true
             }
@@ -910,14 +910,14 @@ export default {
           this.haveChanges = false
         }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            if (error.response.data && error.response.data.errors) {
-              const msgCode = error.response.data.errors.find(x => x.payment_error_type.startsWith('BCOL'))
-              if (msgCode) {
-                const errObj = await this.getErrorObj(msgCode.payment_error_type)
+            const errCode = this.getErrorCode(error)
+            if (errCode) {
+              const errObj = await this.getErrorObj(this.payApiUrl, errCode.payment_error_type)
+              if (errObj) {
                 this.bcolErrMsg = errObj.detail
                 this.bcolTitle = errObj.title
+                this.bcolErrorDialog = true
               }
-              this.bcolErrorDialog = true
             } else {
               this.paymentErrorDialog = true
             }
@@ -942,15 +942,9 @@ export default {
       this.$router.push({ name: DASHBOARD })
     },
 
-    async getErrorObj (errCode) {
-      const fetchUrl = this.payApiUrl + 'codes/errors/BCOL_ERROR'
-      const errObj = await axios.get(fetchUrl)
-      console.log(errObj)
-      return errObj.data
-    },
-
     resetErrors () {
       this.saveErrorDialog = false
+      this.bcolErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []
     },

@@ -6,8 +6,10 @@ import EnumMixin from './enum-mixin'
 import FilingMixin from './filing-mixin'
 import NamexRequestMixin from './namex-request-mixin'
 import ResourceLookupMixin from './resource-lookup-mixin'
+import BcolMixin from './bcol-mixin'
 
 export {
+  BcolMixin,
   CommonMixin,
   CountriesProvincesMixin,
   DateMixin,

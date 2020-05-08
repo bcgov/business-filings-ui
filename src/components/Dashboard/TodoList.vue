@@ -403,7 +403,7 @@ import { DetailsList, NameRequestInfo } from '@/components/common'
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { BcolMixin, CommonMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
@@ -421,7 +421,7 @@ export default {
     NameRequestInfo
   },
 
-  mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
+  mixins: [BcolMixin, CommonMixin, DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
 
   data () {
     return {
@@ -436,6 +436,7 @@ export default {
       confirmEnabled: false,
       currentFilingId: null,
       panel: null as number, // currently expanded panel
+      payAPiUrl: sessionStorage.getItem('PAY_API_URL'),
 
       // enums
       EntityTypes,
@@ -599,7 +600,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getBcolMessage(bcolErr)
+          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
         }
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
@@ -632,7 +633,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getBcolMessage(bcolErr)
+          bcolObj = await this.getErrorObj(this.payAPiUrl, bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_DIRECTORS,
@@ -658,7 +659,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getBcolMessage(bcolErr)
+          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_ADDRESS,
@@ -684,7 +685,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getBcolMessage(bcolErr)
+          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.CORRECTION,
@@ -713,7 +714,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getBcolMessage(bcolErr)
+          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.INCORPORATION_APPLICATION,
@@ -936,16 +937,6 @@ export default {
           this.cancelPaymentErrorDialog = true
         }
       })
-    },
-
-    async getBcolMessage (errCode: string): Promise<any> {
-      const fetchUrl = sessionStorage.getItem('PAY_API_URL') + 'codes/errors/' + errCode
-      const errObj = await axios.get(fetchUrl).catch(() => { return null })
-      if (errObj && errObj.data) {
-        return errObj.data
-      } else {
-        return null
-      }
     },
 
     showCommentDialog (filingId: number): void {
