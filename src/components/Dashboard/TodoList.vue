@@ -597,7 +597,10 @@ export default {
           ? date = filing.annualReport.annualReportDate
           : date = filing.annualReport.nextARDate
         const bcolErr = filing.header.paymentErrorType || null
-        const bcolObj = await this.getBcolMessage(bcolErr)
+        let bcolObj = null
+        if (bcolErr) {
+          bcolObj = await this.getBcolMessage(bcolErr)
+        }
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
           this.taskItems.push({
@@ -627,7 +630,10 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfDirectors) {
         const bcolErr = filing.header.paymentErrorType || null
-        const bcolObj = await this.getBcolMessage(bcolErr)
+        let bcolObj = null
+        if (bcolErr) {
+          bcolObj = await this.getBcolMessage(bcolErr)
+        }
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_DIRECTORS,
           id: filing.header.filingId,
@@ -650,7 +656,10 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfAddress) {
         const bcolErr = filing.header.paymentErrorType || null
-        const bcolObj = await this.getBcolMessage(bcolErr)
+        let bcolObj = null
+        if (bcolErr) {
+          bcolObj = await this.getBcolMessage(bcolErr)
+        }
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_ADDRESS,
           id: filing.header.filingId,
@@ -673,7 +682,10 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
         const bcolErr = filing.header.paymentErrorType || null
-        const bcolObj = await this.getBcolMessage(bcolErr)
+        let bcolObj = null
+        if (bcolErr) {
+          bcolObj = await this.getBcolMessage(bcolErr)
+        }
         this.taskItems.push({
           type: FilingTypes.CORRECTION,
           id: filing.header.filingId,
@@ -699,7 +711,10 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.incorporationApplication) {
         const bcolErr = filing.header.paymentErrorType || null
-        const bcolObj = await this.getBcolMessage(bcolErr)
+        let bcolObj = null
+        if (bcolErr) {
+          bcolObj = await this.getBcolMessage(bcolErr)
+        }
         this.taskItems.push({
           type: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
@@ -925,8 +940,12 @@ export default {
 
     async getBcolMessage (errCode: string): Promise<any> {
       const fetchUrl = sessionStorage.getItem('PAY_API_URL') + 'codes/errors/' + errCode
-      const errObj = await axios.get(fetchUrl)
-      return errObj.data
+      const errObj = await axios.get(fetchUrl).catch(() => { return null })
+      if (errObj && errObj.data) {
+        return errObj.data
+      } else {
+        return null
+      }
     },
 
     showCommentDialog (filingId: number): void {
