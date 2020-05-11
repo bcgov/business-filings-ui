@@ -641,7 +641,7 @@ export default {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
             const errCode = this.getErrorCode(error)
             if (errCode) {
-              const errObj = await this.getErrorObj(this.payApiUrl, errCode.payment_error_type)
+              const errObj = await this.getErrorObj(errCode.payment_error_type)
               if (errObj) {
                 this.bcolErrMsg = errObj.detail
                 this.bcolTitle = errObj.title
@@ -680,7 +680,7 @@ export default {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
             const errCode = this.getErrorCode(error)
             if (errCode) {
-              const errObj = await this.getErrorObj(this.payApiUrl, errCode.payment_error_type)
+              const errObj = await this.getErrorObj(errCode.payment_error_type)
               if (errObj) {
                 this.bcolErrMsg = errObj.detail
                 this.bcolTitle = errObj.title

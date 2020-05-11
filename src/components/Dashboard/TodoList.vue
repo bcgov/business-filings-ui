@@ -600,7 +600,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
+          bcolObj = await this.getErrorObj(bcolErr)
         }
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
@@ -633,7 +633,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getErrorObj(this.payAPiUrl, bcolErr)
+          bcolObj = await this.getErrorObj(bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_DIRECTORS,
@@ -659,7 +659,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
+          bcolObj = await this.getErrorObj(bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_ADDRESS,
@@ -685,7 +685,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
+          bcolObj = await this.getErrorObj(bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.CORRECTION,
@@ -714,7 +714,7 @@ export default {
         const bcolErr = filing.header.paymentErrorType || null
         let bcolObj = null
         if (bcolErr) {
-          bcolObj = await this.getErrorObj(this.payApiUrl, bcolErr)
+          bcolObj = await this.getErrorObj(bcolErr)
         }
         this.taskItems.push({
           type: FilingTypes.INCORPORATION_APPLICATION,

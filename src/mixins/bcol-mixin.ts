@@ -1,17 +1,15 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { AlertMessageIF } from '@/interfaces'
 import axios from '@/axios-auth'
 
 @Component({})
 export default class BcolMixin extends Vue {
-  async getErrorObj (url, errCode) {
+  async getErrorObj (errCode) {
     const fetchUrl = sessionStorage.getItem('PAY_API_URL') + 'codes/errors/' + errCode
-    const errObj = await axios.get(fetchUrl).catch(() => { return null })
+    const errObj = await axios.get(fetchUrl)
     if (errObj && errObj.data) {
       return errObj.data
-    } else {
-      return null
-    }
+    } 
+    return null
   }
 
   getErrorCode (error) {

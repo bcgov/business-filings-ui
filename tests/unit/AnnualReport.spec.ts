@@ -9,7 +9,7 @@ import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
-import { BAD_REQUEST } from 'http-status-codes'
+import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { shallowMount, createLocalVue, mount, Wrapper } from '@vue/test-utils'
 
 // Components
@@ -2102,4 +2102,155 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
     expect(vm.saveErrors[0].error)
       .toBe('Another draft filing already exists. Please complete it before creating a new filing.')
   })
+})
+
+
+describe('AnnualReport - BCOL error dialog on save', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeEach(() => {
+    // init store
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityType = 'CP'
+    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.ARFilingYear = 2017
+    store.state.currentFilingStatus = 'NEW'
+
+    // mock "file post" endpoint
+    const p1 = Promise.reject({
+      response: {
+        status: PAYMENT_REQUIRED,
+        data: {
+          errors: [
+            {
+              payment_error_type: 'BCOL_ERROR'
+            }
+          ],
+          filing: {
+            annualReport: {
+              annualGeneralMeetingDate: '2018-07-15'
+            },
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
+            },
+            header: {
+              name: 'annualReport',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123
+            }
+          }
+        }
+      }
+    })
+
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+
+    sinon
+      .stub(axios, 'post')
+      .withArgs('businesses/CP0001191/filings')
+      .returns(p1)
+    
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
+
+    wrapper = mount(AnnualReport, {
+      store,
+      localVue,
+      router,
+      stubs: {
+        ArDate: true,
+        AgmDate: true,
+        OfficeAddresses: true,
+        Directors: true,
+        Certify: true,
+        StaffPayment: true,
+        Affix: true,
+        SbcFeeSummary: true,
+        ConfirmDialog: true,
+        PaymentErrorDialog: true,
+        ResumeErrorDialog: true,
+        SaveErrorDialog: true,
+        BcolErrorDialog: true
+      },
+      vuetify
+    })
+    vm = wrapper.vm
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('Attempt to file and pay with a BCOL error', async () => {
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('PAY_API_URL', '')
+    sessionStorage.setItem('AUTH_URL', 'auth/')
+    const get = sinon.stub(axios, 'get')
+
+    get.withArgs('businesses/CP0001191/tasks')
+    .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // make sure form is validated
+    vm.staffPaymentFormValid = true
+    vm.agmDateValid = true
+    vm.addressesFormValid = true
+    vm.directorFormValid = true
+    vm.certifyFormValid = true
+    vm.directorEditInProgress = false
+    store.state.filingData = [{ filingTypeCode: 'OTANN', entityType: 'CP' }] // dummy data
+
+    // stub address data
+    vm.addresses = {
+      registeredOffice: {
+        deliveryAddress: {},
+        mailingAddress: {}
+      }
+    }
+
+    // make sure a fee is required
+    vm.totalFee = 100
+
+    // sanity check
+
+    expect(vm.bcolErrMsg).toBeNull()
+    expect(vm.bcolTitle).toBeNull()
+
+    expect(vm.bcolErrorDialog).toBe(false)
+
+    const button = wrapper.find('#ar-file-pay-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    
+    get.withArgs('codes/errors/BCOL_ERROR')
+    .returns(new Promise(resolve => resolve({ data: {
+      detail: 'An Error has occured',
+      title: 'Error'
+    }})))
+    // click the File & Pay button
+    await button.trigger('click')
+    await flushPromises()
+    // await vm.onClickFilePay()
+    // work-around because click trigger isn't working
+
+    // verify redirection
+    expect(vm.bcolErrMsg.length).toBeGreaterThan(0)
+    expect(vm.bcolTitle.length).toBeGreaterThan(0)
+    expect(vm.bcolErrorDialog).toBe(true)
+
+    wrapper.destroy()
+  })
+
 })

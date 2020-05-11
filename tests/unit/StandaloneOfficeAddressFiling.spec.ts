@@ -11,7 +11,7 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { BAD_REQUEST } from 'http-status-codes'
+import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { configJson } from '@/resources/business-config'
 
 Vue.use(Vuetify)
@@ -1738,3 +1738,143 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     }
   )
 })
+
+describe('Change of Directors - BCOL error dialog on save', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeEach(() => {
+    // init store
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityType = 'CP'
+    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.ARFilingYear = 2017
+    store.state.currentFilingStatus = 'NEW'
+
+    // mock "file post" endpoint
+    const p1 = Promise.reject({
+      response: {
+        status: PAYMENT_REQUIRED,
+        data: {
+          errors: [
+            {
+              payment_error_type: 'BCOL_ERROR'
+            }
+          ],
+          filing: {
+            annualReport: {
+              annualGeneralMeetingDate: '2018-07-15'
+            },
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
+            },
+            header: {
+              name: 'annualReport',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123
+            }
+          }
+        }
+      }
+    })
+
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+
+    sinon
+      .stub(axios, 'post')
+      .withArgs('businesses/CP0001191/filings')
+      .returns(p1)
+  })
+
+  it('Attempt to file and pay with a BCOL error', async () => {
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('PAY_API_URL', '')
+    sessionStorage.setItem('AUTH_URL', 'auth/')
+    const get = sinon.stub(axios, 'get')
+
+    get.withArgs('businesses/CP0001191/tasks')
+    .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+
+    const wrapper = mount(StandaloneOfficeAddressFiling, {
+      store,
+      localVue,
+      router,
+      stubs: {
+        OfficeAddresses: true,
+        Certify: true,
+        StaffPayment: true,
+        Affix: true,
+        SbcFeeSummary: true,
+        ConfirmDialog: true,
+        PaymentErrorDialog: true,
+        ResumeErrorDialog: true,
+        SaveErrorDialog: true
+      },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    // set all properties truthy
+    vm.staffPaymentFormValid = true
+    vm.certifyFormValid = true
+    vm.officeAddressFormValid = true
+    store.state.filingData = [{}] // dummy data
+
+    // stub address data
+    vm.addresses = {
+      registeredOffice: {
+        deliveryAddress: {},
+        mailingAddress: {}
+      }
+    }
+
+    // make sure a fee is required
+    vm.totalFee = 100
+
+    // sanity check
+
+    expect(vm.bcolErrMsg).toBeNull()
+    expect(vm.bcolTitle).toBeNull()
+
+    expect(vm.bcolErrorDialog).toBe(false)
+
+    const button = wrapper.find('#coa-file-pay-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    
+    get.withArgs('codes/errors/BCOL_ERROR')
+    .returns(new Promise(resolve => resolve({ data: {
+      detail: 'An Error has occured',
+      title: 'Error'
+    }})))
+    // click the File & Pay button
+    await button.trigger('click')
+    await flushPromises()
+    // await vm.onClickFilePay()
+    // work-around because click trigger isn't working
+
+    // verify redirection
+    expect(vm.bcolErrMsg.length).toBeGreaterThan(0)
+    expect(vm.bcolTitle.length).toBeGreaterThan(0)
+    expect(vm.bcolErrorDialog).toBe(true)
+
+    wrapper.destroy()
+  })
+
+})
+
+
