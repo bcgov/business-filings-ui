@@ -2242,7 +2242,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises()
-    // await vm.onClickFilePay()
+    await vm.onClickFilePay()
     // work-around because click trigger isn't working
 
     // verify redirection
