@@ -1516,6 +1516,60 @@ describe('TodoList - Click Tests', () => {
       done()
     })
   })
+
+  it('Confirm BCOL error is captured in todo list', async() => {
+    sessionStorage.setItem('PAY_API_URL', '') 
+    store.state.tasks = [
+      {
+        'task': {
+          'filing': {
+            'header': {
+              'name': 'annualReport',
+              'ARFilingYear': 2019,
+              'status': 'DRAFT',
+              'filingId': 123,
+              'paymentErrorType': 'BCOL_ERROR'
+            },
+            'annualReport': {
+              'annualGeneralMeetingDate': '2019-07-15',
+              'annualReportDate': '2019-07-15'
+            },
+            'changeOfAddress': {},
+            'changeOfDirectors': {}
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    sinon.stub(axios, 'get').withArgs('codes/errors/BCOL_ERROR')
+    .returns(new Promise(resolve => resolve({ data: {
+      detail: 'An Error has occured',
+      title: 'Error'
+    }})))
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+
+    expect(vm.$el.querySelector('.bcol-error')).toBeNull()
+
+    await flushPromises()
+
+    const todoItem = vm.$el.querySelector('.bcol-error')
+
+    //const button = todoItem.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
+    //await button.click()
+
+    const button = wrapper.find('.expand-btn')
+    button.trigger('click')
+    await Vue.nextTick()
+
+    const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
+    expect(todoItem).toBeDefined()
+    expect(bcolPanel.textContent).toContain('An Error has occured')
+
+  })
 })
 
 describe('TodoList - Click Tests - BCOMPs', () => {
