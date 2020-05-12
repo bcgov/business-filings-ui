@@ -1,11 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="payment-error-dialog">
-    <v-card>
-      <v-card-title>Payment Incomplete - {{title}}</v-card-title>
+  <v-dialog v-model="bcolDialog" width="45rem" persistent :attach="attach" content-class="bcol-error-dialog">
+    <v-card v-if="bcolObject">
+      <v-card-title>Payment Incomplete - {{bcolObject.title}}</v-card-title>
 
       <v-card-text>
         <p class="genErr">This {{filingType}} could not be filed for the following reason:</p>
-        <p class="genErr">{{errMsg}}</p>
+        <p class="genErr">{{bcolObject.detail}}</p>
 
         <template v-if="!isRoleStaff">
           <p class="genErr">Your {{filingType}} has been saved as a draft and you
@@ -39,12 +39,9 @@ export default class BcolErrorDialog extends Vue {
   // Getter definition for static type checking.
   readonly isRoleStaff!: boolean
 
-  // Prop to display the dialog.
-  @Prop() private dialog: boolean
-
   @Prop() private filingType: string
 
-  @Prop() private errMsg: string
+  @Prop({ default: () => { return null } }) private bcolObject: object
 
   @Prop() title: string
 
@@ -53,6 +50,10 @@ export default class BcolErrorDialog extends Vue {
 
   // Pass click event to parent.
   @Emit() private exit () { }
+
+  private get bcolDialog (): boolean {
+    return this.bcolObject != null
+  }
 }
 </script>
 

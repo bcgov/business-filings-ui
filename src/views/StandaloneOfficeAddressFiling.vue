@@ -30,9 +30,7 @@
     />
 
     <bcol-error-dialog
-      :dialog="bcolErrorDialog"
-      :title="bcolTitle"
-      :errMsg="bcolErrMsg"
+      :bcolObject="bcolObj"
       filingType="Address Change"
       @exit="navigateToDashboard(true)"/>
 
@@ -246,10 +244,7 @@ export default {
       totalFee: 0,
 
       // bcol error variables
-      bcolErrorDialog: false,
-      bcolErrMsg: null,
-      bcolTitle: null,
-
+      bcolObj: null,
       // enums
       EntityTypes,
       FilingCodes,
@@ -613,9 +608,7 @@ export default {
             if (errCode) {
               const errObj = await this.getErrorObj(errCode.payment_error_type)
               if (errObj) {
-                this.bcolErrMsg = errObj.detail
-                this.bcolTitle = errObj.title
-                this.bcolErrorDialog = true
+                this.bcolObj = errObj
               }
             } else {
               this.paymentErrorDialog = true
@@ -652,9 +645,7 @@ export default {
             if (errCode) {
               const errObj = await this.getErrorObj(errCode.payment_error_type)
               if (errObj) {
-                this.bcolErrMsg = errObj.detail
-                this.bcolTitle = errObj.title
-                this.bcolErrorDialog = true
+                this.bcolObj = errObj
               }
             } else {
               this.paymentErrorDialog = true

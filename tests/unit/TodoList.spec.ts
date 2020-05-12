@@ -1558,9 +1558,6 @@ describe('TodoList - Click Tests', () => {
 
     const todoItem = vm.$el.querySelector('.bcol-error')
 
-    //const button = todoItem.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
-    //await button.click()
-
     const button = wrapper.find('.expand-btn')
     button.trigger('click')
     await Vue.nextTick()

@@ -84,7 +84,7 @@
                   </div>
                 </div>
 
-                <div v-else-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
+                <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
                   <div>DRAFT</div>
                   <v-btn x-small icon class="expand-btn">
                     <v-icon>mdi-message-reply</v-icon>
@@ -92,13 +92,10 @@
                   Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
-                 <div v-else-if="isBcolError(task)" class="todo-subtitle">
+                 <div v-if="isBcolError(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === task.id">
-                    PROCESSING...
-                  </div>
-                  <div class="payment-status" v-else>
+                  <div class="payment-status">
                     <span>PAYMENT UNSUCCESSFUL</span>
                     <v-btn
                       class="expand-btn"
@@ -317,7 +314,7 @@
 
         <v-expansion-panel-content>
           <v-card v-if="isBcolError(task)" class="todo-list-detail bcol-todo-list-detail">
-            <v-card-text>
+            <v-card-text v-if="task.bcolErrObj && task.bcolErrObj.title && task.bcolErrObj.detail">
             <p class="font-weight-bold black--text">Payment Incomplete - {{task.bcolErrObj.title}}</p>
             <span v-html="task.bcolErrObj.detail"/>
             </v-card-text>
@@ -358,7 +355,7 @@
             </v-card-text>
           </v-card>
 
-          <v-card v-else-if="isBcolError(task)" data-test-class="payment-unsuccessful">
+          <v-card v-else-if="isStatusError(task)" data-test-class="payment-unsuccessful">
             <v-card-text>
               <p class="font-weight-bold black--text">Payment Unsuccessful</p>
               <p>This filing is pending payment. The payment appears to have been unsuccessful for some
@@ -436,7 +433,6 @@ export default {
       confirmEnabled: false,
       currentFilingId: null,
       panel: null as number, // currently expanded panel
-      payAPiUrl: sessionStorage.getItem('PAY_API_URL'),
 
       // enums
       EntityTypes,
@@ -458,6 +454,10 @@ export default {
     /** The Business ID string. */
     businessId (): string | null {
       return sessionStorage.getItem('BUSINESS_ID')
+    },
+
+    payAPiUrl (): string {
+      return sessionStorage.getItem('PAY_API_URL')
     },
 
     /** The NR Number string. */
@@ -597,11 +597,10 @@ export default {
         filing.annualReport.annualReportDate
           ? date = filing.annualReport.annualReportDate
           : date = filing.annualReport.nextARDate
+
         const bcolErr = filing.header.paymentErrorType || null
-        let bcolObj = null
-        if (bcolErr) {
-          bcolObj = await this.getErrorObj(bcolErr)
-        }
+        const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
+
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
           this.taskItems.push({
@@ -614,7 +613,7 @@ export default {
             enabled: Boolean(task.enabled),
             order: task.order,
             paymentToken: filing.header.paymentToken || null,
-            paymentErrorType: bcolErr,
+            // paymentErrorType: bcolErr,
             bcolErrObj: bcolObj
           })
         } else {
@@ -631,10 +630,8 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfDirectors) {
         const bcolErr = filing.header.paymentErrorType || null
-        let bcolObj = null
-        if (bcolErr) {
-          bcolObj = await this.getErrorObj(bcolErr)
-        }
+        const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
+
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_DIRECTORS,
           id: filing.header.filingId,
@@ -644,7 +641,7 @@ export default {
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          paymentErrorType: bcolErr,
+          // paymentErrorType: bcolErr,
           bcolErrObj: bcolObj
         })
       } else {
@@ -657,10 +654,8 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfAddress) {
         const bcolErr = filing.header.paymentErrorType || null
-        let bcolObj = null
-        if (bcolErr) {
-          bcolObj = await this.getErrorObj(bcolErr)
-        }
+        const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
+
         this.taskItems.push({
           type: FilingTypes.CHANGE_OF_ADDRESS,
           id: filing.header.filingId,
@@ -670,7 +665,7 @@ export default {
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          paymentErrorType: bcolErr,
+          // paymentErrorType: bcolErr,
           bcolErrObj: bcolObj
         })
       } else {
@@ -712,10 +707,8 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.incorporationApplication) {
         const bcolErr = filing.header.paymentErrorType || null
-        let bcolObj = null
-        if (bcolErr) {
-          bcolObj = await this.getErrorObj(bcolErr)
-        }
+        const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
+
         this.taskItems.push({
           type: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
@@ -725,7 +718,7 @@ export default {
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          paymentErrorType: bcolErr,
+          // paymentErrorType: bcolErr,
           bcolErrObj: bcolObj
         })
       } else {
@@ -953,7 +946,7 @@ export default {
     },
 
     isBcolError (task: any): boolean {
-      return task.paymentErrorType && task.paymentErrorType.startsWith('BCOL')
+      return task.bcolErrObj != null
     },
 
     isPriority (priority: boolean): string {

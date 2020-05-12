@@ -30,9 +30,7 @@
     />
 
     <bcol-error-dialog
-      :dialog="bcolErrorDialog"
-      :title="bcolTitle"
-      :errMsg="bcolErrMsg"
+      :bcolOBject="bcolObj"
       filingType="Annual Report"
       @exit="navigateToDashboard(true)"/>
 
@@ -383,9 +381,7 @@ export default {
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
-      bcolErrorDialog: false,
-      bcolErrMsg: null,
-      bcolTitle: null,
+      bcolObj: null,
       // other local properties
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
@@ -875,9 +871,7 @@ export default {
             if (errCode) {
               const errObj = await this.getErrorObj(errCode.payment_error_type)
               if (errObj) {
-                this.bcolErrMsg = errObj.detail
-                this.bcolTitle = errObj.title
-                this.bcolErrorDialog = true
+                this.bcolObj = errObj
               }
             } else {
               this.paymentErrorDialog = true
@@ -914,9 +908,7 @@ export default {
             if (errCode) {
               const errObj = await this.getErrorObj(errCode.payment_error_type)
               if (errObj) {
-                this.bcolErrMsg = errObj.detail
-                this.bcolTitle = errObj.title
-                this.bcolErrorDialog = true
+                this.bcolObj = errObj
               }
             } else {
               this.paymentErrorDialog = true

@@ -2225,11 +2225,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     vm.totalFee = 100
 
     // sanity check
-
-    expect(vm.bcolErrMsg).toBeNull()
-    expect(vm.bcolTitle).toBeNull()
-
-    expect(vm.bcolErrorDialog).toBe(false)
+    expect(vm.bcolObj).toBeNull()
 
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -2245,10 +2241,9 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     await vm.onClickFilePay()
     // work-around because click trigger isn't working
 
-    // verify redirection
-    expect(vm.bcolErrMsg.length).toBeGreaterThan(0)
-    expect(vm.bcolTitle.length).toBeGreaterThan(0)
-    expect(vm.bcolErrorDialog).toBe(true)
+    // verify an error has been received
+    expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)
+    expect(vm.bcolObj?.title?.length).toBeGreaterThan(0)
 
     wrapper.destroy()
   })
