@@ -9,7 +9,7 @@ import mockRouter from './mockRouter'
 import { getVuexStore } from '@/store'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import flushPromises from 'flush-promises'
-import { sleep } from '@/utils/sleep'
+
 // Components
 import { DetailsList } from '@/components/common'
 import Vue2Filters from 'vue2-filters'
@@ -1563,7 +1563,8 @@ describe('TodoList - Click Tests', () => {
     const button = wrapper.find('.expand-btn')
 
     button.trigger('click')
-    await sleep(400)
+    await Vue.nextTick()
+    await flushPromises()
     await Vue.nextTick()
     const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
     expect(todoItem).toBeDefined()
