@@ -1517,7 +1517,7 @@ describe('TodoList - Click Tests', () => {
     })
   })
 
-  it('Confirm BCOL error is captured in todo list', async() => {
+  it('Confirm BCOL error is captured in todo list', async () => {
     sessionStorage.setItem('PAY_API_URL', '') 
     store.state.tasks = [
       {
@@ -1556,16 +1556,18 @@ describe('TodoList - Click Tests', () => {
 
     await flushPromises()
 
+    await Vue.nextTick()
+
     const todoItem = vm.$el.querySelector('.bcol-error')
 
     const button = wrapper.find('.expand-btn')
+
     button.trigger('click')
     await Vue.nextTick()
-
     const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
     expect(todoItem).toBeDefined()
     expect(bcolPanel.textContent).toContain('An Error has occured')
-
+    
   })
 })
 
