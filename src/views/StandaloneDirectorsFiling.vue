@@ -32,7 +32,8 @@
     <bcol-error-dialog
       :bcolOBject="bcolObj"
       filingType="Change of Directors"
-      @exit="navigateToDashboard(true)"/>
+      @exit="navigateToDashboard(true)"
+      attach="#standalone-directors"/>
 
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">

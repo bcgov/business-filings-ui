@@ -32,7 +32,8 @@
     <bcol-error-dialog
       :bcolOBject="bcolObj"
       filingType="Annual Report"
-      @exit="navigateToDashboard(true)"/>
+      @exit="navigateToDashboard(true)"
+      attach="#annual-report"/>
 
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">

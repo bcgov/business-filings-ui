@@ -27,5 +27,4 @@ export default class BcolMixin extends Vue {
   get payApi () {
     return sessionStorage.getItem('PAY_API_URL')
   }
-
 }

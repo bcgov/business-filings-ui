@@ -32,7 +32,8 @@
     <bcol-error-dialog
       :bcolObject="bcolObj"
       filingType="Address Change"
-      @exit="navigateToDashboard(true)"/>
+      @exit="navigateToDashboard(true)"
+      attach="#standalone-office-address"/>
 
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">
