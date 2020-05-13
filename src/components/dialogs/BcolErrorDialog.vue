@@ -4,7 +4,8 @@
       <v-card-title id="dialog-title">Payment Incomplete - {{bcolObject.title}}</v-card-title>
 
       <v-card-text>
-        <p class="genErr" id="dialog-header">This {{filingTypeToName(filingType)}} could not be filed for the following reason:</p>
+        <p class="genErr" id="dialog-header">This {{filingTypeToName(filingType)}}
+          could not be filed for the following reason:</p>
         <p class="genErr" id="dialog-content">{{bcolObject.detail}}</p>
 
         <template v-if="!isRoleStaff">

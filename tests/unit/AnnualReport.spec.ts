@@ -2118,7 +2118,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 
-    // mock "file post" endpoint
+    // mock "file post" endpoint, with a BCOL error response
     const p1 = Promise.reject({
       response: {
         status: PAYMENT_REQUIRED,
@@ -2230,6 +2230,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
     
+    // Stub out a response from the Error endpoint in Pay API
     get.withArgs('codes/errors/BCOL_ERROR')
     .returns(new Promise(resolve => resolve({ data: {
       detail: 'An Error has occured',

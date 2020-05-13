@@ -1519,6 +1519,7 @@ describe('TodoList - Click Tests', () => {
 
   it('Confirm BCOL error is captured in todo list', async () => {
     sessionStorage.setItem('PAY_API_URL', '') 
+    // Store a task with a filing associated to a BCOL error
     store.state.tasks = [
       {
         'task': {
@@ -1543,6 +1544,7 @@ describe('TodoList - Click Tests', () => {
       }
     ]
 
+    // Stub out a response from the Error endpoint in Pay API
     sinon.stub(axios, 'get').withArgs('codes/errors/BCOL_ERROR')
     .returns(new Promise(resolve => resolve({ data: {
       detail: 'An Error has occured',
@@ -1552,20 +1554,23 @@ describe('TodoList - Click Tests', () => {
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
 
-    expect(vm.$el.querySelector('.bcol-error')).toBeNull()
-
     await flushPromises()
 
     await Vue.nextTick()
 
+    // The class appended to a todo div when an item
+    // has a bcol error
     const todoItem = vm.$el.querySelector('.bcol-error')
 
     const button = wrapper.find('.expand-btn')
 
     button.trigger('click')
     await Vue.nextTick()
+    // Async/timing issue requires a couple of delaying tactics
     await flushPromises()
     await Vue.nextTick()
+
+    // Confirm the message is visible after expansion panel clicked
     const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
     expect(todoItem).toBeDefined()
     expect(bcolPanel.textContent).toContain('An Error has occured')
