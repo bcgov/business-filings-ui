@@ -456,10 +456,6 @@ export default {
       return sessionStorage.getItem('BUSINESS_ID')
     },
 
-    payAPiUrl (): string {
-      return sessionStorage.getItem('PAY_API_URL')
-    },
-
     /** The NR Number string. */
     nrNumber (): string {
       return sessionStorage.getItem('NR_NUMBER')
@@ -677,11 +673,6 @@ export default {
     async loadCorrection (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
-        const bcolErr = filing.header.paymentErrorType || null
-        let bcolObj = null
-        if (bcolErr) {
-          bcolObj = await this.getErrorObj(bcolErr)
-        }
         this.taskItems.push({
           type: FilingTypes.CORRECTION,
           id: filing.header.filingId,

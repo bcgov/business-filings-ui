@@ -1,14 +1,14 @@
 <template>
-  <v-dialog v-model="bcolDialog" width="45rem" persistent :attach="attach" content-class="bcol-error-dialog">
+  <v-dialog :value="bcolDialog" width="45rem" persistent :attach="attach" content-class="bcol-error-dialog">
     <v-card v-if="bcolObject">
       <v-card-title>Payment Incomplete - {{bcolObject.title}}</v-card-title>
 
       <v-card-text>
-        <p class="genErr">This {{filingType}} could not be filed for the following reason:</p>
+        <p class="genErr">This {{this.filingTypeToName(filingType)}} could not be filed for the following reason:</p>
         <p class="genErr">{{bcolObject.detail}}</p>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">Your {{filingType}} has been saved as a draft and you
+          <p class="genErr">Your {{this.filingTypeToName(filingType)}} has been saved as a draft and you
                     can retry your payment from the dashboard once the issue has been resolved.</p>
         </template>
       </v-card-text>
@@ -27,12 +27,14 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 import { ErrorContact } from '@/components/common'
+import { EnumMixin } from '@/mixins'
 
 @Component({
   computed: {
     // Property definition for runtime environment.
     ...mapGetters(['isRoleStaff'])
   },
+  mixins: [EnumMixin],
   components: { ErrorContact }
 })
 export default class BcolErrorDialog extends Vue {
@@ -42,8 +44,6 @@ export default class BcolErrorDialog extends Vue {
   @Prop() private filingType: string
 
   @Prop({ default: () => { return null } }) private bcolObject: object
-
-  @Prop() title: string
 
   // Prop to provide attachment selector.
   @Prop() private attach: string

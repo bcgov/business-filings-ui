@@ -31,7 +31,7 @@
 
     <bcol-error-dialog
       :bcolOBject="bcolObj"
-      filingType="Change of Directors"
+      :filingType="FilingTypes.CHANGE_OF_DIRECTORS"
       @exit="navigateToDashboard(true)"
       attach="#standalone-directors"/>
 
@@ -319,7 +319,8 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPayment } from '@/components/common'
 
 // Dialog Components
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
+  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Mixins
 import { CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
@@ -638,10 +639,7 @@ export default {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
             const errCode = this.getErrorCode(error)
             if (errCode) {
-              const errObj = await this.getErrorObj(errCode.payment_error_type)
-              if (errObj) {
-                this.bcolObj = errObj
-              }
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
             } else {
               this.paymentErrorDialog = true
             }
@@ -675,10 +673,7 @@ export default {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
             const errCode = this.getErrorCode(error)
             if (errCode) {
-              const errObj = await this.getErrorObj(errCode.payment_error_type)
-              if (errObj) {
-                this.bcolObj = errObj
-              }
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
             } else {
               this.paymentErrorDialog = true
             }
@@ -780,7 +775,6 @@ export default {
 
     resetErrors () {
       this.saveErrorDialog = false
-      this.bcolErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []
     },

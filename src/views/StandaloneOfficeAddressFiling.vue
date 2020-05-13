@@ -31,7 +31,7 @@
 
     <bcol-error-dialog
       :bcolObject="bcolObj"
-      filingType="Address Change"
+      :filingType="FilingTypes.CHANGE_OF_ADDRESS"
       @exit="navigateToDashboard(true)"
       attach="#standalone-office-address"
     />
@@ -186,7 +186,8 @@ import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
 // Dialogs
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
+  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Components
 import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
@@ -608,10 +609,7 @@ export default {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
             const errCode = this.getErrorCode(error)
             if (errCode) {
-              const errObj = await this.getErrorObj(errCode.payment_error_type)
-              if (errObj) {
-                this.bcolObj = errObj
-              }
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
             } else {
               this.paymentErrorDialog = true
             }
@@ -645,10 +643,7 @@ export default {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
             const errCode = this.getErrorCode(error)
             if (errCode) {
-              const errObj = await this.getErrorObj(errCode.payment_error_type)
-              if (errObj) {
-                this.bcolObj = errObj
-              }
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
             } else {
               this.paymentErrorDialog = true
             }
@@ -675,7 +670,6 @@ export default {
 
     resetErrors () {
       this.saveErrorDialog = false
-      this.bcolErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []
     },
