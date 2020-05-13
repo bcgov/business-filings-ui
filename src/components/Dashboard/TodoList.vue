@@ -570,7 +570,7 @@ export default {
             await this.loadChangeOfAddress(task)
             break
           case FilingTypes.CORRECTION:
-            await this.loadCorrection(task)
+            this.loadCorrection(task)
             break
           case FilingTypes.INCORPORATION_APPLICATION:
             await this.loadIncorporationApplication(task)
@@ -670,7 +670,7 @@ export default {
       }
     },
 
-    async loadCorrection (task) {
+    loadCorrection (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
         this.taskItems.push({

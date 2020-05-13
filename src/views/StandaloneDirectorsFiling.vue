@@ -774,6 +774,8 @@ export default {
     },
 
     resetErrors () {
+      this.paymentErrorDialog = false
+      this.bcolObj = null
       this.saveErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []

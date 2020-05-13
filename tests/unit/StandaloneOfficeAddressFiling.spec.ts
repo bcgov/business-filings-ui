@@ -1864,7 +1864,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     await vm.onClickFilePay()
     // work-around because click trigger isn't working
 
-    // verify redirection
+    // verify a bcol error message was retrieved
     expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)
     expect(vm.bcolObj?.title?.length).toBeGreaterThan(0)
 
