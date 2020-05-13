@@ -4,13 +4,16 @@
       <v-card-title id="dialog-title">Payment Incomplete - {{bcolObject.title}}</v-card-title>
 
       <v-card-text>
-        <p class="genErr" id="dialog-header">This {{filingTypeToName(filingType)}}
-          could not be filed for the following reason:</p>
+        <p class="genErr" id="dialog-header">
+          This {{filingTypeToName(filingType)}} could not be filed for the following reason:
+        </p>
         <p class="genErr" id="dialog-content">{{bcolObject.detail}}</p>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">Your {{filingTypeToName(filingType)}} has been saved as a draft and you
-                    can retry your payment from the dashboard once the issue has been resolved.</p>
+          <p class="genErr">
+            Your {{filingTypeToName(filingType)}} has been saved as a draft and you 
+            can retry your payment from the dashboard once the issue has been resolved.
+          </p>
         </template>
       </v-card-text>
 
