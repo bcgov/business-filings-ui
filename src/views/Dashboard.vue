@@ -60,7 +60,7 @@
                         <span>Pending</span>
                       </v-chip>
                     </template>
-                    <span>The updated office addresses will be legally effective on {{ effectiveDate }},
+                    <span>The updated office addresses will be legally effective on {{ coaEffectiveDate }},
                       12:01 AM(Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
                 </v-scale-transition>
@@ -77,7 +77,8 @@
               <v-card flat>
                 <address-list-sm
                   :coaPending="coaPending"
-                  :completedFilingRequired="completedFilingRequired"
+                  :showCompleteYourFilingMessage="isIncorpAppTask"
+                  :showGrayedOut="isIncorpAppFiling"
                 />
               </v-card>
             </section>
@@ -97,7 +98,8 @@
               </header>
               <v-card flat>
                 <director-list-sm
-                  :completedFilingRequired="completedFilingRequired"
+                  :showCompleteYourFilingMessage="isIncorpAppTask"
+                  :showGrayedOut="isIncorpAppFiling"
                 />
               </v-card>
             </section>
@@ -126,7 +128,7 @@ import { CommonMixin } from '@/mixins'
 import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Constants
-import { EntityTypes, FilingNames, FilingStatus } from '@/enums'
+import { EntityStatus, EntityTypes, FilingNames, FilingStatus } from '@/enums'
 import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 export default {
@@ -146,33 +148,42 @@ export default {
     return {
       todoCount: 0,
       hasBlockerFiling: false,
-      completedFilingRequired: false,
       filedCount: 0,
       historyFilings: [],
       todoListFilings: [],
-      refreshTimer: null,
+      refreshTimer: null as number,
       checkFilingStatusCount: 0,
-      inProcessFiling: null,
+      inProcessFiling: null as any,
       coaPending: false,
-      effectiveDate: null,
-      coaWarningDialog: false,
-
-      // Filing Status Enum
-      FilingStatus
+      coaEffectiveDate: null as string,
+      coaWarningDialog: false
     }
   },
 
   computed: {
-    ...mapState(['entityIncNo']),
+    ...mapState(['entityIncNo', 'entityStatus']),
 
     /** The NR Number string. */
     nrNumber (): string {
       return sessionStorage.getItem('NR_NUMBER')
     },
 
-    /** Checks if changes need to be disabled */
+    /** Whether this is an Incorporation Application task. */
+    isIncorpAppTask (): boolean {
+      return (this.entityStatus === EntityStatus.NAME_REQUEST || this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+    },
+
+    /** Whether this is an Incorporation Application filing. */
+    isIncorpAppFiling (): boolean {
+      return (this.entityStatus === EntityStatus.PENDING_INCORP_APP)
+    },
+
+    /** Whether changes need to be disabled. */
     disableChanges () : boolean {
-      return this.nrNumber ? this.completedFilingRequired : this.hasBlockerFiling
+      if (this.nrNumber) {
+        return (this.isIncorpAppTask || this.isIncorpAppFiling)
+      }
+      return this.hasBlockerFiling
     }
   },
 
@@ -252,25 +263,24 @@ export default {
     },
 
     /**
-     * Searches the filings history for a 'paid' status.
-     * Paid status indicates a filing that is paid but future effective.
-     * Change the state of the UI when a filing is future effective.
-     * Currently only BCOMPs change of addresses filing are future effective.
-     *
+     * Searches the filings history for a 'paid' status (ie, not yet completed).
+     * Used to block new filings while there's a pending one.
      * @param filings The array of filings in history
      */
-    checkPendingFilings (filings: Array<any>) {
+    checkPendingFilings (filings: Array<any>): boolean {
       if (!filings || !filings.length) return // safety check
 
-      filings.some(filing => {
-        if (filing.name === FilingNames.ADDRESS_CHANGE && filing.status === FilingStatus.PAID) {
-          this.effectiveDate = filing.filingEffectiveDate
+      const foundCoa = filings.some(filing => {
+        if (filing.name === FilingNames.ADDRESS_CHANGE && filing.isPaid) {
           this.coaPending = true
+          this.coaEffectiveDate = filing.effectiveDate
           this.hasBlockerFiling = true
           return true
         }
         return false
       })
+
+      return foundCoa
     },
 
     /**
@@ -293,11 +303,6 @@ export default {
       // check if a filing has a paid but pending state ( Currently BCOMPS )
       if (this.isBComp()) {
         this.checkPendingFilings(this.historyFilings)
-      }
-      // Set completed filing required to show address since this is an NR
-      // once transitioned to the business id, addresses/directors will be available
-      if (this.nrNumber) {
-        this.completedFilingRequired = true
       }
 
       // check whether to reload the dashboard with updated data

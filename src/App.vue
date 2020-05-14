@@ -57,7 +57,7 @@
 
 <script lang="ts">
 // Libraries
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import TokenService from 'sbc-common-components/src/services/token.services'
 
@@ -121,6 +121,8 @@ export default {
   },
 
   computed: {
+    ...mapState(['tasks', 'filings']),
+
     /** The Auth API string. */
     authApiUrl (): string {
       return sessionStorage.getItem('AUTH_API_URL')
@@ -312,6 +314,15 @@ export default {
             this.storeNrData(data[0])
             this.storeTasks(data[1])
             this.storeFilings(data[2])
+
+            // safety check
+            // must be one or the other but not neither or both (ie, XOR)
+            const haveOneTask = (this.tasks.length === 1)
+            const haveOneFiling = (this.filings.length === 1)
+            if (haveOneTask === haveOneFiling) {
+              throw new Error('NR must have 1 task or 1 filing')
+            }
+
             this.dataLoaded = true
           }).catch(error => {
             // eslint-disable-next-line no-console
@@ -490,11 +501,17 @@ export default {
       const tasks = response?.data?.tasks
       if (tasks) {
         this.setTasks(tasks)
+        // special cases for Name Request or Incorp App
         if (this.nrNumber && tasks.length > 0) {
-          if (tasks[0].task?.todo) {
-            this.setEntityStatus(EntityStatus.NAME_REQUEST)
-          } else {
-            this.setEntityStatus(EntityStatus.INCORPORATION_APPLICATION)
+          switch (tasks[0].task?.todo?.header?.name) {
+            case FilingTypes.NAME_REQUEST:
+              // this is a Name Request
+              this.setEntityStatus(EntityStatus.NAME_REQUEST)
+              break
+            case FilingTypes.INCORPORATION_APPLICATION:
+              // this is a Draft Incorporation Application
+              this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
+              break
           }
         }
       } else {
@@ -513,6 +530,21 @@ export default {
       const filings = response?.data?.filings
       if (filings) {
         this.setFilings(filings)
+        // special case for Incorp App
+        if (this.nrNumber && filings.length > 0) {
+          const incorporationApplication = filings[0].filing?.incorporationApplication
+          if (incorporationApplication) {
+            // this is a Pending Incorporation Application
+            this.setEntityStatus(EntityStatus.PENDING_INCORP_APP)
+            // set temporary addresses and directors
+            if (incorporationApplication.offices) {
+              this.storeAddresses({ data: incorporationApplication.offices })
+            }
+            if (incorporationApplication.parties?.length > 0) {
+              this.storeDirectors({ data: { directors: [...incorporationApplication.parties] } })
+            }
+          }
+        }
       } else {
         throw new Error('Invalid filings')
       }

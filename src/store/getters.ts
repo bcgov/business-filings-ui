@@ -21,8 +21,8 @@ export default {
     switch (state.currentFilingStatus) {
       case FilingStatus.NEW: return ''
       case FilingStatus.DRAFT: return 'Draft'
-      default: return state.currentFilingStatus
     }
+    return state.currentFilingStatus
   },
 
   // get last Change of Directors filing from list of past filings
@@ -72,9 +72,5 @@ export default {
       }
     }
     return lastFilingDate
-  },
-
-  getConfigObject (state): object {
-    return null
   }
 }

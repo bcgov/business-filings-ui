@@ -1,7 +1,5 @@
 <template>
-  <div class="details-list pt-6">
-    <v-divider></v-divider>
-
+  <div class="details-list">
     <div class="title-bar pt-6">
       <h4>
         <v-icon small>mdi-message-reply</v-icon>

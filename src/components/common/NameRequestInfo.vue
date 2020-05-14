@@ -84,23 +84,17 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   }
 
   /** The entity title  */
-  private entityTypeDescription () :string {
-    const entityType = this.parsedNameRequest.entityType
-    if (entityType === 'BC') {
-      return this.entityTypeToName(EntityTypes.BCOMP)
-    } else if (entityType === 'CP') {
-      return this.entityTypeToName(EntityTypes.COOP)
-    }
-    return ''
+  private entityTypeDescription (): string {
+    return this.entityTypeToName(this.parsedNameRequest.entityType)
   }
 
   /** The request type */
-  private requestType () : string {
+  private requestType (): string {
     return 'New Business'
   }
 
   /** Return formatted expiration date */
-  private formattedExpirationDate () : string {
+  private formattedExpirationDate (): string {
     return this.toReadableDate(this.nameRequestDetails.expirationDate)
   }
 
@@ -114,7 +108,7 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   }
 
   /** Return formatted applicant name */
-  private applicantName () : string {
+  private applicantName (): string {
     let name = this.nameRequestApplicant.firstName
     if (this.nameRequestApplicant.middleName) {
       name = `${name} ${this.nameRequestApplicant.middleName} ${this.nameRequestApplicant.lastName}`
@@ -125,13 +119,14 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   }
 
   /** Return formatted address string */
-  private applicantAddress () : string {
+  private applicantAddress (): string {
     // Get Address info
     const city = this.nameRequestApplicant.city
     const stateProvince = this.nameRequestApplicant.stateProvinceCode
     const postal = this.nameRequestApplicant.postalCode
     const country = this.nameRequestApplicant.countryTypeCode
-      ? getName(this.nameRequestApplicant.countryTypeCode) : ''
+      ? getName(this.nameRequestApplicant.countryTypeCode)
+      : ''
 
     // Build address lines
     let address = this.nameRequestApplicant.addressLine1

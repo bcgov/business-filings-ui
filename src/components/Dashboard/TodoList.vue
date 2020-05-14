@@ -43,15 +43,20 @@
           'bcol-error': isBcolError(task)
         }"
       >
-        <v-expansion-panel-header class="todo-item-toggle no-dropdown-icon">
+        <v-expansion-panel-header class="no-dropdown-icon">
           <div class="list-item">
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
-                <div v-if="isTypeCorrection(task) && isStatusDraft(task)">
-                  <v-btn small icon color="red" class="expand-btn">
-                    <v-icon>mdi-information-outline</v-icon>
-                  </v-btn>
-                </div>
+                <v-btn
+                  v-if="isTypeCorrection(task) && isStatusDraft(task)"
+                  class="expand-btn ml-0"
+                  outlined
+                  color="red"
+                  :ripple=false
+                >
+                  <v-icon left>mdi-information-outline</v-icon>
+                  {{ (panel === index) ? "Hide Details" : "View Details" }}
+                </v-btn>
               </h3>
 
               <div class="bcorps-ar-subtitle"
@@ -86,13 +91,19 @@
 
                 <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
                   <div>DRAFT</div>
-                  <v-btn x-small icon class="expand-btn">
-                    <v-icon>mdi-message-reply</v-icon>
+                  <v-btn
+                    v-if="task.comments.length > 0"
+                    class="expand-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                  >
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
-                  Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
-                 <div v-if="isBcolError(task)" class="todo-subtitle">
+                 <div v-else-if="isBcolError(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
                   <div class="payment-status">
@@ -100,7 +111,7 @@
                     <v-btn
                       class="expand-btn"
                       outlined
-                      color="red darken-4"
+                      color="red"
                       :ripple=false
                       @click.stop="togglePanel(index)"
                     >
@@ -115,11 +126,16 @@
                 </div>
 
                 <div v-else-if="isTypeCorrection(task) && isStatusCorrectionPending(task)" class="todo-subtitle">
-                  <span class="before-details">FILING PENDING</span>
-                  <v-btn x-small icon class="expand-btn">
-                    <v-icon>mdi-message-reply</v-icon>
+                  <div>FILING PENDING</div>
+                  <v-btn
+                    class="expand-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                  >
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
-                  Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
                 <div v-else-if="isStatusPending(task)" class="todo-subtitle">
@@ -313,63 +329,59 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <v-card v-if="isBcolError(task)" class="todo-list-detail bcol-todo-list-detail">
-            <v-card-text v-if="task.bcolErrObj && task.bcolErrObj.title && task.bcolErrObj.detail">
-            <p class="font-weight-bold black--text">Payment Incomplete - {{task.bcolErrObj.title}}</p>
-            <span v-html="task.bcolErrObj.detail"/>
-            </v-card-text>
-          </v-card>
-          <div v-else-if="isTypeCorrection(task)">
-            <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail">
-              <p class="list-item__subtitle">
-                This filing is in review and has been saved as a draft.<br />
-                Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.
-              </p>
-              <!-- the detail comments section -->
-              <details-list
-                :filing=task
-                :isTask="true"
-                @showCommentDialog="showCommentDialog($event)"
-              />
-            </div>
-
-            <div v-else data-test-class="correction-pending" class="todo-list-detail">
-              <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
-                Normal processing times are 2 to 5 business days; Priority processing times are 1 to 2 business days.
-              </p>
-              <!-- the detail comments section -->
-              <details-list
-                :filing=task
-                :isTask="true"
-                @showCommentDialog="showCommentDialog($event)"
-              />
-            </div>
+          <div v-if="isBcolError(task)" class="todo-list-detail bcol-todo-list-detail body-2">
+            <template v-if="task.bcolErrObj && task.bcolErrObj.title && task.bcolErrObj.detail">
+              <h4>Payment Incomplete - {{task.bcolErrObj.title}}</h4>
+              <p v-html="task.bcolErrObj.detail" />
+            </template>
           </div>
 
-          <v-card v-else-if="isStatusPending(task)" data-test-class="payment-incomplete">
-            <v-card-text>
-              <p class="font-weight-bold black--text">Payment Incomplete</p>
-              <p>This filing is pending payment. The payment may still be in progress or may have been
-                interrupted for some reason.<p>
-              <p>You may continue this filing by selecting "Resume Payment".</p>
-            </v-card-text>
-          </v-card>
+          <template v-else-if="isTypeCorrection(task)">
+            <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail body-2">
+              <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
+                Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
+              </p>
+              <v-divider class="mt-6"></v-divider>
+              <!-- the detail comments section -->
+              <details-list
+                :filing=task
+                :isTask="true"
+                @showCommentDialog="showCommentDialog($event)"
+              />
+            </div>
 
-          <v-card v-else-if="isStatusError(task)" data-test-class="payment-unsuccessful">
-            <v-card-text>
-              <p class="font-weight-bold black--text">Payment Unsuccessful</p>
-              <p>This filing is pending payment. The payment appears to have been unsuccessful for some
-                reason.</p>
-              <p>You may continue this filing by selecting "Retry Payment".</p>
-            </v-card-text>
-          </v-card>
+            <div v-else data-test-class="correction-pending" class="todo-list-detail body-2">
+              <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
+                Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
+              </p>
+              <v-divider class="mt-6"></v-divider>
+              <!-- the detail comments section -->
+              <details-list
+                :filing=task
+                :isTask="true"
+                @showCommentDialog="showCommentDialog($event)"
+              />
+            </div>
+          </template>
 
-          <v-card v-else-if="isStatusPaid(task)" data-test-class="payment-paid">
-            <v-card-text>
-              <p class="font-weight-bold black--text">Paid</p>
-              <p>This filing is paid but the filing is not yet complete. Please check again later.</p>
-            </v-card-text>
-          </v-card>
+          <div v-else-if="isStatusPending(task)" data-test-class="payment-incomplete" class="todo-list-detail body-2">
+            <h4>Payment Incomplete</h4>
+            <p>This filing is pending payment. The payment may still be in progress or may have been
+              interrupted for some reason.<p>
+            <p>You may continue this filing by selecting "Resume Payment".</p>
+          </div>
+
+          <div v-else-if="isStatusError(task)" data-test-class="payment-unsuccessful" class="todo-list-detail body-2">
+            <p class="font-weight-bold black--text">Payment Unsuccessful</p>
+            <p>This filing is pending payment. The payment appears to have been unsuccessful for some
+              reason.</p>
+            <p>You may continue this filing by selecting "Retry Payment".</p>
+          </div>
+
+          <div v-else-if="isStatusPaid(task)" data-test-class="payment-paid" class="todo-list-detail body-2">
+            <p class="font-weight-bold black--text">Paid</p>
+            <p>This filing is paid but the filing is not yet complete. Please check again later.</p>
+          </div>
 
           <div v-else-if="isStatusNew(task) && isTypeNameRequest(task)" data-test-class="nr-details">
             <name-request-info :nameRequest="task.nameRequest" />
@@ -508,7 +520,7 @@ export default {
             const ARFilingYear = todo.header.ARFilingYear
             this.taskItems.push({
               id: -1, // not falsy
-              type: FilingTypes.ANNUAL_REPORT,
+              filingType: FilingTypes.ANNUAL_REPORT,
               title: `File ${ARFilingYear} Annual Report`,
               subtitle: task.enabled ? '(including Address and/or Director Change)' : null,
               ARFilingYear,
@@ -522,7 +534,7 @@ export default {
           case FilingTypes.NAME_REQUEST:
             this.taskItems.push({
               id: -1, // not falsy
-              type: FilingTypes.NAME_REQUEST,
+              filingType: FilingTypes.NAME_REQUEST,
               title: `Name Request ${this.nrNumber} - ${this.entityName}`,
               subtitle: `APPROVED - ${this.expiresText(todo)}`,
               status: todo.header.status || FilingStatus.NEW,
@@ -600,7 +612,7 @@ export default {
         if (date) {
           const ARFilingYear = +date.substring(0, 4)
           this.taskItems.push({
-            type: FilingTypes.ANNUAL_REPORT,
+            filingType: FilingTypes.ANNUAL_REPORT,
             id: filing.header.filingId,
             title: `File ${ARFilingYear} Annual Report`,
             draftTitle: `${ARFilingYear} Annual Report`,
@@ -609,7 +621,6 @@ export default {
             enabled: Boolean(task.enabled),
             order: task.order,
             paymentToken: filing.header.paymentToken || null,
-            // paymentErrorType: bcolErr,
             bcolErrObj: bcolObj
           })
         } else {
@@ -629,7 +640,7 @@ export default {
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         this.taskItems.push({
-          type: FilingTypes.CHANGE_OF_DIRECTORS,
+          filingType: FilingTypes.CHANGE_OF_DIRECTORS,
           id: filing.header.filingId,
           title: `File Director Change`,
           draftTitle: `Director Change`,
@@ -637,7 +648,6 @@ export default {
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          // paymentErrorType: bcolErr,
           bcolErrObj: bcolObj
         })
       } else {
@@ -653,7 +663,7 @@ export default {
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         this.taskItems.push({
-          type: FilingTypes.CHANGE_OF_ADDRESS,
+          filingType: FilingTypes.CHANGE_OF_ADDRESS,
           id: filing.header.filingId,
           title: `File Address Change`,
           draftTitle: `Address Change`,
@@ -661,7 +671,6 @@ export default {
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          // paymentErrorType: bcolErr,
           bcolErrObj: bcolObj
         })
       } else {
@@ -674,13 +683,13 @@ export default {
       const filing = task.task.filing
       if (filing && filing.header && filing.correction) {
         this.taskItems.push({
-          type: FilingTypes.CORRECTION,
+          filingType: FilingTypes.CORRECTION,
           id: filing.header.filingId,
           filingDate: filing.correction.correctedFilingDate,
-          corrFilingId: filing.correction.correctedFilingId,
+          correctedFilingId: filing.correction.correctedFilingId,
           correctedFilingType: this.filingTypeToName(filing.correction.correctedFilingType),
-          title: `${this.isPriority(filing.header.priority)} -
-            ${this.filingTypeToName(filing.correction.correctedFilingType)}`,
+          title: (this.isPriority(filing.header.priority) + ' - ' +
+            this.filingTypeToName(filing.correction.correctedFilingType)),
           draftTitle: `${this.filingTypeToName(filing.correction.correctedFilingType)}`,
           status: filing.header.status,
           enabled: Boolean(task.enabled),
@@ -701,15 +710,14 @@ export default {
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         this.taskItems.push({
-          type: FilingTypes.INCORPORATION_APPLICATION,
+          filingType: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
-          title: `${this.entityTypeToName(this.entityType)}  Incorporation Application - ${this.entityName}`,
+          title: `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`,
           draftTitle: 'Incorporation Application',
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          // paymentErrorType: bcolErr,
           bcolErrObj: bcolObj
         })
       } else {
@@ -719,7 +727,7 @@ export default {
     },
 
     doFileNow (task) {
-      switch (task.type) {
+      switch (task.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // file the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
@@ -741,7 +749,7 @@ export default {
     },
 
     doResumeFiling (task) {
-      switch (task.type) {
+      switch (task.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // resume this Annual Report
           this.setARFilingYear(task.ARFilingYear)
@@ -764,7 +772,7 @@ export default {
           // resume this Correction Filing
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: CORRECTION,
-            params: { filingId: task.id, correctedFilingId: task.corrFilingId }
+            params: { filingId: task.id, correctedFilingId: task.correctedFilingId }
           })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
@@ -937,7 +945,7 @@ export default {
     },
 
     isBcolError (task: any): boolean {
-      return task.bcolErrObj != null
+      return !!task.bcolErrObj
     },
 
     isPriority (priority: boolean): string {
@@ -946,17 +954,17 @@ export default {
 
     /** Returns True if task type is Correction. */
     isTypeCorrection (task: any): boolean {
-      return (task.type === FilingTypes.CORRECTION)
+      return (task.filingType === FilingTypes.CORRECTION)
     },
 
     /** Returns True if task type is Annual Report. */
     isTypeAnnualReport (task: any): boolean {
-      return (task.type === FilingTypes.ANNUAL_REPORT)
+      return (task.filingType === FilingTypes.ANNUAL_REPORT)
     },
 
     /** Returns True if task type is Name Request. */
     isTypeNameRequest (task: any): boolean {
-      return (task.type === FilingTypes.NAME_REQUEST)
+      return (task.filingType === FilingTypes.NAME_REQUEST)
     },
 
     /** Closes current panel or opens new panel. */
@@ -979,35 +987,33 @@ export default {
 @import "@/assets/styles/theme.scss";
 
 .todo-item {
-  // disable expansion in general
+  // disable expansion generally
   pointer-events: none;
-}
 
-// specifically enable COA checkbox
-.todo-list-checkbox {
-  pointer-events: auto;
-}
+  // enable all buttons (that aren't explicitly disabled)
+  .v-btn:not(:disabled) {
+    pointer-events: auto;
+  }
 
-// specifically enable events on this div
-.todo-list-detail {
-  pointer-events: auto;
-}
+  // specifically enable COA checkbox
+  .todo-list-checkbox {
+    pointer-events: auto;
+  }
 
-.todo-list.disabled {
-  opacity: 0.6;
-
-  // enable just the expansion button
-  .expand-btn {
+  // specifically enable events on this div
+  .todo-list-detail {
     pointer-events: auto;
   }
 }
 
-.todo-item:not(.disabled) {
-  // enable all buttons
-  .v-btn {
-    pointer-events: auto;
-  }
-}
+// FUTURE: fix this if needed (incorrect selector so apparently not used atm)
+// .todo-list.disabled {
+//   opacity: 0.6;
+//   // enable just the expansion button
+//   .expand-btn {
+//     pointer-events: auto;
+//   }
+// }
 
 .todo-item.draft .v-expansion-panel-content {
   display: none;
@@ -1044,17 +1050,14 @@ export default {
   }
 }
 
-.before-details {
-    &:after {
-      display: inline-block;
-      margin-left: 0.5rem;
-      margin-right: 0.5rem;
-      content: "•";
-    }
-}
-
 .list-item__title {
-  display: flex;
+  height: 20px; // for consistent height with and without icon button
+
+  .v-btn {
+    // adjust button position so it fits within the title height
+    margin-top: -8px;
+    margin-bottom: -4px
+  }
 }
 
 .list-item__actions {
@@ -1084,10 +1087,6 @@ export default {
   }
 }
 
-.todo-label {
-  flex: 1 1 auto;
-}
-
 .expand-btn {
   margin-left: 0.25rem;
   border: none;
@@ -1097,12 +1096,29 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  height: 2.25rem; // for consistent height with and without icon button
+  margin-bottom: -0.5rem; // remove extra space when subtitle displays
+}
+
+.todo-list-detail {
+  h4 {
+    letter-spacing: 0;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  p:first-of-type {
+    padding-top: 0.75rem;
+  }
+
+  p {
+    margin-bottom: 0.5rem !important;
+  }
 }
 
 .payment-status {
   display: flex;
   align-items: center;
-  height: 28px; // for consistent height with and without icon button
 }
 
 .vert-pipe {
@@ -1116,10 +1132,6 @@ export default {
 .v-expansion-panel-header {
   padding-top: 1.25rem !important;
   padding-bottom: 1.25rem !important;
-}
-
-.todo-item-toggle h3 {
-  margin-bottom: 0.25rem;
 }
 
 .bcol-error {

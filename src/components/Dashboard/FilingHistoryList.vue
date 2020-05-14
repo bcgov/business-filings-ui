@@ -19,39 +19,58 @@
         v-for="(filing, index) in filedItems"
         :key="index"
       >
+        <!-- NB: bottom padding for when panel is collapsed -->
         <v-expansion-panel-header class="no-dropdown-icon">
           <div class="list-item">
             <div class="filing-label">
-              <h3>{{filing.title}}{{applyCorrectionTag(filing)}}</h3>
+              <h3 class="list-item__title mb-0">{{filing.title}}{{applyCorrectionTag(filing)}}</h3>
 
               <div class="list-item__subtitle d-flex">
-                <v-scale-transition v-if="isCoaFutureEffective(filing.type, filing.status)">
+                <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
+                  <span>FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
-                      <div id="pending-alert" class="list-item__subtitle" v-on="on">
-                        <span>FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
-                        <v-icon color="yellow" small>mdi-alert</v-icon>
+                      <div class="pending-alert" v-on="on">
+                        <v-icon color="orange darken-2">mdi-alert</v-icon>
                       </div>
                     </template>
-                    <span>The updated office addresses will be legally effective on {{filing.filingEffectiveDate}},
+                    <span>The updated office addresses will be legally effective on {{filing.effectiveDate}},
                       12:01 AM (Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
-                </v-scale-transition>
+                </div>
 
-                <div v-else-if="isPaid(filing.status)" class="filing-subtitle">
-                  <span class="orange--text text--darken-2">FILING PENDING</span>
+                <div v-else-if="filing.isIaFutureEffective" class="filing-subtitle">
+                  <span>FUTURE EFFECTIVE INCORPORATION</span>
+                  <span class="vert-pipe"></span>
+                  <span>PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="blue darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon left>mdi-information-outline</v-icon>
+                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  </v-btn>
+                </div>
+
+                <div v-else-if="filing.isPaid" class="filing-subtitle">
+                  <span class="orange--text text--darken-2">
+                    PENDING FILING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})
+                  </span>
                   <span class="vert-pipe"></span>
                   <span>PAID</span>
                   <v-btn
-                      class="details-btn"
-                      outlined
-                      color="orange darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-alert</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
+                    class="details-btn"
+                    outlined
+                    color="orange darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon left>mdi-alert</v-icon>
+                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  </v-btn>
                 </div>
 
                 <!-- else filing is COMPLETED -->
@@ -63,15 +82,16 @@
                   <v-btn
                     class="comments-btn"
                     outlined
+                    color="primary"
                     :ripple=false
                     @click.stop="togglePanel(index)"
                   >
-                    <v-icon small left>mdi-message-reply</v-icon>
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
                     Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
                   </v-btn>
                 </div>
               </div> <!-- end of subtitle -->
-            </div>
+            </div> <!-- end of filing-label -->
 
             <div class="filing-item__actions">
               <v-btn
@@ -93,13 +113,13 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="hasBlockerFiling || filing.isCorrection">
+                    <v-list-item :disabled="hasBlockerFiling || filing.isCorrection || filing.isIaFutureEffective">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title
                         class="file-correction-item"
-                        @click="correctThisItem(filing)"
+                        @click="correctThisFiling(filing)"
                       >
                         File a Correction
                       </v-list-item-title>
@@ -124,44 +144,54 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <pending-filing v-if="isPaid(filing.status)" :title=filing.title />
+          <template v-if="filing.isBcompCoaFutureEffective" />
+
+          <template v-else-if="filing.isIaFutureEffective">
+            <future-effective-filing :filing=filing />
+            <v-divider class="mt-7 mb-5"></v-divider>
+          </template>
+
+          <template v-else-if="filing.isPaid">
+            <pending-filing :filing=filing />
+            <v-divider class="mt-7 mb-5"></v-divider>
+          </template>
 
           <paper-filing v-if="filing.paperOnly" />
 
-          <v-list dense class="py-0" v-else>
+          <!-- the list of documents -->
+          <v-list dense class="document-list py-0" v-if="filing.documents">
             <v-list-item
-              class="px-0"
-              v-for="(document, index) in filing.filingDocuments"
+              v-for="(document, index) in filing.documents"
               :key="index"
             >
-              <v-btn text color="primary"
+              <v-btn v-if="document.type === DOCUMENT_TYPE_REPORT"
+                text color="primary"
                 class="download-document-btn"
                 @click="downloadDocument(document)"
-                :disabled="loadingDocument"
+                :disabled="loadingDocument || loadingReceipt || loadingAll"
                 :loading="loadingDocument"
               >
                 <v-icon>mdi-file-pdf-outline</v-icon>
-                <span>{{document.name}}</span>
+                <span>{{document.title}}</span>
               </v-btn>
-            </v-list-item>
 
-            <v-list-item class="px-0" v-if="filing.paymentToken">
-              <v-btn text color="primary"
+              <v-btn v-if="document.type === DOCUMENT_TYPE_RECEIPT"
+                text color="primary"
                 class="download-receipt-btn"
-                @click="downloadReceipt(filing)"
-                :disabled="loadingReceipt"
+                @click="downloadReceipt(document)"
+                :disabled="loadingReceipt || loadingDocument || loadingAll"
                 :loading="loadingReceipt"
               >
                 <v-icon>mdi-file-pdf-outline</v-icon>
-                <span>Receipt</span>
+                <span>{{document.title}}</span>
               </v-btn>
             </v-list-item>
 
-            <v-list-item class="px-0" v-if="!filing.paperOnly">
+            <v-list-item v-if="filing.documents.length > 1">
               <v-btn text color="primary"
                 class="download-all-btn"
                 @click="downloadAll(filing)"
-                :disabled="loadingAll"
+                :disabled="loadingAll || loadingDocument || loadingReceipt"
                 :loading="loadingAll"
               >
                 <v-icon>mdi-download</v-icon>
@@ -171,12 +201,14 @@
           </v-list>
 
           <!-- the detail comments section -->
-          <details-list
-             v-if="filing.comments.length > 0"
-            :filing=filing
-            :isTask="false"
-            @showCommentDialog="showCommentDialog($event)"
-          />
+          <template v-if="filing.comments.length > 0">
+            <v-divider class="mt-6"></v-divider>
+            <details-list
+              :filing=filing
+              :isTask="false"
+              @showCommentDialog="showCommentDialog($event)"
+            />
+          </template>
 
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -204,6 +236,7 @@ import { mapGetters, mapState } from 'vuex'
 import { DetailsList } from '@/components/common'
 import PaperFiling from './PaperFiling.vue'
 import PendingFiling from './PendingFiling.vue'
+import FutureEffectiveFiling from './FutureEffectiveFiling.vue'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -224,6 +257,7 @@ export default {
     DetailsList,
     PaperFiling,
     PendingFiling,
+    FutureEffectiveFiling,
     AddCommentDialog,
     DownloadErrorDialog
   },
@@ -233,7 +267,7 @@ export default {
       addCommentDialog: false,
       downloadErrorDialog: false,
       panel: null as number, // currently expanded panel
-      filedItems: [],
+      filedItems: [] as Array<any>,
       loadingDocument: false,
       loadingReceipt: false,
       loadingAll: false,
@@ -263,6 +297,10 @@ export default {
   },
 
   created (): void {
+    // constants
+    this.DOCUMENT_TYPE_REPORT = 1
+    this.DOCUMENT_TYPE_RECEIPT = 2
+
     // load data into this page
     this.loadData()
   },
@@ -274,7 +312,7 @@ export default {
       // create filed items
       for (let i = 0; i < this.filings.length; i++) {
         const filing = this.filings[i].filing
-        if (filing && filing.header) {
+        if (filing?.header?.date) {
           let filingDate = filing.header.date.slice(0, 10)
           if (filingDate < '2019-03-08' || filing.header.availableOnPaperOnly) {
             // filings before Bob Date
@@ -283,7 +321,7 @@ export default {
             // filings on or after Bob Date
             switch (filing.header.name) {
               case FilingTypes.ANNUAL_REPORT:
-                this.loadAnnualReport(filing, filing.annualReport)
+                this.loadAnnualReport(filing)
                 break
               case FilingTypes.CHANGE_OF_DIRECTORS:
                 this.loadOtherReport(filing, filing.changeOfDirectors)
@@ -295,10 +333,10 @@ export default {
                 this.loadOtherReport(filing, filing.changeOfName)
                 break
               case FilingTypes.CORRECTION:
-                this.loadCorrection(filing, filing.correction)
+                this.loadCorrection(filing)
                 break
               case FilingTypes.INCORPORATION_APPLICATION:
-                this.loadOtherReport(filing, filing.incorporationApplication)
+                this.loadIncorporationApplication(filing)
                 break
               case FilingTypes.SPECIAL_RESOLUTION:
                 this.loadOtherReport(filing, filing.specialResolution)
@@ -314,7 +352,7 @@ export default {
           }
         } else {
           // eslint-disable-next-line no-console
-          console.log('ERROR - invalid filing or filing header =', filing)
+          console.log('ERROR - invalid filing =', filing)
         }
       }
 
@@ -327,40 +365,49 @@ export default {
       if (highlightId) { this.highlightFiling(highlightId) }
     },
 
-    // Extracts date from a local datetime string
-    // Returns "yyyy-mm-dd"
-    formatDate (dateString: string): string {
-      if (!dateString) return null // safety check
-      return dateString.split(' ')[0]
-    },
+    loadAnnualReport (filing: any) {
+      const header = filing?.header
+      const annualReport = filing?.annualReport
 
-    loadAnnualReport (filing, section) {
-      if (section) {
-        const date = section.annualReportDate
+      if (header && annualReport) {
+        const date = annualReport.annualReportDate
         if (date) {
-          const localDateTime = this.convertUTCTimeToLocalTime(filing.header.date)
-          const filingDate = this.formatDate(localDateTime)
-
-          const type = filing.header.name
+          const filingType = header.name
           const agmYear = +date.slice(0, 4)
-          const title = this.filingTypeToName(type, agmYear)
+          const name = this.filingTypeToName(filingType, agmYear)
+
+          const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+          const filingDate = filingDateTime?.slice(0, 10)
+
+          // build filing item
           const item = {
-            type: type,
-            title: title,
-            filingId: filing.header.filingId,
-            filingAuthor: filing.header.certifiedBy,
-            filingDateTime: localDateTime,
-            filingDate: filingDate,
-            paymentToken: filing.header.paymentToken,
-            filingDocuments: [{
-              filingId: filing.header.filingId,
-              name: 'Annual Report',
-              documentName: `${this.entityIncNo} - ${title} - ${filingDate}.pdf`
-            }],
-            isCorrected: filing.header.isCorrected || false,
-            isCorrectionPending: filing.header.isCorrectionPending || false,
-            comments: this.flattenAndSortComments(filing.header.comments)
+            filingType,
+            title: name,
+            filingId: header.filingId,
+            filingAuthor: header.certifiedBy,
+            filingDate,
+            documents: [{
+              type: this.DOCUMENT_TYPE_REPORT,
+              filingId: header.filingId,
+              title: name,
+              filename: `${this.entityIncNo} - ${name} - ${filingDate}.pdf`
+            }] as Array<any>,
+            isCorrected: (header.isCorrected || false),
+            isCorrectionPending: (header.isCorrectionPending || false),
+            comments: this.flattenAndSortComments(header.comments)
           }
+
+          // add receipt
+          if (header.paymentToken) {
+            item.documents.push({
+              type: this.DOCUMENT_TYPE_RECEIPT,
+              filingDateTime,
+              paymentToken: header.paymentToken,
+              title: 'Receipt',
+              filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+            })
+          }
+
           this.filedItems.push(item)
         } else {
           // eslint-disable-next-line no-console
@@ -372,39 +419,72 @@ export default {
       }
     },
 
-    loadOtherReport (filing, section) {
-      if (section) {
-        const localDateTime = this.convertUTCTimeToLocalTime(filing.header.date)
-        const filingDate = this.formatDate(localDateTime)
+    loadIncorporationApplication (filing: any) {
+      const header = filing?.header
+      const incorporationApplication = filing?.incorporationApplication
 
-        // Effective date is when the filing is applied to the backend, assigned by the backend when the filing is made.
-        // Currently, all filings will be applied immediately except a change of address for a Benefit Company
-        // The latter is always effective the following day at 12:01 AM Pacific Time
-        let effectiveDate = filing.header.date.slice(0, 10)
-        if (filing.header.effectiveDate) effectiveDate = filing.header.effectiveDate.slice(0, 10)
+      if (header && incorporationApplication) {
+        const filingType = header.name // NB: this is not NR type (but they should match)
 
-        const type = filing.header.name
-        const title = this.filingTypeToName(type)
+        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
 
-        const item = {
-          type: type,
-          title: title,
-          filingId: filing.header.filingId,
-          filingAuthor: filing.header.certifiedBy,
-          filingDateTime: localDateTime,
-          filingDate: filingDate,
-          filingEffectiveDate: effectiveDate,
-          paymentToken: filing.header.paymentToken,
-          filingDocuments: [{
-            filingId: filing.header.filingId,
-            name: title,
-            documentName: `${this.entityIncNo} - ${title} - ${filingDate}.pdf`
-          }],
-          status: filing.header.status,
-          isCorrected: filing.header.isCorrected || false,
-          isCorrectionPending: filing.header.isCorrectionPending || false,
-          comments: this.flattenAndSortComments(filing.header.comments)
+        // Effective Date is assigned by the backend when the filing is completed (normally right away).
+        // Effective Date may be in the future (eg, for Incorp App future effective filings).
+        // If Effective Date is empty, use Filing Date instead.
+        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+        const effectiveDate = effectiveDateTime?.slice(0, 10)
+
+        // is this a Future Effective Incorp App?
+        const isIaFutureEffective = this.isFutureEffective(filing)
+
+        // if it's not a FE IA, is it paid?
+        const isPaid = !isIaFutureEffective && (header.status === FilingStatus.PAID)
+
+        const name = this.filingTypeToName(filingType)
+        let docFilename: string
+        let receiptFilename: string
+        if (isIaFutureEffective) {
+          docFilename = `${this.entityIncNo} - ${name} (Future Effective) - ${filingDate}.pdf`
+          receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
+        } else {
+          docFilename = `${this.entityIncNo} - ${name} - ${filingDate}.pdf`
+          receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
+
+        // build filing item
+        const item: any = {
+          filingType,
+          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.entityName}`,
+          filingId: header.filingId,
+          filingAuthor: header.certifiedBy,
+          filingDate,
+          effectiveDateTime, // used for future effective Incorp App
+          isIaFutureEffective,
+          isPaid,
+          documents: [{
+            type: this.DOCUMENT_TYPE_REPORT,
+            filingId: header.filingId,
+            title: `${name}${isIaFutureEffective ? ' - Future Effective Incorporation' : ''}`,
+            filename: docFilename
+          }] as Array<any>,
+          status: header.status,
+          isCorrected: (header.isCorrected || false),
+          isCorrectionPending: (header.isCorrectionPending || false),
+          comments: this.flattenAndSortComments(header.comments)
+        }
+
+        // add receipt
+        if (header.paymentToken) {
+          item.documents.push({
+            type: this.DOCUMENT_TYPE_RECEIPT,
+            filingDateTime,
+            paymentToken: header.paymentToken,
+            title: `Receipt${isIaFutureEffective ? ' - Future Effective Incorporation' : ''}`,
+            filename: receiptFilename
+          })
+        }
+
         this.filedItems.push(item)
       } else {
         // eslint-disable-next-line no-console
@@ -412,22 +492,102 @@ export default {
       }
     },
 
-    loadCorrection (filing, section) {
-      if (section) {
-        const localDateTime = this.convertUTCTimeToLocalTime(filing.header.date)
+    loadOtherReport (filing: any, section: any) {
+      const header = filing?.header
 
+      if (header && section) {
+        const filingType = header.name
+
+        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
+
+        // Effective Date is assigned by the backend when the filing is completed (normally right away).
+        // Effective Date may be in the future (eg, for BCOMP COA filings).
+        // If Effective Date is empty, use Filing Date instead.
+        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+        const effectiveDate = effectiveDateTime?.slice(0, 10)
+
+        const name = this.filingTypeToName(filingType)
+
+        // is this a Future Effective BComp Change of Address?
+        const isBcompCoaFutureEffective = this.isBComp() &&
+          filingType === FilingTypes.CHANGE_OF_ADDRESS &&
+          this.isFutureEffective(filing)
+
+        // if it's not a BCOMP COA FE, is it paid?
+        const isPaid = !isBcompCoaFutureEffective && (header.status === FilingStatus.PAID)
+
+        // build filing item
+        const item: any = {
+          filingType,
+          title: name,
+          filingId: header.filingId,
+          filingAuthor: header.certifiedBy,
+          filingDate,
+          effectiveDate, // used for future effective COA
+          isBcompCoaFutureEffective,
+          isPaid,
+          documents: [{
+            type: this.DOCUMENT_TYPE_REPORT,
+            filingId: header.filingId,
+            title: name,
+            filename: `${this.entityIncNo} - ${name} - ${filingDate}.pdf`
+          }] as Array<any>,
+          status: header.status,
+          isCorrected: (header.isCorrected || false),
+          isCorrectionPending: (header.isCorrectionPending || false),
+          comments: this.flattenAndSortComments(header.comments)
+        }
+
+        // add receipt
+        if (header.paymentToken) {
+          item.documents.push({
+            type: this.DOCUMENT_TYPE_RECEIPT,
+            filingDateTime,
+            paymentToken: header.paymentToken,
+            title: 'Receipt',
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+          })
+        }
+
+        this.filedItems.push(item)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - missing section in filing =', filing)
+      }
+    },
+
+    /**
+     * Whether this filing is in a future effective state.
+     * NB: uses data from header
+     */
+    isFutureEffective (filing: any): boolean {
+      if ((filing?.header?.status === FilingStatus.PAID) && filing?.header?.effectiveDate) {
+        const effectiveDateTime = new Date(filing.header.effectiveDate)
+        const now = new Date()
+        if (effectiveDateTime > now) {
+          return true
+        }
+      }
+      return false
+    },
+
+    loadCorrection (filing: any) {
+      const header = filing?.header
+      const correction = filing?.correction
+
+      if (header && correction) {
         const item = {
-          type: filing.header.name,
-          title: `Correction - ${this.filingTypeToName(filing.correction.correctedFilingType)}`,
-          filingId: filing.header.filingId,
-          filingAuthor: filing.header.certifiedBy,
-          filingDateTime: localDateTime,
-          filingDate: filing.correction.correctedFilingDate,
+          filingType: header.name,
+          title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
+          filingId: header.filingId,
+          filingAuthor: header.certifiedBy,
+          filingDateTime: this.convertUTCTimeToLocalTime(header.date), // used for receipt
+          filingDate: this.convertUTCTimeToLocalTime(correction.correctedFilingDate),
           isCorrection: true,
-          paymentToken: filing.header.paymentToken,
-          corrFilingId: filing.correction.correctedFilingId,
-          correctedFilingType: filing.correction.correctedFilingType,
-          comments: this.flattenAndSortComments(filing.header.comments)
+          correctedFilingId: correction.correctedFilingId,
+          correctedFilingType: correction.correctedFilingType,
+          comments: this.flattenAndSortComments(header.comments)
         }
         this.filedItems.push(item)
       } else {
@@ -436,105 +596,111 @@ export default {
       }
     },
 
-    loadPaperFiling (filing) {
-      // split name on camelcase and capitalize first letters
-      if (!filing || !filing.header || !filing.header.name) return // safety check
+    loadPaperFiling (filing: any) {
+      const header = filing?.header
 
-      const localDateTime = this.convertUTCTimeToLocalTime(filing.header.date)
-      const filingDate = this.formatDate(localDateTime)
+      if (header) {
+        // since name is not guaranteed to exist, provide a fallback
+        const filingType = header.name || 'unknown'
 
-      const type = filing.header.name
+        let title: string
+        if (filing.annualReport?.annualReportDate) {
+          const agmYear = +filing.annualReport.annualReportDate.slice(0, 4)
+          title = this.filingTypeToName(filingType, agmYear)
+        } else {
+          title = this.filingTypeToName(filingType)
+        }
 
-      let title: string
-      if (filing.annualReport && filing.annualReport.annualReportDate) {
-        const agmYear: number = +filing.annualReport.annualReportDate.slice(0, 4)
-        title = this.filingTypeToName(type, agmYear)
+        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
+        const filingYear = filingDate?.slice(0, 4)
+
+        const item = {
+          filingType,
+          title,
+          filingId: header.filingId,
+          filingAuthor: 'Registry Staff',
+          filingDate,
+          filingYear,
+          paperOnly: true,
+          isCorrected: (header.isCorrected || false),
+          isCorrectionPending: (header.isCorrectionPending || false),
+          comments: this.flattenAndSortComments(header.comments)
+        }
+        this.filedItems.push(item)
       } else {
-        title = this.filingTypeToName(type)
+        // eslint-disable-next-line no-console
+        console.log('ERROR - missing section in filing =', filing)
       }
-
-      const item = {
-        type: type,
-        title: title,
-        filingId: filing.header.filingId,
-        filingAuthor: 'Registry Staff',
-        filingDate: filingDate,
-        filingYear: filing.header.date.slice(0, 4),
-        paymentToken: null,
-        filingDocuments: [{
-          filingId: filing.header.filingId,
-          name: title,
-          documentName: null
-        }],
-        paperOnly: true,
-        isCorrected: filing.header.isCorrected || false,
-        isCorrectionPending: filing.header.isCorrectionPending || false,
-        comments: this.flattenAndSortComments(filing.header.comments)
-      }
-      this.filedItems.push(item)
     },
 
     /** Expands the panel of the specified Filing ID. */
     highlightFiling (filingId: number) {
       for (let i = 0; i < this.filedItems.length; i++) {
-        const filingDocuments = this.filedItems[i].filingDocuments
+        const documents = this.filedItems[i].documents
         // NB: this only works if there is a filing document
-        if (filingDocuments && filingDocuments[0].filingId === filingId) {
+        if (documents && documents[0].filingId === filingId) {
           this.panel = i
           break
         }
       }
     },
 
-    correctThisItem (item) {
-      if (!item || !item.type) return // safety check
-      switch (item.type) {
+    correctThisFiling (filing: any) {
+      switch (filing?.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // FUTURE:
           // this.$router.push({ name: ANNUAL_REPORT,
-          //   params: { filingId: item.filingId, isCorrection: true }})
+          //   params: { filingId: filing.filingId, isCorrection: true }})
           // FOR NOW:
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+            params: { correctedFilingId: filing.filingId } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // FUTURE:
           // this.$router.push({ name: STANDALONE_DIRECTORS,
-          //   params: { filingId: item.filingId, isCorrection: true } })
+          //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+            params: { correctedFilingId: filing.filingId } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // FUTURE:
           // this.$router.push({ name: STANDALONE_ADDRESSES,
-          //   params: { filingId: item.filingId, isCorrection: true } })
+          //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+            params: { correctedFilingId: filing.filingId } })
+          break
+        case FilingTypes.INCORPORATION_APPLICATION:
+          // for now, not allowed
+          alert('At this time, you cannot correct an incorporation application. Please contact Ops if needed.')
           break
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?
           // this.$router.push({ name: CORRECTION,
-          //   params: { correctedFilingId: item.filingId } })
+          //   params: { correctedFilingId: filing.filingId } })
           alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
           break
         default:
           // fallback for all other filings
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+            params: { correctedFilingId: filing.filingId } })
           break
       }
     },
 
-    async downloadDocument (filingDocument) {
+    async downloadDocument (document: any) {
       this.loadingDocument = true
-      await this.downloadOneDocument(filingDocument)
+      await this.downloadOneDocument(document)
       this.loadingDocument = false
     },
 
-    async downloadOneDocument (filingDocument) {
-      const url = `businesses/${this.entityIncNo}/filings/${filingDocument.filingId}`
+    async downloadOneDocument (document: any) {
+      // safety check
+      if (!document.filingId || !document.filename) return
+
+      const url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
       const headers = { 'Accept': 'application/pdf' }
 
       await axios.get(url, { headers: headers, responseType: 'blob' as 'json' }).then(response => {
@@ -548,7 +714,7 @@ export default {
           // IE doesn't allow using a blob object directly as link href
           // instead it is necessary to use msSaveOrOpenBlob
           if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(blob, filingDocument.documentName)
+            window.navigator.msSaveOrOpenBlob(blob, document.filename)
           } else {
             // for other browsers, create a link pointing to the ObjectURL containing the blob
             const url = window.URL.createObjectURL(blob)
@@ -556,7 +722,7 @@ export default {
             window.document.body.appendChild(a)
             a.setAttribute('style', 'display: none')
             a.href = url
-            a.download = filingDocument.documentName
+            a.download = document.filename
             a.click()
             window.URL.revokeObjectURL(url)
             a.remove()
@@ -573,19 +739,20 @@ export default {
       })
     },
 
-    async downloadReceipt (filing) {
+    async downloadReceipt (document: any) {
       this.loadingReceipt = true
-      await this.downloadOneReceipt(filing)
+      await this.downloadOneReceipt(document)
       this.loadingReceipt = false
     },
 
-    async downloadOneReceipt (filing) {
-      if (!filing.paymentToken || !filing.filingDateTime || !filing.filingDate) return // safety check
+    async downloadOneReceipt (document: any) {
+      // safety check
+      if (!document.paymentToken || !document.filingDateTime || !document.filename) return
 
-      const url = `${filing.paymentToken}/receipts`
+      const url = `${document.paymentToken}/receipts`
       const data = {
         corpName: this.entityName,
-        filingDateTime: filing.filingDateTime,
+        filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }
       const config = {
@@ -596,8 +763,6 @@ export default {
 
       await axios.post(url, data, config).then(response => {
         if (response) {
-          const fileName = `${this.entityIncNo} - Receipt - ${filing.filingDate}.pdf`
-
           /* solution from https://github.com/axios/axios/issues/1392 */
 
           // it is necessary to create a new blob object with mime-type explicitly set
@@ -607,7 +772,7 @@ export default {
           // IE doesn't allow using a blob object directly as link href
           // instead it is necessary to use msSaveOrOpenBlob
           if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(blob, fileName)
+            window.navigator.msSaveOrOpenBlob(blob, document.filename)
           } else {
             // for other browsers, create a link pointing to the ObjectURL containing the blob
             const url = window.URL.createObjectURL(blob)
@@ -615,7 +780,7 @@ export default {
             window.document.body.appendChild(a)
             a.setAttribute('style', 'display: none')
             a.href = url
-            a.download = fileName
+            a.download = document.filename
             a.click()
             window.URL.revokeObjectURL(url)
             a.remove()
@@ -632,40 +797,21 @@ export default {
       })
     },
 
-    async downloadAll (filing) {
+    async downloadAll (filing: any) {
       this.loadingAll = true
       // first download documents (if any)
-      if (filing.filingDocuments) {
-        for (let i = 0; i < filing.filingDocuments.length; i++) {
-          await this.downloadOneDocument(filing.filingDocuments[i])
+      if (filing?.documents) {
+        for (let i = 0; i < filing.documents.length; i++) {
+          const type = filing.documents[i].type
+          if (type === this.DOCUMENT_TYPE_REPORT) {
+            await this.downloadOneDocument(filing.documents[i])
+          }
+          if (type === this.DOCUMENT_TYPE_RECEIPT) {
+            await this.downloadOneReceipt(filing.documents[i])
+          }
         }
       }
-      // finally download receipt
-      if (filing.paymentToken) {
-        await this.downloadOneReceipt(filing)
-      }
       this.loadingAll = false
-    },
-
-    /**
-     * Whether this specific filing is a future affective COA.
-     * @param filingType The type of the filing in the history list.
-     * @param status The status of the filing in the history list.
-     */
-    isCoaFutureEffective (filingType: string, status: string): boolean {
-      return (
-        this.isBComp() &&
-        filingType === FilingTypes.CHANGE_OF_ADDRESS &&
-        this.isPaid(status)
-      )
-    },
-
-    /**
-     * Whether this specific filing is paid.
-     * @param status The status of the filing in the history list.
-     */
-    isPaid (status: string): boolean {
-      return (status === FilingStatus.PAID)
     },
 
     showCommentDialog (filingId: number): void {
@@ -705,8 +851,8 @@ export default {
       }
     },
 
-    applyCorrectionTag (item: any): string {
-      return item.isCorrected ? ' - Corrected' : item.isCorrectionPending ? ' - Correction Pending' : ''
+    applyCorrectionTag (filing: any): string {
+      return filing?.isCorrected ? ' - Corrected' : (filing?.isCorrectionPending ? ' - Correction Pending' : '')
     },
 
     /** Closes current panel or opens new panel. */
@@ -729,14 +875,15 @@ export default {
 @import "@/assets/styles/theme.scss";
 
 .filing-history-item {
-  // disable expansion in general
+  // disable expansion generally
   pointer-events: none;
 }
 
-// specifically enable anchors and buttons
+// specifically enable anchors, buttons and the pending alert icon
 // for this page and sub-components
 ::v-deep a,
-::v-deep .v-btn {
+::v-deep .v-btn,
+::v-deep .pending-alert .v-icon {
   pointer-events: auto;
 }
 
@@ -755,14 +902,25 @@ export default {
   flex: 1 1 auto;
 }
 
+.list-item__subtitle {
+  // make all subtitles the same height
+  height: 2.25rem;
+}
+
 .pending-tooltip {
   max-width: 16rem;
+}
+
+.pending-alert .v-icon {
+  font-size: 18px; // same as other v-icons
+  padding-left: 0.875rem;
 }
 
 .filing-subtitle {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  margin-bottom: -0.5rem; // remove extra space when subtitle displays
 }
 
 // vertical pipe for separating subtitle statuses
@@ -774,20 +932,9 @@ export default {
   border-left: 1px solid $gray6;
 }
 
-.comments-btn {
-  border: none;
-
-  // bullet for separating subtitle and comments button
-  &:before {
-    display: inline-block;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    content: "•";
-  }
-}
-
 .details-btn,
-.expand-btn {
+.expand-btn,
+.comments-btn {
   margin-left: 0.25rem;
   border: none;
 }
@@ -801,10 +948,6 @@ export default {
   padding-right: 1.5rem;
   padding-left: 1.5rem;
   padding-bottom: 1.5rem;
-}
-
-.filing-history-item h3 {
-  margin-bottom: 0.25rem;
 }
 
 .filing-item__actions {
@@ -823,5 +966,10 @@ export default {
     min-width: unset !important;
     padding: 0.25rem !important;
   }
+}
+
+.document-list .v-list-item {
+  padding-left: 0;
+  min-height: 1.5rem;
 }
 </style>

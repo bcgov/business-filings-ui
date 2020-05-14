@@ -8,10 +8,11 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 describe('Pending Filing', () => {
-  it('Displays expected content with no filing', () => {
+  it('Displays expected content with no data', () => {
     const wrapper = mount(PendingFiling, { vuetify })
 
     // verify content
+    expect(wrapper.find('h4').text()).toBe('Filing Pending')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('This filing is paid')
@@ -23,13 +24,14 @@ describe('Pending Filing', () => {
 
   it('Displays expected content with a filing', () => {
     const wrapper = mount(PendingFiling, { vuetify,
-      propsData: { title: 'Incorporation Application' }
+      propsData: { filing: { title: 'Incorporation Application' } }
     })
 
     // verify content
+    expect(wrapper.find('h4').text()).toBe('Filing Pending')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('This Incorporation Application is')
+    expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
     expect(wrapper.find(ErrorContact).exists()).toBe(true)
 

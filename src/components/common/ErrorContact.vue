@@ -1,5 +1,5 @@
 <template>
-  <ul class="pl-0">
+  <ul class="error-contact pl-0">
     <li class="contact-container">
       <v-icon small class="contact-icon">mdi-phone</v-icon>
       <span class="font-weight-bold contact-key">Canada &amp; U.S. Toll Free:</span>

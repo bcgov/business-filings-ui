@@ -1015,7 +1015,7 @@ describe('TodoList - UI - BCOMP', () => {
     wrapper.destroy()
   })
 
-  it('displays a task but `File Now` Btn is disabled when checkbox is unselected', async () => {
+  it('displays a task but \'File Now\' is disabled when checkbox is unselected', async () => {
     // init store
     store.state.tasks = [
       {

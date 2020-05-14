@@ -129,7 +129,8 @@ export default class EntityInfo extends Mixins(EnumMixin) {
     switch (this.entityStatus) {
       case EntityStatus.NAME_REQUEST:
         return `${this.entityTypeToName(this.entityType)} Name Request`
-      case EntityStatus.INCORPORATION_APPLICATION:
+      case EntityStatus.DRAFT_INCORP_APP:
+      case EntityStatus.PENDING_INCORP_APP:
         return `${this.entityTypeToName(this.entityType)} Incorporation Application`
     }
     return '' // should never happen

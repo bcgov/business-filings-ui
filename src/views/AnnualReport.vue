@@ -30,7 +30,7 @@
     />
 
     <bcol-error-dialog
-      :bcolOBject="bcolObj"
+      :bcolObject="bcolObj"
       :filingType="FilingTypes.ANNUAL_REPORT"
       @exit="navigateToDashboard(true)"
       attach="#annual-report"/>
