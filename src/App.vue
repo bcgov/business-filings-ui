@@ -57,7 +57,7 @@
 
 <script lang="ts">
 // Libraries
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import TokenService from 'sbc-common-components/src/services/token.services'
 
@@ -121,6 +121,8 @@ export default {
   },
 
   computed: {
+    ...mapState(['tasks', 'filings']),
+
     /** The Auth API string. */
     authApiUrl (): string {
       return sessionStorage.getItem('AUTH_API_URL')
@@ -312,6 +314,15 @@ export default {
             this.storeNrData(data[0])
             this.storeTasks(data[1])
             this.storeFilings(data[2])
+
+            // safety check
+            // must be one or the other but not neither or both (ie, XOR)
+            const haveOneTask = (this.tasks.length === 1)
+            const haveOneFiling = (this.filings.length === 1)
+            if (haveOneTask === haveOneFiling) {
+              throw new Error('NR must have 1 task or 1 filing')
+            }
+
             this.dataLoaded = true
           }).catch(error => {
             // eslint-disable-next-line no-console
