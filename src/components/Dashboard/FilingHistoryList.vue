@@ -147,12 +147,12 @@
           <template v-if="filing.isBcompCoaFutureEffective" />
 
           <template v-else-if="filing.isIaFutureEffective">
-            <future-effective-filing class="" :filing=filing />
+            <future-effective-filing :filing=filing />
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
           <template v-else-if="filing.isPaid">
-            <pending-filing class="" :filing=filing />
+            <pending-filing :filing=filing />
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
