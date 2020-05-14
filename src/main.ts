@@ -34,7 +34,7 @@ async function start () {
   // initialize Launch Darkly
   await initLDClient()
 
-  // If a NR number is specified check of create ui is enabled
+  // if this is a NR, check if we are allowing user to go to Create UI
   if (sessionStorage.getItem('NR_NUMBER') && !featureFlags.getFlag('bcrs-create-ui-enabled')) {
     throw new Error('create-ui is disabled')
   }
