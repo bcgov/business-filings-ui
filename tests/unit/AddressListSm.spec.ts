@@ -166,7 +166,7 @@ describe('AddressListSm', () => {
       .toContain('111 Buchanan St')
     expect(wrapper.find('#registered-office-panel .mailing-address-list-item .same-as-above').exists())
       .toBe(false)
-    expect(wrapper.find('#registered-office-panel .mailing-address-list-item .address-subtitle') .text())
+    expect(wrapper.find('#registered-office-panel .mailing-address-list-item .address-subtitle').text())
       .toContain('222 Buchanan St')
 
     // verify records addresses

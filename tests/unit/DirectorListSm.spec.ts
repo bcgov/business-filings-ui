@@ -75,8 +75,8 @@ describe('DirectorListSm', () => {
     expect(wrapper.classes()).not.toContain('disabled')
 
     // verify that expansion buttons are clickable
-    expect(wrapper.findAll('.v-expansion-panel-header').at(0).attributes('tabindex')).toBeUndefined()
-    expect(wrapper.findAll('.v-expansion-panel-header').at(1).attributes('tabindex')).toBeUndefined()
+    expect(wrapper.findAll('.address-panel-toggle').at(0).attributes('tabindex')).toBeUndefined()
+    expect(wrapper.findAll('.address-panel-toggle').at(1).attributes('tabindex')).toBeUndefined()
 
     // verify that expansion icons are displayed
     expect(wrapper.findAll('.v-expansion-panel-header__icon').at(0).isVisible()).toBe(true)
@@ -203,8 +203,8 @@ describe('DirectorListSm', () => {
     expect(wrapper.classes()).toContain('disabled')
 
     // verify that expansion buttons aren't clickable
-    expect(wrapper.findAll('.v-expansion-panel-header').at(0).attributes('tabindex')).toBe('-1')
-    expect(wrapper.findAll('.v-expansion-panel-header').at(1).attributes('tabindex')).toBe('-1')
+    expect(wrapper.findAll('.address-panel-toggle').at(0).attributes('tabindex')).toBe('-1')
+    expect(wrapper.findAll('.address-panel-toggle').at(1).attributes('tabindex')).toBe('-1')
 
     // verify that expansion icons aren't displayed
     expect(wrapper.findAll('.v-expansion-panel-header__icon').at(0).isVisible()).toBe(false)

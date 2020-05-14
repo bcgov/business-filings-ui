@@ -1,16 +1,13 @@
 <template>
   <div id="address-list-sm">
-    <!-- when grayed out, expand all panels and disable expansion -->
-    <v-expansion-panels accordion multiple
-      :value="(showGrayedOut || showCompleteYourFilingMessage) ? [0,1] : [0]"
-      :disabled="(showGrayedOut || showCompleteYourFilingMessage)"
-    >
+    <!-- when "disabled", expand all panels and disable expansion -->
+    <v-expansion-panels accordion multiple :value="disabled ? [0,1] : [0]" :disabled="disabled">
       <!-- Registered Office -->
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
         :class="{
           'address-overlay': coaPending,
-          'disabled': showGrayedOut
+          'disabled': disabled
         }"
       >
         <v-expansion-panel-header id="registered-office-panel-toggle">
@@ -109,7 +106,7 @@
         class="align-items-top"
         :class="{
           'address-overlay': coaPending,
-          'disabled': showGrayedOut
+          'disabled': disabled
         }"
       >
         <v-expansion-panel-header id="records-office-panel-toggle">
@@ -240,6 +237,11 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false })
   private showGrayedOut: boolean
+
+  /** Whether to appear disabled. */
+  private get disabled (): boolean {
+    return (this.showCompleteYourFilingMessage || this.showGrayedOut)
+  }
 
   /** Enum definition for use in template */
   readonly EntityTypes = EntityTypes

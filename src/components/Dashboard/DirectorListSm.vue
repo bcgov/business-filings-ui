@@ -1,5 +1,5 @@
 <template>
-  <div id="director-list-sm" :class="{ 'disabled': showGrayedOut }">
+  <div id="director-list-sm" :class="{ 'disabled': disabled }">
     <div v-if="showCompleteYourFilingMessage">
       <span class="complete-filing">Complete your filing to display</span>
     </div>
@@ -9,7 +9,7 @@
       <v-expansion-panel class="align-items-top address-panel"
         v-for="director in directors"
         :key="director.id"
-        :disabled=showGrayedOut
+        :disabled="disabled"
       >
         <v-expansion-panel-header class="address-panel-toggle">
           <div class="avatar-container">
@@ -90,6 +90,11 @@ export default class DirectorListSm extends Mixins(CountriesProvincesMixin, Comm
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false })
   private showGrayedOut: boolean
+
+  /** Whether to appear disabled. */
+  private get disabled (): boolean {
+    return (this.showCompleteYourFilingMessage || this.showGrayedOut)
+  }
 }
 </script>
 
