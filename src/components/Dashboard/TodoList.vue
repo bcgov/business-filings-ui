@@ -99,7 +99,7 @@
                     :ripple=false
                   >
                     <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                    Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
+                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
                 </div>
 
@@ -126,11 +126,16 @@
                 </div>
 
                 <div v-else-if="isTypeCorrection(task) && isStatusCorrectionPending(task)" class="todo-subtitle">
-                  <span class="before-details">FILING PENDING</span>
-                  <v-btn x-small icon class="expand-btn">
-                    <v-icon>mdi-message-reply</v-icon>
+                  <div>FILING PENDING</div>
+                  <v-btn
+                    class="expand-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                  >
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
-                  Detail{{task.comments.length > 1 ? "s" : ""}} ({{task.comments.length}})
                 </div>
 
                 <div v-else-if="isStatusPending(task)" class="todo-subtitle">
@@ -984,33 +989,31 @@ export default {
 .todo-item {
   // disable expansion generally
   pointer-events: none;
-}
 
-// specifically enable COA checkbox
-.todo-list-checkbox {
-  pointer-events: auto;
-}
+  // enable all buttons (that aren't explicitly disabled)
+  .v-btn:not(:disabled) {
+    pointer-events: auto;
+  }
 
-// specifically enable events on this div
-.todo-list-detail {
-  pointer-events: auto;
-}
+  // specifically enable COA checkbox
+  .todo-list-checkbox {
+    pointer-events: auto;
+  }
 
-.todo-list.disabled {
-  opacity: 0.6;
-
-  // enable just the expansion button
-  .expand-btn {
+  // specifically enable events on this div
+  .todo-list-detail {
     pointer-events: auto;
   }
 }
 
-.todo-item:not(.disabled) {
-  // enable all buttons
-  .v-btn {
-    pointer-events: auto;
-  }
-}
+// FUTURE: fix this if needed (incorrect selector so apparently not used atm)
+// .todo-list.disabled {
+//   opacity: 0.6;
+//   // enable just the expansion button
+//   .expand-btn {
+//     pointer-events: auto;
+//   }
+// }
 
 .todo-item.draft .v-expansion-panel-content {
   display: none;
@@ -1055,15 +1058,6 @@ export default {
     margin-top: -8px;
     margin-bottom: -4px
   }
-}
-
-.before-details {
-    &:after {
-      display: inline-block;
-      margin-left: 0.5rem;
-      margin-right: 0.5rem;
-      content: "•";
-    }
 }
 
 .list-item__actions {
