@@ -11,7 +11,7 @@
 
         <template v-if="!isRoleStaff">
           <p class="genErr">
-            Your {{filingTypeToName(filingType)}} has been saved as a draft and you 
+            Your {{filingTypeToName(filingType)}} has been saved as a draft and you
             can retry your payment from the dashboard once the issue has been resolved.
           </p>
         </template>
@@ -33,6 +33,7 @@ import { mapGetters } from 'vuex'
 import { ErrorContact } from '@/components/common'
 import { EnumMixin } from '@/mixins'
 import { FilingTypes } from '@/enums'
+
 @Component({
   computed: {
     // Property definition for runtime environment.

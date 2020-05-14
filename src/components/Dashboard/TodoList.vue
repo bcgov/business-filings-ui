@@ -470,7 +470,7 @@ export default {
   methods: {
     ...mapActions(['setARFilingYear', 'setCurrentFilingStatus']),
 
-    async loadData () {
+    loadData () {
       this.taskItems = []
       // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
       if (this.isCoop()) this.confirmCheckbox = true
