@@ -30,7 +30,7 @@
     />
 
     <bcol-error-dialog
-      :bcolOBject="bcolObj"
+      :bcolObject="bcolObj"
       :filingType="FilingTypes.CHANGE_OF_DIRECTORS"
       @exit="navigateToDashboard(true)"
       attach="#standalone-directors"/>
