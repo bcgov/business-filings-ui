@@ -29,6 +29,13 @@
       attach="#standalone-office-address"
     />
 
+    <bcol-error-dialog
+      :bcolObject="bcolObj"
+      :filingType="FilingTypes.CHANGE_OF_ADDRESS"
+      @exit="navigateToDashboard(true)"
+      attach="#standalone-office-address"
+    />
+
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">
       <div class="loading__content">
@@ -179,7 +186,8 @@ import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
 // Dialogs
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
+  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Components
 import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
@@ -190,7 +198,7 @@ import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 import { DASHBOARD } from '@/constants'
 
 // Mixins
-import { CommonMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -206,9 +214,10 @@ export default {
     ConfirmDialog,
     PaymentErrorDialog,
     ResumeErrorDialog,
-    SaveErrorDialog
+    SaveErrorDialog,
+    BcolErrorDialog
   },
-  mixins: [CommonMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
 
   data () {
     return {
@@ -237,6 +246,8 @@ export default {
       staffPaymentFormValid: null,
       totalFee: 0,
 
+      // bcol error variables
+      bcolObj: null,
       // enums
       EntityTypes,
       FilingCodes,
@@ -594,9 +605,14 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            const errCode = this.getErrorCode(error)
+            if (errCode) {
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors
@@ -623,9 +639,14 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            const errCode = this.getErrorCode(error)
+            if (errCode) {
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors
@@ -648,6 +669,8 @@ export default {
     },
 
     resetErrors () {
+      this.paymentErrorDialog = false
+      this.bcolObj = null
       this.saveErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []

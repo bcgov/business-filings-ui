@@ -13,7 +13,7 @@ import PaymentErrorDialog from './PaymentErrorDialog.vue'
 import ResumeErrorDialog from './ResumeErrorDialog.vue'
 import SaveErrorDialog from './SaveErrorDialog.vue'
 import WarningPopover from './WarningPopover.vue'
-
+import BcolErrorDialog from './BcolErrorDialog.vue'
 export {
   BusinessAuthErrorDialog,
   AddCommentDialog,
@@ -29,5 +29,6 @@ export {
   PaymentErrorDialog,
   ResumeErrorDialog,
   SaveErrorDialog,
-  WarningPopover
+  WarningPopover,
+  BcolErrorDialog
 }

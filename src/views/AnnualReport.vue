@@ -29,6 +29,12 @@
       attach="#annual-report"
     />
 
+    <bcol-error-dialog
+      :bcolOBject="bcolObj"
+      :filingType="FilingTypes.ANNUAL_REPORT"
+      @exit="navigateToDashboard(true)"
+      attach="#annual-report"/>
+
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">
       <div class="loading__content">
@@ -311,10 +317,11 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 
 // Dialogs
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
+  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -323,7 +330,7 @@ import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/con
 export default {
   name: 'AnnualReport',
 
-  mixins: [DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
 
   components: {
     ArDate,
@@ -338,7 +345,8 @@ export default {
     ConfirmDialog,
     PaymentErrorDialog,
     ResumeErrorDialog,
-    SaveErrorDialog
+    SaveErrorDialog,
+    BcolErrorDialog
   },
 
   data () {
@@ -375,7 +383,7 @@ export default {
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
-
+      bcolObj: null,
       // other local properties
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
@@ -859,9 +867,14 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            const errCode = this.getErrorCode(error)
+            if (errCode) {
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors
@@ -888,9 +901,14 @@ export default {
           }
           filing = res.data.filing
           this.haveChanges = false
-        }).catch(error => {
+        }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
+            const errCode = this.getErrorCode(error)
+            if (errCode) {
+              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
+            } else {
+              this.paymentErrorDialog = true
+            }
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {
               this.saveErrors = error.response.data.errors
@@ -913,6 +931,8 @@ export default {
     },
 
     resetErrors () {
+      this.paymentErrorDialog = false
+      this.bcolObj = null
       this.saveErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []
