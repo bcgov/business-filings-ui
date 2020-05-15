@@ -1450,7 +1450,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')
-    .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     const $route = { params: { filingId: 0 } } // new filing id
     wrapper = mount(StandaloneDirectorsFiling, {
@@ -1498,13 +1498,13 @@ describe('Change of Directors - BCOL error dialog on save', () => {
 
     const button = wrapper.find('#cod-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
-    
+
     // Stub out a response from the Error endpoint in Pay API
     get.withArgs('codes/errors/BCOL_ERROR')
-    .returns(new Promise(resolve => resolve({ data: {
-      detail: 'An Error has occured',
-      title: 'Error'
-    }})))
+      .returns(new Promise(resolve => resolve({ data: {
+        detail: 'An Error has occured',
+        title: 'Error'
+      } })))
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises()
@@ -1517,6 +1517,4 @@ describe('Change of Directors - BCOL error dialog on save', () => {
 
     wrapper.destroy()
   })
-
 })
-

@@ -7,7 +7,7 @@
         <p class="genErr" id="dialog-header">
           This {{filingTypeToName(filingType)}} could not be filed for the following reason:
         </p>
-        <p class="genErr" id="dialog-content">{{bcolObject.detail}}</p>
+        <p class="genErr" id="dialog-content" v-html="bcolObject.detail"></p>
 
         <template v-if="!isRoleStaff">
           <p class="genErr">
