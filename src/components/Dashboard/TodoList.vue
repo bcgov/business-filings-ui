@@ -606,7 +606,7 @@ export default {
           ? date = filing.annualReport.annualReportDate
           : date = filing.annualReport.nextARDate
 
-        const bcolErr = filing.header.paymentErrorType || null
+        const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         if (date) {
@@ -636,7 +636,7 @@ export default {
     async loadChangeOfDirectors (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfDirectors) {
-        const bcolErr = filing.header.paymentErrorType || null
+        const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         this.taskItems.push({
@@ -659,7 +659,7 @@ export default {
     async loadChangeOfAddress (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.changeOfAddress) {
-        const bcolErr = filing.header.paymentErrorType || null
+        const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         this.taskItems.push({
@@ -706,7 +706,7 @@ export default {
     async loadIncorporationApplication (task) {
       const filing = task.task.filing
       if (filing && filing.header && filing.incorporationApplication) {
-        const bcolErr = filing.header.paymentErrorType || null
+        const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
         this.taskItems.push({

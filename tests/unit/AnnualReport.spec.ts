@@ -2104,7 +2104,6 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   })
 })
 
-
 describe('AnnualReport - BCOL error dialog on save', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
@@ -2159,7 +2158,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
       .stub(axios, 'post')
       .withArgs('businesses/CP0001191/filings')
       .returns(p1)
-    
+
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -2202,7 +2201,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')
-    .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // make sure form is validated
     vm.staffPaymentFormValid = true
@@ -2229,13 +2228,13 @@ describe('AnnualReport - BCOL error dialog on save', () => {
 
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
-    
+
     // Stub out a response from the Error endpoint in Pay API
     get.withArgs('codes/errors/BCOL_ERROR')
-    .returns(new Promise(resolve => resolve({ data: {
-      detail: 'An Error has occured',
-      title: 'Error'
-    }})))
+      .returns(new Promise(resolve => resolve({ data: {
+        detail: 'An Error has occured',
+        title: 'Error'
+      } })))
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises()
@@ -2248,5 +2247,4 @@ describe('AnnualReport - BCOL error dialog on save', () => {
 
     wrapper.destroy()
   })
-
 })

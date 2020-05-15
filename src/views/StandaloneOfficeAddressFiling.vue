@@ -487,7 +487,8 @@ export default {
         const filingId: number = +filing.header.filingId
 
         // whether this is a staff or no-fee filing
-        const prePaidFiling = (this.isRoleStaff || !this.isPayRequired)
+        const paymentCompleted = filing.header?.paymentStatusCode === 'COMPLETED'
+        const prePaidFiling = (this.isRoleStaff || !this.isPayRequired || paymentCompleted)
 
         // if filing needs to be paid, redirect to Pay URL
         if (!prePaidFiling) {

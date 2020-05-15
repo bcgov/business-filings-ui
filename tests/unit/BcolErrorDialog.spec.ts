@@ -17,8 +17,8 @@ describe('BcolErrorDialog - Verify parameters passed in are displayed correctly'
         propsData: {
           filingType: FilingTypes.ANNUAL_REPORT,
           bcolObject: {
-              title: "Error",
-              detail: "A BCOL payment error has occured"
+            title: 'Error',
+            detail: 'A BCOL payment error has occured'
           }
         },
         store,
@@ -30,7 +30,7 @@ describe('BcolErrorDialog - Verify parameters passed in are displayed correctly'
     expect(wrapper.find('#dialog-content').text())
       .toContain('A BCOL payment error has occured')
     expect(wrapper.find('#dialog-header').text())
-    .toBe('This Annual Report could not be filed for the following reason:')
+      .toBe('This Annual Report could not be filed for the following reason:')
     expect(wrapper.find('#dialog-retry-button')).toBeDefined()
 
     wrapper.destroy()
