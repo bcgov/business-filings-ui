@@ -1740,11 +1740,9 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 })
 
 describe('Change of Directors - BCOL error dialog on save', () => {
-  let wrapper: Wrapper<Vue>
-  let vm: any
-
   beforeEach(() => {
     // init store
+    store.state.currentDate = '2019-07-15'
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
@@ -1795,7 +1793,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       .returns(p1)
   })
 
-  it('Attempt to file and pay with a BCOL error', async () => {
+  it('Attempts to file and pay with a BCOL error', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
@@ -1823,6 +1821,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
         ConfirmDialog: true,
         PaymentErrorDialog: true,
         ResumeErrorDialog: true,
+        BcolErrorDialog: true,
         SaveErrorDialog: true
       },
       vuetify
