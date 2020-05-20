@@ -438,8 +438,8 @@ export default {
         // is this a Future Effective Incorp App?
         const isIaFutureEffective = this.isFutureEffective(filing)
 
-        // if it's not a FE IA, is it paid?
-        const isPaid = !isIaFutureEffective && (header.status === FilingStatus.PAID)
+        // is this a paid filing?
+        const isPaid = (header.status === FilingStatus.PAID)
 
         const name = this.filingTypeToName(filingType)
         let docFilename: string
@@ -514,8 +514,8 @@ export default {
           filingType === FilingTypes.CHANGE_OF_ADDRESS &&
           this.isFutureEffective(filing)
 
-        // if it's not a BCOMP COA FE, is it paid?
-        const isPaid = !isBcompCoaFutureEffective && (header.status === FilingStatus.PAID)
+        // is this a paid filing?
+        const isPaid = (header.status === FilingStatus.PAID)
 
         // build filing item
         const item: any = {

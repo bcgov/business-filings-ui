@@ -1387,11 +1387,9 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 })
 
 describe('Change of Directors - BCOL error dialog on save', () => {
-  let wrapper: Wrapper<Vue>
-  let vm: any
-
   beforeEach(() => {
     // init store
+    store.state.currentDate = '2019-07-15'
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
@@ -1442,7 +1440,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       .returns(p1)
   })
 
-  it('Attempt to file and pay with a BCOL error', async () => {
+  it('Attempts to file and pay with a BCOL error', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
@@ -1453,7 +1451,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     const $route = { params: { filingId: 0 } } // new filing id
-    wrapper = mount(StandaloneDirectorsFiling, {
+    const wrapper = mount(StandaloneDirectorsFiling, {
       store,
       mocks: { $route },
       stubs: {
@@ -1466,12 +1464,13 @@ describe('Change of Directors - BCOL error dialog on save', () => {
         ConfirmDialog: true,
         PaymentErrorDialog: true,
         ResumeErrorDialog: true,
+        BcolErrorDialog: true,
         SaveErrorDialog: true
       },
       vuetify
     })
 
-    vm = wrapper.vm as any
+    const vm: any = wrapper.vm
 
     // make sure form is validated
     vm.inFilingReview = true
@@ -1493,7 +1492,6 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     vm.totalFee = 100
 
     // sanity check
-
     expect(vm.bcolObj).toBeNull()
 
     const button = wrapper.find('#cod-file-pay-btn')
@@ -1501,10 +1499,13 @@ describe('Change of Directors - BCOL error dialog on save', () => {
 
     // Stub out a response from the Error endpoint in Pay API
     get.withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({ data: {
-        detail: 'An Error has occured',
-        title: 'Error'
-      } })))
+      .returns(new Promise(resolve => resolve({
+        data: {
+          detail: 'An error has occurred',
+          title: 'Error'
+        }
+      })))
+
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises()

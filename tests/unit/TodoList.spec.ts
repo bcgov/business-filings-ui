@@ -1546,10 +1546,12 @@ describe('TodoList - Click Tests', () => {
 
     // Stub out a response from the Error endpoint in Pay API
     sinon.stub(axios, 'get').withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({ data: {
-        detail: 'An Error has occured',
-        title: 'Error'
-      } })))
+      .returns(new Promise(resolve => resolve({
+        data: {
+          detail: 'An error has occurred',
+          title: 'Error'
+        }
+      })))
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
@@ -1573,7 +1575,7 @@ describe('TodoList - Click Tests', () => {
     // Confirm the message is visible after expansion panel clicked
     const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
     expect(todoItem).toBeDefined()
-    expect(bcolPanel.textContent).toContain('An Error has occured')
+    expect(bcolPanel.textContent).toContain('An error has occurred')
   })
 })
 
@@ -1854,7 +1856,30 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
               status: 'NEW'
             },
             nameRequest: {
-              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT'
+              names: [
+                {
+                  name: 'Test Name',
+                  state: 'APPROVED'
+                }
+              ],
+              nrNum: 'NR 1234567',
+              applicants: {
+                addrLine1: '1234 Fake Street',
+                addrLine2: 'Block 3',
+                addrLine3: 'Suite 1001',
+                city: 'Victoria',
+                countryTypeCd: 'CA',
+                postalCd: 'V9E 3S2',
+                stateProvinceCd: 'BC',
+                emailAddress: 'abc@test.com',
+                phoneNumber: '7777777777',
+                firstName: 'Adam',
+                middleName: 'John',
+                lastName: 'Smith'
+              },
+              consentFlag: null,
+              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT',
+              state: 'APPROVED'
             }
           }
         },

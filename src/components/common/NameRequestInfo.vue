@@ -78,6 +78,8 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   private nameRequestApplicant: NameRequestApplicantIF
 
   private created () {
+    if (!this.nameRequest) return // safety check
+
     this.parsedNameRequest = this.generateNameRequestState(this.nameRequest, null)
     this.nameRequestDetails = this.parsedNameRequest.details
     this.nameRequestApplicant = this.parsedNameRequest.applicant

@@ -61,7 +61,7 @@
                       </v-chip>
                     </template>
                     <span>The updated office addresses will be legally effective on {{ coaEffectiveDate }},
-                      12:01 AM(Pacific Time). No other filings are allowed until then.</span>
+                      12:01 AM (Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
                 </v-scale-transition>
                 <v-btn text small color="primary"
@@ -128,7 +128,7 @@ import { CommonMixin } from '@/mixins'
 import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Constants
-import { EntityStatus, EntityTypes, FilingNames, FilingStatus } from '@/enums'
+import { EntityStatus, FilingStatus } from '@/enums'
 import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 export default {
@@ -263,24 +263,24 @@ export default {
     },
 
     /**
-     * Searches the filings history for a 'paid' status (ie, not yet completed).
+     * Searches the filings history for a "pending" state, ie, paid (not yet completed).
      * Used to block new filings while there's a pending one.
-     * @param filings The array of filings in history
+     * @param filings the array of history filings array to search
      */
-    checkPendingFilings (filings: Array<any>): boolean {
-      if (!filings || !filings.length) return // safety check
+    checkPendingFilings (filings: Array<any>): void {
+      if (!filings?.length) return // safety check
 
-      const foundCoa = filings.some(filing => {
-        if (filing.name === FilingNames.ADDRESS_CHANGE && filing.isPaid) {
-          this.coaPending = true
-          this.coaEffectiveDate = filing.effectiveDate
+      const foundPaid = filings.some(filing => {
+        if (filing.isPaid) {
+          if (filing.isBcompCoaFutureEffective) {
+            this.coaPending = true
+            this.coaEffectiveDate = filing.effectiveDate
+          }
           this.hasBlockerFiling = true
           return true
         }
         return false
       })
-
-      return foundCoa
     },
 
     /**
@@ -300,10 +300,8 @@ export default {
 
   watch: {
     historyFilings () {
-      // check if a filing has a paid but pending state ( Currently BCOMPS )
-      if (this.isBComp()) {
-        this.checkPendingFilings(this.historyFilings)
-      }
+      // check if any filing has a pending state
+      this.checkPendingFilings(this.historyFilings)
 
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
@@ -336,12 +334,6 @@ section header {
   }
 }
 
-.pending-chip {
-  max-width: 3.75rem;
-  height: 1rem;
-  overflow: visible;
-  font-size: 8px;
-}
 .change-btn {
   padding: 0 6px 0 6px!important;
 }
