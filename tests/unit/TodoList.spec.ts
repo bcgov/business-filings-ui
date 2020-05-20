@@ -1854,7 +1854,30 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
               status: 'NEW'
             },
             nameRequest: {
-              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT'
+              names: [
+                {
+                  name: 'Test Name',
+                  state: 'APPROVED'
+                }
+              ],
+              nrNum: 'NR 1234567',
+              applicants: {
+                addrLine1: '1234 Fake Street',
+                addrLine2: 'Block 3',
+                addrLine3: 'Suite 1001',
+                city: 'Victoria',
+                countryTypeCd: 'CA',
+                postalCd: 'V9E 3S2',
+                stateProvinceCd: 'BC',
+                emailAddress: 'abc@test.com',
+                phoneNumber: '7777777777',
+                firstName: 'Adam',
+                middleName: 'John',
+                lastName: 'Smith'
+              },
+              consentFlag: null,
+              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT',
+              state: 'APPROVED'
             }
           }
         },
