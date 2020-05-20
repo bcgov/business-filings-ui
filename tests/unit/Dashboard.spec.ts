@@ -81,10 +81,8 @@ describe('Dashboard - UI', () => {
   })
 
   it('disables filing buttons when there is a future effective filing pending', () => {
-    store.state.entityType = 'BC'
-
     wrapper.find(FilingHistoryList).vm.$emit('filings-list',
-      [{ name: 'Address Change', isPaid: true }])
+      [{ name: 'Address Change', isPaid: true, isBcompCoaFutureEffective: true }])
     wrapper.find(TodoList).vm.$emit('has-blocker-filing', true)
 
     expect(vm.hasBlockerFiling).toEqual(true)

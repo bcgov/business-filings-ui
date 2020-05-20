@@ -1492,7 +1492,6 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     vm.totalFee = 100
 
     // sanity check
-
     expect(vm.bcolObj).toBeNull()
 
     const button = wrapper.find('#cod-file-pay-btn')
@@ -1500,10 +1499,13 @@ describe('Change of Directors - BCOL error dialog on save', () => {
 
     // Stub out a response from the Error endpoint in Pay API
     get.withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({ data: {
-        detail: 'An Error has occured',
-        title: 'Error'
-      } })))
+      .returns(new Promise(resolve => resolve({
+        data: {
+          detail: 'An error has occurred',
+          title: 'Error'
+        }
+      })))
+
     // click the File & Pay button
     await button.trigger('click')
     await flushPromises()

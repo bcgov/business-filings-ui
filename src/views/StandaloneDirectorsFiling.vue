@@ -52,7 +52,7 @@
               <article id="standalone-directors-article">
                 <header>
                   <h1 id="filing-header">Director Change</h1>
-                  <p>Select the date of your director changes. If you have director changes that occured on
+                  <p>Select the date of your director changes. If you have director changes that occurred on
                       different dates, you will need to perform multiple Director Change filings &mdash;
                       one for each unique date.</p>
 

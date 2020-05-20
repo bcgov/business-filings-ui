@@ -1546,10 +1546,12 @@ describe('TodoList - Click Tests', () => {
 
     // Stub out a response from the Error endpoint in Pay API
     sinon.stub(axios, 'get').withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({ data: {
-        detail: 'An Error has occured',
-        title: 'Error'
-      } })))
+      .returns(new Promise(resolve => resolve({
+        data: {
+          detail: 'An error has occurred',
+          title: 'Error'
+        }
+      })))
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
@@ -1573,7 +1575,7 @@ describe('TodoList - Click Tests', () => {
     // Confirm the message is visible after expansion panel clicked
     const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
     expect(todoItem).toBeDefined()
-    expect(bcolPanel.textContent).toContain('An Error has occured')
+    expect(bcolPanel.textContent).toContain('An error has occurred')
   })
 })
 
