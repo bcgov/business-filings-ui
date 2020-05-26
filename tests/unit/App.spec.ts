@@ -16,6 +16,88 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
+const BCOMP_ADDRESSES = {
+  'registeredOffice': {
+    'mailingAddress': {
+      'streetAddress': '1012 Douglas St',
+      'addressCity': 'Victoria',
+      'addressRegion': 'BC',
+      'addressType': 'mailing',
+      'postalCode': 'V8W 2C3',
+      'addressCountry': 'CA'
+    },
+    'deliveryAddress': {
+      'streetAddress': '220 Buchanan St',
+      'addressCity': 'Glasgow',
+      'addressRegion': 'Scotland',
+      'addressType': 'delivery',
+      'postalCode': 'G1 2FFF',
+      'addressCountry': 'UK'
+    }
+  },
+  'recordsOffice': {
+    'mailingAddress': {
+      'streetAddress': '220 Buchanan St',
+      'addressCity': 'Glasgow',
+      'addressRegion': 'Scotland',
+      'addressType': 'mailing',
+      'postalCode': 'G1 2FFF',
+      'addressCountry': 'UK'
+    },
+    'deliveryAddress': {
+      'streetAddress': '1012 Douglas St',
+      'addressCity': 'Victoria',
+      'addressRegion': 'BC',
+      'addressType': 'delivery',
+      'postalCode': 'V8W 2C3',
+      'addressCountry': 'CA'
+    }
+  }
+}
+
+const BCOMP_DIRECTORS = [
+  {
+    'officer': {
+      'firstName': 'Peter',
+      'lastName': 'Griffin'
+    },
+    'deliveryAddress': {
+      'streetAddress': '1012 Douglas St',
+      'addressCity': 'Victoria',
+      'addressRegion': 'BC',
+      'postalCode': 'V8W 2C3',
+      'addressCountry': 'CA'
+    },
+    'mailingAddress': {
+      'streetAddress': '1012 Douglas St',
+      'addressCity': 'Victoria',
+      'addressRegion': 'BC',
+      'postalCode': 'V8W 2C3',
+      'addressCountry': 'CA'
+    }
+  },
+  {
+    'officer': {
+      'firstName': 'Joe',
+      'lastName': 'Swanson'
+    },
+    'deliveryAddress': {
+      'streetAddress': '220 Buchanan St',
+      'addressCity': 'Glasgow',
+      'addressRegion': 'Scotland',
+      'postalCode': 'G1 2FFF',
+      'addressCountry': 'UK'
+    },
+    'mailingAddress': {
+      'streetAddress': '220 Buchanan St',
+      'addressCity': 'Glasgow',
+      'addressRegion': 'Scotland',
+      'postalCode': 'G1 2FFF',
+      'addressCountry': 'UK'
+    }
+  }
+]
+
 describe('App as a COOP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
@@ -509,47 +591,7 @@ describe('App as a BCOMP', () => {
     // GET addresses
     get.withArgs('businesses/BC0007291/addresses')
       .returns(new Promise((resolve) => resolve({
-        data:
-          {
-            'registeredOffice':
-              {
-                'mailingAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Victoria',
-                  'addressRegion': 'BC',
-                  'addressType': 'mailing',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '220 Buchanan St',
-                  'addressCity': 'Glasgow',
-                  'addressRegion': 'Scotland',
-                  'addressType': 'delivery',
-                  'postalCode': 'G1 2FFF',
-                  'addressCountry': 'UK'
-                }
-              },
-            'recordsOffice':
-              {
-                'mailingAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Vancouver',
-                  'addressRegion': 'BC',
-                  'addressType': 'mailing',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '220 Buchanan St',
-                  'addressCity': 'Glasgow',
-                  'addressRegion': 'Scotland',
-                  'addressType': 'delivery',
-                  'postalCode': 'G1 2FFF',
-                  'addressCountry': 'UK'
-                }
-              }
-          }
+        data: BCOMP_ADDRESSES
       })))
 
     // GET directors
@@ -557,48 +599,7 @@ describe('App as a BCOMP', () => {
       .returns(new Promise((resolve) => resolve({
         data:
           {
-            directors: [
-              {
-                'officer': {
-                  'firstName': 'Peter',
-                  'lastName': 'Griffin'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Victoria',
-                  'addressRegion': 'BC',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                },
-                'mailingAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Victoria',
-                  'addressRegion': 'BC',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                }
-              },
-              {
-                'officer': {
-                  'firstName': 'Joe',
-                  'lastName': 'Swanson'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '220 Buchanan St',
-                  'addressCity': 'Glasgow',
-                  'addressRegion': 'Scotland',
-                  'postalCode': 'G1 2FFF',
-                  'addressCountry': 'UK'
-                },
-                'mailingAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Victoria',
-                  'addressRegion': 'BC',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                }
-              }
-            ]
+            directors: BCOMP_DIRECTORS
           }
       })))
 
@@ -678,8 +679,8 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
     expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
-    expect(vm.$store.state.recordsAddress.mailingAddress.addressCity).toBe('Vancouver')
-    expect(vm.$store.state.recordsAddress.deliveryAddress.addressCity).toBe('Glasgow')
+    expect(vm.$store.state.recordsAddress.mailingAddress.addressCity).toBe('Glasgow')
+    expect(vm.$store.state.recordsAddress.deliveryAddress.addressCity).toBe('Victoria')
 
     // These values have been assigned in the mockResponse but are expected to be filtered out by front-end logic.
     expect(vm.$store.state.registeredAddress.addressType).toBeUndefined()
@@ -693,7 +694,8 @@ describe('App as a BCOMP', () => {
   })
 })
 
-describe('App as a Name Request', () => {
+// FUTURE: enable when/if we have NRs without a draft
+xdescribe('App as a Name Request', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -742,7 +744,7 @@ describe('App as a Name Request', () => {
                 consumptionDate: null
               }
             ],
-            nrNum: 'NR 1234567',
+            nrNumber: 'NR 1234567',
             requestTypeCd: 'XX',
             state: 'APPROVED'
           }
@@ -826,7 +828,7 @@ describe('App as a Name Request', () => {
     expect(vm.nameRequest.expirationDate).toBe('Thu, 31 Dec 2099 23:59:59 GMT')
     expect(vm.nameRequest.names[0].name).toBe('My Name Request')
     expect(vm.nameRequest.names[0].consumptionDate).toBeNull()
-    expect(vm.nameRequest.nrNum).toBe('NR 1234567')
+    expect(vm.nameRequest.nrNumber).toBe('NR 1234567')
     expect(vm.nameRequest.requestTypeCd).toBe('XX')
     expect(vm.nameRequest.state).toBe('APPROVED')
 
@@ -849,11 +851,15 @@ describe('App as a Name Request', () => {
   })
 })
 
-describe('App as an Incorporation Application', () => {
+describe('App as a Draft Incorporation Application', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
   beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
     sessionStorage.clear()
     // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
@@ -870,14 +876,14 @@ describe('App as an Incorporation Application', () => {
       'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
       'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
       'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg')
-    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
   })
 
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
     // GET authorizations (role)
-    get.withArgs('NR 1234567/authorizations')
+    get.withArgs('T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
           {
@@ -898,44 +904,34 @@ describe('App as an Incorporation Application', () => {
                 consumptionDate: null
               }
             ],
-            nrNum: 'NR 1234567',
-            requestTypeCd: 'XX',
+            nrNumber: 'NR 1234567',
+            requestTypeCd: 'BC',
             state: 'APPROVED'
           }
       })))
 
-    // GET tasks
-    get.withArgs('businesses/NR 1234567/tasks')
+    // GET IA filings
+    get.withArgs('businesses/T123456789/filings')
       .returns(new Promise((resolve) => resolve({
-        data:
-          {
-            tasks: [
-              {
-                enabled: true,
-                order: 1,
-                task: {
-                  todo: {
-                    nameRequest: {
-                      zig: 'zag'
-                    },
-                    header: {
-                      name: 'incorporationApplication',
-                      status: 'NEW'
-                    }
-                  }
-                }
+        data: {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BC'
+            },
+            header: {
+              accountId: '123',
+              date: '2020-05-21T00:11:55.887740+00:00',
+              name: 'incorporationApplication',
+              status: 'DRAFT'
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567'
               }
-            ]
+            }
           }
-      })))
-
-    // GET filings
-    get.withArgs('businesses/NR 1234567/filings')
-      .returns(new Promise((resolve) => resolve({
-        data:
-          {
-            'filings': []
-          }
+        }
       })))
 
     // create a Local Vue and install router on it
@@ -961,27 +957,154 @@ describe('App as an Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.nameRequest.names[0].name).toBe('My Name Request')
-    expect(vm.nameRequest.names[0].consumptionDate).toBeNull()
-    expect(vm.nameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.nameRequest.requestTypeCd).toBe('XX')
-    expect(vm.nameRequest.state).toBe('APPROVED')
-
+    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
     expect(vm.$store.state.entityName).toBe('My Name Request')
-    expect(vm.$store.state.entityType).toBe('XX')
-    expect(vm.$store.state.entityIncNo).toBe('NR 1234567')
   })
 
-  it('fetches Tasks properly', () => {
+  it('fetches IA filings properly', () => {
+    expect(vm.$store.state.entityIncNo).toBe('T123456789')
+    expect(vm.$store.state.entityType).toBe('BC')
+    expect(vm.$store.state.entityStatus).toBe('DRAFT_INCORP_APP')
+
+    // verify loaded task
     expect(vm.$store.state.tasks.length).toBe(1)
     expect(vm.$store.state.tasks[0].enabled).toBe(true)
     expect(vm.$store.state.tasks[0].order).toBe(1)
-    expect(vm.$store.state.tasks[0].task.todo.header.nameRequest).toBeUndefined()
-    expect(vm.$store.state.tasks[0].task.todo.header.name).toBe('incorporationApplication')
-    expect(vm.$store.state.tasks[0].task.todo.header.status).toBe('NEW')
+    expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('BC')
+    expect(vm.$store.state.tasks[0].task.filing.header.name).toBe('incorporationApplication')
+    expect(vm.$store.state.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(vm.$store.state.tasks[0].task.filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
+  })
+})
+
+describe('App as a Pending Incorporation Application', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
+    sessionStorage.clear()
+    // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
+      'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
+      'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
+      '0aC9yZWFsbXMvZmNmMGtwcXIiLCJhdWQiOlsic2JjLWF1dGgtd2ViIiwiYWNjb3VudCJdLCJzdWIiOiI4ZTVkZDYzNS01OGRkLTQ5YzUtYmViM' +
+      'S00NmE1ZDVhMTYzNWMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzYmMtYXV0aC13ZWIiLCJhdXRoX3RpbWUiOjAsInNlc3Npb25fc3RhdGUiOiI' +
+      '5OGQ3Y2Y2Zi0xYTQ1LTQzMzUtYWU0OC02YzBiNTdlMGYwNTAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly8xOTIuMTY4L' +
+      'jAuMTM6ODA4MC8iLCIxOTIuMTY4LjAuMTMiLCIqIiwiaHR0cDovLzE5Mi4xNjguMC4xMzo4MDgwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI' +
+      '6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3Vud' +
+      'CI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiIiLCJ' +
+      'yb2xlcyI6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl0sInByZWZlcnJlZF91c2VybmFtZSI6I' +
+      'mJjMDAwNzI5MSIsImxvZ2luU291cmNlIjoiUEFTU0NPREUiLCJ1c2VybmFtZSI6ImJjMDAwNzI5MSJ9.GYKmp5SQxZYTEkltSgaM3LMNcmuo_n' +
+      'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
+      'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
+      'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg')
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
   })
 
-  it('fetches Filings properly', () => {
-    expect(vm.$store.state.filings.length).toBe(0)
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role)
+    get.withArgs('T123456789/authorizations')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            roles: ['edit', 'view']
+          }
+      })))
+
+    // GET NR data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+            names: [
+              {
+                name: 'My Name Request',
+                state: 'APPROVED',
+                consumptionDate: null
+              }
+            ],
+            nrNumber: 'NR 1234567',
+            requestTypeCd: 'BC',
+            state: 'APPROVED'
+          }
+      })))
+
+    // GET IA filings
+    get.withArgs('businesses/T123456789/filings')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BC'
+            },
+            header: {
+              accountId: '123',
+              date: '2020-05-21T00:11:55.887740+00:00',
+              name: 'incorporationApplication',
+              status: 'PAID'
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567'
+              },
+              offices: BCOMP_ADDRESSES,
+              parties: BCOMP_DIRECTORS
+            }
+          }
+        }
+      })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      sync: false,
+      localVue,
+      router,
+      store,
+      vuetify })
+    vm = wrapper.vm
+
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches NR data properly', () => {
+    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
+    expect(vm.$store.state.entityName).toBe('My Name Request')
+  })
+
+  it('fetches IA filings properly', () => {
+    expect(vm.$store.state.entityIncNo).toBe('T123456789')
+    expect(vm.$store.state.entityType).toBe('BC')
+    expect(vm.$store.state.entityStatus).toBe('PAID_INCORP_APP')
+
+    // spot check addresses and directors
+    expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
+    expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
+    expect(vm.$store.state.directors[0].officer.lastName).toBe('Griffin')
+    expect(vm.$store.state.directors[1].officer.lastName).toBe('Swanson')
+
+    // verify loaded filing
+    expect(vm.$store.state.filings.length).toBe(1)
+    expect(vm.$store.state.filings[0].filing.business.legalType).toBe('BC')
+    expect(vm.$store.state.filings[0].filing.header.name).toBe('incorporationApplication')
+    expect(vm.$store.state.filings[0].filing.header.status).toBe('PAID')
+    expect(vm.$store.state.filings[0].filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
   })
 })

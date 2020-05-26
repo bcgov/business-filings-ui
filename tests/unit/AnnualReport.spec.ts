@@ -924,8 +924,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    button.trigger('click')
-    await flushPromises()
+    // button.trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 
@@ -996,8 +996,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    button.trigger('click')
-    await flushPromises()
+    // button.trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 
@@ -1227,7 +1227,8 @@ describe('AnnualReport - Part 4 - Saving', () => {
     }
 
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1256,7 +1257,8 @@ describe('AnnualReport - Part 4 - Saving', () => {
     }
 
     // click the Save & Resume Later button
-    wrapper.find('#ar-save-resume-btn').trigger('click')
+    // wrapper.find('#ar-save-resume-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
@@ -1273,7 +1275,8 @@ describe('AnnualReport - Part 4 - Saving', () => {
     vm.certifyFormValid = true
 
     // click the Cancel button
-    wrapper.find('#ar-cancel-btn').trigger('click')
+    // wrapper.find('#ar-cancel-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.$router.push({ name: 'dashboard' })
 
@@ -1415,7 +1418,8 @@ describe('AnnualReport - Part 5 - Data', () => {
 
   it('includes Directors, Office Mailing Address, and Office Delivery Address in AR filing data', async () => {
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1435,7 +1439,8 @@ describe('AnnualReport - Part 5 - Data', () => {
 
   it('includes unchanged directors in AR filing data', async () => {
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1452,7 +1457,8 @@ describe('AnnualReport - Part 5 - Data', () => {
 
   it('includes appointed directors in AR filing data', async () => {
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1469,7 +1475,8 @@ describe('AnnualReport - Part 5 - Data', () => {
 
   it('does NOT include ceased directors in AR filing data', async () => {
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1486,7 +1493,8 @@ describe('AnnualReport - Part 5 - Data', () => {
 
   it('includes certification data in the header', async () => {
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1508,7 +1516,8 @@ describe('AnnualReport - Part 5 - Data', () => {
     store.state.currentDate = '2019-03-03'
 
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1530,7 +1539,8 @@ describe('AnnualReport - Part 5 - Data', () => {
     vm.didNotHoldAgm = true
 
     // click the Save button
-    wrapper.find('#ar-save-btn').trigger('click')
+    // wrapper.find('#ar-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1723,6 +1733,7 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     // - the first index (0) is to get the first call, where there could be many calls to the stubbed function
     // - the second index (1) is to get the second param - data - where the call is axios.post(url, data)
     const payload = spy.args[0][1]
+
     // basic tests to pass ensuring structure of payload is as expected
     expect(payload.filing).toBeDefined()
     expect(payload.filing.annualReport).toBeDefined()
@@ -1951,11 +1962,11 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
       }
     }
 
-    // click the Save button
-    wrapper.find('#ar-file-pay-btn').trigger('click')
+    // click the File & Pay button
+    // wrapper.find('#ar-file-pay-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
-    await flushPromises()
 
     // verify error dialog
     expect(vm.saveErrorDialog).toBe(true)
@@ -1990,11 +2001,11 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     // set the filingId
     vm.filingId = 123
 
-    // click the Save button
-    wrapper.find('#ar-file-pay-btn').trigger('click')
+    // click the File & Pay button
+    // wrapper.find('#ar-file-pay-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
-    await flushPromises()
 
     // verify error dialog
     expect(vm.saveErrorDialog).toBe(true)
@@ -2092,7 +2103,7 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
       }
     }
 
-    // click the Save button
+    // click the File & Pay button
     wrapper.find('#ar-file-pay-btn').trigger('click')
     await flushPromises()
 
@@ -2239,10 +2250,10 @@ describe('AnnualReport - BCOL error dialog on save', () => {
       })))
 
     // click the File & Pay button
-    await button.trigger('click')
-    await flushPromises()
-    await vm.onClickFilePay()
+    // button.trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
+    await vm.onClickFilePay()
 
     // verify an error has been received
     expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)

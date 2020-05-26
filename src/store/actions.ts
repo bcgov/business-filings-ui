@@ -17,6 +17,9 @@ export default {
   setNextARDate ({ commit }, nextARDate: string) {
     commit('nextARDate', nextARDate)
   },
+  setNameRequest ({ commit }, nameRequest: object) {
+    commit('nameRequest', nameRequest)
+  },
   setARFilingYear ({ commit }, ARFilingYear: number) {
     commit('ARFilingYear', ARFilingYear)
   },

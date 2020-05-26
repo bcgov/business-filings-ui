@@ -55,6 +55,7 @@ describe('AddCommentDialog', () => {
         vuetify
       })
 
+    // click the Cancel button
     wrapper.find('#dialog-cancel-button').trigger('click')
     await flushPromises()
 
@@ -91,10 +92,10 @@ describe('AddCommentDialog', () => {
       })
     const vm: any = wrapper.vm
 
+    // click the Save button
     // wrapper.find('#dialog-save-button').trigger('click')
     // await flushPromises()
-
-    // apparently the click doesn't call the method, so do it explicitly
+    // work-around because click trigger isn't working
     await vm.save()
 
     // verify Close event

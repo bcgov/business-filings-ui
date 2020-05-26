@@ -725,7 +725,7 @@ export default {
               this.initialCODDate = filing.header.effectiveDate.slice(0, 10)
             } else {
               // eslint-disable-next-line no-console
-              console.error('fetchChangeOfDirectors() error = missing Effective Date')
+              console.log('fetchChangeOfDirectors() error = missing Effective Date')
             }
 
             const changeOfDirectors = filing.changeOfDirectors
@@ -769,7 +769,7 @@ export default {
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.error('fetchData() error =', error)
+        console.log('fetchData() error =', error)
         this.resumeErrorDialog = true
       })
     },
@@ -823,7 +823,7 @@ export default {
           })
           .catch(error => {
             // eslint-disable-next-line no-console
-            console.error('hasTasks() error =', error)
+            console.log('hasTasks() error =', error)
             this.saveErrorDialog = true
           })
       }

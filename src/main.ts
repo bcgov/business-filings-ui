@@ -34,8 +34,8 @@ async function start () {
   // initialize Launch Darkly
   await initLDClient()
 
-  // if this is a NR, check if we are allowing user to go to Create UI
-  if (sessionStorage.getItem('NR_NUMBER') && !featureFlags.getFlag('bcrs-create-ui-enabled')) {
+  // if this is a draft Incorp App, check if we are allowing user to go to Create UI
+  if (sessionStorage.getItem('TEMP_REG_NUMBER') && !featureFlags.getFlag('bcrs-create-ui-enabled')) {
     throw new Error('create-ui is disabled')
   }
 
@@ -59,7 +59,7 @@ async function start () {
 
 // execution and error handling
 start().catch(error => {
-  console.error(error) // eslint-disable-line no-console
+  console.log(error) // eslint-disable-line no-console
   alert('There was an error starting this page. (See console for details.)\n' +
   'Please try again later.')
   // try to redirect to Business Registry home page

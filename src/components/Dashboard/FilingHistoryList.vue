@@ -217,7 +217,7 @@
     <!-- No Results Message -->
     <v-card class="no-results" flat v-if="!filedItems.length">
       <v-card-text>
-        <div class="no-results__subtitle" v-if="nrNumber">Complete your filing to display</div>
+        <div class="no-results__subtitle" v-if="tempRegNumber">Complete your filing to display</div>
         <template v-else>
           <div class="no-results__title">You have no filing history</div>
           <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
@@ -271,7 +271,7 @@ export default {
       loadingDocument: false,
       loadingReceipt: false,
       loadingAll: false,
-      currentFilingId: null,
+      currentFilingId: null as number,
 
       // enums
       EntityTypes,
@@ -290,9 +290,9 @@ export default {
 
     ...mapState(['entityIncNo', 'filings', 'entityName']),
 
-    /** The NR Number string. */
-    nrNumber (): string {
-      return sessionStorage.getItem('NR_NUMBER')
+    /** The Incorporation Application's Temporary Registration Number string. */
+    tempRegNumber (): string {
+      return sessionStorage.getItem('TEMP_REG_NUMBER')
     }
   },
 
@@ -358,6 +358,14 @@ export default {
 
       this.$emit('filed-count', this.filedItems.length)
       this.$emit('filings-list', this.filedItems)
+
+      // If there is an Incorp App item, emit the has-blocker-filings event to the parent component.
+      // This indicates that a new filing cannot be started because this item has to be completed first.
+      this.$emit('has-blocker-filing',
+        this.filedItems.filter(item => {
+          return (item.filingType === FilingTypes.INCORPORATION_APPLICATION)
+        }).length > 0
+      )
 
       // if needed, highlight a specific filing
       // NB: use unary plus operator to cast string to number
@@ -734,7 +742,7 @@ export default {
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.error('loadOneDocument() error =', error)
+        console.log('loadOneDocument() error =', error)
         this.downloadErrorDialog = true
       })
     },
@@ -792,7 +800,7 @@ export default {
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.error('downloadOneReceipt() error =', error)
+        console.log('downloadOneReceipt() error =', error)
         this.downloadErrorDialog = true
       })
     },
@@ -843,11 +851,11 @@ export default {
           }
         }).catch(error => {
           // eslint-disable-next-line no-console
-          console.error('reloadComments() error =', error)
+          console.log('reloadComments() error =', error)
         })
       } else {
         // eslint-disable-next-line no-console
-        console.error('reloadComments() error - could not find filing id =', filingId)
+        console.log('reloadComments() error - could not find filing id =', filingId)
       }
     },
 

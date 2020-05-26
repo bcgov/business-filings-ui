@@ -22,12 +22,12 @@
                 </h2>
               </header>
               <todo-list
-                @todo-count="todoCount = $event"
-                @has-blocker-filing="hasBlockerFiling = $event"
-                @todo-filings="todoListFilings = $event"
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
                 :hasBlockerFiling="hasBlockerFiling"
+                @todo-count="todoCount = $event"
+                @todo-filings="todoListFilings = $event"
+                @has-blocker-filing="hasBlockerFiling = $event"
               />
             </section>
 
@@ -41,6 +41,7 @@
                 :hasBlockerFiling="hasBlockerFiling"
                 @filed-count="filedCount = $event"
                 @filings-list="historyFilings = $event"
+                @has-blocker-filing="hasBlockerFiling = $event"
               />
             </section>
           </v-col>
@@ -67,7 +68,7 @@
                 <v-btn text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
-                  :disabled="disableChanges"
+                  :disabled="hasBlockerFiling"
                   @click.native.stop="proceedCoa()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -89,7 +90,7 @@
                 <v-btn text small color="primary"
                   id="standalone-directors-button"
                   class="change-btn"
-                  :disabled="disableChanges"
+                  :disabled="hasBlockerFiling"
                   @click.native.stop="goToStandaloneDirectors()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -163,27 +164,14 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
-    /** The NR Number string. */
-    nrNumber (): string {
-      return sessionStorage.getItem('NR_NUMBER')
-    },
-
-    /** Whether this is an Incorporation Application task. */
+    /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
-      return (this.entityStatus === EntityStatus.NAME_REQUEST || this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+      return (this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
     },
 
-    /** Whether this is an Incorporation Application filing. */
+    /** Whether this is a Paid Incorporation Application. */
     isIncorpAppFiling (): boolean {
-      return (this.entityStatus === EntityStatus.PENDING_INCORP_APP)
-    },
-
-    /** Whether changes need to be disabled. */
-    disableChanges () : boolean {
-      if (this.nrNumber) {
-        return (this.isIncorpAppTask || this.isIncorpAppFiling)
-      }
-      return this.hasBlockerFiling
+      return (this.entityStatus === EntityStatus.PAID_INCORP_APP)
     }
   },
 

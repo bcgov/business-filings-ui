@@ -1,27 +1,27 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="name-request-invalid-dialog">
     <v-card>
-      <v-card-title>Invalid Name Request</v-card-title>
+      <v-card-title>Invalid Incorporation Application</v-card-title>
 
       <v-card-text>
         <p class="genErr" v-if="type === NameRequestStates.EXPIRED">
-          The specified name request has expired.</p>
+          The name request has expired.</p>
 
         <p class="genErr" v-else-if="type === NameRequestStates.CONSUMED">
-          The specified name request has already been consumed.</p>
+          The name request has already been consumed.</p>
 
         <p class="genErr" v-else-if="type === NameRequestStates.NOT_APPROVED">
-          The specified name request has not been approved.</p>
+          The name request has not been approved.</p>
 
         <p class="genErr" v-else-if="type === NameRequestStates.NOT_FOUND">
-          The specified name request number could not be found.</p>
+          The name request number could not be found.</p>
 
         <p class="genErr" v-else-if="type === NameRequestStates.NEED_CONSENT">
-          The specified name request number is awaiting consent.</p>
+          The name request number is awaiting consent.</p>
 
         <p class="genErr" v-else>An unexpected error has occurred.</p>
 
-        <p class="mt-4">You can retry now, or you can exit and try to access this Name Request
+        <p class="mt-4">You can retry now, or you can exit and try to access this Incorporation Application
           at another time.</p>
 
         <template v-if="!isRoleStaff">

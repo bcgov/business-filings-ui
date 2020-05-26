@@ -22,6 +22,7 @@ export default {
   businessPhoneExtension: null as string,
   lastAgmDate: null as string,
   nextARDate: null as string,
+  nameRequest: null as object,
 
   ARFilingYear: null as number,
   tasks: [] as Array<object>,

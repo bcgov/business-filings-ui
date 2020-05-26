@@ -445,9 +445,9 @@ export default {
           console.log('fetchDraftFiling() error - invalid response =', res)
           this.resumeErrorDialog = true
         }
-      }).catch(err => {
+      }).catch(error => {
         // eslint-disable-next-line no-console
-        console.error('fetchDraftFiling() error =', err)
+        console.log('fetchDraftFiling() error =', error)
         this.resumeErrorDialog = true
       })
     },
@@ -482,7 +482,7 @@ export default {
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.error('fetchOrigFiling() error =', error)
+        console.log('fetchOrigFiling() error =', error)
         this.loadCorrectionDialog = true
       })
     },
@@ -705,7 +705,7 @@ export default {
           })
           .catch(error => {
             // eslint-disable-next-line no-console
-            console.error('fetchData() error =', error)
+            console.log('fetchData() error =', error)
             this.saveErrorDialog = true
           })
       }

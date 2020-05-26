@@ -97,7 +97,7 @@ export default class AddCommentDialog extends Vue {
     // ensure we have a Filing ID
     if (!this.filingId) {
       // eslint-disable-next-line no-console
-      console.error('save() error - missing filing ID')
+      console.log('save() error - missing filing ID')
       return
     }
 
@@ -116,7 +116,7 @@ export default class AddCommentDialog extends Vue {
       success = true
     }).catch(error => {
       // eslint-disable-next-line no-console
-      console.error('save() error =', error)
+      console.log('save() error =', error)
       alert('Could not save your comment. Please try again or cancel.')
     })
 

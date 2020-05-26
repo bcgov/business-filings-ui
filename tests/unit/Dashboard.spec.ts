@@ -7,6 +7,7 @@ import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
+import flushPromises from 'flush-promises'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -189,7 +190,7 @@ describe('Dashboard - Click Tests', () => {
     const button = wrapper.find('#standalone-addresses-button')
     expect(button.text()).toContain('Change')
     button.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify routing to Standalone Office Address Filing page with id=0
     expect(vm.$route.name).toBe('standalone-addresses')
@@ -218,7 +219,7 @@ describe('Dashboard - Click Tests', () => {
     const button = wrapper.find('#standalone-addresses-button')
     expect(button.text()).toContain('Change')
     button.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.coaWarningDialog).toBe(true)
     expect(wrapper.find('#dialog-toggle-button')).toBeDefined()
@@ -247,7 +248,7 @@ describe('Dashboard - Click Tests', () => {
     const button = wrapper.find('#standalone-directors-button')
     expect(button.text()).toContain('Change')
     button.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify routing to Standalone Directors Filing page with id=0
     expect(vm.$route.name).toBe('standalone-directors')
@@ -256,38 +257,31 @@ describe('Dashboard - Click Tests', () => {
     wrapper.destroy()
   })
 
-  it('address/director change should be disabled', async () => {
-    const wrapper = shallowMount(Dashboard,
-      {
-        store,
-        vuetify,
-        computed: {
-          disableChanges () {
-            return true
-          }
-        }
-      })
-    await Vue.nextTick()
-    expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
-    expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
-
-    wrapper.destroy()
-  })
-
   it('address/director change should be enabled', async () => {
     const wrapper = shallowMount(Dashboard,
       {
         store,
-        vuetify,
-        computed: {
-          disableChanges () {
-            return false
-          }
-        }
+        vuetify
       })
-    await Vue.nextTick()
+      await Vue.nextTick()
+
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
+
+    wrapper.destroy()
+  })
+
+  it('address/director change should be disabled', async () => {
+    const wrapper = shallowMount(Dashboard,
+      {
+        store,
+        vuetify
+      })
+    wrapper.setData({ hasBlockerFiling: true })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+    expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
 
     wrapper.destroy()
   })

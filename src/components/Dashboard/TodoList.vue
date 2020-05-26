@@ -39,7 +39,6 @@
         :key="index"
         :class="{
           'disabled': !task.enabled,
-          'draft': isStatusDraft(task) && !isTypeCorrection(task) && !isBcolError(task),
           'bcol-error': isBcolError(task)
         }"
       >
@@ -47,8 +46,7 @@
           <div class="list-item">
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
-                <v-btn
-                  v-if="isTypeCorrection(task) && isStatusDraft(task)"
+                <v-btn v-if="isTypeCorrection(task) && isStatusDraft(task)"
                   class="expand-btn ml-0"
                   outlined
                   color="red"
@@ -59,8 +57,8 @@
                 </v-btn>
               </h3>
 
-              <div class="bcorps-ar-subtitle"
-                v-if="businessId && isBComp() && isTypeAnnualReport(task) && isStatusNew(task)"
+              <div v-if="businessId && isBComp() && isTypeAnnualReport(task) && isStatusNew(task)"
+                class="bcorps-ar-subtitle"
               >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
@@ -75,7 +73,7 @@
               <div class="list-item__subtitle">
                 <div v-if="task.subtitle" class="todo-subtitle">
                   <div>{{ task.subtitle }}</div>
-                  <div class="payment-status" v-if="isTypeNameRequest(task)">
+                  <div v-if="task.nameRequest" class="payment-status">
                     <v-btn
                       class="expand-btn"
                       outlined
@@ -103,7 +101,7 @@
                   </v-btn>
                 </div>
 
-                 <div v-else-if="isBcolError(task)" class="todo-subtitle">
+                <div v-else-if="isBcolError(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
                   <div class="payment-status">
@@ -121,7 +119,7 @@
                   </div>
                 </div>
 
-                <div v-else-if="isStatusDraft(task)" class="todo-subtitle">
+                <div v-else-if="isStatusDraft(task) && !isTypeIncorporationApplication(task)" class="todo-subtitle">
                   <div>DRAFT</div>
                 </div>
 
@@ -224,14 +222,18 @@
                   </v-btn>
                 </template>
 
-                <div v-else-if="!isTypeCorrection(task)">
+                <template v-else-if="!isTypeCorrection(task)">
                   <template v-if="isStatusDraft(task)">
                     <v-btn class="btn-draft-resume"
                       color="primary"
                       :disabled="!task.enabled"
                       @click.native.stop="doResumeFiling(task)"
                     >
-                      <span>Resume</span>
+                      <template v-if="isTypeIncorporationApplication(task) && task.isEmptyFiling">
+                        <span v-if="nameRequest">Incorporate using this NR</span>
+                        <span v-else>Incorporate a Numbered Company</span>
+                      </template>
+                      <span v-else>Resume</span>
                     </v-btn>
                     <!-- dropdown menu -->
                     <v-menu offset-y left>
@@ -242,7 +244,7 @@
                           <v-icon>mdi-menu-down</v-icon>
                         </v-btn>
                       </template>
-                      <v-list ref="draft_actions" class="actions__more-actions">
+                      <v-list class="actions__more-actions">
                         <v-list-item
                           v-if="businessId"
                           id="btn-delete-draft"
@@ -252,7 +254,7 @@
                         </v-list-item>
 
                         <v-list-item
-                          v-if="nrNumber"
+                          v-if="tempRegNumber"
                           id="btn-delete-incorporation"
                           @click="confirmDeleteIncorporation(task)"
                         >
@@ -282,7 +284,7 @@
                           <v-icon>mdi-menu-down</v-icon>
                         </v-btn>
                       </template>
-                      <v-list ref="pending_actions" class="actions__more-actions">
+                      <v-list class="actions__more-actions">
                         <v-list-item id="btn-cancel-payment" @click="confirmCancelPayment(task)"
                           data-test-id="btn-cancel-payment"
                         >
@@ -292,37 +294,40 @@
                     </v-menu>
                   </template>
 
-                  <v-btn v-else-if="isStatusError(task)"
-                    class="btn-retry-payment"
-                    color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doResumePayment(task)"
-                  >
-                    <span>Retry Payment</span>
-                  </v-btn>
+                  <template v-else-if="isStatusError(task)">
+                    <v-btn class="btn-retry-payment"
+                      color="primary"
+                      :disabled="!task.enabled"
+                      @click.native.stop="doResumePayment(task)"
+                    >
+                      <span>Retry Payment</span>
+                    </v-btn>
+                  </template>
 
                   <template v-else-if="isStatusPaid(task)">
                     <!-- no action button in this case -->
                   </template>
 
-                  <v-btn v-else-if="!isStatusCompleted(task) && isTypeAnnualReport(task)"
-                    class="btn-file-now"
-                    color="primary"
-                    :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
-                    @click.native.stop="doFileNow(task)"
-                  >
-                    <span>File Annual Report</span>
-                  </v-btn>
+                  <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
+                    <v-btn class="btn-file-now"
+                      color="primary"
+                      :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
+                      @click.native.stop="doFileNow(task)"
+                    >
+                      <span>File Annual Report</span>
+                    </v-btn>
+                  </template>
 
-                  <v-btn v-else-if="!isStatusCompleted(task) && isTypeNameRequest(task)"
-                    class="btn-file-now"
-                    color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doFileNow(task)"
-                  >
-                    <span>Incorporate using this NR</span>
-                  </v-btn>
-                </div>
+                  <template v-else-if="isStatusNew(task) && isTypeNameRequest(task)">
+                      <v-btn class="btn-file-now"
+                      color="primary"
+                      :disabled="!task.enabled"
+                      @click.native.stop="doFileNow(task)"
+                    >
+                      <span>Incorporate using this NR</span>
+                    </v-btn>
+                  </template>
+                </template>
               </div>
             </div>
           </div>
@@ -386,6 +391,10 @@
           <div v-else-if="isStatusNew(task) && isTypeNameRequest(task)" data-test-class="nr-details">
             <name-request-info :nameRequest="task.nameRequest" />
           </div>
+
+          <div v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)" data-test-class="nr-details">
+            <name-request-info :nameRequest="task.nameRequest" />
+          </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -435,15 +444,15 @@ export default {
   data () {
     return {
       addCommentDialog: false,
-      taskItems: null,
-      deleteErrors: [],
-      deleteWarnings: [],
+      taskItems: [] as Array<any>,
+      deleteErrors: [] as Array<any>,
+      deleteWarnings: [] as Array<any>,
       deleteErrorDialog: false,
-      cancelPaymentErrors: [],
+      cancelPaymentErrors: [] as Array<any>,
       cancelPaymentErrorDialog: false,
       confirmCheckbox: false,
       confirmEnabled: false,
-      currentFilingId: null,
+      currentFilingId: null as number,
       panel: null as number, // currently expanded panel
 
       // enums
@@ -461,16 +470,16 @@ export default {
   computed: {
     ...mapGetters(['isRoleStaff']),
 
-    ...mapState(['tasks', 'entityIncNo', 'entityName']),
+    ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest']),
 
     /** The Business ID string. */
     businessId (): string | null {
       return sessionStorage.getItem('BUSINESS_ID')
     },
 
-    /** The NR Number string. */
-    nrNumber (): string {
-      return sessionStorage.getItem('NR_NUMBER')
+    /** The Incorporation Application's Temporary Registration Number string. */
+    tempRegNumber (): string {
+      return sessionStorage.getItem('TEMP_REG_NUMBER')
     }
   },
 
@@ -489,9 +498,9 @@ export default {
 
       // create task items
       this.tasks.forEach(async task => {
-        if (task && task.task && task.task.todo) {
+        if (task?.task?.todo) {
           this.loadTodoItem(task)
-        } else if (task && task.task && task.task.filing) {
+        } else if (task?.task?.filing) {
           await this.loadFilingItem(task)
         } else {
           // eslint-disable-next-line no-console
@@ -502,8 +511,9 @@ export default {
       this.$emit('todo-count', this.taskItems.length)
       this.$emit('todo-filings', this.taskItems)
 
-      // If this is a draft/pending/error/paid item, emit the has-blocker-filings event to the parent component.
-      // This indicates that a new filing cannot be started because this one has to be completed first.
+      // If there are any draft/pending/error/paid/correction items, emit the has-blocker-filings event to
+      // the parent component. This indicates that a new filing cannot be started because this item has to
+      // be completed first.
       this.$emit('has-blocker-filing',
         this.taskItems.filter(item => {
           return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
@@ -516,7 +526,7 @@ export default {
       const todo = task.task.todo
       if (todo && todo.header) {
         switch (todo.header.name) {
-          case FilingTypes.ANNUAL_REPORT: {
+          case FilingTypes.ANNUAL_REPORT:
             const ARFilingYear = todo.header.ARFilingYear
             this.taskItems.push({
               id: -1, // not falsy
@@ -530,19 +540,19 @@ export default {
               nextArDate: this.toReadableDate(todo.business?.nextAnnualReport)
             })
             break
-          }
-          case FilingTypes.NAME_REQUEST:
-            this.taskItems.push({
-              id: -1, // not falsy
-              filingType: FilingTypes.NAME_REQUEST,
-              title: `Name Request ${this.nrNumber} - ${this.entityName}`,
-              subtitle: `APPROVED - ${this.expiresText(todo)}`,
-              status: todo.header.status || FilingStatus.NEW,
-              enabled: Boolean(task.enabled),
-              order: task.order,
-              nameRequest: todo.nameRequest
-            })
-            break
+          // FUTURE: uncomment when/if we have NRs without a draft
+          // case FilingTypes.NAME_REQUEST:
+          //   this.taskItems.push({
+          //     id: -1, // not falsy
+          //     filingType: FilingTypes.NAME_REQUEST,
+          //     title: `Name Request ${this.tempRegNumber} - ${this.entityName}`,
+          //     subtitle: `APPROVED - ${this.expiresText(this.nameRequest)}`,
+          //     status: todo.header.status || FilingStatus.NEW,
+          //     enabled: Boolean(task.enabled),
+          //     order: task.order,
+          //     nameRequest: this.nameRequest
+          //   })
+          //   break
           default:
             // eslint-disable-next-line no-console
             console.log('ERROR - got unknown todo item =', todo)
@@ -554,9 +564,9 @@ export default {
       }
     },
 
-    expiresText (task): string {
+    expiresText (nameRequest): string {
       // NB: if expiration date is today (0) then NR is expired
-      const expireDays = this.daysFromToday(task.nameRequest?.expirationDate)
+      const expireDays = this.daysFromToday(nameRequest?.expirationDate)
       if (isNaN(expireDays) || expireDays < 1) {
         return 'Expired'
       } else if (expireDays < 2) {
@@ -705,20 +715,33 @@ export default {
 
     async loadIncorporationApplication (task) {
       const filing = task.task.filing
-      if (filing && filing.header && filing.incorporationApplication) {
+      if (filing && filing.header) {
+        const title = this.nameRequest
+          ? `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
+          : `${this.entityTypeToName(this.entityType)} Incorporation Application`
+
+        const subtitle = this.nameRequest
+          ? `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+          : 'DRAFT'
+
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
+
+        const haveData = Boolean(filing.offices || filing.contactPoint || filing.parties || filing.shareClasses)
 
         this.taskItems.push({
           filingType: FilingTypes.INCORPORATION_APPLICATION,
           id: filing.header.filingId,
-          title: `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`,
+          title,
+          subtitle,
           draftTitle: 'Incorporation Application',
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
           paymentToken: filing.header.paymentToken || null,
-          bcolErrObj: bcolObj
+          bcolErrObj: bcolObj,
+          isEmptyFiling: !haveData,
+          nameRequest: this.nameRequest
         })
       } else {
         // eslint-disable-next-line no-console
@@ -734,13 +757,14 @@ export default {
           this.setCurrentFilingStatus(FilingStatus.NEW)
           this.$router.push({ name: ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
           break
-        case FilingTypes.NAME_REQUEST:
-          // redirect to Create web app to create this Incorporation Application
-          const createUrl = sessionStorage.getItem('CREATE_URL')
-          const url = `${createUrl}?nrNumber=${this.nrNumber}`
-          // assume Create URL is always reachable
-          window.location.assign(url)
-          break
+        // FUTURE: uncomment when/if we have NRs without a draft
+        // case FilingTypes.NAME_REQUEST:
+        //   // redirect to Create web app to create this Incorporation Application
+        //   const createUrl = sessionStorage.getItem('CREATE_URL')
+        //   const url = `${createUrl}?id=${this.tempRegNumber}`
+        //   // assume Create URL is always reachable
+        //   window.location.assign(url)
+        //   break
         default:
           // eslint-disable-next-line no-console
           console.log('doFileNow(), invalid type for item =', task)
@@ -778,13 +802,13 @@ export default {
         case FilingTypes.INCORPORATION_APPLICATION:
           // redirect to Create web app to resume this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
-          const url = `${createUrl}?nrNumber=${this.nrNumber}`
+          const url = `${createUrl}?id=${this.tempRegNumber}`
           // assume Create URL is always reachable
           window.location.assign(url)
           break
         default:
           // eslint-disable-next-line no-console
-          console.log('doFileNow(), invalid type for item =', task)
+          console.log('doResumeFiling(), invalid type for item =', task)
           break
       }
     },
@@ -829,12 +853,17 @@ export default {
     },
 
     confirmDeleteIncorporation (task) {
+      const line1 = `Deleting this ${task.draftTitle} will remove this application and all information ` +
+        'associated with this application.'
+      const line2 = this.nameRequest
+        ? 'You will be returned to your Manage Businesses dashboard where you can use the Name Request ' +
+          'associated with this application for a future application.'
+        : 'You will be returned to the Business Registry home page.'
+
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Delete Incorporation Application?',
-        'Deleting this Incorporation Application will remove this application and all information associated ' +
-          'with this application.\n\nYou may use any valid Name Request associated with this application for ' +
-          'future Benefit Company Incorporation Applications',
+        `${line1}\n\n${line2}`,
         {
           width: '40rem',
           persistent: true,
@@ -846,6 +875,18 @@ export default {
         // if we get here, "Delete" was clicked
         if (confirm) {
           await this.doDeleteDraft(task)
+
+          if (this.nameRequest) {
+            // redirect to Manage Businesses page
+            const manageBusinessesUrl = sessionStorage.getItem('BUSINESSES_URL') + 'business'
+            // assume Manage Businesses URL is always reachable
+            window.location.assign(manageBusinessesUrl)
+          } else {
+            // redirect to Business Registry home page
+            const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
+            // assume Businesses URL is always reachable
+            window.location.assign(businessesUrl)
+          }
         } else {
           // do nothing
         }
@@ -855,7 +896,7 @@ export default {
     },
 
     async doDeleteDraft (task) {
-      const id = this.entityIncNo || this.nrNumber
+      const id = this.entityIncNo || this.tempRegNumber
       let url = `businesses/${id}/filings/${task.id}`
       await axios.delete(url).then(res => {
         if (!res) { throw new Error('Invalid API response') }
@@ -967,6 +1008,11 @@ export default {
       return (task.filingType === FilingTypes.NAME_REQUEST)
     },
 
+    /** Returns True if task type is Name Incorporation Application. */
+    isTypeIncorporationApplication (task: any): boolean {
+      return (task.filingType === FilingTypes.INCORPORATION_APPLICATION)
+    },
+
     /** Closes current panel or opens new panel. */
     togglePanel (index: number) {
       this.panel = (this.panel === index) ? null : index
@@ -1006,19 +1052,6 @@ export default {
   }
 }
 
-// FUTURE: fix this if needed (incorrect selector so apparently not used atm)
-// .todo-list.disabled {
-//   opacity: 0.6;
-//   // enable just the expansion button
-//   .expand-btn {
-//     pointer-events: auto;
-//   }
-// }
-
-.todo-item.draft .v-expansion-panel-content {
-  display: none;
-}
-
 .todo-item .list-item {
   padding: 0;
   justify-content: space-evenly;
@@ -1051,7 +1084,7 @@ export default {
 }
 
 .list-item__title {
-  height: 20px; // for consistent height with and without icon button
+  min-height: 20px; // for consistent height with and without icon button
 
   .v-btn {
     // adjust button position so it fits within the title height
