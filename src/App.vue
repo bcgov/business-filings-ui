@@ -222,10 +222,7 @@ export default {
       // only initialize once
       // don't start during Jest tests as it messes up the test JWT
       if (this.tokenService || this.isJestRunning) return Promise.resolve()
-      console.info('Starting token refresh service...') // eslint-disable-line no-console
-      this.tokenService = new TokenService()
-      await this.tokenService.init()
-      this.tokenService.scheduleRefreshTimer()
+
       try {
         console.info('Starting token refresh service...') // eslint-disable-line no-console
         this.tokenService = new TokenService()
