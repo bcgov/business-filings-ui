@@ -263,7 +263,7 @@ describe('Dashboard - Click Tests', () => {
         store,
         vuetify
       })
-      await Vue.nextTick()
+    await Vue.nextTick()
 
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
