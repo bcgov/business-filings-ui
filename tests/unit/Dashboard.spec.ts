@@ -67,18 +67,20 @@ describe('Dashboard - UI', () => {
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
   })
 
-  it('disables standalone filing buttons when there is a blocker filing in the todo list', () => {
+  it('disables standalone filing buttons when there is a blocker task in the todo list', () => {
     wrapper.find(TodoList).vm.$emit('has-blocker-task', true)
 
     expect(vm.hasBlockerTask).toEqual(true)
+    expect(vm.disableChanges).toEqual(true)
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables filing buttons when there is a future effective filing pending', () => {
+  it('disables standalone filing buttons when there is a blocker filing in the filing history list', () => {
     wrapper.find(FilingHistoryList).vm.$emit('has-blocker-filing', true)
 
     expect(vm.hasBlockerFiling).toEqual(true)
+    expect(vm.disableChanges).toEqual(true)
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
@@ -89,6 +91,7 @@ describe('Dashboard - UI', () => {
 
     expect(vm.hasPendingFiling).toEqual(true)
     expect(vm.coaPending).toEqual(true)
+    expect(vm.disableChanges).toEqual(true)
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
