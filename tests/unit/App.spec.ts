@@ -923,7 +923,8 @@ describe('App as a Draft Incorporation Application', () => {
               accountId: '123',
               date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
-              status: 'DRAFT'
+              status: 'DRAFT',
+              filingId: 789
             },
             incorporationApplication: {
               nameRequest: {
@@ -977,7 +978,7 @@ describe('App as a Draft Incorporation Application', () => {
   })
 })
 
-describe('App as a Pending Incorporation Application', () => {
+describe('App as a Paid Incorporation Application', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1049,7 +1050,9 @@ describe('App as a Pending Incorporation Application', () => {
               accountId: '123',
               date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
-              status: 'PAID'
+              status: 'PAID',
+              filingId: 789,
+              paymentToken: 987,
             },
             incorporationApplication: {
               nameRequest: {
