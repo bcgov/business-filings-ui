@@ -1052,7 +1052,7 @@ describe('App as a Paid Incorporation Application', () => {
               name: 'incorporationApplication',
               status: 'PAID',
               filingId: 789,
-              paymentToken: 987,
+              paymentToken: 987
             },
             incorporationApplication: {
               nameRequest: {
