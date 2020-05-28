@@ -311,7 +311,7 @@
                   <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
                     <v-btn class="btn-file-now"
                       color="primary"
-                      :disabled="!task.enabled || coaPending || !confirmCheckbox || hasBlockerFiling"
+                      :disabled="!task.enabled || coaPending || !confirmCheckbox || disableChanges"
                       @click.native.stop="doFileNow(task)"
                     >
                       <span>File Annual Report</span>
@@ -464,7 +464,7 @@ export default {
   props: {
     inProcessFiling: null,
     coaPending: null,
-    hasBlockerFiling: null
+    disableChanges: null
   },
 
   computed: {
@@ -511,10 +511,9 @@ export default {
       this.$emit('todo-count', this.taskItems.length)
       this.$emit('todo-filings', this.taskItems)
 
-      // If there are any draft/pending/error/paid/correction items, emit the has-blocker-filings event to
-      // the parent component. This indicates that a new filing cannot be started because this item has to
-      // be completed first.
-      this.$emit('has-blocker-filing',
+      // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
+      // This indicates that a new filing cannot be started because this item has to be completed first.
+      this.$emit('has-blocker-task',
         this.taskItems.filter(item => {
           return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
             this.isStatusPaid(item) || this.isTypeCorrection(item))

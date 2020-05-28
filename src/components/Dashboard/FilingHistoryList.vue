@@ -113,7 +113,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="hasBlockerFiling || filing.isCorrection || filing.isIaFutureEffective">
+                    <v-list-item :disabled="disableChanges || filing.isCorrection || filing.isIaFutureEffective">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -282,7 +282,7 @@ export default {
   },
 
   props: {
-    hasBlockerFiling: null
+    disableChanges: null
   },
 
   computed: {
@@ -359,7 +359,7 @@ export default {
       this.$emit('filed-count', this.filedItems.length)
       this.$emit('filings-list', this.filedItems)
 
-      // If there is an Incorp App item, emit the has-blocker-filings event to the parent component.
+      // If there is an Incorp App filing, emit this event to the parent component.
       // This indicates that a new filing cannot be started because this item has to be completed first.
       this.$emit('has-blocker-filing',
         this.filedItems.filter(item => {
