@@ -453,27 +453,6 @@ export default {
 
     /** Gets the Incorp App filing from Legal API. */
     getIncorpApp (): Promise<any> {
-      // FOR DEBUGGING ONLY
-      // return Promise.resolve({
-      //   filing: {
-      //     business: {
-      //       identifier: 'TFvise6Erj',
-      //       legalType: 'BC'
-      //     },
-      //     header: {
-      //       accountId: '133', // not used
-      //       date: '2020-05-21T00:11:55.887740+00:00', // used when this is a filing
-      //       name: 'incorporationApplication',
-      //       status: 'DRAFT'
-      //     },
-      //     incorporationApplication: {
-      //       nameRequest: {
-      //         nrNumber: 'NR 3489584'
-      //       }
-      //     }
-      //   }
-      // })
-
       const url = `businesses/${this.tempRegNumber}/filings`
       return axios.get(url)
         // workaround because data is at "response.data.data"
