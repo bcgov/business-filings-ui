@@ -3,6 +3,7 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
+import flushPromises from 'flush-promises'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
@@ -179,8 +180,7 @@ describe('Filing History List', () => {
     const $route = { query: { } }
 
     // init store
-    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
-    store.state.entityIncNo = 'NR 1234567'
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.filings = []
 
     const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
@@ -193,7 +193,7 @@ describe('Filing History List', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').text()).toContain('Complete your filing to display')
 
-    sessionStorage.removeItem('NR_NUMBER')
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 
@@ -201,8 +201,7 @@ describe('Filing History List', () => {
     const $route = { query: { } }
 
     // init store
-    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
-    store.state.entityIncNo = 'NR 1234567'
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BC'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
@@ -245,7 +244,7 @@ describe('Filing History List', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify Hide Details button
     // NB: only this filing has a Hide Details button
@@ -281,7 +280,7 @@ describe('Filing History List', () => {
     expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
 
-    sessionStorage.removeItem('NR_NUMBER')
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 
@@ -289,8 +288,7 @@ describe('Filing History List', () => {
     const $route = { query: { } }
 
     // init store
-    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
-    store.state.entityIncNo = 'NR 1234567'
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BC'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
@@ -337,7 +335,7 @@ describe('Filing History List', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify Hide Details button
     // NB: only this filing has a Hide Details button
@@ -373,7 +371,7 @@ describe('Filing History List', () => {
     expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
 
-    sessionStorage.removeItem('NR_NUMBER')
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 
@@ -558,7 +556,7 @@ describe('Filing History List', () => {
 
     // expand details
     buttons.at(1).trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify Close button
     expect(wrapper.findAll('.expand-btn').at(1).text()).toContain('Close')
@@ -636,7 +634,7 @@ describe('Filing History List', () => {
 
     // expand details
     buttons.at(1).trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify Hide Documents button
     expect(wrapper.findAll('.expand-btn').at(1).text()).toContain('Hide Documents')
@@ -739,7 +737,7 @@ describe('Filing History List', () => {
     const button = wrapper.find('.comments-btn')
     expect(button.text()).toContain('Details (2)')
     button.trigger('click')
-    await Vue.nextTick()
+    await flushPromises()
 
     // verify that Details List component is displayed after the item is expanded
     expect(wrapper.find(PendingFiling).exists()).toBe(false)

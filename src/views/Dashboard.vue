@@ -22,12 +22,12 @@
                 </h2>
               </header>
               <todo-list
-                @todo-count="todoCount = $event"
-                @has-blocker-filing="hasBlockerFiling = $event"
-                @todo-filings="todoListFilings = $event"
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
-                :hasBlockerFiling="hasBlockerFiling"
+                :disableChanges="disableChanges"
+                @todo-count="todoCount = $event"
+                @todo-filings="todoListFilings = $event"
+                @has-blocker-task="hasBlockerTask = $event"
               />
             </section>
 
@@ -38,9 +38,10 @@
                 </h2>
               </header>
               <filing-history-list
-                :hasBlockerFiling="hasBlockerFiling"
+                :disableChanges="disableChanges"
                 @filed-count="filedCount = $event"
                 @filings-list="historyFilings = $event"
+                @has-blocker-filing="hasBlockerFiling = $event"
               />
             </section>
           </v-col>
@@ -147,7 +148,9 @@ export default {
   data () {
     return {
       todoCount: 0,
+      hasBlockerTask: false,
       hasBlockerFiling: false,
+      hasPendingFiling: false,
       filedCount: 0,
       historyFilings: [],
       todoListFilings: [],
@@ -163,27 +166,19 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
-    /** The NR Number string. */
-    nrNumber (): string {
-      return sessionStorage.getItem('NR_NUMBER')
-    },
-
-    /** Whether this is an Incorporation Application task. */
+    /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
-      return (this.entityStatus === EntityStatus.NAME_REQUEST || this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+      return (this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
     },
 
-    /** Whether this is an Incorporation Application filing. */
+    /** Whether this is a Paid Incorporation Application. */
     isIncorpAppFiling (): boolean {
-      return (this.entityStatus === EntityStatus.PENDING_INCORP_APP)
+      return (this.entityStatus === EntityStatus.PAID_INCORP_APP)
     },
 
-    /** Whether changes need to be disabled. */
-    disableChanges () : boolean {
-      if (this.nrNumber) {
-        return (this.isIncorpAppTask || this.isIncorpAppFiling)
-      }
-      return this.hasBlockerFiling
+    /** Whether to block a new filing because another item has to be finished first. */
+    disableChanges (): boolean {
+      return (this.hasBlockerTask || this.hasBlockerFiling || this.hasPendingFiling)
     }
   },
 
@@ -265,18 +260,17 @@ export default {
     /**
      * Searches the filings history for a "pending" state, ie, paid (not yet completed).
      * Used to block new filings while there's a pending one.
-     * @param filings the array of history filings array to search
      */
-    checkPendingFilings (filings: Array<any>): void {
-      if (!filings?.length) return // safety check
+    checkPendingFilings (): void {
+      if (!this.historyFilings?.length) return // safety check
 
-      const foundPaid = filings.some(filing => {
+      const foundPaid = this.historyFilings.some(filing => {
         if (filing.isPaid) {
           if (filing.isBcompCoaFutureEffective) {
             this.coaPending = true
             this.coaEffectiveDate = filing.effectiveDate
           }
-          this.hasBlockerFiling = true
+          this.hasPendingFiling = true
           return true
         }
         return false
@@ -301,7 +295,7 @@ export default {
   watch: {
     historyFilings () {
       // check if any filing has a pending state
-      this.checkPendingFilings(this.historyFilings)
+      this.checkPendingFilings()
 
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()

@@ -1114,7 +1114,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       // TODO: verify that new filing was created
 
       // click the Save button
-      wrapper.find('#coa-save-btn').trigger('click')
+      // wrapper.find('#coa-save-btn').trigger('click')
+      // await flushPromises()
       // work-around because click trigger isn't working
       await vm.onClickSave()
 
@@ -1141,7 +1142,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     vm.certifyFormValid = true
 
     // click the Save & Resume Later button
-    wrapper.find('#coa-save-resume-btn').trigger('click')
+    // wrapper.find('#coa-save-resume-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
@@ -1253,7 +1255,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       // TODO: verify that new filing was created
 
       // click the Save button
-      wrapper.find('#coa-save-btn').trigger('click')
+      // wrapper.find('#coa-save-btn').trigger('click')
+      // await flushPromises()
       // work-around because click trigger isn't working
       await vm.onClickSave()
 
@@ -1280,7 +1283,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     vm.certifyFormValid = true
 
     // click the Save & Resume Later button
-    wrapper.find('#coa-save-resume-btn').trigger('click')
+    // wrapper.find('#coa-save-resume-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
@@ -1362,7 +1366,8 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
   it('includes certification data in the header', async () => {
     // click the Save button
-    wrapper.find('#coa-save-btn').trigger('click')
+    // wrapper.find('#coa-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1459,7 +1464,8 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
   it('includes certification data in the header', async () => {
     // click the Save button
-    wrapper.find('#coa-save-btn').trigger('click')
+    // wrapper.find('#coa-save-btn').trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1671,7 +1677,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       // TODO: verify that new filing was created
 
       // click the File & Pay button
-      wrapper.find('#coa-file-pay-btn').trigger('click')
+      // wrapper.find('#coa-file-pay-btn').trigger('click')
+      // await flushPromises()
       // work-around because click trigger isn't working
       await vm.onClickFilePay()
 
@@ -1723,7 +1730,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       // TODO: verify that new filing was created
 
       // click the File & Pay button
-      wrapper.find('#coa-file-pay-btn').trigger('click')
+      // wrapper.find('#coa-file-pay-btn').trigger('click')
+      // await flushPromises()
       // work-around because click trigger isn't working
       await vm.onClickFilePay()
 
@@ -1861,10 +1869,10 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       })))
 
     // click the File & Pay button
-    await button.trigger('click')
-    await flushPromises()
-    await vm.onClickFilePay()
+    // button.trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
+    await vm.onClickFilePay()
 
     // verify a bcol error message was retrieved
     expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)

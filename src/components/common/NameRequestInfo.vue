@@ -14,7 +14,7 @@
           <li>
             <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED"
               color="green" class="nr-status-icon">mdi-check</v-icon>
-            Status: {{  nameRequestDetails.status | capitalize }}
+            Status: {{ nameRequestDetails.status | capitalize }}
           </li>
           <li id="condition-consent">
             <v-icon v-if="conditionConsent() === RECEIVED_STATE || conditionConsent() === NOT_REQUIRED"
@@ -80,7 +80,7 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   private created () {
     if (!this.nameRequest) return // safety check
 
-    this.parsedNameRequest = this.generateNameRequestState(this.nameRequest, null)
+    this.parsedNameRequest = this.parseNameRequest(this.nameRequest, null)
     this.nameRequestDetails = this.parsedNameRequest.details
     this.nameRequestApplicant = this.parsedNameRequest.applicant
   }

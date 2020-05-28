@@ -17,6 +17,9 @@ export default {
   nextARDate (state, nextARDate: string) {
     state.nextARDate = nextARDate
   },
+  nameRequest (state, nameRequest: object) {
+    state.nameRequest = nameRequest
+  },
   ARFilingYear (state, ARFilingYear: number) {
     state.ARFilingYear = ARFilingYear
   },

@@ -285,9 +285,9 @@ describe('AddressListSm', () => {
       })
     await Vue.nextTick()
 
-    // Click the records office tab to display the addresses
+    // click the records office tab to display the addresses
     const button = wrapper.find('#records-office-panel-toggle')
-    await button.trigger('click')
+    button.trigger('click')
 
     const expectedMessage = 'Complete your filing to display'
     expect(wrapper.find('#registered-office-panel .delivery-address-list-item .complete-filing').text())

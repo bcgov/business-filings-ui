@@ -4,9 +4,13 @@
 
       <!-- Entity Name, Entity Status -->
       <div class="title-container">
-        <div class="mb-1" id="entity-legal-name">
-          <span>{{ entityName || 'Not Available' }}</span>
+        <div v-if="businessId" class="mb-1" id="entity-legal-name" aria-label="Business Legal Name">
+          <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
+        <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
+          <span>{{ nrTitle || 'Unknown Title'}}</span>
+        </div>
+
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
           <span>In Good Standing</span>
         </v-chip>
@@ -26,6 +30,7 @@
             <dd class="ml-2" id="entity-business-number">
               <span>{{ entityBusinessNo || 'Not Available' }}</span>
             </dd>
+
             <dt>Incorporation No:</dt>
             <dd class="ml-2" id="entity-incorporation-number">
               <span>{{ entityIncNo || 'Not Available' }}</span>
@@ -46,6 +51,7 @@
               </dd>
             </template>
           </dl>
+
           <v-menu bottom left offset-y content-class="v-menu">
             <template v-slot:activator="{ on }">
               <v-btn id="entity-settings-button" small icon color="primary" v-on="on">
@@ -62,17 +68,20 @@
       </div>
 
       <!-- NR Subtitle, NR Number -->
-      <div class="nr-info" v-if="nrNumber">
+      <div class="nr-info" v-if="tempRegNumber">
         <div class="nr-info__meta">
           <dl>
             <dt></dt>
-            <dd id="nr-subtitle">
+            <dd id="nr-subtitle" aria-label="Sub Title">
               <span>{{ nrSubtitle }}</span>
             </dd>
-            <dt>Name Request No:</dt>
-            <dd class="ml-2" id="nr-number">
-              <span>{{ nrNumber }}</span>
-            </dd>
+
+            <template v-if="nrNumber">
+              <dt>Name Request No:</dt>
+              <dd class="ml-2" id="nr-number">
+                <span>{{ nrNumber }}</span>
+              </dd>
+            </template>
           </dl>
         </div>
       </div>
@@ -98,7 +107,7 @@ import { EntityStatus, EntityTypes } from '@/enums'
     // Property definitions for runtime environment.
     ...mapState(['entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
       'businessEmail', 'businessPhone', 'businessPhoneExtension']),
-    ...mapGetters(['isRoleStaff'])
+    ...mapGetters(['isRoleStaff', 'nrNumber'])
   }
 })
 export default class EntityInfo extends Mixins(EnumMixin) {
@@ -113,15 +122,31 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   readonly businessPhone!: string
   readonly businessPhoneExtension!: string
   readonly isRoleStaff!: boolean
+  readonly nrNumber!: string
+
+  // Enum for template
+  readonly EntityTypes = EntityTypes
 
   /** The Business ID string. */
   private get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
-  /** The NR Number string. */
-  private get nrNumber (): string {
-    return sessionStorage.getItem('NR_NUMBER')
+  /** The Incorporation Application's Temporary Registration Number string. */
+  private get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
+
+  /** The NR Title string. */
+  private get nrTitle (): string {
+    if (this.nrNumber) return this.entityName
+
+    switch (this.entityType) {
+      case EntityTypes.COOP: return 'Numbered Cooperative'
+      case EntityTypes.BCOMP: return 'Numbered Benefit Company'
+      case EntityTypes.CORP: return 'Numbered Corporation'
+    }
+    return '' // should never happen
   }
 
   /** The NR Subtitle string. */
@@ -130,7 +155,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
       case EntityStatus.NAME_REQUEST:
         return `${this.entityTypeToName(this.entityType)} Name Request`
       case EntityStatus.DRAFT_INCORP_APP:
-      case EntityStatus.PENDING_INCORP_APP:
+      case EntityStatus.PAID_INCORP_APP:
         return `${this.entityTypeToName(this.entityType)} Incorporation Application`
     }
     return '' // should never happen
@@ -191,7 +216,8 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   padding-bottom: 1.5rem;
 }
 
-#entity-legal-name {
+#entity-legal-name,
+#incorp-app-title {
   display: inline-block;
   color: $gray9;
   letter-spacing: -0.01rem;

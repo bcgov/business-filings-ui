@@ -20,7 +20,8 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
       nr.state &&
       nr.expirationDate &&
       nr.names?.length > 0 &&
-      nr.nrNum &&
+      // workaround for old or new property name
+      (nr.nrNum || nr.nrNumber) &&
       nr.requestTypeCd)
   }
 
@@ -62,15 +63,16 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Generates name request state for the store.
+   * Parses name request.
    * @param nr the name request response payload
    * @param filingId the filing id
    */
-  generateNameRequestState (nr: any, filingId: number): NameRequestIF {
+  parseNameRequest (nr: any, filingId: number): NameRequestIF {
     const approvedName = nr.names.find(name => name.state === NameRequestStates.APPROVED).name
     return {
-      nrNumber: nr.nrNum,
-      // TODO: Update entityType to use nr.requestTypeCd when namex supports our entity types
+      // workaround for old or new property name
+      nrNumber: nr.nrNum || nr.nrNumber,
+      // FUTURE: Update entityType to use nr.requestTypeCd when namex supports our entity types
       entityType: EntityTypes.BCOMP,
       filingId: filingId,
       applicant: {

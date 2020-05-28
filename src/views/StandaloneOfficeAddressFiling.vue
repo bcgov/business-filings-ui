@@ -429,7 +429,7 @@ export default {
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.error('fetchData() error =', error)
+        console.log('fetchData() error =', error)
         this.resumeErrorDialog = true
       })
     },
@@ -695,7 +695,7 @@ export default {
           })
           .catch(error => {
             // eslint-disable-next-line no-console
-            console.error('hasTasks() error =', error)
+            console.log('hasTasks() error =', error)
             this.saveErrorDialog = true
           })
       }

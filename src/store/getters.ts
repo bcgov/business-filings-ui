@@ -13,6 +13,11 @@ export default {
     return state.authRoles.includes('view')
   },
 
+  nrNumber (state): string {
+    // workaround for old or new property name
+    return state.nameRequest?.nrNum || state.nameRequest?.nrNumber
+  },
+
   isAnnualReportEditable (state): boolean {
     return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
   },

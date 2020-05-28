@@ -899,7 +899,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.error('getDirectors() error =', error)
+          console.log('getDirectors() error =', error)
         })
     }
   }

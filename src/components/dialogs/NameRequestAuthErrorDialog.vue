@@ -1,19 +1,19 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="name-request-auth-error-dialog">
     <v-card>
-      <v-card-title>Unable to Access Name Request</v-card-title>
+      <v-card-title>Unable to Access Incorporation Application</v-card-title>
 
       <v-card-text>
-        <p class="genErr">Your account is currently unable to access this Name Request. This may be
-          because of the following:</p>
+        <p class="genErr">Your account is currently unable to access this Incorporation Application.
+          This may be because of the following:</p>
         <ul>
-          <li>Your account is not authorized to access this Name Request &mdash; contact the Name
-            Request owner to get access.</li>
+          <li>Your account is not authorized to access this Incorporation Application &mdash; contact
+            the account owner to get access.</li>
           <li>Your login session has timed out &mdash; please exit and then login again.</li>
-          <li>The specified Name Request Number is not valid.</li>
+          <li>The specified Incorporation Application number is not valid.</li>
         </ul>
-        <p class="mt-4">You can retry now, or you can exit and try to access this Name Request at
-          another time.</p>
+        <p class="mt-4">You can retry now, or you can exit and try to access this Incorporation Application
+          at another time.</p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
           <ErrorContact />

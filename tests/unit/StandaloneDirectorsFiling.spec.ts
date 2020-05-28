@@ -1507,10 +1507,10 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       })))
 
     // click the File & Pay button
-    await button.trigger('click')
-    await flushPromises()
-    await vm.onClickFilePay()
+    // button.trigger('click')
+    // await flushPromises()
     // work-around because click trigger isn't working
+    await vm.onClickFilePay()
 
     // verify an error has been received
     expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)
