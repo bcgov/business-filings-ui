@@ -579,7 +579,7 @@ export default {
 
     async loadFilingItem (task) {
       const filing = task.task.filing
-      if (filing && filing.header) {
+      if (filing?.header) {
         switch (filing.header.name) {
           case FilingTypes.ANNUAL_REPORT:
             await this.loadAnnualReport(task)
@@ -610,7 +610,7 @@ export default {
     async loadAnnualReport (task) {
       let date
       const filing = task.task.filing
-      if (filing && filing.header && filing.annualReport) {
+      if (filing?.header && filing?.annualReport) {
         filing.annualReport.annualReportDate
           ? date = filing.annualReport.annualReportDate
           : date = filing.annualReport.nextARDate
@@ -644,7 +644,7 @@ export default {
 
     async loadChangeOfDirectors (task) {
       const filing = task.task.filing
-      if (filing && filing.header && filing.changeOfDirectors) {
+      if (filing?.header && filing?.changeOfDirectors) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
@@ -667,7 +667,7 @@ export default {
 
     async loadChangeOfAddress (task) {
       const filing = task.task.filing
-      if (filing && filing.header && filing.changeOfAddress) {
+      if (filing?.header && filing?.changeOfAddress) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
@@ -690,7 +690,7 @@ export default {
 
     loadCorrection (task) {
       const filing = task.task.filing
-      if (filing && filing.header && filing.correction) {
+      if (filing?.header && filing?.correction) {
         this.taskItems.push({
           filingType: FilingTypes.CORRECTION,
           id: filing.header.filingId,
@@ -714,7 +714,7 @@ export default {
 
     async loadIncorporationApplication (task) {
       const filing = task.task.filing
-      if (filing && filing.header) {
+      if (filing?.header) {
         const title = this.nameRequest
           ? `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
           : `${this.entityTypeToName(this.entityType)} Incorporation Application`
@@ -726,7 +726,8 @@ export default {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
-        const haveData = Boolean(filing.offices || filing.contactPoint || filing.parties || filing.shareClasses)
+        const ia = filing.incorporationApplication // may be undefined
+        const haveData = Boolean(ia?.offices || ia?.contactPoint || ia?.parties || ia?.shareClasses)
 
         this.taskItems.push({
           filingType: FilingTypes.INCORPORATION_APPLICATION,
@@ -903,7 +904,7 @@ export default {
         // emit dashboard reload trigger event
         this.$root.$emit('triggerDashboardReload')
       }).catch(error => {
-        if (error && error.response) {
+        if (error?.response) {
           if (error.response.data.errors) {
             this.deleteErrors = error.response.data.errors
           }
@@ -960,7 +961,7 @@ export default {
         // emit dashboard reload trigger event
         this.$root.$emit('triggerDashboardReload')
       }).catch(error => {
-        if (error && error.response) {
+        if (error?.response) {
           if (error.response.data.errors) {
             this.cancelPaymentErrors = error.response.data.errors
           }
