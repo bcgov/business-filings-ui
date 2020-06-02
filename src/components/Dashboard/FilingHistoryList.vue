@@ -298,8 +298,8 @@ export default {
 
   created (): void {
     // constants
-    this.DOCUMENT_TYPE_REPORT = 1
-    this.DOCUMENT_TYPE_RECEIPT = 2
+    this.DOCUMENT_TYPE_REPORT = 'REPORT'
+    this.DOCUMENT_TYPE_RECEIPT = 'RECEIPT'
 
     // load data into this page
     this.loadData()
@@ -376,6 +376,7 @@ export default {
     loadAnnualReport (filing: any) {
       const header = filing?.header
       const annualReport = filing?.annualReport
+      const documents = filing?.documents
 
       if (header && annualReport) {
         const date = annualReport.annualReportDate
@@ -394,12 +395,7 @@ export default {
             filingId: header.filingId,
             filingAuthor: header.certifiedBy,
             filingDate,
-            documents: [{
-              type: this.DOCUMENT_TYPE_REPORT,
-              filingId: header.filingId,
-              title: name,
-              filename: `${this.entityIncNo} - ${name} - ${filingDate}.pdf`
-            }] as Array<any>,
+            documents: documents || [] as Array<any>,
             isCorrected: (header.isCorrected || false),
             isCorrectionPending: (header.isCorrectionPending || false),
             comments: this.flattenAndSortComments(header.comments)
@@ -430,6 +426,7 @@ export default {
     loadIncorporationApplication (filing: any) {
       const header = filing?.header
       const incorporationApplication = filing?.incorporationApplication
+      const documents = filing?.documents
 
       if (header && incorporationApplication) {
         const filingType = header.name // NB: this is not NR type (but they should match)
@@ -450,13 +447,10 @@ export default {
         const isPaid = (header.status === FilingStatus.PAID)
 
         const name = this.filingTypeToName(filingType)
-        let docFilename: string
         let receiptFilename: string
         if (isIaFutureEffective) {
-          docFilename = `${this.entityIncNo} - ${name} (Future Effective) - ${filingDate}.pdf`
           receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
         } else {
-          docFilename = `${this.entityIncNo} - ${name} - ${filingDate}.pdf`
           receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
@@ -470,12 +464,7 @@ export default {
           effectiveDateTime, // used for future effective Incorp App
           isIaFutureEffective,
           isPaid,
-          documents: [{
-            type: this.DOCUMENT_TYPE_REPORT,
-            filingId: header.filingId,
-            title: `${name}${isIaFutureEffective ? ' - Future Effective Incorporation' : ''}`,
-            filename: docFilename
-          }] as Array<any>,
+          documents: documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
           isCorrectionPending: (header.isCorrectionPending || false),
@@ -502,6 +491,7 @@ export default {
 
     loadOtherReport (filing: any, section: any) {
       const header = filing?.header
+      const documents = filing?.documents
 
       if (header && section) {
         const filingType = header.name
@@ -535,12 +525,7 @@ export default {
           effectiveDate, // used for future effective COA
           isBcompCoaFutureEffective,
           isPaid,
-          documents: [{
-            type: this.DOCUMENT_TYPE_REPORT,
-            filingId: header.filingId,
-            title: name,
-            filename: `${this.entityIncNo} - ${name} - ${filingDate}.pdf`
-          }] as Array<any>,
+          documents: documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
           isCorrectionPending: (header.isCorrectionPending || false),
@@ -708,8 +693,13 @@ export default {
       // safety check
       if (!document.filingId || !document.filename) return
 
-      const url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
+      let url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
       const headers = { 'Accept': 'application/pdf' }
+
+      // Notice of articles or certificate will come in as a document report type
+      if (document.reportType) {
+        url += `?type=${document.reportType}`
+      }
 
       await axios.get(url, { headers: headers, responseType: 'blob' as 'json' }).then(response => {
         if (response) {

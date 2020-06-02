@@ -217,6 +217,15 @@ describe('Filing History List', () => {
             paymentToken: 1971,
             status: 'PAID'
           },
+          documents: [
+            {
+              filename: 'TyxHdPDf3A - Incorporation Application - 2020-06-02.pdf',
+              filingId: 85114,
+              reportType: null,
+              title: 'Incorporation Application',
+              type: 'REPORT'
+            }
+          ],
           incorporationApplication: { }
         }
       }
@@ -304,6 +313,15 @@ describe('Filing History List', () => {
             paymentToken: 1971,
             status: 'PAID'
           },
+          documents: [
+            {
+              filename: 'TyxHdPDf3A - Incorporation Application (Future Effective) - 2020-06-02.pdf',
+              filingId: 85114,
+              reportType: null,
+              title: 'Incorporation Application - Future Effective Incorporation',
+              type: 'REPORT'
+            }
+          ],
           incorporationApplication: {
             nameRequest: {
               legalType: 'BC'
@@ -592,6 +610,15 @@ describe('Filing History List', () => {
             'status': 'COMPLETED',
             'availableOnPaperOnly': true
           },
+          'documents': [
+            {
+              'filename': 'BC1111111 - Director Change - 2020-06-01.pdf',
+              'filingId': 654,
+              'reportType': null,
+              'title': 'Director Change',
+              'type': 'REPORT'
+            }
+          ],
           'changeOfDirectors': {
           }
         }
@@ -608,6 +635,15 @@ describe('Filing History List', () => {
             'status': 'COMPLETED',
             'availableOnPaperOnly': false
           },
+          'documents': [
+            {
+              'filename': 'BC1111111 - Annual Report - 2020-06-01.pdf',
+              'filingId': 321,
+              'reportType': null,
+              'title': 'Annual Report',
+              'type': 'REPORT'
+            }
+          ],
           'annualReport': {
             'annualGeneralMeetingDate': '2019-12-31',
             'annualReportDate': '2019-12-31'
