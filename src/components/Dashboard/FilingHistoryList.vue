@@ -376,7 +376,6 @@ export default {
     loadAnnualReport (filing: any) {
       const header = filing?.header
       const annualReport = filing?.annualReport
-      const documents = filing?.documents
 
       if (header && annualReport) {
         const date = annualReport.annualReportDate
@@ -395,7 +394,7 @@ export default {
             filingId: header.filingId,
             filingAuthor: header.certifiedBy,
             filingDate,
-            documents: documents || [] as Array<any>,
+            documents: filing?.documents || [] as Array<any>,
             isCorrected: (header.isCorrected || false),
             isCorrectionPending: (header.isCorrectionPending || false),
             comments: this.flattenAndSortComments(header.comments)
@@ -426,7 +425,6 @@ export default {
     loadIncorporationApplication (filing: any) {
       const header = filing?.header
       const incorporationApplication = filing?.incorporationApplication
-      const documents = filing?.documents
 
       if (header && incorporationApplication) {
         const filingType = header.name // NB: this is not NR type (but they should match)
@@ -464,7 +462,7 @@ export default {
           effectiveDateTime, // used for future effective Incorp App
           isIaFutureEffective,
           isPaid,
-          documents: documents || [] as Array<any>,
+          documents: filing?.documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
           isCorrectionPending: (header.isCorrectionPending || false),
@@ -491,7 +489,6 @@ export default {
 
     loadOtherReport (filing: any, section: any) {
       const header = filing?.header
-      const documents = filing?.documents
 
       if (header && section) {
         const filingType = header.name
@@ -525,7 +522,7 @@ export default {
           effectiveDate, // used for future effective COA
           isBcompCoaFutureEffective,
           isPaid,
-          documents: documents || [] as Array<any>,
+          documents: filing?.documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
           isCorrectionPending: (header.isCorrectionPending || false),
