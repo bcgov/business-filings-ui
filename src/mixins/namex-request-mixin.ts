@@ -42,16 +42,16 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
     }
 
     // If the NR is awaiting consent, it is not consumable.
-    if (nr.state === NameRequestStates.CONDITIONAL && nr.consentFlag !== 'R') {
+    // R = received (we have consent)
+    // N = waived (we don't need consent)
+    if (nr.state === NameRequestStates.CONDITIONAL && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
       return NameRequestStates.NEED_CONSENT
     }
 
-    // If the NR's root state is not APPROVED, it is not consumable.
-    if (nr.state !== NameRequestStates.APPROVED) {
+    // If the NR's root state is not APPROVED or CONDITIONAL, it is not consumable.
+    if (nr.state !== NameRequestStates.APPROVED && nr.state !== NameRequestStates.CONDITIONAL) {
       return NameRequestStates.NOT_APPROVED
     }
-
-    // NB: from here down, the NR is APPROVED
 
     // If the NR has already been consumed, it is not consumable.
     if (nr.names.some(name => name.consumptionDate)) {
@@ -59,16 +59,15 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
     }
 
     // Otherwise, the NR is consumable.
-    return NameRequestStates.APPROVED
+    return nr.state // APPROVED or CONDITIONAL
   }
 
   /**
-   * Parses name request.
+   * Parses Name Request.
    * @param nr the name request response payload
    * @param filingId the filing id
    */
   parseNameRequest (nr: any, filingId: number): NameRequestIF {
-    const approvedName = nr.names.find(name => name.state === NameRequestStates.APPROVED).name
     return {
       // workaround for old or new property name
       nrNumber: nr.nrNum || nr.nrNumber,
@@ -95,11 +94,25 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
         lastName: nr.applicants.lastName
       },
       details: {
-        approvedName: approvedName,
+        approvedName: this.getApprovedName(nr),
         consentFlag: nr.consentFlag,
         expirationDate: nr.expirationDate,
         status: nr.state
       }
     }
+  }
+
+  /**
+   * Returns the Name Request's approved name.
+   * @param nr the name request response payload
+   */
+  getApprovedName (nr: any): string {
+    if (nr.state === NameRequestStates.APPROVED) {
+      return nr.names.find(name => name.state === NameRequestStates.APPROVED).name
+    }
+    if (nr.state === NameRequestStates.CONDITIONAL) {
+      return nr.names.find(name => name.state === NameRequestStates.CONDITION).name
+    }
+    return '' // should never happen
   }
 }

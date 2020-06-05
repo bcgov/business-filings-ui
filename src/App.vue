@@ -543,7 +543,7 @@ export default {
 
       // check if NR is consumable
       const nrState: NameRequestStates = this.getNrState(nr)
-      if (nrState !== NameRequestStates.APPROVED) {
+      if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
         this.nameRequestInvalidDialog = true
         this.nameRequestInvalidType = nrState
         throw new Error('NR not consumable')
@@ -553,7 +553,7 @@ export default {
       this.setNameRequest(nr)
 
       // save the approved name
-      const entityName = nr.names.find(name => name.state === NameRequestStates.APPROVED)?.name
+      const entityName = this.getApprovedName(nr)
       this.setEntityName(entityName || 'Unknown Name')
     },
 
