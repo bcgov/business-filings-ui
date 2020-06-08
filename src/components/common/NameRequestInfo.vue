@@ -12,16 +12,19 @@
           <li>Request Type: {{ requestType() }}</li>
           <li>Expiry Date: {{ formattedExpirationDate() }}</li>
           <li>
-            <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED"
+            <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED ||
+                          nameRequestDetails.status === NameRequestStates.CONDITIONAL"
               color="green" class="nr-status-icon">mdi-check</v-icon>
             Status: {{ nameRequestDetails.status | capitalize }}
           </li>
           <li id="condition-consent">
-            <v-icon v-if="conditionConsent() === RECEIVED_STATE || conditionConsent() === NOT_REQUIRED"
+            <v-icon v-if="conditionConsent === NOT_REQUIRED_STATE ||
+                          conditionConsent === RECEIVED_STATE ||
+                          conditionConsent === WAIVED_STATE"
               color="green" class="nr-status-icon">mdi-check</v-icon>
-            <v-icon v-if="conditionConsent() === NOT_RECEIVED_STATE" color="red"
+            <v-icon v-if="conditionConsent === NOT_RECEIVED_STATE" color="red"
               class="nr-status-icon">mdi-close</v-icon>
-            Condition/Consent: {{ conditionConsent() }}
+            Condition/Consent: {{ conditionConsent }}
           </li>
         </ul>
       </v-col>
@@ -66,7 +69,8 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   readonly EntityTypes = EntityTypes
   readonly RECEIVED_STATE = 'Received'
   readonly NOT_RECEIVED_STATE= 'Not Received'
-  readonly NOT_REQUIRED = 'Not Required'
+  readonly NOT_REQUIRED_STATE = 'Not Required'
+  readonly WAIVED_STATE = 'Waived'
 
   @Prop()
   private nameRequest: any
@@ -100,13 +104,21 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
     return this.toReadableDate(this.nameRequestDetails.expirationDate)
   }
 
-  /** Return consent received string by checking if conditional and if consent has been received */
-  private conditionConsent (): string {
-    if (this.nameRequestDetails.status === NameRequestStates.CONDITIONAL) {
-      return this.nameRequestDetails.consentFlag === 'R' ? this.RECEIVED_STATE : this.NOT_RECEIVED_STATE
-    } else {
-      return this.NOT_REQUIRED
+  /** Return condition/consent string */
+  private get conditionConsent (): string {
+    if (this.nameRequestDetails.status === NameRequestStates.APPROVED) {
+      return this.NOT_REQUIRED_STATE
     }
+    if (this.nameRequestDetails.consentFlag === null) {
+      return this.NOT_REQUIRED_STATE
+    }
+    if (this.nameRequestDetails.consentFlag === 'R') {
+      return this.RECEIVED_STATE
+    }
+    if (this.nameRequestDetails.consentFlag === 'N') {
+      return this.WAIVED_STATE
+    }
+    return this.NOT_RECEIVED_STATE
   }
 
   /** Return formatted applicant name */
