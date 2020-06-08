@@ -8,7 +8,7 @@
           <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
         <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
-          <span>{{ nrTitle || 'Unknown Title'}}</span>
+          <span>{{ this.displayName || 'Unknown Title'}}</span>
         </div>
 
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
@@ -96,13 +96,13 @@ import { Component, Mixins, Vue } from 'vue-property-decorator'
 import { mapState, mapGetters } from 'vuex'
 
 // Mixins
-import { EnumMixin } from '@/mixins'
+import { CommonMixin, EnumMixin } from '@/mixins'
 
 // Enums
 import { EntityStatus, EntityTypes } from '@/enums'
 
 @Component({
-  mixins: [EnumMixin],
+  mixins: [CommonMixin, EnumMixin],
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
@@ -135,18 +135,6 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   /** The Incorporation Application's Temporary Registration Number string. */
   private get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
-  }
-
-  /** The NR Title string. */
-  private get nrTitle (): string {
-    if (this.nrNumber) return this.entityName
-
-    switch (this.entityType) {
-      case EntityTypes.COOP: return 'Numbered Cooperative'
-      case EntityTypes.BCOMP: return 'Numbered Benefit Company'
-      case EntityTypes.CORP: return 'Numbered Corporation'
-    }
-    return '' // should never happen
   }
 
   /** The NR Subtitle string. */

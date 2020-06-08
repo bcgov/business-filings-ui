@@ -8,12 +8,12 @@ import { EntityTypes } from '@/enums'
  */
 @Component({
   computed: {
-    ...mapState(['entityType'])
+    ...mapState(['entityType', 'entityName'])
   }
 })
 export default class CommonMixin extends Vue {
   readonly entityType!: EntityTypes
-
+  readonly entityName!: string
   /** Returns True if entity is a Benefit Company. */
   isBComp (): boolean {
     return (this.entityType === EntityTypes.BCOMP)
@@ -27,6 +27,21 @@ export default class CommonMixin extends Vue {
   /** Returns True if entity is a Corporation. */
   isCorp (): boolean {
     return (this.entityType === EntityTypes.CORP)
+  }
+
+  get displayName (): string {
+    let name = this.entityName
+    if (!name) {
+      switch (this.entityType) {
+        case EntityTypes.COOP: name = 'Numbered Cooperative'
+          break
+        case EntityTypes.BCOMP: name = 'Numbered Benefit Company'
+          break
+        case EntityTypes.CORP: name = 'Numbered Corporation'
+          break
+      }
+    }
+    return name
   }
 
   /**

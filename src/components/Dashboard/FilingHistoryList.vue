@@ -293,21 +293,6 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    displayName (): string {
-      let name = this.entityName
-      if (!name) {
-        switch (this.entityType) {
-          case EntityTypes.COOP: name = 'Numbered Cooperative'
-            break
-          case EntityTypes.BCOMP: name = 'Numbered Benefit Company'
-            break
-          case EntityTypes.CORP: name = 'Numbered Corporation'
-            break
-        }
-      }
-      return name
     }
   },
 
@@ -761,7 +746,7 @@ export default {
 
       const url = `${document.paymentToken}/receipts`
       const data = {
-        corpName: this.filingTitle,
+        corpName: this.entityName,
         filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }
