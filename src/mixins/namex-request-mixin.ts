@@ -42,9 +42,11 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
     }
 
     // If the NR is awaiting consent, it is not consumable.
-    // R = received (we have consent)
-    // N = waived (we don't need consent)
-    if (nr.state === NameRequestStates.CONDITIONAL && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
+    // null = consent not required
+    // R = consent received
+    // N = consent waived
+    if (nr.state === NameRequestStates.CONDITIONAL &&
+      nr.consentFlag !== null && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
       return NameRequestStates.NEED_CONSENT
     }
 

@@ -18,9 +18,9 @@
             Status: {{ nameRequestDetails.status | capitalize }}
           </li>
           <li id="condition-consent">
-            <v-icon v-if="conditionConsent === NOT_REQUIRED ||
+            <v-icon v-if="conditionConsent === NOT_REQUIRED_STATE ||
                           conditionConsent === RECEIVED_STATE ||
-                          conditionConsent === WAIVED"
+                          conditionConsent === WAIVED_STATE"
               color="green" class="nr-status-icon">mdi-check</v-icon>
             <v-icon v-if="conditionConsent === NOT_RECEIVED_STATE" color="red"
               class="nr-status-icon">mdi-close</v-icon>
@@ -69,8 +69,8 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   readonly EntityTypes = EntityTypes
   readonly RECEIVED_STATE = 'Received'
   readonly NOT_RECEIVED_STATE= 'Not Received'
-  readonly NOT_REQUIRED = 'Not Required'
-  readonly WAIVED = 'Waived'
+  readonly NOT_REQUIRED_STATE = 'Not Required'
+  readonly WAIVED_STATE = 'Waived'
 
   @Prop()
   private nameRequest: any
@@ -107,13 +107,16 @@ export default class NameRequestInfo extends Mixins(CommonMixin, DateMixin, Enum
   /** Return condition/consent string */
   private get conditionConsent (): string {
     if (this.nameRequestDetails.status === NameRequestStates.APPROVED) {
-      return this.NOT_REQUIRED
+      return this.NOT_REQUIRED_STATE
+    }
+    if (this.nameRequestDetails.consentFlag === null) {
+      return this.NOT_REQUIRED_STATE
     }
     if (this.nameRequestDetails.consentFlag === 'R') {
       return this.RECEIVED_STATE
     }
     if (this.nameRequestDetails.consentFlag === 'N') {
-      return this.WAIVED
+      return this.WAIVED_STATE
     }
     return this.NOT_RECEIVED_STATE
   }
