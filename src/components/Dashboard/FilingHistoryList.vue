@@ -295,15 +295,19 @@ export default {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
     },
 
-    nrTitle (): string {
-      if (this.nrNumber) return this.entityName
-
-      switch (this.entityType) {
-        case EntityTypes.COOP: return 'Numbered Cooperative'
-        case EntityTypes.BCOMP: return 'Numbered Benefit Company'
-        case EntityTypes.CORP: return 'Numbered Corporation'
+    displayName (): string {
+      let name = this.entityName
+      if (!name) {
+        switch (this.entityType) {
+          case EntityTypes.COOP: name = 'Numbered Cooperative'
+            break
+          case EntityTypes.BCOMP: name = 'Numbered Benefit Company'
+            break
+          case EntityTypes.CORP: name = 'Numbered Corporation'
+            break
+        }
       }
-      return '' // should never happen
+      return name
     }
   },
 
@@ -466,7 +470,7 @@ export default {
         // build filing item
         const item: any = {
           filingType,
-          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.entityName}`,
+          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.displayName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
@@ -757,7 +761,7 @@ export default {
 
       const url = `${document.paymentToken}/receipts`
       const data = {
-        corpName: this.entityName || this.nrTitle,
+        corpName: this.filingTitle,
         filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }
