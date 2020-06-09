@@ -71,7 +71,7 @@
               </div>
 
               <div class="list-item__subtitle">
-                <div v-if="task.subtitle" class="todo-subtitle">
+                <div v-if="task.subtitle && !task.bcolErrObj" class="todo-subtitle">
                   <div>{{ task.subtitle }}</div>
                   <div v-if="task.nameRequest" class="payment-status">
                     <v-btn
