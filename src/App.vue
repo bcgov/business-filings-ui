@@ -484,6 +484,7 @@ export default {
 
       switch (filing.header.status) {
         case 'DRAFT':
+        case 'PENDING':
           // this is a Draft Incorporation Application
           this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
 
