@@ -73,6 +73,20 @@
                   </v-btn>
                 </div>
 
+                <div v-else-if="filing.isCompleteIA && tempRegNumber" class="filing-subtitle">
+                  <span>PENDING FILING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="blue darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon left>mdi-information-outline</v-icon>
+                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  </v-btn>
+                </div>
+
                 <!-- else filing is COMPLETED -->
                 <div v-else class="filing-subtitle">
                   <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
@@ -156,6 +170,11 @@
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
+          <template v-else-if="filing.isCompleteIA && tempRegNumber">
+            <complete-filing />
+            <v-divider class="mt-7 mb-5"></v-divider>
+          </template>
+
           <paper-filing v-if="filing.paperOnly" />
 
           <!-- the list of documents -->
@@ -233,6 +252,7 @@ import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
 
 // Components
+import CompleteFiling from './CompleteFiling.vue'
 import { DetailsList } from '@/components/common'
 import PaperFiling from './PaperFiling.vue'
 import PendingFiling from './PendingFiling.vue'
@@ -254,6 +274,7 @@ export default {
   mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin],
 
   components: {
+    CompleteFiling,
     DetailsList,
     PaperFiling,
     PendingFiling,
@@ -359,14 +380,6 @@ export default {
       this.$emit('filed-count', this.filedItems.length)
       this.$emit('filings-list', this.filedItems)
 
-      // If there is an Incorp App filing, emit this event to the parent component.
-      // This indicates that a new filing cannot be started because this item has to be completed first.
-      this.$emit('has-blocker-filing',
-        this.filedItems.filter(item => {
-          return (item.filingType === FilingTypes.INCORPORATION_APPLICATION)
-        }).length > 0
-      )
-
       // if needed, highlight a specific filing
       // NB: use unary plus operator to cast string to number
       const highlightId = +this.$route.query.filing_id // may be NaN (which is false)
@@ -444,6 +457,9 @@ export default {
         // is this a paid filing?
         const isPaid = (header.status === FilingStatus.PAID)
 
+        // is this a completed filing?
+        const isCompleteIA = (header.status === FilingStatus.COMPLETED)
+
         const name = this.filingTypeToName(filingType)
         let receiptFilename: string
         if (isIaFutureEffective) {
@@ -462,6 +478,7 @@ export default {
           effectiveDateTime, // used for future effective Incorp App
           isIaFutureEffective,
           isPaid,
+          isCompleteIA,
           documents: filing?.documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),

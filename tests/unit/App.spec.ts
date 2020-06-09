@@ -1434,7 +1434,7 @@ describe('App as a Paid Incorporation Application', () => {
   it('fetches IA filings properly', () => {
     expect(vm.$store.state.entityIncNo).toBe('T123456789')
     expect(vm.$store.state.entityType).toBe('BC')
-    expect(vm.$store.state.entityStatus).toBe('PAID_INCORP_APP')
+    expect(vm.$store.state.entityStatus).toBe('FILED_INCORP_APP')
 
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')

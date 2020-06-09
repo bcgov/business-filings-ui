@@ -1,17 +1,15 @@
 <template>
-  <div class="pending-filing body-2">
-    <h4>Filing Pending</h4>
+  <div class="complete-ia-filing body-2">
+    <h4>Incorporation Complete</h4>
 
-    <p>This {{title}} is paid, but the filing has not been completed by the BC
-      Registry yet. Some filings may take longer than expected.</p>
-    <p>If this issue persists, please contact us.</p>
+    <p>{{name}} has been successfully incorporated.</p>
+    <p>Return to your Manage Businesses dashboard to access your business and file changes.</p>
 
-    <ErrorContact />
     <div class="to-dashboard-container">
       <v-btn
         color="primary"
         @click.native.stop="returnToDashboard()"
-        >
+      >
         <span>Return to Dashboard</span>
       </v-btn>
     </div>
@@ -19,19 +17,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { ErrorContact } from '@/components/common'
+import { mapState } from 'vuex'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
-  components: { ErrorContact }
+  computed: {
+    ...mapState(['entityName'])
+  }
 })
-export default class PendingFiling extends Vue {
-  /** The subject filing. */
-  @Prop() private filing: any
+export default class CompleteFiling extends Vue {
+  readonly entityName!: string
 
-  /** The tite of the subject filing. */
-  private get title (): string {
-    return this.filing?.title || 'filing'
+  /** Determine the name for the entity.
+   * Use the entity name if it is available, otherwise build name for numbered company.
+   */
+  private get name (): string {
+    return this.entityName || 'A numbered benefit company'
   }
 
   private returnToDashboard (): void {
@@ -62,7 +63,4 @@ p {
   margin-bottom: 0.5rem !important;
 }
 
-.error-contact {
-  padding-top: 0.75rem;
-}
 </style>

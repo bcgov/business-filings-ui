@@ -90,7 +90,7 @@ describe('EntityInfo', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
     store.state.entityName = 'My Future Company'
-    store.state.entityStatus = 'PAID_INCORP_APP'
+    store.state.entityStatus = 'FILED_INCORP_APP'
     store.state.entityType = 'BC'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
