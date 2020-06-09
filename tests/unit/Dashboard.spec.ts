@@ -76,13 +76,16 @@ describe('Dashboard - UI', () => {
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables standalone filing buttons when there is a blocker filing in the filing history list', () => {
-    wrapper.find(FilingHistoryList).vm.$emit('has-blocker-filing', true)
+  it('disables standalone filing buttons when there is temporary reg number', () => {
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
 
-    expect(vm.hasBlockerFiling).toEqual(true)
-    expect(vm.disableChanges).toEqual(true)
-    expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
-    expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify })
+    const localVm: any = localWrapper.vm
+
+    expect(localVm.disableChanges).toEqual(true)
+    expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
+    expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+    sessionStorage.clear()
   })
 
   it('disables filing buttons when there is a future effective filing pending', () => {

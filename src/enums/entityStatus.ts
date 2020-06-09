@@ -5,5 +5,5 @@ export enum EntityStatus {
   // overloaded values (used only before business exists):
   NAME_REQUEST = 'NAME_REQUEST',
   DRAFT_INCORP_APP = 'DRAFT_INCORP_APP',
-  PAID_INCORP_APP = 'PAID_INCORP_APP',
+  FILED_INCORP_APP = 'FILED_INCORP_APP',
 }

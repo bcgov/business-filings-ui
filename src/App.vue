@@ -498,14 +498,15 @@ export default {
           ])
           break
 
+        case 'COMPLETED':
         case 'PAID':
           const incorporationApplication = filing.incorporationApplication
           if (!incorporationApplication) {
             throw new Error('Invalid incorporation application object')
           }
 
-          // this is a Paid Incorporation Application
-          this.setEntityStatus(EntityStatus.PAID_INCORP_APP)
+          // this is a paid or completed Incorporation Application
+          this.setEntityStatus(EntityStatus.FILED_INCORP_APP)
 
           // set temporary addresses and directors
           this.storeAddresses({ data: incorporationApplication.offices })

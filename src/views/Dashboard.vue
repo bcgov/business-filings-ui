@@ -41,7 +41,6 @@
                 :disableChanges="disableChanges"
                 @filed-count="filedCount = $event"
                 @filings-list="historyFilings = $event"
-                @has-blocker-filing="hasBlockerFiling = $event"
               />
             </section>
           </v-col>
@@ -149,7 +148,6 @@ export default {
     return {
       todoCount: 0,
       hasBlockerTask: false,
-      hasBlockerFiling: false,
       hasPendingFiling: false,
       filedCount: 0,
       historyFilings: [],
@@ -171,14 +169,24 @@ export default {
       return (this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
     },
 
-    /** Whether this is a Paid Incorporation Application. */
+    /** Whether this is a Paid or Completed Incorporation Application. */
     isIncorpAppFiling (): boolean {
-      return (this.entityStatus === EntityStatus.PAID_INCORP_APP)
+      return (this.entityStatus === EntityStatus.FILED_INCORP_APP)
     },
 
-    /** Whether to block a new filing because another item has to be finished first. */
+    /** Whether to block a new filing because another item has to be finished first.
+     * No changes are allowed if
+     * 1) this is a temporary reg number until it switches to a real business number
+     * 2) has a pending filing (is PAID) and waiting for completion
+     * 3) has a blocker task in the todo list (ie. draft, paid, error, correction )
+     */
     disableChanges (): boolean {
-      return (this.hasBlockerTask || this.hasBlockerFiling || this.hasPendingFiling)
+      return (this.hasBlockerTask || this.hasPendingFiling || this.hasTempRegNumber)
+    },
+
+    /** The Incorporation Application's Temporary Registration Number string. */
+    hasTempRegNumber (): boolean {
+      return Boolean(sessionStorage.getItem('TEMP_REG_NUMBER'))
     }
   },
 
