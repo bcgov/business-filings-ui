@@ -9,7 +9,7 @@
       <v-btn
         color="primary"
         @click.native.stop="returnToDashboard()"
-        >
+      >
         <span>Return to Dashboard</span>
       </v-btn>
     </div>
