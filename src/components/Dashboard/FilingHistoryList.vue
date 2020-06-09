@@ -288,7 +288,7 @@ export default {
   computed: {
     ...mapGetters(['isRoleStaff', 'nrNumber']),
 
-    ...mapState(['entityIncNo', 'filings', 'entityName']),
+    ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
 
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
