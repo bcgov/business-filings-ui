@@ -746,7 +746,7 @@ export default {
 
       const url = `${document.paymentToken}/receipts`
       const data = {
-        corpName: this.entityName,
+        corpName: this.corpDisplayName,
         filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }
