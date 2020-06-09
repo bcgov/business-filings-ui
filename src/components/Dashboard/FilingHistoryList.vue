@@ -286,13 +286,24 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isRoleStaff']),
+    ...mapGetters(['isRoleStaff', 'nrNumber']),
 
-    ...mapState(['entityIncNo', 'filings', 'entityName']),
+    ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
 
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    nrTitle (): string {
+      if (this.nrNumber) return this.entityName
+
+      switch (this.entityType) {
+        case EntityTypes.COOP: return 'Numbered Cooperative'
+        case EntityTypes.BCOMP: return 'Numbered Benefit Company'
+        case EntityTypes.CORP: return 'Numbered Corporation'
+      }
+      return '' // should never happen
     }
   },
 
@@ -746,7 +757,7 @@ export default {
 
       const url = `${document.paymentToken}/receipts`
       const data = {
-        corpName: this.entityName,
+        corpName: this.entityName || this.nrTitle,
         filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }
