@@ -18,11 +18,9 @@
 
 <script lang="ts">
 import { mapState } from 'vuex'
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { ErrorContact } from '@/components/common'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
-  components: { ErrorContact },
   computed: {
     ...mapState(['entityName', 'entityIncNo'])
   }
@@ -35,11 +33,15 @@ export default class CompleteFiling extends Vue {
    * Use the entity name if it is available, otherwise build name for numbered company.
    */
   private get name (): string {
+    // Safety check
+    if (!this.entityName && !this.entityIncNo) {
+      return ''
+    }
     return this.entityName || `${this.entityIncNo.replace('BC', '')} B.C. LTD.`
   }
 
   private returnToDashboard (): void {
-    const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
+    const businessesUrl = sessionStorage.getItem('BUSINESSES_URL') + 'business'
     window.location.assign(businessesUrl)
   }
 }

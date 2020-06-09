@@ -35,7 +35,7 @@ export default class PendingFiling extends Vue {
   }
 
   private returnToDashboard (): void {
-    const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
+    const businessesUrl = sessionStorage.getItem('BUSINESSES_URL') + 'business'
     window.location.assign(businessesUrl)
   }
 }
