@@ -34,7 +34,7 @@ describe('Complete Filing', () => {
     expect(wrapper.find('h4').text()).toBe('Incorporation Complete')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('1234567 B.C. LTD. has been successfully incorporated.')
+    expect(paragraphs.at(0).text()).toContain('A numbered benefit company has been successfully incorporated.')
     expect(paragraphs.at(1).text())
       .toContain('Return to your Manage Businesses dashboard to access your business and file changes.')
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)

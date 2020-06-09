@@ -22,22 +22,17 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
   computed: {
-    ...mapState(['entityName', 'entityIncNo'])
+    ...mapState(['entityName'])
   }
 })
 export default class CompleteFiling extends Vue {
   readonly entityName!: string
-  readonly entityIncNo!: string
 
   /** Determine the name for the entity.
    * Use the entity name if it is available, otherwise build name for numbered company.
    */
   private get name (): string {
-    // Safety check
-    if (!this.entityName && !this.entityIncNo) {
-      return ''
-    }
-    return this.entityName || `${this.entityIncNo.replace('BC', '')} B.C. LTD.`
+    return this.entityName || 'A numbered benefit company'
   }
 
   private returnToDashboard (): void {
