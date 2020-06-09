@@ -293,17 +293,6 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    nrTitle (): string {
-      if (this.nrNumber) return this.entityName
-
-      switch (this.entityType) {
-        case EntityTypes.COOP: return 'Numbered Cooperative'
-        case EntityTypes.BCOMP: return 'Numbered Benefit Company'
-        case EntityTypes.CORP: return 'Numbered Corporation'
-      }
-      return '' // should never happen
     }
   },
 
@@ -466,7 +455,7 @@ export default {
         // build filing item
         const item: any = {
           filingType,
-          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.entityName}`,
+          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.corpDisplayName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
@@ -757,7 +746,7 @@ export default {
 
       const url = `${document.paymentToken}/receipts`
       const data = {
-        corpName: this.entityName || this.nrTitle,
+        corpName: this.corpDisplayName,
         filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }

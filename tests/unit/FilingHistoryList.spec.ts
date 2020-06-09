@@ -202,6 +202,7 @@ describe('Filing History List', () => {
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    store.state.nameRequest = { nrNumber: 'NR 1234567' }
     store.state.entityType = 'BC'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
@@ -388,6 +389,62 @@ describe('Filing History List', () => {
     // verify Download All button
     expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
+
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
+    wrapper.destroy()
+  })
+
+  it('displays default title if numbered company incorporation application', async () => {
+    const $route = { query: { } }
+
+    // init store
+    store.state.nameRequest = null
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    store.state.entityType = 'BC'
+
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            availableOnPaperOnly: false,
+            certifiedBy: 'Full Name',
+            date: '2020-05-06T19:00:00+00:00',
+            effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
+            filingId: 85114,
+            name: 'incorporationApplication',
+            paymentToken: 1971,
+            status: 'PAID'
+          },
+          documents: [
+            {
+              filename: 'TyxHdPDf3A - Incorporation Application - 2020-06-02.pdf',
+              filingId: 85114,
+              reportType: null,
+              title: 'Incorporation Application',
+              type: 'REPORT'
+            }
+          ],
+          incorporationApplication: { }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.filedItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+
+    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
+    expect(wrapper.find('.filing-label').text()).toContain('Numbered Benefit Company')
+    const spans = wrapper.findAll('.list-item__subtitle span')
+    expect(spans.at(0).text()).toBe('PENDING FILING (filed by Full Name on 2020-05-06)')
+    expect(spans.at(2).text()).toBe('PAID')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
