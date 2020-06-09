@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { omit, isEqual } from 'lodash'
 import { EntityTypes } from '@/enums'
 
@@ -8,12 +8,14 @@ import { EntityTypes } from '@/enums'
  */
 @Component({
   computed: {
-    ...mapState(['entityType', 'entityName'])
+    ...mapState(['entityType', 'entityName']),
+    ...mapGetters(['nrNumber'])
   }
 })
 export default class CommonMixin extends Vue {
   readonly entityType!: EntityTypes
   readonly entityName!: string
+  readonly nrNumber!: string
   /** Returns True if entity is a Benefit Company. */
   isBComp (): boolean {
     return (this.entityType === EntityTypes.BCOMP)
@@ -29,9 +31,9 @@ export default class CommonMixin extends Vue {
     return (this.entityType === EntityTypes.CORP)
   }
 
-  get displayName (): string {
+  get corpDisplayName (): string {
     let name = this.entityName
-    if (!name) {
+    if (!this.nrNumber) {
       switch (this.entityType) {
         case EntityTypes.COOP: name = 'Numbered Cooperative'
           break

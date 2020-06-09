@@ -455,7 +455,7 @@ export default {
         // build filing item
         const item: any = {
           filingType,
-          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.displayName}`,
+          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.corpDisplayName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,

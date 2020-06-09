@@ -8,7 +8,7 @@
           <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
         <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
-          <span>{{ this.displayName || 'Unknown Title'}}</span>
+          <span>{{ this.corpDisplayName || 'Unknown Title'}}</span>
         </div>
 
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
