@@ -128,6 +128,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
+  readonly corpDisplayName!: string
   readonly entityType!: EntityTypes
   readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
@@ -209,7 +210,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
         href: `${sessionStorage.getItem('AUTH_URL')}account/${currentAccount?.id}/business`
       },
       {
-        text: this.entityName,
+        text: this.entityName || this.corpDisplayName,
         disabled: false,
         exact: true,
         to: { name: DASHBOARD }
