@@ -1,7 +1,7 @@
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
-      <v-breadcrumbs :items="getBreadCrumbs()" divider=">" class="breadcrumb mb-5">
+      <v-breadcrumbs :items="getBreadcrumbs()" divider=">" class="breadcrumb mb-5">
         <v-breadcrumbs-item
           slot="item"
           slot-scope="{ item }"
@@ -198,8 +198,8 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 
   /** Track route for breadcrumb. */
   @Watch('$route', { immediate: true })
-  private getBreadCrumbs (): Array<BreadcrumbInterface> {
-    const breadCrumbs = this.$route?.meta?.breadcrumb
+  private getBreadcrumbs (): Array<BreadcrumbInterface> {
+    const breadcrumbs = this.$route?.meta?.breadcrumb
     // The Current Account data only available in deployed environments
     const currentAccount = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))
 
@@ -215,7 +215,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
         exact: true,
         to: { name: DASHBOARD }
       },
-      ...(breadCrumbs || [])
+      ...(breadcrumbs || [])
     ]
   }
 }
