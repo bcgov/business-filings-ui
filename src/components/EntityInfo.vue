@@ -1,3 +1,5 @@
+import {ANNUAL_REPORT} from '@/constants';
+import {ANNUAL_REPORT} from '@/constants';
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
@@ -101,8 +103,8 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { mapState, mapGetters } from 'vuex'
+import { Component, Mixins } from 'vue-property-decorator'
+import { mapGetters, mapState } from 'vuex'
 
 // Mixins
 import { CommonMixin, EnumMixin } from '@/mixins'
@@ -110,16 +112,17 @@ import { CommonMixin, EnumMixin } from '@/mixins'
 // Enums
 import { EntityStatus, EntityTypes } from '@/enums'
 
+// Interfaces
 import { BreadcrumbInterface } from '@/interfaces'
 
 // Constants
-import { DASHBOARD } from '@/constants'
+import { ANNUAL_REPORT, DASHBOARD } from '@/constants'
 
 @Component({
   mixins: [CommonMixin, EnumMixin],
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
+    ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
       'businessEmail', 'businessPhone', 'businessPhoneExtension']),
     ...mapGetters(['isRoleStaff', 'nrNumber'])
   }
@@ -129,6 +132,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
   readonly corpDisplayName!: string
+  readonly ARFilingYear!: string
   readonly entityType!: EntityTypes
   readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
@@ -196,18 +200,19 @@ export default class EntityInfo extends Mixins(EnumMixin) {
     window.location.assign(businessProfileUrl)
   }
 
-  /** Track route for breadcrumb. */
-  @Watch('$route', { immediate: true })
+  /** Get route breadcrumbs. */
   private getBreadcrumbs (): Array<BreadcrumbInterface> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
-    // The Current Account data only available in deployed environments
-    const currentAccount = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))
+
+    // Apply the filing year to the breadcrumb trail for Annual Reports
+    let ArCrumb = breadcrumbs?.find(item => item.to.name === ANNUAL_REPORT)
+    if (ArCrumb) ArCrumb.text = `File ${this.ARFilingYear} Annual Report`
 
     return [
       {
-        text: 'My Account',
+        text: 'Manage Businesses',
         disabled: false,
-        href: `${sessionStorage.getItem('AUTH_URL')}account/${currentAccount?.id}/business`
+        href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
       {
         text: this.entityName || this.corpDisplayName,
@@ -237,6 +242,16 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 
   .v-breadcrumbs li {
     font-size: .75rem;
+  }
+
+  ::v-deep {
+    .v-breadcrumbs a {
+      color: #333333;
+    }
+
+    .v-breadcrumbs a:hover {
+      color: #1a76d2;
+    }
   }
 }
 
@@ -288,9 +303,9 @@ dt {
 
 dd + dt:before {
   content: "•";
-    display: inline-block;
-    margin-right: 0.75rem;
-    margin-left: 0.75rem;
+  display: inline-block;
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
 }
 
 .business-info__contact {
