@@ -25,7 +25,15 @@ export default [
     name: ANNUAL_REPORT,
     component: AnnualReport,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: 'File Annual Report',
+          disabled: false,
+          exact: true,
+          to: { name: ANNUAL_REPORT }
+        }
+      ]
     }
   },
   {
@@ -33,7 +41,15 @@ export default [
     name: STANDALONE_DIRECTORS,
     component: StandaloneDirectorsFiling,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: 'Director Change',
+          disabled: false,
+          exact: true,
+          to: { name: STANDALONE_DIRECTORS }
+        }
+      ]
     }
   },
   {
@@ -41,7 +57,15 @@ export default [
     name: STANDALONE_ADDRESSES,
     component: StandaloneOfficeAddressFiling,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: 'Address Change',
+          disabled: false,
+          exact: true,
+          to: { name: STANDALONE_ADDRESSES }
+        }
+      ]
     }
   },
   {
@@ -49,7 +73,15 @@ export default [
     name: CORRECTION,
     component: Correction,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: 'Correction',
+          disabled: false,
+          exact: true,
+          to: { name: CORRECTION }
+        }
+      ]
     }
   },
   {

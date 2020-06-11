@@ -1,7 +1,16 @@
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
-
+      <v-breadcrumbs :items="getBreadCrumbs()" divider=">" class="breadcrumb mb-5">
+        <v-breadcrumbs-item
+          slot="item"
+          slot-scope="{ item }"
+          exact
+          :to="item.to"
+          :href="item.href">
+          {{ item.text }}
+        </v-breadcrumbs-item>
+      </v-breadcrumbs>
       <!-- Entity Name, Entity Status -->
       <div class="title-container">
         <div v-if="businessId" class="mb-1" id="entity-legal-name" aria-label="Business Legal Name">
@@ -92,7 +101,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { mapState, mapGetters } from 'vuex'
 
 // Mixins
@@ -100,6 +109,11 @@ import { CommonMixin, EnumMixin } from '@/mixins'
 
 // Enums
 import { EntityStatus, EntityTypes } from '@/enums'
+
+import { BreadcrumbInterface } from '@/interfaces'
+
+// Constants
+import { DASHBOARD } from '@/constants'
 
 @Component({
   mixins: [CommonMixin, EnumMixin],
@@ -180,6 +194,28 @@ export default class EntityInfo extends Mixins(EnumMixin) {
     // assume Business Profile URL is always reachable
     window.location.assign(businessProfileUrl)
   }
+
+  /** Track route for breadcrumb. */
+  @Watch('$route', { immediate: true })
+  private getBreadCrumbs (): Array<BreadcrumbInterface> {
+    const breadCrumbs = this.$route.meta.breadcrumb
+    const currentAccount = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))
+
+    return [
+      {
+        text: 'My Account',
+        disabled: false,
+        href: `${sessionStorage.getItem('AUTH_URL')}account/${currentAccount.id}/business`
+      },
+      {
+        text: this.entityName,
+        disabled: false,
+        exact: true,
+        to: { name: DASHBOARD }
+      },
+      ...(breadCrumbs || [])
+    ]
+  }
 }
 </script>
 
@@ -192,6 +228,14 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 
 #entity-info {
   background: $BCgovInputBG;
+
+  .breadcrumb {
+    padding: 0;
+  }
+
+  .v-breadcrumbs li {
+    font-size: 12px;
+  }
 }
 
 // #entity-info.staff {
@@ -200,7 +244,6 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 // }
 
 .container {
-  padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
 
