@@ -77,5 +77,14 @@ export default {
       }
     }
     return lastFilingDate
+  },
+
+  isBusinessWithNoMaintenanceFilings (state): boolean {
+    if (state.filings && state.filings.length === 1 &&
+      state.filings[0].filing.header.name === 'incorporationApplication') {
+      return true
+    } else {
+      return false
+    }
   }
 }
