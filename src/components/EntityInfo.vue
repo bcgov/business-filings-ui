@@ -198,14 +198,14 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   /** Track route for breadcrumb. */
   @Watch('$route', { immediate: true })
   private getBreadCrumbs (): Array<BreadcrumbInterface> {
-    const breadCrumbs = this.$route.meta.breadcrumb
+    const breadCrumbs = this.$route?.meta?.breadcrumb
     const currentAccount = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))
 
     return [
       {
         text: 'My Account',
         disabled: false,
-        href: `${sessionStorage.getItem('AUTH_URL')}account/${currentAccount.id}/business`
+        href: `${sessionStorage.getItem('AUTH_URL')}account/${currentAccount?.id}/business`
       },
       {
         text: this.entityName,

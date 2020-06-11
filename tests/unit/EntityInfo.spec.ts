@@ -1,12 +1,16 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
-import { shallowMount } from '@vue/test-utils'
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
+import mockRouter from './mockRouter'
+import { ANNUAL_REPORT } from '@/constants';
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
+Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
@@ -130,5 +134,85 @@ describe('EntityInfo', () => {
     expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
     expect(wrapper.find('#nr-subtitle').exists()).toBeFalsy()
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
+  })
+
+  it('displays the breadcrumb correctly', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
+  })
+
+  it('displays the breadcrumb correctly when navigating to an annual report', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+    router.push('annual-report')
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
+    expect(wrapper.find('.breadcrumb').text()).toContain('File Annual Report')
+    expect(wrapper.find('.breadcrumb').text()).not.toContain('Address Change')
+    expect(wrapper.find('.breadcrumb').text()).not.toContain('Director Change')
+  })
+
+  it('displays the breadcrumb correctly when navigating to an address change', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+    router.push('standalone-addresses')
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
+    expect(wrapper.find('.breadcrumb').text()).toContain('Address Change')
+    expect(wrapper.find('.breadcrumb').text()).not.toContain('File Annual Report')
+    expect(wrapper.find('.breadcrumb').text()).not.toContain('Director Change')
+  })
+
+  it('displays the breadcrumb correctly when navigating to a Director Change', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+    router.push('standalone-directors')
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
+    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
+    expect(wrapper.find('.breadcrumb').text()).toContain('Director Change')
+    expect(wrapper.find('.breadcrumb').text()).not.toContain('File Annual Report')
+    expect(wrapper.find('.breadcrumb').text()).not.toContain('Address Change')
   })
 })
