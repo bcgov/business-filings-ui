@@ -198,7 +198,8 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   /** Track route for breadcrumb. */
   @Watch('$route', { immediate: true })
   private getBreadCrumbs (): Array<BreadcrumbInterface> {
-    const breadCrumbs = this.$route?.meta?.breadcrumb
+    const breadCrumbs = this.$route.meta?.breadcrumb
+    // The Current Account data only available in deployed environments
     const currentAccount = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))
 
     return [
@@ -234,7 +235,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   }
 
   .v-breadcrumbs li {
-    font-size: 12px;
+    font-size: .75rem;
   }
 }
 

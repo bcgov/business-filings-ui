@@ -2,11 +2,10 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
 import mockRouter from './mockRouter'
-import { ANNUAL_REPORT } from '@/constants';
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
