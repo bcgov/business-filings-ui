@@ -1,5 +1,3 @@
-import {ANNUAL_REPORT} from '@/constants';
-import {ANNUAL_REPORT} from '@/constants';
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
