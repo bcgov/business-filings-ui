@@ -1,7 +1,7 @@
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
-      <v-breadcrumbs :items="getBreadcrumbs()" divider=">" class="breadcrumb mb-5">
+      <v-breadcrumbs :items="breadcrumbs" divider=">" class="breadcrumb mb-5">
         <v-breadcrumbs-item
           slot="item"
           slot-scope="{ item }"
@@ -199,11 +199,11 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   }
 
   /** Get route breadcrumbs. */
-  private getBreadcrumbs (): Array<BreadcrumbInterface> {
+  private get breadcrumbs (): Array<BreadcrumbInterface> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
 
     // Apply the filing year to the breadcrumb trail for Annual Reports
-    let ArCrumb = breadcrumbs?.find(item => item.to.name === ANNUAL_REPORT)
+    const ArCrumb = breadcrumbs?.find(item => item.to.name === ANNUAL_REPORT)
     if (ArCrumb) ArCrumb.text = `File ${this.ARFilingYear} Annual Report`
 
     return [
