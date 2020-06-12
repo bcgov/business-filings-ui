@@ -69,6 +69,30 @@ const businessWithMaintenanceFiling = [
   }
 ]
 
+const taskList = [
+  {
+    'task': {
+      'filing': {
+        'header': {
+          'name': 'annualReport',
+          'ARFilingYear': 2019,
+          'status': 'ERROR',
+          'filingId': 789,
+          'paymentToken': 987
+        },
+        'annualReport': {
+          'annualGeneralMeetingDate': '2019-07-15',
+          'annualReportDate': '2019-07-15'
+        },
+        'changeOfAddress': {},
+        'changeOfDirectors': {}
+      }
+    },
+    'enabled': true,
+    'order': 1
+  }
+]
+
 async function waitForUpdate () {
   await Vue.nextTick()
   await flushPromises()
@@ -119,6 +143,18 @@ describe('Legal Obligation', () => {
 
     wrapper.find('#dismiss-btn').trigger('click')
     await waitForUpdate()
+    expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+    wrapper.destroy()
+  })
+
+  it('hides the legal obligation section if there is a task', async () => {
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = newBusinessFiling
+    store.state.tasks = taskList
+
+    const wrapper = mount(LegalObligation, { store, vuetify })
+    await waitForUpdate()
+
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
     wrapper.destroy()
   })
