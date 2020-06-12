@@ -147,9 +147,16 @@ describe('EntityInfo', () => {
 
     await Vue.nextTick()
 
-    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3).toBeUndefined()
   })
 
   it('displays the breadcrumb correctly when navigating to an annual report', async () => {
@@ -161,16 +168,21 @@ describe('EntityInfo', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
     store.state.entityName = 'My Named Company'
+    store.state.ARFilingYear = '2020'
     const wrapper = mount(EntityInfo, { vuetify, store, router })
 
     await Vue.nextTick()
 
-    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
-    expect(wrapper.find('.breadcrumb').text()).toContain('File Annual Report')
-    expect(wrapper.find('.breadcrumb').text()).not.toContain('Address Change')
-    expect(wrapper.find('.breadcrumb').text()).not.toContain('Director Change')
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3.textContent).toContain('File 2020 Annual Report')
   })
 
   it('displays the breadcrumb correctly when navigating to an address change', async () => {
@@ -186,12 +198,16 @@ describe('EntityInfo', () => {
 
     await Vue.nextTick()
 
-    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
-    expect(wrapper.find('.breadcrumb').text()).toContain('Address Change')
-    expect(wrapper.find('.breadcrumb').text()).not.toContain('File Annual Report')
-    expect(wrapper.find('.breadcrumb').text()).not.toContain('Director Change')
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3.textContent).toContain('Address Change')
   })
 
   it('displays the breadcrumb correctly when navigating to a Director Change', async () => {
@@ -207,11 +223,15 @@ describe('EntityInfo', () => {
 
     await Vue.nextTick()
 
-    expect(wrapper.find('.breadcrumb').exists()).toBe(true)
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Account')
-    expect(wrapper.find('.breadcrumb').text()).toContain('My Named Company')
-    expect(wrapper.find('.breadcrumb').text()).toContain('Director Change')
-    expect(wrapper.find('.breadcrumb').text()).not.toContain('File Annual Report')
-    expect(wrapper.find('.breadcrumb').text()).not.toContain('Address Change')
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3.textContent).toContain('Director Change')
   })
 })
