@@ -79,6 +79,7 @@ export default {
     return lastFilingDate
   },
 
+  // To show Legal Obligations only for a new business that hasn't filed anything else yet
   isBusinessWithNoMaintenanceFilings (state): boolean {
     if (state.filings && state.filings.length === 1 &&
       state.filings[0].filing.header.name === 'incorporationApplication') {
