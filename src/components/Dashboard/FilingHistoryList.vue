@@ -74,7 +74,7 @@
                 </div>
 
                 <div v-else-if="filing.isCompleteIA && tempRegNumber" class="filing-subtitle">
-                  <span>PENDING FILING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                   <v-btn
                     class="details-btn"
                     outlined
@@ -186,9 +186,9 @@
               <v-btn v-if="document.type === DOCUMENT_TYPE_REPORT"
                 text color="primary"
                 class="download-document-btn"
-                @click="downloadDocument(document)"
+                @click="downloadDocument(document, index)"
                 :disabled="loadingDocument || loadingReceipt || loadingAll"
-                :loading="loadingDocument"
+                :loading="loadingDocument && index===downloadingDocIndex"
               >
                 <v-icon>mdi-file-pdf-outline</v-icon>
                 <span>{{document.title}}</span>
@@ -293,6 +293,7 @@ export default {
       loadingReceipt: false,
       loadingAll: false,
       currentFilingId: null as number,
+      downloadingDocIndex: -1,
 
       // enums
       EntityTypes,
@@ -697,10 +698,12 @@ export default {
       }
     },
 
-    async downloadDocument (document: any) {
+    async downloadDocument (document: any, index: number) {
       this.loadingDocument = true
+      this.downloadingDocIndex = index
       await this.downloadOneDocument(document)
       this.loadingDocument = false
+      this.downloadingDocIndex = -1
     },
 
     async downloadOneDocument (document: any) {

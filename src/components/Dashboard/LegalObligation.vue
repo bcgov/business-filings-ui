@@ -1,5 +1,6 @@
 <template>
-  <div v-if="showLegalObligation && isBusinessWithNoMaintenanceFilings" class="legal-obligation-container">
+  <div v-if="showLegalObligation && isBusinessWithNoMaintenanceFilings && !tempRegNumber"
+    class="legal-obligation-container">
     <v-card flat class="legal-obligation-section">
       <v-icon color="blue darken-2" class="info-icon">mdi-information-outline</v-icon>
       <div class="share-structure-check-text">
@@ -66,6 +67,10 @@ export default class LegalObligation extends Vue {
     return 'https://www2.gov.bc.ca/gov/content/employment-business/business/' +
     'managing-a-business/permits-licences/businesses-incorporated-companies/' +
     'incorporated-companies/make-changes'
+  }
+
+  private get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 }
 </script>

@@ -158,4 +158,15 @@ describe('Legal Obligation', () => {
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
     wrapper.destroy()
   })
+
+  it('hides the legal obligation section for temp reg number', async () => {
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
+    store.state.filings = newBusinessFiling
+
+    const wrapper = mount(LegalObligation, { store, vuetify })
+    await waitForUpdate()
+
+    expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+    wrapper.destroy()
+  })
 })
