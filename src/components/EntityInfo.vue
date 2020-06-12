@@ -1,7 +1,16 @@
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff }">
     <v-container>
-
+      <v-breadcrumbs :items="breadcrumbs" divider=">" class="breadcrumb mb-5">
+        <v-breadcrumbs-item
+          slot="item"
+          slot-scope="{ item }"
+          exact
+          :to="item.to"
+          :href="item.href">
+          {{ item.text }}
+        </v-breadcrumbs-item>
+      </v-breadcrumbs>
       <!-- Entity Name, Entity Status -->
       <div class="title-container">
         <div v-if="businessId" class="mb-1" id="entity-legal-name" aria-label="Business Legal Name">
@@ -92,8 +101,8 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
-import { mapState, mapGetters } from 'vuex'
+import { Component, Mixins } from 'vue-property-decorator'
+import { mapGetters, mapState } from 'vuex'
 
 // Mixins
 import { CommonMixin, EnumMixin } from '@/mixins'
@@ -101,11 +110,17 @@ import { CommonMixin, EnumMixin } from '@/mixins'
 // Enums
 import { EntityStatus, EntityTypes } from '@/enums'
 
+// Interfaces
+import { BreadcrumbInterface } from '@/interfaces'
+
+// Constants
+import { ANNUAL_REPORT, DASHBOARD } from '@/constants'
+
 @Component({
   mixins: [CommonMixin, EnumMixin],
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
+    ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
       'businessEmail', 'businessPhone', 'businessPhoneExtension']),
     ...mapGetters(['isRoleStaff', 'nrNumber'])
   }
@@ -114,6 +129,8 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
+  readonly corpDisplayName!: string
+  readonly ARFilingYear!: string
   readonly entityType!: EntityTypes
   readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
@@ -180,6 +197,30 @@ export default class EntityInfo extends Mixins(EnumMixin) {
     // assume Business Profile URL is always reachable
     window.location.assign(businessProfileUrl)
   }
+
+  /** Get route breadcrumbs. */
+  private get breadcrumbs (): Array<BreadcrumbInterface> {
+    const breadcrumbs = this.$route?.meta?.breadcrumb
+
+    // Apply the filing year to the breadcrumb trail for Annual Reports
+    const ArCrumb = breadcrumbs?.find(item => item.to.name === ANNUAL_REPORT)
+    if (ArCrumb) ArCrumb.text = `File ${this.ARFilingYear} Annual Report`
+
+    return [
+      {
+        text: 'Manage Businesses Dashboard',
+        disabled: false,
+        href: `${sessionStorage.getItem('AUTH_URL')}business`
+      },
+      {
+        text: this.entityName || this.corpDisplayName,
+        disabled: false,
+        exact: true,
+        to: { name: DASHBOARD }
+      },
+      ...(breadcrumbs || [])
+    ]
+  }
 }
 </script>
 
@@ -192,6 +233,24 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 
 #entity-info {
   background: $BCgovInputBG;
+
+  .breadcrumb {
+    padding: 0;
+  }
+
+  .v-breadcrumbs li {
+    font-size: .75rem;
+  }
+
+  ::v-deep {
+    .v-breadcrumbs a {
+      color: $gray8;
+    }
+
+    .v-breadcrumbs a:hover {
+      color: $BCgovABlue3;
+    }
+  }
 }
 
 // #entity-info.staff {
@@ -200,7 +259,6 @@ export default class EntityInfo extends Mixins(EnumMixin) {
 // }
 
 .container {
-  padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
 
@@ -243,9 +301,9 @@ dt {
 
 dd + dt:before {
   content: "•";
-    display: inline-block;
-    margin-right: 0.75rem;
-    margin-left: 0.75rem;
+  display: inline-block;
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
 }
 
 .business-info__contact {

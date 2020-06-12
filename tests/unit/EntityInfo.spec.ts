@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
-import { shallowMount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
+import mockRouter from './mockRouter'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
+Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
@@ -130,5 +133,105 @@ describe('EntityInfo', () => {
     expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
     expect(wrapper.find('#nr-subtitle').exists()).toBeFalsy()
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
+  })
+
+  it('displays the breadcrumb correctly', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3).toBeUndefined()
+  })
+
+  it('displays the breadcrumb correctly when navigating to an annual report', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+    router.push('annual-report')
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    store.state.ARFilingYear = '2020'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3.textContent).toContain('File 2020 Annual Report')
+  })
+
+  it('displays the breadcrumb correctly when navigating to an address change', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+    router.push('standalone-addresses')
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3.textContent).toContain('Address Change')
+  })
+
+  it('displays the breadcrumb correctly when navigating to a Director Change', async () => {
+    const store = getVuexStore()
+    const router = mockRouter.mock()
+    router.push('standalone-directors')
+
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+
+    store.state.entityName = 'My Named Company'
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+
+    await Vue.nextTick()
+
+    const breadcrumbs = wrapper.vm.$el.querySelectorAll('.v-breadcrumbs li')
+    const crumb1 = breadcrumbs[0]
+    const divider = breadcrumbs[1] // Divider is present every odd index
+    const crumb2 = breadcrumbs[2]
+    const crumb3 = breadcrumbs[4]
+
+    expect(crumb1.textContent).toContain('Manage Businesses')
+    expect(divider.textContent).toContain('>')
+    expect(crumb2.textContent).toContain('My Named Company')
+    expect(crumb3.textContent).toContain('Director Change')
   })
 })
