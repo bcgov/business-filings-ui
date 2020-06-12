@@ -21,6 +21,7 @@
                   <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
                 </h2>
               </header>
+              <legal-obligation/>
               <todo-list
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
@@ -120,6 +121,7 @@ import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
+import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -141,7 +143,8 @@ export default {
     FilingHistoryList,
     AddressListSm,
     DirectorListSm,
-    CoaWarningDialog
+    CoaWarningDialog,
+    LegalObligation
   },
 
   data () {

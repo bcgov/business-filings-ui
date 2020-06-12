@@ -13,6 +13,7 @@
     "test:debug": "node --inspect-brk node_modules/.bin/vue-cli-service test:unit --testPathPattern --no-cache --watch --runInBand"
   },
   "dependencies": {
+    "@babel/compat-data": "^7.9.0",
     "@mdi/font": "^5.0.45",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
