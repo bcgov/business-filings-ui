@@ -21,7 +21,7 @@
 // define constants
 def COMPONENT_NAME = 'coops-ui'
 def TAG_NAME = 'dev'
-def NAMESPACE = 'namespace'
+def NAMESPACE = '1rdehl'
 
 // define groovy functions
 import groovy.json.JsonOutput
