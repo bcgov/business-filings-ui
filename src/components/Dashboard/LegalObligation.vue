@@ -4,7 +4,7 @@
     <v-card flat class="legal-obligation-section">
       <v-icon color="blue darken-2" class="info-icon">mdi-information-outline</v-icon>
       <div class="share-structure-check-text">
-        <span class="bold-text">Legal Obligations:</span> You are required by the Business Corporations Act
+        <span class="bold-text">Legal Obligations:</span> You are required by the <i>Business Corporations Act</i>
         to keep the information about your corporation up to date with the Registrar: For example, you must file annual
         reports, director changes and address changes.
         <span class="read-more-btn" @click="readMoreFlag = true">
@@ -22,8 +22,8 @@
                 good standing with the Registrar.
               </li>
               <li>
-                <span class="bold-text">Director changes</span> - update director information with 15 days of any change
-                (appointing, ceasing or updating an existing director's name and address)
+                <span class="bold-text">Director changes</span> - update director information within 15 days of any
+                change (appointing, ceasing or updating an existing director's name or address)
               </li>
               <li>
                 <span class="bold-text">Company address changes</span> - update any changes to a company's registered or
@@ -88,7 +88,7 @@ export default class LegalObligation extends Vue {
     display: flex;
     align-items: flex-start;
     padding: 1.2rem;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     width: 75%;
 }
 
