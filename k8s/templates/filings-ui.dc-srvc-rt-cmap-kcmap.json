@@ -91,7 +91,7 @@
                                 "image": "${DOCKER_REGISTRY}/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}",
                                 "ports": [
                                     {
-                                        "containerPort": 8080,
+                                        "containerPort": 2015,
                                         "protocol": "TCP"
                                     }
                                 ],
@@ -149,10 +149,10 @@
             "spec": {
                 "ports": [
                     {
-                        "name": "8080-tcp",
-                        "port": 8080,
+                        "name": "2015-tcp",
+                        "port": 2015,
                         "protocol": "TCP",
-                        "targetPort": 8080
+                        "targetPort": 2015
                     }
                 ],
                 "selector": {
@@ -176,7 +176,7 @@
                 "host": "${DOMAIN}",
                 "path": "${PATH}",
                 "port": {
-                    "targetPort": "8080-tcp"
+                    "targetPort": "2015-tcp"
                 },
                 "tls": {
                     "insecureEdgeTerminationPolicy": "Redirect",

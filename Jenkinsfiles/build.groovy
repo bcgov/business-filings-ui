@@ -22,6 +22,7 @@
 def COMPONENT_NAME = 'coops-ui'
 def TAG_NAME = 'dev'
 def NAMESPACE = '1rdehl'
+def CONTEXT_DIRECTORY = '.'
 
 // define groovy functions
 import groovy.json.JsonOutput
