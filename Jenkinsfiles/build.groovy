@@ -165,43 +165,43 @@ podTemplate(label: nodejs_label, name: nodejs_label, serviceAccount: 'jenkins', 
             } catch (Exception e) {
                 error('Failure')
             }
+        }
 
-        }
-    }
-    stage("Build ${COMPONENT_NAME}-inter") {
-      script {
-        openshift.withCluster() {
-          openshift.withProject() {
-            echo "Building ${COMPONENT_NAME}-inter ..."
-            def build = openshift.selector("bc", "${COMPONENT_NAME}-inter")
-            build.startBuild("--wait=true").logs("-f")
-          }
-        }
-      }
-    }
-    stage("Build ${COMPONENT_NAME}") {
-      script {
-        openshift.withCluster() {
-          openshift.withProject() {
-            echo "Building ${COMPONENT_NAME} ..."
-            def build = openshift.selector("bc", "${COMPONENT_NAME}")
-            build.startBuild("--wait=true").logs("-f")
-          }
-        }
-      }
-    }
-    stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
+        stage("Build ${COMPONENT_NAME}-inter") {
         script {
             openshift.withCluster() {
-                openshift.withProject() {
+            openshift.withProject() {
+                echo "Building ${COMPONENT_NAME}-inter ..."
+                def build = openshift.selector("bc", "${COMPONENT_NAME}-inter")
+                build.startBuild("--wait=true").logs("-f")
+            }
+            }
+        }
+        }
+        stage("Build ${COMPONENT_NAME}") {
+        script {
+            openshift.withCluster() {
+            openshift.withProject() {
+                echo "Building ${COMPONENT_NAME} ..."
+                def build = openshift.selector("bc", "${COMPONENT_NAME}")
+                build.startBuild("--wait=true").logs("-f")
+            }
+            }
+        }
+        }
+        stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
+            script {
+                openshift.withCluster() {
+                    openshift.withProject() {
 
-                    echo "Tagging ${COMPONENT_NAME} for deployment to ${TAG_NAME} ..."
+                        echo "Tagging ${COMPONENT_NAME} for deployment to ${TAG_NAME} ..."
 
-                    // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
-                    // Tag the images for deployment based on the image's hash
-                    def IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}")
-                    echo "IMAGE_HASH: ${IMAGE_HASH}"
-                    openshift.tag("${COMPONENT_NAME}@${IMAGE_HASH}", "${COMPONENT_NAME}:${TAG_NAME}")
+                        // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+                        // Tag the images for deployment based on the image's hash
+                        def IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}")
+                        echo "IMAGE_HASH: ${IMAGE_HASH}"
+                        openshift.tag("${COMPONENT_NAME}@${IMAGE_HASH}", "${COMPONENT_NAME}:${TAG_NAME}")
+                    }
                 }
             }
         }
