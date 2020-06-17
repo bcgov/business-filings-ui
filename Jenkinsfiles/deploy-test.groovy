@@ -47,14 +47,8 @@ properties([
 ])
 
 node {
-    def old_version
     stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
         script {
-            openshift.withCluster() {
-                openshift.withProject("${NAMESPACE}-${TAG_NAME}") {
-                    old_version = openshift.selector('dc', "${COMPONENT_NAME}-${TAG_NAME}").object().status.latestVersion
-                }
-            }
             openshift.withCluster() {
                 openshift.withProject() {
 
