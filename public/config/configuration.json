@@ -1,11 +1,11 @@
 {
-  "BUSINESSES_URL": "https://dev.bcregistry.ca/cooperatives/auth/",
-  "AUTH_URL": "https://dev.bcregistry.ca/cooperatives/auth/",
+  "BUSINESSES_URL": "https://dev.bcregistry.ca/business/auth/",
+  "AUTH_URL": "https://dev.bcregistry.ca/business/auth/",
   "CREATE_URL": "https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/",
   "LEGAL_API_URL": "https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "AUTH_API_URL": "https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "PAY_API_URL": "https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",
-  "ADDRESS_COMPLETE_KEY": "RH99-RN99-GB72-FW86",
-  "LD_CLIENT_ID": "5e5d5af4574f7e09ab53d03b"
+  "ADDRESS_COMPLETE_KEY": "_secret_",
+  "LD_CLIENT_ID": "_secret_"
 }
