@@ -869,7 +869,8 @@ export default {
           persistent: true,
           yes: 'Delete',
           no: null,
-          cancel: 'Don\'t delete'
+          cancel: 'Don\'t delete',
+          stayOpenAfterConfirm: true
         }
       ).then(async (confirm) => {
         // if we get here, "Delete" was clicked

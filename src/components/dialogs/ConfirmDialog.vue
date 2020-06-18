@@ -14,10 +14,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn id="dialog-yes-button" color="primary" text v-show="!!options.yes"
-          @click.native="onClickYes()">{{ options.yes }}</v-btn>
+          @click.native="onClickYes()" :loading="isConfirming" :disabled="isConfirming">{{ options.yes }}</v-btn>
         <v-btn id="dialog-no-button" color="primary" text v-show="!!options.no"
-          @click.native="onClickNo()">{{ options.no }}</v-btn>
-        <v-btn id="dialog-cancel-button" color="secondary" text v-show="!!options.cancel"
+          @click.native="onClickNo()" :disabled="isConfirming">{{ options.no }}</v-btn>
+        <v-btn id="dialog-cancel-button" :disabled="isConfirming" color="secondary" text v-show="!!options.cancel"
           @click.native="onClickCancel()">{{ options.cancel }}</v-btn>
       </v-card-actions>
     </v-card>
@@ -65,6 +65,7 @@ interface OptionsObject {
   yes?: string,
   no?: string,
   cancel?: string
+  stayOpenAfterConfirm?: boolean
 }
 
 @Component({})
@@ -84,6 +85,9 @@ export default class ConfirmDialog extends Vue {
   /** The dialog's message. */
   private message: string = null
 
+  /** Confirm in progress for spinnger */
+  private isConfirming = false
+
   /** The dialog's default options. */
   private options: OptionsObject = {
     width: 400,
@@ -91,7 +95,8 @@ export default class ConfirmDialog extends Vue {
     persistent: false,
     yes: 'Yes',
     no: 'No',
-    cancel: 'Cancel'
+    cancel: 'Cancel',
+    stayOpenAfterConfirm: false
   }
 
   /**
@@ -115,7 +120,11 @@ export default class ConfirmDialog extends Vue {
   /** Handler for Yes button. */
   private onClickYes (): void {
     this.resolve(true)
-    this.dialog = false
+    if (this.options.stayOpenAfterConfirm) {
+      this.isConfirming = true
+    } else {
+      this.dialog = false
+    }
   }
 
   /** Handler for No button. */
@@ -128,6 +137,15 @@ export default class ConfirmDialog extends Vue {
   private onClickCancel (): void {
     this.reject()
     this.dialog = false
+  }
+
+  /**
+   * Allow the ability to manually close the dialog when
+   * using the stayOpenAfterConfirm option.
+   * */
+  close (): void {
+    this.dialog = false
+    this.isConfirming = false
   }
 }
 </script>
