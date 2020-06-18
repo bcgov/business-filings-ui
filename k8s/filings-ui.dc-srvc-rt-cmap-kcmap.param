@@ -1,9 +1,9 @@
 #=========================================================
 # Template parameters for:
-# Project: business-create-ui
+# Project: filings-ui
 # Component: deployment config, service, route, config map, kc config map
 # Action: build
-# Template File: templates/business-create-ui.dc-srvc-rt-cmap-kcmap.json
+# Template File: templates/filings-ui.dc-srvc-rt-cmap-kcmap.json
 # Hint: oc process -n 1rdehl-dev -f templates/filings-ui.dc-srvc-rt-cmap-kcmap.json --param-file=filings-ui.dc-srvc-rt-cmap-kcmap.param
 # Hint: oc process -n 1rdehl-dev -f templates/filings-ui.dc-srvc-rt-cmap-kcmap.json --param-file=filings-ui.dc-srvc-rt-cmap-kcmap.param | oc replace -n 1rdehl-dev -f -
 #=========================================================
@@ -27,7 +27,7 @@ LEGAL_API_URL="https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/"
 AUTH_API_URL="https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/"
 CREATE_URL= "https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/"
 PAY_API_URL="https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/"
-KEYCLOAK_CONFIG_PATH="https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/config/kc/keycloak.json"
+KEYCLOAK_CONFIG_PATH="https://dev.bcregistry.ca/business/auth/config/kc/keycloak.json"
 ADDRESS_COMPLETE_KEY="_secret_"
 LD_CLIENT_ID="_secret_"
 SENTRY_DSN=""

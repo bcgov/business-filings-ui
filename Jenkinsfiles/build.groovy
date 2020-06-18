@@ -106,102 +106,41 @@ if (!run_pipeline) {
     currentBuild.result = 'SUCCESS'
     return
 }
-
-// create NodeJS pod to run verification steps
-def nodejs_label = "jenkins-nodejs-${UUID.randomUUID().toString()}"
-podTemplate(label: nodejs_label, name: nodejs_label, serviceAccount: 'jenkins', cloud: 'openshift', containers: [
-    containerTemplate(
-        name: 'jnlp',
-        image: '172.50.0.2:5000/openshift/jenkins-slave-nodejs:8',
-        resourceRequestCpu: '500m',
-        resourceLimitCpu: '1000m',
-        resourceRequestMemory: '1Gi',
-        resourceLimitMemory: '2Gi',
-        workingDir: '/tmp',
-        command: '',
-        args: '${computer.jnlpmac} ${computer.name}'
-    )
-])
-{
-    node (nodejs_label) {
-        checkout scm
-        dir(CONTEXT_DIRECTORY) {
-            try {
-                sh '''
-                    node -v
-                    npm install
-                '''
-                /* TODO - these do not run correctly in pipeline
-                stage("Run Jest tests") {
-                    def testResults = sh(script: "npm run test:unit-silent", returnStatus: true)
-
-                    echo "Unit tests ran, returned ${testResults}"
-                    if (testResults != 0) {
-                        try {
-                            timeout(time: 1, unit: 'DAYS') {
-                                input message: "Unit tests failed. Continue?", id: "1"
-                            }
-                        } catch (Exception e) {
-                            error('Abort')
-                        }
-                    }
-                }
-                */
-                stage("Check code quality (lint)") {
-                    def lintResults = sh(script: "npm run lint:nofix", returnStatus: true)
-
-                    echo "Linter ran, returned ${lintResults}"
-                    if (lintResults > 0) {
-                        try {
-                            timeout(time: 1, unit: 'DAYS') {
-                                input message: "Linter failed. Continue?", id: "2"
-                            }
-                        } catch (Exception e) {
-                            error('Abort')
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                error('Failure')
-            }
-        }
-
-        stage("Build ${COMPONENT_NAME}-inter") {
+node {
+    stage("Build ${COMPONENT_NAME}-inter") {
         script {
             openshift.withCluster() {
-            openshift.withProject() {
-                echo "Building ${COMPONENT_NAME}-inter ..."
-                def build = openshift.selector("bc", "${COMPONENT_NAME}-inter")
-                build.startBuild("--wait=true").logs("-f")
-            }
+                openshift.withProject() {
+                    echo "Building ${COMPONENT_NAME}-inter ..."
+                    def build = openshift.selector("bc", "${COMPONENT_NAME}-inter")
+                    build.startBuild("--wait=true").logs("-f")
+                }
             }
         }
-        }
-        stage("Build ${COMPONENT_NAME}") {
-        script {
-            openshift.withCluster() {
+    }
+    stage("Build ${COMPONENT_NAME}") {
+    script {
+        openshift.withCluster() {
             openshift.withProject() {
                 echo "Building ${COMPONENT_NAME} ..."
                 def build = openshift.selector("bc", "${COMPONENT_NAME}")
                 build.startBuild("--wait=true").logs("-f")
             }
-            }
         }
-        }
-        stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
-            script {
-                openshift.withCluster() {
-                    openshift.withProject() {
+    }
+    }
+    stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
+        script {
+            openshift.withCluster() {
+                openshift.withProject() {
 
-                        echo "Tagging ${COMPONENT_NAME} for deployment to ${TAG_NAME} ..."
+                    echo "Tagging ${COMPONENT_NAME} for deployment to ${TAG_NAME} ..."
 
-                        // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
-                        // Tag the images for deployment based on the image's hash
-                        def IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}")
-                        echo "IMAGE_HASH: ${IMAGE_HASH}"
-                        openshift.tag("${COMPONENT_NAME}@${IMAGE_HASH}", "${COMPONENT_NAME}:${TAG_NAME}")
-                    }
+                    // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+                    // Tag the images for deployment based on the image's hash
+                    def IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}")
+                    echo "IMAGE_HASH: ${IMAGE_HASH}"
+                    openshift.tag("${COMPONENT_NAME}@${IMAGE_HASH}", "${COMPONENT_NAME}:${TAG_NAME}")
                 }
             }
         }

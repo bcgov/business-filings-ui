@@ -211,21 +211,21 @@
             "displayName": "Name",
             "description": "The name assigned to all of the OpenShift resources associated to this app.",
             "required": true,
-            "value": "business-create-ui"
+            "value": "filings-ui"
         },
         {
             "name": "TEMPLATE_DESCRIPTION",
             "displayName": "DESCRIPTION",
             "description": "Description of what this deploy template is for.",
             "required": true,
-            "value": "Template to deploy the Business Create UI."
+            "value": "Template to deploy filings ui."
         },
         {
             "name": "APP_GROUP",
             "displayName": "App Group",
             "description": "The name assigned to all of the deployments in this project.",
             "required": true,
-            "value": "business-create"
+            "value": "filings-ui"
         },
         {
             "name": "DOCKER_REGISTRY",
@@ -260,14 +260,14 @@
             "displayName": "Domain name.",
             "description": "The FQDN of the service.",
             "required": true,
-            "value": "business-create-dev.pathfinder.gov.bc.ca"
+            "value": "dev.bcregistry.ca"
         },
         {
             "name": "PATH",
             "displayName": "URL Path",
             "description": "The path portion of the URL",
             "required": true,
-            "value": "/businesses/create/"
+            "value": "/business"
         },
         {
             "name": "LEGAL_API_URL",
