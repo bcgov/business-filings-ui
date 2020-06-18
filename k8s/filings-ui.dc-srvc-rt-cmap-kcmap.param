@@ -23,7 +23,7 @@ PATH="/business"
 # For config maps
 BUSINESSES_URL="https://dev.bcregistry.ca/business/auth/"
 AUTH_URL="https://dev.bcregistry.ca/business/auth/"
-LEGAL_API_URL="https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/businesses/"
+LEGAL_API_URL="https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/"
 AUTH_API_URL="https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/"
 CREATE_URL= "https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/"
 PAY_API_URL="https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/"
