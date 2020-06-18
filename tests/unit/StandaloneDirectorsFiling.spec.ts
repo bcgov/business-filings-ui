@@ -598,7 +598,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -662,7 +662,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -726,7 +726,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()

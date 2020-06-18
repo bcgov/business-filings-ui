@@ -1551,7 +1551,7 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/654/' + encodeURIComponent('cooperatives/?filing_id=456')
+    const payURL = 'auth/makepayment/654/' + encodeURIComponent('business/?filing_id=456')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1599,7 +1599,7 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/987/' + encodeURIComponent('cooperatives/?filing_id=789')
+    const payURL = 'auth/makepayment/987/' + encodeURIComponent('business/?filing_id=789')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1845,7 +1845,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/654/' + encodeURIComponent('cooperatives/?filing_id=456')
+    const payURL = 'auth/makepayment/654/' + encodeURIComponent('business/?filing_id=456')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1893,7 +1893,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/987/' + encodeURIComponent('cooperatives/?filing_id=789')
+    const payURL = 'auth/makepayment/987/' + encodeURIComponent('business/?filing_id=789')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1979,7 +1979,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'cooperatives/create/?id=T123456789'
+    const createUrl = 'business/create/?id=T123456789'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
@@ -2030,7 +2030,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'cooperatives/create/?id=T123456789'
+    const createUrl = 'business/create/?id=T123456789'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
@@ -2076,7 +2076,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'cooperatives/create/?id=T123456789'
+    const createUrl = 'business/create/?id=T123456789'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
