@@ -869,12 +869,15 @@ export default {
           persistent: true,
           yes: 'Delete',
           no: null,
-          cancel: 'Don\'t delete'
+          cancel: 'Don\'t delete',
+          stayOpenAfterConfirm: true
         }
       ).then(async (confirm) => {
         // if we get here, "Delete" was clicked
         if (confirm) {
-          await this.doDeleteDraft(task)
+          // delete without refreshing the dashboard as it triggers an error loading an IA
+          // a redirect will happen taking the user off this page
+          await this.doDeleteDraft(task, false)
 
           if (this.nameRequest) {
             // redirect to Manage Businesses page
@@ -895,14 +898,16 @@ export default {
       })
     },
 
-    async doDeleteDraft (task) {
+    async doDeleteDraft (task, refreshDashboard: boolean = true) {
       const id = this.entityIncNo || this.tempRegNumber
       let url = `businesses/${id}/filings/${task.id}`
       await axios.delete(url).then(res => {
         if (!res) { throw new Error('Invalid API response') }
 
-        // emit dashboard reload trigger event
-        this.$root.$emit('triggerDashboardReload')
+        if (refreshDashboard) {
+          // emit dashboard reload trigger event
+          this.$root.$emit('triggerDashboardReload')
+        }
       }).catch(error => {
         if (error?.response) {
           if (error.response.data.errors) {
