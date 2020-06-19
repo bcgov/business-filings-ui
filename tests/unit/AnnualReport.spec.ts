@@ -930,7 +930,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     await vm.onClickFilePay()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1002,7 +1002,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     await vm.onClickFilePay()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1131,7 +1131,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('cooperatives/?filing_id=123')
+    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()

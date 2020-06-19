@@ -3,12 +3,13 @@
 # Project: namerequest
 # Component: pipeline
 # Action: build
-# Template File: templates/namerequest-pipeline.json
+# Template File: templates/pipeline.json
+# Hint: oc process -n gl2uos-tools -f templates/pipeline.json --param-file=pipeline.param | oc replace -n gl2uos-tools -f -
 #=========================================================
-NAME="bcrs-entities-create-ui"
+NAME="coops-ui"
 PIPELINE_PURPOSE="build"
-GIT_REPO_URL="https://github.com/bcgov/bcrs-entities-create-ui.git"
+GIT_REPO_URL="https://github.com/bcgov/business-filings-ui.git"
 GIT_REF="master"
-SOURCE_CONTEXT_DIR="src"
+SOURCE_CONTEXT_DIR=""
 JENKINS_FILE="Jenkinsfiles/build.groovy"
 WEBHOOK="unknown"

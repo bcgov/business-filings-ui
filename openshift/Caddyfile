@@ -6,7 +6,7 @@ log stdout
 
 errors stdout
 
-rewrite /cooperatives {
+rewrite /business {
     regexp .*
-    to {path} /cooperatives/
+    to {path} /business/
 }

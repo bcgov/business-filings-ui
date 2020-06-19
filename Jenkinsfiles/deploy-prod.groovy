@@ -19,8 +19,8 @@
 //   -> hudson.model.DirectoryBrowserSupport.CSP : removes restrictions on CSS file load, thus html pages of test reports are displayed pretty
 //   See: https://docs.openshift.com/container-platform/3.9/using_images/other_images/jenkins.html for a complete list of JENKINS env vars
 // define constants
-def NAMESPACE = 'namesapce'
-def COMPONENT_NAME = 'bcrs-entities-create-ui'
+def NAMESPACE = '1rdehl'
+def COMPONENT_NAME = 'coops-ui'
 def TAG_NAME = 'prod'
 def SOURCE_TAG = 'test'
 
@@ -47,14 +47,8 @@ properties([
 ])
 
 node {
-    def old_version
     stage("Tag ${COMPONENT_NAME}:${TAG_NAME}") {
         script {
-            openshift.withCluster() {
-                openshift.withProject("${NAMESPACE}-${TAG_NAME}") {
-                    old_version = openshift.selector('dc', "${COMPONENT_NAME}-${TAG_NAME}").object().status.latestVersion
-                }
-            }
             openshift.withCluster() {
                 openshift.withProject() {
                     echo "Tagging ${COMPONENT_NAME}:${TAG_NAME}-previous"
@@ -68,32 +62,6 @@ node {
                     IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}", "${SOURCE_TAG}")
                     echo "IMAGE_HASH: ${IMAGE_HASH}"
                     openshift.tag("${COMPONENT_NAME}@${IMAGE_HASH}", "${COMPONENT_NAME}:${TAG_NAME}")
-                }
-            }
-        }
-    }
-    stage("Verify deployment") {
-        sleep 10
-        script {
-            openshift.withCluster() {
-                openshift.withProject("${NAMESPACE}-${TAG_NAME}") {
-                    def new_version = openshift.selector('dc', "${COMPONENT_NAME}-${TAG_NAME}").object().status.latestVersion
-                    if (new_version == old_version) {
-                        echo "New deployment was not triggered."
-                        currentBuild.result = "FAILURE"
-                    }
-                    def pod_selector = openshift.selector('pod', [ app:"${COMPONENT_NAME}-${TAG_NAME}" ])
-                    pod_selector.untilEach {
-                        deployment = it.objects()[0].metadata.labels.deployment
-                        echo deployment
-                        if (deployment ==  "${COMPONENT_NAME}-${TAG_NAME}-${new_version}" && it.objects()[0].status.phase == 'Running' && it.objects()[0].status.containerStatuses[0].ready) {
-                            return true
-                        } else {
-                            echo "Pod for new deployment not ready"
-                            sleep 5
-                            return false
-                        }
-                    }
                 }
             }
         }

@@ -19,9 +19,10 @@
 //   -> hudson.model.DirectoryBrowserSupport.CSP : removes restrictions on CSS file load, thus html pages of test reports are displayed pretty
 //   See: https://docs.openshift.com/container-platform/3.9/using_images/other_images/jenkins.html for a complete list of JENKINS env vars
 // define constants
-def COMPONENT_NAME = 'bcrs-entities-create-ui'
+def COMPONENT_NAME = 'coops-ui'
 def TAG_NAME = 'dev'
-def NAMESPACE = 'namespace'
+def NAMESPACE = '1rdehl'
+def CONTEXT_DIRECTORY = '.'
 
 // define groovy functions
 import groovy.json.JsonOutput
@@ -105,28 +106,31 @@ if (!run_pipeline) {
     currentBuild.result = 'SUCCESS'
     return
 }
-
 node {
-    stage("Build ${COMPONENT_NAME}") {
-      script {
-        openshift.withCluster() {
-          openshift.withProject() {
-
-            echo "Building ${COMPONENT_NAME} ..."
-            def build = openshift.selector("bc", "${COMPONENT_NAME}")
-            build.startBuild("--wait=true").logs("-f")
-          }
-        }
-      }
-    }
-    def old_version
-    stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
+    stage("Build ${COMPONENT_NAME}-inter") {
         script {
             openshift.withCluster() {
-                openshift.withProject("${NAMESPACE}-${TAG_NAME}") {
-                    old_version = openshift.selector('dc', "${COMPONENT_NAME}-${TAG_NAME}").object().status.latestVersion
+                openshift.withProject() {
+                    echo "Building ${COMPONENT_NAME}-inter ..."
+                    def build = openshift.selector("bc", "${COMPONENT_NAME}-inter")
+                    build.startBuild("--wait=true").logs("-f")
                 }
             }
+        }
+    }
+    stage("Build ${COMPONENT_NAME}") {
+    script {
+        openshift.withCluster() {
+            openshift.withProject() {
+                echo "Building ${COMPONENT_NAME} ..."
+                def build = openshift.selector("bc", "${COMPONENT_NAME}")
+                build.startBuild("--wait=true").logs("-f")
+            }
+        }
+    }
+    }
+    stage("Deploy ${COMPONENT_NAME}:${TAG_NAME}") {
+        script {
             openshift.withCluster() {
                 openshift.withProject() {
 
@@ -137,46 +141,6 @@ node {
                     def IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}")
                     echo "IMAGE_HASH: ${IMAGE_HASH}"
                     openshift.tag("${COMPONENT_NAME}@${IMAGE_HASH}", "${COMPONENT_NAME}:${TAG_NAME}")
-                }
-            }
-        }
-    }
-    stage("Verify deployment") {
-        sleep 10
-        script {
-            openshift.withCluster() {
-                openshift.withProject("${NAMESPACE}-${TAG_NAME}") {
-                    def new_version = openshift.selector('dc', "${COMPONENT_NAME}-${TAG_NAME}").object().status.latestVersion
-                    if (new_version == old_version) {
-                        echo "New deployment was not triggered."
-                        currentBuild.result = "FAILURE"
-                    }
-                    def pod_selector = openshift.selector('pod', [ app:"${COMPONENT_NAME}-${TAG_NAME}" ])
-                    pod_selector.untilEach {
-                        deployment = it.objects()[0].metadata.labels.deployment
-                        echo deployment
-                        if (deployment ==  "${COMPONENT_NAME}-${TAG_NAME}-${new_version}" && it.objects()[0].status.phase == 'Running' && it.objects()[0].status.containerStatuses[0].ready) {
-                            return true
-                        } else {
-                            echo "Pod for new deployment not ready"
-                            sleep 5
-                            return false
-                        }
-                    }
-                }
-            }
-        }
-    }
-    stage("Run tests on ${COMPONENT_NAME}:${TAG_NAME}") {
-        openshift.withCluster() {
-            openshift.withProject() {
-                def test_pipeline = openshift.selector('bc', 'pytest-pipeline')
-                try {
-                    test_pipeline.startBuild('--wait=true', "-e=component=${COMPONENT_NAME}", "-e=component_tag=${TAG_NAME}", "-e=tag=${TAG_NAME}", "-e=namespace=${NAMESPACE}", "-e=db_type=PG").logs('-F')
-                    echo "All tests passed"
-                } catch (Exception e) {
-                    echo "Not all tests passed."
-                    currentBuild.result = 'FAILURE'
                 }
             }
         }

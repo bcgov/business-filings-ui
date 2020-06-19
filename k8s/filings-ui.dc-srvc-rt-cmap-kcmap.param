@@ -1,0 +1,33 @@
+#=========================================================
+# Template parameters for:
+# Project: filings-ui
+# Component: deployment config, service, route, config map, kc config map
+# Action: build
+# Template File: templates/filings-ui.dc-srvc-rt-cmap-kcmap.json
+# Hint: oc process -n 1rdehl-dev -f templates/filings-ui.dc-srvc-rt-cmap-kcmap.json --param-file=filings-ui.dc-srvc-rt-cmap-kcmap.param
+# Hint: oc process -n 1rdehl-dev -f templates/filings-ui.dc-srvc-rt-cmap-kcmap.json --param-file=filings-ui.dc-srvc-rt-cmap-kcmap.param | oc replace -n 1rdehl-dev -f -
+#=========================================================
+NAME="coops-ui"
+DOCKER_REGISTRY="docker-registry.default.svc:5000"
+IMAGE_NAMESPACE="gl2uos-tools"
+TAG_NAME="dev"
+REPLICAS="1"
+UPDATE_PERIOD_SECONDS="1"
+INTERVAL_SECONDS="1"
+TIMEOUT_SECONDS="600"
+MAX_UNAVAILABLE="25%"
+MAX_SURGE="25%"
+MOUNT_PATH="/var/www/html/business/config"
+DOMAIN="dev.bcregistry.ca"
+PATH="/business"
+# For config maps
+BUSINESSES_URL="https://dev.bcregistry.ca/business/auth/"
+AUTH_URL="https://dev.bcregistry.ca/business/auth/"
+LEGAL_API_URL="https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/"
+AUTH_API_URL="https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/"
+CREATE_URL= "https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/"
+PAY_API_URL="https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/"
+KEYCLOAK_CONFIG_PATH="https://dev.bcregistry.ca/business/auth/config/kc/keycloak.json"
+ADDRESS_COMPLETE_KEY="_secret_"
+LD_CLIENT_ID="_secret_"
+SENTRY_DSN=""
