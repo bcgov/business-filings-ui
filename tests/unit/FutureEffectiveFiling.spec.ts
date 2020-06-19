@@ -18,7 +18,7 @@ describe('Future Effective Filing', () => {
     expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation Date')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(3)
-    expect(paragraphs.at(0).text()).toContain('for unknown')
+    expect(paragraphs.at(0).text()).toContain('this Numbered Benefit Company')
     expect(paragraphs.at(0).text()).toContain('will be unknown Pacific Time')
     expect(paragraphs.at(1).text()).toContain('If you wish to change')
     expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application')

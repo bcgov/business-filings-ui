@@ -2,7 +2,7 @@
   <div class="future-effective-filing body-2">
     <h4>Future Effective Incorporation Date</h4>
 
-    <p>The incorporation date and time for {{entityName || 'unknown'}}
+    <p>The incorporation date and time for {{entityName || 'this Numbered Benefit Company'}}
       will be {{effectiveDateTime || 'unknown'}} Pacific Time.</p>
     <p>If you wish to change the information in this application you must
       contact Registry Staff to file a withdrawal. </p>
