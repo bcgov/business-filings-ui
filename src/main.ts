@@ -60,8 +60,11 @@ async function start () {
 // execution and error handling
 start().catch(error => {
   console.log(error) // eslint-disable-line no-console
-  alert('There was an error starting this page. (See console for details.)\n' +
-  'Please try again later.')
+  // display alert if not this specific error type
+  if (error?.name !== 'MissingIdError') {
+    alert('There was an error starting this page. (See console for details.)\n' +
+      'Please try again later.')
+  }
   // try to redirect to Business Registry home page
   const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
   if (businessesUrl) {
