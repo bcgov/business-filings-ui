@@ -60,8 +60,8 @@ async function start () {
 // execution and error handling
 start().catch(error => {
   console.log(error) // eslint-disable-line no-console
-  // display alert if not this specific error type
-  if (error?.name !== 'MissingIdError') {
+  // bypass alert if this specific error
+  if (!error?.message?.startsWith('Missing or invalid')) {
     alert('There was an error starting this page. (See console for details.)\n' +
       'Please try again later.')
   }
