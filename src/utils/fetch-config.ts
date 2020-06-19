@@ -2,14 +2,6 @@
 
 import axios from '@/axios-auth'
 
-/* Custom error type for missing business ID or temp reg number. **/
-export class MissingIdError extends Error {
-  constructor (message: string) {
-    super(message)
-    this.name = this.constructor.name
-  }
-}
-
 /**
  * Fetches config from environment and API.
  * Also identifies Business ID from initial route.
@@ -89,7 +81,7 @@ export async function fetchConfig (): Promise<void> {
     // ensure we don't already have a Business ID in scope
     sessionStorage.removeItem('BUSINESS_ID')
   } else {
-    return Promise.reject(new MissingIdError('Missing or invalid Business ID or Temp Reg Number.'))
+    return Promise.reject(new Error('Missing or invalid Business ID or Temp Reg Number.'))
   }
 
   // set Base for Vue Router
