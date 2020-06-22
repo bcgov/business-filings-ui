@@ -33,7 +33,7 @@ export default class CommonMixin extends Vue {
 
   get corpDisplayName (): string {
     let name = this.entityName
-    if (!this.nrNumber) {
+    if (!this.entityName && !this.nrNumber) {
       switch (this.entityType) {
         case EntityTypes.COOP: name = 'Numbered Cooperative'
           break
