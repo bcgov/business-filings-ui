@@ -70,7 +70,7 @@ describe('EntityInfo', () => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
-    store.state.entityName = 'My Numbered Company'
+    store.state.entityName = null
     store.state.entityStatus = 'DRAFT_INCORP_APP'
     store.state.entityType = 'BC'
     store.state.nameRequest = null

@@ -398,6 +398,7 @@ describe('Filing History List', () => {
     const $route = { query: { } }
 
     // init store
+    store.state.entityName = null
     store.state.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BC'
