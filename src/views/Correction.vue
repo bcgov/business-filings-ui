@@ -657,6 +657,8 @@ export default {
           this.haveChanges = false
         }).catch(error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
+            // Changes were saved if a 402 is received. haveChanges flag is cleared.
+            this.haveChanges = false
             this.paymentErrorDialog = true
           } else if (error && error.response && error.response.status === BAD_REQUEST) {
             if (error.response.data.errors) {

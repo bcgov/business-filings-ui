@@ -638,6 +638,8 @@ export default {
           this.haveChanges = false
         }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
+            // Changes were saved if a 402 is received. haveChanges flag is cleared.
+            this.haveChanges = false
             const errCode = this.getErrorCode(error)
             if (errCode) {
               this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
