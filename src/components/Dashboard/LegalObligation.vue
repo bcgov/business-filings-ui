@@ -6,7 +6,7 @@
       <v-icon color="blue darken-2" class="info-icon">mdi-information-outline</v-icon>
       <div class="share-structure-check-text">
         <span class="bold-text">Legal Obligations:</span>
-        You are required by the <i>Business Corporations Act</i> to keep the information about your corporation up
+        You are required by the <em>Business Corporations Act</em> to keep the information about your corporation up
         to date with the Registrar: For example, you must file annual reports, director changes and address changes.
         <span class="read-more-btn" @click="readMoreFlag = true">
           <span v-if="!readMoreFlag">Read more about your legal obligations...</span>
