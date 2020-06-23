@@ -76,7 +76,7 @@ describe('Dashboard - UI', () => {
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables standalone filing buttons when there is Temporary Reg Number', () => {
+  it('disables standalone filing buttons when there is a Temporary Reg Number', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
 
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify })

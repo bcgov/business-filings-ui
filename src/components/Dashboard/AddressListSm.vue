@@ -223,13 +223,11 @@ import { BaseAddressObjIF } from '@/interfaces'
   }
 })
 export default class AddressListSm extends Mixins(ObjectMixin, CountriesProvincesMixin) {
-  // Local definition of computed property for static type checking.
+  // Local definitions of computed properties for static type checking.
   readonly isBComp!: boolean
   readonly isCorp!: boolean
-
-  // Base Address properties
-  private registeredAddress!: BaseAddressObjIF
-  private recordsAddress!: BaseAddressObjIF
+  readonly registeredAddress!: BaseAddressObjIF
+  readonly recordsAddress!: BaseAddressObjIF
 
   /** Whether a COA filing is pending. */
   @Prop({ default: false })
