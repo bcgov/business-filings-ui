@@ -1,13 +1,11 @@
 <template>
-  <div class="future-effective-filing body-2">
-    <h4>Future Effective Incorporation Date</h4>
+  <div class="future-effective-ia-pending-body body-2">
+    <h4>Incorporation Pending</h4>
 
     <p>The incorporation date and time for {{entityName || 'this Numbered Benefit Company'}}
-      will be {{effectiveDateTime || 'unknown'}} Pacific Time.</p>
-    <p>If you wish to change the information in this application you must
-      contact Registry Staff to file a withdrawal. </p>
-    <p>Withdrawing this Incorporation Application will remove this application
-      and all associated information, and will incur a $20.00 fee. </p>
+      has been recorded as {{effectiveDateTime || 'unknown'}} Pacific Time.</p>
+    <p>It may take up to one hour to process this filing.</p>
+    <p>If this issue persists, please contact us.</p>
 
     <ErrorContact />
   </div>
@@ -22,7 +20,7 @@ import { ErrorContact } from '@/components/common'
   computed: { ...mapState(['entityName']) },
   components: { ErrorContact }
 })
-export default class FutureEffectiveFiling extends Vue {
+export default class FutureEffectiveIaPending extends Vue {
   /** The subject filing. */
   @Prop() private filing: any
 
@@ -34,8 +32,6 @@ export default class FutureEffectiveFiling extends Vue {
 </script>
 
 <style lang="scss" scoped>
-// @import "@/assets/styles/theme.scss";
-
 h4 {
   letter-spacing: 0;
   font-size: 0.9375rem;
