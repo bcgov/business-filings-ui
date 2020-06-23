@@ -1,5 +1,5 @@
 <template>
-  <div class="completed-ia-filing body-2">
+  <div class="completed-ia-body body-2">
     <h4>Incorporation Complete</h4>
 
     <p>{{name}} has been successfully incorporated.</p>

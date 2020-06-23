@@ -1,5 +1,5 @@
 <template>
-  <div class="pending-filing body-2">
+  <div class="pending-filing-body body-2">
     <h4>Filing Pending</h4>
 
     <p>This {{title}} is paid, but the filing has not been completed by the BC

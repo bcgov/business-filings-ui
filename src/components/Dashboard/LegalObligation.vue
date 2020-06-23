@@ -1,15 +1,17 @@
 <template>
   <div v-if="showLegalObligation && isBusinessWithNoMaintenanceFilings && !tempRegNumber"
-    class="legal-obligation-container">
+    class="legal-obligation-container"
+  >
     <v-card flat class="legal-obligation-section">
       <v-icon color="blue darken-2" class="info-icon">mdi-information-outline</v-icon>
       <div class="share-structure-check-text">
-        <span class="bold-text">Legal Obligations:</span> You are required by the <i>Business Corporations Act</i>
-        to keep the information about your corporation up to date with the Registrar: For example, you must file annual
-        reports, director changes and address changes.
+        <span class="bold-text">Legal Obligations:</span>
+        You are required by the <i>Business Corporations Act</i> to keep the information about your corporation up
+        to date with the Registrar: For example, you must file annual reports, director changes and address changes.
         <span class="read-more-btn" @click="readMoreFlag = true">
           <span v-if="!readMoreFlag">Read more about your legal obligations...</span>
         </span>
+
         <div v-if="readMoreFlag">
           <div class="read-more-line">
             The most common updates you are legally responsible to file include:
@@ -32,17 +34,17 @@
             </ul>
           </div>
           <div class="read-more-line">
-            <span>Find more detailed information
-              <a :href="detailInfoURL" target="_blank">here</a>
-            </span>
+            <span>Find more detailed information <a :href="detailInfoURL" target="_blank">here</a></span>
           </div>
           <div class="read-more-line">
             <span class="read-more-btn" @click="readMoreFlag = false">Read less...</span>
           </div>
         </div>
+
         <div class="legal-obligation-btn-panel">
           <v-btn id="dismiss-btn" color="primary" @click="showLegalObligation = false" height="25" width="90">
-            Dismiss</v-btn>
+            Dismiss
+          </v-btn>
         </div>
       </div>
     </v-card>
