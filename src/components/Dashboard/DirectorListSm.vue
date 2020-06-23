@@ -73,15 +73,17 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 // Mixins
-import { CountriesProvincesMixin, CommonMixin } from '@/mixins'
+import { CountriesProvincesMixin, ObjectMixin } from '@/mixins'
 
 @Component({
+  mixins: [CountriesProvincesMixin, ObjectMixin],
   computed: {
     ...mapState(['directors'])
   }
 })
-export default class DirectorListSm extends Mixins(CountriesProvincesMixin, CommonMixin) {
-  readonly directors: Array<object>
+export default class DirectorListSm extends Mixins(CountriesProvincesMixin, ObjectMixin) {
+  // Local definition of computed property for static type checking.
+  readonly directors!: Array<object>
 
   /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false })

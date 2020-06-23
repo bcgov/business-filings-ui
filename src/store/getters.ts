@@ -1,14 +1,32 @@
-import { FilingTypes, FilingStatus } from '@/enums'
+import { EntityTypes, FilingTypes, FilingStatus } from '@/enums'
 
 export default {
+  /** Is True if entity is a Benefit Company. */
+  isBComp (state): boolean {
+    return (state.entityType === EntityTypes.BCOMP)
+  },
+
+  /** Is True if entity is a Cooperative. */
+  isCoop (state): boolean {
+    return (state.entityType === EntityTypes.COOP)
+  },
+
+  /** Is True if entity is a Corporation. */
+  isCorp (state): boolean {
+    return (state.entityType === EntityTypes.CORP)
+  },
+
+  /** Is True if Staff role is set. */
   isRoleStaff (state): boolean {
     return state.keycloakRoles.includes('staff')
   },
 
+  /** Is True if Edit role is set. */
   isRoleEdit (state): boolean {
     return state.authRoles.includes('edit')
   },
 
+  /** Is True if View role is set. */
   isRoleView (state): boolean {
     return state.authRoles.includes('view')
   },

@@ -52,12 +52,12 @@
               <h1 id="filing-header">Address Change</h1>
 
               <p>
-                <span v-if="isCoop()">Please change your Registered Office Address.</span>
-                <span v-if="isBComp()">Please change your Registered Office Address and Records Address.</span>
+                <span v-if="isCoop">Please change your Registered Office Address.</span>
+                <span v-if="isBComp">Please change your Registered Office Address and Records Address.</span>
               </p>
 
               <v-alert type="info" outlined
-                v-if="isBComp()"
+                v-if="isBComp"
                 icon="mdi-information"
                 class="white-background"
               >
@@ -198,7 +198,7 @@ import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 import { DASHBOARD } from '@/constants'
 
 // Mixins
-import { CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -217,7 +217,7 @@ export default {
     SaveErrorDialog,
     BcolErrorDialog
   },
-  mixins: [CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin],
 
   data () {
     return {
@@ -259,7 +259,7 @@ export default {
   computed: {
     ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo',
       'entityFoundingDate', 'registeredAddress', 'recordsAddress', 'filingData']),
-    ...mapGetters(['isRoleStaff']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff']),
 
     validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)

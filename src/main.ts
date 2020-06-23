@@ -32,7 +32,9 @@ async function start () {
   await fetchConfig()
 
   // initialize Launch Darkly
-  await initLDClient()
+  if (window['ldClientId']) {
+    await initLDClient()
+  }
 
   // if this is a draft Incorp App, check if we are allowing user to go to Create UI
   if (sessionStorage.getItem('TEMP_REG_NUMBER') && !featureFlags.getFlag('bcrs-create-ui-enabled')) {

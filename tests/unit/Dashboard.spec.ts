@@ -76,7 +76,7 @@ describe('Dashboard - UI', () => {
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables standalone filing buttons when there is temporary reg number', () => {
+  it('disables standalone filing buttons when there is Temporary Reg Number', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
 
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify })
@@ -88,7 +88,7 @@ describe('Dashboard - UI', () => {
     sessionStorage.clear()
   })
 
-  it('disables filing buttons when there is a future effective filing pending', () => {
+  it('disables filing buttons when there is a BCOMP Future Effective COA', () => {
     wrapper.find(FilingHistoryList).vm.$emit('filings-list',
       [{ name: 'Address Change', isPaid: true, isBcompCoaFutureEffective: true }])
 

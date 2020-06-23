@@ -49,7 +49,7 @@
           <section id="annual-report-main-section">
             <!-- COOP only: -->
             <article
-              v-if="isCoop()"
+              v-if="isCoop"
               class="annual-report-article"
               :class="agmDate ? 'agm-date-selected' : 'no-agm-date-selected'"
             >
@@ -123,7 +123,7 @@
 
             <!-- BCOMP only: -->
             <article
-              v-if="isBComp()"
+              v-if="isBComp"
               class="annual-report-article"
             >
               <!-- Page Title -->
@@ -161,9 +161,9 @@
             <!-- Both COOP and BCOMP: -->
 
             <!-- Certify -->
-            <section v-show="isBComp() || agmDate || noAgm">
+            <section v-show="isBComp || agmDate || noAgm">
               <header>
-                <h2 id="AR-step-4-header" v-if="isBComp()">3. Certify</h2>
+                <h2 id="AR-step-4-header" v-if="isBComp">3. Certify</h2>
                 <h2 id="AR-step-4-header" v-else>4. Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report.</p>
               </header>
@@ -177,7 +177,7 @@
             </section>
 
             <!-- Staff Payment -->
-            <section v-if="isRoleStaff" v-show="isBComp() || agmDate || noAgm">
+            <section v-if="isRoleStaff" v-show="isBComp || agmDate || noAgm">
               <header>
                 <h2 id="AR-step-5-header">5. Staff Payment</h2>
               </header>
@@ -207,7 +207,7 @@
 
     <!-- Buttons ( COOP only ) -->
     <v-container
-      v-if="isCoop()"
+      v-if="isCoop"
       class="list-item"
       id="coop-buttons-container"
     >
@@ -264,7 +264,7 @@
 
     <!-- Buttons ( BCOMP only ) -->
     <v-container
-      v-if="isBComp()"
+      v-if="isBComp"
       class="list-item"
       id="bcorp-buttons-container"
     >
@@ -321,7 +321,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
   SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
+import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -330,7 +330,7 @@ import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/con
 export default {
   name: 'AnnualReport',
 
-  mixins: [DateMixin, CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
+  mixins: [DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
 
   components: {
     ArDate,
@@ -407,7 +407,8 @@ export default {
       'entityIncNo', 'entityFoundingDate', 'registeredAddress', 'recordsAddress', 'lastPreLoadFilingDate',
       'directors', 'filingData']),
 
-    ...mapGetters(['isRoleStaff', 'isAnnualReportEditable', 'reportState', 'lastCOAFilingDate', 'lastCODFilingDate']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isAnnualReportEditable', 'reportState', 'lastCOAFilingDate',
+      'lastCODFilingDate']),
 
     /**
      * The As Of date, used to query data, as Effective Date, and as Annual Report Date.
@@ -429,7 +430,7 @@ export default {
     },
 
     certifyMessage (): string {
-      if (this.isBComp()) {
+      if (this.isBComp) {
         return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
       }
       return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
@@ -442,7 +443,7 @@ export default {
     validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
 
-      if (this.isCoop()) {
+      if (this.isCoop) {
         return (staffPaymentValid && this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
           this.certifyFormValid && !this.directorEditInProgress)
       }
@@ -554,7 +555,7 @@ export default {
               if (this.$refs.directorsList && this.$refs.directorsList.setDraftDate) {
                 this.$refs.directorsList.setDraftDate(annualReport.annualGeneralMeetingDate)
               }
-              if (this.isCoop()) {
+              if (this.isCoop) {
                 // set the new AGM date in the AGM Date component (may be null or empty)
                 this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
                 // set the new No AGM flag in the AGM Date component (may be undefined)
@@ -786,7 +787,7 @@ export default {
         }
       }
 
-      if (this.isCoop()) {
+      if (this.isCoop) {
         annualReport = {
           annualReport: {
             annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
@@ -801,7 +802,7 @@ export default {
             directors: this.allDirectors.filter(el => el.cessationDate === null)
           }
         }
-      } else if (this.isBComp()) {
+      } else if (this.isBComp) {
         annualReport = {
           annualReport: {
             annualReportDate: this.asOfDate,
@@ -988,7 +989,7 @@ export default {
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     // use default Priority and Waive Fees flags
-    if (this.isBComp()) {
+    if (this.isBComp) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.isPriority, this.isWaiveFees)
     }
   },
@@ -1013,9 +1014,9 @@ export default {
     isPriority (val: boolean): void {
       // apply this flag to AR filing code only
       // simply re-add the AR code with the updated Priority flag and default Waive Fees flag
-      if (this.isBComp()) {
+      if (this.isBComp) {
         this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, this.isWaiveFees)
-      } else if (this.isCoop()) {
+      } else if (this.isCoop) {
         this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val, this.isWaiveFees)
       }
     },

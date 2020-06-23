@@ -20,10 +20,7 @@ export default class PaperFiling extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-// @import "@/assets/styles/theme.scss";
-
 p {
   margin-bottom: 0.5rem !important;
 }
-
 </style>

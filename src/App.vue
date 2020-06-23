@@ -71,7 +71,7 @@ import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErr
   NameRequestInvalidDialog } from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
+import { ObjectMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
 
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
@@ -84,7 +84,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 export default {
   name: 'App',
 
-  mixins: [CommonMixin, DirectorMixin, NamexRequestMixin],
+  mixins: [ObjectMixin, DirectorMixin, NamexRequestMixin],
 
   data () {
     return {
@@ -95,7 +95,7 @@ export default {
       nameRequestInvalidDialog: false as boolean,
       nameRequestInvalidType: null as NameRequestStates,
       currentDateTimerId: null as number,
-      nrNumber: null as string,
+      localNrNumber: null as string,
 
       /**
        * Instance of the token refresh service.
@@ -326,7 +326,7 @@ export default {
       const iaData = await this.getIncorpApp()
       this.storeIncorpApp(iaData)
 
-      if (this.nrNumber) {
+      if (this.localNrNumber) {
         const nrData = await this.getNameRequest()
         this.storeNrData(nrData)
       }
@@ -480,7 +480,7 @@ export default {
       // store NR Number if present
       const nr = filing.incorporationApplication?.nameRequest
       // workaround for old or new property name
-      this.nrNumber = nr?.nrNum || nr?.nrNumber
+      this.localNrNumber = nr?.nrNum || nr?.nrNumber
 
       switch (filing.header.status) {
         case 'DRAFT':
@@ -523,7 +523,7 @@ export default {
 
     /** Gets NR data from Legal API. */
     getNameRequest (): Promise<any> {
-      const url = `nameRequests/${this.nrNumber}`
+      const url = `nameRequests/${this.localNrNumber}`
       return axios.get(url)
         // workaround because data is at "response.data.data"
         .then(response => Promise.resolve(response.data))

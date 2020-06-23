@@ -42,7 +42,6 @@ export default class PendingFiling extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
 .to-dashboard-container {
   text-align: center;
   padding: 1rem;

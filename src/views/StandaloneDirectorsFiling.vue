@@ -57,7 +57,7 @@
                       one for each unique date.</p>
 
                   <v-alert type="info" outlined
-                    v-if="!isBComp()"
+                    v-if="!isBComp"
                     icon="mdi-information"
                     class="white-background"
                   >
@@ -323,7 +323,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
   SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
@@ -348,7 +348,7 @@ export default {
     BcolErrorDialog
   },
 
-  mixins: [CommonMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin],
 
   data () {
     return {
@@ -396,7 +396,7 @@ export default {
   computed: {
     ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isRoleStaff']),
+    ...mapGetters(['isBComp', 'isRoleStaff']),
 
     validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)

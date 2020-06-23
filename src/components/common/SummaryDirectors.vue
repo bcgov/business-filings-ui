@@ -6,7 +6,7 @@
         <v-subheader class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="isBComp()">Mailing Address</span>
+          <span v-if="isBComp">Mailing Address</span>
           <span class="header-appointed">Appointed/Elected</span>
         </v-subheader>
 
@@ -67,7 +67,7 @@
                     <base-address :address="director.deliveryAddress" />
                   </div>
 
-                  <div class="address same-address" v-if="isBComp()">
+                  <div class="address same-address" v-if="isBComp">
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                       Same as Delivery Address
                     </span>
@@ -153,7 +153,7 @@
                     <div class="address">
                       <base-address :address="director.deliveryAddress" />
                     </div>
-                    <div class="address same-address" v-if="isBComp()">
+                    <div class="address same-address" v-if="isBComp">
                       <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                         Same as Delivery Address
                       </span>
@@ -178,12 +178,13 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { mapGetters } from 'vuex'
 
 // Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { DateMixin, CommonMixin } from '@/mixins'
+import { DateMixin, ObjectMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes } from '@/enums'
@@ -195,9 +196,15 @@ import { Director } from '@/interfaces'
 @Component({
   components: {
     BaseAddress
+  },
+  computed: {
+    ...mapGetters(['isBComp'])
   }
 })
-export default class SummaryDirectors extends Mixins(DateMixin, CommonMixin) {
+export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
+  // Local definition of computed property for static type checking.
+  readonly isBComp!: boolean
+
   // Directors array passed into this component.
   @Prop({ default: [] })
   private directors: Array<Director>

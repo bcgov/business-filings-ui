@@ -191,7 +191,7 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
+import { DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
   from '@/mixins'
 
 // Enums and Constants
@@ -201,7 +201,7 @@ import { DASHBOARD } from '@/constants'
 export default {
   name: 'Correction',
 
-  mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin],
 
   components: {
     Certify,

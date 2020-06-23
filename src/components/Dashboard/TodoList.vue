@@ -57,7 +57,7 @@
                 </v-btn>
               </h3>
 
-              <div v-if="businessId && isBComp() && isTypeAnnualReport(task) && isStatusNew(task)"
+              <div v-if="businessId && isBComp && isTypeAnnualReport(task) && isStatusNew(task)"
                 class="bcorps-ar-subtitle"
               >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
@@ -203,7 +203,7 @@
 
             <div class="list-item__actions">
               <div style="width:100%">
-                <p class="date-subtitle" v-if="isBComp() && isTypeAnnualReport(task) && isStatusNew(task)">
+                <p class="date-subtitle" v-if="isBComp && isTypeAnnualReport(task) && isStatusNew(task)">
                   Due {{task.nextArDate}}
                 </p>
 
@@ -421,7 +421,7 @@ import { DetailsList, NameRequestInfo } from '@/components/common'
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
 
 // Mixins
-import { BcolMixin, CommonMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
@@ -439,7 +439,7 @@ export default {
     NameRequestInfo
   },
 
-  mixins: [BcolMixin, CommonMixin, DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
+  mixins: [BcolMixin, DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
 
   data () {
     return {
@@ -468,7 +468,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isRoleStaff']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest']),
 
@@ -494,7 +494,7 @@ export default {
     loadData () {
       this.taskItems = []
       // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
-      if (this.isCoop()) this.confirmCheckbox = true
+      if (this.isCoop) this.confirmCheckbox = true
 
       // create task items
       this.tasks.forEach(async task => {
