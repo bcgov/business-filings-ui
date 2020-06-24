@@ -8,9 +8,9 @@ import axios from '@/axios-auth'
  */
 export async function fetchConfig (): Promise<void> {
   // get config from environment
-  const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, cooperatives
-  const processEnvBaseUrl: string = process.env.BASE_URL // eg, /cooperatives/
-  const windowLocationPathname = window.location.pathname // eg, /cooperatives/CP1234567/...
+  const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, business
+  const processEnvBaseUrl: string = process.env.BASE_URL // eg, /business/
+  const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   if (!processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
@@ -18,8 +18,8 @@ export async function fetchConfig (): Promise<void> {
   }
 
   // fetch config from API
-  // eg, http://localhost:8080/cooperatives/config/configuration.json
-  // eg, https://dev.bcregistry.ca/cooperatives/config/configuration.json
+  // eg, http://localhost:8080/business/config/configuration.json
+  // eg, https://dev.bcregistry.ca/business/config/configuration.json
   const url = `${windowLocationOrigin}${processEnvBaseUrl}config/configuration.json`
   const headers = {
     'Accept': 'application/json',
@@ -85,13 +85,13 @@ export async function fetchConfig (): Promise<void> {
   }
 
   // set Base for Vue Router
-  // eg, "/cooperatives/CPxxx/" or "/cooperatives/Txxx/"
+  // eg, "/business/CPxxx/" or "/business/Txxx/"
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
   console.log('Set Vue Router Base to: ' + vueRouterBase)
 
   // set Base URL for returning from redirects
-  // eg, http://localhost:8080/cooperatives/CPxxx/
+  // eg, http://localhost:8080/business/CPxxx/
   const baseUrl = windowLocationOrigin + vueRouterBase
   sessionStorage.setItem('BASE_URL', baseUrl)
   console.log('Set Base URL to: ' + baseUrl)

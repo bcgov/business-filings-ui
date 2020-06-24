@@ -102,7 +102,7 @@
 
       <!-- Records Office (BCOMPs and CORPs) -->
       <v-expansion-panel id="records-office-panel"
-        v-if="isBComp() || isCorp()"
+        v-if="isBComp || isCorp"
         class="align-items-top"
         :class="{
           'address-overlay': coaPending,
@@ -205,10 +205,10 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 // Mixins
-import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
+import { ObjectMixin, CountriesProvincesMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes } from '@/enums'
@@ -218,13 +218,16 @@ import { BaseAddressObjIF } from '@/interfaces'
 
 @Component({
   computed: {
+    ...mapGetters(['isBComp', 'isCorp']),
     ...mapState(['registeredAddress', 'recordsAddress'])
   }
 })
-export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
-  // Base Address properties
-  private registeredAddress: BaseAddressObjIF
-  private recordsAddress: BaseAddressObjIF
+export default class AddressListSm extends Mixins(ObjectMixin, CountriesProvincesMixin) {
+  // Local definitions of computed properties for static type checking.
+  readonly isBComp!: boolean
+  readonly isCorp!: boolean
+  readonly registeredAddress!: BaseAddressObjIF
+  readonly recordsAddress!: BaseAddressObjIF
 
   /** Whether a COA filing is pending. */
   @Prop({ default: false })

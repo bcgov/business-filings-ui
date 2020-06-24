@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { getVuexStore } from '@/store'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import CompleteFiling from '@/components/Dashboard/CompleteFiling.vue'
+import CompletedIa from '@/components/Dashboard/CompletedIa.vue'
 
 Vue.use(Vuetify)
 const store = getVuexStore()
@@ -11,7 +11,7 @@ const vuetify = new Vuetify({})
 describe('Complete Filing', () => {
   it('Displays expected content with entityName', () => {
     store.state.entityName = 'My Business'
-    const wrapper = shallowMount(CompleteFiling, { store, vuetify })
+    const wrapper = shallowMount(CompletedIa, { store, vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Incorporation Complete')
@@ -28,7 +28,7 @@ describe('Complete Filing', () => {
   it('Displays expected content with entityIncNo', () => {
     store.state.entityName = null
     store.state.entityIncNo = 'BC1234567'
-    const wrapper = shallowMount(CompleteFiling, { store, vuetify })
+    const wrapper = shallowMount(CompletedIa, { store, vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Incorporation Complete')

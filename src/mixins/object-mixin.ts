@@ -1,51 +1,11 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState, mapGetters } from 'vuex'
 import { omit, isEqual } from 'lodash'
-import { EntityTypes } from '@/enums'
 
 /**
- * Mixin that provides some useful common utilities.
+ * Mixin that provides some useful object utilities.
  */
-@Component({
-  computed: {
-    ...mapState(['entityType', 'entityName']),
-    ...mapGetters(['nrNumber'])
-  }
-})
-export default class CommonMixin extends Vue {
-  readonly entityType!: EntityTypes
-  readonly entityName!: string
-  readonly nrNumber!: string
-  /** Returns True if entity is a Benefit Company. */
-  isBComp (): boolean {
-    return (this.entityType === EntityTypes.BCOMP)
-  }
-
-  /** Returns True if entity is a Cooperative. */
-  isCoop (): boolean {
-    return (this.entityType === EntityTypes.COOP)
-  }
-
-  /** Returns True if entity is a Corporation. */
-  isCorp (): boolean {
-    return (this.entityType === EntityTypes.CORP)
-  }
-
-  get corpDisplayName (): string {
-    let name = this.entityName
-    if (!this.entityName && !this.nrNumber) {
-      switch (this.entityType) {
-        case EntityTypes.COOP: name = 'Numbered Cooperative'
-          break
-        case EntityTypes.BCOMP: name = 'Numbered Benefit Company'
-          break
-        case EntityTypes.CORP: name = 'Numbered Corporation'
-          break
-      }
-    }
-    return name
-  }
-
+@Component({})
+export default class ObjectMixin extends Vue {
   /**
    * Removes the specified property from an object.
    * @param baseObj the base object

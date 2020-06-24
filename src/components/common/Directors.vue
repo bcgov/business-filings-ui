@@ -87,7 +87,7 @@
                     />
                   </div>
 
-                  <div class="form__row" v-if="isBComp()">
+                  <div class="form__row" v-if="isBComp">
                     <v-checkbox
                       class="inherit-checkbox"
                       label="Mailing Address same as Delivery Address"
@@ -181,7 +181,7 @@
         <v-subheader v-if="this.directors.length && !directorEditInProgress" class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="isBComp()">Mailing Address</span>
+          <span v-if="isBComp">Mailing Address</span>
           <span>Appointed/Elected</span>
         </v-subheader>
         <li class="director-list-item"
@@ -240,7 +240,7 @@
                   <div class="address">
                     <base-address :address="director.deliveryAddress" />
                   </div>
-                  <div class="address same-address" v-if="isBComp()">
+                  <div class="address same-address" v-if="isBComp">
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                       Same as Delivery Address
                     </span>
@@ -368,7 +368,7 @@
                     :key="activeIndex"
                   />
 
-                  <div class="form__row" v-if="isBComp()" v-show="editFormShowHide.showAddress">
+                  <div class="form__row" v-if="isBComp" v-show="editFormShowHide.showAddress">
                     <v-checkbox
                       class="inherit-checkbox"
                       label="Mailing Address same as Delivery Address"
@@ -505,7 +505,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { mapState, mapGetters } from 'vuex'
 import { required, maxLength } from 'vuelidate/lib/validators'
@@ -515,7 +515,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { WarningPopover } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, CommonMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
+import { DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Constants
 import { EntityTypes, FilingStatus } from '@/enums'
@@ -533,10 +533,10 @@ import { FormType, BaseAddressType, AlertMessageIF } from '@/interfaces'
     // Property definitions for runtime environment.
     ...mapState(['entityIncNo', 'lastPreLoadFilingDate', 'currentDate', 'currentFilingStatus', 'lastAnnualReportDate',
       'entityFoundingDate']),
-    ...mapGetters(['lastCODFilingDate'])
+    ...mapGetters(['isBComp', 'lastCODFilingDate'])
   }
 })
-export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMixin, ResourceLookupMixin) {
+export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   $refs!: {
@@ -691,6 +691,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
   readonly lastPreLoadFilingDate!: string
   readonly currentDate!: string
   readonly currentFilingStatus!: FilingStatus
+  readonly isBComp!: boolean
   readonly lastCODFilingDate!: string
   readonly lastAnnualReportDate!: string
   readonly entityFoundingDate!: string
@@ -1004,7 +1005,7 @@ export default class Directors extends Mixins(DateMixin, CommonMixin, DirectorMi
     }
 
     // Add the mailing address property if the entity is a BCOMP
-    if (this.isBComp()) {
+    if (this.isBComp) {
       newDirector = { ...newDirector, mailingAddress: { ...this.inProgressMailAddress } }
     }
 

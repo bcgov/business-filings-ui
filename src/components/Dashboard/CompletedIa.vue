@@ -1,5 +1,5 @@
 <template>
-  <div class="complete-ia-filing body-2">
+  <div class="completed-ia-body body-2">
     <h4>Incorporation Complete</h4>
 
     <p>{{name}} has been successfully incorporated.</p>
@@ -25,7 +25,7 @@ import { Component, Vue } from 'vue-property-decorator'
     ...mapState(['entityName'])
   }
 })
-export default class CompleteFiling extends Vue {
+export default class CompletedIa extends Vue {
   readonly entityName!: string
 
   /** Determine the name for the entity.
@@ -43,7 +43,6 @@ export default class CompleteFiling extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
 .to-dashboard-container {
   text-align: center;
   padding: 1rem;

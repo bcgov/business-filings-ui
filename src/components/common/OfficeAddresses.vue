@@ -92,7 +92,7 @@
           </div>
         </li>
 
-        <div v-if="isBComp()">
+        <div v-if="isBComp">
           <div class="address-edit-header" v-if="showAddressForm">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -198,6 +198,7 @@
 // Libraries
 import { Component, Emit, Prop, Watch, Mixins } from 'vue-property-decorator'
 import { isEmpty } from 'lodash'
+import { mapGetters } from 'vuex'
 
 // Schemas
 import { officeAddressSchema } from '@/schemas'
@@ -206,7 +207,7 @@ import { officeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { CommonMixin } from '@/mixins'
+import { ObjectMixin } from '@/mixins'
 
 // Interfaces
 import { BaseAddressObjIF, BcorpAddressIf, AddressIF } from '@/interfaces'
@@ -219,9 +220,15 @@ import { ADDRESSCHANGED } from '@/constants'
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
+  },
+  computed: {
+    ...mapGetters(['isBComp'])
   }
 })
-export default class OfficeAddresses extends Mixins(CommonMixin) {
+export default class OfficeAddresses extends Mixins(ObjectMixin) {
+  // Local definition of computed property for static type checking.
+  readonly isBComp!: boolean
+
   /**
    * Indicates whether this component should be enabled or not.
    */

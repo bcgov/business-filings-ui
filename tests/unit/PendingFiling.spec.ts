@@ -35,6 +35,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
     expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -114,7 +114,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -122,9 +122,6 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
-
-// Mixins
-import { CommonMixin } from '@/mixins'
 
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
@@ -135,8 +132,6 @@ import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 export default {
   name: 'Dashboard',
-
-  mixins: [CommonMixin],
 
   components: {
     TodoList,
@@ -167,6 +162,8 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
+    ...mapGetters(['isBComp']),
+
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
       return (this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
@@ -180,7 +177,7 @@ export default {
     /** Whether to block a new filing because another item has to be finished first.
      * No changes are allowed if
      * 1) this is a temporary reg number until it switches to a real business number
-     * 2) has a pending filing (is PAID) and waiting for completion
+     * 2) has a filing pending (is PAID) and waiting for completion
      * 3) has a blocker task in the todo list (ie. draft, paid, error, correction )
      */
     disableChanges (): boolean {
@@ -269,7 +266,7 @@ export default {
     },
 
     /**
-     * Searches the filings history for a "pending" state, ie, paid (not yet completed).
+     * Searches the filings history for a "pending" state, (ie, paid / not yet completed).
      * Used to block new filings while there's a pending one.
      */
     checkPendingFilings (): void {
@@ -299,7 +296,7 @@ export default {
      * Display COA warning if BCOMP else proceed to COA.
      */
     proceedCoa () {
-      this.isBComp() ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
+      this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
     }
   },
 

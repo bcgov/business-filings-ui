@@ -12,20 +12,22 @@ export default class BcolMixin extends Vue {
       if (errObj?.data) {
         return errObj.data
       }
-      return null
-    } catch (error) {
-      return null
+    } catch (e) {
+      // ignore error
     }
+    return null
   }
 
   getErrorCode (error): string {
     if (error?.response?.data?.errors) {
-      const msgCode = error.response.data.errors.find(x => x.payment_error_type && x.payment_error_type.startsWith('BCOL'))
+      const msgCode = error.response.data.errors.find(
+        error => error.payment_error_type && error.payment_error_type.startsWith('BCOL')
+      )
       if (msgCode) {
         return msgCode
       }
-      return null
     }
+    return null
   }
 
   get payApi (): string {

@@ -26,6 +26,7 @@
               <h3 class="list-item__title mb-0">{{filing.title}}{{applyCorrectionTag(filing)}}</h3>
 
               <div class="list-item__subtitle d-flex">
+                <!-- is this a BCOMP FE COA? -->
                 <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
                   <span>FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                   <v-tooltip top content-class="pending-tooltip">
@@ -39,10 +40,9 @@
                   </v-tooltip>
                 </div>
 
-                <div v-else-if="filing.isIaFutureEffective" class="filing-subtitle">
-                  <span>FUTURE EFFECTIVE INCORPORATION</span>
-                  <span class="vert-pipe"></span>
-                  <span>PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                <!-- is this a COMPLETED IA? (incorp app mode only) -->
+                <div v-else-if="tempRegNumber && filing.isCompleted" class="filing-subtitle">
+                  <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                   <v-btn
                     class="details-btn"
                     outlined
@@ -55,9 +55,10 @@
                   </v-btn>
                 </div>
 
-                <div v-else-if="filing.isPaid" class="filing-subtitle">
+                <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
+                <div v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending" class="filing-subtitle">
                   <span class="orange--text text--darken-2">
-                    PENDING FILING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})
+                    FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})
                   </span>
                   <span class="vert-pipe"></span>
                   <span>PAID</span>
@@ -73,8 +74,11 @@
                   </v-btn>
                 </div>
 
-                <div v-else-if="filing.isCompleteIA && tempRegNumber" class="filing-subtitle">
-                  <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
+                <div v-else-if="tempRegNumber && filing.isFutureEffectiveIa" class="filing-subtitle">
+                  <span>FUTURE EFFECTIVE INCORPORATION</span>
+                  <span class="vert-pipe"></span>
+                  <span>PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                   <v-btn
                     class="details-btn"
                     outlined
@@ -87,11 +91,32 @@
                   </v-btn>
                 </div>
 
-                <!-- else filing is COMPLETED -->
+                <!-- is this a PAID (ie, not completed) filing? -->
+                <div v-else-if="filing.isPaid" class="filing-subtitle">
+                  <span class="orange--text text--darken-2">
+                    FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})
+                  </span>
+                  <span class="vert-pipe"></span>
+                  <span>PAID</span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="orange darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon left>mdi-alert</v-icon>
+                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  </v-btn>
+                </div>
+
+                <!-- else must be a COMPLETED filing -->
+                <!-- NB: no details button -->
                 <div v-else class="filing-subtitle">
                   <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
                 </div>
 
+                <!-- details (comments) button -->
                 <div v-if="filing.comments.length > 0" class="filing-subtitle">
                   <v-btn
                     class="comments-btn"
@@ -107,6 +132,7 @@
               </div> <!-- end of subtitle -->
             </div> <!-- end of filing-label -->
 
+            <!-- the action button/menu -->
             <div class="filing-item__actions">
               <v-btn
                 class="expand-btn"
@@ -127,7 +153,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="disableChanges || filing.isCorrection || filing.isIaFutureEffective">
+                    <v-list-item :disabled="disableChanges || filing.isCorrection || filing.isFutureEffectiveIa">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -158,22 +184,37 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
+          <!-- is this a BCOMP FE COA filing? -->
+          <!-- NB: no details -->
           <template v-if="filing.isBcompCoaFutureEffective" />
 
-          <template v-else-if="filing.isIaFutureEffective">
-            <future-effective-filing :filing=filing />
+          <!-- is this a COMPLETED IA? (incorp app mode only) -->
+          <template v-else-if="tempRegNumber && filing.isCompleted">
+            <completed-ia />
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
+          <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
+          <template v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending">
+            <future-effective-ia-pending :filing=filing />
+            <v-divider class="mt-7 mb-5"></v-divider>
+          </template>
+
+          <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
+          <template v-else-if="tempRegNumber && filing.isFutureEffectiveIa">
+            <future-effective-ia :filing=filing />
+            <v-divider class="mt-7 mb-5"></v-divider>
+          </template>
+
+          <!-- is this a PAID (ie, not completed) filing? -->
           <template v-else-if="filing.isPaid">
             <pending-filing :filing=filing />
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
-          <template v-else-if="filing.isCompleteIA && tempRegNumber">
-            <complete-filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+          <!-- else must be a COMPLETED filing -->
+          <!-- NB: no details -->
+          <template v-else />
 
           <paper-filing v-if="filing.paperOnly" />
 
@@ -219,7 +260,7 @@
             </v-list-item>
           </v-list>
 
-          <!-- the detail comments section -->
+          <!-- the details (comments) section -->
           <template v-if="filing.comments.length > 0">
             <v-divider class="mt-6"></v-divider>
             <details-list
@@ -252,11 +293,12 @@ import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
 
 // Components
-import CompleteFiling from './CompleteFiling.vue'
+import CompletedIa from './CompletedIa.vue'
 import { DetailsList } from '@/components/common'
 import PaperFiling from './PaperFiling.vue'
 import PendingFiling from './PendingFiling.vue'
-import FutureEffectiveFiling from './FutureEffectiveFiling.vue'
+import FutureEffectiveIa from './FutureEffectiveIa.vue'
+import FutureEffectiveIaPending from './FutureEffectiveIaPending.vue'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
@@ -266,19 +308,20 @@ import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 // Mixins
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin],
+  mixins: [DateMixin, EnumMixin, FilingMixin],
 
   components: {
-    CompleteFiling,
+    CompletedIa,
     DetailsList,
     PaperFiling,
     PendingFiling,
-    FutureEffectiveFiling,
+    FutureEffectiveIa,
+    FutureEffectiveIaPending,
     AddCommentDialog,
     DownloadErrorDialog
   },
@@ -308,7 +351,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isRoleStaff', 'nrNumber']),
+    ...mapGetters(['isBComp', 'isRoleStaff', 'nrNumber']),
 
     ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
 
@@ -396,7 +439,6 @@ export default {
         if (date) {
           const filingType = header.name
           const agmYear = +date.slice(0, 4)
-          const name = this.filingTypeToName(filingType, agmYear)
 
           const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
           const filingDate = filingDateTime?.slice(0, 10)
@@ -404,10 +446,11 @@ export default {
           // build filing item
           const item = {
             filingType,
-            title: name,
+            title: this.filingTypeToName(filingType, agmYear),
             filingId: header.filingId,
             filingAuthor: header.certifiedBy,
             filingDate,
+            isPaid: (header.status === FilingStatus.PAID),
             documents: filing?.documents || [] as Array<any>,
             isCorrected: (header.isCorrected || false),
             isCorrectionPending: (header.isCorrectionPending || false),
@@ -418,6 +461,7 @@ export default {
           if (header.paymentToken) {
             item.documents.push({
               type: this.DOCUMENT_TYPE_RECEIPT,
+              corpName: this.entityName || this.entityTypeToTitle(this.entityType),
               filingDateTime,
               paymentToken: header.paymentToken,
               title: 'Receipt',
@@ -450,36 +494,36 @@ export default {
         // Effective Date may be in the future (eg, for Incorp App future effective filings).
         // If Effective Date is empty, use Filing Date instead.
         const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
-        const effectiveDate = effectiveDateTime?.slice(0, 10)
 
         // is this a Future Effective Incorp App?
-        const isIaFutureEffective = this.isFutureEffective(filing)
+        const isFutureEffectiveIa = !!filing.header.isFutureEffective
 
-        // is this a paid filing?
-        const isPaid = (header.status === FilingStatus.PAID)
-
-        // is this a completed filing?
-        const isCompleteIA = (header.status === FilingStatus.COMPLETED)
+        // is this a Future Effective Incorp App pending completion?
+        const isFutureEffectiveIaPending = isFutureEffectiveIa && this.isEffectiveDatePast(filing)
 
         const name = this.filingTypeToName(filingType)
+
         let receiptFilename: string
-        if (isIaFutureEffective) {
+        if (isFutureEffectiveIa) {
           receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
         } else {
           receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
+        const corpName = this.entityName || this.entityTypeToTitle(this.entityType)
+
         // build filing item
         const item: any = {
           filingType,
-          title: `${this.entityTypeToName(this.entityType)} ${name} - ${this.corpDisplayName}`,
+          title: `${this.entityTypeToName(this.entityType)} ${name} - ${corpName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
-          effectiveDateTime, // used for future effective Incorp App
-          isIaFutureEffective,
-          isPaid,
-          isCompleteIA,
+          effectiveDateTime, // used in Future Effective IA components
+          isFutureEffectiveIa,
+          isFutureEffectiveIaPending,
+          isPaid: (header.status === FilingStatus.PAID),
+          isCompleted: (header.status === FilingStatus.COMPLETED),
           documents: filing?.documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
@@ -491,9 +535,10 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
+            corpName,
             filingDateTime,
             paymentToken: header.paymentToken,
-            title: `Receipt${isIaFutureEffective ? ' - Future Effective Incorporation' : ''}`,
+            title: `Receipt${isFutureEffectiveIa ? ' - Future Effective Incorporation' : ''}`,
             filename: receiptFilename
           })
         }
@@ -520,26 +565,22 @@ export default {
         const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
         const effectiveDate = effectiveDateTime?.slice(0, 10)
 
-        const name = this.filingTypeToName(filingType)
-
-        // is this a Future Effective BComp Change of Address?
-        const isBcompCoaFutureEffective = this.isBComp() &&
-          filingType === FilingTypes.CHANGE_OF_ADDRESS &&
-          this.isFutureEffective(filing)
-
-        // is this a paid filing?
-        const isPaid = (header.status === FilingStatus.PAID)
+        // is this a BCOMP Future Effective Change of Address?
+        const isBcompCoaFutureEffective = this.isBComp &&
+          (header.status === FilingStatus.PAID) &&
+          (filingType === FilingTypes.CHANGE_OF_ADDRESS) &&
+          this.isEffectiveDateFuture(filing)
 
         // build filing item
         const item: any = {
           filingType,
-          title: name,
+          title: this.filingTypeToName(filingType),
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
-          effectiveDate, // used for future effective COA
+          effectiveDate, // used for BCOMP COA Future Effective tooltip
           isBcompCoaFutureEffective,
-          isPaid,
+          isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
@@ -551,6 +592,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
+            corpName: this.entityName || this.entityTypeToTitle(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -565,12 +607,23 @@ export default {
       }
     },
 
-    /**
-     * Whether this filing is in a future effective state.
-     * NB: uses data from header
-     */
-    isFutureEffective (filing: any): boolean {
-      if ((filing?.header?.status === FilingStatus.PAID) && filing?.header?.effectiveDate) {
+    /** Whether this filing's effective date/time is in the past. */
+    isEffectiveDatePast (filing: any): boolean {
+      if (filing?.header?.effectiveDate) {
+        // NB: these are both in UTC
+        const effectiveDateTime = new Date(filing.header.effectiveDate)
+        const now = new Date()
+        if (effectiveDateTime <= now) {
+          return true
+        }
+      }
+      return false
+    },
+
+    /** Whether this filing's effective date/time is in the future. */
+    isEffectiveDateFuture (filing: any): boolean {
+      if (filing?.header?.effectiveDate) {
+        // NB: these are both in UTC
         const effectiveDateTime = new Date(filing.header.effectiveDate)
         const now = new Date()
         if (effectiveDateTime > now) {
@@ -766,7 +819,7 @@ export default {
 
       const url = `${document.paymentToken}/receipts`
       const data = {
-        corpName: this.corpDisplayName,
+        corpName: document.corpName,
         filingDateTime: document.filingDateTime,
         fileName: 'receipt' // not used
       }

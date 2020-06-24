@@ -11,13 +11,14 @@
           {{ item.text }}
         </v-breadcrumbs-item>
       </v-breadcrumbs>
+
       <!-- Entity Name, Entity Status -->
       <div class="title-container">
         <div v-if="businessId" class="mb-1" id="entity-legal-name" aria-label="Business Legal Name">
           <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
         <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
-          <span>{{ this.corpDisplayName || 'Unknown Title'}}</span>
+          <span>{{ entityName || entityTypeToTitle(entityType)}}</span>
         </div>
 
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
@@ -105,7 +106,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
 
 // Mixins
-import { CommonMixin, EnumMixin } from '@/mixins'
+import { EnumMixin } from '@/mixins'
 
 // Enums
 import { EntityStatus, EntityTypes } from '@/enums'
@@ -117,7 +118,7 @@ import { BreadcrumbInterface } from '@/interfaces'
 import { ANNUAL_REPORT, DASHBOARD } from '@/constants'
 
 @Component({
-  mixins: [CommonMixin, EnumMixin],
+  mixins: [EnumMixin],
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
@@ -129,7 +130,6 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
-  readonly corpDisplayName!: string
   readonly ARFilingYear!: string
   readonly entityType!: EntityTypes
   readonly entityStatus!: EntityStatus
@@ -213,7 +213,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
         href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
       {
-        text: this.entityName || this.corpDisplayName,
+        text: this.entityName || this.entityTypeToTitle(this.entityType),
         disabled: false,
         exact: true,
         to: { name: DASHBOARD }
