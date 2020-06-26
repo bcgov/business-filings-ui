@@ -31,8 +31,18 @@
       @okay="resetCancelPaymentErrors"
       attach="#todo-list"
     />
-
-    <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
+    <v-card class="no-results" v-if="isBComp && !allowBCompMaintenanceFiling" flat>
+      <v-card-text>
+        <div class="no-results__title">
+          Coming Soon - Online Maintenance Filings such as Address and Director Changes
+        </div>
+        <div class="no-results__subtitle">If you need to make changes to your Benefit Company, contact us  </div>
+        <div class="error-contact-container">
+          <ErrorContact/>
+        </div>
+      </v-card-text>
+    </v-card>
+    <v-expansion-panels v-else-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item"
         v-for="(task, index) in orderBy(taskItems, 'order')"
@@ -400,7 +410,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="taskItems && !taskItems.length">
+    <v-card class="no-results" flat v-else>
       <v-card-text>
         <div class="no-results__title">You don't have anything to do yet</div>
         <div class="no-results__subtitle">Filings that require your attention will appear here</div>
@@ -415,7 +425,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
-import { DetailsList, NameRequestInfo } from '@/components/common'
+import { DetailsList, ErrorContact, NameRequestInfo } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -427,6 +437,8 @@ import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
+import { featureFlags } from '@/common/FeatureFlags'
+
 export default {
   name: 'TodoList',
 
@@ -436,6 +448,7 @@ export default {
     ConfirmDialog,
     DeleteErrorDialog,
     DetailsList,
+    ErrorContact,
     NameRequestInfo
   },
 
@@ -480,6 +493,10 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    allowBCompMaintenanceFiling (): boolean {
+      return featureFlags.getFlag('bcomp-allow-maintenance-filing')
     }
   },
 
@@ -1178,5 +1195,11 @@ export default {
 
 .bcol-todo-list-detail {
   background-color: #f1f1f1 !important;
+}
+
+.error-contact-container {
+  width: 50%;
+  margin-top: 0.5rem;
+  display: inline-block;
 }
 </style>
