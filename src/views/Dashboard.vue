@@ -65,7 +65,7 @@
                       12:01 AM (Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
                 </v-scale-transition>
-                <v-tooltip top v-if="isBComp && !allowBCompMaintenanceFiling"
+                <v-tooltip top v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling"
                   color="primary">
                   <template v-slot:activator="{ on }">
                     <span  v-on="on" >
@@ -98,7 +98,7 @@
             <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
-                <v-tooltip top v-if="isBComp && !allowBCompMaintenanceFiling"
+                <v-tooltip top v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling"
                    color="primary">
                   <template v-slot:activator="{ on }">
                     <span  v-on="on" >
