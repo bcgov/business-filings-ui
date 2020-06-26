@@ -31,7 +31,7 @@
       @okay="resetCancelPaymentErrors"
       attach="#todo-list"
     />
-    <v-card class="no-results" v-if="isBComp && !allowBCompMaintenanceFiling" flat>
+    <v-card class="no-results" v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling" flat>
       <v-card-text>
         <div class="no-results__title">
           Coming Soon - Online Maintenance Filings such as Address and Director Changes
