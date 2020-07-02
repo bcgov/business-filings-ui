@@ -2,17 +2,17 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
-import { mount, createLocalVue } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
 import mockRouter from './mockRouter'
 import { getVuexStore } from '@/store'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import flushPromises from 'flush-promises'
-
 // Components
 import { DetailsList } from '@/components/common'
 import Vue2Filters from 'vue2-filters'
+import { EntityTypes } from '@/enums';
 
 // NB: test util async issue
 // in some cases, the elements are not updated during the test
@@ -1068,7 +1068,7 @@ describe('TodoList - UI - BCOMP', () => {
     expect(item3.querySelector('.todo-list-checkbox')).toBeDefined()
 
     // Simulate Checkbox being selected to enable first File Now button
-    vm.confirmCheckbox = true
+    wrapper.find('#enable-checkbox').trigger('click')
 
     // check action buttons
     expect(item1.querySelector('.list-item__actions .v-btn').disabled).toBe(false)
@@ -1115,7 +1115,7 @@ describe('TodoList - UI - BCOMP', () => {
       .toContain('Verify your Office Address and Current Directors before filing your Annual Report.')
 
     // Simulate Checkbox being selected to enable File Now Button
-    vm.confirmCheckbox = true
+    wrapper.find('#enable-checkbox').trigger('click')
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -1713,7 +1713,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     expect(vm.taskItems.length).toEqual(1)
 
     // verify model state
-    expect(vm.confirmCheckbox).toBe(false)
+    expect(vm.enableCheckbox[0]).toBeUndefined()
 
     // verify checkbox content
     const firstTodoItem = vm.$el.querySelectorAll('.todo-item')[0]
@@ -1733,7 +1733,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
     // click checkbox to enable File Now button
     await htmlInputElement.click()
-    expect(vm.confirmCheckbox).toBe(true)
+    expect(vm.enableCheckbox[0]).toBe(true)
     expect(fileNowButton.disabled).toBe(false)
 
     // click File Now button

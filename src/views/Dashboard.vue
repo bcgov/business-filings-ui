@@ -178,7 +178,8 @@ export default {
       inProcessFiling: null as any,
       coaPending: false,
       coaEffectiveDate: null as string,
-      coaWarningDialog: false
+      coaWarningDialog: false,
+      tempRegNumber: sessionStorage.getItem('TEMP_REG_NUMBER')
     }
   },
 
