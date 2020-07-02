@@ -465,7 +465,7 @@ export default {
       deleteErrorDialog: false,
       cancelPaymentErrors: [] as Array<any>,
       cancelPaymentErrorDialog: false,
-      enableCheckbox: [] as Array<number>,
+      enableCheckbox: [],
       confirmEnabled: false,
       currentFilingId: null as number,
       panel: null as number, // currently expanded panel

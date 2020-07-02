@@ -12,7 +12,6 @@ import flushPromises from 'flush-promises'
 // Components
 import { DetailsList } from '@/components/common'
 import Vue2Filters from 'vue2-filters'
-import { EntityTypes } from '@/enums';
 
 // NB: test util async issue
 // in some cases, the elements are not updated during the test
