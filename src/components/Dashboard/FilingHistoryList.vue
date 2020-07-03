@@ -23,7 +23,8 @@
         <v-expansion-panel-header class="no-dropdown-icon">
           <div class="list-item">
             <div class="filing-label">
-              <h3 class="list-item__title mb-0">{{filing.title}}{{applyCorrectionTag(filing)}}</h3>
+              <h3 class="list-item__title">{{filing.title}}{{correctionTag(filing)}}</h3>
+              <h4 v-if="filing.subtitle" class="list-item__title mt-1">{{filing.subtitle}}</h4>
 
               <div class="list-item__subtitle d-flex">
                 <!-- is this a BCOMP FE COA? -->
@@ -140,8 +141,10 @@
                 :ripple=false
                 @click.stop="togglePanel(index)"
               >
-                <span v-if="(panel === index)">{{ filing.paperOnly ? "Close" : "Hide Documents" }}</span>
-                <span v-else>{{ filing.paperOnly ? "Request a Copy" : "View Documents" }}</span>
+                <span v-if="filing.isNoa">{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                <span v-else-if="filing.isColinFiling">{{ (panel === index) ? "Close" : "Request a Copy" }}</span>
+                <span v-else-if="filing.isPaperFiling">{{ (panel === index) ? "Close" : "Request a Copy" }}</span>
+                <span v-else>{{ (panel === index) ? "Hide Documents" : "View Documents" }}</span>
               </v-btn>
 
               <!-- the drop-down menu -->
@@ -153,7 +156,7 @@
                 </template>
                 <v-list dense>
                   <v-list-item-group color="primary">
-                    <v-list-item :disabled="disableChanges || filing.isCorrection || filing.isFutureEffectiveIa">
+                    <v-list-item :disabled="disableCorrection(filing)">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
@@ -212,11 +215,19 @@
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
+          <!-- is this a Notice of Alteration? -->
+          <template v-else-if="filing.isNoa">
+            <notice-of-alteration />
+            <v-divider class="mt-7 mb-5"></v-divider>
+          </template>
+
           <!-- else must be a COMPLETED filing -->
           <!-- NB: no details -->
           <template v-else />
 
-          <paper-filing v-if="filing.paperOnly" />
+          <colin-filing v-if="filing.isColinFiling" />
+
+          <paper-filing v-if="filing.isPaperFiling" />
 
           <!-- the list of documents -->
           <v-list dense class="document-list py-0" v-if="filing.documents">
@@ -293,19 +304,22 @@ import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
 
 // Components
+import ColinFiling from './ColinFiling.vue'
 import CompletedIa from './CompletedIa.vue'
-import { DetailsList } from '@/components/common'
-import PaperFiling from './PaperFiling.vue'
-import PendingFiling from './PendingFiling.vue'
 import FutureEffectiveIa from './FutureEffectiveIa.vue'
 import FutureEffectiveIaPending from './FutureEffectiveIaPending.vue'
+import NoticeOfAlteration from './NoticeOfAlteration.vue'
+import PaperFiling from './PaperFiling.vue'
+import PendingFiling from './PendingFiling.vue'
+import { DetailsList } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 
-// Enums and Constants
+// Enums and Constants and Interfaces
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
+import { AlterationIF, FilingIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
@@ -316,12 +330,14 @@ export default {
   mixins: [DateMixin, EnumMixin, FilingMixin],
 
   components: {
+    ColinFiling,
     CompletedIa,
-    DetailsList,
-    PaperFiling,
-    PendingFiling,
     FutureEffectiveIa,
     FutureEffectiveIaPending,
+    NoticeOfAlteration,
+    PaperFiling,
+    PendingFiling,
+    DetailsList,
     AddCommentDialog,
     DownloadErrorDialog
   },
@@ -331,7 +347,7 @@ export default {
       addCommentDialog: false,
       downloadErrorDialog: false,
       panel: null as number, // currently expanded panel
-      historyItems: [] as Array<any>,
+      historyItems: [] as Array<HistoryItemIF>,
       loadingDocument: false,
       loadingReceipt: false,
       loadingAll: false,
@@ -373,7 +389,10 @@ export default {
         const filing = this.filings[i].filing
         if (filing?.header?.date) {
           let filingDate = filing.header.date.slice(0, 10)
-          if (filingDate < '2019-03-08' || filing.header.availableOnPaperOnly) {
+          if (filing.header.availableInColinOnly) {
+            // filings from converted companies
+            this.loadColinFiling(filing)
+          } else if (filingDate < '2019-03-08' || filing.header.availableOnPaperOnly) {
             // filings before Bob Date
             this.loadPaperFiling(filing)
           } else {
@@ -401,7 +420,10 @@ export default {
                 this.loadOtherReport(filing, filing.specialResolution)
                 break
               case FilingTypes.VOLUNTARY_DISSOLUTION:
-                this.loadOtherReport(FilingTypes.VOLUNTARY_DISSOLUTION, filing, filing.voluntaryDissolution)
+                this.loadOtherReport(filing, filing.voluntaryDissolution)
+                break
+              case FilingTypes.NOTICE_OF_ALTERATION:
+                this.loadNoticeOfAlteration(filing)
                 break
               default:
                 // fallback for unknown filings
@@ -424,7 +446,7 @@ export default {
       if (highlightId) { this.highlightFiling(highlightId) }
     },
 
-    loadAnnualReport (filing: any) {
+    loadAnnualReport (filing: FilingIF) {
       const header = filing?.header
       const annualReport = filing?.annualReport
 
@@ -438,7 +460,7 @@ export default {
           const filingDate = filingDateTime?.slice(0, 10)
 
           // build filing item
-          const item = {
+          const item: HistoryItemIF = {
             filingType,
             title: this.filingTypeToName(filingType, agmYear),
             filingId: header.filingId,
@@ -446,6 +468,7 @@ export default {
             filingDate,
             isPaid: (header.status === FilingStatus.PAID),
             documents: filing?.documents || [] as Array<any>,
+            status: header.status,
             isCorrected: (header.isCorrected || false),
             isCorrectionPending: (header.isCorrectionPending || false),
             comments: this.flattenAndSortComments(header.comments)
@@ -474,7 +497,7 @@ export default {
       }
     },
 
-    loadIncorporationApplication (filing: any) {
+    loadIncorporationApplication (filing: FilingIF) {
       const header = filing?.header
       const incorporationApplication = filing?.incorporationApplication
 
@@ -507,7 +530,7 @@ export default {
         const corpName = this.entityName || this.entityTypeToNumberedName(this.entityType)
 
         // build filing item
-        const item: any = {
+        const item: HistoryItemIF = {
           filingType,
           title: `${this.entityTypeToName(this.entityType)} ${name} - ${corpName}`,
           filingId: header.filingId,
@@ -544,7 +567,76 @@ export default {
       }
     },
 
-    loadOtherReport (filing: any, section: any) {
+    /** Loads an "Alteration" filing into the historyItems list. */
+    loadNoticeOfAlteration (filing: FilingIF) {
+      const header = filing?.header
+      const alteration = filing?.alteration as AlterationIF
+
+      if (header && alteration) {
+        const filingType = header.name
+
+        // FUTURE: subtitle may be a concatenation of subtypes?
+        let subtitle
+        if (alteration.alterCorpType?.corpType) {
+          subtitle = this.entityTypeToName(alteration.alterCorpType.corpType) + ' to ' +
+            this.entityTypeToName(EntityTypes.BCOMP)
+        }
+
+        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
+
+        // Effective Date is assigned by the backend when the filing is completed (normally right away).
+        // Effective Date may be in the future (eg, for BCOMP COA filings).
+        // If Effective Date is empty, use Filing Date instead.
+        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+
+        // is this a Future Effective Incorp NOA?
+        const isFutureEffectiveNoa = !!filing.header.isFutureEffective
+
+        // is this a Future Effective NOA pending completion?
+        const isFutureEffectiveNoaPending = isFutureEffectiveNoa && this.isEffectiveDatePast(filing)
+
+        // build filing item
+        const item: HistoryItemIF = {
+          filingType,
+          title: this.filingTypeToName(filingType),
+          subtitle,
+          filingId: header.filingId,
+          filingAuthor: header.certifiedBy,
+          filingDate,
+          effectiveDateTime, // used in Future Effective IA components
+          isNoa: true,
+          isFutureEffectiveNoa,
+          isFutureEffectiveNoaPending,
+          isPaid: (header.status === FilingStatus.PAID),
+          documents: filing?.documents || [] as Array<any>,
+          status: header.status,
+          // isCorrected: (header.isCorrected || false), // FUTURE maybe
+          // isCorrectionPending: (header.isCorrectionPending || false), // FUTURE maybe
+          comments: this.flattenAndSortComments(header.comments)
+        }
+
+        // add receipt
+        if (header.paymentToken) {
+          item.documents.push({
+            type: this.DOCUMENT_TYPE_RECEIPT,
+            corpName: this.entityName || this.entityTypeToNumberedName(this.entityType),
+            filingDateTime,
+            paymentToken: header.paymentToken,
+            title: 'Receipt',
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+          })
+        }
+
+        this.historyItems.push(item)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - missing section in filing =', filing)
+      }
+    },
+
+    /** Loads a general filing into the historyItems list. */
+    loadOtherReport (filing: FilingIF, section: any) {
       const header = filing?.header
 
       if (header && section) {
@@ -566,7 +658,7 @@ export default {
           this.isEffectiveDateFuture(filing)
 
         // build filing item
-        const item: any = {
+        const item: HistoryItemIF = {
           filingType,
           title: this.filingTypeToName(filingType),
           filingId: header.filingId,
@@ -602,7 +694,7 @@ export default {
     },
 
     /** Whether this filing's effective date/time is in the past. */
-    isEffectiveDatePast (filing: any): boolean {
+    isEffectiveDatePast (filing: FilingIF): boolean {
       if (filing?.header?.effectiveDate) {
         // NB: these are both in UTC
         const effectiveDateTime = new Date(filing.header.effectiveDate)
@@ -615,7 +707,7 @@ export default {
     },
 
     /** Whether this filing's effective date/time is in the future. */
-    isEffectiveDateFuture (filing: any): boolean {
+    isEffectiveDateFuture (filing: FilingIF): boolean {
       if (filing?.header?.effectiveDate) {
         // NB: these are both in UTC
         const effectiveDateTime = new Date(filing.header.effectiveDate)
@@ -627,12 +719,12 @@ export default {
       return false
     },
 
-    loadCorrection (filing: any) {
+    loadCorrection (filing: FilingIF) {
       const header = filing?.header
       const correction = filing?.correction
 
       if (header && correction) {
-        const item = {
+        const item: HistoryItemIF = {
           filingType: header.name,
           title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
           filingId: header.filingId,
@@ -640,6 +732,8 @@ export default {
           filingDateTime: this.convertUTCTimeToLocalTime(header.date), // used for receipt
           filingDate: this.convertUTCTimeToLocalTime(correction.correctedFilingDate),
           isCorrection: true,
+          isPaid: (header.status === FilingStatus.PAID),
+          status: header.status,
           correctedFilingId: correction.correctedFilingId,
           correctedFilingType: correction.correctedFilingType,
           comments: this.flattenAndSortComments(header.comments)
@@ -651,7 +745,8 @@ export default {
       }
     },
 
-    loadPaperFiling (filing: any) {
+    /** Loads a "Colin filing" into the historyItems list. */
+    loadColinFiling (filing: FilingIF) {
       const header = filing?.header
 
       if (header) {
@@ -670,14 +765,57 @@ export default {
         const filingDate = filingDateTime?.slice(0, 10)
         const filingYear = filingDate?.slice(0, 4)
 
-        const item = {
+        const item: HistoryItemIF = {
+          filingType,
+          title,
+          filingId: header.filingId,
+          filingAuthor: 'Registry Staff', // TBD
+          filingDate,
+          filingYear,
+          isColinFiling: true,
+          isPaid: (header.status === FilingStatus.PAID),
+          status: header.status,
+          // isCorrected: (header.isCorrected || false), // FUTURE
+          // isCorrectionPending: (header.isCorrectionPending || false), // FUTURE
+          comments: this.flattenAndSortComments(header.comments)
+        }
+        this.historyItems.push(item)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - missing section in filing =', filing)
+      }
+    },
+
+    /** Loads a "paper filing" into the historyItems list. */
+    loadPaperFiling (filing: FilingIF) {
+      const header = filing?.header
+
+      if (header) {
+        // since name is not guaranteed to exist, provide a fallback
+        const filingType = header.name || 'unknown'
+
+        let title: string
+        if (filing.annualReport?.annualReportDate) {
+          const agmYear = +filing.annualReport.annualReportDate.slice(0, 4)
+          title = this.filingTypeToName(filingType, agmYear)
+        } else {
+          title = this.filingTypeToName(filingType)
+        }
+
+        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
+        const filingYear = filingDate?.slice(0, 4)
+
+        const item: HistoryItemIF = {
           filingType,
           title,
           filingId: header.filingId,
           filingAuthor: 'Registry Staff',
           filingDate,
           filingYear,
-          paperOnly: true,
+          isPaperFiling: true,
+          isPaid: (header.status === FilingStatus.PAID),
+          status: header.status,
           isCorrected: (header.isCorrected || false),
           isCorrectionPending: (header.isCorrectionPending || false),
           comments: this.flattenAndSortComments(header.comments)
@@ -701,15 +839,15 @@ export default {
       }
     },
 
-    correctThisFiling (filing: any) {
-      switch (filing?.filingType) {
+    correctThisFiling (item: HistoryItemIF) {
+      switch (item?.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // FUTURE:
           // this.$router.push({ name: ANNUAL_REPORT,
           //   params: { filingId: filing.filingId, isCorrection: true }})
           // FOR NOW:
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: filing.filingId } })
+            params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // FUTURE:
@@ -717,7 +855,7 @@ export default {
           //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: filing.filingId } })
+            params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // FUTURE:
@@ -725,7 +863,7 @@ export default {
           //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: filing.filingId } })
+            params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
           // for now, not allowed
@@ -734,13 +872,13 @@ export default {
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?
           // this.$router.push({ name: CORRECTION,
-          //   params: { correctedFilingId: filing.filingId } })
+          //   params: { correctedFilingId: item.filingId } })
           alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
           break
         default:
           // fallback for all other filings
           this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: filing.filingId } })
+            params: { correctedFilingId: item.filingId } })
           break
       }
     },
@@ -859,17 +997,17 @@ export default {
       })
     },
 
-    async downloadAll (filing: any) {
+    async downloadAll (item: HistoryItemIF) {
       this.loadingAll = true
       // first download documents (if any)
-      if (filing?.documents) {
-        for (let i = 0; i < filing.documents.length; i++) {
-          const type = filing.documents[i].type
+      if (item?.documents) {
+        for (let i = 0; i < item.documents.length; i++) {
+          const type = item.documents[i].type
           if (type === this.DOCUMENT_TYPE_REPORT) {
-            await this.downloadOneDocument(filing.documents[i])
+            await this.downloadOneDocument(item.documents[i])
           }
           if (type === this.DOCUMENT_TYPE_RECEIPT) {
-            await this.downloadOneReceipt(filing.documents[i])
+            await this.downloadOneReceipt(item.documents[i])
           }
         }
       }
@@ -913,13 +1051,19 @@ export default {
       }
     },
 
-    applyCorrectionTag (filing: any): string {
-      return filing?.isCorrected ? ' - Corrected' : (filing?.isCorrectionPending ? ' - Correction Pending' : '')
+    /** Returns correction tag for this history item. */
+    correctionTag (item: HistoryItemIF): string {
+      return item?.isCorrected ? ' - Corrected' : (item?.isCorrectionPending ? ' - Correction Pending' : '')
     },
 
     /** Closes current panel or opens new panel. */
-    togglePanel (index: number) {
+    togglePanel (index: number): void {
       this.panel = (this.panel === index) ? null : index
+    },
+
+    /** Whether to disable correction for this history item. */
+    disableCorrection (item: HistoryItemIF): boolean {
+      return (this.disableChanges || item.isCorrection || item.isFutureEffectiveIa || item.isColinFiling)
     }
   },
 

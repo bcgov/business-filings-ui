@@ -148,10 +148,11 @@ import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
 
-// Enums and Constants
+// Enums, Constants and Interfaces
 import { EntityStatus, FilingStatus } from '@/enums'
 import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 import { featureFlags } from '@/common/FeatureFlags'
+import { HistoryItemIF, TaskItemIF } from '@/interfaces'
 
 export default {
   name: 'Dashboard',
@@ -170,9 +171,9 @@ export default {
       hasBlockerTask: false,
       hasPendingFiling: false,
       taskCount: 0,
-      taskItems: [],
+      taskItems: [] as Array<TaskItemIF>,
       historyCount: 0,
-      historyItems: [],
+      historyItems: [] as Array<HistoryItemIF>,
       refreshTimer: null as number,
       checkFilingStatusCount: 0,
       inProcessFiling: null as any,

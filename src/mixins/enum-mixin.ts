@@ -68,6 +68,8 @@ export default class EnumMixin extends Vue {
       case EntityTypes.COOP: return EntityNames.COOP
       case EntityTypes.BCOMP: return EntityNames.BCOMP
       case EntityTypes.CORP: return EntityNames.CORP
+      case EntityTypes.BC_ULC: return EntityNames.BC_ULC
+      case EntityTypes.BC_COMP: return EntityNames.BC_COMP
     }
     return 'Unknown' // should never happen
   }
@@ -89,6 +91,7 @@ export default class EnumMixin extends Vue {
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
+      case FilingTypes.NOTICE_OF_ALTERATION: return FilingNames.NOTICE_OF_ALTERATION
     }
     // fallback for unknown filings
     return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())

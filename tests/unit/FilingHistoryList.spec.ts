@@ -7,11 +7,13 @@ import flushPromises from 'flush-promises'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
+import ColinFiling from '@/components/Dashboard/ColinFiling.vue'
+import CompletedIa from '@/components/Dashboard/CompletedIa.vue'
+import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
+import FutureEffectiveIaPending from '@/components/Dashboard/FutureEffectiveIaPending.vue'
+import NoticeOfAlteration from '@/components/Dashboard/NoticeOfAlteration.vue'
 import PaperFiling from '@/components/Dashboard/PaperFiling.vue'
 import PendingFiling from '@/components/Dashboard/PendingFiling.vue'
-import FutureEffectiveIaPending from '@/components/Dashboard/FutureEffectiveIaPending.vue'
-import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
-import CompletedIa from '@/components/Dashboard/CompletedIa.vue'
 import { DetailsList } from '@/components/common'
 
 Vue.use(Vuetify)

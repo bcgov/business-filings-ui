@@ -8,4 +8,5 @@ export enum FilingTypes {
   INCORPORATION_APPLICATION = 'incorporationApplication',
   SPECIAL_RESOLUTION = 'specialResolution',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
+  NOTICE_OF_ALTERATION = 'alteration',
 }

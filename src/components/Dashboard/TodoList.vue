@@ -430,9 +430,10 @@ import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorD
 // Mixins
 import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
-// Enums and Constants
+// Enums, Constants and Interfaces
 import { FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
+import { FilingIF, TaskItemIF } from '@/interfaces'
 
 import { featureFlags } from '@/common/FeatureFlags'
 
@@ -454,7 +455,7 @@ export default {
   data () {
     return {
       addCommentDialog: false,
-      taskItems: [] as Array<any>,
+      taskItems: [] as Array<TaskItemIF>,
       deleteErrors: [] as Array<any>,
       deleteWarnings: [] as Array<any>,
       deleteErrorDialog: false,
@@ -533,7 +534,7 @@ export default {
     },
 
     loadTodoItem (task) {
-      const todo = task.task.todo
+      const todo: FilingIF = task.task.todo
       if (todo && todo.header) {
         switch (todo.header.name) {
           case FilingTypes.ANNUAL_REPORT:
@@ -577,7 +578,7 @@ export default {
     },
 
     async loadFilingItem (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header) {
         switch (filing.header.name) {
           case FilingTypes.ANNUAL_REPORT:
@@ -608,7 +609,7 @@ export default {
 
     async loadAnnualReport (task) {
       let date
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.annualReport) {
         filing.annualReport.annualReportDate
           ? date = filing.annualReport.annualReportDate
@@ -642,7 +643,7 @@ export default {
     },
 
     async loadChangeOfDirectors (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.changeOfDirectors) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
@@ -665,7 +666,7 @@ export default {
     },
 
     async loadChangeOfAddress (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.changeOfAddress) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
@@ -688,7 +689,7 @@ export default {
     },
 
     loadCorrection (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.correction) {
         this.taskItems.push({
           filingType: FilingTypes.CORRECTION,
@@ -712,7 +713,7 @@ export default {
     },
 
     async loadIncorporationApplication (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header) {
         const title = this.nameRequest
           ? `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
@@ -754,7 +755,7 @@ export default {
       }
     },
 
-    doFileNow (task) {
+    doFileNow (task: TaskItemIF) {
       switch (task.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // file the subject Annual Report
@@ -777,7 +778,7 @@ export default {
       }
     },
 
-    doResumeFiling (task) {
+    doResumeFiling (task: TaskItemIF) {
       switch (task.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // resume this Annual Report
@@ -819,7 +820,7 @@ export default {
     },
 
     // this is called for both Resume Payment and Retry Payment
-    doResumePayment (task) {
+    doResumePayment (task: TaskItemIF) {
       const filingId = task.id
       const paymentToken = task.paymentToken
 
@@ -833,7 +834,7 @@ export default {
       return true
     },
 
-    confirmDeleteDraft (task) {
+    confirmDeleteDraft (task: TaskItemIF) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Delete Draft?',
@@ -857,7 +858,7 @@ export default {
       })
     },
 
-    confirmDeleteIncorporation (task) {
+    confirmDeleteIncorporation (task: TaskItemIF) {
       const line1 = `Deleting this ${task.draftTitle} will remove this application and all information ` +
         'associated with this application.'
       const line2 = this.nameRequest
@@ -903,7 +904,7 @@ export default {
       })
     },
 
-    async doDeleteDraft (task, refreshDashboard: boolean = true) {
+    async doDeleteDraft (task: TaskItemIF, refreshDashboard: boolean = true) {
       const id = this.entityIncNo || this.tempRegNumber
       let url = `businesses/${id}/filings/${task.id}`
       await axios.delete(url).then(res => {
@@ -939,7 +940,7 @@ export default {
       this.cancelPaymentErrors = []
     },
 
-    confirmCancelPayment (task) {
+    confirmCancelPayment (task: TaskItemIF) {
       // open confirmation dialog and wait for response
       this.$refs.confirmCancelPaymentDialog.open(
         'Cancel Payment?',
@@ -963,7 +964,7 @@ export default {
       })
     },
 
-    async cancelPaymentAndSetToDraft (task) {
+    async cancelPaymentAndSetToDraft (task: TaskItemIF) {
       let url = `businesses/${this.entityIncNo}/filings/${task.id}`
       await axios.patch(url, {}).then(res => {
         if (!res) { throw new Error('Invalid API response') }
@@ -995,7 +996,7 @@ export default {
       }
     },
 
-    isBcolError (task: any): boolean {
+    isBcolError (task: TaskItemIF): boolean {
       return !!task.bcolErrObj
     },
 
@@ -1004,22 +1005,22 @@ export default {
     },
 
     /** Returns True if task type is Correction. */
-    isTypeCorrection (task: any): boolean {
+    isTypeCorrection (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.CORRECTION)
     },
 
     /** Returns True if task type is Annual Report. */
-    isTypeAnnualReport (task: any): boolean {
+    isTypeAnnualReport (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.ANNUAL_REPORT)
     },
 
     /** Returns True if task type is Name Request. */
-    isTypeNameRequest (task: any): boolean {
+    isTypeNameRequest (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.NAME_REQUEST)
     },
 
     /** Returns True if task type is Name Incorporation Application. */
-    isTypeIncorporationApplication (task: any): boolean {
+    isTypeIncorporationApplication (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.INCORPORATION_APPLICATION)
     },
 

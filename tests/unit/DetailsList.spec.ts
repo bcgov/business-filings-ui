@@ -20,7 +20,7 @@ describe('Details List', () => {
     'filingDate': '2018-12-12',
     'filingYear': '2018',
     'paymentToken': null,
-    'paperOnly': true,
+    'isPaperOnly': true,
     'isCorrected': false,
     'isCorrectionPending': false,
     'comments': []
@@ -34,7 +34,7 @@ describe('Details List', () => {
     'filingDate': '2018-12-12',
     'filingYear': '2018',
     'paymentToken': null,
-    'paperOnly': true,
+    'isPaperOnly': true,
     'isCorrected': false,
     'isCorrectionPending': false,
     'comments': [
@@ -58,7 +58,7 @@ describe('Details List', () => {
     'filingDate': '2018-12-12',
     'filingYear': '2018',
     'paymentToken': null,
-    'paperOnly': true,
+    'isPaperOnly': true,
     'isCorrected': false,
     'isCorrectionPending': false,
     'comments': [
