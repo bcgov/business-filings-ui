@@ -169,9 +169,9 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(0)
+    expect(vm.historyItems.length).toEqual(0)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
-    expect(wrapper.emitted('filed-count')).toEqual([[0]])
+    expect(wrapper.emitted('history-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').text()).toContain('You have no filing history')
 
@@ -189,7 +189,7 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.historyItems.length).toEqual(7)
     expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle').text())
       .toContain('2019-06-02')
 
@@ -308,9 +308,9 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(6)
+    expect(vm.historyItems.length).toEqual(6)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(6)
-    expect(wrapper.emitted('filed-count')).toEqual([[6]])
+    expect(wrapper.emitted('history-count')).toEqual([[6]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -364,9 +364,9 @@ describe('Filing History List - regular filings', () => {
     await Vue.nextTick()
 
     // verify initial state
-    expect(vm.filedItems.length).toEqual(2)
+    expect(vm.historyItems.length).toEqual(2)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
-    expect(wrapper.emitted('filed-count')).toEqual([[2]])
+    expect(wrapper.emitted('history-count')).toEqual([[2]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -460,9 +460,9 @@ describe('Filing History List - regular filings', () => {
     await Vue.nextTick()
 
     // verify initial state
-    expect(vm.filedItems.length).toEqual(2)
+    expect(vm.historyItems.length).toEqual(2)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
-    expect(wrapper.emitted('filed-count')).toEqual([[2]])
+    expect(wrapper.emitted('history-count')).toEqual([[2]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -503,7 +503,7 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.historyItems.length).toEqual(7)
     const item = wrapper.findAll('.filing-history-item').at(5)
     expect(item.find('.list-item__subtitle').text()).toContain('FILED AND PENDING')
     expect(item.find('.list-item__subtitle').text()).toContain('by Cameron')
@@ -527,9 +527,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(0)
+    expect(vm.historyItems.length).toEqual(0)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
-    expect(wrapper.emitted('filed-count')).toEqual([[0]])
+    expect(wrapper.emitted('history-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').text()).toContain('Complete your filing to display')
 
@@ -568,9 +568,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -616,9 +616,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -674,9 +674,9 @@ describe('Filing History List - incorporation applications', () => {
     await Vue.nextTick()
 
     // verify panel h
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -771,9 +771,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -869,9 +869,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -970,9 +970,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -1066,9 +1066,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -1166,9 +1166,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -1238,9 +1238,9 @@ describe('Filing History List - corrections', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.historyItems.length).toEqual(7)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(7)
-    expect(wrapper.emitted('filed-count')).toEqual([[7]])
+    expect(wrapper.emitted('history-count')).toEqual([[7]])
 
     const item = wrapper.findAll('.filing-history-item').at(6)
     expect(item.find('.list-item .filing-label').text()).toContain('Correction')

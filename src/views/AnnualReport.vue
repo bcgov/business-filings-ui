@@ -314,7 +314,8 @@ import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses }
+  from '@/components/common'
 
 // Dialogs
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
@@ -324,7 +325,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
 import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Constants
-import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes } from '@/enums'
 import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/constants'
 
 export default {
@@ -384,6 +385,7 @@ export default {
       saveErrorDialog: false,
       paymentErrorDialog: false,
       bcolObj: null,
+
       // other local properties
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
@@ -394,10 +396,7 @@ export default {
       saveErrors: [],
       saveWarnings: [],
 
-      // enums
-      EntityTypes,
-      FilingCodes,
-      FilingStatus,
+      // enum in template
       FilingTypes
     }
   },

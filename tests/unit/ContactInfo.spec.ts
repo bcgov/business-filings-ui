@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 describe('Error Contact', () => {
   it('Displays expected content', () => {
-    const wrapper = mount(ErrorContact, { vuetify })
+    const wrapper = mount(ContactInfo, { vuetify })
 
     // verify content
     const listItems = wrapper.findAll('.contact-container')

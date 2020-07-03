@@ -52,7 +52,7 @@ import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
 
 // Enums
-import { EntityTypes, NameRequestStates } from '@/enums'
+import { NameRequestStates } from '@/enums'
 
 // Interfaces
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
@@ -64,9 +64,10 @@ import { DateMixin, EnumMixin, NamexRequestMixin } from '@/mixins'
   filters: { 'VMask': VueMaskFilter }
 })
 export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NamexRequestMixin) {
-  // Template Enums
+  // Enum for template
   readonly NameRequestStates = NameRequestStates
-  readonly EntityTypes = EntityTypes
+
+  // Constants
   readonly RECEIVED_STATE = 'Received'
   readonly NOT_RECEIVED_STATE= 'Not Received'
   readonly NOT_REQUIRED_STATE = 'Not Required'

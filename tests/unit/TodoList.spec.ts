@@ -49,7 +49,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(0)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
-    expect(wrapper.emitted('todo-count')).toEqual([[0]])
+    expect(wrapper.emitted('task-count')).toEqual([[0]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).not.toBeNull()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
@@ -119,7 +119,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
-    expect(wrapper.emitted('todo-count')).toEqual([[3]])
+    expect(wrapper.emitted('task-count')).toEqual([[3]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -169,7 +169,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -216,7 +216,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -257,7 +257,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -298,7 +298,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -351,7 +351,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -406,7 +406,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -464,7 +464,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -528,7 +528,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -578,7 +578,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -641,7 +641,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -689,7 +689,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -731,7 +731,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -771,7 +771,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -813,7 +813,7 @@ describe('TodoList - UI', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -848,7 +848,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(0)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
-    expect(wrapper.emitted('todo-count')).toEqual([[0]])
+    expect(wrapper.emitted('task-count')).toEqual([[0]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).not.toBeNull()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
@@ -915,7 +915,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
-    expect(wrapper.emitted('todo-count')).toEqual([[3]])
+    expect(wrapper.emitted('task-count')).toEqual([[3]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -972,7 +972,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1068,7 +1068,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1115,7 +1115,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1162,7 +1162,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1203,7 +1203,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1243,7 +1243,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1285,7 +1285,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 

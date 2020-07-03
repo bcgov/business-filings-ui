@@ -1,5 +1,5 @@
 <template>
-  <ul class="error-contact pl-0">
+  <ul class="contact-info pl-0">
     <li class="contact-container">
       <v-icon small class="contact-icon">mdi-phone</v-icon>
       <span class="font-weight-bold contact-key">Canada &amp; U.S. Toll Free:</span>
@@ -22,12 +22,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class ErrorContact extends Vue { }
+export default class ContactInfo extends Vue { }
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-
 li {
   font-size: 0.9rem;
 }

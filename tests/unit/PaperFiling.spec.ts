@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import PaperFiling from '@/components/Dashboard/PaperFiling.vue'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -16,7 +16,7 @@ describe('Paper Filing', () => {
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('Filings completed')
     expect(paragraphs.at(1).text()).toContain('To request copies')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

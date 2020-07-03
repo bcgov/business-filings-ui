@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mapActions, mapState } from 'vuex'
-import { FilingData } from '@/interfaces'
+import { FilingDataIF } from '@/interfaces'
 import { EntityTypes, FilingCodes } from '@/enums'
 
 /**
@@ -19,7 +19,7 @@ export default class FilingMixin extends Vue {
   readonly setFilingData!: (x: any) => void
 
   // store getters
-  readonly filingData!: Array<FilingData>
+  readonly filingData!: Array<FilingDataIF>
   readonly entityType!: EntityTypes
 
   /**
@@ -56,7 +56,7 @@ export default class FilingMixin extends Vue {
     priority: boolean | undefined,
     waiveFees: boolean | undefined
   ): void {
-    let myFilingData: Array<FilingData> = this.filingData
+    let myFilingData: Array<FilingDataIF> = this.filingData
     if (filingCode) {
       // always remove code if it already exists
       myFilingData = myFilingData.filter(el => el.filingTypeCode !== filingCode)

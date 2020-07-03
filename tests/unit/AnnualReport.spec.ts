@@ -17,7 +17,8 @@ import AnnualReport from '@/views/AnnualReport.vue'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
-import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses }
+  from '@/components/common'
 import { configJson } from '@/resources/business-config'
 
 Vue.use(Vuetify)

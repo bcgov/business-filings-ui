@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import PendingFiling from '@/components/Dashboard/PendingFiling.vue'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -17,7 +17,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('This filing is paid')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()
@@ -34,7 +34,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()

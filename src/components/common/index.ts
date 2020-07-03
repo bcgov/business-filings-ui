@@ -1,7 +1,7 @@
 import Certify from './Certify.vue'
+import ContactInfo from './ContactInfo.vue'
 import DetailComment from './DetailComment.vue'
-import DetailsList from '@/components/common/DetailsList.vue'
-import ErrorContact from './ErrorContact.vue'
+import DetailsList from './DetailsList.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
 import StaffPayment from './StaffPayment.vue'
 import SummaryCertify from './SummaryCertify.vue'
@@ -15,9 +15,9 @@ import NameRequestInfo from './NameRequestInfo.vue'
 
 export {
   Certify,
+  ContactInfo,
   DetailsList,
   DetailComment,
-  ErrorContact,
   OfficeAddresses,
   StaffPayment,
   SummaryCertify,

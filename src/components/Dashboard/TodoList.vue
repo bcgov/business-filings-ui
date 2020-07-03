@@ -37,9 +37,11 @@
         <div class="no-results__title">
           Coming Soon - Online Maintenance Filings such as Address and Director Changes
         </div>
-        <div class="no-results__subtitle">If you need to make changes to your Benefit Company, please contact us.</div>
-        <div class="error-contact-container">
-          <ErrorContact/>
+        <div class="no-results__subtitle">
+          If you need to make changes to your Benefit Company, please contact us.
+        </div>
+        <div class="contact-info-container">
+          <ContactInfo/>
         </div>
       </v-card-text>
     </v-card>
@@ -420,7 +422,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
-import { DetailsList, ErrorContact, NameRequestInfo } from '@/components/common'
+import { DetailsList, ContactInfo, NameRequestInfo } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -429,7 +431,7 @@ import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorD
 import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Constants
-import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
+import { FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 import { featureFlags } from '@/common/FeatureFlags'
@@ -443,7 +445,7 @@ export default {
     ConfirmDialog,
     DeleteErrorDialog,
     DetailsList,
-    ErrorContact,
+    ContactInfo,
     NameRequestInfo
   },
 
@@ -461,11 +463,7 @@ export default {
       enableCheckbox: [] as Array<any>,
       confirmEnabled: false,
       currentFilingId: null as number,
-      panel: null as number, // currently expanded panel
-
-      // enums
-      EntityTypes,
-      FilingStatus
+      panel: null as number // currently expanded panel
     }
   },
 
@@ -505,10 +503,11 @@ export default {
 
     loadData () {
       this.taskItems = []
+
       // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
       if (this.isCoop) this.confirmCheckbox = true
 
-      // create task items
+      // create task items from 'tasks' array from API
       this.tasks.forEach(async task => {
         if (task?.task?.todo) {
           this.loadTodoItem(task)
@@ -520,8 +519,8 @@ export default {
         }
       })
 
-      this.$emit('todo-count', this.taskItems.length)
-      this.$emit('todo-filings', this.taskItems)
+      this.$emit('task-count', this.taskItems.length)
+      this.$emit('task-items', this.taskItems)
 
       // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
       // This indicates that a new filing cannot be started because this item has to be completed first.
@@ -1198,7 +1197,7 @@ export default {
   background-color: #f1f1f1 !important;
 }
 
-.error-contact-container {
+.contact-info-container {
   width: 50%;
   margin-top: 0.5rem;
   display: inline-block;

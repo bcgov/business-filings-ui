@@ -13,10 +13,10 @@
       attach="#filing-history-list"
     />
 
-    <v-expansion-panels v-if="filedItems.length > 0" v-model="panel">
+    <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
       <v-expansion-panel
         class="align-items-top filing-history-item"
-        v-for="(filing, index) in filedItems"
+        v-for="(filing, index) in historyItems"
         :key="index"
       >
         <!-- NB: bottom padding for when panel is collapsed -->
@@ -275,7 +275,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="!filedItems.length">
+    <v-card class="no-results" flat v-if="!historyItems.length">
       <v-card-text>
         <div class="no-results__subtitle" v-if="tempRegNumber">Complete your filing to display</div>
         <template v-else>
@@ -304,7 +304,7 @@ import FutureEffectiveIaPending from './FutureEffectiveIaPending.vue'
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 
 // Enums and Constants
-import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 
 // Mixins
@@ -331,18 +331,12 @@ export default {
       addCommentDialog: false,
       downloadErrorDialog: false,
       panel: null as number, // currently expanded panel
-      filedItems: [] as Array<any>,
+      historyItems: [] as Array<any>,
       loadingDocument: false,
       loadingReceipt: false,
       loadingAll: false,
       currentFilingId: null as number,
-      downloadingDocIndex: -1,
-
-      // enums
-      EntityTypes,
-      FilingNames,
-      FilingStatus,
-      FilingTypes
+      downloadingDocIndex: -1
     }
   },
 
@@ -372,9 +366,9 @@ export default {
 
   methods: {
     loadData () {
-      this.filedItems = []
+      this.historyItems = []
 
-      // create filed items
+      // create history items from 'filings' array from API
       for (let i = 0; i < this.filings.length; i++) {
         const filing = this.filings[i].filing
         if (filing?.header?.date) {
@@ -421,8 +415,8 @@ export default {
         }
       }
 
-      this.$emit('filed-count', this.filedItems.length)
-      this.$emit('filings-list', this.filedItems)
+      this.$emit('history-count', this.historyItems.length)
+      this.$emit('history-items', this.historyItems)
 
       // if needed, highlight a specific filing
       // NB: use unary plus operator to cast string to number
@@ -461,7 +455,7 @@ export default {
           if (header.paymentToken) {
             item.documents.push({
               type: this.DOCUMENT_TYPE_RECEIPT,
-              corpName: this.entityName || this.entityTypeToTitle(this.entityType),
+              corpName: this.entityName || this.entityTypeToNumberedName(this.entityType),
               filingDateTime,
               paymentToken: header.paymentToken,
               title: 'Receipt',
@@ -469,7 +463,7 @@ export default {
             })
           }
 
-          this.filedItems.push(item)
+          this.historyItems.push(item)
         } else {
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid Annual Report Date in filing =', filing)
@@ -510,7 +504,7 @@ export default {
           receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
-        const corpName = this.entityName || this.entityTypeToTitle(this.entityType)
+        const corpName = this.entityName || this.entityTypeToNumberedName(this.entityType)
 
         // build filing item
         const item: any = {
@@ -543,7 +537,7 @@ export default {
           })
         }
 
-        this.filedItems.push(item)
+        this.historyItems.push(item)
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - missing section in filing =', filing)
@@ -592,7 +586,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToTitle(this.entityType),
+            corpName: this.entityName || this.entityTypeToNumberedName(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -600,7 +594,7 @@ export default {
           })
         }
 
-        this.filedItems.push(item)
+        this.historyItems.push(item)
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - missing section in filing =', filing)
@@ -650,7 +644,7 @@ export default {
           correctedFilingType: correction.correctedFilingType,
           comments: this.flattenAndSortComments(header.comments)
         }
-        this.filedItems.push(item)
+        this.historyItems.push(item)
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - missing section in filing =', filing)
@@ -688,7 +682,7 @@ export default {
           isCorrectionPending: (header.isCorrectionPending || false),
           comments: this.flattenAndSortComments(header.comments)
         }
-        this.filedItems.push(item)
+        this.historyItems.push(item)
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - missing section in filing =', filing)
@@ -697,8 +691,8 @@ export default {
 
     /** Expands the panel of the specified Filing ID. */
     highlightFiling (filingId: number) {
-      for (let i = 0; i < this.filedItems.length; i++) {
-        const documents = this.filedItems[i].documents
+      for (let i = 0; i < this.historyItems.length; i++) {
+        const documents = this.historyItems[i].documents
         // NB: this only works if there is a filing document
         if (documents && documents[0].filingId === filingId) {
           this.panel = i
@@ -896,7 +890,7 @@ export default {
 
     async reloadComments (filingId: number): Promise<void> {
       // find the filing in the list
-      const filing = this.filedItems.find(item => (item.filingId === filingId))
+      const filing = this.historyItems.find(item => (item.filingId === filingId))
 
       if (filing) {
         // fetch latest comments for this filing

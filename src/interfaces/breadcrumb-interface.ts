@@ -1,9 +1,7 @@
-import Vue from 'vue'
-
-export interface BreadcrumbInterface extends Vue {
+export interface BreadcrumbIF {
   text: string;
-  disabled?: boolean
-  exact?: boolean
-  to?: {}
-  href?: string
+  disabled?: boolean;
+  exact?: boolean;
+  to?: any;
+  href?: string;
 }

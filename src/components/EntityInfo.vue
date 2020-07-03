@@ -18,7 +18,7 @@
           <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
         <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
-          <span>{{ entityName || entityTypeToTitle(entityType)}}</span>
+          <span>{{ entityName || entityTypeToNumberedName(entityType)}}</span>
         </div>
 
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
@@ -112,7 +112,7 @@ import { EnumMixin } from '@/mixins'
 import { EntityStatus, EntityTypes } from '@/enums'
 
 // Interfaces
-import { BreadcrumbInterface } from '@/interfaces'
+import { BreadcrumbIF } from '@/interfaces'
 
 // Constants
 import { ANNUAL_REPORT, DASHBOARD } from '@/constants'
@@ -140,9 +140,6 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   readonly businessPhoneExtension!: string
   readonly isRoleStaff!: boolean
   readonly nrNumber!: string
-
-  // Enum for template
-  readonly EntityTypes = EntityTypes
 
   /** The Business ID string. */
   private get businessId (): string {
@@ -199,7 +196,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   }
 
   /** Get route breadcrumbs. */
-  private get breadcrumbs (): Array<BreadcrumbInterface> {
+  private get breadcrumbs (): Array<BreadcrumbIF> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
 
     // Apply the filing year to the breadcrumb trail for Annual Reports
@@ -213,7 +210,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
         href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
       {
-        text: this.entityName || this.entityTypeToTitle(this.entityType),
+        text: this.entityName || this.entityTypeToNumberedName(this.entityType),
         disabled: false,
         exact: true,
         to: { name: DASHBOARD }

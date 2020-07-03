@@ -30,7 +30,6 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
-import { ErrorContact } from '@/components/common'
 import { EnumMixin } from '@/mixins'
 import { FilingTypes } from '@/enums'
 
@@ -39,8 +38,7 @@ import { FilingTypes } from '@/enums'
     // Property definition for runtime environment.
     ...mapGetters(['isRoleStaff'])
   },
-  mixins: [EnumMixin],
-  components: { ErrorContact }
+  mixins: [EnumMixin]
 })
 export default class BcolErrorDialog extends Vue {
   // Getter definition for static type checking.
@@ -61,7 +59,3 @@ export default class BcolErrorDialog extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-</style>

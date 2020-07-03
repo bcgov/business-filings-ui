@@ -4,7 +4,7 @@ import { getVuexStore } from '@/store'
 
 import { mount } from '@vue/test-utils'
 import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -22,7 +22,7 @@ describe('Future Effective IA', () => {
     expect(paragraphs.at(0).text()).toContain('will be unknown Pacific Time.')
     expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this')
     expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application will')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -43,7 +43,7 @@ describe('Future Effective IA', () => {
     expect(paragraphs.at(0).text()).toContain('will be 2020-05-15 12:00:00 PM Pacific Time.')
     expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this')
     expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application will')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

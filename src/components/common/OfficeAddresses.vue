@@ -213,7 +213,6 @@ import { ObjectMixin } from '@/mixins'
 import { BaseAddressObjIF, BcorpAddressIf, AddressIF } from '@/interfaces'
 
 // Enums and Constants
-import { EntityTypes } from '@/enums'
 import { ADDRESSCHANGED } from '@/constants'
 
 @Component({
@@ -295,9 +294,6 @@ export default class OfficeAddresses extends Mixins(ObjectMixin) {
 
   // The Address schema containing Vuelidate rules.
   private addressSchema = officeAddressSchema
-
-  // Enum definition for use in template.
-  readonly EntityTypes = EntityTypes
 
   /**
    * Called when component is created.

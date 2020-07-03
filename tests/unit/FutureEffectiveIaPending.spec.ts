@@ -4,7 +4,7 @@ import { getVuexStore } from '@/store'
 
 import { mount } from '@vue/test-utils'
 import FutureEffectiveIaPending from '@/components/Dashboard/FutureEffectiveIaPending.vue'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -22,7 +22,7 @@ describe('Future Effective IA Pending', () => {
     expect(paragraphs.at(0).text()).toContain('has been recorded as unknown Pacific Time.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing.')
     expect(paragraphs.at(2).text()).toContain('If this issue persists, please contact us.')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -43,7 +43,7 @@ describe('Future Effective IA Pending', () => {
     expect(paragraphs.at(0).text()).toContain('has been recorded as 2020-05-15 12:00:00 PM Pacific Time.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing.')
     expect(paragraphs.at(2).text()).toContain('If this issue persists, please contact us.')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -316,17 +316,18 @@ import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPayment } from '@/components/common'
+import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPayment }
+  from '@/components/common'
 
 // Dialog Components
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
-  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog }
+  from '@/components/dialogs'
 
 // Mixins
 import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Constants
-import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes } from '@/enums'
 import { CEASED, APPOINTED, ADDRESSCHANGED, NAMECHANGED, DASHBOARD } from '@/constants'
 
 export default {
@@ -385,10 +386,9 @@ export default {
 
       // bcol error variables
       bcolObj: null,
-      // enums
-      EntityTypes,
+
+      // enums in template
       FilingCodes,
-      FilingStatus,
       FilingTypes
     }
   },

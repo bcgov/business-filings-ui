@@ -7,18 +7,18 @@
     <p>It may take up to one hour to process this filing.</p>
     <p>If this issue persists, please contact us.</p>
 
-    <ErrorContact />
+    <contact-info class="pt-3" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import { ErrorContact } from '@/components/common'
+import { ContactInfo } from '@/components/common'
 
 @Component({
   computed: { ...mapState(['entityName']) },
-  components: { ErrorContact }
+  components: { ContactInfo }
 })
 export default class FutureEffectiveIaPending extends Vue {
   /** The subject filing. */
@@ -44,9 +44,5 @@ p:first-of-type {
 
 p {
   margin-bottom: 0.5rem !important;
-}
-
-.error-contact {
-  padding-top: 0.75rem;
 }
 </style>

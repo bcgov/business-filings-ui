@@ -47,10 +47,10 @@ export default class EnumMixin extends Vue {
   }
 
   /**
-   * Converts the entity type to an entity title.
+   * Converts the entity type to a numbered entity name.
    * @param type the entity type to convert
    */
-  entityTypeToTitle (type: EntityTypes): string {
+  entityTypeToNumberedName (type: EntityTypes): string {
     switch (type) {
       case EntityTypes.COOP: return 'Numbered Cooperative'
       case EntityTypes.BCOMP: return 'Numbered Benefit Company'

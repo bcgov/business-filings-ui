@@ -9,18 +9,18 @@
     <p>Withdrawing this Incorporation Application will remove this application
       and all associated information, and will incur a $20.00 fee.</p>
 
-    <ErrorContact />
+    <contact-info class="pt-3" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import { ErrorContact } from '@/components/common'
+import { ContactInfo } from '@/components/common'
 
 @Component({
   computed: { ...mapState(['entityName']) },
-  components: { ErrorContact }
+  components: { ContactInfo }
 })
 export default class FutureEffectiveIa extends Vue {
   /** The subject filing. */
@@ -46,9 +46,5 @@ p:first-of-type {
 
 p {
   margin-bottom: 0.5rem !important;
-}
-
-.error-contact {
-  padding-top: 0.75rem;
 }
 </style>
