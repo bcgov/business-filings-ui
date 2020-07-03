@@ -178,8 +178,7 @@ export default {
       inProcessFiling: null as any,
       coaPending: false,
       coaEffectiveDate: null as string,
-      coaWarningDialog: false,
-      tempRegNumber: sessionStorage.getItem('TEMP_REG_NUMBER')
+      coaWarningDialog: false
     }
   },
 
@@ -211,6 +210,11 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     hasTempRegNumber (): boolean {
       return Boolean(sessionStorage.getItem('TEMP_REG_NUMBER'))
+    },
+
+    /** The Incorporation Application's Temporary Registration Number string. */
+    tempRegNumber (): string {
+      return sessionStorage.getItem('TEMP_REG_NUMBER')
     },
 
     allowBCompMaintenanceFiling (): boolean {

@@ -465,7 +465,7 @@ export default {
       deleteErrorDialog: false,
       cancelPaymentErrors: [] as Array<any>,
       cancelPaymentErrorDialog: false,
-      enableCheckbox: [],
+      enableCheckbox: [] as Array<any>,
       confirmEnabled: false,
       currentFilingId: null as number,
       panel: null as number, // currently expanded panel
@@ -1045,9 +1045,9 @@ export default {
 
     /** Determine the Annual Report Due date for a given filing. */
     arDueDate (filingYear: number, foundingDate: Date) {
-      let dueDate = new Date(foundingDate)
+      const dueDate = new Date(foundingDate)
       dueDate.setFullYear(filingYear)
-      dueDate.setDate(dueDate.getDate() + 61)
+      dueDate.setDate(dueDate.getDate() + 60) // The due date is 60 days AFTER the anniversary date for a given year
       return this.toReadableDate(dueDate)
     }
   },
