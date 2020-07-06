@@ -8,5 +8,5 @@ export enum FilingNames {
   LEGAL_NAME_CHANGE = 'Legal Name Change',
   SPECIAL_RESOLUTION = 'Special Resolution',
   VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
-  NOTICE_OF_ALTERATION = 'Notice of Alteration',
+  ALTERATION_NOTICE = 'Alteration Notice',
 }

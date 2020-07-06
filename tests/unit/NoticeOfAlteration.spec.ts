@@ -13,8 +13,10 @@ describe('Notice of Alteration Filing', () => {
 
     // verify content
     const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(1)
-    expect(paragraphs.at(0).text()).toContain('Notice of Alteration documents are')
+    expect(paragraphs.length).toBe(3)
+    expect(paragraphs.at(0).text()).toContain('Alteration documents are only available')
+    expect(paragraphs.at(1).text()).toContain('To request copies of paper documents,')
+    expect(paragraphs.at(2).text()).toContain('If you have questions, please contact us.')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()

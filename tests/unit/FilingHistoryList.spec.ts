@@ -1227,7 +1227,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 })
 
-describe('Filing History List - Notice of Alterations', () => {
+describe('Filing History List - Alteration Notices', () => {
   it('displays a Corp Type alteration (BC ULC to BCOMP)', async () => {
     const $route = { query: { } }
 
@@ -1263,7 +1263,7 @@ describe('Filing History List - Notice of Alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to BC Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
@@ -1329,7 +1329,7 @@ describe('Filing History List - Notice of Alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('BC Company to BC Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
@@ -1360,7 +1360,7 @@ describe('Filing History List - Notice of Alterations', () => {
     wrapper.destroy()
   })
 
-  it('displays a Resolutions alteration', async () => {
+  it('displays a Resolution Date alteration', async () => {
     const $route = { query: { } }
 
     // init store
@@ -1391,8 +1391,8 @@ describe('Filing History List - Notice of Alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Resolutions')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Resolution Date')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1422,7 +1422,7 @@ describe('Filing History List - Notice of Alterations', () => {
     wrapper.destroy()
   })
 
-  it('displays a Corporation Name alteration', async () => {
+  it('displays a Company Name alteration', async () => {
     const $route = { query: { } }
 
     // init store
@@ -1453,8 +1453,8 @@ describe('Filing History List - Notice of Alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Corporation Name')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1484,7 +1484,7 @@ describe('Filing History List - Notice of Alterations', () => {
     wrapper.destroy()
   })
 
-  it('displays a Name Translation alteration', async () => {
+  it('displays a Company Name Translation alteration', async () => {
     const $route = { query: { } }
 
     // init store
@@ -1515,8 +1515,8 @@ describe('Filing History List - Notice of Alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Name Translation')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name Translation')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1577,7 +1577,7 @@ describe('Filing History List - Notice of Alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('Share Structure')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
     expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')

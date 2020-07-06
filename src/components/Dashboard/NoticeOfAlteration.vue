@@ -1,8 +1,9 @@
 <template>
   <div class="completed-ia-body body-2">
-    <p>Notice of Alteration documents are only available from BC Registry. If you would like to
-      request copies, contact BC Registry Staff with the documents you require and the name and
-      incorporation number of your company:</p>
+    <p>Alteration documents are only available from the BC Registry as paper documents.</p>
+    <p>To request copies of paper documents, contact BC Registry Staff with the incorporation number,
+      the filing date, and the documents you require.</p>
+    <p>If you have questions, please contact us.</p>
 
     <contact-info class="pt-3" />
   </div>
