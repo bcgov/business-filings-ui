@@ -1123,6 +1123,56 @@ describe('TodoList - UI - BCOMP', () => {
     wrapper.destroy()
   })
 
+  it.only('\'File Annual Report\' and verification checkbox are disabled when COA is pending', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'task': {
+          'todo': {
+            'header': {
+              'name': 'annualReport',
+              'ARFilingYear': 2019,
+              'status': 'NEW'
+            },
+            'business': {
+              'nextAnnualReport': '2019-09-17T00:00:00+00:00'
+            }
+          }
+        },
+        'enabled': true,
+        'order': 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0, coaPending: true } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
+    expect(item.querySelector('.bcorps-ar-subtitle').textContent)
+      .toContain('Verify your Office Address and Current Directors before filing your Annual Report.')
+
+    // Verify checkbox is disabled
+    expect(wrapper.find('#enable-checkbox').attributes('disabled')).toBe('disabled')
+
+    // Simulate the attempt to enable the File Annual Report btn
+    wrapper.find('#enable-checkbox').trigger('click')
+
+    // Verify File Annual Report btn is disabled
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(wrapper.find('.list-item__actions .v-btn').attributes('disabled')).toBe('disabled')
+    expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
+
+    wrapper.destroy()
+  })
+
   it('displays a task but \'File Now\' is disabled when checkbox is unselected', async () => {
     // init store
     store.state.tasks = [

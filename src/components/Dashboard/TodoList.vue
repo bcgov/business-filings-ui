@@ -75,7 +75,7 @@
                   id="enable-checkbox"
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
-                  :disabled=!task.enabled
+                  :disabled="!task.enabled || coaPending"
                   v-model="enableCheckbox[index]"
                   @click.native.stop
                 />
