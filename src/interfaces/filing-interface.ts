@@ -1,21 +1,15 @@
-import { FilingTypes } from '@/enums'
-import { AlterationIF } from '@/interfaces'
+import { AlterationIF, BusinessIF, HeaderIF } from '@/interfaces'
 
 /** A filing item (task or filing) from the API. */
 export interface FilingIF {
   annualReport?: any;
-  business?: any;
+  business: BusinessIF;
   changeOfAddress?: any;
   changeOfDirectors?: any;
   correction?: any;
   documents?: Array<any>;
-  header: {
-    name: FilingTypes;
-    status: string;
-    filingId: number;
-    date: string;
-    [propName: string]: any; // excess properties
-  },
+  header: HeaderIF,
   incorporationApplication?: any;
   alteration?: AlterationIF;
+  [propName: string]: any; // excess properties
 }

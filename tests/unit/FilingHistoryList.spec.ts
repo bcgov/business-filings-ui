@@ -1227,6 +1227,451 @@ describe('Filing History List - incorporation applications', () => {
   })
 })
 
+describe('Filing History List - Notice of Alterations', () => {
+  it('displays a Corp Type alteration (BC ULC to BCOMP)', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED'
+          },
+          business: {
+            legalType: 'BC_ULC'
+          },
+          alteration: {
+            alterCorpType: {
+              corpType: 'BC'
+            }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to BC Benefit Company')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Corp Type alteration (BC COMP to BCOMP)', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED'
+          },
+          business: {
+            legalType: 'BC_COMP'
+          },
+          alteration: {
+            alterCorpType: {
+              corpType: 'BC'
+            }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Company to BC Benefit Company')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Resolutions alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED'
+          },
+          business: {},
+          alteration: {
+            alterResolutions: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Resolutions')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Corporation Name alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED'
+          },
+          business: {},
+          alteration: {
+            alterCorpName: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Corporation Name')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Name Translation alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED'
+          },
+          business: {},
+          alteration: {
+            alterNameTranslation: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Name Translation')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Share Structure alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED'
+          },
+          business: {},
+          alteration: {
+            alterShareStructure: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Notice of Alteration')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Share Structure')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - Colin filings', () => {
+  it('displays an Annual Report Colin filing', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'annualReport',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            availableInColinOnly: true,
+            status: 'COMPLETED'
+          },
+          annualReport: {
+            annualReportDate: '2018-06-10'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('.list-item__title').text()).toBe('Annual Report (2018)')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(false)
+    expect(wrapper.find(ColinFiling).exists()).toBe(true)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+})
+
 describe('Filing History List - corrections', () => {
   it('displays a correction filing with Details Count', async () => {
     const $route = { query: { } }

@@ -319,7 +319,7 @@ import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 // Enums and Constants and Interfaces
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
-import { AlterationIF, FilingIF, HistoryItemIF } from '@/interfaces'
+import { AlterationIF, BusinessIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
@@ -453,7 +453,7 @@ export default {
       if (header && annualReport) {
         const date = annualReport.annualReportDate
         if (date) {
-          const filingType = header.name
+          const filingType = FilingTypes.ANNUAL_REPORT
           const agmYear = +date.slice(0, 4)
 
           const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
@@ -502,7 +502,7 @@ export default {
       const incorporationApplication = filing?.incorporationApplication
 
       if (header && incorporationApplication) {
-        const filingType = header.name // NB: this is not NR type (but they should match)
+        const filingType = FilingTypes.INCORPORATION_APPLICATION
 
         const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
@@ -570,16 +570,24 @@ export default {
     /** Loads an "Alteration" filing into the historyItems list. */
     loadNoticeOfAlteration (filing: FilingIF) {
       const header = filing?.header
-      const alteration = filing?.alteration as AlterationIF
+      const alteration = filing?.alteration
+      const business = filing?.business
 
-      if (header && alteration) {
-        const filingType = header.name
+      if (header && alteration && business) {
+        const filingType = FilingTypes.NOTICE_OF_ALTERATION
 
-        // FUTURE: subtitle may be a concatenation of subtypes?
-        let subtitle
-        if (alteration.alterCorpType?.corpType) {
-          subtitle = this.entityTypeToName(alteration.alterCorpType.corpType) + ' to ' +
-            this.entityTypeToName(EntityTypes.BCOMP)
+        let subtitle = ''
+        if (alteration.alterCorpType) {
+          subtitle = this.entityTypeToName(business.legalType) + ' to ' +
+            this.entityTypeToName(alteration.alterCorpType.corpType)
+        } else if (alteration.alterResolutions) {
+          subtitle = 'Resolutions'
+        } else if (alteration.alterCorpName) {
+          subtitle = 'Corporation Name'
+        } else if (alteration.alterNameTranslation) {
+          subtitle = 'Name Translation'
+        } else if (alteration.alterShareStructure) {
+          subtitle = 'Share Structure'
         }
 
         const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
@@ -602,7 +610,7 @@ export default {
           title: this.filingTypeToName(filingType),
           subtitle,
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
+          filingAuthor: 'Registry Staff', // TBD
           filingDate,
           effectiveDateTime, // used in Future Effective IA components
           isNoa: true,
@@ -725,7 +733,7 @@ export default {
 
       if (header && correction) {
         const item: HistoryItemIF = {
-          filingType: header.name,
+          filingType: FilingTypes.CORRECTION,
           title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
