@@ -829,138 +829,6 @@ describe('TodoList - UI', () => {
 
     wrapper.destroy()
   })
-
-  // FUTURE: enable when/if we have NRs without a draft
-  xit('displays the Name Request details in the Todo list', async () => {
-    // init store
-    store.state.tasks = [
-      {
-        'enabled': true,
-        'order': 1,
-        'task': {
-          'todo': {
-            'header': {
-              'name': 'nameRequest',
-              'status': 'NEW'
-            },
-            'nameRequest': {
-              'additionalInfo': '',
-              'applicants': {
-                'addrLine1': '1234 Fake Street',
-                'addrLine2': 'Block 3',
-                'addrLine3': 'Suite 1001',
-                'city': 'Victoria',
-                'clientFirstName': 'Connor',
-                'clientLastName': 'Horton',
-                'contact': 'James Bond',
-                'countryTypeCd': 'CA',
-                'declineNotificationInd': 'N',
-                'emailAddress': 'abc@test.com',
-                'faxNumber': null,
-                'firstName': 'Adam',
-                'lastName': 'Smith',
-                'middleName': 'Jane',
-                'partyId': 1657726,
-                'phoneNumber': '7777777777',
-                'postalCd': 'V9E 3S2',
-                'stateProvinceCd': 'BC'
-              },
-              'comments': [],
-              'consentFlag': null,
-              'consent_dt': null,
-              'corpNum': null,
-              'entity_type_cd': 'CR',
-              'expirationDate': 'Mon, 21 Nov 2022 08:00:00 GMT',
-              'furnished': 'Y',
-              'hasBeenReset': false,
-              'id': 2258180,
-              'lastUpdate': 'Fri, 03 Apr 2020 20:07:10 GMT',
-              'names': [
-                {
-                  'choice': 1,
-                  'designation': 'INC.',
-                  'name': 'Test Name 1 INC.',
-                  'name_type_cd': null,
-                  'state': 'APPROVED'
-                },
-                {
-                  'choice': 3,
-                  'designation': 'INCORPORATED',
-                  'name': 'Test Name 2 INC.',
-                  'name_type_cd': null,
-                  'state': 'NE'
-                },
-                {
-                  'choice': 2,
-                  'designation': 'INCORPORATED',
-                  'name': 'Test Name 3 INC.',
-                  'name_type_cd': null,
-                  'state': 'NE'
-                }
-              ],
-              'nrNumber': 'NR 1234567',
-              'priorityCd': 'Y',
-              'priorityDate': 'Wed, 25 Sep 2019 17:48:58 GMT',
-              'requestTypeCd': 'CR',
-              'request_action_cd': 'NRO-NEWAML',
-              'state': 'APPROVED',
-              'submitCount': 1,
-              'submittedDate': 'Wed, 25 Sep 2019 17:48:00 GMT',
-              'submitter_userid': '',
-              'userId': 'abc',
-              'xproJurisdiction': null
-            }
-          }
-        }
-      }
-    ]
-
-    store.state.entityStatus = 'NAME_REQUEST'
-
-    const wrapper = mount(TodoList, { store, vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    expect(vm.taskItems.length).toEqual(1)
-
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
-
-    const nrListSelector = '#name-request-info ul li'
-    const itemCount = vm.$el.querySelectorAll(nrListSelector).length
-
-    expect(itemCount).toEqual(6)
-
-    const title = vm.$el.querySelectorAll(nrListSelector)[0]
-    const entityType = vm.$el.querySelectorAll(nrListSelector)[1]
-    const requestType = vm.$el.querySelectorAll(nrListSelector)[2]
-    const expiryDate = vm.$el.querySelectorAll(nrListSelector)[3]
-    const status = vm.$el.querySelectorAll(nrListSelector)[4]
-    const conditionConsent = vm.$el.querySelectorAll(nrListSelector)[5]
-
-    expect(title.textContent).toContain('Name Request')
-    expect(entityType.textContent).toContain('Entity Type: BC Benefit Company')
-    expect(requestType.textContent).toContain('Request Type: New Business')
-    expect(expiryDate.textContent).toContain('Expiry Date: Nov 21, 2022')
-    expect(status.textContent).toContain('Status: Approved')
-    expect(conditionConsent.textContent).toContain('Condition/Consent: Not Required')
-
-    const applicantInfoListSelector = '#name-request-applicant-info ul li'
-    const applicantInfoListCount = vm.$el.querySelectorAll(applicantInfoListSelector).length
-    const name = vm.$el.querySelectorAll(applicantInfoListSelector)[1]
-    const address = vm.$el.querySelectorAll(applicantInfoListSelector)[2]
-    const email = vm.$el.querySelectorAll(applicantInfoListSelector)[3]
-    const phone = vm.$el.querySelectorAll(applicantInfoListSelector)[4]
-
-    expect(applicantInfoListCount).toEqual(5)
-    expect(name.textContent).toContain('Name: Adam Jane Smith')
-    expect(address.textContent)
-      .toContain('Address: 1234 Fake Street, Block 3, Suite 1001, Victoria, BC, V9E 3S2, Canada')
-    expect(email.textContent).toContain('Email: abc@test.com')
-    expect(phone.textContent).toContain('Phone: (777) 777-7777')
-
-    wrapper.destroy()
-  })
 })
 
 describe('TodoList - UI - BCOMP', () => {
@@ -1380,6 +1248,205 @@ describe('TodoList - UI - BCOMP', () => {
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
     expect(button.querySelector('.v-btn__content').textContent).toContain('Resume Payment')
+
+    wrapper.destroy()
+  })
+})
+
+describe('TodoList - UI - Incorp Apps', () => {
+  beforeAll(() => {
+    sessionStorage.clear()
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    store.state.entityType = 'BC'
+  })
+
+  it('displays a DRAFT numbered company IA', async () => {
+    // init store
+    store.state.nameRequest = null
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'incorporationApplication',
+              status: 'DRAFT'
+            },
+            incorporationApplication: {},
+            changeOfAddress: {},
+            changeOfDirectors: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent)
+      .toContain('BC Benefit Company Incorporation Application')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('NR APPROVED')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('FILING PENDING')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('PAYMENT INCOMPLETE')
+    expect(item.querySelector('.expand-btn')).toBeNull()
+
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.disabled).toBe(false)
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Incorporate a Numbered Company')
+
+    wrapper.destroy()
+  })
+
+  it('displays a DRAFT named company IA', async () => {
+    // init store
+    store.state.nameRequest = {}
+    store.state.entityName = 'My Business Inc'
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'incorporationApplication',
+              status: 'DRAFT'
+            },
+            incorporationApplication: {},
+            changeOfAddress: {},
+            changeOfDirectors: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).
+      toContain('BC Benefit Company Incorporation Application - My Business Inc')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('NR APPROVED')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('DRAFT')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('FILING PENDING')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('PAYMENT INCOMPLETE')
+    expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
+
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.disabled).toBe(false)
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Incorporate using this NR')
+
+    wrapper.destroy()
+  })
+
+  it('displays a PENDING numbered company IA', async () => {
+    // init store
+    store.state.nameRequest = null
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'incorporationApplication',
+              status: 'PENDING'
+            },
+            incorporationApplication: {},
+            changeOfAddress: {},
+            changeOfDirectors: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).
+      toContain('BC Benefit Company Incorporation Application')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('DRAFT')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('NR APPROVED')
+    expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
+
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.disabled).toBe(false)
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
+
+    wrapper.destroy()
+  })
+
+  it('displays a PENDING named company IA', async () => {
+    // init store
+    store.state.nameRequest = {}
+    store.state.entityName = 'My Business Inc'
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'incorporationApplication',
+              status: 'PENDING'
+            },
+            nameRequest: {},
+            incorporationApplication: {},
+            changeOfAddress: {},
+            changeOfDirectors: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).
+      toContain('BC Benefit Company Incorporation Application - My Business Inc')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('DRAFT')
+    expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('NR APPROVED')
+    expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
+
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.disabled).toBe(false)
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
 
     wrapper.destroy()
   })
@@ -1917,71 +1984,6 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
 
   afterAll(() => {
     window.location.assign = assign
-  })
-
-  // FUTURE: enable when/if we have NRs without a draft
-  xit('redirects to Create URL when \'Incorporate using this NR\' is clicked', async () => {
-    // init Name Request todo task
-    store.state.tasks = [
-      {
-        task: {
-          todo: {
-            header: {
-              name: 'nameRequest',
-              status: 'NEW'
-            },
-            nameRequest: {
-              names: [
-                {
-                  name: 'Test Name',
-                  state: 'APPROVED'
-                }
-              ],
-              nrNumber: 'NR 1234567',
-              applicants: {
-                addrLine1: '1234 Fake Street',
-                addrLine2: 'Block 3',
-                addrLine3: 'Suite 1001',
-                city: 'Victoria',
-                countryTypeCd: 'CA',
-                postalCd: 'V9E 3S2',
-                stateProvinceCd: 'BC',
-                emailAddress: 'abc@test.com',
-                phoneNumber: '7777777777',
-                firstName: 'Adam',
-                middleName: 'John',
-                lastName: 'Smith'
-              },
-              consentFlag: null,
-              expirationDate: 'Thu, 31 Dec 2099 08:00:00 GMT',
-              state: 'APPROVED'
-            }
-          }
-        },
-        enabled: true,
-        order: 1
-      }
-    ]
-    store.state.entityStatus = 'NAME_REQUEST'
-
-    const wrapper = mount(TodoList, { store, vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    expect(vm.taskItems.length).toEqual(1)
-
-    const button = wrapper.find('.list-item__actions .v-btn')
-    expect(button.attributes('disabled')).toBeUndefined()
-    expect(button.find('.v-btn__content').text()).toContain('Incorporate using this NR')
-
-    button.trigger('click')
-    await flushPromises()
-
-    // verify redirection
-    const createUrl = 'business/create/?id=T123456789'
-    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
-
-    wrapper.destroy()
   })
 
   it('redirects to Create URL when \'Resume\' is clicked on a Named Company draft IA', async () => {
