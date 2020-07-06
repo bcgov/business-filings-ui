@@ -98,6 +98,71 @@ const BCOMP_DIRECTORS = [
   }
 ]
 
+const BCOMP_PARTIES = [
+  {
+    'deliveryAddress': {
+      'addressCity': 'Victoria',
+      'addressCountry': 'CA',
+      'addressRegion': 'BC',
+      'postalCode': 'V8Z 123',
+      'streetAddress': '1234 Fake St',
+      'streetAddressAdditional': ''
+    },
+    'mailingAddress': {
+      'addressCity': 'Victoria',
+      'addressCountry': 'CA',
+      'addressRegion': 'BC',
+      'postalCode': 'V8Z 123',
+      'streetAddress': '1012 Douglas St',
+      'streetAddressAdditional': ''
+    },
+    'officer': {
+      'email': 'abc@bcregtest.gov.bc.ca',
+      'firstName': 'Griffin',
+      'id': 0,
+      'lastName': 'Swanson',
+      'middleName': '',
+      'orgName': '',
+      'partyType': 'Person'
+    },
+    'roles': [
+      {
+        'appointmentDate': '2020-07-06',
+        'roleType': 'Completing Party'
+      },
+      {
+        'appointmentDate': '2020-07-06',
+        'roleType': 'Director'
+      }
+    ]
+  },
+  {
+    'mailingAddress': {
+      'addressCity': 'Victoria',
+      'addressCountry': 'CA',
+      'addressRegion': 'BC',
+      'postalCode': 'V8Z 6S1',
+      'streetAddress': '1012 Douglas St',
+      'streetAddressAdditional': ''
+    },
+    'officer': {
+      'email': null,
+      'firstName': '',
+      'id': 1,
+      'lastName': '',
+      'middleName': '',
+      'orgName': 'Test Inc',
+      'partyType': 'Org'
+    },
+    'roles': [
+      {
+        'appointmentDate': '2020-07-06',
+        'roleType': 'Incorporator'
+      }
+    ]
+  }
+]
+
 describe('App as a COOP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
@@ -1398,7 +1463,7 @@ describe('App as a Paid Incorporation Application', () => {
                 nrNumber: 'NR 1234567'
               },
               offices: BCOMP_ADDRESSES,
-              parties: BCOMP_DIRECTORS
+              parties: BCOMP_PARTIES
             }
           }
         }
@@ -1439,8 +1504,9 @@ describe('App as a Paid Incorporation Application', () => {
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
     expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
-    expect(vm.$store.state.directors[0].officer.lastName).toBe('Griffin')
-    expect(vm.$store.state.directors[1].officer.lastName).toBe('Swanson')
+    expect(vm.$store.state.directors[0].officer.firstName).toBe('Griffin')
+    expect(vm.$store.state.directors[0].officer.lastName).toBe('Swanson')
+    expect(vm.$store.state.directors.length).toEqual(1)
 
     // verify loaded filing
     expect(vm.$store.state.filings.length).toBe(1)
