@@ -204,12 +204,12 @@ export default {
      * 3) has a blocker task in the todo list (ie. draft, paid, error, correction )
      */
     disableChanges (): boolean {
-      return (this.hasBlockerTask || this.hasPendingFiling || this.hasTempRegNumber)
+      return (this.hasBlockerTask || this.hasPendingFiling || !!this.tempRegNumber)
     },
 
     /** The Incorporation Application's Temporary Registration Number string. */
-    hasTempRegNumber (): boolean {
-      return Boolean(sessionStorage.getItem('TEMP_REG_NUMBER'))
+    tempRegNumber (): string {
+      return sessionStorage.getItem('TEMP_REG_NUMBER')
     },
 
     allowBCompMaintenanceFiling (): boolean {

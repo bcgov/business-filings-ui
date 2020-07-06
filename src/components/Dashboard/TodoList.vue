@@ -67,15 +67,16 @@
                 </v-btn>
               </h3>
 
-              <div v-if="businessId && isBComp && isTypeAnnualReport(task) && isStatusNew(task)"
+              <div v-if="businessId && isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)"
                 class="bcorps-ar-subtitle"
               >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
+                  id="enable-checkbox"
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
                   :disabled=!task.enabled
-                  v-model="confirmCheckbox"
+                  v-model="enableCheckbox[index]"
                   @click.native.stop
                 />
               </div>
@@ -213,8 +214,9 @@
 
             <div class="list-item__actions">
               <div style="width:100%">
-                <p class="date-subtitle" v-if="isBComp && isTypeAnnualReport(task) && isStatusNew(task)">
-                  Due {{task.nextArDate}}
+                <p class="date-subtitle" v-if="isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)"
+                >
+                  Due {{task.arDueDate}}
                 </p>
 
                 <!-- pre-empt any buttons below -->
@@ -321,7 +323,7 @@
                   <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
                     <v-btn class="btn-file-now"
                       color="primary"
-                      :disabled="!task.enabled || coaPending || !confirmCheckbox || disableChanges"
+                      :disabled="!task.enabled || coaPending || ( isBComp && !enableCheckbox[index] ) || disableChanges"
                       @click.native.stop="doFileNow(task)"
                     >
                       <span>File Annual Report</span>
@@ -463,7 +465,7 @@ export default {
       deleteErrorDialog: false,
       cancelPaymentErrors: [] as Array<any>,
       cancelPaymentErrorDialog: false,
-      confirmCheckbox: false,
+      enableCheckbox: [] as Array<any>,
       confirmEnabled: false,
       currentFilingId: null as number,
       panel: null as number, // currently expanded panel
@@ -548,12 +550,13 @@ export default {
               id: -1, // not falsy
               filingType: FilingTypes.ANNUAL_REPORT,
               title: `File ${ARFilingYear} Annual Report`,
-              subtitle: task.enabled ? '(including Address and/or Director Change)' : null,
+              subtitle: task.enabled && !this.isBComp ? '(including Address and/or Director Change)' : null,
               ARFilingYear,
               status: todo.header.status || FilingStatus.NEW,
               enabled: Boolean(task.enabled),
               order: task.order,
-              nextArDate: this.toReadableDate(todo.business?.nextAnnualReport)
+              nextArDate: this.toReadableDate(todo.business?.nextAnnualReport),
+              arDueDate: this.arDueDate(todo.header?.ARFilingYear, todo.business?.foundingDate)
             })
             break
           // FUTURE: uncomment when/if we have NRs without a draft
@@ -1038,6 +1041,14 @@ export default {
     /** Closes current panel or opens new panel. */
     togglePanel (index: number) {
       this.panel = (this.panel === index) ? null : index
+    },
+
+    /** Determine the Annual Report Due date for a given filing. */
+    arDueDate (filingYear: number, foundingDate: Date) {
+      const dueDate = new Date(foundingDate)
+      dueDate.setFullYear(filingYear)
+      dueDate.setDate(dueDate.getDate() + 60) // The due date is 60 days AFTER the anniversary date for a given year
+      return this.toReadableDate(dueDate)
     }
   },
 
@@ -1187,6 +1198,10 @@ export default {
 .v-expansion-panel-header {
   padding-top: 1.25rem !important;
   padding-bottom: 1.25rem !important;
+}
+
+.v-expansion-panel-header:before {
+  background-color: white !important;
 }
 
 .bcol-error {
