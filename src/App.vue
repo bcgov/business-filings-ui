@@ -511,7 +511,9 @@ export default {
 
           // set temporary addresses and directors
           this.storeAddresses({ data: incorporationApplication.offices })
-          this.storeDirectors({ data: { directors: [...incorporationApplication.parties] } })
+          const directors = incorporationApplication.parties.filter((party) => party.roles.filter((role) =>
+            role.roleType === 'Director').length !== 0)
+          this.storeDirectors({ data: { directors: [...directors] } })
 
           this.setFilings([{ filing }])
           break
