@@ -1360,68 +1360,6 @@ describe('Filing History List - Alteration Notices', () => {
     wrapper.destroy()
   })
 
-  it('displays a Resolution Date alteration', async () => {
-    const $route = { query: { } }
-
-    // init store
-    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
-    store.state.entityName = 'ACME Benefit Inc'
-    store.state.filings = [
-      {
-        filing: {
-          header: {
-            name: 'alteration',
-            date: '2020-03-24T19:20:05.670859+00:00',
-            status: 'COMPLETED'
-          },
-          business: {},
-          alteration: {
-            alterResolutions: {}
-          }
-        }
-      }
-    ]
-
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    expect(vm.historyItems.length).toEqual(1)
-    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('history-count')).toEqual([[1]])
-
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Resolution Date')
-    expect(wrapper.find('.list-item__subtitle span').text()).toContain('FILED AND PAID')
-    expect(wrapper.find('.list-item__subtitle span').text()).toContain('(filed by Registry Staff on 2020-03-24)')
-    expect(vm.panel).toBeNull() // no row is expanded
-    expect(wrapper.find('.no-results').exists()).toBe(false)
-
-    // verify expand button and toggle panel
-    const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('View Details')
-    detailsBtn.trigger('click')
-    await flushPromises()
-
-    // verify updated expand button
-    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
-
-    // verify details
-    expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
-    expect(wrapper.find(ColinFiling).exists()).toBe(false)
-
-    sessionStorage.removeItem('BUSINESS_ID')
-    wrapper.destroy()
-  })
-
   it('displays a Company Name alteration', async () => {
     const $route = { query: { } }
 
@@ -1501,7 +1439,7 @@ describe('Filing History List - Alteration Notices', () => {
           },
           business: {},
           alteration: {
-            alterNameTranslation: {}
+            alterNameTranslations: {}
           }
         }
       }

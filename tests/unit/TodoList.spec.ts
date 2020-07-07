@@ -991,7 +991,7 @@ describe('TodoList - UI - BCOMP', () => {
     wrapper.destroy()
   })
 
-  it.only('\'File Annual Report\' and verification checkbox are disabled when COA is pending', async () => {
+  it('\'File Annual Report\' and verification checkbox are disabled when COA is pending', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1018,7 +1018,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1337,7 +1337,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1385,7 +1385,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1432,7 +1432,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1481,7 +1481,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     expect(vm.taskItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 

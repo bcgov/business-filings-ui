@@ -580,11 +580,9 @@ export default {
         if (alteration.alterCorpType) {
           subtitle = this.entityTypeToName(business.legalType) + ' to ' +
             this.entityTypeToName(alteration.alterCorpType.corpType)
-        } else if (alteration.alterResolutions) {
-          subtitle = 'Resolution Date'
         } else if (alteration.alterCorpName) {
           subtitle = 'Company Name'
-        } else if (alteration.alterNameTranslation) {
+        } else if (alteration.alterNameTranslations) {
           subtitle = 'Company Name Translation'
         } else if (alteration.alterShareStructure) {
           subtitle = 'Share Structure'

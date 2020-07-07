@@ -1,12 +1,33 @@
 import { EntityTypes } from '@/enums'
 
+export interface AlterCorpTypeIF {
+  corpType: EntityTypes;
+  [propName: string]: any; // excess properties
+}
+
+export interface AlterCorpNameIF {
+  legalName: string;
+  nrNumber: string;
+  [propName: string]: any; // excess properties
+}
+
+export interface AlterNameTranslationsIF {
+  modifiedTranslations: Array<any>;
+  ceasedTranslations: Array<string>;
+  [propName: string]: any; // excess properties
+}
+
+export interface AlterShareStructureIF {
+  resolutionDates: Array<string>;
+  shareClasses: Array<any>;
+  [propName: string]: any; // excess properties
+}
+
 /** A filing's alteration object from the API. */
 export interface AlterationIF {
-  alterCorpType?: {
-    corpType: EntityTypes;
-  }
-  alterResolutions?: any;
-  alterCorpName?: any;
-  alterNameTranslation?: any;
-  alterShareStructure?: any;
+  provisionsRemoved?: boolean;
+  alterCorpType?: AlterCorpTypeIF
+  alterCorpName?: AlterCorpNameIF
+  alterNameTranslations?: AlterNameTranslationsIF
+  alterShareStructure?: AlterShareStructureIF
 }
