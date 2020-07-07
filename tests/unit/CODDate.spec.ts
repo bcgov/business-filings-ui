@@ -19,7 +19,7 @@ Vue.config.devtools = false
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
 
-describe('CodDate', () => {
+describe('CodDate for COOPS', () => {
   let wrapper: Wrapper<CodDate>
   let vm: any
 
@@ -29,6 +29,7 @@ describe('CodDate', () => {
 
     // set Last Filing Date and verify new Min Date
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityType = 'CP'
 
     wrapper = mount(CodDate, { store, vuetify })
     vm = wrapper.vm
@@ -154,5 +155,45 @@ describe('CodDate', () => {
     wrapper.setData({ dateFormatted: '2018/11/11' })
     wrapper.vm.$v.$touch()
     expect(wrapper.vm.$v.dateFormatted.isValidCODDate).toBe(false)
+  })
+})
+
+describe('CodDate for BCOMP', () => {
+  let wrapper: Wrapper<CodDate>
+  let vm: any
+
+  beforeEach(() => {
+    // init store
+    store.state.currentDate = '2019/07/15'
+
+    // set Last Filing Date and verify new Min Date
+    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityType = 'BC'
+
+    wrapper = mount(CodDate, { store, vuetify })
+    vm = wrapper.vm
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+    wrapper = null
+  })
+
+  it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {
+    // Set some COD filings for the entity in the store
+    store.state.filings = [
+      { filing: { header: { date: '2019-02-01' }, changeOfDirectors: {} } },
+      { filing: { header: { effectiveDate: '2019-03-01' }, changeOfDirectors: {} } }
+    ]
+    expect(vm.minDate).toBe('2019-03-01')
+
+    // cleanup
+    store.state.filings = []
+  })
+
+  it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
+    // verify initial state
+    expect(vm.$store.state.filings).toEqual([])
+    expect(vm.minDate).toBe('2018-03-01')
   })
 })
