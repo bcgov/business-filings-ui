@@ -71,7 +71,7 @@ import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErr
   NameRequestInvalidDialog } from '@/components/dialogs'
 
 // Mixins
-import { ObjectMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
+import { ObjectMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
 
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
@@ -84,7 +84,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 export default {
   name: 'App',
 
-  mixins: [ObjectMixin, DirectorMixin, NamexRequestMixin],
+  mixins: [ObjectMixin, DirectorMixin, NameRequestMixin],
 
   data () {
     return {

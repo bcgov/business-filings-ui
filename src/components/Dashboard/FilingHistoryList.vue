@@ -213,16 +213,24 @@
           <!-- is this a Notice of Alteration? -->
           <template v-else-if="filing.isNoa">
             <notice-of-alteration />
-            <v-divider class="mt-7 mb-5"></v-divider>
+            <!-- NB: no documents so no divider needed -->
+          </template>
+
+          <!-- is this a Colin filing? -->
+          <template v-else-if="filing.isColinFiling">
+            <colin-filing />
+            <!-- NB: no documents so no divider needed -->
+          </template>
+
+          <!-- is this a paper filing? -->
+          <template v-else-if="filing.isPaperFiling">
+            <paper-filing />
+            <!-- NB: no documents so no divider needed -->
           </template>
 
           <!-- else must be a COMPLETED filing -->
           <!-- NB: no details -->
           <template v-else />
-
-          <colin-filing v-if="filing.isColinFiling" />
-
-          <paper-filing v-if="filing.isPaperFiling" />
 
           <!-- the list of documents -->
           <v-list dense class="document-list py-0" v-if="filing.documents">

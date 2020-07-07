@@ -10,7 +10,7 @@ import { DateMixin } from '@/mixins'
  * Mixin that provides some useful Name Request utilities.
  */
 @Component
-export default class NamexRequestMixin extends Mixins(DateMixin) {
+export default class NameRequestMixin extends Mixins(DateMixin) {
   /**
    * Returns True if the Name Request data is valid.
    * @param nr the name request response payload

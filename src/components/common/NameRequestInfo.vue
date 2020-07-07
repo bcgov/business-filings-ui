@@ -58,12 +58,12 @@ import { NameRequestStates } from '@/enums'
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
 
 // Mixins
-import { DateMixin, EnumMixin, NamexRequestMixin } from '@/mixins'
+import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 @Component({
   filters: { 'VMask': VueMaskFilter }
 })
-export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NamexRequestMixin) {
+export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
   // Enum for template
   readonly NameRequestStates = NameRequestStates
 
