@@ -117,7 +117,7 @@ export default class CodDate extends Mixins(DateMixin) {
      */
     let minDate = null
     if (this.isBComp) {
-      minDate = this.lastCODFilingDate ? this.lastCODFilingDate : this.entityFoundingDate.split('T')[0]
+      minDate = this.lastCODFilingDate || this.entityFoundingDate.split('T')[0]
     } else {
       if (!this.lastCODFilingDate && !this.lastAnnualReportDate) {
         minDate = this.entityFoundingDate.split('T')[0]
