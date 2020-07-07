@@ -59,7 +59,7 @@ import { DateMixin } from '@/mixins'
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['currentDate', 'lastAnnualReportDate', 'entityFoundingDate']),
-    ...mapGetters(['lastCODFilingDate'])
+    ...mapGetters(['lastCODFilingDate', 'isBComp'])
   },
   validations: {
     dateFormatted: { isNotNull, isValidFormat, isValidCODDate }
@@ -81,6 +81,7 @@ export default class CodDate extends Mixins(DateMixin) {
   readonly lastAnnualReportDate!: string
   readonly lastCODFilingDate!: string
   readonly entityFoundingDate!: string
+  readonly isBComp: boolean
 
   /**
    * Computed value.
@@ -106,20 +107,26 @@ export default class CodDate extends Mixins(DateMixin) {
    */
   private get minDate (): string {
     /**
-     * Determine the latest of the following dates:
+     * Determine the latest of the following dates for coops:
      * - the last COD filing in filing history (from legal DB)
      * - the last AR filing in filing history (from the Legal DB)
+     *
+     *  For BComp the last COD filing in filing history (from legal DB)
      *
      * If the entity has no filing history, the founding date will be used.
      */
     let minDate = null
-    if (!this.lastCODFilingDate && !this.lastAnnualReportDate) {
-      minDate = this.entityFoundingDate.split('T')[0]
+    if (this.isBComp) {
+      minDate = this.lastCODFilingDate || this.entityFoundingDate.split('T')[0]
     } else {
-      const lastARFilingDate = !this.lastAnnualReportDate ? 0 : +this.lastAnnualReportDate.split('-').join('')
-      const lastCODFilingDate = !this.lastCODFilingDate ? 0 : +this.lastCODFilingDate.split('-').join('')
-      const minCODDate = Math.max(lastARFilingDate, lastCODFilingDate)
-      minDate = this.numToUsableString(minCODDate)
+      if (!this.lastCODFilingDate && !this.lastAnnualReportDate) {
+        minDate = this.entityFoundingDate.split('T')[0]
+      } else {
+        const lastARFilingDate = !this.lastAnnualReportDate ? 0 : +this.lastAnnualReportDate.split('-').join('')
+        const lastCODFilingDate = !this.lastCODFilingDate ? 0 : +this.lastCODFilingDate.split('-').join('')
+        const minCODDate = Math.max(lastARFilingDate, lastCODFilingDate)
+        minDate = this.numToUsableString(minCODDate)
+      }
     }
     return minDate
   }
