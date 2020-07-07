@@ -26,7 +26,7 @@
         </p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If you need help, please contact us.</p>
-          <ErrorContact class="mt-5" />
+          <contact-info class="mt-5" />
         </template>
       </v-card-text>
 
@@ -43,14 +43,14 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
-import { ErrorContact } from '@/components/common'
+import { ContactInfo } from '@/components/common'
 
 @Component({
   computed: {
     // Property definition for runtime environment.
     ...mapGetters(['isRoleStaff'])
   },
-  components: { ErrorContact }
+  components: { ContactInfo }
 })
 export default class DeleteErrorDialog extends Vue {
   // Getter definition for static type checking.
@@ -72,7 +72,3 @@ export default class DeleteErrorDialog extends Vue {
   @Emit() private okay () { }
 }
 </script>
-
-<style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-</style>

@@ -210,9 +210,6 @@ import { mapGetters, mapState } from 'vuex'
 // Mixins
 import { ObjectMixin, CountriesProvincesMixin } from '@/mixins'
 
-// Enums
-import { EntityTypes } from '@/enums'
-
 // Interfaces
 import { BaseAddressObjIF } from '@/interfaces'
 
@@ -245,9 +242,6 @@ export default class AddressListSm extends Mixins(ObjectMixin, CountriesProvince
   private get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
-
-  /** Enum definition for use in template */
-  readonly EntityTypes = EntityTypes
 }
 </script>
 

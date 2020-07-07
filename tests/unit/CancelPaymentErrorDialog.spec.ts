@@ -23,7 +23,7 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Cancel Payment')
     expect(wrapper.find('#dialog-text').text())
       .toContain('We were unable to cancel your payment.')
-    expect(wrapper.find('#dialog-text').text()).toContain('If you need help, please contact us')
+    expect(wrapper.find('#dialog-text').text()).toContain('If you need help, please contact us.')
     expect(wrapper.find('#dialog-ok-btn')).toBeDefined()
 
     wrapper.destroy()
@@ -45,7 +45,7 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Cancel Payment')
     expect(wrapper.find('#dialog-text').text())
       .toContain('We were unable to cancel your payment.')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('If you need help, please contact us')
+    expect(wrapper.find('#dialog-text').text()).not.toContain('If you need help, please contact us.')
     expect(wrapper.find('#dialog-ok-btn')).toBeDefined()
 
     wrapper.destroy()

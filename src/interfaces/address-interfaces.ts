@@ -1,11 +1,11 @@
 import Vue from 'vue'
 
-export interface BaseAddressType extends Vue {
+export interface BaseAddressIF extends Vue {
   $refs: any;
 }
 
 // Base address Interface to match the address.json schema and it's optional fields.
-export interface AddressIF extends Vue {
+export interface AddressIF {
   actions?: string[];
   addressCity: string;
   addressCountry: string;
@@ -17,13 +17,13 @@ export interface AddressIF extends Vue {
 }
 
 // Interface to define the joint base address response
-export interface BaseAddressObjIF extends Vue {
+export interface BaseAddressObjIF {
   deliveryAddress: AddressIF;
   mailingAddress: AddressIF;
 }
 
 // Interface to define the Bcorps address response
-export interface BcorpAddressIf extends Vue {
+export interface BcorpAddressIf {
   registeredOffice: BaseAddressObjIF;
   recordsOffice: BaseAddressObjIF;
 }

@@ -54,11 +54,11 @@ describe('Dashboard - UI', () => {
   })
 
   it('updates its counts from sub-component events', () => {
-    wrapper.find(TodoList).vm.$emit('todo-count', 2)
-    wrapper.find(FilingHistoryList).vm.$emit('filed-count', 3)
+    wrapper.find(TodoList).vm.$emit('task-count', 2)
+    wrapper.find(FilingHistoryList).vm.$emit('history-count', 3)
 
-    expect(vm.todoCount).toEqual(2)
-    expect(vm.filedCount).toEqual(3)
+    expect(vm.taskCount).toEqual(2)
+    expect(vm.historyCount).toEqual(3)
   })
 
   it('enables standalone filing buttons when there are no blockers', () => {
@@ -89,7 +89,7 @@ describe('Dashboard - UI', () => {
   })
 
   it('disables filing buttons when there is a BCOMP Future Effective COA', () => {
-    wrapper.find(FilingHistoryList).vm.$emit('filings-list',
+    wrapper.find(FilingHistoryList).vm.$emit('history-items',
       [{ name: 'Address Change', isPaid: true, isBcompCoaFutureEffective: true }])
 
     expect(vm.hasPendingFiling).toEqual(true)
@@ -141,15 +141,15 @@ describe('Dashboard - In Process Tests', () => {
     expect(vm.$route.query.filing_id).toBe('123')
 
     // emit Todo List _with_ the pending filing
-    wrapper.find(TodoList).vm.$emit('todo-filings', [
+    wrapper.find(TodoList).vm.$emit('task-items', [
       { id: 123 }
     ])
 
     // emit Filings List _without_ the completed filing
-    wrapper.find(FilingHistoryList).vm.$emit('filings-list', [])
+    wrapper.find(FilingHistoryList).vm.$emit('history-items', [])
 
     // clear Todo List so test can end
-    wrapper.find(TodoList).vm.$emit('todo-filings', [])
+    wrapper.find(TodoList).vm.$emit('task-items', [])
 
     // verify that filing is "in process"
     expect(vm.inProcessFiling).toEqual(123)
@@ -162,10 +162,10 @@ describe('Dashboard - In Process Tests', () => {
     expect(vm.$route.query.filing_id).toBe('123')
 
     // emit Todo List _without_ the pending filing
-    wrapper.find(TodoList).vm.$emit('todo-filings', [])
+    wrapper.find(TodoList).vm.$emit('task-items', [])
 
     // emit Filings List _with_ the completed filing
-    wrapper.find(FilingHistoryList).vm.$emit('filings-list', [
+    wrapper.find(FilingHistoryList).vm.$emit('history-items', [
       { id: 123 }
     ])
 

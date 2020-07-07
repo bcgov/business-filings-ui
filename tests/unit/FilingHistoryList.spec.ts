@@ -7,11 +7,13 @@ import flushPromises from 'flush-promises'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
+import ColinFiling from '@/components/Dashboard/ColinFiling.vue'
+import CompletedIa from '@/components/Dashboard/CompletedIa.vue'
+import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
+import FutureEffectiveIaPending from '@/components/Dashboard/FutureEffectiveIaPending.vue'
+import NoticeOfAlteration from '@/components/Dashboard/NoticeOfAlteration.vue'
 import PaperFiling from '@/components/Dashboard/PaperFiling.vue'
 import PendingFiling from '@/components/Dashboard/PendingFiling.vue'
-import FutureEffectiveIaPending from '@/components/Dashboard/FutureEffectiveIaPending.vue'
-import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
-import CompletedIa from '@/components/Dashboard/CompletedIa.vue'
 import { DetailsList } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -169,9 +171,9 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(0)
+    expect(vm.historyItems.length).toEqual(0)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
-    expect(wrapper.emitted('filed-count')).toEqual([[0]])
+    expect(wrapper.emitted('history-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').text()).toContain('You have no filing history')
 
@@ -189,7 +191,7 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.historyItems.length).toEqual(7)
     expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle').text())
       .toContain('2019-06-02')
 
@@ -308,9 +310,9 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(6)
+    expect(vm.historyItems.length).toEqual(6)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(6)
-    expect(wrapper.emitted('filed-count')).toEqual([[6]])
+    expect(wrapper.emitted('history-count')).toEqual([[6]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -364,9 +366,9 @@ describe('Filing History List - regular filings', () => {
     await Vue.nextTick()
 
     // verify initial state
-    expect(vm.filedItems.length).toEqual(2)
+    expect(vm.historyItems.length).toEqual(2)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
-    expect(wrapper.emitted('filed-count')).toEqual([[2]])
+    expect(wrapper.emitted('history-count')).toEqual([[2]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -460,9 +462,9 @@ describe('Filing History List - regular filings', () => {
     await Vue.nextTick()
 
     // verify initial state
-    expect(vm.filedItems.length).toEqual(2)
+    expect(vm.historyItems.length).toEqual(2)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
-    expect(wrapper.emitted('filed-count')).toEqual([[2]])
+    expect(wrapper.emitted('history-count')).toEqual([[2]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -503,11 +505,12 @@ describe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.historyItems.length).toEqual(7)
     const item = wrapper.findAll('.filing-history-item').at(5)
-    expect(item.find('.list-item__subtitle').text()).toContain('FILED AND PENDING')
-    expect(item.find('.list-item__subtitle').text()).toContain('by Cameron')
-    expect(item.find('.list-item__subtitle').text()).toContain('on 2019-12-12')
+    expect(item.find('.list-item__subtitle').text())
+      .toContain('FILED AND PENDING (filed by Cameron on 2019-12-12')
+    expect(item.find('.list-item__subtitle').text())
+      .toContain('The updated office addresses will be legally effective')
 
     expect(item.text()).toContain('The updated office addresses will be legally effective on 2099-12-13')
 
@@ -527,9 +530,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(0)
+    expect(vm.historyItems.length).toEqual(0)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(0)
-    expect(wrapper.emitted('filed-count')).toEqual([[0]])
+    expect(wrapper.emitted('history-count')).toEqual([[0]])
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').text()).toContain('Complete your filing to display')
 
@@ -568,9 +571,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -616,9 +619,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -674,9 +677,9 @@ describe('Filing History List - incorporation applications', () => {
     await Vue.nextTick()
 
     // verify panel h
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -687,7 +690,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -771,9 +774,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -784,7 +787,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -869,9 +872,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -882,7 +885,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -970,18 +973,19 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
-    expect(wrapper.find('.list-item__subtitle span').text()).toBe('FILED AND PAID (filed by Full Name on 2020-04-28)')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Full Name on 2020-04-28)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -1066,9 +1070,9 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
@@ -1079,7 +1083,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -1166,14 +1170,15 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(1)
+    expect(vm.historyItems.length).toEqual(1)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
-    expect(wrapper.emitted('filed-count')).toEqual([[1]])
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
-    expect(wrapper.find('.list-item__subtitle span').text()).toBe('FILED AND PAID (filed by Full Name on 2020-04-28)')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Full Name on 2020-04-28)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1225,6 +1230,396 @@ describe('Filing History List - incorporation applications', () => {
   })
 })
 
+describe('Filing History List - Alteration Notices', () => {
+  it('displays a Corp Type alteration (BC ULC to BCOMP)', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED',
+            filingId: 85114
+          },
+          business: {
+            legalType: 'ULC' // 'from' type
+          },
+          alteration: {
+            alterCorpType: {
+              corpType: 'BC' // 'to' type
+            }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text())
+      .toContain('BC Unlimited Liability Company to BC Benefit Company')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Corp Type alteration (BC COMP to BCOMP)', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED',
+            filingId: 85114
+          },
+          business: {
+            legalType: 'BCC' // 'from' type
+          },
+          alteration: {
+            alterCorpType: {
+              corpType: 'BC' // 'to' type
+            }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Company to BC Benefit Company')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Company Name alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED',
+            filingId: 85114
+          },
+          business: {},
+          alteration: {
+            alterCorpName: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Company Name Translation alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED',
+            filingId: 85114
+          },
+          business: {},
+          alteration: {
+            alterNameTranslations: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name Translation')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+
+  it('displays a Share Structure alteration', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'alteration',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            status: 'COMPLETED',
+            filingId: 85114
+          },
+          business: {},
+          alteration: {
+            alterShareStructure: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Share Structure')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(ColinFiling).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - Colin filings', () => {
+  it('displays an Annual Report Colin filing', async () => {
+    const $route = { query: { } }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BC'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'annualReport',
+            date: '2020-03-24T19:20:05.670859+00:00',
+            availableInColinOnly: true,
+            status: 'COMPLETED',
+            filingId: 85114
+          },
+          annualReport: {
+            annualReportDate: '2018-06-10'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('.list-item__title').text()).toBe('Annual Report (2018)')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed on 2020-03-24)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify expand button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('Request a Copy')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify updated expand button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+
+    // verify details
+    expect(vm.panel).toEqual(0) // first row is expanded
+    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(false)
+    expect(wrapper.find(ColinFiling).exists()).toBe(true)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
+})
+
 describe('Filing History List - corrections', () => {
   it('displays a correction filing with Details Count', async () => {
     const $route = { query: { } }
@@ -1238,9 +1633,9 @@ describe('Filing History List - corrections', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.filedItems.length).toEqual(7)
+    expect(vm.historyItems.length).toEqual(7)
     expect(wrapper.findAll('.filing-history-item').length).toEqual(7)
-    expect(wrapper.emitted('filed-count')).toEqual([[7]])
+    expect(wrapper.emitted('history-count')).toEqual([[7]])
 
     const item = wrapper.findAll('.filing-history-item').at(6)
     expect(item.find('.list-item .filing-label').text()).toContain('Correction')

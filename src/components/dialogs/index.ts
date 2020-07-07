@@ -1,5 +1,6 @@
-import BusinessAuthErrorDialog from './BusinessAuthErrorDialog.vue'
 import AddCommentDialog from './AddCommentDialog.vue'
+import BcolErrorDialog from './BcolErrorDialog.vue'
+import BusinessAuthErrorDialog from './BusinessAuthErrorDialog.vue'
 import CancelPaymentErrorDialog from './CancelPaymentErrorDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
 import ConfirmDialog from './ConfirmDialog.vue'
@@ -13,10 +14,11 @@ import PaymentErrorDialog from './PaymentErrorDialog.vue'
 import ResumeErrorDialog from './ResumeErrorDialog.vue'
 import SaveErrorDialog from './SaveErrorDialog.vue'
 import WarningPopover from './WarningPopover.vue'
-import BcolErrorDialog from './BcolErrorDialog.vue'
+
 export {
-  BusinessAuthErrorDialog,
   AddCommentDialog,
+  BcolErrorDialog,
+  BusinessAuthErrorDialog,
   CancelPaymentErrorDialog,
   CoaWarningDialog,
   ConfirmDialog,
@@ -29,6 +31,5 @@ export {
   PaymentErrorDialog,
   ResumeErrorDialog,
   SaveErrorDialog,
-  WarningPopover,
-  BcolErrorDialog
+  WarningPopover
 }

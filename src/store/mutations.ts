@@ -1,5 +1,5 @@
-import { EntityTypes, EntityStatus, FilingStatus } from '@/enums'
-import { FilingData } from '@/interfaces'
+import { LegalTypes, EntityStatus, FilingStatus } from '@/enums'
+import { FilingDataIF } from '@/interfaces'
 
 export default {
   keycloakRoles (state, keycloakRoles: Array<string>) {
@@ -29,7 +29,7 @@ export default {
   entityName (state, entityName: string) {
     state.entityName = entityName
   },
-  entityType (state, entityType: EntityTypes) {
+  entityType (state, entityType: LegalTypes) {
     state.entityType = entityType
   },
   entityStatus (state, entityStatus: EntityStatus) {
@@ -77,7 +77,7 @@ export default {
   configObject (state, configObject: object) {
     state.configObject = configObject
   },
-  filingData (state, filingData: Array<FilingData>) {
+  filingData (state, filingData: Array<FilingDataIF>) {
     state.filingData = filingData
   }
 }

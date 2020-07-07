@@ -26,7 +26,7 @@ describe('SaveErrorDialog - Part 1 - Displays Error/Warning messages', () => {
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to save FILING')
     expect(wrapper.find('#dialog-text').text())
       .toContain('We were unable to save your FILING. You can continue to try to save this')
-    expect(wrapper.find('#dialog-text').text()).toContain('If you need help, please contact us')
+    expect(wrapper.find('#dialog-text').text()).toContain('If you need help, please contact us.')
     expect(wrapper.find('#dialog-exit-button')).toBeDefined()
     expect(wrapper.find('#dialog-retry-button')).toBeDefined()
 
@@ -50,7 +50,7 @@ describe('SaveErrorDialog - Part 1 - Displays Error/Warning messages', () => {
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to save FILING')
     expect(wrapper.find('#dialog-text').text())
       .toContain('We were unable to save your FILING. You can continue to try to save this')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('If you need help, please contact us')
+    expect(wrapper.find('#dialog-text').text()).not.toContain('If you need help, please contact us.')
     expect(wrapper.find('#dialog-exit-button')).toBeDefined()
     expect(wrapper.find('#dialog-retry-button')).toBeDefined()
 

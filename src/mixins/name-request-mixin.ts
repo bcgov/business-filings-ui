@@ -1,6 +1,6 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { NameRequestStates, EntityTypes } from '@/enums'
+import { NameRequestStates, LegalTypes } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 
 // Mixins
@@ -10,7 +10,7 @@ import { DateMixin } from '@/mixins'
  * Mixin that provides some useful Name Request utilities.
  */
 @Component
-export default class NamexRequestMixin extends Mixins(DateMixin) {
+export default class NameRequestMixin extends Mixins(DateMixin) {
   /**
    * Returns True if the Name Request data is valid.
    * @param nr the name request response payload
@@ -65,7 +65,7 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses Name Request.
+   * Parses Name Request from namex response into our NR object.
    * @param nr the name request response payload
    * @param filingId the filing id
    */
@@ -74,7 +74,7 @@ export default class NamexRequestMixin extends Mixins(DateMixin) {
       // workaround for old or new property name
       nrNumber: nr.nrNum || nr.nrNumber,
       // FUTURE: Update entityType to use nr.requestTypeCd when namex supports our entity types
-      entityType: EntityTypes.BCOMP,
+      entityType: LegalTypes.BENEFIT_COMPANY,
       filingId: filingId,
       applicant: {
         // Address Information

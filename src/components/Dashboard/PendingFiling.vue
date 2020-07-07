@@ -6,7 +6,8 @@
       Registry yet. Some filings may take longer than expected.</p>
     <p>If this issue persists, please contact us.</p>
 
-    <ErrorContact />
+    <contact-info class="pt-3" />
+
     <div class="to-dashboard-container">
       <v-btn
         color="primary"
@@ -20,10 +21,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { ErrorContact } from '@/components/common'
+import { ContactInfo } from '@/components/common'
 
 @Component({
-  components: { ErrorContact }
+  components: { ContactInfo }
 })
 export default class PendingFiling extends Vue {
   /** The subject filing. */
@@ -59,9 +60,5 @@ p:first-of-type {
 
 p {
   margin-bottom: 0.5rem !important;
-}
-
-.error-contact {
-  padding-top: 0.75rem;
 }
 </style>

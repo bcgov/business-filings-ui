@@ -18,7 +18,7 @@
           <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
         <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
-          <span>{{ entityName || entityTypeToTitle(entityType)}}</span>
+          <span>{{ entityName || legalTypeToNumberedName(entityType)}}</span>
         </div>
 
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
@@ -109,10 +109,10 @@ import { mapGetters, mapState } from 'vuex'
 import { EnumMixin } from '@/mixins'
 
 // Enums
-import { EntityStatus, EntityTypes } from '@/enums'
+import { EntityStatus, LegalTypes } from '@/enums'
 
 // Interfaces
-import { BreadcrumbInterface } from '@/interfaces'
+import { BreadcrumbIF } from '@/interfaces'
 
 // Constants
 import { ANNUAL_REPORT, DASHBOARD } from '@/constants'
@@ -131,7 +131,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
   readonly ARFilingYear!: string
-  readonly entityType!: EntityTypes
+  readonly entityType!: LegalTypes
   readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
   readonly entityIncNo!: number
@@ -140,9 +140,6 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   readonly businessPhoneExtension!: string
   readonly isRoleStaff!: boolean
   readonly nrNumber!: string
-
-  // Enum for template
-  readonly EntityTypes = EntityTypes
 
   /** The Business ID string. */
   private get businessId (): string {
@@ -158,10 +155,10 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   private get nrSubtitle (): string {
     switch (this.entityStatus) {
       case EntityStatus.NAME_REQUEST:
-        return `${this.entityTypeToName(this.entityType)} Name Request`
+        return `${this.legalTypeToName(this.entityType)} Name Request`
       case EntityStatus.DRAFT_INCORP_APP:
       case EntityStatus.FILED_INCORP_APP:
-        return `${this.entityTypeToName(this.entityType)} Incorporation Application`
+        return `${this.legalTypeToName(this.entityType)} Incorporation Application`
     }
     return '' // should never happen
   }
@@ -199,7 +196,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   }
 
   /** Get route breadcrumbs. */
-  private get breadcrumbs (): Array<BreadcrumbInterface> {
+  private get breadcrumbs (): Array<BreadcrumbIF> {
     const breadcrumbs = this.$route?.meta?.breadcrumb
 
     // Apply the filing year to the breadcrumb trail for Annual Reports
@@ -213,7 +210,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
         href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
       {
-        text: this.entityName || this.entityTypeToTitle(this.entityType),
+        text: this.entityName || this.legalTypeToNumberedName(this.entityType),
         disabled: false,
         exact: true,
         to: { name: DASHBOARD }

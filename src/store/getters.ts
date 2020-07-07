@@ -1,19 +1,19 @@
-import { EntityTypes, FilingTypes, FilingStatus } from '@/enums'
+import { LegalTypes, FilingTypes, FilingStatus } from '@/enums'
 
 export default {
   /** Is True if entity is a Benefit Company. */
   isBComp (state): boolean {
-    return (state.entityType === EntityTypes.BCOMP)
+    return (state.entityType === LegalTypes.BENEFIT_COMPANY)
   },
 
   /** Is True if entity is a Cooperative. */
   isCoop (state): boolean {
-    return (state.entityType === EntityTypes.COOP)
+    return (state.entityType === LegalTypes.COOP)
   },
 
-  /** Is True if entity is a Corporation. */
+  /** Is True if entity is a BC Corporation. */
   isCorp (state): boolean {
-    return (state.entityType === EntityTypes.CORP)
+    return (state.entityType === LegalTypes.BC_CORPORATION)
   },
 
   /** Is True if Staff role is set. */

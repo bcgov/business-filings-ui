@@ -4,7 +4,7 @@ import DateMixin from './date-mixin'
 import DirectorMixin from './director-mixin'
 import EnumMixin from './enum-mixin'
 import FilingMixin from './filing-mixin'
-import NamexRequestMixin from './namex-request-mixin'
+import NameRequestMixin from './name-request-mixin'
 import ObjectMixin from './object-mixin'
 import ResourceLookupMixin from './resource-lookup-mixin'
 
@@ -15,7 +15,7 @@ export {
   DirectorMixin,
   EnumMixin,
   FilingMixin,
-  NamexRequestMixin,
+  NameRequestMixin,
   ObjectMixin,
   ResourceLookupMixin
 }

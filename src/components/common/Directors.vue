@@ -518,11 +518,11 @@ import { WarningPopover } from '@/components/dialogs'
 import { DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Constants
-import { EntityTypes, FilingStatus } from '@/enums'
+import { FilingStatus } from '@/enums'
 import { CEASED, NAMECHANGED, ADDRESSCHANGED, APPOINTED } from '@/constants'
 
 // Interfaces
-import { FormType, BaseAddressType, AlertMessageIF } from '@/interfaces'
+import { FormIF, BaseAddressIF, AlertMessageIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -541,14 +541,14 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
   // ref: https://github.com/vuejs/vetur/issues/1414
   $refs!: {
     // form and components to appoint a new director:
-    newDirectorForm: FormType,
-    baseAddressNew: BaseAddressType,
-    mailAddressNew: BaseAddressType,
+    newDirectorForm: FormIF,
+    baseAddressNew: BaseAddressIF,
+    mailAddressNew: BaseAddressIF,
     // form and components to edit an existing director:
     // (there is only 1 at a time but it's still an array)
-    editDirectorForm: Array<FormType>,
-    baseAddressEdit: Array<BaseAddressType>,
-    mailAddressEdit: Array<BaseAddressType>
+    editDirectorForm: Array<FormIF>,
+    baseAddressEdit: Array<BaseAddressIF>,
+    mailAddressEdit: Array<BaseAddressIF>
   }
 
   // Props passed into this component.
@@ -613,9 +613,6 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
 
   // State of the form checkbox for determining whether or not the mailing address is the same as the delivery address.
   private inheritDeliveryAddress: boolean = false
-
-  // Enum definition for use in template.
-  readonly EntityTypes = EntityTypes
 
   // The Address schema containing Vuelidate rules.
   // NB: This should match the subject JSON schema.

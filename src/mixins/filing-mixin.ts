@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mapActions, mapState } from 'vuex'
-import { FilingData } from '@/interfaces'
-import { EntityTypes, FilingCodes } from '@/enums'
+import { FilingDataIF } from '@/interfaces'
+import { LegalTypes, FilingCodes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -19,8 +19,8 @@ export default class FilingMixin extends Vue {
   readonly setFilingData!: (x: any) => void
 
   // store getters
-  readonly filingData!: Array<FilingData>
-  readonly entityType!: EntityTypes
+  readonly filingData!: Array<FilingDataIF>
+  readonly entityType!: LegalTypes
 
   /**
    * Flattens and sorts an array of comments.
@@ -56,7 +56,7 @@ export default class FilingMixin extends Vue {
     priority: boolean | undefined,
     waiveFees: boolean | undefined
   ): void {
-    let myFilingData: Array<FilingData> = this.filingData
+    let myFilingData: Array<FilingDataIF> = this.filingData
     if (filingCode) {
       // always remove code if it already exists
       myFilingData = myFilingData.filter(el => el.filingTypeCode !== filingCode)

@@ -7,7 +7,7 @@
         <p class="genErr">We were unable to download your document(s).</p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
-          <ErrorContact />
+          <contact-info />
         </template>
       </v-card-text>
 
@@ -24,14 +24,14 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
-import { ErrorContact } from '@/components/common'
+import { ContactInfo } from '@/components/common'
 
 @Component({
   computed: {
     // Property definition for runtime environment.
     ...mapGetters(['isRoleStaff'])
   },
-  components: { ErrorContact }
+  components: { ContactInfo }
 })
 export default class DownloadErrorDialog extends Vue {
   // Getter definition for static type checking.
@@ -47,7 +47,3 @@ export default class DownloadErrorDialog extends Vue {
   @Emit() private close () { }
 }
 </script>
-
-<style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-</style>

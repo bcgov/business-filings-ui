@@ -18,7 +18,7 @@
             <section>
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-todo-subtitle">
-                  <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
+                  <span>To Do</span>&nbsp;<span class="gray6">({{taskCount}})</span>
                 </h2>
               </header>
               <legal-obligation/>
@@ -26,8 +26,8 @@
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
                 :disableChanges="disableChanges"
-                @todo-count="todoCount = $event"
-                @todo-filings="todoListFilings = $event"
+                @task-count="taskCount = $event"
+                @task-items="taskItems = $event"
                 @has-blocker-task="hasBlockerTask = $event"
               />
             </section>
@@ -35,13 +35,13 @@
             <section>
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-filing-history-subtitle">
-                  <span>Recent Filing History</span>&nbsp;<span class="gray6">({{filedCount}})</span>
+                  <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
               </header>
               <filing-history-list
                 :disableChanges="disableChanges"
-                @filed-count="filedCount = $event"
-                @filings-list="historyFilings = $event"
+                @history-count="historyCount = $event"
+                @history-items="historyItems = $event"
               />
             </section>
           </v-col>
@@ -148,10 +148,11 @@ import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
 
-// Enums and Constants
+// Enums, Constants and Interfaces
 import { EntityStatus, FilingStatus } from '@/enums'
 import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 import { featureFlags } from '@/common/FeatureFlags'
+import { HistoryItemIF, TaskItemIF } from '@/interfaces'
 
 export default {
   name: 'Dashboard',
@@ -167,12 +168,12 @@ export default {
 
   data () {
     return {
-      todoCount: 0,
       hasBlockerTask: false,
       hasPendingFiling: false,
-      filedCount: 0,
-      historyFilings: [],
-      todoListFilings: [],
+      taskCount: 0,
+      taskItems: [] as Array<TaskItemIF>,
+      historyCount: 0,
+      historyItems: [] as Array<HistoryItemIF>,
       refreshTimer: null as number,
       checkFilingStatusCount: 0,
       inProcessFiling: null as any,
@@ -241,8 +242,8 @@ export default {
       // only consider refreshing the dashboard if we came from a filing
       if (!filingId) return
 
-      const isInFilingHistory = Boolean(this.historyFilings.find(el => el.filingId === filingId))
-      const isInTodoList = Boolean(this.todoListFilings.find(el => el.id === filingId))
+      const isInFilingHistory = Boolean(this.historyItems.find(el => el.filingId === filingId))
+      const isInTodoList = Boolean(this.taskItems.find(el => el.id === filingId))
 
       // if this filing is NOT in the to-do list and IS in the filing history list, do nothing - there is no problem
       if (!isInTodoList && isInFilingHistory) return
@@ -293,13 +294,13 @@ export default {
     },
 
     /**
-     * Searches the filings history for a "pending" state, (ie, paid / not yet completed).
+     * Searches the history items for a "pending" state, (ie, paid / not yet completed).
      * Used to block new filings while there's a pending one.
      */
-    checkPendingFilings (): void {
-      if (!this.historyFilings?.length) return // safety check
+    checkForPendingFilings (): void {
+      if (!this.historyItems?.length) return // safety check
 
-      const foundPaid = this.historyFilings.some(filing => {
+      const foundPaid = this.historyItems.some(filing => {
         if (filing.isPaid) {
           if (filing.isBcompCoaFutureEffective) {
             this.coaPending = true
@@ -312,31 +313,27 @@ export default {
       })
     },
 
-    /**
-     * Toggle the Change of address warning dialog.
-     */
+    /** Toggle the Change of address warning dialog. */
     toggleCoaWarning () {
       this.coaWarningDialog = !this.coaWarningDialog
     },
 
-    /**
-     * Display COA warning if BCOMP else proceed to COA.
-     */
+    /** Display COA warning if BCOMP else proceed to COA. */
     proceedCoa () {
       this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
     }
   },
 
   watch: {
-    historyFilings () {
-      // check if any filing has a pending state
-      this.checkPendingFilings()
+    historyItems () {
+      // check if any history item has a pending state
+      this.checkForPendingFilings()
 
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
     },
 
-    todoListFilings () {
+    taskItems () {
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
     }

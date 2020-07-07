@@ -52,21 +52,22 @@ import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
 
 // Enums
-import { EntityTypes, NameRequestStates } from '@/enums'
+import { NameRequestStates } from '@/enums'
 
 // Interfaces
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
 
 // Mixins
-import { DateMixin, EnumMixin, NamexRequestMixin } from '@/mixins'
+import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 @Component({
   filters: { 'VMask': VueMaskFilter }
 })
-export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NamexRequestMixin) {
-  // Template Enums
+export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
+  // Enum for template
   readonly NameRequestStates = NameRequestStates
-  readonly EntityTypes = EntityTypes
+
+  // Constants
   readonly RECEIVED_STATE = 'Received'
   readonly NOT_RECEIVED_STATE= 'Not Received'
   readonly NOT_REQUIRED_STATE = 'Not Required'
@@ -91,7 +92,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NamexR
 
   /** The entity title  */
   private entityTypeDescription (): string {
-    return this.entityTypeToName(this.parsedNameRequest.entityType)
+    return this.legalTypeToName(this.parsedNameRequest.entityType)
   }
 
   /** The request type */

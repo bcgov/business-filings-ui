@@ -1,5 +1,5 @@
-import { EntityTypes, EntityStatus, FilingStatus } from '@/enums'
-import { FilingData } from '@/interfaces'
+import { LegalTypes, EntityStatus, FilingStatus } from '@/enums'
+import { FilingDataIF } from '@/interfaces'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -29,7 +29,7 @@ export default {
   setEntityName ({ commit }, entityName: string) {
     commit('entityName', entityName)
   },
-  setEntityType ({ commit }, entityType: EntityTypes) {
+  setEntityType ({ commit }, entityType: LegalTypes) {
     commit('entityType', entityType)
   },
   setEntityStatus ({ commit }, entityStatus: EntityStatus) {
@@ -77,7 +77,7 @@ export default {
   setConfigObject ({ commit }, configObject: object) {
     commit('configObject', configObject)
   },
-  setFilingData ({ commit }, filingData: Array<FilingData>) {
+  setFilingData ({ commit }, filingData: Array<FilingDataIF>) {
     commit('filingData', filingData)
   }
 }

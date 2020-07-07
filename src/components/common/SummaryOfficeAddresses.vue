@@ -98,9 +98,6 @@ import { ObjectMixin } from '@/mixins'
 // Interfaces
 import { BaseAddressObjIF } from '@/interfaces'
 
-// Enums
-import { EntityTypes } from '@/enums'
-
 @Component({
   mixins: [ObjectMixin],
   components: {
@@ -120,9 +117,6 @@ export default class SummaryOfficeAddresses extends Mixins(ObjectMixin) {
    */
   @Prop({ default: null })
   private recordsAddress: BaseAddressObjIF
-
-  // Enum definition for use in template.
-  private EntityTypes = EntityTypes
 }
 </script>
 

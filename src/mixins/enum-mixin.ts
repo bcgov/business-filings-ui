@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { EntityNames, EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+import { LegalTypes, LegalNames, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -47,27 +47,29 @@ export default class EnumMixin extends Vue {
   }
 
   /**
-   * Converts the entity type to an entity title.
-   * @param type the entity type to convert
+   * Converts the legal type to a numbered legal name.
+   * @param type the legal type to convert
    */
-  entityTypeToTitle (type: EntityTypes): string {
+  legalTypeToNumberedName (type: LegalTypes): string {
     switch (type) {
-      case EntityTypes.COOP: return 'Numbered Cooperative'
-      case EntityTypes.BCOMP: return 'Numbered Benefit Company'
-      case EntityTypes.CORP: return 'Numbered Corporation'
+      case LegalTypes.BC_CORPORATION: return 'Numbered Corporation'
+      case LegalTypes.BENEFIT_COMPANY: return 'Numbered Benefit Company'
+      case LegalTypes.COOP: return 'Numbered Cooperative'
     }
     return 'Unknown' // should never happen
   }
 
   /**
-   * Converts the entity type to an entity name.
-   * @param type the entity type to convert
+   * Converts the legal type to a legal name.
+   * @param type the legal type to convert
    */
-  entityTypeToName (type: EntityTypes): string {
+  legalTypeToName (type: LegalTypes): string {
     switch (type) {
-      case EntityTypes.COOP: return EntityNames.COOP
-      case EntityTypes.BCOMP: return EntityNames.BCOMP
-      case EntityTypes.CORP: return EntityNames.CORP
+      case LegalTypes.BC_COMPANY: return LegalNames.BC_COMPANY
+      case LegalTypes.BC_CORPORATION: return LegalNames.BC_CORPORATION
+      case LegalTypes.BC_ULC_COMPANY: return LegalNames.BC_ULC_COMPANY
+      case LegalTypes.BENEFIT_COMPANY: return LegalNames.BENEFIT_COMPANY
+      case LegalTypes.COOP: return LegalNames.COOP
     }
     return 'Unknown' // should never happen
   }
@@ -89,6 +91,7 @@ export default class EnumMixin extends Vue {
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
+      case FilingTypes.NOTICE_OF_ALTERATION: return FilingNames.ALTERATION_NOTICE
     }
     // fallback for unknown filings
     return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())

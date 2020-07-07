@@ -201,7 +201,7 @@ import { DASHBOARD } from '@/constants'
 import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes, FilingCodes, FilingStatus, FilingTypes } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
   name: 'StandaloneOfficeAddressFiling',
@@ -248,10 +248,9 @@ export default {
 
       // bcol error variables
       bcolObj: null,
-      // enums
-      EntityTypes,
+
+      // enums in template
       FilingCodes,
-      FilingStatus,
       FilingTypes
     }
   },

@@ -37,9 +37,11 @@
         <div class="no-results__title">
           Coming Soon - Online Maintenance Filings such as Address and Director Changes
         </div>
-        <div class="no-results__subtitle">If you need to make changes to your Benefit Company, please contact us.</div>
-        <div class="error-contact-container">
-          <ErrorContact/>
+        <div class="no-results__subtitle">
+          If you need to make changes to your Benefit Company, please contact us.
+        </div>
+        <div class="contact-info-container">
+          <ContactInfo/>
         </div>
       </v-card-text>
     </v-card>
@@ -420,7 +422,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
-import { DetailsList, ErrorContact, NameRequestInfo } from '@/components/common'
+import { DetailsList, ContactInfo, NameRequestInfo } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -428,9 +430,10 @@ import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorD
 // Mixins
 import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
-// Enums and Constants
-import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
+// Enums, Constants and Interfaces
+import { FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
+import { FilingIF, TaskItemIF } from '@/interfaces'
 
 import { featureFlags } from '@/common/FeatureFlags'
 
@@ -443,7 +446,7 @@ export default {
     ConfirmDialog,
     DeleteErrorDialog,
     DetailsList,
-    ErrorContact,
+    ContactInfo,
     NameRequestInfo
   },
 
@@ -452,7 +455,7 @@ export default {
   data () {
     return {
       addCommentDialog: false,
-      taskItems: [] as Array<any>,
+      taskItems: [] as Array<TaskItemIF>,
       deleteErrors: [] as Array<any>,
       deleteWarnings: [] as Array<any>,
       deleteErrorDialog: false,
@@ -461,11 +464,7 @@ export default {
       enableCheckbox: [] as Array<any>,
       confirmEnabled: false,
       currentFilingId: null as number,
-      panel: null as number, // currently expanded panel
-
-      // enums
-      EntityTypes,
-      FilingStatus
+      panel: null as number // currently expanded panel
     }
   },
 
@@ -505,10 +504,11 @@ export default {
 
     loadData () {
       this.taskItems = []
+
       // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
       if (this.isCoop) this.confirmCheckbox = true
 
-      // create task items
+      // create task items from 'tasks' array from API
       this.tasks.forEach(async task => {
         if (task?.task?.todo) {
           this.loadTodoItem(task)
@@ -520,8 +520,8 @@ export default {
         }
       })
 
-      this.$emit('todo-count', this.taskItems.length)
-      this.$emit('todo-filings', this.taskItems)
+      this.$emit('task-count', this.taskItems.length)
+      this.$emit('task-items', this.taskItems)
 
       // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
       // This indicates that a new filing cannot be started because this item has to be completed first.
@@ -534,7 +534,7 @@ export default {
     },
 
     loadTodoItem (task) {
-      const todo = task.task.todo
+      const todo: FilingIF = task.task.todo
       if (todo && todo.header) {
         switch (todo.header.name) {
           case FilingTypes.ANNUAL_REPORT:
@@ -578,7 +578,7 @@ export default {
     },
 
     async loadFilingItem (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header) {
         switch (filing.header.name) {
           case FilingTypes.ANNUAL_REPORT:
@@ -609,7 +609,7 @@ export default {
 
     async loadAnnualReport (task) {
       let date
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.annualReport) {
         filing.annualReport.annualReportDate
           ? date = filing.annualReport.annualReportDate
@@ -643,7 +643,7 @@ export default {
     },
 
     async loadChangeOfDirectors (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.changeOfDirectors) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
@@ -666,7 +666,7 @@ export default {
     },
 
     async loadChangeOfAddress (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.changeOfAddress) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
@@ -689,7 +689,7 @@ export default {
     },
 
     loadCorrection (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header && filing?.correction) {
         this.taskItems.push({
           filingType: FilingTypes.CORRECTION,
@@ -713,11 +713,11 @@ export default {
     },
 
     async loadIncorporationApplication (task) {
-      const filing = task.task.filing
+      const filing: FilingIF = task.task.filing
       if (filing?.header) {
         const title = this.nameRequest
-          ? `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
-          : `${this.entityTypeToName(this.entityType)} Incorporation Application`
+          ? `${this.legalTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
+          : `${this.legalTypeToName(this.entityType)} Incorporation Application`
 
         // set subtitle only if DRAFT
         let subtitle
@@ -755,7 +755,7 @@ export default {
       }
     },
 
-    doFileNow (task) {
+    doFileNow (task: TaskItemIF) {
       switch (task.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // file the subject Annual Report
@@ -778,7 +778,7 @@ export default {
       }
     },
 
-    doResumeFiling (task) {
+    doResumeFiling (task: TaskItemIF) {
       switch (task.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // resume this Annual Report
@@ -820,7 +820,7 @@ export default {
     },
 
     // this is called for both Resume Payment and Retry Payment
-    doResumePayment (task) {
+    doResumePayment (task: TaskItemIF) {
       const filingId = task.id
       const paymentToken = task.paymentToken
 
@@ -834,7 +834,7 @@ export default {
       return true
     },
 
-    confirmDeleteDraft (task) {
+    confirmDeleteDraft (task: TaskItemIF) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Delete Draft?',
@@ -858,7 +858,7 @@ export default {
       })
     },
 
-    confirmDeleteIncorporation (task) {
+    confirmDeleteIncorporation (task: TaskItemIF) {
       const line1 = `Deleting this ${task.draftTitle} will remove this application and all information ` +
         'associated with this application.'
       const line2 = this.nameRequest
@@ -904,7 +904,7 @@ export default {
       })
     },
 
-    async doDeleteDraft (task, refreshDashboard: boolean = true) {
+    async doDeleteDraft (task: TaskItemIF, refreshDashboard: boolean = true) {
       const id = this.entityIncNo || this.tempRegNumber
       let url = `businesses/${id}/filings/${task.id}`
       await axios.delete(url).then(res => {
@@ -940,7 +940,7 @@ export default {
       this.cancelPaymentErrors = []
     },
 
-    confirmCancelPayment (task) {
+    confirmCancelPayment (task: TaskItemIF) {
       // open confirmation dialog and wait for response
       this.$refs.confirmCancelPaymentDialog.open(
         'Cancel Payment?',
@@ -964,7 +964,7 @@ export default {
       })
     },
 
-    async cancelPaymentAndSetToDraft (task) {
+    async cancelPaymentAndSetToDraft (task: TaskItemIF) {
       let url = `businesses/${this.entityIncNo}/filings/${task.id}`
       await axios.patch(url, {}).then(res => {
         if (!res) { throw new Error('Invalid API response') }
@@ -996,7 +996,7 @@ export default {
       }
     },
 
-    isBcolError (task: any): boolean {
+    isBcolError (task: TaskItemIF): boolean {
       return !!task.bcolErrObj
     },
 
@@ -1005,22 +1005,22 @@ export default {
     },
 
     /** Returns True if task type is Correction. */
-    isTypeCorrection (task: any): boolean {
+    isTypeCorrection (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.CORRECTION)
     },
 
     /** Returns True if task type is Annual Report. */
-    isTypeAnnualReport (task: any): boolean {
+    isTypeAnnualReport (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.ANNUAL_REPORT)
     },
 
     /** Returns True if task type is Name Request. */
-    isTypeNameRequest (task: any): boolean {
+    isTypeNameRequest (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.NAME_REQUEST)
     },
 
     /** Returns True if task type is Name Incorporation Application. */
-    isTypeIncorporationApplication (task: any): boolean {
+    isTypeIncorporationApplication (task: TaskItemIF): boolean {
       return (task.filingType === FilingTypes.INCORPORATION_APPLICATION)
     },
 
@@ -1198,7 +1198,7 @@ export default {
   background-color: #f1f1f1 !important;
 }
 
-.error-contact-container {
+.contact-info-container {
   width: 50%;
   margin-top: 0.5rem;
   display: inline-block;

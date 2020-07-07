@@ -1,5 +1,5 @@
-import { EntityTypes, EntityStatus, FilingStatus } from '@/enums'
-import { FilingData } from '@/interfaces'
+import { LegalTypes, EntityStatus, FilingStatus } from '@/enums'
+import { FilingDataIF } from '@/interfaces'
 
 export default {
   // tombstone data
@@ -10,7 +10,7 @@ export default {
 
   // entity info
   entityName: null as string,
-  entityType: null as EntityTypes,
+  entityType: null as LegalTypes,
   entityStatus: null as EntityStatus,
   entityBusinessNo: null as string,
   entityIncNo: null as string,
@@ -33,5 +33,5 @@ export default {
 
   currentFilingStatus: null as FilingStatus,
   configObject: null as object,
-  filingData: [] as Array<FilingData>
+  filingData: [] as Array<FilingDataIF>
 }

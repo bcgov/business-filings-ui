@@ -70,7 +70,7 @@
 import { Component, Mixins, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 import { mapState, mapGetters } from 'vuex'
 import { DateMixin } from '@/mixins'
-import { FormType } from '@/interfaces'
+import { FormIF } from '@/interfaces'
 
 @Component({
   mixins: [DateMixin],
@@ -83,7 +83,7 @@ import { FormType } from '@/interfaces'
 export default class AgmDate extends Mixins(DateMixin) {
   // annotate form to fix "Property X does not exist on type Y" error
   $refs!: {
-    form: FormType
+    form: FormIF
   }
   // Prop passed into this component.
   @Prop({ default: null })

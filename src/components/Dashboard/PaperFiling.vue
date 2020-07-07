@@ -5,16 +5,16 @@
     <p>To request copies of paper documents, contact BC Registry Staff with the document you require and
       the name and incorporation number of your association:</p>
 
-    <ErrorContact class="pt-3" />
+    <contact-info class="pt-3" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { ErrorContact } from '@/components/common'
+import { ContactInfo } from '@/components/common'
 
 @Component({
-  components: { ErrorContact }
+  components: { ContactInfo }
 })
 export default class PaperFiling extends Vue {}
 </script>
