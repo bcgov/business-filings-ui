@@ -31,17 +31,19 @@
       @okay="resetCancelPaymentErrors"
       attach="#todo-list"
     />
+
     <v-card class="no-results" v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling" flat>
       <v-card-text>
         <div class="no-results__title">
           Coming Soon - Online Maintenance Filings such as Address and Director Changes
         </div>
-        <div class="no-results__subtitle">If you need to make changes to your Benefit Company, contact us  </div>
+        <div class="no-results__subtitle">If you need to make changes to your Benefit Company, please contact us.</div>
         <div class="error-contact-container">
           <ErrorContact/>
         </div>
       </v-card-text>
     </v-card>
+
     <v-expansion-panels v-else-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item"
@@ -81,8 +83,13 @@
                 />
               </div>
 
-              <div class="list-item__subtitle">
-                <div v-if="task.subtitle && !task.bcolErrObj" class="todo-subtitle">
+              <div v-else class="list-item__subtitle">
+                <div v-if="task.subtitle && isTypeAnnualReport(task)" class="todo-subtitle">
+                  <span>{{ task.subtitle }}</span>
+                </div>
+
+                <!-- NB: the following blocks are mutually exclusive -->
+                <div v-if="task.subtitle && isTypeIncorporationApplication(task)" class="todo-subtitle">
                   <div>{{ task.subtitle }}</div>
                   <div v-if="task.nameRequest" class="payment-status">
                     <v-btn
@@ -98,7 +105,7 @@
                   </div>
                 </div>
 
-                <div v-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
+                <div v-else-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
                   <div>DRAFT</div>
                   <v-btn
                     v-if="task.comments.length > 0"
@@ -329,19 +336,9 @@
                       <span>File Annual Report</span>
                     </v-btn>
                   </template>
-
-                  <template v-else-if="isStatusNew(task) && isTypeNameRequest(task)">
-                      <v-btn class="btn-file-now"
-                      color="primary"
-                      :disabled="!task.enabled"
-                      @click.native.stop="doFileNow(task)"
-                    >
-                      <span>Incorporate using this NR</span>
-                    </v-btn>
-                  </template>
                 </template>
               </div>
-            </div>
+            </div> <!-- end of actions -->
           </div>
         </v-expansion-panel-header>
 
@@ -398,10 +395,6 @@
           <div v-else-if="isStatusPaid(task)" data-test-class="payment-paid" class="todo-list-detail body-2">
             <p class="font-weight-bold black--text">Paid</p>
             <p>This filing is paid but the filing is not yet complete. Please check again later.</p>
-          </div>
-
-          <div v-else-if="isStatusNew(task) && isTypeNameRequest(task)" data-test-class="nr-details">
-            <name-request-info :nameRequest="task.nameRequest" />
           </div>
 
           <div v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)" data-test-class="nr-details">
@@ -559,19 +552,6 @@ export default {
               arDueDate: this.arDueDate(todo.header?.ARFilingYear, todo.business?.foundingDate)
             })
             break
-          // FUTURE: uncomment when/if we have NRs without a draft
-          // case FilingTypes.NAME_REQUEST:
-          //   this.taskItems.push({
-          //     id: -1, // not falsy
-          //     filingType: FilingTypes.NAME_REQUEST,
-          //     title: `Name Request ${this.tempRegNumber} - ${this.entityName}`,
-          //     subtitle: `APPROVED - ${this.expiresText(this.nameRequest)}`,
-          //     status: todo.header.status || FilingStatus.NEW,
-          //     enabled: Boolean(task.enabled),
-          //     order: task.order,
-          //     nameRequest: this.nameRequest
-          //   })
-          //   break
           default:
             // eslint-disable-next-line no-console
             console.log('ERROR - got unknown todo item =', todo)
@@ -739,9 +719,15 @@ export default {
           ? `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
           : `${this.entityTypeToName(this.entityType)} Incorporation Application`
 
-        const subtitle = this.nameRequest
-          ? `NR APPROVED - ${this.expiresText(this.nameRequest)}`
-          : 'DRAFT'
+        // set subtitle only if DRAFT
+        let subtitle
+        if (this.isStatusDraft(filing.header)) {
+          if (this.nameRequest) {
+            subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+          } else {
+            subtitle = 'DRAFT'
+          }
+        }
 
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
