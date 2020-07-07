@@ -26,8 +26,8 @@ export interface AlterShareStructureIF {
 /** A filing's alteration object from the API. */
 export interface AlterationIF {
   provisionsRemoved?: boolean;
-  alterCorpType?: AlterCorpTypeIF
-  alterCorpName?: AlterCorpNameIF
-  alterNameTranslations?: AlterNameTranslationsIF
-  alterShareStructure?: AlterShareStructureIF
+  alterCorpType?: AlterCorpTypeIF;
+  alterCorpName?: AlterCorpNameIF;
+  alterNameTranslations?: AlterNameTranslationsIF;
+  alterShareStructure?: AlterShareStructureIF;
 }
