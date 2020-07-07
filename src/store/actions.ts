@@ -1,4 +1,4 @@
-import { EntityTypes, EntityStatus, FilingStatus } from '@/enums'
+import { LegalTypes, EntityStatus, FilingStatus } from '@/enums'
 import { FilingDataIF } from '@/interfaces'
 
 export default {
@@ -29,7 +29,7 @@ export default {
   setEntityName ({ commit }, entityName: string) {
     commit('entityName', entityName)
   },
-  setEntityType ({ commit }, entityType: EntityTypes) {
+  setEntityType ({ commit }, entityType: LegalTypes) {
     commit('entityType', entityType)
   },
   setEntityStatus ({ commit }, entityStatus: EntityStatus) {

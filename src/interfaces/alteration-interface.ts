@@ -1,7 +1,7 @@
-import { EntityTypes } from '@/enums'
+import { LegalTypes } from '@/enums'
 
 export interface AlterCorpTypeIF {
-  corpType: EntityTypes;
+  corpType: LegalTypes;
   [propName: string]: any; // excess properties
 }
 

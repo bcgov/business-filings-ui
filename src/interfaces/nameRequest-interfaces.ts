@@ -1,15 +1,18 @@
-import { EntityTypes } from '@/enums'
+import { LegalTypes } from '@/enums'
 
-// Name Request State interface
+/**
+ * Name Request State interface.
+ * (Used by our UI/API - not the same as namex response object.)
+ */
 export interface NameRequestIF {
     nrNumber: string;
-    entityType: EntityTypes;
+    entityType: LegalTypes;
     details: NameRequestDetailsIF;
     applicant: NameRequestApplicantIF;
     filingId: number | null;
   }
 
-// Name request response details interface
+/** Name request response details interface. */
 export interface NameRequestDetailsIF {
     approvedName: string;
     status: string;
@@ -17,7 +20,7 @@ export interface NameRequestDetailsIF {
     expirationDate: string;
   }
 
-// Name request applicant details interface
+/** Name request applicant details interface. */
 export interface NameRequestApplicantIF {
     firstName: string;
     middleName: string;

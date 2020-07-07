@@ -92,7 +92,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NamexR
 
   /** The entity title  */
   private entityTypeDescription (): string {
-    return this.entityTypeToName(this.parsedNameRequest.entityType)
+    return this.legalTypeToName(this.parsedNameRequest.entityType)
   }
 
   /** The request type */

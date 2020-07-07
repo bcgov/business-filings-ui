@@ -716,8 +716,8 @@ export default {
       const filing: FilingIF = task.task.filing
       if (filing?.header) {
         const title = this.nameRequest
-          ? `${this.entityTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
-          : `${this.entityTypeToName(this.entityType)} Incorporation Application`
+          ? `${this.legalTypeToName(this.entityType)} Incorporation Application - ${this.entityName}`
+          : `${this.legalTypeToName(this.entityType)} Incorporation Application`
 
         // set subtitle only if DRAFT
         let subtitle

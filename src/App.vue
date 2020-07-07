@@ -77,7 +77,7 @@ import { ObjectMixin, DirectorMixin, NamexRequestMixin } from '@/mixins'
 import { configJson } from '@/resources'
 
 // Enums and Constants
-import { EntityStatus, EntityTypes, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
+import { EntityStatus, LegalTypes, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
 import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -464,7 +464,7 @@ export default {
       }
 
       // verify that this is the correct entity type
-      if (filing.business.legalType !== EntityTypes.BCOMP) {
+      if (filing.business.legalType !== LegalTypes.BENEFIT_COMPANY) {
         throw new Error('Invalid business legal type')
       }
 

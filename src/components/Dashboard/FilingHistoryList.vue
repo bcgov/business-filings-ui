@@ -29,7 +29,7 @@
               <div class="list-item__subtitle d-flex">
                 <!-- is this a BCOMP FE COA? -->
                 <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
-                  <span>FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <span>{{ filedLabel('FILED AND PENDING', filing) }}</span>
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
                       <div class="pending-alert" v-on="on">
@@ -43,7 +43,7 @@
 
                 <!-- is this a COMPLETED IA? (incorp app mode only) -->
                 <div v-else-if="tempRegNumber && filing.isCompleted" class="filing-subtitle">
-                  <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
                   <v-btn
                     class="details-btn"
                     outlined
@@ -58,9 +58,7 @@
 
                 <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
                 <div v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending" class="filing-subtitle">
-                  <span class="orange--text text--darken-2">
-                    FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})
-                  </span>
+                  <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
                   <span class="vert-pipe"></span>
                   <span>PAID</span>
                   <v-btn
@@ -79,7 +77,7 @@
                 <div v-else-if="tempRegNumber && filing.isFutureEffectiveIa" class="filing-subtitle">
                   <span>FUTURE EFFECTIVE INCORPORATION</span>
                   <span class="vert-pipe"></span>
-                  <span>PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <span>{{ filedLabel('PAID', filing) }}</span>
                   <v-btn
                     class="details-btn"
                     outlined
@@ -94,9 +92,7 @@
 
                 <!-- is this a PAID (ie, not completed) filing? -->
                 <div v-else-if="filing.isPaid" class="filing-subtitle">
-                  <span class="orange--text text--darken-2">
-                    FILED AND PENDING (filed by {{filing.filingAuthor}} on {{filing.filingDate}})
-                  </span>
+                  <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
                   <span class="vert-pipe"></span>
                   <span>PAID</span>
                   <v-btn
@@ -114,7 +110,7 @@
                 <!-- else must be a COMPLETED filing -->
                 <!-- NB: no details button -->
                 <div v-else class="filing-subtitle">
-                  <span>FILED AND PAID (filed by {{filing.filingAuthor}} on {{filing.filingDate}})</span>
+                  <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
                 </div>
 
                 <!-- details (comments) button -->
@@ -316,7 +312,7 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 
 // Enums and Constants and Interfaces
-import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
+import { LegalTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 import { AlterationIF, BusinessIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
@@ -477,7 +473,7 @@ export default {
           if (header.paymentToken) {
             item.documents.push({
               type: this.DOCUMENT_TYPE_RECEIPT,
-              corpName: this.entityName || this.entityTypeToNumberedName(this.entityType),
+              corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
               filingDateTime,
               paymentToken: header.paymentToken,
               title: 'Receipt',
@@ -526,12 +522,12 @@ export default {
           receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
-        const corpName = this.entityName || this.entityTypeToNumberedName(this.entityType)
+        const corpName = this.entityName || this.legalTypeToNumberedName(this.entityType)
 
         // build filing item
         const item: HistoryItemIF = {
           filingType,
-          title: `${this.entityTypeToName(this.entityType)} ${name} - ${corpName}`,
+          title: `${this.legalTypeToName(this.entityType)} ${name} - ${corpName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
@@ -577,8 +573,8 @@ export default {
 
         let subtitle = ''
         if (alteration.alterCorpType) {
-          subtitle = this.entityTypeToName(business.legalType) + ' to ' +
-            this.entityTypeToName(alteration.alterCorpType.corpType)
+          subtitle = this.legalTypeToName(business.legalType) + ' to ' +
+            this.legalTypeToName(alteration.alterCorpType.corpType)
         } else if (alteration.alterCorpName) {
           subtitle = 'Company Name'
         } else if (alteration.alterNameTranslations) {
@@ -625,7 +621,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedName(this.entityType),
+            corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -683,7 +679,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedName(this.entityType),
+            corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -774,7 +770,7 @@ export default {
           filingType,
           title,
           filingId: header.filingId,
-          filingAuthor: 'Registry Staff', // TBD
+          filingAuthor: null,
           filingDate,
           filingYear,
           isColinFiling: true,
@@ -837,7 +833,7 @@ export default {
       for (let i = 0; i < this.historyItems.length; i++) {
         const documents = this.historyItems[i].documents
         // NB: this only works if there is a filing document
-        if (documents && documents[0].filingId === filingId) {
+        if (documents?.length > 0 && documents[0].filingId === filingId) {
           this.panel = i
           break
         }
@@ -1059,6 +1055,16 @@ export default {
     /** Returns correction tag for this history item. */
     correctionTag (item: HistoryItemIF): string {
       return item?.isCorrected ? ' - Corrected' : (item?.isCorrectionPending ? ' - Correction Pending' : '')
+    },
+
+    /** Returns "filed" label with conditional author and date. */
+    filedLabel (status: string, item: HistoryItemIF): string {
+      const a = item.filingAuthor
+      const d = item.filingDate
+      if (a && d) return `${status} (filed by ${a} on ${d})`
+      if (a) return `${status} (filed by ${a})`
+      if (d) return `${status} (filed on ${d})`
+      return status
     },
 
     /** Closes current panel or opens new panel. */
