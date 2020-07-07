@@ -6,5 +6,7 @@ export interface HeaderIF {
   filingId: number;
   name: FilingTypes;
   status: string;
+  availableInColinOnly?: boolean;
+  availableOnPaperOnly?: boolean;
   [propName: string]: any; // excess properties
 }

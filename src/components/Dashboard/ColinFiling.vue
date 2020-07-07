@@ -5,7 +5,7 @@
       target="_blank">BC Online</a>.</p>
     <p>If you do not have access to Corporate Online or BC Online and would like to request copies
       of paper documents, contact BC Registry Staff with the document you require and the name and
-      incorporation number of your company:</p>
+      incorporation number of your company.</p>
 
     <contact-info class="pt-3" />
   </div>

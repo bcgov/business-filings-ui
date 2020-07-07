@@ -141,9 +141,8 @@
                 :ripple=false
                 @click.stop="togglePanel(index)"
               >
-                <span v-if="filing.isNoa">{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                <span v-else-if="filing.isColinFiling">{{ (panel === index) ? "Close" : "Request a Copy" }}</span>
-                <span v-else-if="filing.isPaperFiling">{{ (panel === index) ? "Close" : "Request a Copy" }}</span>
+                <span v-if="filing.isNoa || filing.isColinFiling || filing.isPaperFiling">
+                  {{ (panel === index) ? "Close" : "Request a Copy" }}</span>
                 <span v-else>{{ (panel === index) ? "Hide Documents" : "View Documents" }}</span>
               </v-btn>
 

@@ -689,7 +689,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -786,7 +786,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -884,7 +884,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -983,7 +983,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -1081,7 +1081,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify View Details button and expand details
+    // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     detailsBtn.trigger('click')
@@ -1270,14 +1270,14 @@ describe('Filing History List - Alteration Notices', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify expand button and toggle panel
+    // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('View Details')
+    expect(detailsBtn.text()).toContain('Request a Copy')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify updated expand button
-    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1336,14 +1336,14 @@ describe('Filing History List - Alteration Notices', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify expand button and toggle panel
+    // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('View Details')
+    expect(detailsBtn.text()).toContain('Request a Copy')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify updated expand button
-    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1398,14 +1398,14 @@ describe('Filing History List - Alteration Notices', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify expand button and toggle panel
+    // verify Request a Copy and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('View Details')
+    expect(detailsBtn.text()).toContain('Request a Copy')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify updated expand button
-    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1460,14 +1460,14 @@ describe('Filing History List - Alteration Notices', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify expand button and toggle panel
+    // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('View Details')
+    expect(detailsBtn.text()).toContain('Request a Copy')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify updated expand button
-    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1522,14 +1522,14 @@ describe('Filing History List - Alteration Notices', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify expand button and toggle panel
+    // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('View Details')
+    expect(detailsBtn.text()).toContain('Request a Copy')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify updated expand button
-    expect(wrapper.find('.expand-btn').text()).toContain('Hide Details')
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
