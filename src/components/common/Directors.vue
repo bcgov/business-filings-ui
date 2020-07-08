@@ -359,14 +359,17 @@
                     />
                   </div>
 
-                  <base-address ref="baseAddressEdit"
-                    v-show="editFormShowHide.showAddress"
-                    :address="director.deliveryAddress"
-                    :editing="true"
-                    :schema="addressSchema"
-                    @update:address="updateBaseAddress"
-                    :key="activeIndex"
-                  />
+                  <label class="address-sub-header">Delivery Address</label>
+                  <div class="address-wrapper">
+                    <base-address ref="baseAddressEdit"
+                      v-show="editFormShowHide.showAddress"
+                      :address="director.deliveryAddress"
+                      :editing="true"
+                      :schema="addressSchema"
+                      @update:address="updateBaseAddress"
+                      :key="activeIndex"
+                    />
+                  </div>
 
                   <div class="form__row" v-if="isBComp" v-show="editFormShowHide.showAddress">
                     <v-checkbox

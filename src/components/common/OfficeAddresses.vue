@@ -764,6 +764,7 @@ label:first-child {
   padding: 0;
 }
 .records-inherit-checkbox {
+  white-space: nowrap;
   margin-top: 0rem;
   margin-left: 4.65rem;
   margin-bottom: -1.5rem;
