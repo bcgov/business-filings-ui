@@ -502,23 +502,34 @@ export default {
   methods: {
     ...mapActions(['setARFilingYear', 'setCurrentFilingStatus']),
 
-    loadData () {
+    async loadData () {
       this.taskItems = []
 
       // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
       if (this.isCoop) this.confirmCheckbox = true
 
-      // create task items from 'tasks' array from API
-      this.tasks.forEach(async task => {
+      for (const task of this.tasks) {
         if (task?.task?.todo) {
-          this.loadTodoItem(task)
+          await this.loadTodoItem(task)
         } else if (task?.task?.filing) {
           await this.loadFilingItem(task)
         } else {
           // eslint-disable-next-line no-console
           console.log('ERROR - got unknown task =', task)
         }
-      })
+      }
+
+      this.$emit('task-count', this.taskItems.length)
+      this.$emit('task-items', this.taskItems)
+
+      // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
+      // This indicates that a new filing cannot be started because this item has to be completed first.
+      this.$emit('has-blocker-task',
+        this.taskItems.filter(item => {
+          return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
+            this.isStatusPaid(item) || this.isTypeCorrection(item))
+        }).length > 0
+      )
     },
 
     loadTodoItem (task) {
@@ -1031,20 +1042,6 @@ export default {
       // if tasks changes, reload them
       // (does not fire on initial page load)
       this.loadData()
-    },
-    taskItems () {
-      // Update dashboard when the tasks items change
-      this.$emit('task-count', this.taskItems.length)
-      this.$emit('task-items', this.taskItems)
-
-      // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
-      // This indicates that a new filing cannot be started because this item has to be completed first.
-      this.$emit('has-blocker-task',
-        this.taskItems.filter(item => {
-          return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
-            this.isStatusPaid(item) || this.isTypeCorrection(item))
-        }).length > 0
-      )
     }
   }
 }
