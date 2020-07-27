@@ -519,18 +519,6 @@ export default {
           console.log('ERROR - got unknown task =', task)
         }
       })
-
-      this.$emit('task-count', this.taskItems.length)
-      this.$emit('task-items', this.taskItems)
-
-      // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
-      // This indicates that a new filing cannot be started because this item has to be completed first.
-      this.$emit('has-blocker-task',
-        this.taskItems.filter(item => {
-          return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
-            this.isStatusPaid(item) || this.isTypeCorrection(item))
-        }).length > 0
-      )
     },
 
     loadTodoItem (task) {
@@ -1043,6 +1031,20 @@ export default {
       // if tasks changes, reload them
       // (does not fire on initial page load)
       this.loadData()
+    },
+    taskItems () {
+      // Update dashboard when the tasks items change
+      this.$emit('task-count', this.taskItems.length)
+      this.$emit('task-items', this.taskItems)
+
+      // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
+      // This indicates that a new filing cannot be started because this item has to be completed first.
+      this.$emit('has-blocker-task',
+        this.taskItems.filter(item => {
+          return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
+            this.isStatusPaid(item) || this.isTypeCorrection(item))
+        }).length > 0
+      )
     }
   }
 }
