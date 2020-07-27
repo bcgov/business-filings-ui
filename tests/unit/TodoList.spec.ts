@@ -115,7 +115,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.taskItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
@@ -911,7 +911,7 @@ describe('TodoList - UI - BCOMP', () => {
 
     const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.taskItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
