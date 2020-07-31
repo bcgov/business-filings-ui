@@ -243,11 +243,9 @@ export default {
     /** Clears Keycloak token information from session storage. */
     clearKeycloakSession () : void {
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
-      sessionStorage.removeItem(SessionStorageKeys.UserFullName)
-      sessionStorage.removeItem(SessionStorageKeys.UserKcId)
-      sessionStorage.removeItem(SessionStorageKeys.UserAccountType)
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
+      sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
     },
 
     /** Fetches business data / incorp app data. */
