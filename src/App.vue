@@ -59,7 +59,7 @@
 // Libraries
 import { mapState, mapActions } from 'vuex'
 import axios from '@/axios-auth'
-import TokenService from 'sbc-common-components/src/services/token.services'
+import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -97,11 +97,8 @@ export default {
       currentDateTimerId: null as number,
       localNrNumber: null as string,
 
-      /**
-       * Instance of the token refresh service.
-       * Needs to exist for lifetime of app.
-       */
-      tokenService: null as TokenService,
+      /** Whether the token refresh service is initialized. */
+      tokenService: false as boolean,
 
       // enums
       EntityStatus,
@@ -225,9 +222,8 @@ export default {
 
       try {
         console.info('Starting token refresh service...') // eslint-disable-line no-console
-        this.tokenService = new TokenService()
-        await this.tokenService.init()
-        this.tokenService.scheduleRefreshTimer()
+        await KeycloakService.initializeToken()
+        this.tokenService = true
       } catch (err) {
         // happens when the refresh token has expired in session storage
 
@@ -243,11 +239,9 @@ export default {
     /** Clears Keycloak token information from session storage. */
     clearKeycloakSession () : void {
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
-      sessionStorage.removeItem(SessionStorageKeys.UserFullName)
-      sessionStorage.removeItem(SessionStorageKeys.UserKcId)
-      sessionStorage.removeItem(SessionStorageKeys.UserAccountType)
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
+      sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
     },
 
     /** Fetches business data / incorp app data. */
