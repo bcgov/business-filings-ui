@@ -24,7 +24,7 @@ export async function fetchConfig (): Promise<void> {
   const headers = {
     'Accept': 'application/json',
     'ResponseType': 'application/json',
-    'Cache-Control': 'no-cache'
+    'Cache-Control': 'no-store'
   }
 
   const response = await axios.get(url, { headers }).catch(() => {
