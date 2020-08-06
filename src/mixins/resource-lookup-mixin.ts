@@ -8,12 +8,13 @@ import { FilingCodes } from '@/enums'
  */
 @Component({
   computed: {
-    ...mapState(['configObject'])
+    ...mapState(['configObject', 'isBComp'])
   }
 })
 
 export default class ResourceLookupMixin extends Vue {
     readonly configObject!: any
+    readonly isBComp!: boolean
 
     /**
      * Returns certify message using the configuration lookup object.
@@ -43,9 +44,10 @@ export default class ResourceLookupMixin extends Vue {
      * @returns the compliance message or null (if the configuration has been loaded)
      */
     directorWarning (directors: Array<any>): AlertMessageIF {
+      const filingCode = this.isBComp ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
       // FUTURE: Too much code for this. Can be condensed and made more reusable.
       if (directors && directors.length) {
-        const configSection = this.configObject.flows.find(x => x.feeCode === FilingCodes.DIRECTOR_CHANGE_OT).warnings
+        const configSection = this.configObject.flows.find(x => x.feeCode === filingCode).warnings
         let errors = []
         // If this entity has a BC Residency requirement for directors, one of the
         // directors specified needs to have both their mailing and delivery address within British Columbia

@@ -87,7 +87,7 @@
                 :isCertified.sync="isCertified"
                 :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ADDRESS_CHANGE_OT)"
+                :message="certifyText(feeCode)"
                 @valid="certifyFormValid=$event"
               />
             </section>
@@ -284,6 +284,11 @@ export default {
     isPayRequired (): boolean {
       // FUTURE: modify rule here as needed
       return (this.totalFee > 0)
+    },
+
+    /** Local computed value for the fee code based on entity type */
+    feeCode (): string {
+      return this.isBComp ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT
     }
   },
 
@@ -403,7 +408,8 @@ export default {
                   }
                 }
                 // use default Priority and Waive Fees flags
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.isPriority, this.isWaiveFees)
+                // apply this flag to BCOMPs only
+                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_BC, this.isPriority, this.isWaiveFees)
               } else {
                 this.addresses = {
                   registeredOffice: {
@@ -412,6 +418,7 @@ export default {
                   }
                 }
                 // use default Priority and Waive Fees flags
+                // apply this flag to all OTHER entity types
                 this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.isPriority, this.isWaiveFees)
               }
             }
@@ -443,8 +450,7 @@ export default {
       this.haveChanges = true
       // when addresses change, update filing data
       // use default Priority and Waive Fees flags
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT,
-        this.isPriority, this.isWaiveFees)
+      this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.isPriority, this.isWaiveFees)
     },
 
     async onClickSave () {
@@ -550,8 +556,7 @@ export default {
           legalName: this.entityName
         }
       }
-
-      if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT) && this.addresses) {
+      if (this.hasFilingCode(this.feeCode) && this.addresses) {
         if (this.addresses.recordsOffice) {
           changeOfAddress = {
             changeOfAddress: {

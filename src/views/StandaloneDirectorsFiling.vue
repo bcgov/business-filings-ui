@@ -98,7 +98,7 @@
                     :isCertified.sync="isCertified"
                     :certifiedBy.sync="certifiedBy"
                     :entityDisplay="displayName()"
-                    :message="certifyText(FilingCodes.DIRECTOR_CHANGE_OT)"
+                    :message="certifyText(feeCode)"
                     @valid="certifyFormValid=$event"
                   />
                 </section>
@@ -223,7 +223,7 @@
                     :isCertified.sync="isCertified"
                     :certifiedBy.sync="certifiedBy"
                     :entityDisplay="displayName()"
-                    :message="certifyText(FilingCodes.DIRECTOR_CHANGE_OT)"
+                    :message="certifyText(feeCode)"
                     @valid="certifyFormValid=$event"
                   />
                 </section>
@@ -418,6 +418,11 @@ export default {
     isPayRequired (): boolean {
       // FUTURE: modify rule here as needed
       return (this.totalFee > 0)
+    },
+
+    /** Local computed value for the fee code based on entity type */
+    feeCode (): string {
+      return this.isBComp ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
     }
   },
 
@@ -489,8 +494,7 @@ export default {
       this.haveChanges = true
       // when directors change, update filing data
       // use default Priority and Waive Fees flags
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT,
-        this.isPriority, this.isWaiveFees)
+      this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.isPriority, this.isWaiveFees)
     },
 
     directorsFreeChange (modified: boolean) {
@@ -605,7 +609,7 @@ export default {
         }
       }
 
-      if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
+      if (this.hasFilingCode(this.feeCode) ||
       this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
         changeOfDirectors = {
           changeOfDirectors: {
@@ -743,7 +747,7 @@ export default {
                     this.hasAction(director, APPOINTED)
                 ).length > 0) {
                   // use default Priority and Waive Fees flags
-                  this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, this.isPriority, this.isWaiveFees)
+                  this.updateFilingData('add', this.feeCode, this.isPriority, this.isWaiveFees)
                 }
 
                 // add filing code for free changes
