@@ -299,7 +299,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
+describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -334,11 +334,8 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
               certifiedBy: 'Full Name',
               email: 'no_one@never.get',
               filingId: 123,
-              routingSlipNumber: '456',
-              // NB: it's not valid to have both "priority" and "waiveFees" true
-              // but we're just testing that these values are restored properly
-              priority: true,
-              waiveFees: true
+              routingSlipNumber: '123456789',
+              priority: true
             }
           }
         }
@@ -349,7 +346,7 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
     sinon.restore()
   })
 
-  it('fetches a draft Standalone Office Address filing', async () => {
+  it('fetches a draft Standalone Office Address filing with FAS staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
@@ -359,10 +356,10 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
     expect(vm.certifiedBy).toBe('Full Name')
     expect(vm.isCertified).toBe(false)
 
-    // verify that Staff Payment fields were restored
-    expect(vm.routingSlipNumber).toBe('456')
-    expect(vm.isPriority).toBe(true)
-    expect(vm.isWaiveFees).toBe(true)
+    // verify that FAS data was restored
+    expect(vm.staffPaymentData.option).toBe(1) // FAS
+    expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
 
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)
@@ -375,7 +372,155 @@ describe('Standalone Office Address Filing - Part 2 - Resuming', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => {
+describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
+  beforeEach(() => {
+    // init store
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityName = 'Legal Name - CP0001191'
+
+    // mock "fetch a draft filing" endpoint
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            changeOfAddress: {
+              offices: {
+                registeredOffice: {
+                  deliveryAddress: sampleDeliveryAddress,
+                  mailingAddress: sampleMailingAddress
+                }
+              }
+            },
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
+            },
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
+              bcolAccountNumber: '123456',
+              datNumber: 'C1234567',
+              folioNumber: '123ABCabc',
+              priority: true
+            }
+          }
+        }
+      })))
+  })
+
+  afterEach(() => {
+    sinon.restore()
+  })
+
+  it('fetches a draft Standalone Office Address filing with BCOL staff payment', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
+
+    // verify that BCOL data was restored
+    expect(vm.staffPaymentData.option).toBe(2) // BCOL
+    expect(vm.staffPaymentData.bcolAccountNumber).toBe('123456')
+    expect(vm.staffPaymentData.datNumber).toBe('C1234567')
+    expect(vm.staffPaymentData.folioNumber).toBe('123ABCabc')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
+
+    // verify that changed addresses were restored
+    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+
+    wrapper.destroy()
+  })
+})
+
+describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
+  beforeEach(() => {
+    // init store
+    store.state.businessId = 'CP0001191'
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityName = 'Legal Name - CP0001191'
+
+    // mock "fetch a draft filing" endpoint
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            changeOfAddress: {
+              offices: {
+                registeredOffice: {
+                  deliveryAddress: sampleDeliveryAddress,
+                  mailingAddress: sampleMailingAddress
+                }
+              }
+            },
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
+            },
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
+              waiveFees: true
+            }
+          }
+        }
+      })))
+  })
+
+  afterEach(() => {
+    sinon.restore()
+  })
+
+  it('fetches a draft Standalone Office Address filing with No Fee staff payment', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
+
+    // verify that No Fee data was restored
+    expect(vm.staffPaymentData.option).toBe(0) // NO_FEE
+    expect(vm.staffPaymentData.isPriority).toBeFalsy()
+
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
+
+    // verify that changed addresses were restored
+    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+
+    wrapper.destroy()
+  })
+})
+
+describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
@@ -414,12 +559,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => 
               status: 'DRAFT',
               certifiedBy: 'Full Name',
               email: 'no_one@never.get',
-              filingId: 123,
-              routingSlipNumber: '456',
-              // NB: it's not valid to have both "priority" and "waiveFees" true
-              // but we're just testing that these values are restored properly
-              priority: true,
-              waiveFees: true
+              filingId: 123
             }
           }
         }
@@ -439,11 +579,6 @@ describe('Standalone Office Address Filing - Part 2B - Resuming (BCOMP)', () => 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
     expect(vm.isCertified).toBe(false)
-
-    // verify that Staff Payment fields were restored
-    expect(vm.routingSlipNumber).toBe('456')
-    expect(vm.isPriority).toBe(true)
-    expect(vm.isWaiveFees).toBe(true)
 
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)

@@ -91,9 +91,7 @@
                 <h2 id="correction-step-3-header">3. Staff Payment</h2>
               </header>
               <staff-payment
-                :routingSlipNumber.sync="routingSlipNumber"
-                :isPriority.sync="isPriority"
-                :isWaiveFees.sync="isWaiveFees"
+                :staffPaymentData.sync="staffPaymentData"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -194,9 +192,10 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
 import { DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
   from '@/mixins'
 
-// Enums and Constants
-import { FilingCodes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+// Enums, Constants and Interfaces
+import { FilingCodes, FilingNames, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
 import { DASHBOARD } from '@/constants'
+import { StaffPaymentIF } from '@/interfaces'
 
 export default {
   name: 'Correction',
@@ -227,11 +226,8 @@ export default {
       certifyFormValid: null,
 
       // properties for StaffPayment component
-      routingSlipNumber: '',
-      isPriority: false,
-      isWaiveFees: false,
+      staffPaymentData: { option: StaffPaymentOptions.NONE } as StaffPaymentIF,
       staffPaymentFormValid: null,
-      totalFee: 0,
 
       // flags for displaying dialogs
       loadCorrectionDialog: false,
@@ -240,6 +236,7 @@ export default {
       paymentErrorDialog: false,
 
       // other program state
+      totalFee: 0,
       dataLoaded: false,
       loadingMessage: 'Loading...', // initial generic message
       filingId: 0, // id of this correction filing
@@ -369,8 +366,9 @@ export default {
   /** Called when component is mounted. */
   mounted (): void {
     // always include correction code
-    // use default Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.CORRECTION, this.isPriority, this.isWaiveFees)
+    // use existing Priority and Waive Fees flags
+    this.updateFilingData('add', FilingCodes.CORRECTION, this.staffPaymentData.isPriority,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   },
 
   /** Called before routing away from this component. */
@@ -424,13 +422,33 @@ export default {
             if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
-            // load Certified By but not Date
+            // load Certified By (but not Date)
             this.certifiedBy = filing.header.certifiedBy
 
             // load Staff Payment properties
-            this.routingSlipNumber = filing.header.routingSlipNumber
-            this.isPriority = filing.header.priority
-            this.isWaiveFees = filing.header.waiveFees
+            if (filing.header.routingSlipNumber) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.FAS,
+                routingSlipNumber: filing.header.routingSlipNumber,
+                isPriority: filing.header.priority
+              }
+            } else if (filing.header.bcolAccountNumber) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.BCOL,
+                bcolAccountNumber: filing.header.bcolAccountNumber,
+                datNumber: filing.header.datNumber,
+                folioNumber: filing.header.folioNumber,
+                isPriority: filing.header.priority
+              }
+            } else if (filing.header.waiveFees) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.NO_FEE
+              }
+            } else {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.NONE
+              }
+            }
 
             // load Detail Comment, removing the first line (default comment)
             const comment: string = filing.correction.comment || ''
@@ -567,17 +585,26 @@ export default {
           date: this.currentDate
         }
       }
-      // only save Routing Slip Number if it's valid
-      if (this.routingSlipNumber && !this.isWaiveFees) {
-        header.header['routingSlipNumber'] = this.routingSlipNumber
-      }
-      // only save Priority it it's valid
-      if (this.isPriority && !this.isWaiveFees) {
-        header.header['priority'] = true
-      }
-      // only save Waive Fees if it's valid
-      if (this.isWaiveFees) {
-        header.header['waiveFees'] = true
+
+      switch (this.staffPaymentData.option) {
+        case StaffPaymentOptions.FAS:
+          header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
+          header.header['priority'] = this.staffPaymentData.isPriority
+          break
+
+        case StaffPaymentOptions.BCOL:
+          header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
+          header.header['datNumber'] = this.staffPaymentData.datNumber
+          header.header['folioNumber'] = this.staffPaymentData.folioNumber
+          header.header['priority'] = this.staffPaymentData.isPriority
+          break
+
+        case StaffPaymentOptions.NO_FEE:
+          header.header['waiveFees'] = true
+          break
+
+        case StaffPaymentOptions.NONE: // should never happen
+          break
       }
 
       const business: any = {
@@ -726,22 +753,18 @@ export default {
       this.haveChanges = true
     },
 
-    /** Called when Staff Payment form validity changes.  */
-    staffPaymentFormValid (val: boolean): void {
+    /** Called when Staff Payment Data changes. */
+    staffPaymentData (val: StaffPaymentIF) {
+      const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
+
+      // apply Priority flag to CRCTN filing code only
+      // simply re-add the CRCTN code with the updated Priority flag and existing Waive Fees flag
+      this.updateFilingData('add', FilingCodes.CORRECTION, val.isPriority, waiveFees)
+
+      // add/remove Waive Fees flag to all filing codes
+      this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
+
       this.haveChanges = true
-    },
-
-    /** Called when Is Priority changes. */
-    isPriority (val: boolean): void {
-      // apply this flag to CRCTN filing code only
-      // simply re-add the CRCTN code with the updated Priority flag and default Waive Fees flag
-      this.updateFilingData('add', FilingCodes.CORRECTION, val, this.isWaiveFees)
-    },
-
-    /** Called when Is Waive Fees changes. */
-    isWaiveFees (val: boolean): void {
-      // add/remove this flag to all filing codes
-      this.updateFilingData(val ? 'add' : 'remove', undefined, undefined, true)
     }
   }
 }

@@ -98,9 +98,7 @@
                 <h2 id="AR-step-5-header">Staff Payment</h2>
               </header>
               <staff-payment
-                :routingSlipNumber.sync="routingSlipNumber"
-                :isPriority.sync="isPriority"
-                :isWaiveFees.sync="isWaiveFees"
+                :staffPaymentData.sync="staffPaymentData"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -200,8 +198,9 @@ import { DASHBOARD } from '@/constants'
 // Mixins
 import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
-// Enums
-import { FilingCodes, FilingStatus, FilingTypes } from '@/enums'
+// Enums and Interfaces
+import { FilingCodes, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
+import { StaffPaymentIF } from '@/interfaces'
 
 export default {
   name: 'StandaloneOfficeAddressFiling',
@@ -238,13 +237,11 @@ export default {
       haveChanges: false,
       saveErrors: [],
       saveWarnings: [],
+      totalFee: 0,
 
       // properties for StaffPayment component
-      routingSlipNumber: null,
-      isPriority: false,
-      isWaiveFees: false,
+      staffPaymentData: { option: StaffPaymentOptions.NONE } as StaffPaymentIF,
       staffPaymentFormValid: null,
-      totalFee: 0,
 
       // bcol error variables
       bcolObj: null,
@@ -383,13 +380,33 @@ export default {
             if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
-            // load Certified By but not Date
+            // load Certified By (but not Date)
             this.certifiedBy = filing.header.certifiedBy
 
             // load Staff Payment properties
-            this.routingSlipNumber = filing.header.routingSlipNumber
-            this.isPriority = filing.header.priority
-            this.isWaiveFees = filing.header.waiveFees
+            if (filing.header.routingSlipNumber) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.FAS,
+                routingSlipNumber: filing.header.routingSlipNumber,
+                isPriority: filing.header.priority
+              }
+            } else if (filing.header.bcolAccountNumber) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.BCOL,
+                bcolAccountNumber: filing.header.bcolAccountNumber,
+                datNumber: filing.header.datNumber,
+                folioNumber: filing.header.folioNumber,
+                isPriority: filing.header.priority
+              }
+            } else if (filing.header.waiveFees) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.NO_FEE
+              }
+            } else {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.NONE
+              }
+            }
 
             // load Annual Report fields
             if (!filing.changeOfAddress) throw new Error('Missing change of address')
@@ -407,9 +424,10 @@ export default {
                     mailingAddress: changeOfAddress.recordsOffice.mailingAddress
                   }
                 }
-                // use default Priority and Waive Fees flags
+                // use existing Priority and Waive Fees flags
                 // apply this flag to BCOMPs only
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_BC, this.isPriority, this.isWaiveFees)
+                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_BC, this.staffPaymentData.isPriority,
+                  (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
               } else {
                 this.addresses = {
                   registeredOffice: {
@@ -417,9 +435,10 @@ export default {
                     mailingAddress: changeOfAddress.registeredOffice.mailingAddress
                   }
                 }
-                // use default Priority and Waive Fees flags
+                // use existing Priority and Waive Fees flags
                 // apply this flag to all OTHER entity types
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.isPriority, this.isWaiveFees)
+                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.staffPaymentData.isPriority,
+                  (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
               }
             }
           } catch (err) {
@@ -449,8 +468,9 @@ export default {
     officeModifiedEventHandler (modified: boolean): void {
       this.haveChanges = true
       // when addresses change, update filing data
-      // use default Priority and Waive Fees flags
-      this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.isPriority, this.isWaiveFees)
+      // use existing Priority and Waive Fees flags
+      this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.staffPaymentData.isPriority,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
     async onClickSave () {
@@ -536,17 +556,26 @@ export default {
           date: this.currentDate
         }
       }
-      // only save Routing Slip Number if it's valid
-      if (this.routingSlipNumber && !this.isWaiveFees) {
-        header.header['routingSlipNumber'] = this.routingSlipNumber
-      }
-      // only save Priority it it's valid
-      if (this.isPriority && !this.isWaiveFees) {
-        header.header['priority'] = true
-      }
-      // only save Waive Fees if it's valid
-      if (this.isWaiveFees) {
-        header.header['waiveFees'] = true
+
+      switch (this.staffPaymentData.option) {
+        case StaffPaymentOptions.FAS:
+          header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
+          header.header['priority'] = this.staffPaymentData.isPriority
+          break
+
+        case StaffPaymentOptions.BCOL:
+          header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
+          header.header['datNumber'] = this.staffPaymentData.datNumber
+          header.header['folioNumber'] = this.staffPaymentData.folioNumber
+          header.header['priority'] = this.staffPaymentData.isPriority
+          break
+
+        case StaffPaymentOptions.NO_FEE:
+          header.header['waiveFees'] = true
+          break
+
+        case StaffPaymentOptions.NONE: // should never happen
+          break
       }
 
       const business = {
@@ -711,33 +740,29 @@ export default {
 
   watch: {
     /** Called when Is Certified changes. */
-    isCertified (val) {
+    isCertified (val: boolean) {
       this.haveChanges = true
     },
 
     /** Called when Certified By changes. */
-    certifiedBy (val) {
+    certifiedBy (val: string) {
       this.haveChanges = true
     },
 
-    /** Called when Routing Slip Number changes. */
-    routingSlipNumber (val) {
-      this.haveChanges = true
-    },
+    /** Called when Staff Payment Data changes. */
+    staffPaymentData (val: StaffPaymentIF) {
+      const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
-    /** Called when Is Priority changes. */
-    isPriority (val: boolean): void {
-      // apply this flag to OTADD filing code only
-      // if OTADD code exists, simply re-add it with the updated Priority flag and default Waive Fees flag
+      // apply Priority flag to OTADD filing code only
+      // if OTADD code exists, simply re-add it with the updated Priority flag and existing Waive Fees flag
       if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
-        this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, val, this.isWaiveFees)
+        this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, val.isPriority, waiveFees)
       }
-    },
 
-    /** Called when Is Waive Fees changes. */
-    isWaiveFees (val: boolean): void {
-      // add/remove this flag to all filing codes
-      this.updateFilingData(val ? 'add' : 'remove', undefined, undefined, true)
+      // add/remove Waive Fees flag to all filing codes
+      this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
+
+      this.haveChanges = true
     }
   }
 }
