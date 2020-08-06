@@ -17,7 +17,7 @@ export const configJson = [{
   displayName: 'Benefit Company',
   flows: [
     {
-      feeCode: FilingCodes.ADDRESS_CHANGE_OT,
+      feeCode: FilingCodes.ADDRESS_CHANGE_BC,
       displayName: 'Change Of Address',
       certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
            'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +
@@ -31,7 +31,7 @@ export const configJson = [{
            'See Section 51 of the Business Corporations Act.'
     },
     {
-      feeCode: FilingCodes.DIRECTOR_CHANGE_OT,
+      feeCode: FilingCodes.DIRECTOR_CHANGE_BC,
       displayName: 'Change Of Directors',
       certifyText: 'Note: It is an offence to make a false or misleading statement in ' +
            'respect of a material fact in a record submitted to the Corporate Registry for filing. ' +

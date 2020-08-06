@@ -87,7 +87,7 @@
                 :isCertified.sync="isCertified"
                 :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ADDRESS_CHANGE_OT)"
+                :message="certifyText(isBComp ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT)"
                 @valid="certifyFormValid=$event"
               />
             </section>
@@ -403,7 +403,7 @@ export default {
                   }
                 }
                 // use default Priority and Waive Fees flags
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.isPriority, this.isWaiveFees)
+                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_BC, this.isPriority, this.isWaiveFees)
               } else {
                 this.addresses = {
                   registeredOffice: {
@@ -443,8 +443,9 @@ export default {
       this.haveChanges = true
       // when addresses change, update filing data
       // use default Priority and Waive Fees flags
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT,
-        this.isPriority, this.isWaiveFees)
+      this.updateFilingData(modified ? 'add' : 'remove', this.isBComp ? FilingCodes.ADDRESS_CHANGE_BC
+        : FilingCodes.ADDRESS_CHANGE_OT,
+      this.isPriority, this.isWaiveFees)
     },
 
     async onClickSave () {
@@ -550,8 +551,8 @@ export default {
           legalName: this.entityName
         }
       }
-
-      if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT) && this.addresses) {
+      if (this.hasFilingCode(this.isBComp ? FilingCodes.ADDRESS_CHANGE_BC
+        : FilingCodes.ADDRESS_CHANGE_OT) && this.addresses) {
         if (this.addresses.recordsOffice) {
           changeOfAddress = {
             changeOfAddress: {
