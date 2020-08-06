@@ -408,7 +408,7 @@ export default {
                   }
                 }
                 // use default Priority and Waive Fees flags
-                // Within a conditional that identifies this filing as a BCOMP, so update to BC Fee Code
+                // apply this flag to BCOMPs only
                 this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_BC, this.isPriority, this.isWaiveFees)
               } else {
                 this.addresses = {
@@ -418,7 +418,7 @@ export default {
                   }
                 }
                 // use default Priority and Waive Fees flags
-                // No conditions, update to OTHERS Fee code
+                // apply this flag to all OTHER entity types
                 this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.isPriority, this.isWaiveFees)
               }
             }
