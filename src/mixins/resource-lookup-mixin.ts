@@ -14,7 +14,7 @@ import { FilingCodes } from '@/enums'
 
 export default class ResourceLookupMixin extends Vue {
     readonly configObject!: any
-    readonly isBComp: boolean
+    readonly isBComp!: boolean
 
     /**
      * Returns certify message using the configuration lookup object.
