@@ -41,16 +41,16 @@ function setValue (vm: any, id: string, value: string) {
   input.dispatchEvent(event)
 }
 
-describe.only('Directors as a COOP', () => {
+describe('Directors as a COOP', () => {
   let vm: any
   let vm2: any
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
-    store.state.configObject = await configJson.find(x => x.typeEnum === store.state.entityType)
+    store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
 
     // GET directors
     sinon.stub(axios, 'get')
@@ -520,12 +520,12 @@ describe.only('Directors as a COOP', () => {
 describe('Directors as a BCOMP', () => {
   let vm: any
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // init store
     store.state.entityIncNo = 'BC0007291'
     store.state.entityType = 'BC'
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
-    store.state.configObject = await configJson.find(x => x.typeEnum === store.state.entityType)
+    store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
 
     // GET directors
     sinon.stub(axios, 'get')
@@ -604,8 +604,6 @@ describe('Directors as a BCOMP', () => {
   })
 
   afterEach(() => {
-    store.state.entityType = ''
-    store.state.configObject = {}
     sinon.restore()
   })
 
@@ -811,6 +809,7 @@ describe('Appoint New Director tests', () => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
+    store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
 
     // GET directors
     sinon.stub(axios, 'get')
