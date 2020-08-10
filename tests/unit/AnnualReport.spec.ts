@@ -643,7 +643,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 2 - Resuming', () => {
+describe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -678,10 +678,170 @@ describe('AnnualReport - Part 2 - Resuming', () => {
                   certifiedBy: 'Full Name',
                   email: 'no_one@never.get',
                   filingId: 123,
-                  routingSlipNumber: '456',
-                  // NB: it's not valid to have both "priority" and "waiveFees" true
-                  // but we're just testing that these values are restored properly
-                  priority: true,
+                  routingSlipNumber: '123456789',
+                  priority: true
+                }
+              }
+            }
+          })
+        )
+      )
+  })
+
+  afterEach(() => {
+    sinon.restore()
+  })
+
+  it('fetches a draft AR filing with FAS staff payment', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // FUTURE: verify that Draft Date (for directors) was restored
+    // (should be '2018-07-15')
+
+    // FUTURE: verify that AGM Date was restored
+    // (should be '2018/07/15')
+
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
+
+    // verify that FAS data was restored
+    expect(vm.staffPaymentData.option).toBe(1) // FAS
+    expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
+
+    // FUTURE: verify that changed addresses and directors were restored
+    // (need to include in data above)
+
+    wrapper.destroy()
+  })
+})
+
+describe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
+  beforeEach(() => {
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.ARFilingYear = 2017
+    store.state.currentFilingStatus = 'DRAFT'
+
+    // mock "fetch a draft filing" endpoint
+    sinon
+      .stub(axios, 'get')
+      .withArgs('businesses/CP0001191/filings/123')
+      .returns(
+        new Promise(resolve =>
+          resolve({
+            data: {
+              filing: {
+                annualReport: {
+                  annualGeneralMeetingDate: '2018-07-15'
+                },
+                business: {
+                  cacheId: 1,
+                  foundingDate: '2007-04-08',
+                  identifier: 'CP0001191',
+                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+                  legalName: 'Legal Name - CP0001191'
+                },
+                header: {
+                  name: 'annualReport',
+                  date: '2017-06-06',
+                  submitter: 'cp0001191',
+                  status: 'DRAFT',
+                  certifiedBy: 'Full Name',
+                  email: 'no_one@never.get',
+                  filingId: 123,
+                  bcolAccountNumber: '123456',
+                  datNumber: 'C1234567',
+                  folioNumber: '123ABCabc',
+                  priority: true
+                }
+              }
+            }
+          })
+        )
+      )
+  })
+
+  afterEach(() => {
+    sinon.restore()
+  })
+
+  it('fetches a draft AR filing with BCOL staff payment', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // FUTURE: verify that Draft Date (for directors) was restored
+    // (should be '2018-07-15')
+
+    // FUTURE: verify that AGM Date was restored
+    // (should be '2018/07/15')
+
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
+
+    // verify that BCOL data was restored
+    expect(vm.staffPaymentData.option).toBe(2) // BCOL
+    expect(vm.staffPaymentData.bcolAccountNumber).toBe('123456')
+    expect(vm.staffPaymentData.datNumber).toBe('C1234567')
+    expect(vm.staffPaymentData.folioNumber).toBe('123ABCabc')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
+
+    // FUTURE: verify that changed addresses and directors were restored
+    // (need to include in data above)
+
+    wrapper.destroy()
+  })
+})
+
+describe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
+  beforeEach(() => {
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.ARFilingYear = 2017
+    store.state.currentFilingStatus = 'DRAFT'
+
+    // mock "fetch a draft filing" endpoint
+    sinon
+      .stub(axios, 'get')
+      .withArgs('businesses/CP0001191/filings/123')
+      .returns(
+        new Promise(resolve =>
+          resolve({
+            data: {
+              filing: {
+                annualReport: {
+                  annualGeneralMeetingDate: '2018-07-15'
+                },
+                business: {
+                  cacheId: 1,
+                  foundingDate: '2007-04-08',
+                  identifier: 'CP0001191',
+                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+                  legalName: 'Legal Name - CP0001191'
+                },
+                header: {
+                  name: 'annualReport',
+                  date: '2017-06-06',
+                  submitter: 'cp0001191',
+                  status: 'DRAFT',
+                  certifiedBy: 'Full Name',
+                  email: 'no_one@never.get',
+                  filingId: 123,
                   waiveFees: true
                 }
               }
@@ -695,36 +855,33 @@ describe('AnnualReport - Part 2 - Resuming', () => {
     sinon.restore()
   })
 
-  it('fetches a draft AR filing', done => {
+  it('fetches a draft AR filing with No Fee staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // FUTURE: verify that Draft Date (for directors) was restored
-      // (should be '2018-07-15')
+    // FUTURE: verify that Draft Date (for directors) was restored
+    // (should be '2018-07-15')
 
-      // FUTURE: verify that AGM Date was restored
-      // (should be '2018/07/15')
+    // FUTURE: verify that AGM Date was restored
+    // (should be '2018/07/15')
 
-      // verify that Certified By was restored
-      expect(vm.certifiedBy).toBe('Full Name')
-      expect(vm.isCertified).toBe(false)
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
 
-      // verify that Staff Payment fields were restored
-      expect(vm.routingSlipNumber).toBe('456')
-      expect(vm.isPriority).toBe(true)
-      expect(vm.isWaiveFees).toBe(true)
+    // verify that No Fee data was restored
+    expect(vm.staffPaymentData.option).toBe(0) // NO_FEE
+    expect(vm.staffPaymentData.isPriority).toBeFalsy()
 
-      // verify that we stored the Filing ID
-      expect(+vm.filingId).toBe(123)
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
 
-      // FUTURE: verify that changed addresses and directors were restored
-      // (need to include in data above)
+    // FUTURE: verify that changed addresses and directors were restored
+    // (need to include in data above)
 
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
   })
 })
 

@@ -2,39 +2,66 @@
   <v-card flat id="summary-payment-container">
     <div class="payment-container">
       <label>Payment</label>
-      <div class="value payment-received" v-if="routingSlipNumber">
-        <p class="mb-0"><strong>Routing Slip Number:</strong> {{routingSlipNumber}}</p>
-        <p class="mb-0" v-if="isPriority"><strong>Priority</strong></p>
-      </div>
-      <div class="value no-fee" v-if="isWaiveFees">
-        <p class="mb-0">No Fee</p>
-      </div>
+
+      <template v-if="staffPaymentData.option === StaffPaymentOptions.FAS">
+        <div class="value fas">
+          <p><strong>Cash or Cheque</strong></p>
+          <v-divider />
+          <p><strong>Routing Slip Number:</strong> {{staffPaymentData.routingSlipNumber}}</p>
+          <v-divider />
+          <p><strong>Priority:</strong> {{staffPaymentData.isPriority ? "Yes": "No"}}</p>
+        </div>
+      </template>
+
+      <template v-else-if="staffPaymentData.option === StaffPaymentOptions.BCOL">
+        <div class="value bcol">
+          <p><strong>BC Online</strong></p>
+          <v-divider />
+          <p><strong>BC Online Account Number:</strong> {{staffPaymentData.bcolAccountNumber}}</p>
+          <p><strong>DAT Number:</strong> {{staffPaymentData.datNumber}}</p>
+          <p><strong>Folio Number:</strong> {{staffPaymentData.folioNumber || "Not Provided"}}</p>
+          <v-divider />
+          <p><strong>Priority:</strong> {{staffPaymentData.isPriority ? "Yes": "No"}}</p>
+        </div>
+      </template>
+
+      <template v-else-if="staffPaymentData.option === StaffPaymentOptions.NO_FEE">
+        <div class="value no-fee">
+          <p><strong>No Fee</strong></p>
+          <v-divider />
+          <p><strong>Priority:</strong> Not Available</p>
+        </div>
+      </template>
     </div>
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
+import { StaffPaymentOptions } from '@/enums'
+import { StaffPaymentIF } from '@/interfaces'
 
 @Component({})
 export default class SummaryStaffPayment extends Vue {
-  /** Routing Slip Number prop. */
-  @Prop({ default: '' })
-  private routingSlipNumber: string
+  // Enum for template
+  readonly StaffPaymentOptions = StaffPaymentOptions
 
-  /** Is Priority prop. */
-  @Prop({ default: false })
-  private isPriority: boolean
-
-  /** Is Waive Fees prop. */
-  @Prop({ default: false })
-  private isWaiveFees: boolean
+  /** Staff Payment Data prop. */
+  @Prop({ default: () => {
+    return {
+      option: StaffPaymentOptions.NONE,
+      routingSlipNumber: null,
+      bcolAccountNumber: null,
+      datNumber: null,
+      folioNumber: null,
+      isPriority: false
+    }
+  } })
+  private staffPaymentData: StaffPaymentIF
 }
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-
 #summary-payment-container {
   margin-top: 1rem;
   padding: 1.25rem;
@@ -63,9 +90,26 @@ export default class SummaryStaffPayment extends Vue {
   }
 }
 
-.value.payment-received,
+.value.fas,
+.value.bcol,
 .value.no-fee {
-  min-width: 100%;
+  width: 100%;
   line-height: 1.5rem;
+
+  p {
+    margin: 0.5rem 0;
+  }
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  hr {
+    margin: 1rem 0;
+  }
 }
 </style>

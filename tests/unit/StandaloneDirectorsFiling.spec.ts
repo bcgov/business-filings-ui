@@ -326,7 +326,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 })
 
-describe('Standalone Directors Filing - Part 2 - Resuming', () => {
+describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -358,7 +358,8 @@ describe('Standalone Directors Filing - Part 2 - Resuming', () => {
                 'certifiedBy': 'Full Name',
                 'email': 'no_one@never.get',
                 'filingId': 123,
-                'routingSlipNumber': '456'
+                routingSlipNumber: '123456789',
+                priority: true
               }
             }
           }
@@ -369,29 +370,171 @@ describe('Standalone Directors Filing - Part 2 - Resuming', () => {
     sinon.restore()
   })
 
-  it('fetches a draft Standalone Directors filing', done => {
+  it('fetches a draft Standalone Directors filing with FAS staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // verify that Certified By was restored
-      expect(vm.certifiedBy).toBe('Full Name')
-      expect(vm.isCertified).toBe(false)
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
 
-      // verify that Routing Slip Number was restored
-      expect(vm.routingSlipNumber).toBe('456')
+    // verify that FAS data was restored
+    expect(vm.staffPaymentData.option).toBe(1) // FAS
+    expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
 
-      // verify that we stored the Filing ID
-      expect(+vm.filingId).toBe(123)
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
 
-      // verify that we loaded the director data correctly
-      expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
-      expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
+    // verify that we loaded the director data correctly
+    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
+    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
 
-      wrapper.destroy()
-      done()
-    })
+    wrapper.destroy()
+  })
+})
+
+describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payment', () => {
+  beforeEach(() => {
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.currentDate = '2019-07-15'
+
+    // mock "fetch a draft filing" endpoint
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            'filing': {
+              'changeOfDirectors': {
+                'directors': sampleDirectors
+              },
+              'business': {
+                'cacheId': 1,
+                'foundingDate': '2007-04-08T00:00:00+00:00',
+                'identifier': 'CP0001191',
+                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+                'legalName': 'Legal Name - CP0001191'
+              },
+              'header': {
+                'name': 'changeOfDirectors',
+                'date': '2017-06-06T00:00:00+00:00',
+                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+                'submitter': 'cp0001191',
+                'status': 'DRAFT',
+                'certifiedBy': 'Full Name',
+                'email': 'no_one@never.get',
+                'filingId': 123,
+                bcolAccountNumber: '123456',
+                datNumber: 'C1234567',
+                folioNumber: '123ABCabc',
+                priority: true
+              }
+            }
+          }
+      })))
+  })
+
+  afterEach(() => {
+    sinon.restore()
+  })
+
+  it('fetches a draft Standalone Directors filing with BCOL staff payment', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
+
+    // verify that BCOL data was restored
+    expect(vm.staffPaymentData.option).toBe(2) // BCOL
+    expect(vm.staffPaymentData.bcolAccountNumber).toBe('123456')
+    expect(vm.staffPaymentData.datNumber).toBe('C1234567')
+    expect(vm.staffPaymentData.folioNumber).toBe('123ABCabc')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
+
+    // verify that we loaded the director data correctly
+    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
+    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
+
+    wrapper.destroy()
+  })
+})
+
+describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff payment', () => {
+  beforeEach(() => {
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.currentDate = '2019-07-15'
+
+    // mock "fetch a draft filing" endpoint
+    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            'filing': {
+              'changeOfDirectors': {
+                'directors': sampleDirectors
+              },
+              'business': {
+                'cacheId': 1,
+                'foundingDate': '2007-04-08T00:00:00+00:00',
+                'identifier': 'CP0001191',
+                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+                'legalName': 'Legal Name - CP0001191'
+              },
+              'header': {
+                'name': 'changeOfDirectors',
+                'date': '2017-06-06T00:00:00+00:00',
+                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+                'submitter': 'cp0001191',
+                'status': 'DRAFT',
+                'certifiedBy': 'Full Name',
+                'email': 'no_one@never.get',
+                'filingId': 123,
+                waiveFees: true
+              }
+            }
+          }
+      })))
+  })
+
+  afterEach(() => {
+    sinon.restore()
+  })
+
+  it('fetches a draft Standalone Directors filing with No Fee staff payment', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify that Certified By was restored
+    expect(vm.certifiedBy).toBe('Full Name')
+    expect(vm.isCertified).toBe(false)
+
+    // verify that No Fee data was restored
+    expect(vm.staffPaymentData.option).toBe(0) // NO_FEE
+    expect(vm.staffPaymentData.isPriority).toBeFalsy()
+
+    // verify that we stored the Filing ID
+    expect(+vm.filingId).toBe(123)
+
+    // verify that we loaded the director data correctly
+    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
+    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
+
+    wrapper.destroy()
   })
 })
 

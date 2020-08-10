@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
 import { isNotNull, isValidFormat, isValidCODDate } from '@/validators'
 import { mapState, mapGetters } from 'vuex'
 import { DateMixin } from '@/mixins'

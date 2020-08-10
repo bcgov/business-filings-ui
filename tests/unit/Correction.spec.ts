@@ -111,23 +111,27 @@ describe('Correction - UI', () => {
     expect(vm.filingData.length).toBe(1)
     expect(vm.filingData[0].filingTypeCode).toBe('CRCTN')
     expect(vm.filingData[0].entityType).toBe('CP')
-    expect(vm.filingData[0].priority).toBe(false)
+    expect(vm.filingData[0].priority).toBeUndefined()
     expect(vm.filingData[0].waiveFees).toBe(false)
 
-    // verify Is Priority true
-    vm.isPriority = true
+    // verify Is Priority = true
+    vm.staffPaymentData = { isPriority: true }
     expect(vm.filingData[0].priority).toBe(true)
 
-    // verify Is Priority false
-    vm.isPriority = false
+    // verify Is Priority = false
+    vm.staffPaymentData = { isPriority: false }
     expect(vm.filingData[0].priority).toBe(false)
 
-    // verify Is Waive Fees true
-    vm.isWaiveFees = true
+    // verify Is Waive Fees = true
+    vm.staffPaymentData = { option: 0 } // NO_FEE
     expect(vm.filingData[0].waiveFees).toBe(true)
 
-    // verify Is Waive Fees false
-    vm.isWaiveFees = false
+    // verify Is Waive Fees = false
+    vm.staffPaymentData = { option: 1 } // FAS
+    expect(vm.filingData[0].waiveFees).toBe(false)
+
+    // verify Is Waive Fees = false
+    vm.staffPaymentData = { option: 2 } // BCOL
     expect(vm.filingData[0].waiveFees).toBe(false)
 
     wrapper.destroy()
@@ -281,7 +285,7 @@ describe('Correction - UI', () => {
     wrapper.destroy()
   })
 
-  it('resumes draft correction properly', async () => {
+  it('resumes draft correction properly with FAS staff payment', async () => {
     // mock "get draft correction" endpoint
     sinonAxiosGet
       .withArgs('businesses/CP1234567/filings/456')
@@ -298,9 +302,133 @@ describe('Correction - UI', () => {
                 status: 'DRAFT',
                 certifiedBy: 'Johnny Certifier',
                 routingSlipNumber: '123456789',
-                // NB: it's not valid to have both "priority" and "waiveFees" true
-                // but we're just testing that these values are restored properly
-                priority: true,
+                priority: true
+              },
+              correction: {
+                comment: 'Line 1\nLine 2\nLine 3'
+              },
+              annualReport: {}
+            }
+          }
+        })
+      ))
+
+    // mock $route
+    const $route = { params: { filingId: '456', correctedFilingId: '123' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
+
+    const wrapper = mount(Correction, {
+      store,
+      router,
+      stubs: {
+        DetailComment: true,
+        Certify: true,
+        StaffPayment: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetches to complete
+    await flushPromises()
+
+    expect(vm.certifiedBy).toBe('Johnny Certifier')
+    expect(vm.staffPaymentData.option).toBe(1) // FAS
+    expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+    // NB: line 1 (default comment) should be removed
+    expect(vm.detailComment).toBe('Line 2\nLine 3')
+
+    wrapper.destroy()
+  })
+
+  it('resumes draft correction properly with FAS staff payment', async () => {
+    // mock "get draft correction" endpoint
+    sinonAxiosGet
+      .withArgs('businesses/CP1234567/filings/456')
+      .returns(new Promise(resolve =>
+        resolve({
+          data: {
+            filing: {
+              business: {
+                identifier: 'CP1234567',
+                legalName: 'My Test Entity'
+              },
+              header: {
+                name: 'correction',
+                status: 'DRAFT',
+                certifiedBy: 'Johnny Certifier',
+                bcolAccountNumber: '123456',
+                datNumber: 'C1234567',
+                folioNumber: '123ABCabc',
+                priority: true
+              },
+              correction: {
+                comment: 'Line 1\nLine 2\nLine 3'
+              },
+              annualReport: {}
+            }
+          }
+        })
+      ))
+
+    // mock $route
+    const $route = { params: { filingId: '456', correctedFilingId: '123' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
+
+    const wrapper = mount(Correction, {
+      store,
+      router,
+      stubs: {
+        DetailComment: true,
+        Certify: true,
+        StaffPayment: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetches to complete
+    await flushPromises()
+
+    expect(vm.certifiedBy).toBe('Johnny Certifier')
+    expect(vm.staffPaymentData.option).toBe(2) // BCOL
+    expect(vm.staffPaymentData.bcolAccountNumber).toBe('123456')
+    expect(vm.staffPaymentData.datNumber).toBe('C1234567')
+    expect(vm.staffPaymentData.folioNumber).toBe('123ABCabc')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+    // NB: line 1 (default comment) should be removed
+    expect(vm.detailComment).toBe('Line 2\nLine 3')
+
+    wrapper.destroy()
+  })
+
+  it('resumes draft correction properly with No Fee staff payment', async () => {
+    // mock "get draft correction" endpoint
+    sinonAxiosGet
+      .withArgs('businesses/CP1234567/filings/456')
+      .returns(new Promise(resolve =>
+        resolve({
+          data: {
+            filing: {
+              business: {
+                identifier: 'CP1234567',
+                legalName: 'My Test Entity'
+              },
+              header: {
+                name: 'correction',
+                status: 'DRAFT',
+                certifiedBy: 'Johnny Certifier',
                 waiveFees: true
               },
               correction: {
@@ -337,9 +465,8 @@ describe('Correction - UI', () => {
     await flushPromises()
 
     expect(vm.certifiedBy).toBe('Johnny Certifier')
-    expect(vm.routingSlipNumber).toBe('123456789')
-    expect(vm.isPriority).toBe(true)
-    expect(vm.isWaiveFees).toBe(true)
+    expect(vm.staffPaymentData.option).toBe(0) // NO_FEE
+    expect(vm.staffPaymentData.isPriority).toBeFalsy()
     // NB: line 1 (default comment) should be removed
     expect(vm.detailComment).toBe('Line 2\nLine 3')
 

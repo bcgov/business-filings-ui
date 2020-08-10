@@ -33,7 +33,8 @@
       :bcolObject="bcolObj"
       :filingType="FilingTypes.ANNUAL_REPORT"
       @exit="navigateToDashboard(true)"
-      attach="#annual-report"/>
+      attach="#annual-report"
+    />
 
     <!-- Initial Page Load Transition -->
     <div class="loading-container fade-out">
@@ -182,9 +183,7 @@
                 <h2 id="AR-step-5-header">5. Staff Payment</h2>
               </header>
               <staff-payment
-                :routingSlipNumber.sync="routingSlipNumber"
-                :isPriority.sync="isPriority"
-                :isWaiveFees.sync="isWaiveFees"
+                :staffPaymentData.sync="staffPaymentData"
                 @valid="staffPaymentFormValid=$event"
               />
             </section>
@@ -324,9 +323,10 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
 // Mixins
 import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
-// Enums and Constants
-import { FilingCodes, FilingStatus, FilingTypes } from '@/enums'
+// Enums, Constants and Interfaces
+import { FilingCodes, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
 import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/constants'
+import { StaffPaymentIF } from '@/interfaces'
 
 export default {
   name: 'AnnualReport',
@@ -374,11 +374,8 @@ export default {
       certifyFormValid: null,
 
       // properties for StaffPayment component
-      routingSlipNumber: null,
-      isPriority: false,
-      isWaiveFees: false,
+      staffPaymentData: { option: StaffPaymentOptions.NONE } as StaffPaymentIF,
       staffPaymentFormValid: null,
-      totalFee: 0,
 
       // flags for displaying dialogs
       resumeErrorDialog: false,
@@ -387,6 +384,7 @@ export default {
       bcolObj: null,
 
       // other local properties
+      totalFee: 0,
       filingId: null,
       loadingMessage: 'Loading...', // initial generic message
       saving: false as boolean, // true only when saving
@@ -538,13 +536,33 @@ export default {
             if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
             if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
-            // load Certified By but not Date
+            // load Certified By (but not Date)
             this.certifiedBy = filing.header.certifiedBy
 
             // load Staff Payment properties
-            this.routingSlipNumber = filing.header.routingSlipNumber
-            this.isPriority = filing.header.priority
-            this.isWaiveFees = filing.header.waiveFees
+            if (filing.header.routingSlipNumber) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.FAS,
+                routingSlipNumber: filing.header.routingSlipNumber,
+                isPriority: filing.header.priority
+              }
+            } else if (filing.header.bcolAccountNumber) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.BCOL,
+                bcolAccountNumber: filing.header.bcolAccountNumber,
+                datNumber: filing.header.datNumber,
+                folioNumber: filing.header.folioNumber,
+                isPriority: filing.header.priority
+              }
+            } else if (filing.header.waiveFees) {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.NO_FEE
+              }
+            } else {
+              this.staffPaymentData = {
+                option: StaffPaymentOptions.NONE
+              }
+            }
 
             // load Annual Report fields
             const annualReport = filing.annualReport
@@ -577,8 +595,9 @@ export default {
                   director => this.hasAction(director, CEASED) || this.hasAction(director, APPOINTED)
                 ).length > 0) {
                   // always set Priority flag to false
-                  // use default Waive Fees flag
-                  this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
+                  // use existing Waive Fees flag
+                  this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, false,
+                    (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
                 }
 
                 // add filing code for free changes
@@ -586,8 +605,9 @@ export default {
                   director => this.hasAction(director, NAMECHANGED) || this.hasAction(director, ADDRESSCHANGED)
                 ).length > 0) {
                   // always set Priority flag to false
-                  // use default Waive Fees flag
-                  this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
+                  // use existing Waive Fees flag
+                  this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false,
+                    (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
                 }
               } else {
                 throw new Error('Invalid change of directors')
@@ -610,8 +630,9 @@ export default {
                   }
                 }
                 // always set Priority flag to false
-                // use default Waive Fees flag
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, false, this.isWaiveFees)
+                // use existing Waive Fees flag
+                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, false,
+                  (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
               } else {
                 throw new Error('Invalid change of address')
               }
@@ -643,24 +664,27 @@ export default {
       this.haveChanges = true
       // when addresses change, update filing data
       // always set Priority flag to false
-      // use default Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT, false, this.isWaiveFees)
+      // use existing Waive Fees flag
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT, false,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
     directorsChange (modified: boolean) {
       this.haveChanges = true
       // when directors change, update filing data
       // always set Priority flag to false
-      // use default Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
+      // use existing Waive Fees flag
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT, false,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
     directorsFreeChange (modified: boolean) {
       this.haveChanges = true
       // when directors change (free filing), update filing data
       // always set Priority flag to false
-      // use default Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false, this.isWaiveFees)
+      // use existing Waive Fees flag
+      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
     onAgmDateChange (val: string) {
@@ -676,8 +700,9 @@ export default {
     onAgmDateValidChange (val: boolean) {
       this.agmDateValid = val
       // when validity changes, update filing data
-      // use default Priority and Waive Fees flags
-      this.updateFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT, this.isPriority, this.isWaiveFees)
+      // use existing Priority and Waive Fees flags
+      this.updateFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT, this.staffPaymentData.isPriority,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
     async onClickSave () {
@@ -765,17 +790,26 @@ export default {
           effectiveDate: this.asOfDate + 'T00:00:00+00:00'
         }
       }
-      // only save Routing Slip Number if it's valid
-      if (this.routingSlipNumber && !this.isWaiveFees) {
-        header.header['routingSlipNumber'] = this.routingSlipNumber
-      }
-      // only save Priority it it's valid
-      if (this.isPriority && !this.isWaiveFees) {
-        header.header['priority'] = true
-      }
-      // only save Waive Fees if it's valid
-      if (this.isWaiveFees) {
-        header.header['waiveFees'] = true
+
+      switch (this.staffPaymentData.option) {
+        case StaffPaymentOptions.FAS:
+          header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
+          header.header['priority'] = this.staffPaymentData.isPriority
+          break
+
+        case StaffPaymentOptions.BCOL:
+          header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
+          header.header['datNumber'] = this.staffPaymentData.datNumber
+          header.header['folioNumber'] = this.staffPaymentData.folioNumber
+          header.header['priority'] = this.staffPaymentData.isPriority
+          break
+
+        case StaffPaymentOptions.NO_FEE:
+          header.header['waiveFees'] = true
+          break
+
+        case StaffPaymentOptions.NONE: // should never happen
+          break
       }
 
       const business = {
@@ -987,9 +1021,10 @@ export default {
   mounted (): void {
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
-    // use default Priority and Waive Fees flags
+    // use existing Priority and Waive Fees flags
     if (this.isBComp) {
-      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.isPriority, this.isWaiveFees)
+      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     }
   },
 
@@ -1004,26 +1039,22 @@ export default {
       this.haveChanges = true
     },
 
-    /** Called when Routing Slip Number changes. */
-    routingSlipNumber (val) {
-      this.haveChanges = true
-    },
+    /** Called when Staff Payment Data changes. */
+    staffPaymentData (val: StaffPaymentIF) {
+      const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
-    /** Called when Is Priority changes. */
-    isPriority (val: boolean): void {
-      // apply this flag to AR filing code only
-      // simply re-add the AR code with the updated Priority flag and default Waive Fees flag
+      // apply Priority flag to AR filing code only
+      // simply re-add the AR code with the updated Priority flag and existing Waive Fees flag
       if (this.isBComp) {
-        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val, this.isWaiveFees)
+        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val.isPriority, waiveFees)
       } else if (this.isCoop) {
-        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val, this.isWaiveFees)
+        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val.isPriority, waiveFees)
       }
-    },
 
-    /** Called when Is Waive Fees changes. */
-    isWaiveFees (val: boolean): void {
-      // add/remove this flag to all filing codes
-      this.updateFilingData(val ? 'add' : 'remove', undefined, undefined, true)
+      // add/remove Waive Fees flag to all filing codes
+      this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
+
+      this.haveChanges = true
     }
   }
 }

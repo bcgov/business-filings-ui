@@ -542,7 +542,8 @@ import { FormIF, BaseAddressIF, AlertMessageIF } from '@/interfaces'
 export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
-  $refs!: {
+  // ref: https://github.com/vuejs/vue-class-component/issues/94
+  $refs!: Vue['$refs'] & {
     // form and components to appoint a new director:
     newDirectorForm: FormIF,
     baseAddressNew: BaseAddressIF,

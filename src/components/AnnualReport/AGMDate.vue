@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
 import { mapState, mapGetters } from 'vuex'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
@@ -81,10 +81,13 @@ import { FormIF } from '@/interfaces'
   }
 })
 export default class AgmDate extends Mixins(DateMixin) {
-  // annotate form to fix "Property X does not exist on type Y" error
-  $refs!: {
+  // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
+  // ref: https://github.com/vuejs/vetur/issues/1414
+  // ref: https://github.com/vuejs/vue-class-component/issues/94
+  $refs!: Vue['$refs'] & {
     form: FormIF
   }
+
   // Prop passed into this component.
   @Prop({ default: null })
   private newAgmDate: string | null
