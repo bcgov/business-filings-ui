@@ -275,6 +275,10 @@ $icon-width: 2.75rem;
   padding: 0 1rem;
 }
 
+.v-list-item:first-of-type {
+  padding-bottom: 1rem;
+}
+
 .v-list-item__icon {
   margin-top: 0.7rem;
   margin-right: 0;
@@ -290,7 +294,7 @@ $icon-width: 2.75rem;
 }
 
 .v-list-item__content {
-  padding: 0 0 1rem 0;
+  padding: 0;
 }
 
 .address-icon {
