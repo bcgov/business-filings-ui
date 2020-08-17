@@ -32,21 +32,7 @@
       attach="#todo-list"
     />
 
-    <v-card class="no-results" v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling" flat>
-      <v-card-text>
-        <div class="no-results__title">
-          Coming Soon - Online Maintenance Filings such as Address and Director Changes
-        </div>
-        <div class="no-results__subtitle">
-          If you need to make changes to your Benefit Company, please contact us.
-        </div>
-        <div class="contact-info-container">
-          <ContactInfo/>
-        </div>
-      </v-card-text>
-    </v-card>
-
-    <v-expansion-panels v-else-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
+    <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item"
         v-for="(task, index) in orderBy(taskItems, 'order')"
@@ -422,7 +408,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
 // Components
-import { DetailsList, ContactInfo, NameRequestInfo } from '@/components/common'
+import { DetailsList, NameRequestInfo } from '@/components/common'
 
 // Dialogs
 import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
@@ -446,7 +432,6 @@ export default {
     ConfirmDialog,
     DeleteErrorDialog,
     DetailsList,
-    ContactInfo,
     NameRequestInfo
   },
 
@@ -487,10 +472,6 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    allowBCompMaintenanceFiling (): boolean {
-      return featureFlags.getFlag('bcomp-allow-maintenance-filing')
     }
   },
 

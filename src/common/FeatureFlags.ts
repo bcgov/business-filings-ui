@@ -1,7 +1,9 @@
 import { initialize, LDFlagSet } from 'launchdarkly-js-client-sdk'
 
 /** bcrs-create-ui-enabled = whether user is allowed to go to Create UI */
-const defaultFlagSet = { 'bcrs-create-ui-enabled': true, 'bcomp-allow-maintenance-filing': true }
+const defaultFlagSet = {
+  'bcrs-create-ui-enabled': true
+}
 
 class FeatureFlags {
     private static instance: FeatureFlags

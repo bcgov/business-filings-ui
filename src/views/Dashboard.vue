@@ -65,23 +65,11 @@
                       12:01 AM (Pacific Time). No other filings are allowed until then.</span>
                   </v-tooltip>
                 </v-scale-transition>
-                <v-tooltip top v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling"
-                  color="primary">
-                  <template v-slot:activator="{ on }">
-                    <span  v-on="on" >
-                      <v-btn text small disabled>
-                      <v-icon small>mdi-pencil</v-icon>
-                      <span>Change</span>
-                    </v-btn>
-                    </span>
-                  </template>
-                  <span>Online Address Change is coming soon.</span>
-                </v-tooltip>
                 <v-btn text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
                   :disabled="disableChanges"
-                  @click.native.stop="proceedCoa()" v-else>
+                  @click.native.stop="proceedCoa()">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -98,23 +86,11 @@
             <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
-                <v-tooltip top v-if="!tempRegNumber && isBComp && !allowBCompMaintenanceFiling"
-                   color="primary">
-                  <template v-slot:activator="{ on }">
-                    <span  v-on="on" >
-                      <v-btn text small disabled>
-                      <v-icon small>mdi-pencil</v-icon>
-                      <span>Change</span>
-                    </v-btn>
-                    </span>
-                  </template>
-                  <span>Online Director Change is coming soon.</span>
-                </v-tooltip>
                 <v-btn text small color="primary"
                   id="standalone-directors-button"
                   class="change-btn"
                   :disabled="disableChanges"
-                  @click.native.stop="goToStandaloneDirectors()" v-else>
+                  @click.native.stop="goToStandaloneDirectors()">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -211,10 +187,6 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    allowBCompMaintenanceFiling (): boolean {
-      return featureFlags.getFlag('bcomp-allow-maintenance-filing')
     }
   },
 
