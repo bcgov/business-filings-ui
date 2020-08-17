@@ -146,6 +146,10 @@ $avatar-width: 2.75rem;
   padding: 0;
 }
 
+.v-list-item:first-of-type {
+  padding-bottom: 1rem;
+}
+
 .v-list-item__title {
   font-size: 0.875rem;
   font-weight: 400;
