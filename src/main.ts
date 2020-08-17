@@ -17,6 +17,8 @@ import '@/assets/styles/overrides.scss'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import App from '@/App.vue'
 import { initLDClient, featureFlags } from '@/common/FeatureFlags'
+import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
 
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
@@ -30,6 +32,13 @@ Vue.use(Vue2Filters)
 async function start () {
   // fetch config from environment and API
   await fetchConfig()
+
+  // initialize Sentry
+  console.info('Initializing Sentry...') // eslint-disable-line no-console
+  Sentry.init({
+    dsn: window['sentryDsn'],
+    integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+  })
 
   // initialize Launch Darkly
   if (window['ldClientId']) {

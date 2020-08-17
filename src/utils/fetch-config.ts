@@ -68,6 +68,10 @@ export async function fetchConfig (): Promise<void> {
   window['ldClientId'] = ldClientId
   console.info('Set Launch Darkly Client ID.')
 
+  const sentryDsn = response.data['SENTRY_DSN'];
+  (<any>window).sentryDsn = sentryDsn
+  console.log('Set Sentry DSN.')
+
   // get Business ID / Temp Reg Number and validate that it looks OK
   // it should be first token after Base URL in Pathname
   // FUTURE: improve Business ID / Temp Reg Number validation

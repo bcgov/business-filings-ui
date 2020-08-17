@@ -15,6 +15,8 @@
   "dependencies": {
     "@babel/compat-data": "^7.9.0",
     "@mdi/font": "^5.0.45",
+    "@sentry/browser": "^5.21.1",
+    "@sentry/integrations": "^5.21.1",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "country-list": "^2.2.0",
