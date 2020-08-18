@@ -31,6 +31,7 @@ Vue.use(Vue2Filters)
 // main code
 async function start () {
   // fetch config from environment and API
+  // must come first as inits below depend on config
   await fetchConfig()
 
   // initialize Sentry
