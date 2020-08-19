@@ -50,7 +50,7 @@
       </main>
     </div>
 
-    <sbc-footer :appNameVersionStr=appNameVersionStr />
+    <sbc-footer :aboutText=aboutText />
 
   </v-app>
 </template>
@@ -165,9 +165,9 @@ export default {
       return (process.env.JEST_WORKER_ID !== undefined)
     },
 
-    /** The app name and version string. */
-    appNameVersionStr (): string {
-      return `${process.env.PACKAGE_NAME} V${process.env.PACKAGE_VERSION}`
+    /** The About text. */
+    aboutText (): string {
+      return process.env.ABOUT_TEXT
     }
   },
 

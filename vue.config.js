@@ -1,17 +1,24 @@
 const webpack = require('webpack')
 const fs = require('fs')
 const packageJson = fs.readFileSync('./package.json')
-const packageName = JSON.parse(packageJson).friendlyName || 0
-const packageVersion = JSON.parse(packageJson).version || 0
+const appName = JSON.parse(packageJson).appName
+const appVersion = JSON.parse(packageJson).version
+const sbcName = JSON.parse(packageJson).sbcName
+const sbcVersion = JSON.parse(packageJson).dependencies['sbc-common-components']
+const aboutText1 = (appName && appVersion) ? `${appName} v${appVersion}` : ''
+const aboutText2 = (sbcName && sbcVersion) ? `${sbcName} v${sbcVersion}` : ''
 
 module.exports = {
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
-          'process.env': {
-              PACKAGE_NAME:  '"' + packageName + '"',
-              PACKAGE_VERSION: '"' + packageVersion + '"'
-          }
+        'process.env': {
+          ABOUT_TEXT:
+            (aboutText1 && aboutText2) ? `"${aboutText1}<br>${aboutText2}"`
+              : aboutText1 ? `"${aboutText1}"`
+                : aboutText2 ? `"${aboutText2}"`
+                  : ''
+        }
       })
     ],
     devtool: 'source-map'
