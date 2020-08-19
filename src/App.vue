@@ -1,6 +1,6 @@
 <template>
   <v-app class="app-container theme--light" id="app">
-
+    <!-- Dialogs -->
     <dashboard-unavailable-dialog
       :dialog="dashboardUnavailableDialog"
       @exit="onClickExit"
@@ -50,7 +50,7 @@
       </main>
     </div>
 
-    <sbc-footer />
+    <sbc-footer :aboutText=aboutText />
 
   </v-app>
 </template>
@@ -163,6 +163,11 @@ export default {
     /** True if Jest is running the code. */
     isJestRunning (): boolean {
       return (process.env.JEST_WORKER_ID !== undefined)
+    },
+
+    /** The About text. */
+    aboutText (): string {
+      return process.env.ABOUT_TEXT
     }
   },
 
