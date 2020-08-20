@@ -71,6 +71,7 @@ async function start () {
 
 // execution and error handling
 start().catch(error => {
+  Sentry.captureException(error)
   console.log(error) // eslint-disable-line no-console
   // bypass alert if this specific error
   if (!error?.message?.startsWith('Missing or invalid')) {
