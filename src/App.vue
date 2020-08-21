@@ -60,6 +60,7 @@
 import { mapState, mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
+import * as Sentry from '@sentry/browser'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -67,8 +68,10 @@ import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
-import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErrorDialog,
-  NameRequestInvalidDialog } from '@/components/dialogs'
+import {
+  DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErrorDialog,
+  NameRequestInvalidDialog
+} from '@/components/dialogs'
 
 // Mixins
 import { ObjectMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
@@ -242,7 +245,7 @@ export default {
     },
 
     /** Clears Keycloak token information from session storage. */
-    clearKeycloakSession () : void {
+    clearKeycloakSession (): void {
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
       sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
@@ -282,6 +285,10 @@ export default {
         } catch (err) {
           console.log(err) // eslint-disable-line no-console
           this.dashboardUnavailableDialog = true
+          // logging exception to sentry due to incomplete business data.
+          // at this point system doesn't know why its incomplete.
+          // since its not an expected behaviour it could be better to track.
+          Sentry.captureException(err)
         }
       }
 
@@ -455,7 +462,7 @@ export default {
         .then(response => Promise.resolve(response.data))
     },
 
-    storeIncorpApp (data: any) : void {
+    storeIncorpApp (data: any): void {
       const filing = data?.filing
 
       if (!filing?.business || !filing?.header) {
