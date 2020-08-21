@@ -285,6 +285,9 @@ export default {
         } catch (err) {
           console.log(err) // eslint-disable-line no-console
           this.dashboardUnavailableDialog = true
+          // logging exception to sentry due to incomplete business data.
+          // at this point system doesn't know why its incomplete.
+          // since its not an expected behaviour it could be better to track.
           Sentry.captureException(err)
         }
       }

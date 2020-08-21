@@ -71,6 +71,9 @@ async function start () {
 
 // execution and error handling
 start().catch(error => {
+  // log any error after configuring sentry.
+  // it helps to identify configuration issues specific to the environment.
+  // note that it won't log anything related to `fetchConfig()` since sentry is depending on a config value.
   Sentry.captureException(error)
   console.log(error) // eslint-disable-line no-console
   // bypass alert if this specific error
