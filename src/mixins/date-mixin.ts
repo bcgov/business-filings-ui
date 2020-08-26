@@ -113,6 +113,31 @@ export default class DateMixin extends Vue {
   }
 
   /**
+    * API always expects the datetime in  UTC ISO format.
+    * This function expects date (YYYY-MM-DD) without time.
+    * It converts to UTC ISO datetime.
+    */
+  convertLocalDateToUTCDateTime (date: string): string {
+    if (!date || date.length !== 10) return null // safety check
+
+    // make sure the date is in correct format
+    if (date.indexOf('/') >= 0) {
+      date = date.replace('/', '-')
+    }
+
+    // date object with local timezone
+    // if date=2020-08-26 and the local timezone is GMT-0700 (Pacific Daylight Time)
+    // localDate will be `Wed Aug 26 2020 00:00:00 GMT-0700 (Pacific Daylight Time)`
+    const localDate = new Date(date + 'T00:00:00')
+    let isoDate = localDate.toISOString() // "2020-08-26T07:00:00.000Z"
+    if (isoDate.endsWith('.000Z')) {
+      isoDate = isoDate.replace('.000Z', '+00:00') // API expects timezone in this format.
+    }
+
+    return isoDate // "2020-08-26T07:00:00+00:00"
+  }
+
+  /**
    * The number of days that 'date' is from today.
    * @returns -1 for yesterday
    * @returns 0 for today
