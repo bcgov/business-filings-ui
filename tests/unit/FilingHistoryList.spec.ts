@@ -22,6 +22,11 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
+// Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
+const app: HTMLDivElement = document.createElement('div')
+app.setAttribute('data-app', 'true')
+document.body.append(app)
+
 const sampleFilings = [
   {
     'filing': {
@@ -1712,6 +1717,69 @@ describe('Filing History List - corrections', () => {
     expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - redirections', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Correct URL when filing an IA correction', async () => {
+    // init data
+    sessionStorage.setItem('CORRECT_URL', `${process.env.VUE_APP_PATH}/correct/`)
+    store.state.keycloakRoles = ['staff']
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            availableOnPaperOnly: false,
+            certifiedBy: 'Full Name',
+            date: '2020-04-28T19:14:45.589328+00:00',
+            effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
+            filingId: 85114,
+            name: 'incorporationApplication',
+            paymentToken: 1971,
+            status: 'COMPLETED'
+          },
+          incorporationApplication: {}
+        }
+      }
+    ]
+
+    const $route = { query: { } }
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // sanity check
+    expect(vm.historyItems.length).toEqual(1)
+
+    // find and click the drop-down menu button
+    const menuButton = wrapper.find('.menu-btn')
+    expect(menuButton).toBeDefined()
+    menuButton.trigger('click')
+    await flushPromises()
+
+    // find and clck the "File a Correction" menu item
+    const fileCorrectionItem = wrapper.find('.file-correction-item')
+    expect(fileCorrectionItem).toBeDefined()
+    fileCorrectionItem.trigger('click')
+    await flushPromises()
+
+    // verify redirection
+    const createUrl = 'business/correct/correction/?id=85114'
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
   })
