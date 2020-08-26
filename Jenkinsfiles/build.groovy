@@ -21,54 +21,10 @@
 // define constants
 def COMPONENT_NAME = 'coops-ui'
 def TAG_NAME = 'dev'
-def NAMESPACE = '1rdehl'
-def CONTEXT_DIRECTORY = 'business-filings-ui'
 
 // define groovy functions
 import groovy.json.JsonOutput
 
-// Determine whether there were any changes the files within the project's context directory.
-// return a string listing commit msgs occurred since last build
-@NonCPS
-String triggerBuild(String contextDirectory) {
-    // Determine if code has changed within the source context directory.
-    def changeLogSets = currentBuild.changeSets
-    def filesChangeCnt = 0
-    MAX_MSG_LEN = 512
-    def changeString = ""
-    for (int i = 0; i < changeLogSets.size(); i++) {
-        def entries = changeLogSets[i
-        ].items
-        for (int j = 0; j < entries.length; j++) {
-            def entry = entries[j
-            ]
-            //echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
-            def files = new ArrayList(entry.affectedFiles)
-
-            for (int k = 0; k < files.size(); k++) {
-                def file = files[k
-                ]
-                def filePath = file.path
-                //echo ">> ${file.path}"
-                if (filePath.contains(contextDirectory)) {
-                    filesChangeCnt = 1
-                    truncated_msg = entry.msg.take(MAX_MSG_LEN)
-                    changeString += " - ${truncated_msg} [${entry.author}]\n"
-                    k = files.size()
-                    j = entries.length
-                }
-            }
-        }
-    }
-    if ( filesChangeCnt < 1 ) {
-        echo('The changes do not require a build.')
-        return ""
-    }
-    else {
-        echo('The changes require a build.')
-        return changeString
-    }
-}
 // Get an image's hash tag
 String getImageTagHash(String imageName, String tag = "") {
 
@@ -88,23 +44,6 @@ properties([
     ]
 ])
 
-def run_pipeline = true
-if( triggerBuild(CONTEXT_DIRECTORY) == "" ) {
-    node {
-        try {
-            timeout(time: 1, unit: 'DAYS') {
-                input message: "Run ${COMPONENT_NAME}-${TAG_NAME}-pipeline?", id: "1234", submitter: 'admin,thorwolpert-admin,rarmitag-admin,kialj876-admin,severinbeauvais-edit,cameron-freshworks-edit'
-            }
-        } catch (Exception e) {
-            run_pipeline = false;
-        }
-    }
-}
-if (!run_pipeline) {
-    echo('No Build Wanted - End of Build.')
-    currentBuild.result = 'SUCCESS'
-    return
-}
 node {
     stage("Build ${COMPONENT_NAME}-inter") {
         script {
