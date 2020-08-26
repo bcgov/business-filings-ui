@@ -1778,7 +1778,7 @@ describe('Filing History List - redirections', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/correct/correction/?id=85114'
+    const createUrl = 'business/correct/correction/?filingId=85114'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
