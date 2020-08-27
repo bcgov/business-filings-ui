@@ -321,7 +321,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, 
   from '@/components/dialogs'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin } from '@/mixins'
 
 // Enums, Constants and Interfaces
 import { FilingCodes, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
@@ -347,7 +347,7 @@ export default {
     BcolErrorDialog
   },
 
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin],
 
   data () {
     return {
@@ -581,8 +581,8 @@ export default {
           name: FilingTypes.CHANGE_OF_DIRECTORS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
-          date: this.currentDate,
-          effectiveDate: this.codDate + 'T00:00:00+00:00'
+          date: this.currentDate, // API reassign this date according to its clock
+          effectiveDate: this.convertLocalDateToUTCDateTime(this.codDate)
         }
       }
 
@@ -616,7 +616,7 @@ export default {
       }
 
       if (this.hasFilingCode(this.feeCode) ||
-      this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
+        this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
         changeOfDirectors = {
           changeOfDirectors: {
             directors: this.allDirectors
@@ -754,7 +754,8 @@ export default {
             }
 
             if (filing.header.effectiveDate) {
-              this.initialCODDate = filing.header.effectiveDate.slice(0, 10)
+              this.initialCODDate =
+                this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
             } else {
               // eslint-disable-next-line no-console
               console.log('fetchChangeOfDirectors() error = missing Effective Date')
