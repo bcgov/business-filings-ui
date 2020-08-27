@@ -317,8 +317,10 @@ import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOffice
   from '@/components/common'
 
 // Dialogs
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
-  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
+import {
+  ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
+  SaveErrorDialog, BcolErrorDialog
+} from '@/components/dialogs'
 
 // Mixins
 import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
@@ -787,7 +789,7 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate,
-          effectiveDate: this.asOfDate + 'T00:00:00+00:00'
+          effectiveDate: this.convertLocalDateToUTCDateTime(this.asOfDate)
         }
       }
 
@@ -825,7 +827,7 @@ export default {
           annualReport: {
             annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
             didNotHoldAgm: this.noAgm || false,
-            annualReportDate: this.asOfDate,
+            annualReportDate: this.convertLocalDateToUTCDateTime(this.asOfDate),
             offices: {
               registeredOffice: {
                 deliveryAddress: this.addresses.registeredOffice['deliveryAddress'],
@@ -838,7 +840,7 @@ export default {
       } else if (this.isBComp) {
         annualReport = {
           annualReport: {
-            annualReportDate: this.asOfDate,
+            annualReportDate: this.convertLocalDateToUTCDateTime(this.asOfDate),
             nextARDate: this.dateToUsableString(new Date(this.nextARDate)),
             offices: {
               registeredOffice: {
@@ -856,7 +858,7 @@ export default {
       }
 
       if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
-      this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
+        this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
         changeOfDirectors = {
           changeOfDirectors: {
             directors: this.allDirectors
