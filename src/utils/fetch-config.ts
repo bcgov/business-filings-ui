@@ -33,15 +33,19 @@ export async function fetchConfig (): Promise<void> {
 
   const businessesUrl = response.data['BUSINESSES_URL']
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
-  console.log('Set Businesses URL to: ' + businessesUrl)
+  console.info('Set Businesses URL to: ' + businessesUrl)
 
   const authUrl = response.data['AUTH_URL']
   sessionStorage.setItem('AUTH_URL', authUrl)
-  console.log('Set Auth URL to: ' + authUrl)
+  console.info('Set Auth URL to: ' + authUrl)
 
   const createUrl = response.data['CREATE_URL']
   sessionStorage.setItem('CREATE_URL', createUrl)
-  console.log('Set Create URL to: ' + createUrl)
+  console.info('Set Create URL to: ' + createUrl)
+
+  const correctUrl = response.data['CORRECT_URL']
+  sessionStorage.setItem('CORRECT_URL', correctUrl)
+  console.info('Set Correct URL to: ' + correctUrl)
 
   const legalApiUrl = response.data['LEGAL_API_URL']
   // set base URL for axios calls
@@ -70,7 +74,7 @@ export async function fetchConfig (): Promise<void> {
 
   const sentryDsn = response.data['SENTRY_DSN'];
   (<any>window).sentryDsn = sentryDsn
-  console.log('Set Sentry DSN.')
+  console.info('Set Sentry DSN.')
 
   // get Business ID / Temp Reg Number and validate that it looks OK
   // it should be first token after Base URL in Pathname
@@ -92,11 +96,11 @@ export async function fetchConfig (): Promise<void> {
   // eg, "/business/CPxxx/" or "/business/Txxx/"
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
-  console.log('Set Vue Router Base to: ' + vueRouterBase)
+  console.info('Set Vue Router Base to: ' + vueRouterBase)
 
   // set Base URL for returning from redirects
   // eg, http://localhost:8080/business/CPxxx/
   const baseUrl = windowLocationOrigin + vueRouterBase
   sessionStorage.setItem('BASE_URL', baseUrl)
-  console.log('Set Base URL to: ' + baseUrl)
+  console.info('Set Base URL to: ' + baseUrl)
 }

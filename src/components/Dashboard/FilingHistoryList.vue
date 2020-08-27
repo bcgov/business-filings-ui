@@ -875,8 +875,11 @@ export default {
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
-          // for now, not allowed
-          alert('At this time, you cannot correct an incorporation application. Please contact Ops if needed.')
+          // redirect to Correct web app to correct this Incorporation Application
+          const correctUrl = sessionStorage.getItem('CORRECT_URL')
+          const url = `${correctUrl}correction/?filingId=${item.filingId}`
+          // assume Correct URL is always reachable
+          window.location.assign(url)
           break
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?

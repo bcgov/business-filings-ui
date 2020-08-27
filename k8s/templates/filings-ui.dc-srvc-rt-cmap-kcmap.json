@@ -127,7 +127,7 @@
             "kind": "ConfigMap",
             "apiVersion": "v1",
             "data": {
-                "configuration.json": "{\n\"LEGAL_API_URL\":\"${LEGAL_API_URL}\",\n\"AUTH_API_URL\":\"${AUTH_API_URL}\",\n\"BUSINESSES_URL\":\"${BUSINESSES_URL}\",\n\"AUTH_URL\":\"${AUTH_URL}\",\n\"PAY_API_URL\":\"${PAY_API_URL}\",\n\"CREATE_URL\":\"${CREATE_URL}\",\n\"KEYCLOAK_CONFIG_PATH\":\"${KEYCLOAK_CONFIG_PATH}\",\n\"ADDRESS_COMPLETE_KEY\":\"${ADDRESS_COMPLETE_KEY}\",\n\"LD_CLIENT_ID\":\"${LD_CLIENT_ID}\",\n\"SENTRY_DSN\":\"${SENTRY_DSN}\"\n}"
+                "configuration.json": "{\n\"LEGAL_API_URL\":\"${LEGAL_API_URL}\",\n\"AUTH_API_URL\":\"${AUTH_API_URL}\",\n\"BUSINESSES_URL\":\"${BUSINESSES_URL}\",\n\"AUTH_URL\":\"${AUTH_URL}\",\n\"PAY_API_URL\":\"${PAY_API_URL}\",\n\"CREATE_URL\":\"${CREATE_URL}\",\n\"CORRECT_URL\":\"${CORRECT_URL}\",\n\"KEYCLOAK_CONFIG_PATH\":\"${KEYCLOAK_CONFIG_PATH}\",\n\"ADDRESS_COMPLETE_KEY\":\"${ADDRESS_COMPLETE_KEY}\",\n\"LD_CLIENT_ID\":\"${LD_CLIENT_ID}\",\n\"SENTRY_DSN\":\"${SENTRY_DSN}\"\n}"
             },
             "metadata": {
                 "name": "${NAME}-${TAG_NAME}-configuration",
@@ -301,6 +301,13 @@
             "name": "CREATE_URL",
             "displayName": "Business Create URL",
             "description": "The URL to the Business Create UI.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "CORRECT_URL",
+            "displayName": "Business Correct URL",
+            "description": "The URL to the Business Correct UI.",
             "required": true,
             "value": ""
         },
