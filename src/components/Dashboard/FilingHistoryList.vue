@@ -875,7 +875,7 @@ export default {
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
-          // redirect to Correct web app to correct this Incorporation Application
+          // redirect to Edit web app to correct this Incorporation Application
           const editUrl = sessionStorage.getItem('EDIT_URL')
           const url = `${editUrl}correction/?filingId=${item.filingId}`
           // assume Correct URL is always reachable
