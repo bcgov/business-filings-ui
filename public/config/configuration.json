@@ -2,7 +2,7 @@
   "BUSINESSES_URL": "https://dev.bcregistry.ca/business/auth/",
   "AUTH_URL": "https://dev.bcregistry.ca/business/auth/",
   "CREATE_URL": "https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/",
-  "CORRECT_URL": "https://business-correct-dev.pathfinder.gov.bc.ca/businesses/correct/",
+  "EDIT_URL": "https://business-create-dev.pathfinder.gov.bc.ca/businesses/edit/",
   "LEGAL_API_URL": "https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "AUTH_API_URL": "https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "PAY_API_URL": "https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/",

@@ -1735,9 +1735,9 @@ describe('Filing History List - redirections', () => {
     window.location.assign = assign
   })
 
-  it('redirects to Correct URL when filing an IA correction', async () => {
+  it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
-    sessionStorage.setItem('CORRECT_URL', `${process.env.VUE_APP_PATH}/correct/`)
+    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     store.state.keycloakRoles = ['staff']
     store.state.filings = [
       {
@@ -1778,7 +1778,7 @@ describe('Filing History List - redirections', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/correct/correction/?filingId=85114'
+    const createUrl = 'business/edit/correction/?filingId=85114'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
