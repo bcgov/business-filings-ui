@@ -22,7 +22,7 @@
 def COMPONENT_NAME = 'coops-ui'
 def TAG_NAME = 'dev'
 def NAMESPACE = '1rdehl'
-def CONTEXT_DIRECTORY = '.'
+def CONTEXT_DIRECTORY = 'business-filings-ui'
 
 // define groovy functions
 import groovy.json.JsonOutput
@@ -51,7 +51,6 @@ String triggerBuild(String contextDirectory) {
                 def filePath = file.path
                 //echo ">> ${file.path}"
                 if (filePath.contains(contextDirectory)) {
-
                     filesChangeCnt = 1
                     truncated_msg = entry.msg.take(MAX_MSG_LEN)
                     changeString += " - ${truncated_msg} [${entry.author}]\n"
@@ -90,11 +89,11 @@ properties([
 ])
 
 def run_pipeline = true
-if( triggerBuild(COMPONENT_NAME) == "" ) {
+if( triggerBuild(CONTEXT_DIRECTORY) == "" ) {
     node {
         try {
             timeout(time: 1, unit: 'DAYS') {
-                input message: "Run ${COMPONENT_NAME}-${TAG_NAME}-pipeline?", id: "1234", submitter: 'admin,thorwolpert-admin,rarmitag-admin,kialj876-admin,severinbeauvais-edit,ochiu-edit,cameron-freshworks-edit'
+                input message: "Run ${COMPONENT_NAME}-${TAG_NAME}-pipeline?", id: "1234", submitter: 'admin,thorwolpert-admin,rarmitag-admin,kialj876-admin,severinbeauvais-edit,cameron-freshworks-edit'
             }
         } catch (Exception e) {
             run_pipeline = false;
@@ -133,9 +132,7 @@ node {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-
                     echo "Tagging ${COMPONENT_NAME} for deployment to ${TAG_NAME} ..."
-
                     // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
                     // Tag the images for deployment based on the image's hash
                     def IMAGE_HASH = getImageTagHash("${COMPONENT_NAME}")
