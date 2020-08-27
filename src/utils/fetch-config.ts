@@ -43,9 +43,9 @@ export async function fetchConfig (): Promise<void> {
   sessionStorage.setItem('CREATE_URL', createUrl)
   console.info('Set Create URL to: ' + createUrl)
 
-  const correctUrl = response.data['CORRECT_URL']
-  sessionStorage.setItem('CORRECT_URL', correctUrl)
-  console.info('Set Correct URL to: ' + correctUrl)
+  const editUrl = response.data['EDIT_URL']
+  sessionStorage.setItem('EDIT_URL', editUrl)
+  console.info('Set Edit URL to: ' + editUrl)
 
   const legalApiUrl = response.data['LEGAL_API_URL']
   // set base URL for axios calls

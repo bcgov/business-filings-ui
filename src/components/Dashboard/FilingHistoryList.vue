@@ -876,7 +876,7 @@ export default {
           break
         case FilingTypes.INCORPORATION_APPLICATION:
           // redirect to Correct web app to correct this Incorporation Application
-          const correctUrl = sessionStorage.getItem('CORRECT_URL')
+          const correctUrl = sessionStorage.getItem('EDIT_URL')
           const url = `${correctUrl}correction/?filingId=${item.filingId}`
           // assume Correct URL is always reachable
           window.location.assign(url)
