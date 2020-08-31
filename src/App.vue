@@ -41,6 +41,7 @@
     </transition>
 
     <sbc-header />
+    <pay-system-alert />
 
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
@@ -63,6 +64,7 @@ import KeycloakService from 'sbc-common-components/src/services/keycloak.service
 import * as Sentry from '@sentry/browser'
 
 // Components
+import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import EntityInfo from '@/components/EntityInfo.vue'
@@ -115,6 +117,7 @@ export default {
     BusinessAuthErrorDialog,
     NameRequestAuthErrorDialog,
     NameRequestInvalidDialog,
+    PaySystemAlert,
     SbcHeader,
     SbcFooter,
     EntityInfo
