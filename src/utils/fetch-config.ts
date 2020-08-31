@@ -40,7 +40,7 @@ export async function fetchConfig (): Promise<void> {
   }
   const authConfigString = JSON.stringify(authConfig)
   sessionStorage.setItem('AUTH_API_CONFIG', authConfigString)
-  console.log('AUTH_API_CONFIG: ' + authConfigString)
+  console.info('AUTH_API_CONFIG: ' + authConfigString)
 
   const businessesUrl = response.data['BUSINESSES_URL']
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
