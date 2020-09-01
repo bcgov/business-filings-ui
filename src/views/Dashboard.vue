@@ -127,7 +127,6 @@ import { CoaWarningDialog } from '@/components/dialogs'
 // Enums, Constants and Interfaces
 import { EntityStatus, FilingStatus } from '@/enums'
 import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
-import { featureFlags } from '@/common/FeatureFlags'
 import { HistoryItemIF, TaskItemIF } from '@/interfaces'
 
 export default {

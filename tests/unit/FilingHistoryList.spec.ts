@@ -1739,6 +1739,7 @@ describe('Filing History List - redirections', () => {
     // init data
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     store.state.keycloakRoles = ['staff']
+    store.state.entityIncNo = 'BC1234567'
     store.state.filings = [
       {
         filing: {
@@ -1778,7 +1779,7 @@ describe('Filing History List - redirections', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/edit/correction/?filingId=85114'
+    const createUrl = 'business/edit/BC1234567/correction?corrected-id=85114'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
