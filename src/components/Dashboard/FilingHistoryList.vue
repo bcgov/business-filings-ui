@@ -305,6 +305,7 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
+import { featureFlags } from '@/utils'
 
 // Components
 import ColinFiling from './ColinFiling.vue'
@@ -1085,7 +1086,12 @@ export default {
 
     /** Whether to disable correction for this history item. */
     disableCorrection (item: HistoryItemIF): boolean {
-      return (this.disableChanges || item.isCorrection || item.isFutureEffectiveIa || item.isColinFiling)
+      // feature flag code to disable correction for an Incorp App
+      const disableThisIaCorrection = (item.filingType === FilingTypes.INCORPORATION_APPLICATION &&
+        !featureFlags.getFlag('correction-ui-enabled'))
+
+      return (this.disableChanges || item.isCorrection || item.isFutureEffectiveIa || item.isColinFiling ||
+        disableThisIaCorrection)
     }
   },
 

@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { fetchConfig } from '@/utils'
+import { fetchConfig, initLDClient } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -16,7 +16,6 @@ import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import App from '@/App.vue'
-import { initLDClient, featureFlags } from '@/common/FeatureFlags'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 
@@ -44,11 +43,6 @@ async function start () {
   // initialize Launch Darkly
   if (window['ldClientId']) {
     await initLDClient()
-  }
-
-  // if this is a draft Incorp App, check if we are allowing user to go to Create UI
-  if (sessionStorage.getItem('TEMP_REG_NUMBER') && !featureFlags.getFlag('bcrs-create-ui-enabled')) {
-    throw new Error('create-ui is disabled')
   }
 
   // configure Keycloak Service
