@@ -6,7 +6,6 @@
   "LEGAL_API_URL": "https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "AUTH_API_URL": "https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/",
   "PAY_API_URL": "https://pay-api-dev.pathfinder.gov.bc.ca/api/v1/",
-  "VUE_APP_STATUS_ROOT_API": "https://status-api-dev.pathfinder.gov.bc.ca/api/v1",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",
   "ADDRESS_COMPLETE_KEY": "",
   "LD_CLIENT_ID": "",
