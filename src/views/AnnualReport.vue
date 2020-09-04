@@ -827,7 +827,7 @@ export default {
           annualReport: {
             annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
             didNotHoldAgm: this.noAgm || false,
-            annualReportDate: this.convertLocalDateToUTCDateTime(this.asOfDate),
+            annualReportDate: this.asOfDate,
             offices: {
               registeredOffice: {
                 deliveryAddress: this.addresses.registeredOffice['deliveryAddress'],
@@ -840,7 +840,7 @@ export default {
       } else if (this.isBComp) {
         annualReport = {
           annualReport: {
-            annualReportDate: this.convertLocalDateToUTCDateTime(this.asOfDate),
+            annualReportDate: this.asOfDate,
             nextARDate: this.dateToUsableString(new Date(this.nextARDate)),
             offices: {
               registeredOffice: {
