@@ -213,7 +213,7 @@
           <!-- is this a Notice of Alteration? -->
           <template v-else-if="filing.isNoa">
             <notice-of-alteration />
-            <!-- NB: no documents so no divider needed -->
+            <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
           <!-- is this a Colin filing? -->
