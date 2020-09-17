@@ -1,6 +1,16 @@
 import { LegalTypes, FilingTypes, FilingStatus } from '@/enums'
 
 export default {
+  /** Get the Current Date */
+  getCurrentDate (state): string {
+    return state.currentDate
+  },
+
+  /** Get Entity Business Number */
+  getIncorporationNumber (state): string {
+    return state.entityIncNo
+  },
+
   /** Is True if entity is a Benefit Company. */
   isBComp (state): boolean {
     return (state.entityType === LegalTypes.BENEFIT_COMPANY)

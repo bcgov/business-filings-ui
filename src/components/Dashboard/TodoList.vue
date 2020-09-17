@@ -227,6 +227,32 @@
                   >
                     <span>Resume</span>
                   </v-btn>
+                  <v-menu offset-y left>
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary" class="actions__more-actions__btn px-0"
+                        v-on="on" id="menu-activator-staff" :disabled="!task.enabled"
+                      >
+                        <v-icon>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list class="actions__more-actions">
+                      <v-list-item
+                        v-if="businessId"
+                        id="btn-delete-draft-staff"
+                        @click="confirmDeleteDraft(task)"
+                      >
+                        <v-list-item-title>Delete Draft</v-list-item-title>
+                      </v-list-item>
+
+                      <v-list-item
+                        v-if="tempRegNumber"
+                        id="btn-delete-incorporation-staff"
+                        @click="confirmDeleteIncorporation(task)"
+                      >
+                        <v-list-item-title>Delete Incorporation Application</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
                 </template>
 
                 <template v-else-if="!isTypeCorrection(task)">
@@ -417,7 +443,7 @@ import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorD
 import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums, Constants and Interfaces
-import { FilingStatus, FilingTypes } from '@/enums'
+import { FilingNames, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 import { FilingIF, TaskItemIF } from '@/interfaces'
 
@@ -458,7 +484,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff']),
+    ...mapGetters(['getIncorporationNumber', 'isBComp', 'isCoop', 'isRoleStaff']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest']),
 
@@ -777,11 +803,20 @@ export default {
           this.$router.push({ name: STANDALONE_ADDRESSES, params: { filingId: task.id } })
           break
         case FilingTypes.CORRECTION:
-          // resume this Correction Filing
-          this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: CORRECTION,
-            params: { filingId: task.id, correctedFilingId: task.correctedFilingId }
-          })
+          if (task.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
+            // redirect to Edit web app to correct this Incorporation Application
+            const editUrl = sessionStorage.getItem('EDIT_URL')
+            const url = `${editUrl}${this.getIncorporationNumber}/correction?correction-id=${task.id}`
+
+            // assume Correct URL is always reachable
+            window.location.assign(url)
+          } else {
+            // resume this Correction Filing
+            this.setCurrentFilingStatus(FilingStatus.DRAFT)
+            this.$router.push({ name: CORRECTION,
+              params: { filingId: task.id, correctedFilingId: task.correctedFilingId }
+            })
+          }
           break
         case FilingTypes.INCORPORATION_APPLICATION:
           // redirect to Create web app to resume this Incorporation Application
@@ -816,7 +851,7 @@ export default {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Delete Draft?',
-        'Delete your ' + task.draftTitle + '? Any changes you\'ve made will be lost.',
+        'Delete your ' + task.title + '? Any changes you\'ve made will be lost.',
         {
           width: '40rem',
           persistent: true,

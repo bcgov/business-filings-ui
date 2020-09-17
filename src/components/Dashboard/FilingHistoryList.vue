@@ -323,7 +323,7 @@ import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
 // Enums and Constants and Interfaces
 import { LegalTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
-import { AlterationIF, BusinessIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
+import { AlterationIF, BusinessIF, CorrectionFilingIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
@@ -365,7 +365,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isRoleStaff', 'nrNumber']),
+    ...mapGetters(['getIncorporationNumber', 'isBComp', 'isRoleStaff', 'nrNumber']),
 
     ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
 
@@ -849,7 +849,7 @@ export default {
       }
     },
 
-    correctThisFiling (item: HistoryItemIF) {
+    async correctThisFiling (item: HistoryItemIF) {
       switch (item?.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // FUTURE:
@@ -876,11 +876,28 @@ export default {
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
-          // redirect to Edit web app to correct this Incorporation Application
-          const editUrl = sessionStorage.getItem('EDIT_URL')
-          const url = `${editUrl}${this.entityIncNo}/correction?corrected-id=${item.filingId}`
-          // assume Correct URL is always reachable
-          window.location.assign(url)
+          try {
+            // Fetch original Incorporation Application
+            const iaFiling = await this.fetchFilingById(this.getIncorporationNumber, item.filingId)
+
+            // Create a Draft Incorporation Application Correction Filing
+            const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
+            const draftCorrection = await this.createCorrection(this.getIncorporationNumber, correctionIaFiling)
+
+            // Retrieve the Filing ID from the newly created Draft
+            const draftCorrectionId = draftCorrection.header.filingId
+
+            // redirect to Edit web app to correct this Incorporation Application
+            const editUrl = sessionStorage.getItem('EDIT_URL')
+            const url = `${editUrl}${this.getIncorporationNumber}/correction?correction-id=${draftCorrectionId}`
+
+            // assume Correct URL is always reachable
+            window.location.assign(url)
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(`Correction Creation error = ${error}`)
+            this.downloadErrorDialog = true
+          }
           break
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?
@@ -1092,6 +1109,45 @@ export default {
 
       return (this.disableChanges || item.isCorrection || item.isFutureEffectiveIa || item.isColinFiling ||
         disableThisIaCorrection)
+    },
+
+    /**
+     * Fetches a filing by its id.
+     * @returns a promise to return the filing of the specified type
+     */
+    fetchFilingById (businessId: string, filingId: number): Promise<any> {
+      const url = `businesses/${businessId}/filings/${filingId}`
+      return axios.get(url)
+        .then(response => {
+          if (response && response.data) {
+            return response.data.filing
+          } else {
+            // eslint-disable-next-line no-console
+            console.log('fetchFilingById() error - invalid response =', response)
+            throw new Error('Invalid API response')
+          }
+        })
+    },
+
+    /**
+     * Create a draft correction filing.
+     * @param filing the object body of the request
+     * @returns a promise to return the filing
+     */
+    createCorrection (businessId: string, filing: CorrectionFilingIF): Promise<any> {
+      // Post base filing to filings endpoint
+      let url = `businesses/${businessId}/filings?draft=true`
+
+      return axios.post(url, { filing }).then(response => {
+        const filing = response?.data?.filing
+        const filingId = +filing?.header?.filingId
+        if (!filing || !filingId) {
+          throw new Error('Invalid API response')
+        }
+        console.log(`Filing Id: ${filingId}`)
+        // this.setFilingId(filingId)
+        return filing
+      })
     }
   },
 

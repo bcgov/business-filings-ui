@@ -1,14 +1,16 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapActions, mapState } from 'vuex'
-import { FilingDataIF } from '@/interfaces'
-import { LegalTypes, FilingCodes } from '@/enums'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import { CorrectionFilingIF, FilingDataIF } from '@/interfaces'
+import { FilingTypes, LegalTypes, FilingCodes } from '@/enums'
+import { IncorporationFilingIF } from '@/interfaces/incorporation-interfaces'
 
 /**
  * Mixin that provides some useful filing utilities.
  */
 @Component({
   computed: {
-    ...mapState(['filingData', 'entityType'])
+    ...mapState(['filingData', 'entityType']),
+    ...mapGetters(['getCurrentDate'])
   },
   methods: {
     ...mapActions(['setFilingData'])
@@ -19,6 +21,7 @@ export default class FilingMixin extends Vue {
   readonly setFilingData!: (x: any) => void
 
   // store getters
+  readonly getCurrentDate!: string
   readonly filingData!: Array<FilingDataIF>
   readonly entityType!: LegalTypes
 
@@ -87,5 +90,55 @@ export default class FilingMixin extends Vue {
    */
   hasFilingCode (filingCode: FilingCodes): boolean {
     return !!this.filingData.find(o => o.filingTypeCode === filingCode)
+  }
+
+  /**
+   * Builds an Incorporation Application Correction filing body from IA filing. Used when creating a IA Correction.
+   * @returns the IA Correction filing body
+   */
+  buildIaCorrectionFiling (iaFiling: IncorporationFilingIF): CorrectionFilingIF {
+    const correctionFiling: CorrectionFilingIF = {
+      header: {
+        name: FilingTypes.CORRECTION,
+        certifiedBy: iaFiling.header.certifiedBy,
+        date: this.getCurrentDate
+      },
+      business: {
+        legalType: iaFiling.business.legalType,
+        identifier: iaFiling.business.identifier,
+        legalName: iaFiling.business.legalName
+      },
+      correction: {
+        correctedFilingId: iaFiling.header.filingId,
+        correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
+        correctedFilingDate: iaFiling.header.date,
+        comment: '',
+        incorporationApplication: {
+          nameRequest: {
+            legalType: iaFiling.incorporationApplication.nameRequest.legalType,
+            legalName: iaFiling.incorporationApplication.nameRequest.legalName,
+            nrNumber: iaFiling.incorporationApplication.nameRequest.nrNumber
+          },
+          nameTranslations: {
+            new: iaFiling.incorporationApplication.nameTranslations.new
+          },
+          offices: iaFiling.incorporationApplication.offices,
+          contactPoint: {
+            email: iaFiling.incorporationApplication.contactPoint.email,
+            phone: iaFiling.incorporationApplication.contactPoint.phone,
+            extension: iaFiling.incorporationApplication.contactPoint.extension
+          },
+          parties: iaFiling.incorporationApplication.parties,
+          shareStructure: {
+            shareClasses: iaFiling.incorporationApplication.shareStructure.shareClasses
+          },
+          incorporationAgreement: {
+            agreementType: iaFiling.incorporationApplication.incorporationAgreement.agreementType
+          }
+        }
+      }
+    }
+
+    return correctionFiling
   }
 }
