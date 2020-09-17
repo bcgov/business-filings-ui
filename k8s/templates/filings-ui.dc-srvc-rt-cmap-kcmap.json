@@ -75,9 +75,9 @@
                                 }
                             },
                             {
-                                "name": "coops-web-caddy-config",
+                                "name": "${NAME}-${TAG_NAME}-keycloak-config",
                                 "configMap": {
-                                    "name": "coops-web-caddy-config",
+                                    "name": "${NAME}-${TAG_NAME}-keycloak-config",
                                     "defaultMode": 420
                                 }
                             }
@@ -85,28 +85,24 @@
                         "containers": [
                             {
                                 "name": "${NAME}-${TAG_NAME}",
-                                "args": [
-                                    "/tmp/scripts/run"
-                                ],
                                 "image": "${DOCKER_REGISTRY}/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}",
                                 "ports": [
                                     {
-                                        "containerPort": 2015,
+                                        "containerPort": 8080,
                                         "protocol": "TCP"
                                     }
                                 ],
                                 "resources": {},
                                 "volumeMounts": [
                                     {
-                                        "name": "coops-web-caddy-config",
-                                        "readOnly": true,
-                                        "mountPath": "/etc/Caddyfile",
-                                        "subPath": "Caddyfile"
-                                    },
-                                    {
                                         "name": "${NAME}-${TAG_NAME}-configuration",
                                         "readOnly": true,
                                         "mountPath": "${MOUNT_PATH}"
+                                    },
+                                    {
+                                        "name": "${NAME}-${TAG_NAME}-keycloak-config",
+                                        "readOnly": true,
+                                        "mountPath": "${KC_MOUNT_PATH}"
                                     }
                                 ],
                                 "terminationMessagePath": "/dev/termination-log",
@@ -127,10 +123,24 @@
             "kind": "ConfigMap",
             "apiVersion": "v1",
             "data": {
-                "configuration.json": "{\n\"LEGAL_API_URL\":\"${LEGAL_API_URL}\",\n\"AUTH_API_URL\":\"${AUTH_API_URL}\",\n\"BUSINESSES_URL\":\"${BUSINESSES_URL}\",\n\"AUTH_URL\":\"${AUTH_URL}\",\n\"PAY_API_URL\":\"${PAY_API_URL}\",\n\"CREATE_URL\":\"${CREATE_URL}\",\n\"EDIT_URL\":\"${EDIT_URL}\",\n\"KEYCLOAK_CONFIG_PATH\":\"${KEYCLOAK_CONFIG_PATH}\",\n\"ADDRESS_COMPLETE_KEY\":\"${ADDRESS_COMPLETE_KEY}\",\n\"LD_CLIENT_ID\":\"${LD_CLIENT_ID}\",\n\"SENTRY_DSN\":\"${SENTRY_DSN}\"\n}"
+                "configuration.json": "{\n\"LEGAL_API_URL\":\"${LEGAL_API_URL}\",\n\"AUTH_API_URL\":\"${AUTH_API_URL}\",\n\"SBC_CONFIG_AUTH_API_URL\":\"${SBC_CONFIG_AUTH_API_URL}\",\n\"BUSINESSES_URL\":\"${BUSINESSES_URL}\",\n\"AUTH_URL\":\"${AUTH_URL}\",\n\"PAY_API_URL\":\"${PAY_API_URL}\",\n\"DASHBOARD_URL\":\"${DASHBOARD_URL}\",\n\"KEYCLOAK_CONFIG_PATH\":\"${KEYCLOAK_CONFIG_PATH}\",\n\"ADDRESS_COMPLETE_KEY\":\"${ADDRESS_COMPLETE_KEY}\",\n\"LD_CLIENT_ID\":\"${LD_CLIENT_ID}\",\n\"SENTRY_DSN\":\"${SENTRY_DSN}\"\n}"
             },
             "metadata": {
                 "name": "${NAME}-${TAG_NAME}-configuration",
+                "labels": {
+                    "app": "${NAME}-${TAG_NAME}",
+                    "app-group": "${APP_GROUP}-${TAG_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "ConfigMap",
+            "apiVersion": "v1",
+            "data": {
+                "keycloak.json": "{\n\"realm\":\"${REALM}\",\n\"auth-server-url\":\"${AUTH_SERVER_URL}\",\n\"ssl-required\":\"${SSL_REQUIRED}\",\n\"resource\":\"${RESOURCE}\",\n\"credentials\":{\"secret\": \"${KC_SECRET}\"},\n\"confidential-port\":${CONFIDENTIAL_PORT}\n}"
+            },
+            "metadata": {
+                "name": "${NAME}-${TAG_NAME}-keycloak-config",
                 "labels": {
                     "app": "${NAME}-${TAG_NAME}",
                     "app-group": "${APP_GROUP}-${TAG_NAME}"
@@ -149,10 +159,10 @@
             "spec": {
                 "ports": [
                     {
-                        "name": "2015-tcp",
-                        "port": 2015,
+                        "name": "8080-tcp",
+                        "port": 8080,
                         "protocol": "TCP",
-                        "targetPort": 2015
+                        "targetPort": 8080
                     }
                 ],
                 "selector": {
@@ -170,13 +180,13 @@
                     "app": "${NAME}-${TAG_NAME}",
                     "app-group": "${APP_GROUP}-${TAG_NAME}"
                 },
-                "name": "filings-ui-${TAG_NAME}"
+                "name": "${NAME}-${TAG_NAME}"
             },
             "spec": {
                 "host": "${DOMAIN}",
                 "path": "${PATH}",
                 "port": {
-                    "targetPort": "2015-tcp"
+                    "targetPort": "8080-tcp"
                 },
                 "tls": {
                     "insecureEdgeTerminationPolicy": "Redirect",
@@ -211,21 +221,21 @@
             "displayName": "Name",
             "description": "The name assigned to all of the OpenShift resources associated to this app.",
             "required": true,
-            "value": "filings-ui"
+            "value": "business-filings"
         },
         {
             "name": "TEMPLATE_DESCRIPTION",
             "displayName": "DESCRIPTION",
             "description": "Description of what this deploy template is for.",
             "required": true,
-            "value": "Template to deploy filings ui."
+            "value": "Template to deploy the Business Filings UI."
         },
         {
             "name": "APP_GROUP",
             "displayName": "App Group",
             "description": "The name assigned to all of the deployments in this project.",
             "required": true,
-            "value": "filings-ui"
+            "value": "business-edit"
         },
         {
             "name": "DOCKER_REGISTRY",
@@ -254,6 +264,13 @@
             "description": "The path to where the app config directory will get mounted.",
             "required": true,
             "value": "/app/config"
+        },
+        {
+            "name": "KC_MOUNT_PATH",
+            "displayName": "Mount config directory.",
+            "description": "The path to where the app config directory will get mounted.",
+            "required": true,
+            "value": "/app/config/kc"
         },
         {
             "name": "DOMAIN",
@@ -298,16 +315,9 @@
             "value": ""
         },
         {
-            "name": "CREATE_URL",
-            "displayName": "Business Create URL",
-            "description": "The URL to the Business Create UI.",
-            "required": true,
-            "value": ""
-        },
-        {
-            "name": "EDIT_URL",
-            "displayName": "Business Edit URL",
-            "description": "The URL to the Business Edit UI.",
+            "name": "DASHBOARD_URL",
+            "displayName": "Business Dashboard URL",
+            "description": "The URL to the Business Dashboard (Filings UI).",
             "required": true,
             "value": ""
         },
@@ -315,6 +325,13 @@
             "name": "PAY_API_URL",
             "displayName": "Payment API URL",
             "description": "The URL to the payment API.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "SBC_CONFIG_AUTH_API_URL",
+            "displayName": "Auth URL",
+            "description": "The auth URL with no slash.",
             "required": true,
             "value": ""
         },
@@ -344,6 +361,48 @@
             "displayName": "Sentry DSN",
             "description": "DSN for sentry intitialization.",
             "required": false,
+            "value": ""
+        },
+        {
+            "name": "REALM",
+            "displayName": "Realm",
+            "description": "Keycloak auth realm.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "AUTH_SERVER_URL",
+            "displayName": "Auth Server Url",
+            "description": "Keycloak Auth Url.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "SSL_REQUIRED",
+            "displayName": "SSL Required",
+            "description": "Type of ssl required.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "RESOURCE",
+            "displayName": "Resource",
+            "description": "Keycloak resource.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "KC_SECRET",
+            "displayName": "Keycloak Secret",
+            "description": "Keycloak Secret.",
+            "required": true,
+            "value": ""
+        },
+        {
+            "name": "CONFIDENTIAL_PORT",
+            "displayName": "Confidential Port",
+            "description": "Confidential Port.",
+            "required": true,
             "value": ""
         },
         {
