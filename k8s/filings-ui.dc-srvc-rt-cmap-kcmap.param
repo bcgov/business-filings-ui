@@ -21,7 +21,7 @@ MOUNT_PATH="/var/www/html/business/config"
 DOMAIN="dev.bcregistry.ca"
 PATH="/business"
 # For config maps
-BUSINESSES_URL="https://dev.bcregistry.ca/business"
+BUSINESSES_URL="https://dev.bcregistry.ca/business/auth"
 AUTH_URL="https://dev.bcregistry.ca/business/auth/"
 LEGAL_API_URL="https://legal-api-dev.pathfinder.gov.bc.ca/api/v1/"
 AUTH_API_URL="https://auth-api-dev.pathfinder.gov.bc.ca/api/v1/"
