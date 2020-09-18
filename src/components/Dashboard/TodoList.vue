@@ -476,7 +476,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIncorporationNumber', 'isBComp', 'isCoop', 'isRoleStaff']),
+    ...mapGetters(['getEntityIncNo', 'isBComp', 'isCoop', 'isRoleStaff']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest']),
 
@@ -798,7 +798,7 @@ export default {
           if (task.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
             // redirect to Edit web app to correct this Incorporation Application
             const editUrl = sessionStorage.getItem('EDIT_URL')
-            const url = `${editUrl}${this.getIncorporationNumber}/correction?correction-id=${task.id}`
+            const url = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${task.id}`
 
             // assume Correct URL is always reachable
             window.location.assign(url)

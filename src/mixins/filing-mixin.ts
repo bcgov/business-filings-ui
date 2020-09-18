@@ -112,29 +112,7 @@ export default class FilingMixin extends Vue {
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: iaFiling.header.date,
         comment: '',
-        incorporationApplication: {
-          nameRequest: {
-            legalType: iaFiling.incorporationApplication.nameRequest.legalType,
-            legalName: iaFiling.incorporationApplication.nameRequest.legalName,
-            nrNumber: iaFiling.incorporationApplication.nameRequest.nrNumber
-          },
-          nameTranslations: {
-            new: iaFiling.incorporationApplication.nameTranslations.new
-          },
-          offices: iaFiling.incorporationApplication.offices,
-          contactPoint: {
-            email: iaFiling.incorporationApplication.contactPoint.email,
-            phone: iaFiling.incorporationApplication.contactPoint.phone,
-            extension: iaFiling.incorporationApplication.contactPoint.extension
-          },
-          parties: iaFiling.incorporationApplication.parties,
-          shareStructure: {
-            shareClasses: iaFiling.incorporationApplication.shareStructure.shareClasses
-          },
-          incorporationAgreement: {
-            agreementType: iaFiling.incorporationApplication.incorporationAgreement.agreementType
-          }
-        }
+        incorporationApplication: iaFiling.incorporationApplication
       }
     }
 

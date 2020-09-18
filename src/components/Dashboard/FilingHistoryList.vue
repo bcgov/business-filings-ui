@@ -15,7 +15,7 @@
 
     <load-correction-dialog
       :dialog="loadCorrectionDialog"
-      @close="loadCorrectionDialog=false"
+      @exit="loadCorrectionDialog=false"
       attach="#filing-history-list"
     />
 
@@ -375,7 +375,7 @@ export default {
   computed: {
     ...mapGetters(['getEntityIncNo', 'isBComp', 'isRoleStaff', 'nrNumber']),
 
-    ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
+    ...mapState(['filings', 'entityName', 'entityType']),
 
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
@@ -494,7 +494,7 @@ export default {
               filingDateTime,
               paymentToken: header.paymentToken,
               title: 'Receipt',
-              filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+              filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
             })
           }
 
@@ -534,9 +534,9 @@ export default {
 
         let receiptFilename: string
         if (isFutureEffectiveIa) {
-          receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
+          receiptFilename = `${this.getEntityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
         } else {
-          receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+          receiptFilename = `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
         const corpName = this.entityName || this.legalTypeToNumberedName(this.entityType)
@@ -642,7 +642,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -700,7 +700,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -932,7 +932,7 @@ export default {
       // safety check
       if (!document.filingId || !document.filename) return
 
-      let url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
+      let url = `businesses/${this.getEntityIncNo}/filings/${document.filingId}`
       const headers = { 'Accept': 'application/pdf' }
 
       // Notice of articles or certificate will come in as a document report type
@@ -1069,7 +1069,7 @@ export default {
 
       if (filing) {
         // fetch latest comments for this filing
-        const url = `businesses/${this.entityIncNo}/filings/${filingId}`
+        const url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
         await axios.get(url).then(res => {
           if (res && res.data && res.data.filing && res.data.filing.header) {
             // reassign just the comments
