@@ -1113,6 +1113,8 @@ export default {
 
     /**
      * Fetches a filing by its id.
+     * @param businessId The business identifier
+     * @param filingId The filing identifier
      * @returns a promise to return the filing of the specified type
      */
     fetchFilingById (businessId: string, filingId: number): Promise<any> {
@@ -1131,6 +1133,7 @@ export default {
 
     /**
      * Create a draft correction filing.
+     * @param businessId The business identifier
      * @param filing the object body of the request
      * @returns a promise to return the filing
      */
@@ -1144,8 +1147,7 @@ export default {
         if (!filing || !filingId) {
           throw new Error('Invalid API response')
         }
-        console.log(`Filing Id: ${filingId}`)
-        // this.setFilingId(filingId)
+
         return filing
       })
     }
