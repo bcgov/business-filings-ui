@@ -886,7 +886,7 @@ export default {
         case FilingTypes.INCORPORATION_APPLICATION:
           try {
             // Fetch original Incorporation Application
-            const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
+            // const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
 
             // Create a Draft Incorporation Application Correction Filing
             const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)

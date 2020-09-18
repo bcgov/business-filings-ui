@@ -46,6 +46,6 @@ export default class LoadCorrectionDialog extends Vue {
   @Prop() private attach: string
 
   // Pass click event to parent.
-  @Emit('exit') private exit () { }
+  @Emit() private exit () { }
 }
 </script>
