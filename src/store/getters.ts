@@ -6,8 +6,8 @@ export default {
     return state.currentDate
   },
 
-  /** Get Entity Business Number */
-  getIncorporationNumber (state): string {
+  /** Get Entity Incorporation Number */
+  getEntityIncNo (state): string {
     return state.entityIncNo
   },
 

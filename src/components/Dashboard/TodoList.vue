@@ -243,14 +243,6 @@
                       >
                         <v-list-item-title>Delete Draft</v-list-item-title>
                       </v-list-item>
-
-                      <v-list-item
-                        v-if="tempRegNumber"
-                        id="btn-delete-incorporation-staff"
-                        @click="confirmDeleteIncorporation(task)"
-                      >
-                        <v-list-item-title>Delete Incorporation Application</v-list-item-title>
-                      </v-list-item>
                     </v-list>
                   </v-menu>
                 </template>
@@ -851,7 +843,7 @@ export default {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Delete Draft?',
-        'Delete your ' + task.title + '? Any changes you\'ve made will be lost.',
+        'Delete your ' + task.draftTitle + '? Any changes you\'ve made will be lost.',
         {
           width: '40rem',
           persistent: true,

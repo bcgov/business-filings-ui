@@ -13,6 +13,12 @@
       attach="#filing-history-list"
     />
 
+    <load-correction-dialog
+      :dialog="loadCorrectionDialog"
+      @close="loadCorrectionDialog=false"
+      attach="#filing-history-list"
+    />
+
     <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
       <v-expansion-panel
         class="align-items-top filing-history-item"
@@ -318,7 +324,7 @@ import PendingFiling from './PendingFiling.vue'
 import { DetailsList } from '@/components/common'
 
 // Dialogs
-import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
+import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums and Constants and Interfaces
 import { LegalTypes, FilingStatus, FilingTypes } from '@/enums'
@@ -326,12 +332,12 @@ import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS }
 import { AlterationIF, BusinessIF, CorrectionFilingIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
-import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [DateMixin, EnumMixin, FilingMixin],
+  mixins: [DateMixin, EnumMixin, FilingMixin, LegalApiMixin],
 
   components: {
     ColinFiling,
@@ -343,13 +349,15 @@ export default {
     PendingFiling,
     DetailsList,
     AddCommentDialog,
-    DownloadErrorDialog
+    DownloadErrorDialog,
+    LoadCorrectionDialog
   },
 
   data () {
     return {
       addCommentDialog: false,
       downloadErrorDialog: false,
+      loadCorrectionDialog: false,
       panel: null as number, // currently expanded panel
       historyItems: [] as Array<HistoryItemIF>,
       loadingDocument: false,
@@ -365,7 +373,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIncorporationNumber', 'isBComp', 'isRoleStaff', 'nrNumber']),
+    ...mapGetters(['getEntityIncNo', 'isBComp', 'isRoleStaff', 'nrNumber']),
 
     ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
 
@@ -878,25 +886,24 @@ export default {
         case FilingTypes.INCORPORATION_APPLICATION:
           try {
             // Fetch original Incorporation Application
-            const iaFiling = await this.fetchFilingById(this.getIncorporationNumber, item.filingId)
+            const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
 
             // Create a Draft Incorporation Application Correction Filing
             const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-            const draftCorrection = await this.createCorrection(this.getIncorporationNumber, correctionIaFiling)
+            const draftCorrection = await this.createCorrection(this.getEntityIncNo, correctionIaFiling)
 
             // Retrieve the Filing ID from the newly created Draft
-            const draftCorrectionId = draftCorrection.header.filingId
+            const draftCorrectionId = draftCorrection.header?.filingId
 
             // redirect to Edit web app to correct this Incorporation Application
             const editUrl = sessionStorage.getItem('EDIT_URL')
-            const url = `${editUrl}${this.getIncorporationNumber}/correction?correction-id=${draftCorrectionId}`
-
+            const url = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
             // assume Correct URL is always reachable
             window.location.assign(url)
           } catch (error) {
             // eslint-disable-next-line no-console
             console.log(`Correction Creation error = ${error}`)
-            this.downloadErrorDialog = true
+            this.loadCorrectionDialog = true
           }
           break
         case FilingTypes.CORRECTION:
@@ -1109,47 +1116,6 @@ export default {
 
       return (this.disableChanges || item.isCorrection || item.isFutureEffectiveIa || item.isColinFiling ||
         disableThisIaCorrection)
-    },
-
-    /**
-     * Fetches a filing by its id.
-     * @param businessId The business identifier
-     * @param filingId The filing identifier
-     * @returns a promise to return the filing of the specified type
-     */
-    fetchFilingById (businessId: string, filingId: number): Promise<any> {
-      const url = `businesses/${businessId}/filings/${filingId}`
-      return axios.get(url)
-        .then(response => {
-          if (response && response.data) {
-            return response.data.filing
-          } else {
-            // eslint-disable-next-line no-console
-            console.log('fetchFilingById() error - invalid response =', response)
-            throw new Error('Invalid API response')
-          }
-        })
-    },
-
-    /**
-     * Create a draft correction filing.
-     * @param businessId The business identifier
-     * @param filing the object body of the request
-     * @returns a promise to return the filing
-     */
-    createCorrection (businessId: string, filing: CorrectionFilingIF): Promise<any> {
-      // Post base filing to filings endpoint
-      let url = `businesses/${businessId}/filings?draft=true`
-
-      return axios.post(url, { filing }).then(response => {
-        const filing = response?.data?.filing
-        const filingId = +filing?.header?.filingId
-        if (!filing || !filingId) {
-          throw new Error('Invalid API response')
-        }
-
-        return filing
-      })
     }
   },
 

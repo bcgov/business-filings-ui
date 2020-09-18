@@ -2,7 +2,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { CorrectionFilingIF, FilingDataIF } from '@/interfaces'
 import { FilingTypes, LegalTypes, FilingCodes } from '@/enums'
-import { IncorporationFilingIF } from '@/interfaces/incorporation-interfaces'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -96,7 +95,7 @@ export default class FilingMixin extends Vue {
    * Builds an Incorporation Application Correction filing body from IA filing. Used when creating a IA Correction.
    * @returns the IA Correction filing body
    */
-  buildIaCorrectionFiling (iaFiling: IncorporationFilingIF): CorrectionFilingIF {
+  buildIaCorrectionFiling (iaFiling: any): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,

@@ -4,6 +4,7 @@ import DateMixin from './date-mixin'
 import DirectorMixin from './director-mixin'
 import EnumMixin from './enum-mixin'
 import FilingMixin from './filing-mixin'
+import LegalApiMixin from './legal-api-mixin'
 import NameRequestMixin from './name-request-mixin'
 import ObjectMixin from './object-mixin'
 import ResourceLookupMixin from './resource-lookup-mixin'
@@ -15,6 +16,7 @@ export {
   DirectorMixin,
   EnumMixin,
   FilingMixin,
+  LegalApiMixin,
   NameRequestMixin,
   ObjectMixin,
   ResourceLookupMixin

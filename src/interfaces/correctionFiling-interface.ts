@@ -1,5 +1,3 @@
-import { IncorporationApplicationIF } from '@/interfaces/incorporation-interfaces'
-
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface CorrectionFilingIF {
   header: {
@@ -9,6 +7,10 @@ export interface CorrectionFilingIF {
     routingSlipNumber?: string
     folioNumber?: string
     effectiveDate?: string
+    bcolAccountNumber?: string
+    datNumber?: string
+    waiveFees?: boolean
+    priority?: boolean
   }
   business: {
     legalType: string
@@ -20,6 +22,6 @@ export interface CorrectionFilingIF {
     correctedFilingType: string
     correctedFilingDate: string
     comment: string
-    incorporationApplication?: IncorporationApplicationIF
+    incorporationApplication?: {}
   }
 }
