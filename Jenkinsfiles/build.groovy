@@ -19,7 +19,7 @@
 //   -> hudson.model.DirectoryBrowserSupport.CSP : removes restrictions on CSS file load, thus html pages of test reports are displayed pretty
 //   See: https://docs.openshift.com/container-platform/3.9/using_images/other_images/jenkins.html for a complete list of JENKINS env vars
 // define constants
-def COMPONENT_NAME = 'coops-ui'
+def COMPONENT_NAME = 'business-filings'
 def TAG_NAME = 'dev'
 
 // define groovy functions

@@ -20,7 +20,7 @@
 //   See: https://docs.openshift.com/container-platform/3.9/using_images/other_images/jenkins.html for a complete list of JENKINS env vars
 // define constants
 def NAMESPACE = '1rdehl'
-def COMPONENT_NAME = 'coops-ui'
+def COMPONENT_NAME = 'business-filings'
 def TAG_NAME = 'test'
 def SOURCE_TAG = 'dev'
 

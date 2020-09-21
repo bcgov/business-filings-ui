@@ -1,14 +1,11 @@
-name: PR CI
+name: Business Filings UI CI
 
 on:
   pull_request:
     types: [assigned, synchronize]
 
-env:
-  IMAGE_NAME: business-filings-ui
-
 jobs:
-  build:
+  business-filings-ui-ci:
     runs-on: ubuntu-latest
 
     strategy:
