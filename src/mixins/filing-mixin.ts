@@ -111,9 +111,9 @@ export default class FilingMixin extends Vue {
         correctedFilingId: iaFiling.header.filingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: iaFiling.header.date,
-        comment: '',
-        incorporationApplication: iaFiling.incorporationApplication
-      }
+        comment: ''
+      },
+      incorporationApplication: iaFiling.incorporationApplication
     }
 
     return correctionFiling

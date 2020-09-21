@@ -1964,8 +1964,8 @@ describe('Filing History List - redirections', () => {
                 'correctedFilingType': 'incorporationApplication',
                 'correctedFilingDate': '2020-05-07',
                 'comment': null,
-                'incorporationApplication': mockIncorporationApplication
-              }
+              },
+              incorporationApplication: mockIncorporationApplication
             }
           }
       })))
