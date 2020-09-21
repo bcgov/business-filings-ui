@@ -4,6 +4,8 @@ import Vuelidate from 'vuelidate'
 import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import flushPromises from 'flush-promises'
+import axios from '@/axios-auth'
+import sinon from 'sinon'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
@@ -1729,10 +1731,244 @@ describe('Filing History List - redirections', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
+      'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
+      'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
+      '0aC9yZWFsbXMvZmNmMGtwcXIiLCJhdWQiOlsic2JjLWF1dGgtd2ViIiwiYWNjb3VudCJdLCJzdWIiOiI4ZTVkZDYzNS01OGRkLTQ5YzUtYmViM' +
+      'S00NmE1ZDVhMTYzNWMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzYmMtYXV0aC13ZWIiLCJhdXRoX3RpbWUiOjAsInNlc3Npb25fc3RhdGUiOiI' +
+      '5OGQ3Y2Y2Zi0xYTQ1LTQzMzUtYWU0OC02YzBiNTdlMGYwNTAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly8xOTIuMTY4L' +
+      'jAuMTM6ODA4MC8iLCIxOTIuMTY4LjAuMTMiLCIqIiwiaHR0cDovLzE5Mi4xNjguMC4xMzo4MDgwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI' +
+      '6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3Vud' +
+      'CI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiIiLCJ' +
+      'yb2xlcyI6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl0sInByZWZlcnJlZF91c2VybmFtZSI6I' +
+      'mJjMDAwNzI5MSIsImxvZ2luU291cmNlIjoiUEFTU0NPREUiLCJ1c2VybmFtZSI6ImJjMDAwNzI5MSJ9.GYKmp5SQxZYTEkltSgaM3LMNcmuo_n' +
+      'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
+      'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
+      'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg')
   })
+
+  const mockIncorporationApplication = {
+    nameRequest: {
+      'legalType': 'BC'
+    },
+    nameTranslations: { 'new': ['ABC Ltd.', 'Financière de l’Odet', 'Société Générale'] },
+    offices: {
+      'registeredOffice': {
+        'deliveryAddress': {
+          'streetAddress': 'delivery_address - address line one',
+          'addressCity': 'delivery_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        },
+        'mailingAddress': {
+          'streetAddress': 'mailing_address - address line one',
+          'addressCity': 'mailing_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        }
+      },
+      'recordsOffice': {
+        'deliveryAddress': {
+          'streetAddress': 'delivery_address - address line one',
+          'addressCity': 'delivery_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        },
+        'mailingAddress': {
+          'streetAddress': 'mailing_address - address line one',
+          'addressCity': 'mailing_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        }
+      }
+    },
+    parties: [
+      {
+        'officer': {
+          'id': 1,
+          'firstName': 'Joe',
+          'lastName': 'Swanson',
+          'middleName': 'P',
+          'email': 'joe@email.com',
+          'orgName': '',
+          'partyType': 'person'
+        },
+        'mailingAddress': {
+          'streetAddress': 'mailing_address - address line one',
+          'streetAddressAdditional': '',
+          'addressCity': 'mailing_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        },
+        'deliveryAddress': {
+          'streetAddress': 'delivery_address - address line one',
+          'streetAddressAdditional': '',
+          'addressCity': 'delivery_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        },
+        'roles': [
+          {
+            'roleType': 'Completing Party',
+            'appointmentDate': '2018-01-01'
+
+          },
+          {
+            'roleType': 'Director',
+            'appointmentDate': '2018-01-01'
+
+          }
+        ]
+      },
+      {
+        'officer': {
+          'id': 2,
+          'firstName': '',
+          'lastName': '',
+          'middleName': '',
+          'orgName': 'Xyz Inc.',
+          'partyType': 'org'
+        },
+        'mailingAddress': {
+          'streetAddress': 'mailing_address - address line one',
+          'streetAddressAdditional': '',
+          'addressCity': 'mailing_address city',
+          'addressCountry': 'CA',
+          'postalCode': 'H0H0H0',
+          'addressRegion': 'BC'
+        },
+        'roles': [
+          {
+            'roleType': 'Incorporator',
+            'appointmentDate': '2018-01-01'
+          }
+        ]
+      }
+    ],
+    shareStructure: {
+      'shareClasses': [
+        {
+          'id': 1,
+          'name': 'Share Class 1',
+          'priority': 1,
+          'hasMaximumShares': true,
+          'maxNumberOfShares': 100,
+          'hasParValue': true,
+          'parValue': 10,
+          'currency': 'CAD',
+          'hasRightsOrRestrictions': true,
+          'series': [
+            {
+              'id': 1,
+              'name': 'Share Series 1',
+              'priority': 1,
+              'hasMaximumShares': true,
+              'maxNumberOfShares': 50,
+              'hasRightsOrRestrictions': true
+            },
+            {
+              'id': 2,
+              'name': 'Share Series 2',
+              'priority': 2,
+              'hasMaximumShares': true,
+              'maxNumberOfShares': 100,
+              'hasRightsOrRestrictions': true
+            }
+          ]
+        },
+        {
+          'id': 2,
+          'name': 'Share Class 2',
+          'priority': 1,
+          'hasMaximumShares': true,
+          'maxNumberOfShares': null,
+          'hasParValue': true,
+          'parValue': null,
+          'currency': null,
+          'hasRightsOrRestrictions': true,
+          'series': []
+        }
+      ]
+    },
+    contactPoint: {
+      'email': 'no_one@never.get',
+      'phone': '123-456-7890'
+    },
+    incorporationAgreement: {
+      'agreementType': 'sample'
+    }
+  }
 
   afterAll(() => {
     window.location.assign = assign
+  })
+
+  beforeEach(() => {
+    const get = sinon.stub(axios, 'get')
+    const post = sinon.stub(axios, 'post')
+
+    // GET original IA
+    get.withArgs('businesses/BC1234567/filings/85114')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            filing: {
+              header: {
+                availableOnPaperOnly: false,
+                certifiedBy: 'Full Name',
+                date: '2020-04-28T19:14:45.589328+00:00',
+                effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
+                filingId: 85114,
+                name: 'incorporationApplication',
+                paymentToken: 1971,
+                status: 'COMPLETED'
+              },
+              business: {
+                'identifier': 'BC1234567',
+                'legalName': 'legal name - BC1234567',
+                'legalType': 'BC'
+              },
+              incorporationApplication: mockIncorporationApplication
+            }
+          }
+      })))
+
+    post.withArgs('businesses/BC1234567/filings?draft=true')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            filing: {
+              header: {
+                availableOnPaperOnly: false,
+                certifiedBy: 'Full Name',
+                date: '2020-04-28T19:14:45.589328+00:00',
+                filingId: 110514,
+                name: 'correction',
+                paymentToken: 1971,
+                status: 'DRAFT'
+              },
+              business: {
+                'identifier': 'BC1234567',
+                'legalName': 'legal name - BC1234567',
+                'legalType': 'BC'
+              },
+              correction: {
+                'correctedFilingId': 85114,
+                'correctedFilingType': 'incorporationApplication',
+                'correctedFilingDate': '2020-05-07',
+                'comment': null,
+                'incorporationApplication': mockIncorporationApplication
+              }
+            }
+          }
+      })))
   })
 
   it('redirects to Edit URL when filing an IA correction', async () => {
@@ -1772,14 +2008,14 @@ describe('Filing History List - redirections', () => {
     menuButton.trigger('click')
     await flushPromises()
 
-    // find and clck the "File a Correction" menu item
+    // find and click the "File a Correction" menu item
     const fileCorrectionItem = wrapper.find('.file-correction-item')
     expect(fileCorrectionItem).toBeDefined()
     fileCorrectionItem.trigger('click')
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/edit/BC1234567/correction?corrected-id=85114'
+    const createUrl = 'business/edit/BC1234567/correction?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()

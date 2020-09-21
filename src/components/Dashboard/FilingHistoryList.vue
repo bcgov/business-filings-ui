@@ -13,6 +13,12 @@
       attach="#filing-history-list"
     />
 
+    <load-correction-dialog
+      :dialog="loadCorrectionDialog"
+      @exit="loadCorrectionDialog=false"
+      attach="#filing-history-list"
+    />
+
     <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
       <v-expansion-panel
         class="align-items-top filing-history-item"
@@ -318,20 +324,20 @@ import PendingFiling from './PendingFiling.vue'
 import { DetailsList } from '@/components/common'
 
 // Dialogs
-import { AddCommentDialog, DownloadErrorDialog } from '@/components/dialogs'
+import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums and Constants and Interfaces
 import { LegalTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
-import { AlterationIF, BusinessIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
+import { AlterationIF, BusinessIF, CorrectionFilingIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
-import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 
 export default {
   name: 'FilingHistoryList',
 
-  mixins: [DateMixin, EnumMixin, FilingMixin],
+  mixins: [DateMixin, EnumMixin, FilingMixin, LegalApiMixin],
 
   components: {
     ColinFiling,
@@ -343,13 +349,15 @@ export default {
     PendingFiling,
     DetailsList,
     AddCommentDialog,
-    DownloadErrorDialog
+    DownloadErrorDialog,
+    LoadCorrectionDialog
   },
 
   data () {
     return {
       addCommentDialog: false,
       downloadErrorDialog: false,
+      loadCorrectionDialog: false,
       panel: null as number, // currently expanded panel
       historyItems: [] as Array<HistoryItemIF>,
       loadingDocument: false,
@@ -365,9 +373,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isRoleStaff', 'nrNumber']),
+    ...mapGetters(['getEntityIncNo', 'isBComp', 'isRoleStaff', 'nrNumber']),
 
-    ...mapState(['entityIncNo', 'filings', 'entityName', 'entityType']),
+    ...mapState(['filings', 'entityName', 'entityType']),
 
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
@@ -486,7 +494,7 @@ export default {
               filingDateTime,
               paymentToken: header.paymentToken,
               title: 'Receipt',
-              filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+              filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
             })
           }
 
@@ -526,9 +534,9 @@ export default {
 
         let receiptFilename: string
         if (isFutureEffectiveIa) {
-          receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
+          receiptFilename = `${this.getEntityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
         } else {
-          receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+          receiptFilename = `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
         const corpName = this.entityName || this.legalTypeToNumberedName(this.entityType)
@@ -634,7 +642,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -692,7 +700,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -849,7 +857,7 @@ export default {
       }
     },
 
-    correctThisFiling (item: HistoryItemIF) {
+    async correctThisFiling (item: HistoryItemIF) {
       switch (item?.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // FUTURE:
@@ -876,11 +884,27 @@ export default {
             params: { correctedFilingId: item.filingId } })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
-          // redirect to Edit web app to correct this Incorporation Application
-          const editUrl = sessionStorage.getItem('EDIT_URL')
-          const url = `${editUrl}${this.entityIncNo}/correction?corrected-id=${item.filingId}`
-          // assume Correct URL is always reachable
-          window.location.assign(url)
+          try {
+            // Fetch original Incorporation Application
+            const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
+
+            // Create a Draft Incorporation Application Correction Filing
+            const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
+            const draftCorrection = await this.createCorrection(this.getEntityIncNo, correctionIaFiling)
+
+            // Retrieve the Filing ID from the newly created Draft
+            const draftCorrectionId = draftCorrection.header?.filingId
+
+            // redirect to Edit web app to correct this Incorporation Application
+            const editUrl = sessionStorage.getItem('EDIT_URL')
+            const url = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
+            // assume Correct URL is always reachable
+            window.location.assign(url)
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(`Correction Creation error = ${error}`)
+            this.loadCorrectionDialog = true
+          }
           break
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?
@@ -908,7 +932,7 @@ export default {
       // safety check
       if (!document.filingId || !document.filename) return
 
-      let url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
+      let url = `businesses/${this.getEntityIncNo}/filings/${document.filingId}`
       const headers = { 'Accept': 'application/pdf' }
 
       // Notice of articles or certificate will come in as a document report type
@@ -1045,7 +1069,7 @@ export default {
 
       if (filing) {
         // fetch latest comments for this filing
-        const url = `businesses/${this.entityIncNo}/filings/${filingId}`
+        const url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
         await axios.get(url).then(res => {
           if (res && res.data && res.data.filing && res.data.filing.header) {
             // reassign just the comments
