@@ -168,7 +168,7 @@ const sampleFilings = [
 
 describe('Filing History List - regular filings', () => {
   it('handles empty data', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -206,7 +206,7 @@ describe('Filing History List - regular filings', () => {
   })
 
   it('displays the filing items pre/post bob date', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -327,7 +327,7 @@ describe('Filing History List - regular filings', () => {
   })
 
   it('expands the specified filing id for a pre-Bob date (paper only) filing', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -405,7 +405,7 @@ describe('Filing History List - regular filings', () => {
   })
 
   it('expands the specified filing id for a post-Bob date (regular) filing', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -527,7 +527,7 @@ describe('Filing History List - regular filings', () => {
 
 describe('Filing History List - incorporation applications', () => {
   it('handles empty data', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -548,7 +548,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays default title for a numbered company IA', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -569,7 +569,7 @@ describe('Filing History List - incorporation applications', () => {
             status: 'PAID'
           },
           documents: [],
-          incorporationApplication: { }
+          incorporationApplication: {}
         }
       }
     ]
@@ -596,7 +596,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays actual title for a named company IA', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.nameRequest = null
@@ -617,7 +617,7 @@ describe('Filing History List - incorporation applications', () => {
             status: 'PAID'
           },
           documents: [],
-          incorporationApplication: { }
+          incorporationApplication: {}
         }
       }
     ]
@@ -644,7 +644,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays a Pending FE IA and documents', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -674,7 +674,7 @@ describe('Filing History List - incorporation applications', () => {
               type: 'REPORT'
             }
           ],
-          incorporationApplication: { }
+          incorporationApplication: {}
         }
       }
     ]
@@ -743,7 +743,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays a FE IA and documents', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -772,7 +772,7 @@ describe('Filing History List - incorporation applications', () => {
               type: 'REPORT'
             }
           ],
-          incorporationApplication: { }
+          incorporationApplication: {}
         }
       }
     ]
@@ -840,7 +840,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays a Paid IA (incorp app mode) and documents', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -870,7 +870,7 @@ describe('Filing History List - incorporation applications', () => {
               type: 'REPORT'
             }
           ],
-          incorporationApplication: { }
+          incorporationApplication: {}
         }
       }
     ]
@@ -938,7 +938,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays a Completed IA (incorp app mode) and documents', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -1038,7 +1038,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays a Paid IA (business mode) and documents', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -1068,7 +1068,7 @@ describe('Filing History List - incorporation applications', () => {
               type: 'REPORT'
             }
           ],
-          incorporationApplication: { }
+          incorporationApplication: {}
         }
       }
     ]
@@ -1136,7 +1136,7 @@ describe('Filing History List - incorporation applications', () => {
   })
 
   it('displays a Completed IA (business mode) and documents', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1239,7 +1239,7 @@ describe('Filing History List - incorporation applications', () => {
 
 describe('Filing History List - Alteration Notices', () => {
   it('displays a Corp Type alteration (BC ULC to BCOMP)', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1307,7 +1307,7 @@ describe('Filing History List - Alteration Notices', () => {
   })
 
   it('displays a Corp Type alteration (BC COMP to BCOMP)', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1374,7 +1374,7 @@ describe('Filing History List - Alteration Notices', () => {
   })
 
   it('displays a Company Name alteration', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1437,7 +1437,7 @@ describe('Filing History List - Alteration Notices', () => {
   })
 
   it('displays a Company Name Translation alteration', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1500,7 +1500,7 @@ describe('Filing History List - Alteration Notices', () => {
   })
 
   it('displays a Share Structure alteration', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1565,7 +1565,7 @@ describe('Filing History List - Alteration Notices', () => {
 
 describe('Filing History List - Colin filings', () => {
   it('displays an Annual Report Colin filing', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -1629,7 +1629,7 @@ describe('Filing History List - Colin filings', () => {
 
 describe('Filing History List - corrections', () => {
   it('displays a correction filing with Details Count', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.entityType = 'CP'
@@ -1653,7 +1653,7 @@ describe('Filing History List - corrections', () => {
   })
 
   it('displays the Details List when comments are present on a correction filing', async () => {
-    const $route = { query: { } }
+    const $route = { query: {} }
 
     // init store
     store.state.filings = sampleFilings
@@ -1703,7 +1703,16 @@ describe('Filing History List - corrections', () => {
           'correction': {
             'correctedFilingType': 'annualReport',
             'correctedFilingDate': '2019-12-31'
-          }
+          },
+          documents: [
+            {
+              filename: 'BC1234567 - Incorporation Application (Corrected) - 2020-06-02.pdf',
+              filingId: 85114,
+              reportType: null,
+              title: 'Incorporation Application (Corrected)',
+              type: 'REPORT'
+            }
+          ]
         }
       }
     ]
@@ -1994,7 +2003,7 @@ describe('Filing History List - redirections', () => {
       }
     ]
 
-    const $route = { query: { } }
+    const $route = { query: {} }
     const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()

@@ -741,6 +741,9 @@ export default {
       const header = filing?.header
       const correction = filing?.correction
 
+      const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+      const filingDate = filingDateTime?.slice(0, 10)
+
       if (header && correction) {
         const item: HistoryItemIF = {
           filingType: FilingTypes.CORRECTION,
@@ -751,10 +754,23 @@ export default {
           filingDate: this.convertUTCTimeToLocalTime(correction.correctedFilingDate),
           isCorrection: true,
           isPaid: (header.status === FilingStatus.PAID),
+          documents: filing?.documents || [] as Array<any>,
           status: header.status,
           correctedFilingId: correction.correctedFilingId,
           correctedFilingType: correction.correctedFilingType,
           comments: this.flattenAndSortComments(header.comments)
+        }
+
+        // add receipt
+        if (header.paymentToken) {
+          item.documents.push({
+            type: this.DOCUMENT_TYPE_RECEIPT,
+            corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
+            filingDateTime,
+            paymentToken: header.paymentToken,
+            title: 'Receipt',
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+          })
         }
         this.historyItems.push(item)
       } else {
@@ -864,24 +880,30 @@ export default {
           // this.$router.push({ name: ANNUAL_REPORT,
           //   params: { filingId: filing.filingId, isCorrection: true }})
           // FOR NOW:
-          this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+          this.$router.push({
+            name: CORRECTION,
+            params: { correctedFilingId: item.filingId }
+          })
           break
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // FUTURE:
           // this.$router.push({ name: STANDALONE_DIRECTORS,
           //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+          this.$router.push({
+            name: CORRECTION,
+            params: { correctedFilingId: item.filingId }
+          })
           break
         case FilingTypes.CHANGE_OF_ADDRESS:
           // FUTURE:
           // this.$router.push({ name: STANDALONE_ADDRESSES,
           //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
-          this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+          this.$router.push({
+            name: CORRECTION,
+            params: { correctedFilingId: item.filingId }
+          })
           break
         case FilingTypes.INCORPORATION_APPLICATION:
           try {
@@ -914,8 +936,10 @@ export default {
           break
         default:
           // fallback for all other filings
-          this.$router.push({ name: CORRECTION,
-            params: { correctedFilingId: item.filingId } })
+          this.$router.push({
+            name: CORRECTION,
+            params: { correctedFilingId: item.filingId }
+          })
           break
       }
     },
