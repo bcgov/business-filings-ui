@@ -1703,16 +1703,7 @@ describe('Filing History List - corrections', () => {
           'correction': {
             'correctedFilingType': 'annualReport',
             'correctedFilingDate': '2019-12-31'
-          },
-          documents: [
-            {
-              filename: 'BC1234567 - Incorporation Application (Corrected) - 2020-06-02.pdf',
-              filingId: 85114,
-              reportType: null,
-              title: 'Incorporation Application (Corrected)',
-              type: 'REPORT'
-            }
-          ]
+          }
         }
       }
     ]
@@ -1728,6 +1719,59 @@ describe('Filing History List - corrections', () => {
     expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('display the documents present on a correction filing', async () => {
+    const $route = { query: { filing_id: '9873' } }
+
+    // init store
+    store.state.filings = [
+      {
+        'filing': {
+          'header': {
+            'name': 'correction',
+            'date': '2019-04-06T19:22:59.003777+00:00',
+            'paymentToken': 7891,
+            'certifiedBy': 'Cameron',
+            'filingId': 9873,
+            'availableOnPaperOnly': false,
+            'effectiveDate': '2019-12-13T00:00:00+00:00',
+            'status': 'COMPLETE'
+          },
+          'correction': {
+            'correctedFilingType': 'annualReport',
+            'correctedFilingDate': '2019-12-31'
+          },
+          'documents': [
+            {
+              filename: 'BC1234567 - Incorporation Application (Corrected) - 2020-06-02.pdf',
+              filingId: 85114,
+              reportType: null,
+              title: 'Incorporation Application (Corrected)',
+              type: 'REPORT'
+            }
+          ]
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    await Vue.nextTick()
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand details
+    button.trigger('click')
+    await flushPromises()
+
+    // verify Incorporation Application button
+    const documentBtns = wrapper.findAll('.download-document-btn')
+    expect(documentBtns.at(0).text()).toBe('Incorporation Application (Corrected)')
+    expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
 
     wrapper.destroy()
   })
@@ -1927,56 +1971,56 @@ describe('Filing History List - redirections', () => {
     get.withArgs('businesses/BC1234567/filings/85114')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            filing: {
-              header: {
-                availableOnPaperOnly: false,
-                certifiedBy: 'Full Name',
-                date: '2020-04-28T19:14:45.589328+00:00',
-                effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
-                filingId: 85114,
-                name: 'incorporationApplication',
-                paymentToken: 1971,
-                status: 'COMPLETED'
-              },
-              business: {
-                'identifier': 'BC1234567',
-                'legalName': 'legal name - BC1234567',
-                'legalType': 'BC'
-              },
-              incorporationApplication: mockIncorporationApplication
-            }
+        {
+          filing: {
+            header: {
+              availableOnPaperOnly: false,
+              certifiedBy: 'Full Name',
+              date: '2020-04-28T19:14:45.589328+00:00',
+              effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
+              filingId: 85114,
+              name: 'incorporationApplication',
+              paymentToken: 1971,
+              status: 'COMPLETED'
+            },
+            business: {
+              'identifier': 'BC1234567',
+              'legalName': 'legal name - BC1234567',
+              'legalType': 'BC'
+            },
+            incorporationApplication: mockIncorporationApplication
           }
+        }
       })))
 
     post.withArgs('businesses/BC1234567/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            filing: {
-              header: {
-                availableOnPaperOnly: false,
-                certifiedBy: 'Full Name',
-                date: '2020-04-28T19:14:45.589328+00:00',
-                filingId: 110514,
-                name: 'correction',
-                paymentToken: 1971,
-                status: 'DRAFT'
-              },
-              business: {
-                'identifier': 'BC1234567',
-                'legalName': 'legal name - BC1234567',
-                'legalType': 'BC'
-              },
-              correction: {
-                'correctedFilingId': 85114,
-                'correctedFilingType': 'incorporationApplication',
-                'correctedFilingDate': '2020-05-07',
-                'comment': null,
-              },
-              incorporationApplication: mockIncorporationApplication
-            }
+        {
+          filing: {
+            header: {
+              availableOnPaperOnly: false,
+              certifiedBy: 'Full Name',
+              date: '2020-04-28T19:14:45.589328+00:00',
+              filingId: 110514,
+              name: 'correction',
+              paymentToken: 1971,
+              status: 'DRAFT'
+            },
+            business: {
+              'identifier': 'BC1234567',
+              'legalName': 'legal name - BC1234567',
+              'legalType': 'BC'
+            },
+            correction: {
+              'correctedFilingId': 85114,
+              'correctedFilingType': 'incorporationApplication',
+              'correctedFilingDate': '2020-05-07',
+              'comment': null
+            },
+            incorporationApplication: mockIncorporationApplication
           }
+        }
       })))
   })
 
