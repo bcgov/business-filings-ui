@@ -50,7 +50,7 @@ describe('EntityInfo', () => {
 
     store.state.entityName = 'My Named Company'
     store.state.entityStatus = 'DRAFT_INCORP_APP'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify })
@@ -72,7 +72,7 @@ describe('EntityInfo', () => {
 
     store.state.entityName = null
     store.state.entityStatus = 'DRAFT_INCORP_APP'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.nameRequest = null
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify })
@@ -94,7 +94,7 @@ describe('EntityInfo', () => {
 
     store.state.entityName = 'My Future Company'
     store.state.entityStatus = 'FILED_INCORP_APP'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify })

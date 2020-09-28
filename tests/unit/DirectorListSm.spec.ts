@@ -94,7 +94,7 @@ describe('DirectorListSm', () => {
     }
 
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.directors = [
       {
         'officer': {
@@ -153,7 +153,7 @@ describe('DirectorListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     const wrapper = mount(DirectorListSm,
       {
@@ -173,7 +173,7 @@ describe('DirectorListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.directors = [
       {
         'officer': {

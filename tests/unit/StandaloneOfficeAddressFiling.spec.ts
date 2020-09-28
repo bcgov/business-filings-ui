@@ -286,7 +286,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       vuetify
     })
 
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
 
     expect(wrapper.find(Certify).exists()).toBe(true)
@@ -526,7 +526,7 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/BC0007291/filings/123')
@@ -617,35 +617,35 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     sinonAxiosGet.withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'routingSlipNumber': '456'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              'routingSlipNumber': '456'
             }
           }
+        }
       })))
 
     sinonAxiosGet.withArgs('businesses/CP0001191/tasks')
@@ -673,70 +673,70 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'cp0001191',
-                'status': 'PENDING',
-                'filingId': 123,
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'paymentToken': '321'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'cp0001191',
+              'status': 'PENDING',
+              'filingId': 123,
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'paymentToken': '321'
             }
           }
+        }
       })))
 
     // mock "update and file" endpoint
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'cp0001191',
-                'status': 'PENDING',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'paymentToken': '321'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'cp0001191',
+              'status': 'PENDING',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              'paymentToken': '321'
             }
           }
+        }
       })))
   })
 
@@ -886,7 +886,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     let sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -894,39 +894,39 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     sinonAxiosGet.withArgs('businesses/BC0007291/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  },
-                  'recordsOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
+                },
+                'recordsOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'BC0007291',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - BC0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'BC0007291',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'routingSlipNumber': '456'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'BC0007291',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - BC0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'BC0007291',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              'routingSlipNumber': '456'
             }
           }
+        }
       })))
 
     sinonAxiosGet.withArgs('businesses/BC0007291/tasks')
@@ -954,78 +954,78 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  },
-                  'recordsOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
+                },
+                'recordsOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'BC0007291',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - BC0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'BC0007291',
-                'status': 'PENDING',
-                'filingId': 123,
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'paymentToken': '321'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'BC0007291',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - BC0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'BC0007291',
+              'status': 'PENDING',
+              'filingId': 123,
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'paymentToken': '321'
             }
           }
+        }
       })))
 
     // mock "update and file" endpoint
     sinon.stub(axios, 'put').withArgs('businesses/BC0007291/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  },
-                  'recordsOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
+                },
+                'recordsOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'BC0007291',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - BC0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'BC0007291',
-                'status': 'PENDING',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'paymentToken': '321'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'BC0007291',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - BC0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'BC0007291',
+              'status': 'PENDING',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              'paymentToken': '321'
             }
           }
+        }
       })))
   })
 
@@ -1180,30 +1180,30 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'deliveryAddress': sampleDeliveryAddress,
-                'mailingAddress': sampleMailingAddress
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123
-              }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'deliveryAddress': sampleDeliveryAddress,
+              'mailingAddress': sampleMailingAddress
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123
             }
           }
+        }
       })))
 
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/tasks')
@@ -1307,44 +1307,44 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  },
-                  'recordsOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
+                },
+                'recordsOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'BC0007291',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - BC0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'BC0007291',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'BC0007291',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - BC0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'BC0007291',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123
             }
           }
+        }
       })))
 
     sinon.stub(axios, 'get').withArgs('businesses/BC0007291/tasks')
@@ -1451,23 +1451,23 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     spy = sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': {},
-                    'mailingAddress': {}
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': {},
+                  'mailingAddress': {}
                 }
-              },
-              'business': {
-              },
-              'header': {
-                'filingId': 123
               }
+            },
+            'business': {
+            },
+            'header': {
+              'filingId': 123
             }
           }
+        }
       })))
 
     // create local Vue and mock router
@@ -1541,27 +1541,27 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     spy = sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': {},
-                    'mailingAddress': {}
-                  },
-                  'recordsOffice': {
-                    'deliveryAddress': {},
-                    'mailingAddress': {}
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': {},
+                  'mailingAddress': {}
+                },
+                'recordsOffice': {
+                  'deliveryAddress': {},
+                  'mailingAddress': {}
                 }
-              },
-              'business': {
-              },
-              'header': {
-                'filingId': 123
               }
+            },
+            'business': {
+            },
+            'header': {
+              'filingId': 123
             }
           }
+        }
       })))
 
     // create local Vue and mock router
@@ -1649,35 +1649,35 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       .withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfAddress': {
-                'offices': {
-                  'registeredOffice': {
-                    'deliveryAddress': sampleDeliveryAddress,
-                    'mailingAddress': sampleMailingAddress
-                  }
+        {
+          'filing': {
+            'changeOfAddress': {
+              'offices': {
+                'registeredOffice': {
+                  'deliveryAddress': sampleDeliveryAddress,
+                  'mailingAddress': sampleMailingAddress
                 }
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfAddress',
-                'date': '2017-06-06',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'routingSlipNumber': '456'
               }
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfAddress',
+              'date': '2017-06-06',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              'routingSlipNumber': '456'
             }
           }
+        }
       })))
 
     // mock "file post" endpoint
@@ -1722,7 +1722,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
         }
       }
     })
-    p1.catch(() => {})
+    p1.catch(() => { })
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1767,7 +1767,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
         }
       }
     })
-    p2.catch(() => {})
+    p2.catch(() => { })
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
   })
 
@@ -1928,7 +1928,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       }
     })
 
-    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
 
     sinon
       .stub(axios, 'post')

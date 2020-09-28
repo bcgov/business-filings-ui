@@ -208,7 +208,7 @@ describe('Dashboard - Click Tests', () => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

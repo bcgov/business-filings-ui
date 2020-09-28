@@ -504,7 +504,7 @@ describe('Filing History List - regular filings', () => {
     const $route = { query: { filing_id: '9873' } }
 
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityIncNo = 'BC0007291'
     store.state.filings = sampleFilings
 
@@ -552,7 +552,7 @@ describe('Filing History List - incorporation applications', () => {
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = null
     store.state.nameRequest = null
     store.state.filings = [
@@ -601,7 +601,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     store.state.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -649,7 +649,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -747,7 +747,7 @@ describe('Filing History List - incorporation applications', () => {
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -845,7 +845,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -942,7 +942,7 @@ describe('Filing History List - incorporation applications', () => {
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -969,7 +969,7 @@ describe('Filing History List - incorporation applications', () => {
           ],
           incorporationApplication: {
             nameRequest: {
-              legalType: 'BC'
+              legalType: 'BEN'
             }
           }
         }
@@ -1043,7 +1043,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1140,7 +1140,7 @@ describe('Filing History List - incorporation applications', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1166,7 +1166,7 @@ describe('Filing History List - incorporation applications', () => {
           ],
           incorporationApplication: {
             nameRequest: {
-              legalType: 'BC'
+              legalType: 'BEN'
             }
           }
         }
@@ -1243,7 +1243,7 @@ describe('Filing History List - Alteration Notices', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1259,7 +1259,7 @@ describe('Filing History List - Alteration Notices', () => {
           },
           alteration: {
             alterCorpType: {
-              corpType: 'BC' // 'to' type
+              corpType: 'BEN' // 'to' type
             }
           }
         }
@@ -1311,7 +1311,7 @@ describe('Filing History List - Alteration Notices', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1327,7 +1327,7 @@ describe('Filing History List - Alteration Notices', () => {
           },
           alteration: {
             alterCorpType: {
-              corpType: 'BC' // 'to' type
+              corpType: 'BEN' // 'to' type
             }
           }
         }
@@ -1378,7 +1378,7 @@ describe('Filing History List - Alteration Notices', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1441,7 +1441,7 @@ describe('Filing History List - Alteration Notices', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1504,7 +1504,7 @@ describe('Filing History List - Alteration Notices', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1569,7 +1569,7 @@ describe('Filing History List - Colin filings', () => {
 
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
@@ -1803,7 +1803,7 @@ describe('Filing History List - redirections', () => {
 
   const mockIncorporationApplication = {
     nameRequest: {
-      'legalType': 'BC'
+      'legalType': 'BEN'
     },
     nameTranslations: { 'new': ['ABC Ltd.', 'Financière de l’Odet', 'Société Générale'] },
     offices: {
@@ -1986,7 +1986,7 @@ describe('Filing History List - redirections', () => {
             business: {
               'identifier': 'BC1234567',
               'legalName': 'legal name - BC1234567',
-              'legalType': 'BC'
+              'legalType': 'BEN'
             },
             incorporationApplication: mockIncorporationApplication
           }
@@ -2010,7 +2010,7 @@ describe('Filing History List - redirections', () => {
             business: {
               'identifier': 'BC1234567',
               'legalName': 'legal name - BC1234567',
-              'legalType': 'BC'
+              'legalType': 'BEN'
             },
             correction: {
               'correctedFilingId': 85114,

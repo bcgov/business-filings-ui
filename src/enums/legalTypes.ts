@@ -4,7 +4,7 @@ export enum LegalTypes {
   BC_COMPANY = 'BCC', // FUTURE: should be 'BC'
   BC_CORPORATION = 'CR', // NOT IN COLIN - NR ONLY?
   BC_ULC_COMPANY = 'ULC',
-  BENEFIT_COMPANY = 'BC', // FUTURE: should be 'BEN'
+  BENEFIT_COMPANY = 'BEN',
   CCC_CONTINUE_IN = 'CCC',
   CO_1860 = 'QA',
   CO_1862 = 'QB',

@@ -33,21 +33,21 @@ describe('AddressListSm', () => {
     store.state.entityType = 'CP'
     store.state.registeredAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '111 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '111 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '222 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '222 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
     }
     store.state.recordsAddress = null
 
@@ -74,21 +74,21 @@ describe('AddressListSm', () => {
     store.state.entityType = 'CP'
     store.state.registeredAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '220 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '220 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '220 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '220 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
     }
     store.state.recordsAddress = null
 
@@ -112,42 +112,42 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.registeredAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '111 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '111 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '222 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '222 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
     }
     store.state.recordsAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '123 Cloverdale St',
-          'addressCity': 'Victoria',
-          'addressRegion': 'BC',
-          'postalCode': 'V8X 2T5',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '123 Cloverdale St',
+        'addressCity': 'Victoria',
+        'addressRegion': 'BC',
+        'postalCode': 'V8X 2T5',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '456 Cloverdale St',
-          'addressCity': 'Victoria',
-          'addressRegion': 'BC',
-          'postalCode': 'V8X 2T5',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '456 Cloverdale St',
+        'addressCity': 'Victoria',
+        'addressRegion': 'BC',
+        'postalCode': 'V8X 2T5',
+        'addressCountry': 'CA'
+      }
     }
 
     const wrapper = mount(AddressListSm, { store, vuetify })
@@ -203,42 +203,42 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.registeredAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '220 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '220 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '220 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '220 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
     }
     store.state.recordsAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '123 Cloverdale St',
-          'addressCity': 'Victoria',
-          'addressRegion': 'BC',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '123 Cloverdale St',
+        'addressCity': 'Victoria',
+        'addressRegion': 'BC',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '123 Cloverdale St',
-          'addressCity': 'Victoria',
-          'addressRegion': 'BC',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '123 Cloverdale St',
+        'addressCity': 'Victoria',
+        'addressRegion': 'BC',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
     }
 
     const wrapper = mount(AddressListSm, { store, vuetify })
@@ -273,7 +273,7 @@ describe('AddressListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     const wrapper = mount(AddressListSm,
       {
@@ -304,42 +304,42 @@ describe('AddressListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.registeredAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '111 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '111 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '222 Buchanan St',
-          'addressCity': 'Glasgow',
-          'addressRegion': 'Scotland',
-          'postalCode': 'G1 2FFF',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '222 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
     }
     store.state.recordsAddress = {
       'deliveryAddress':
-        {
-          'streetAddress': '123 Cloverdale St',
-          'addressCity': 'Victoria',
-          'addressRegion': 'BC',
-          'postalCode': 'V8X 2T5',
-          'addressCountry': 'CA'
-        },
+      {
+        'streetAddress': '123 Cloverdale St',
+        'addressCity': 'Victoria',
+        'addressRegion': 'BC',
+        'postalCode': 'V8X 2T5',
+        'addressCountry': 'CA'
+      },
       'mailingAddress':
-        {
-          'streetAddress': '456 Cloverdale St',
-          'addressCity': 'Victoria',
-          'addressRegion': 'BC',
-          'postalCode': 'V8X 2T5',
-          'addressCountry': 'CA'
-        }
+      {
+        'streetAddress': '456 Cloverdale St',
+        'addressCity': 'Victoria',
+        'addressRegion': 'BC',
+        'postalCode': 'V8X 2T5',
+        'addressCountry': 'CA'
+      }
     }
 
     const wrapper = mount(AddressListSm,

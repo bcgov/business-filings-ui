@@ -263,7 +263,7 @@ describe('OfficeAddresses as a BCOMP', () => {
 
   beforeAll(() => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.registeredAddress = {
       deliveryAddress: {
         addressCity: 'delCity',

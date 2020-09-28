@@ -446,7 +446,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
     store.state.currentFilingStatus = 'NEW'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
   })
 
   it('renders the Annual Report sub-components properly when entity is a BCOMP', () => {
@@ -485,7 +485,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
     const vm: any = wrapper.vm
 
     expect(vm.$store.state.entityIncNo).toEqual('BC0007291')
-    expect(vm.$store.state.entityType).toEqual('BC')
+    expect(vm.$store.state.entityType).toEqual('BEN')
     expect(vm.$store.state.ARFilingYear).toEqual(2018)
     expect(vm.$store.state.nextARDate).toEqual('2019-09-26T00:00:00+00:00')
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
@@ -1185,7 +1185,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
     store.state.currentFilingStatus = 'NEW'
@@ -1274,7 +1274,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     // make sure form is validated
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    store.state.filingData = [{ filingTypeCode: 'ANNBC', entityType: 'BC' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'ANNBC', entityType: 'BEN' }] // dummy data
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -1729,7 +1729,7 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
     store.state.currentDate = '2018-09-26'
     store.state.nextARDate = '2019-09-26T00:00:00+00:00'
@@ -2012,7 +2012,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
     sinon
       .stub(axios, 'post')
       .withArgs('businesses/CP0001191/filings')
@@ -2059,7 +2059,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
     sinon
       .stub(axios, 'put')
       .withArgs('businesses/CP0001191/filings/123')
@@ -2321,7 +2321,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
       }
     })
 
-    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
 
     sinon
       .stub(axios, 'post')

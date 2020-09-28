@@ -337,32 +337,32 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                routingSlipNumber: '123456789',
-                priority: true
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              routingSlipNumber: '123456789',
+              priority: true
             }
           }
+        }
       })))
   })
 
@@ -407,34 +407,34 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                bcolAccountNumber: '123456',
-                datNumber: 'C1234567',
-                folioNumber: '123ABCabc',
-                priority: true
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              bcolAccountNumber: '123456',
+              datNumber: 'C1234567',
+              folioNumber: '123ABCabc',
+              priority: true
             }
           }
+        }
       })))
   })
 
@@ -481,31 +481,31 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                waiveFees: true
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              waiveFees: true
             }
           }
+        }
       })))
   })
 
@@ -564,115 +564,115 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     get.withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123
             }
           }
+        }
       })))
 
     // mock "fetch tasks" endpoint
     get.withArgs('businesses/CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'tasks': [
-              {
-                'task': {
-                  'filing': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2017,
-                      'status': 'NEW'
-                    }
+        {
+          'tasks': [
+            {
+              'task': {
+                'filing': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2017,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': true,
-                'order': 1
-              }
-            ]
-          }
+                }
+              },
+              'enabled': true,
+              'order': 1
+            }
+          ]
+        }
       })))
 
     // mock "save and file" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'PENDING',
-                'filingId': 123,
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'paymentToken': '321'
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'PENDING',
+              'filingId': 123,
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'paymentToken': '321'
             }
           }
+        }
       })))
 
     // mock "update and file" endpoint
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'PENDING',
-                'filingId': 123,
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'paymentToken': '321'
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'PENDING',
+              'filingId': 123,
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'paymentToken': '321'
             }
           }
+        }
       })))
   })
 
@@ -750,7 +750,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -779,7 +779,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     vm.codDateValid = true
     vm.directorFormValid = true
     vm.certifyFormValid = true
-    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'BC' }] // dummy data
+    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'BEN' }] // dummy data
 
     expect(vm.validated).toEqual(true)
 
@@ -888,31 +888,31 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'PAID', // API may return this or PENDING but we don't care
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123,
-                'paymentToken': '321'
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'PAID', // API may return this or PENDING but we don't care
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123,
+              'paymentToken': '321'
             }
           }
+        }
       })))
 
     // mock "fetch tasks" endpoint
@@ -1000,30 +1000,30 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123
             }
           }
+        }
       })))
 
     // mock "fetch tasks" endpoint
@@ -1156,18 +1156,18 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     spy = sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': []
-              },
-              'business': {
-              },
-              'header': {
-                'filingId': 123
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': []
+            },
+            'business': {
+            },
+            'header': {
+              'filingId': 123
             }
           }
+        }
       })))
 
     // create local Vue and mock router
@@ -1311,30 +1311,30 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     get.withArgs('businesses/CP0001191/filings/123')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filing': {
-              'changeOfDirectors': {
-                'directors': sampleDirectors
-              },
-              'business': {
-                'cacheId': 1,
-                'foundingDate': '2007-04-08T00:00:00+00:00',
-                'identifier': 'CP0001191',
-                'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-                'legalName': 'Legal Name - CP0001191'
-              },
-              'header': {
-                'name': 'changeOfDirectors',
-                'date': '2017-06-06T00:00:00+00:00',
-                'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-                'submitter': 'cp0001191',
-                'status': 'DRAFT',
-                'certifiedBy': 'Full Name',
-                'email': 'no_one@never.get',
-                'filingId': 123
-              }
+        {
+          'filing': {
+            'changeOfDirectors': {
+              'directors': sampleDirectors
+            },
+            'business': {
+              'cacheId': 1,
+              'foundingDate': '2007-04-08T00:00:00+00:00',
+              'identifier': 'CP0001191',
+              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
+              'legalName': 'Legal Name - CP0001191'
+            },
+            'header': {
+              'name': 'changeOfDirectors',
+              'date': '2017-06-06T00:00:00+00:00',
+              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
+              'submitter': 'cp0001191',
+              'status': 'DRAFT',
+              'certifiedBy': 'Full Name',
+              'email': 'no_one@never.get',
+              'filingId': 123
             }
           }
+        }
       })))
 
     // mock "fetch tasks" endpoint
@@ -1402,7 +1402,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1448,7 +1448,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
   })
 
@@ -1575,7 +1575,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
       }
     })
 
-    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
 
     sinon
       .stub(axios, 'post')

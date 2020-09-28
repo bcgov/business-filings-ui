@@ -835,7 +835,7 @@ describe('TodoList - UI - BCOMP', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
   })
 
   it('handles empty data', async () => {
@@ -1307,7 +1307,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
   })
 
   it('displays a DRAFT numbered company IA', async () => {
@@ -1789,7 +1789,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
   })
 
   afterAll(() => {
@@ -2025,7 +2025,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     sessionStorage.setItem('CREATE_URL', `${process.env.VUE_APP_PATH}/create/`)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityName = 'My Business Inc'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     // mock the window.location.assign function
     delete window.location
@@ -2044,7 +2044,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -2095,7 +2095,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -2297,7 +2297,7 @@ describe('TodoList - Delete Draft', () => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityIncNo = 'T123456789'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityStatus = 'DRAFT_INCORP_APP'
     store.state.tasks = [
       {
