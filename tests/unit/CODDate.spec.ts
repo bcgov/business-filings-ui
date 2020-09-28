@@ -124,7 +124,8 @@ describe('CodDate for COOPS', () => {
   })
 
   it('invalidates the component when entered month is after Max Date', () => {
-    wrapper = mount(CodDate, { store,
+    wrapper = mount(CodDate, {
+      store,
       vuetify,
       computed: {
         minDate () {
@@ -133,7 +134,8 @@ describe('CodDate for COOPS', () => {
         maxDate () {
           return '2019-05-05'
         }
-      } })
+      }
+    })
 
     wrapper.setData({ dateFormatted: '2019/11/11' })
     wrapper.vm.$v.$touch()
@@ -141,7 +143,8 @@ describe('CodDate for COOPS', () => {
   })
 
   it('invalidates the component when entered month is before Min Date', () => {
-    wrapper = mount(CodDate, { store,
+    wrapper = mount(CodDate, {
+      store,
       vuetify,
       computed: {
         minDate () {
@@ -150,7 +153,8 @@ describe('CodDate for COOPS', () => {
         maxDate () {
           return '2019-05-05'
         }
-      } })
+      }
+    })
 
     wrapper.setData({ dateFormatted: '2018/11/11' })
     wrapper.vm.$v.$touch()
@@ -168,7 +172,7 @@ describe('CodDate for BCOMP', () => {
 
     // set Last Filing Date and verify new Min Date
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
 
     wrapper = mount(CodDate, { store, vuetify })
     vm = wrapper.vm

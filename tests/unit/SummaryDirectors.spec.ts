@@ -164,7 +164,7 @@ describe('Directors as a BCOMP', () => {
   beforeEach(done => {
     // init store
     store.state.entityIncNo = 'BC0007291'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     const directors = [
       {
         'id': 1,

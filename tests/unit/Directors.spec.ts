@@ -57,48 +57,48 @@ describe('Directors as a COOP', () => {
       .withArgs('businesses/CP0001191/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            directors: [
-              {
-                'actions': [],
-                'officer': {
-                  'firstName': 'Peter',
-                  'middleInitial': null,
-                  'lastName': 'Griffin'
-                },
-                'id': '1',
-                'deliveryAddress': {
-                  'streetAddress': 'mailing_address - address line one',
-                  'streetAddressAdditional': null,
-                  'addressCity': 'mailing_address city',
-                  'addressCountry': 'CA',
-                  'postalCode': 'H0H0H0',
-                  'addressRegion': 'BC',
-                  'deliveryInstructions': null
-                },
-                'title': null
+        {
+          directors: [
+            {
+              'actions': [],
+              'officer': {
+                'firstName': 'Peter',
+                'middleInitial': null,
+                'lastName': 'Griffin'
               },
-              {
-                'actions': [],
-                'officer': {
-                  'firstName': 'Joe',
-                  'middleInitial': 'P',
-                  'lastName': 'Swanson'
-                },
-                'id': '2',
-                'deliveryAddress': {
-                  'streetAddress': 'mailing_address - address line #1',
-                  'streetAddressAdditional': 'Kirkintiloch',
-                  'addressCity': 'Glasgow',
-                  'addressCountry': 'UK',
-                  'postalCode': 'H0H 0H0',
-                  'addressRegion': 'Scotland',
-                  'deliveryInstructions': 'go to the back'
-                },
-                'title': 'Treasurer'
-              }
-            ]
-          }
+              'id': '1',
+              'deliveryAddress': {
+                'streetAddress': 'mailing_address - address line one',
+                'streetAddressAdditional': null,
+                'addressCity': 'mailing_address city',
+                'addressCountry': 'CA',
+                'postalCode': 'H0H0H0',
+                'addressRegion': 'BC',
+                'deliveryInstructions': null
+              },
+              'title': null
+            },
+            {
+              'actions': [],
+              'officer': {
+                'firstName': 'Joe',
+                'middleInitial': 'P',
+                'lastName': 'Swanson'
+              },
+              'id': '2',
+              'deliveryAddress': {
+                'streetAddress': 'mailing_address - address line #1',
+                'streetAddressAdditional': 'Kirkintiloch',
+                'addressCity': 'Glasgow',
+                'addressCountry': 'UK',
+                'postalCode': 'H0H 0H0',
+                'addressRegion': 'Scotland',
+                'deliveryInstructions': 'go to the back'
+              },
+              'title': 'Treasurer'
+            }
+          ]
+        }
       })))
 
     const Constructor = Vue.extend(Directors)
@@ -523,7 +523,7 @@ describe('Directors as a BCOMP', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'BC0007291'
-    store.state.entityType = 'BC'
+    store.state.entityType = 'BEN'
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
     store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
 
@@ -532,64 +532,64 @@ describe('Directors as a BCOMP', () => {
       .withArgs('businesses/BC0007291/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            directors: [
-              {
-                'actions': [],
-                'officer': {
-                  'firstName': 'Peter',
-                  'middleInitial': null,
-                  'lastName': 'Griffin'
-                },
-                'deliveryAddress': {
-                  'streetAddress': 'mailing_address - address line one',
-                  'streetAddressAdditional': null,
-                  'addressCity': 'mailing_address city',
-                  'addressCountry': 'mailing_address country',
-                  'postalCode': 'H0H0H0',
-                  'addressRegion': 'BC',
-                  'deliveryInstructions': null
-                },
-                'mailingAddress': {
-                  'streetAddress': '4321 Street Address',
-                  'streetAddressAdditional': 'Kirkintiloch',
-                  'addressCity': 'Glasgow',
-                  'addressCountry': 'UK',
-                  'postalCode': 'H0H 0H0',
-                  'addressRegion': 'Scotland',
-                  'deliveryInstructions': 'go to the back'
-                },
-                'title': null
+        {
+          directors: [
+            {
+              'actions': [],
+              'officer': {
+                'firstName': 'Peter',
+                'middleInitial': null,
+                'lastName': 'Griffin'
               },
-              {
-                'actions': [],
-                'officer': {
-                  'firstName': 'Joe',
-                  'middleInitial': 'P',
-                  'lastName': 'Swanson'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '1234 MockStreet',
-                  'streetAddressAdditional': 'Kirkintiloch',
-                  'addressCity': 'Glasgow',
-                  'addressCountry': 'UK',
-                  'postalCode': 'H0H 0H0',
-                  'addressRegion': 'Scotland',
-                  'deliveryInstructions': 'go to the back'
-                },
-                'mailingAddress': {
-                  'streetAddress': '1234 MockStreet',
-                  'streetAddressAdditional': 'Kirkintiloch',
-                  'addressCity': 'Glasgow',
-                  'addressCountry': 'UK',
-                  'postalCode': 'H0H 0H0',
-                  'addressRegion': 'Scotland',
-                  'deliveryInstructions': 'go to the back'
-                },
-                'title': 'Treasurer'
-              }
-            ]
-          }
+              'deliveryAddress': {
+                'streetAddress': 'mailing_address - address line one',
+                'streetAddressAdditional': null,
+                'addressCity': 'mailing_address city',
+                'addressCountry': 'mailing_address country',
+                'postalCode': 'H0H0H0',
+                'addressRegion': 'BC',
+                'deliveryInstructions': null
+              },
+              'mailingAddress': {
+                'streetAddress': '4321 Street Address',
+                'streetAddressAdditional': 'Kirkintiloch',
+                'addressCity': 'Glasgow',
+                'addressCountry': 'UK',
+                'postalCode': 'H0H 0H0',
+                'addressRegion': 'Scotland',
+                'deliveryInstructions': 'go to the back'
+              },
+              'title': null
+            },
+            {
+              'actions': [],
+              'officer': {
+                'firstName': 'Joe',
+                'middleInitial': 'P',
+                'lastName': 'Swanson'
+              },
+              'deliveryAddress': {
+                'streetAddress': '1234 MockStreet',
+                'streetAddressAdditional': 'Kirkintiloch',
+                'addressCity': 'Glasgow',
+                'addressCountry': 'UK',
+                'postalCode': 'H0H 0H0',
+                'addressRegion': 'Scotland',
+                'deliveryInstructions': 'go to the back'
+              },
+              'mailingAddress': {
+                'streetAddress': '1234 MockStreet',
+                'streetAddressAdditional': 'Kirkintiloch',
+                'addressCity': 'Glasgow',
+                'addressCountry': 'UK',
+                'postalCode': 'H0H 0H0',
+                'addressRegion': 'Scotland',
+                'deliveryInstructions': 'go to the back'
+              },
+              'title': 'Treasurer'
+            }
+          ]
+        }
       })))
 
     const Constructor = Vue.extend(Directors)
@@ -620,7 +620,7 @@ describe('Directors as a BCOMP', () => {
     // click first director's cease button
     click(vm, '#director-1-cease-btn')
     Vue.nextTick(() => {
-    // click second director's cease button
+      // click second director's cease button
       click(vm, '#director-2-cease-btn')
       Vue.nextTick(() => {
         expect(vm.complianceMsg.msg).toContain('A minimum of one director is required')
@@ -816,9 +816,9 @@ describe('Appoint New Director tests', () => {
       .withArgs('businesses/CP0001191/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            directors: []
-          }
+        {
+          directors: []
+        }
       })))
 
     wrapper = mount(Directors, {

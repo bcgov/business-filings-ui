@@ -172,7 +172,7 @@ describe('App as a COOP', () => {
     // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
     // must include keycloakRoles=["view", "edit", "staff"]
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
-        'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
+      'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
       'HAiOjE1Njg0ODk1NTksIm5iZiI6MCwiaWF0IjoxNTY4NDAzMTYwLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2' +
       'EvYXV0aC9yZWFsbXMvZmNmMGtwcXIiLCJhdWQiOlsic2JjLWF1dGgtd2ViIiwicmVhbG0tbWFuYWdlbWVudCIsImJyb2tlciIsImFjY291bnQ' +
       'iXSwic3ViIjoiZDRjNTBiZTAtYWM2OC00MDIyLTkxMGQtMzE2NzQ4NGFkOWU0IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2JjLWF1dGgtd2Vi' +
@@ -203,206 +203,206 @@ describe('App as a COOP', () => {
     get.withArgs('CP0001191/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET business info from Auth API
     get.withArgs('CP0001191')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            // Auth API Entity data
-            contacts: [
-              {
-                email: 'name@mail.com',
-                phone: '(111)-222-3333',
-                phoneExtension: '999'
-              }
-            ]
-          }
+        {
+          // Auth API Entity data
+          contacts: [
+            {
+              email: 'name@mail.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '999'
+            }
+          ]
+        }
       })))
 
     // GET entity info from Legal API
     get.withArgs('businesses/CP0001191')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            // Legal API Business data
-            business: {
-              legalName: 'TEST NAME',
-              status: 'GOODSTANDING',
-              taxId: '123456789',
-              identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
-              foundingDate: '2000-07-13T00:00:00+00:00',
-              lastAnnualGeneralMeetingDate: '2019-08-16',
-              legalType: null
-            }
+        {
+          // Legal API Business data
+          business: {
+            legalName: 'TEST NAME',
+            status: 'GOODSTANDING',
+            taxId: '123456789',
+            identifier: 'CP0001191',
+            lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
+            foundingDate: '2000-07-13T00:00:00+00:00',
+            lastAnnualGeneralMeetingDate: '2019-08-16',
+            legalType: null
           }
+        }
       })))
 
     // GET tasks
     get.withArgs('businesses/CP0001191/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'tasks': [
-              {
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2017,
-                      'status': 'NEW'
-                    }
+        {
+          'tasks': [
+            {
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2017,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': true,
-                'order': 1
+                }
               },
-              {
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2018,
-                      'status': 'NEW'
-                    }
+              'enabled': true,
+              'order': 1
+            },
+            {
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2018,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': false,
-                'order': 2
+                }
               },
-              {
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2019,
-                      'status': 'NEW'
-                    }
+              'enabled': false,
+              'order': 2
+            },
+            {
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2019,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': false,
-                'order': 3
-              }
-            ]
-          }
+                }
+              },
+              'enabled': false,
+              'order': 3
+            }
+          ]
+        }
       })))
 
     // GET filings
     get.withArgs('businesses/CP0001191/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filings': [
-              {
-                'filing': {
-                  'header': {
-                    'name': 'annualReport',
-                    'date': '2019-01-02',
-                    'paymentToken': 123,
-                    'certifiedBy': 'Full Name 1',
-                    'filingId': 321
-                  },
-                  'annualReport': {
-                    'annualGeneralMeetingDate': '2019-12-31'
-                  }
-                }
-              },
-              {
-                'filing': {
-                  'header': {
-                    'name': 'changeOfDirectors',
-                    'date': '2019-03-04',
-                    'paymentToken': 456,
-                    'certifiedBy': 'Full Name 2',
-                    'filingId': 654
-                  },
-                  'changeOfDirectors': {
-                  }
-                }
-              },
-              {
-                'filing': {
-                  'header': {
-                    'name': 'changeOfAddress',
-                    'date': '2019-05-06',
-                    'paymentToken': 789,
-                    'certifiedBy': 'Full Name 3',
-                    'filingId': 987
-                  },
-                  'changeOfAddress': {
-                  }
+        {
+          'filings': [
+            {
+              'filing': {
+                'header': {
+                  'name': 'annualReport',
+                  'date': '2019-01-02',
+                  'paymentToken': 123,
+                  'certifiedBy': 'Full Name 1',
+                  'filingId': 321
+                },
+                'annualReport': {
+                  'annualGeneralMeetingDate': '2019-12-31'
                 }
               }
-            ]
-          }
+            },
+            {
+              'filing': {
+                'header': {
+                  'name': 'changeOfDirectors',
+                  'date': '2019-03-04',
+                  'paymentToken': 456,
+                  'certifiedBy': 'Full Name 2',
+                  'filingId': 654
+                },
+                'changeOfDirectors': {
+                }
+              }
+            },
+            {
+              'filing': {
+                'header': {
+                  'name': 'changeOfAddress',
+                  'date': '2019-05-06',
+                  'paymentToken': 789,
+                  'certifiedBy': 'Full Name 3',
+                  'filingId': 987
+                },
+                'changeOfAddress': {
+                }
+              }
+            }
+          ]
+        }
       })))
 
     // GET addresses
     get.withArgs('businesses/CP0001191/addresses')
       .returns(new Promise((resolve) => resolve({
         data:
+        {
+          'registeredOffice':
           {
-            'registeredOffice':
-              {
-                'mailingAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Victoria',
-                  'addressRegion': 'BC',
-                  'addressType': 'mailing',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '220 Buchanan St',
-                  'addressCity': 'Glasgow',
-                  'addressRegion': 'Scotland',
-                  'addressType': 'delivery',
-                  'postalCode': 'G1 2FFF',
-                  'addressCountry': 'UK'
-                }
-              }
+            'mailingAddress': {
+              'streetAddress': '1012 Douglas St',
+              'addressCity': 'Victoria',
+              'addressRegion': 'BC',
+              'addressType': 'mailing',
+              'postalCode': 'V8W 2C3',
+              'addressCountry': 'CA'
+            },
+            'deliveryAddress': {
+              'streetAddress': '220 Buchanan St',
+              'addressCity': 'Glasgow',
+              'addressRegion': 'Scotland',
+              'addressType': 'delivery',
+              'postalCode': 'G1 2FFF',
+              'addressCountry': 'UK'
+            }
           }
+        }
       })))
 
     // GET directors
     get.withArgs('businesses/CP0001191/directors')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            directors: [
-              {
-                'officer': {
-                  'firstName': 'Peter',
-                  'lastName': 'Griffin'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '1012 Douglas St',
-                  'addressCity': 'Victoria',
-                  'addressRegion': 'BC',
-                  'postalCode': 'V8W 2C3',
-                  'addressCountry': 'CA'
-                }
+        {
+          directors: [
+            {
+              'officer': {
+                'firstName': 'Peter',
+                'lastName': 'Griffin'
               },
-              {
-                'officer': {
-                  'firstName': 'Joe',
-                  'lastName': 'Swanson'
-                },
-                'deliveryAddress': {
-                  'streetAddress': '220 Buchanan St',
-                  'addressCity': 'Glasgow',
-                  'addressRegion': 'Scotland',
-                  'postalCode': 'G1 2FFF',
-                  'addressCountry': 'UK'
-                }
+              'deliveryAddress': {
+                'streetAddress': '1012 Douglas St',
+                'addressCity': 'Victoria',
+                'addressRegion': 'BC',
+                'postalCode': 'V8W 2C3',
+                'addressCountry': 'CA'
               }
-            ]
-          }
+            },
+            {
+              'officer': {
+                'firstName': 'Joe',
+                'lastName': 'Swanson'
+              },
+              'deliveryAddress': {
+                'streetAddress': '220 Buchanan St',
+                'addressCity': 'Glasgow',
+                'addressRegion': 'Scotland',
+                'postalCode': 'G1 2FFF',
+                'addressCountry': 'UK'
+              }
+            }
+          ]
+        }
       })))
 
     // create a Local Vue and install router (and store) on it
@@ -415,7 +415,8 @@ describe('App as a COOP', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -518,139 +519,139 @@ describe('App as a BCOMP', () => {
     get.withArgs('BC0007291/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET business info from Auth API
     get.withArgs('BC0007291')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            contacts: [
-              {
-                email: 'name@mail.com',
-                phone: '(111)-222-3333',
-                phoneExtension: '999'
-              }
-            ]
-          }
+        {
+          contacts: [
+            {
+              email: 'name@mail.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '999'
+            }
+          ]
+        }
       })))
 
     // GET entity info from Legal API
     get.withArgs('businesses/BC0007291')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            // Legal API Business data
-            business: {
-              legalName: 'TEST NAME',
-              status: 'GOODSTANDING',
-              taxId: '123456789',
-              identifier: 'BC0007291',
-              lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
-              foundingDate: '2000-07-13T00:00:00+00:00',
-              lastAnnualGeneralMeetingDate: '2019-08-16',
-              legalType: null
-            }
+        {
+          // Legal API Business data
+          business: {
+            legalName: 'TEST NAME',
+            status: 'GOODSTANDING',
+            taxId: '123456789',
+            identifier: 'BC0007291',
+            lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
+            foundingDate: '2000-07-13T00:00:00+00:00',
+            lastAnnualGeneralMeetingDate: '2019-08-16',
+            legalType: null
           }
+        }
       })))
 
     // GET tasks
     get.withArgs('businesses/BC0007291/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'tasks': [
-              {
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2017,
-                      'status': 'NEW'
-                    }
+        {
+          'tasks': [
+            {
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2017,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': true,
-                'order': 1
+                }
               },
-              {
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2018,
-                      'status': 'NEW'
-                    }
+              'enabled': true,
+              'order': 1
+            },
+            {
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2018,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': false,
-                'order': 2
+                }
               },
-              {
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'annualReport',
-                      'ARFilingYear': 2019,
-                      'status': 'NEW'
-                    }
+              'enabled': false,
+              'order': 2
+            },
+            {
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'annualReport',
+                    'ARFilingYear': 2019,
+                    'status': 'NEW'
                   }
-                },
-                'enabled': false,
-                'order': 3
-              }
-            ]
-          }
+                }
+              },
+              'enabled': false,
+              'order': 3
+            }
+          ]
+        }
       })))
 
     // GET filings
     get.withArgs('businesses/BC0007291/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            'filings': [
-              {
-                'filing': {
-                  'header': {
-                    'name': 'annualReport',
-                    'date': '2019-01-02',
-                    'paymentToken': 123,
-                    'certifiedBy': 'Full Name 1',
-                    'filingId': 321
-                  }
-                }
-              },
-              {
-                'filing': {
-                  'header': {
-                    'name': 'changeOfDirectors',
-                    'date': '2019-03-04',
-                    'paymentToken': 456,
-                    'certifiedBy': 'Full Name 2',
-                    'filingId': 654
-                  },
-                  'changeOfDirectors': {
-                  }
-                }
-              },
-              {
-                'filing': {
-                  'header': {
-                    'name': 'changeOfAddress',
-                    'date': '2019-05-06',
-                    'paymentToken': 789,
-                    'certifiedBy': 'Full Name 3',
-                    'filingId': 987
-                  },
-                  'changeOfAddress': {
-                  }
+        {
+          'filings': [
+            {
+              'filing': {
+                'header': {
+                  'name': 'annualReport',
+                  'date': '2019-01-02',
+                  'paymentToken': 123,
+                  'certifiedBy': 'Full Name 1',
+                  'filingId': 321
                 }
               }
-            ]
-          }
+            },
+            {
+              'filing': {
+                'header': {
+                  'name': 'changeOfDirectors',
+                  'date': '2019-03-04',
+                  'paymentToken': 456,
+                  'certifiedBy': 'Full Name 2',
+                  'filingId': 654
+                },
+                'changeOfDirectors': {
+                }
+              }
+            },
+            {
+              'filing': {
+                'header': {
+                  'name': 'changeOfAddress',
+                  'date': '2019-05-06',
+                  'paymentToken': 789,
+                  'certifiedBy': 'Full Name 3',
+                  'filingId': 987
+                },
+                'changeOfAddress': {
+                }
+              }
+            }
+          ]
+        }
       })))
 
     // GET addresses
@@ -663,9 +664,9 @@ describe('App as a BCOMP', () => {
     get.withArgs('businesses/BC0007291/directors')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            directors: BCOMP_DIRECTORS
-          }
+        {
+          directors: BCOMP_DIRECTORS
+        }
       })))
 
     // create a Local Vue and install router (and store) on it
@@ -681,7 +682,8 @@ describe('App as a BCOMP', () => {
       vuetify,
       destroyed () {
         get()
-      } })
+      }
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -791,81 +793,81 @@ xdescribe('App as a Name Request', () => {
     get.withArgs('NR 1234567/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Name Request',
-                state: 'APPROVED',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            requestTypeCd: 'XX',
-            state: 'APPROVED'
-          }
+        {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED',
+              consumptionDate: null
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'XX',
+          state: 'APPROVED'
+        }
       })))
 
     // GET tasks
     get.withArgs('businesses/NR 1234567/tasks')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            tasks: [
-              {
-                'enabled': true,
-                'order': 1,
-                'task': {
-                  'todo': {
-                    'header': {
-                      'name': 'nameRequest',
-                      'status': 'NEW'
-                    },
-                    'nameRequest': {
-                      'applicants': {
-                        'addrLine1': '1234 Fake Street',
-                        'addrLine2': 'Block 3',
-                        'addrLine3': 'Suite 11',
-                        'city': 'Victoria',
-                        'clientFirstName': 'Connor',
-                        'clientLastName': 'Horton',
-                        'contact': 'James Bond',
-                        'countryTypeCd': 'CA',
-                        'declineNotificationInd': 'N',
-                        'emailAddress': 'abc@test.com',
-                        'faxNumber': null,
-                        'firstName': 'Adam',
-                        'lastName': 'Smith',
-                        'middleName': 'Jane',
-                        'partyId': 1657726,
-                        'phoneNumber': '7777777777',
-                        'postalCd': 'V9E 3S2',
-                        'stateProvinceCd': 'BC'
-                      }
+        {
+          tasks: [
+            {
+              'enabled': true,
+              'order': 1,
+              'task': {
+                'todo': {
+                  'header': {
+                    'name': 'nameRequest',
+                    'status': 'NEW'
+                  },
+                  'nameRequest': {
+                    'applicants': {
+                      'addrLine1': '1234 Fake Street',
+                      'addrLine2': 'Block 3',
+                      'addrLine3': 'Suite 11',
+                      'city': 'Victoria',
+                      'clientFirstName': 'Connor',
+                      'clientLastName': 'Horton',
+                      'contact': 'James Bond',
+                      'countryTypeCd': 'CA',
+                      'declineNotificationInd': 'N',
+                      'emailAddress': 'abc@test.com',
+                      'faxNumber': null,
+                      'firstName': 'Adam',
+                      'lastName': 'Smith',
+                      'middleName': 'Jane',
+                      'partyId': 1657726,
+                      'phoneNumber': '7777777777',
+                      'postalCd': 'V9E 3S2',
+                      'stateProvinceCd': 'BC'
                     }
                   }
                 }
               }
-            ]
-          }
+            }
+          ]
+        }
       })))
 
     // GET filings
     get.withArgs('businesses/NR 1234567/filings')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            filings: []
-          }
+        {
+          filings: []
+        }
       })))
 
     // create a Local Vue and install router on it
@@ -878,7 +880,8 @@ xdescribe('App as a Name Request', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -951,28 +954,28 @@ describe('App as a Draft IA with approved NR', () => {
     get.withArgs('T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Name Request',
-                state: 'APPROVED',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            requestTypeCd: 'BC',
-            state: 'APPROVED'
-          }
+        {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED',
+              consumptionDate: null
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'BC',
+          state: 'APPROVED'
+        }
       })))
 
     // GET IA filings
@@ -982,7 +985,7 @@ describe('App as a Draft IA with approved NR', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -1011,7 +1014,8 @@ describe('App as a Draft IA with approved NR', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -1029,14 +1033,14 @@ describe('App as a Draft IA with approved NR', () => {
 
   it('fetches IA filings properly', () => {
     expect(vm.$store.state.entityIncNo).toBe('T123456789')
-    expect(vm.$store.state.entityType).toBe('BC')
+    expect(vm.$store.state.entityType).toBe('BEN')
     expect(vm.$store.state.entityStatus).toBe('DRAFT_INCORP_APP')
 
     // verify loaded task
     expect(vm.$store.state.tasks.length).toBe(1)
     expect(vm.$store.state.tasks[0].enabled).toBe(true)
     expect(vm.$store.state.tasks[0].order).toBe(1)
-    expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('BC')
+    expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('BEN')
     expect(vm.$store.state.tasks[0].task.filing.header.name).toBe('incorporationApplication')
     expect(vm.$store.state.tasks[0].task.filing.header.status).toBe('DRAFT')
     expect(vm.$store.state.tasks[0].task.filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
@@ -1078,29 +1082,29 @@ describe('App as a Draft IA with conditional-not required', () => {
     get.withArgs('T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            consentFlag: null, // not required
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Conditional NR With Consent Not Required',
-                state: 'CONDITION',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            requestTypeCd: 'BC',
-            state: 'CONDITIONAL'
-          }
+        {
+          consentFlag: null, // not required
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Conditional NR With Consent Not Required',
+              state: 'CONDITION',
+              consumptionDate: null
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'BC',
+          state: 'CONDITIONAL'
+        }
       })))
 
     // GET IA filings
@@ -1110,7 +1114,7 @@ describe('App as a Draft IA with conditional-not required', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -1139,7 +1143,8 @@ describe('App as a Draft IA with conditional-not required', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -1191,29 +1196,29 @@ describe('App as a Draft IA with conditional-received NR', () => {
     get.withArgs('T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            consentFlag: 'R', // received
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Conditional NR With Consent Received',
-                state: 'CONDITION',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            requestTypeCd: 'BC',
-            state: 'CONDITIONAL'
-          }
+        {
+          consentFlag: 'R', // received
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Conditional NR With Consent Received',
+              state: 'CONDITION',
+              consumptionDate: null
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'BC',
+          state: 'CONDITIONAL'
+        }
       })))
 
     // GET IA filings
@@ -1223,7 +1228,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -1252,7 +1257,8 @@ describe('App as a Draft IA with conditional-received NR', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -1304,29 +1310,29 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     get.withArgs('T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            consentFlag: 'N', // waived
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Conditional NR With Consent Waived',
-                state: 'CONDITION',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            requestTypeCd: 'BC',
-            state: 'CONDITIONAL'
-          }
+        {
+          consentFlag: 'N', // waived
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Conditional NR With Consent Waived',
+              state: 'CONDITION',
+              consumptionDate: null
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'BC',
+          state: 'CONDITIONAL'
+        }
       })))
 
     // GET IA filings
@@ -1336,7 +1342,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -1365,7 +1371,8 @@ describe('App as a Draft IA with conditional-waived NR', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -1417,28 +1424,28 @@ describe('App as a Paid Incorporation Application', () => {
     get.withArgs('T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            roles: ['edit', 'view']
-          }
+        {
+          roles: ['edit', 'view']
+        }
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise((resolve) => resolve({
         data:
-          {
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Name Request',
-                state: 'APPROVED',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            requestTypeCd: 'BC',
-            state: 'APPROVED'
-          }
+        {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED',
+              consumptionDate: null
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'BC',
+          state: 'APPROVED'
+        }
       })))
 
     // GET IA filings
@@ -1448,7 +1455,7 @@ describe('App as a Paid Incorporation Application', () => {
           filing: {
             business: {
               identifier: 'T123456789',
-              legalType: 'BC'
+              legalType: 'BEN'
             },
             header: {
               accountId: '123',
@@ -1480,7 +1487,8 @@ describe('App as a Paid Incorporation Application', () => {
       localVue,
       router,
       store,
-      vuetify })
+      vuetify
+    })
     vm = wrapper.vm
 
     await flushPromises()
@@ -1498,7 +1506,7 @@ describe('App as a Paid Incorporation Application', () => {
 
   it('fetches IA filings properly', () => {
     expect(vm.$store.state.entityIncNo).toBe('T123456789')
-    expect(vm.$store.state.entityType).toBe('BC')
+    expect(vm.$store.state.entityType).toBe('BEN')
     expect(vm.$store.state.entityStatus).toBe('FILED_INCORP_APP')
 
     // spot check addresses and directors
@@ -1510,7 +1518,7 @@ describe('App as a Paid Incorporation Application', () => {
 
     // verify loaded filing
     expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].filing.business.legalType).toBe('BC')
+    expect(vm.$store.state.filings[0].filing.business.legalType).toBe('BEN')
     expect(vm.$store.state.filings[0].filing.header.name).toBe('incorporationApplication')
     expect(vm.$store.state.filings[0].filing.header.status).toBe('PAID')
     expect(vm.$store.state.filings[0].filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
