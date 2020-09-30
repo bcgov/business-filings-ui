@@ -419,6 +419,10 @@ export default {
     /** Local computed value for the fee code based on entity type */
     feeCode (): string {
       return this.isBComp ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
+    },
+
+    freeFeeCode (): string {
+      return this.isBComp ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
     }
   },
 
@@ -498,7 +502,7 @@ export default {
       this.haveChanges = true
       // when directors change (free filing), update filing data
       // use existing Priority and Waive Fees flags
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT,
+      this.updateFilingData(modified ? 'add' : 'remove', this.freeFeeCode,
         this.staffPaymentData.isPriority, (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
@@ -616,7 +620,7 @@ export default {
       }
 
       if (this.hasFilingCode(this.feeCode) ||
-        this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
+        this.hasFilingCode(this.freeFeeCode)) {
         changeOfDirectors = {
           changeOfDirectors: {
             directors: this.allDirectors
@@ -782,7 +786,7 @@ export default {
                   director => this.hasAction(director, NAMECHANGED) || this.hasAction(director, ADDRESSCHANGED)
                 ).length > 0) {
                   // use existing Priority and Waive Fees flags
-                  this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, this.staffPaymentData.isPriority,
+                  this.updateFilingData('add', this.freeFeeCode, this.staffPaymentData.isPriority,
                     (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
                 }
               } else {
