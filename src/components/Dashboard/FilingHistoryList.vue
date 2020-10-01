@@ -769,7 +769,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
         this.historyItems.push(item)
