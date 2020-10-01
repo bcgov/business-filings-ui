@@ -1996,31 +1996,31 @@ describe('Filing History List - redirections', () => {
     post.withArgs('businesses/BC1234567/filings?draft=true')
       .returns(new Promise((resolve) => resolve({
         data:
-        {
-          filing: {
-            header: {
-              availableOnPaperOnly: false,
-              certifiedBy: 'Full Name',
-              date: '2020-04-28T19:14:45.589328+00:00',
-              filingId: 110514,
-              name: 'correction',
-              paymentToken: 1971,
-              status: 'DRAFT'
-            },
-            business: {
-              'identifier': 'BC1234567',
-              'legalName': 'legal name - BC1234567',
-              'legalType': 'BEN'
-            },
-            correction: {
-              'correctedFilingId': 85114,
-              'correctedFilingType': 'incorporationApplication',
-              'correctedFilingDate': '2020-05-07',
-              'comment': null
-            },
-            incorporationApplication: mockIncorporationApplication
+          {
+            filing: {
+              header: {
+                availableOnPaperOnly: false,
+                certifiedBy: 'Full Name',
+                date: '2020-04-28T19:14:45.589328+00:00',
+                filingId: 110514,
+                name: 'correction',
+                paymentToken: 1971,
+                status: 'DRAFT'
+              },
+              business: {
+                identifier: 'BC1234567',
+                legalName: 'legal name - BC1234567',
+                legalType: 'BEN'
+              },
+              correction: {
+                correctedFilingId: 85114,
+                correctedFilingType: 'incorporationApplication',
+                correctedFilingDate: '2020-05-07',
+                comment: null
+              },
+              incorporationApplication: mockIncorporationApplication
+            }
           }
-        }
       })))
   })
 

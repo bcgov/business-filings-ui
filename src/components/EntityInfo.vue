@@ -18,7 +18,7 @@
           <span>{{ entityName || 'Unknown Name' }}</span>
         </div>
         <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
-          <span>{{ entityName || legalTypeToNumberedName(entityType)}}</span>
+          <span>{{ entityName || entityTypeToNumberedDescription(entityType)}}</span>
         </div>
 
         <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
@@ -109,7 +109,7 @@ import { mapGetters, mapState } from 'vuex'
 import { EnumMixin } from '@/mixins'
 
 // Enums
-import { EntityStatus, LegalTypes } from '@/enums'
+import { EntityStatus, EntityTypes } from '@/enums'
 
 // Interfaces
 import { BreadcrumbIF } from '@/interfaces'
@@ -131,7 +131,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
   readonly ARFilingYear!: string
-  readonly entityType!: LegalTypes
+  readonly entityType!: EntityTypes
   readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
   readonly entityIncNo!: number
@@ -155,10 +155,10 @@ export default class EntityInfo extends Mixins(EnumMixin) {
   private get nrSubtitle (): string {
     switch (this.entityStatus) {
       case EntityStatus.NAME_REQUEST:
-        return `${this.legalTypeToName(this.entityType)} Name Request`
+        return `${this.entityTypeToDescription(this.entityType)} Name Request`
       case EntityStatus.DRAFT_INCORP_APP:
       case EntityStatus.FILED_INCORP_APP:
-        return `${this.legalTypeToName(this.entityType)} Incorporation Application`
+        return `${this.entityTypeToDescription(this.entityType)} Incorporation Application`
     }
     return '' // should never happen
   }
@@ -210,7 +210,7 @@ export default class EntityInfo extends Mixins(EnumMixin) {
         href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
       {
-        text: this.entityName || this.legalTypeToNumberedName(this.entityType),
+        text: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
         disabled: false,
         exact: true,
         to: { name: DASHBOARD }

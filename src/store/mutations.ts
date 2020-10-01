@@ -1,4 +1,4 @@
-import { LegalTypes, EntityStatus, FilingStatus } from '@/enums'
+import { EntityStatus, EntityTypes, FilingStatus } from '@/enums'
 import { FilingDataIF } from '@/interfaces'
 
 export default {
@@ -29,7 +29,7 @@ export default {
   entityName (state, entityName: string) {
     state.entityName = entityName
   },
-  entityType (state, entityType: LegalTypes) {
+  entityType (state, entityType: EntityTypes) {
     state.entityType = entityType
   },
   entityStatus (state, entityStatus: EntityStatus) {
