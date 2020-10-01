@@ -7,4 +7,5 @@ export enum FilingCodes {
   DIRECTOR_CHANGE_BC = 'BCCDR', // BCOMP - Change of Directors
   DIRECTOR_CHANGE_OT = 'OTCDR', // Others - Change of Directors
   FREE_DIRECTOR_CHANGE_OT = 'OTFDR', // Others - Free Change of Directors
+  FREE_DIRECTOR_CHANGE_BC = 'BCFDR', // bCOMP - Free Change of Directors
 }

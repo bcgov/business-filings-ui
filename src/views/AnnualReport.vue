@@ -457,6 +457,10 @@ export default {
     isPayRequired (): boolean {
       // FUTURE: modify rule here as needed
       return (this.totalFee > 0)
+    },
+
+    freeDirectorChangeFeeCode (): string {
+      return this.isBComp ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
     }
   },
 
@@ -608,7 +612,7 @@ export default {
                 ).length > 0) {
                   // always set Priority flag to false
                   // use existing Waive Fees flag
-                  this.updateFilingData('add', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false,
+                  this.updateFilingData('add', this.freeDirectorChangeFeeCode, false,
                     (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
                 }
               } else {
@@ -685,7 +689,7 @@ export default {
       // when directors change (free filing), update filing data
       // always set Priority flag to false
       // use existing Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false,
+      this.updateFilingData(modified ? 'add' : 'remove', this.freeDirectorChangeFeeCode, false,
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
@@ -858,7 +862,7 @@ export default {
       }
 
       if (this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
-        this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)) {
+        this.hasFilingCode(this.freeDirectorChangeFeeCodemap)) {
         changeOfDirectors = {
           changeOfDirectors: {
             directors: this.allDirectors
