@@ -165,7 +165,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     store.state.entityType = 'CP'
-    store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
+    store.state.configObject = configJson.find(x => x.entityType === store.state.entityType)
     expect(wrapper.find(Certify).exists()).toBe(true)
     const certify: any = wrapper.find(Certify)
 

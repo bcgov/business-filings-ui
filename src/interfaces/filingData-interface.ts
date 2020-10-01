@@ -1,9 +1,9 @@
-import { FilingCodes, LegalTypes } from '@/enums'
+import { EntityTypes, FilingCodes } from '@/enums'
 
 /** Filing data object passed to the SBC Fee Summary. */
 export interface FilingDataIF {
   filingTypeCode: FilingCodes;
-  entityType: LegalTypes;
+  entityType: EntityTypes;
   waiveFees: boolean;
   priority: boolean;
   futureEffective?: boolean;

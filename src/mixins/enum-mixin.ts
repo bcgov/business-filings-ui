@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { LegalTypes, LegalNames, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -47,29 +47,33 @@ export default class EnumMixin extends Vue {
   }
 
   /**
-   * Converts the legal type to a numbered legal name.
-   * @param type the legal type to convert
+   * Converts the entity type to a numbered corp description.
+   * @param type the entity type to convert
+   * @returns the numbered corp description
    */
-  legalTypeToNumberedName (type: LegalTypes): string {
+  entityTypeToNumberedDescription (type: EntityTypes): string {
     switch (type) {
-      case LegalTypes.BC_CORPORATION: return 'Numbered Corporation'
-      case LegalTypes.BENEFIT_COMPANY: return 'Numbered Benefit Company'
-      case LegalTypes.COOP: return 'Numbered Cooperative'
+      case EntityTypes.BC_COMPANY: return 'Numbered Company'
+      case EntityTypes.BC_CORPORATION: return 'Numbered Corporation'
+      case EntityTypes.BC_ULC_COMPANY: return 'Numbered Unlimited Liability Company'
+      case EntityTypes.BENEFIT_COMPANY: return 'Numbered Benefit Company'
+      case EntityTypes.COOP: return 'Numbered Cooperative'
     }
     return 'Unknown' // should never happen
   }
 
   /**
-   * Converts the legal type to a legal name.
-   * @param type the legal type to convert
+   * Converts the entity type to a corp description.
+   * @param type the entity type to convert
+   * @returns the corp description
    */
-  legalTypeToName (type: LegalTypes): string {
+  entityTypeToDescription (type: EntityTypes): string {
     switch (type) {
-      case LegalTypes.BC_COMPANY: return LegalNames.BC_COMPANY
-      case LegalTypes.BC_CORPORATION: return LegalNames.BC_CORPORATION
-      case LegalTypes.BC_ULC_COMPANY: return LegalNames.BC_ULC_COMPANY
-      case LegalTypes.BENEFIT_COMPANY: return LegalNames.BENEFIT_COMPANY
-      case LegalTypes.COOP: return LegalNames.COOP
+      case EntityTypes.BC_COMPANY: return 'BC Company'
+      case EntityTypes.BC_CORPORATION: return 'BC Corporation'
+      case EntityTypes.BC_ULC_COMPANY: return 'BC Unlimited Liability Company'
+      case EntityTypes.BENEFIT_COMPANY: return 'BC Benefit Company'
+      case EntityTypes.COOP: return 'BC Cooperative'
     }
     return 'Unknown' // should never happen
   }

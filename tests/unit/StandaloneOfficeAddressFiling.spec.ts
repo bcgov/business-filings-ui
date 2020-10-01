@@ -287,7 +287,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     })
 
     store.state.entityType = 'BEN'
-    store.state.configObject = configJson.find(x => x.typeEnum === store.state.entityType)
+    store.state.configObject = configJson.find(x => x.entityType === store.state.entityType)
 
     expect(wrapper.find(Certify).exists()).toBe(true)
     const certify: any = wrapper.find(Certify)

@@ -1,4 +1,4 @@
-import { LegalTypes, FilingTypes, FilingStatus } from '@/enums'
+import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
   /** Get the Current Date */
@@ -13,17 +13,17 @@ export default {
 
   /** Is True if entity is a Benefit Company. */
   isBComp (state): boolean {
-    return (state.entityType === LegalTypes.BENEFIT_COMPANY)
+    return (state.entityType === EntityTypes.BENEFIT_COMPANY)
   },
 
   /** Is True if entity is a Cooperative. */
   isCoop (state): boolean {
-    return (state.entityType === LegalTypes.COOP)
+    return (state.entityType === EntityTypes.COOP)
   },
 
   /** Is True if entity is a BC Corporation. */
   isCorp (state): boolean {
-    return (state.entityType === LegalTypes.BC_CORPORATION)
+    return (state.entityType === EntityTypes.BC_CORPORATION)
   },
 
   /** Is True if Staff role is set. */

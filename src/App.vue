@@ -82,7 +82,7 @@ import { ObjectMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
 import { configJson } from '@/resources'
 
 // Enums and Constants
-import { EntityStatus, LegalTypes, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
+import { EntityStatus, EntityTypes, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
 import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -473,7 +473,7 @@ export default {
       }
 
       // verify that this is the correct entity type
-      if (filing.business.legalType !== LegalTypes.BENEFIT_COMPANY) {
+      if (filing.business.legalType !== EntityTypes.BENEFIT_COMPANY) {
         throw new Error('Invalid business legal type')
       }
 
@@ -645,8 +645,8 @@ export default {
     },
 
     /** Stores config object matching this business' legal type. */
-    storeConfigObject (legalType: string): void {
-      const configObject = configJson.find(x => x.typeEnum === legalType)
+    storeConfigObject (entityType: string): void {
+      const configObject = configJson.find(x => x.entityType === entityType)
       this.setConfigObject(configObject)
     },
 

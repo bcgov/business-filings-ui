@@ -1,5 +1,5 @@
-/** Legal types (aka corp type codes in Colin). */
-export enum LegalTypes {
+/** Entity types (aka corp type codes in Colin). */
+export enum EntityTypes {
   BC_CCC = 'CC',
   BC_COMPANY = 'BCC', // FUTURE: should be 'BC'
   BC_CORPORATION = 'CR', // NOT IN COLIN - NR ONLY?

@@ -327,7 +327,7 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums and Constants and Interfaces
-import { LegalTypes, FilingStatus, FilingTypes } from '@/enums'
+import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
 import { AlterationIF, BusinessIF, CorrectionFilingIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
@@ -490,7 +490,7 @@ export default {
           if (header.paymentToken) {
             item.documents.push({
               type: this.DOCUMENT_TYPE_RECEIPT,
-              corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
+              corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
               filingDateTime,
               paymentToken: header.paymentToken,
               title: 'Receipt',
@@ -539,12 +539,12 @@ export default {
           receiptFilename = `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
-        const corpName = this.entityName || this.legalTypeToNumberedName(this.entityType)
+        const corpName = this.entityName || this.entityTypeToNumberedDescription(this.entityType)
 
         // build filing item
         const item: HistoryItemIF = {
           filingType,
-          title: `${this.legalTypeToName(this.entityType)} ${name} - ${corpName}`,
+          title: `${this.entityTypeToDescription(this.entityType)} ${name} - ${corpName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
@@ -590,8 +590,8 @@ export default {
 
         let subtitle = ''
         if (alteration.alterCorpType) {
-          subtitle = this.legalTypeToName(business.legalType) + ' to ' +
-            this.legalTypeToName(alteration.alterCorpType.corpType)
+          subtitle = this.entityTypeToDescription(business.legalType) + ' to ' +
+            this.entityTypeToDescription(alteration.alterCorpType.corpType)
         } else if (alteration.alterCorpName) {
           subtitle = 'Company Name'
         } else if (alteration.alterNameTranslations) {
@@ -638,7 +638,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
+            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -696,7 +696,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
+            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -765,7 +765,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.legalTypeToNumberedName(this.entityType),
+            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
