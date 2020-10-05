@@ -225,7 +225,7 @@
           :loading="savingResuming"
           @click="onClickSaveResume()"
         >
-          <span>Save &amp; Resume Later</span>
+          <span>Save and Resume Later</span>
         </v-btn>
       </div>
 
@@ -242,7 +242,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>{{isPayRequired ? "File &amp; Pay" : "File"}}</span>
+                <span>{{isPayRequired ? "File and Pay" : "File"}}</span>
               </v-btn>
             </div>
           </template>
@@ -281,7 +281,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>File &amp; Pay</span>
+                <span>File and Pay</span>
               </v-btn>
             </div>
           </template>
