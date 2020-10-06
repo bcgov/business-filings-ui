@@ -40,7 +40,7 @@
                   <v-chip x-small label color="blue lighten-2" text-color="white"
                     v-show="isNew(director) && director.cessationDate"
                   >
-                    Appointed &amp; Ceased
+                    Appointed and Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
@@ -127,7 +127,7 @@
                     <v-chip x-small label color="blue lighten-2" text-color="white"
                       v-show="isNew(director) && director.cessationDate"
                     >
-                      Appointed &amp; Ceased
+                      Appointed and Ceased
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>

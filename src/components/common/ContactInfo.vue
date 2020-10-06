@@ -2,7 +2,7 @@
   <ul class="contact-info pl-0">
     <li class="contact-container">
       <v-icon small class="contact-icon">mdi-phone</v-icon>
-      <span class="font-weight-bold contact-key">Canada &amp; U.S. Toll Free:</span>
+      <span class="font-weight-bold contact-key">Canada and U.S. Toll Free:</span>
       <a href="tel:+1-877-526-1526" class="contact-value">1-877-526-1526</a>
     </li>
     <li class="contact-container">
