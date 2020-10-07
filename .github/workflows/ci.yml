@@ -30,9 +30,14 @@ jobs:
           CI: true
       - name: unit test
         run: |
-          npm run test:unit
+          npm run test:unit --coverage
         env:
           CI: true
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          name: codecov-business-filings
+          fail_ci_if_error: true
       - name: build to check strictness
         run: |
           npm run build
