@@ -727,7 +727,7 @@ export default {
           correctedFilingType: this.filingTypeToName(filing.correction.correctedFilingType),
           title: (this.priorityCorrectionTitle(filing.header.priority) + ' - ' +
             this.filingTypeToName(filing.correction.correctedFilingType)),
-          draftTitle: `${this.filingTypeToName(filing.correction.correctedFilingType)}`,
+          draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
