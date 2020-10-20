@@ -326,9 +326,8 @@ import { DetailsList } from '@/components/common'
 // Dialogs
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
-// Enums and Constants and Interfaces
-import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
-import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
+// Enums and Interfaces
+import { EntityTypes, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { AlterationIF, BusinessIF, CorrectionFilingIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
@@ -877,34 +876,37 @@ export default {
       switch (item?.filingType) {
         case FilingTypes.ANNUAL_REPORT:
           // FUTURE:
-          // this.$router.push({ name: ANNUAL_REPORT,
+          // this.$router.push({ name: Routes.ANNUAL_REPORT,
           //   params: { filingId: filing.filingId, isCorrection: true }})
           // FOR NOW:
           this.$router.push({
-            name: CORRECTION,
+            name: Routes.CORRECTION,
             params: { correctedFilingId: item.filingId }
           })
           break
+
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // FUTURE:
-          // this.$router.push({ name: STANDALONE_DIRECTORS,
+          // this.$router.push({ name: Routes.STANDALONE_DIRECTORS,
           //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
           this.$router.push({
-            name: CORRECTION,
+            name: Routes.CORRECTION,
             params: { correctedFilingId: item.filingId }
           })
           break
+
         case FilingTypes.CHANGE_OF_ADDRESS:
           // FUTURE:
-          // this.$router.push({ name: STANDALONE_ADDRESSES,
+          // this.$router.push({ name: Routes.STANDALONE_ADDRESSES,
           //   params: { filingId: filing.filingId, isCorrection: true } })
           // FOR NOW:
           this.$router.push({
-            name: CORRECTION,
+            name: Routes.CORRECTION,
             params: { correctedFilingId: item.filingId }
           })
           break
+
         case FilingTypes.INCORPORATION_APPLICATION:
           try {
             // Fetch original Incorporation Application
@@ -920,7 +922,7 @@ export default {
             // redirect to Edit web app to correct this Incorporation Application
             const editUrl = sessionStorage.getItem('EDIT_URL')
             const url = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
-            // assume Correct URL is always reachable
+            // assume Edit URL is always reachable
             window.location.assign(url)
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -928,16 +930,25 @@ export default {
             this.loadCorrectionDialog = true
           }
           break
+
         case FilingTypes.CORRECTION:
           // FUTURE: allow a correction to a correction?
-          // this.$router.push({ name: CORRECTION,
+          // this.$router.push({ name: Routes.CORRECTION,
           //   params: { correctedFilingId: item.filingId } })
           alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
           break
+
+        case FilingTypes.NOTICE_OF_ALTERATION:
+          // FUTURE: allow a correction to an alteration?
+          // this.$router.push({ name: Routes.CORRECTION,
+          //   params: { correctedFilingId: item.filingId } })
+          alert('At this time, you cannot correct an alteration. Please contact Ops if needed.')
+          break
+
         default:
           // fallback for all other filings
           this.$router.push({
-            name: CORRECTION,
+            name: Routes.CORRECTION,
             params: { correctedFilingId: item.filingId }
           })
           break
@@ -1138,8 +1149,8 @@ export default {
       const disableThisIaCorrection = (item.filingType === FilingTypes.INCORPORATION_APPLICATION &&
         !featureFlags.getFlag('correction-ui-enabled'))
 
-      return (this.disableChanges || item.isCorrection || item.isFutureEffectiveIa || item.isColinFiling ||
-        disableThisIaCorrection)
+      return (this.disableChanges || item.isNoa || item.isCorrection || item.isFutureEffectiveIa ||
+        item.isColinFiling || disableThisIaCorrection)
     }
   },
 

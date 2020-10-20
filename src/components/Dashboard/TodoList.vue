@@ -46,7 +46,7 @@
           <div class="list-item">
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
-                <v-btn v-if="isTypeCorrection(task) && isStatusDraft(task)"
+                <v-btn v-if="(isTypeCorrection(task) || isTypeAlteration(task)) && isStatusDraft(task)"
                   class="expand-btn ml-0"
                   outlined
                   color="red"
@@ -93,7 +93,9 @@
                   </div>
                 </div>
 
-                <div v-else-if="isTypeCorrection(task) && isStatusDraft(task)" class="todo-subtitle">
+                <div v-else-if="(isTypeCorrection(task) || isTypeAlteration(task)) && isStatusDraft(task)"
+                  class="todo-subtitle"
+                >
                   <div>DRAFT</div>
                   <v-btn
                     v-if="task.comments.length > 0"
@@ -129,7 +131,9 @@
                   <div>DRAFT</div>
                 </div>
 
-                <div v-else-if="isTypeCorrection(task) && isStatusCorrectionPending(task)" class="todo-subtitle">
+                <div v-else-if="(isTypeCorrection(task) || isTypeAlteration(task)) && isStatusCorrectionPending(task)"
+                  class="todo-subtitle"
+                >
                   <div>FILING PENDING</div>
                   <v-btn
                     class="expand-btn"
@@ -219,7 +223,9 @@
                   <v-btn text loading disabled />
                 </template>
 
-                <template v-else-if="isRoleStaff && isTypeCorrection(task) && isStatusDraft(task)">
+                <template v-else-if="isRoleStaff && (isTypeCorrection(task) || isTypeAlteration(task))
+                  && isStatusDraft(task)"
+                >
                   <v-btn class="btn-corr-draft-resume"
                      color="primary"
                      :disabled="!task.enabled"
@@ -247,7 +253,7 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="!isTypeCorrection(task)">
+                <template v-else-if="!isTypeCorrection(task) && !isTypeAlteration(task)">
                   <template v-if="isStatusDraft(task)">
                     <v-btn class="btn-draft-resume"
                       color="primary"
@@ -356,7 +362,7 @@
             </template>
           </div>
 
-          <template v-else-if="isTypeCorrection(task)">
+          <template v-else-if="isTypeCorrection(task) || isTypeAlteration(task)">
             <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail body-2">
               <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
@@ -434,9 +440,8 @@ import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorD
 // Mixins
 import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
-// Enums, Constants and Interfaces
-import { FilingNames, FilingStatus, FilingTypes } from '@/enums'
-import { ANNUAL_REPORT, CORRECTION, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
+// Enums and Interfaces
+import { FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { FilingIF, TaskItemIF } from '@/interfaces'
 
 export default {
@@ -524,7 +529,7 @@ export default {
       this.$emit('has-blocker-task',
         this.taskItems.filter(item => {
           return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
-            this.isStatusPaid(item) || this.isTypeCorrection(item))
+            this.isStatusPaid(item) || this.isTypeCorrection(item) || this.isTypeAlteration(item))
         }).length > 0
       )
     },
@@ -592,6 +597,9 @@ export default {
           case FilingTypes.INCORPORATION_APPLICATION:
             await this.loadIncorporationApplication(task)
             break
+          case FilingTypes.NOTICE_OF_ALTERATION:
+            this.loadAlteration(task)
+            break
           default:
             // eslint-disable-next-line no-console
             console.log('ERROR - got unknown filing item =', filing)
@@ -600,6 +608,28 @@ export default {
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - invalid filing or header in task =', task)
+      }
+    },
+
+    loadAlteration (task) {
+      const filing: FilingIF = task.task.filing
+      if (filing?.header && filing?.alteration) {
+        this.taskItems.push({
+          filingType: FilingTypes.NOTICE_OF_ALTERATION,
+          id: filing.header.filingId,
+          // FUTURE
+          filingDate: filing.header.date,
+          title: this.priorityAlterationTitle(filing.header.priority),
+          draftTitle: this.filingTypeToName(FilingTypes.NOTICE_OF_ALTERATION),
+          status: filing.header.status,
+          enabled: Boolean(task.enabled),
+          order: task.order,
+          paymentToken: filing.header.paymentToken || null,
+          comments: this.flattenAndSortComments(filing.header.comments)
+        })
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - invalid filing or header or alteration in task =', task)
       }
     },
 
@@ -691,9 +721,11 @@ export default {
           filingType: FilingTypes.CORRECTION,
           id: filing.header.filingId,
           filingDate: filing.correction.correctedFilingDate,
+          // this is only used for internal corrections (not IA):
           correctedFilingId: filing.correction.correctedFilingId,
+          // this is only used for external corrections (IA):
           correctedFilingType: this.filingTypeToName(filing.correction.correctedFilingType),
-          title: (this.isPriority(filing.header.priority) + ' - ' +
+          title: (this.priorityCorrectionTitle(filing.header.priority) + ' - ' +
             this.filingTypeToName(filing.correction.correctedFilingType)),
           draftTitle: `${this.filingTypeToName(filing.correction.correctedFilingType)}`,
           status: filing.header.status,
@@ -704,7 +736,7 @@ export default {
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header or changeOfAddress in task =', task)
+        console.log('ERROR - invalid filing or header or correction in task =', task)
       }
     },
 
@@ -757,7 +789,7 @@ export default {
           // file the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.NEW)
-          this.$router.push({ name: ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
+          this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
           break
         // FUTURE: uncomment when/if we have NRs without a draft
         // case FilingTypes.NAME_REQUEST:
@@ -780,43 +812,55 @@ export default {
           // resume this Annual Report
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: ANNUAL_REPORT, params: { filingId: task.id } })
+          this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: task.id } })
           break
+
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // resume this Change Of Directors
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: STANDALONE_DIRECTORS, params: { filingId: task.id } })
+          this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: task.id } })
           break
+
         case FilingTypes.CHANGE_OF_ADDRESS:
           // resume this Change Of Address
           this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: STANDALONE_ADDRESSES, params: { filingId: task.id } })
+          this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: task.id } })
           break
+
         case FilingTypes.CORRECTION:
           if (task.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
             // redirect to Edit web app to correct this Incorporation Application
             const editUrl = sessionStorage.getItem('EDIT_URL')
-            const url = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${task.id}`
-
-            // assume Correct URL is always reachable
-            window.location.assign(url)
+            const correctionUrl = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${task.id}`
+            // assume Correction URL is always reachable
+            window.location.assign(correctionUrl)
           } else {
             // resume this Correction Filing
             this.setCurrentFilingStatus(FilingStatus.DRAFT)
-            this.$router.push({ name: CORRECTION,
+            this.$router.push({ name: Routes.CORRECTION,
               params: { filingId: task.id, correctedFilingId: task.correctedFilingId }
             })
           }
           break
+
         case FilingTypes.INCORPORATION_APPLICATION:
           // redirect to Create web app to resume this Incorporation Application
           const createUrl = sessionStorage.getItem('CREATE_URL')
-          const url = `${createUrl}?id=${this.tempRegNumber}`
-          // assume Create URL is always reachable
-          window.location.assign(url)
+          const incorpAppUrl = `${createUrl}?id=${this.tempRegNumber}`
+          // assume Incorp App URL is always reachable
+          window.location.assign(incorpAppUrl)
           break
+
+        case FilingTypes.NOTICE_OF_ALTERATION:
+          // redirect to Edit web app to alter this company
+          const editUrl = sessionStorage.getItem('EDIT_URL')
+          const alterationUrl = `${editUrl}${this.getEntityIncNo}/alteration?alteration-id=${task.id}`
+          // assume Alteration URL is always reachable
+          window.location.assign(alterationUrl)
+          break
+
         default:
           // eslint-disable-next-line no-console
           console.log('doResumeFiling(), invalid type for item =', task)
@@ -1005,28 +1049,16 @@ export default {
       return !!task.bcolErrObj
     },
 
-    isPriority (priority: boolean): string {
-      return priority ? 'Priority Correction' : 'Correction'
+    priorityAlterationTitle (priority: boolean): string {
+      let title = priority ? 'Priority ' : ''
+      title += this.filingTypeToName(FilingTypes.NOTICE_OF_ALTERATION)
+      return title
     },
 
-    /** Returns True if task type is Correction. */
-    isTypeCorrection (task: TaskItemIF): boolean {
-      return (task.filingType === FilingTypes.CORRECTION)
-    },
-
-    /** Returns True if task type is Annual Report. */
-    isTypeAnnualReport (task: TaskItemIF): boolean {
-      return (task.filingType === FilingTypes.ANNUAL_REPORT)
-    },
-
-    /** Returns True if task type is Name Request. */
-    isTypeNameRequest (task: TaskItemIF): boolean {
-      return (task.filingType === FilingTypes.NAME_REQUEST)
-    },
-
-    /** Returns True if task type is Name Incorporation Application. */
-    isTypeIncorporationApplication (task: TaskItemIF): boolean {
-      return (task.filingType === FilingTypes.INCORPORATION_APPLICATION)
+    priorityCorrectionTitle (priority: boolean): string {
+      let title = priority ? 'Priority ' : ''
+      title += this.filingTypeToName(FilingTypes.CORRECTION)
+      return title
     },
 
     /** Closes current panel or opens new panel. */

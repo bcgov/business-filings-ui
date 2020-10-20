@@ -6,6 +6,10 @@ import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
  */
 @Component({})
 export default class EnumMixin extends Vue {
+  //
+  // Filing Status helpers
+  //
+
   /** Returns True if item status is Completed. */
   isStatusCompleted (item: any): boolean {
     return item.status === FilingStatus.COMPLETED
@@ -45,6 +49,44 @@ export default class EnumMixin extends Vue {
   isStatusCorrectionPending (item: any): boolean {
     return item.status === FilingStatus.PENDING_CORRECTION
   }
+
+  /** Returns True if item status is Alteration Pending. */
+  isStatusAlterationPending (item: any): boolean {
+    return item.status === FilingStatus.PENDING_ALTERATION
+  }
+
+  //
+  // Filing Type helpers
+  //
+
+  /** Returns True if task type is Alteration. */
+  isTypeAlteration (item: any): boolean {
+    return (item.filingType === FilingTypes.NOTICE_OF_ALTERATION)
+  }
+
+  /** Returns True if task type is Annual Report. */
+  isTypeAnnualReport (item: any): boolean {
+    return (item.filingType === FilingTypes.ANNUAL_REPORT)
+  }
+
+  /** Returns True if task type is Correction. */
+  isTypeCorrection (item: any): boolean {
+    return (item.filingType === FilingTypes.CORRECTION)
+  }
+
+  /** Returns True if task type is Name Incorporation Application. */
+  isTypeIncorporationApplication (item: any): boolean {
+    return (item.filingType === FilingTypes.INCORPORATION_APPLICATION)
+  }
+
+  /** Returns True if task type is Name Request. */
+  isTypeNameRequest (item: any): boolean {
+    return (item.filingType === FilingTypes.NAME_REQUEST)
+  }
+
+  //
+  // Conversion helpers
+  //
 
   /**
    * Converts the entity type to a numbered corp description.
@@ -87,15 +129,15 @@ export default class EnumMixin extends Vue {
     if (!type) return '' // safety check
     switch (type) {
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
-      case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.DIRECTOR_CHANGE
-      case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.ADDRESS_CHANGE
-      case FilingTypes.CHANGE_OF_NAME: return FilingNames.LEGAL_NAME_CHANGE
+      case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
+      case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
+      case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
-      case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
+      case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
+      case FilingTypes.NOTICE_OF_ALTERATION: return FilingNames.NOTICE_OF_ALTERATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-      case FilingTypes.NOTICE_OF_ALTERATION: return FilingNames.ALTERATION_NOTICE
     }
     // fallback for unknown filings
     return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())

@@ -124,9 +124,8 @@ import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
 
-// Enums, Constants and Interfaces
-import { EntityStatus, FilingStatus } from '@/enums'
-import { STANDALONE_ADDRESSES, STANDALONE_DIRECTORS } from '@/constants'
+// Enums and Interfaces
+import { EntityStatus, FilingStatus, Routes } from '@/enums'
 import { HistoryItemIF, TaskItemIF } from '@/interfaces'
 
 export default {
@@ -194,12 +193,12 @@ export default {
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
-      this.$router.push({ name: STANDALONE_DIRECTORS, params: { filingId: 0 } }) // 0 means "new COD filing"
+      this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: 0 } }) // 0 means "new COD filing"
     },
 
     goToStandaloneAddresses () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
-      this.$router.push({ name: STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
+      this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
     },
 
     checkToReloadDashboard () {

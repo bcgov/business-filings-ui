@@ -1,12 +1,12 @@
 export enum FilingNames {
   ANNUAL_REPORT = 'Annual Report',
-  ADDRESS_CHANGE = 'Address Change',
+  CHANGE_OF_ADDRESS = 'Address Change',
+  CHANGE_OF_DIRECTORS = 'Director Change',
+  CHANGE_OF_NAME = 'Legal Name Change',
   CORRECTION = 'Correction',
-  DIRECTOR_CHANGE = 'Director Change',
-  NAME_REQUEST = 'Name Request',
   INCORPORATION_APPLICATION = 'Incorporation Application',
-  LEGAL_NAME_CHANGE = 'Legal Name Change',
+  NAME_REQUEST = 'Name Request',
+  NOTICE_OF_ALTERATION = 'Alteration Notice',
   SPECIAL_RESOLUTION = 'Special Resolution',
   VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
-  ALTERATION_NOTICE = 'Alteration Notice',
 }

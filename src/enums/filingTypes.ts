@@ -4,9 +4,9 @@ export enum FilingTypes {
   CHANGE_OF_DIRECTORS = 'changeOfDirectors',
   CHANGE_OF_NAME = 'changeOfName',
   CORRECTION = 'correction',
-  NAME_REQUEST = 'nameRequest',
   INCORPORATION_APPLICATION = 'incorporationApplication',
+  NAME_REQUEST = 'nameRequest',
+  NOTICE_OF_ALTERATION = 'alteration',
   SPECIAL_RESOLUTION = 'specialResolution',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
-  NOTICE_OF_ALTERATION = 'alteration',
 }

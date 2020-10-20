@@ -186,8 +186,8 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 // Mixins
 import { DateMixin, ObjectMixin } from '@/mixins'
 
-// Constants
-import { CEASED, APPOINTED, NAMECHANGED, ADDRESSCHANGED } from '@/constants'
+// Enums
+import { Actions } from '@/enums'
 
 // Interfaces
 import { DirectorIF } from '@/interfaces'
@@ -220,8 +220,8 @@ export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
     */
   @Watch('directors', { deep: true, immediate: true })
   private onDirectorsChanged (val: Array<DirectorIF>): void {
-    this.directorSummary = val.filter(d => !d.actions || !d.actions.includes(CEASED))
-    this.directorsCeased = val.filter(d => d.actions && d.actions.includes(CEASED))
+    this.directorSummary = val.filter(d => !d.actions || !d.actions.includes(Actions.CEASED))
+    this.directorsCeased = val.filter(d => d.actions && d.actions.includes(Actions.CEASED))
   }
 
   /**
@@ -238,8 +238,8 @@ export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
    * @returns True if director was appointed.
    */
   private isNew (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(APPOINTED)
-    return director.actions && (director.actions.indexOf(APPOINTED) >= 0)
+    // return director.actions && director.actions.includes(Actions.APPOINTED)
+    return director.actions && (director.actions.indexOf(Actions.APPOINTED) >= 0)
   }
 
   /**
@@ -248,8 +248,8 @@ export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
    * @returns True if director had their address changed.
    */
   private isAddressChanged (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(ADDRESSCHANGED)
-    return director.actions && (director.actions.indexOf(ADDRESSCHANGED) >= 0)
+    // return director.actions && director.actions.includes(Actions.ADDRESSCHANGED)
+    return director.actions && (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
   }
 
   /**
@@ -258,8 +258,8 @@ export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
    * @returns True if director had their name changed.
    */
   private isNameChanged (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(NAMECHANGED)
-    return director.actions && (director.actions.indexOf(NAMECHANGED) >= 0)
+    // return director.actions && director.actions.includes(Actions.NAMECHANGED)
+    return director.actions && (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
   }
 
   /**
@@ -268,8 +268,8 @@ export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
    * @returns True if director is active.
    */
   private isActive (director: DirectorIF): boolean {
-    // return director.actions && director.actions.includes(CEASED)
-    return director.actions && (director.actions.indexOf(CEASED) < 0)
+    // return director.actions && director.actions.includes(Actions.CEASED)
+    return director.actions && (director.actions.indexOf(Actions.CEASED) < 0)
   }
 
   /**
