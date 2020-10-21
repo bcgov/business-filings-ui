@@ -192,9 +192,8 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
 import { DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
   from '@/mixins'
 
-// Enums, Constants and Interfaces
-import { FilingCodes, FilingNames, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
-import { DASHBOARD } from '@/constants'
+// Enums and Interfaces
+import { FilingCodes, FilingNames, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
 import { StaffPaymentIF } from '@/interfaces'
 
 export default {
@@ -350,7 +349,7 @@ export default {
 
     // if required data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.correctedFilingId)) {
-      this.$router.push({ name: DASHBOARD })
+      this.$router.push({ name: Routes.DASHBOARD })
     } else {
       this.dataLoaded = false
       this.loadingMessage = `Preparing Your Correction`
@@ -528,7 +527,7 @@ export default {
       const filing: any = await this.saveFiling(true)
       // on success, go to dashboard
       if (filing) {
-        this.$router.push({ name: DASHBOARD })
+        this.$router.push({ name: Routes.DASHBOARD })
       }
       this.savingResuming = false
     },
@@ -558,7 +557,7 @@ export default {
           window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push({ name: DASHBOARD, query: { filing_id: filingId } })
+          this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -706,7 +705,7 @@ export default {
     /** Handler for dialog Exit click events. */
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: DASHBOARD })
+      this.$router.push({ name: Routes.DASHBOARD })
     },
 
     /** Reset all error flags/states. */

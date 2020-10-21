@@ -9,8 +9,8 @@ import { Component, Vue } from 'vue-property-decorator'
 // Components
 import SbcSignin from 'sbc-common-components/src/components/SbcSignin.vue'
 
-// Constants
-import { DASHBOARD } from '@/constants'
+// Enums
+import { Routes } from '@/enums'
 
 @Component({
   components: {
@@ -21,7 +21,7 @@ export default class Signin extends Vue {
   /** Called when Keycloak session is ready. */
   private async onReady () {
     // navigate to dashboard
-    this.$router.push({ name: DASHBOARD })
+    this.$router.push({ name: Routes.DASHBOARD })
   }
 }
 </script>

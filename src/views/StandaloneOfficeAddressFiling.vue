@@ -193,13 +193,12 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 
 // Constants
 import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
-import { DASHBOARD } from '@/constants'
 
 // Mixins
 import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { FilingCodes, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
 import { StaffPaymentIF } from '@/interfaces'
 
 export default {
@@ -308,7 +307,7 @@ export default {
 
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.filingId)) {
-      this.$router.push({ name: DASHBOARD })
+      this.$router.push({ name: Routes.DASHBOARD })
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your Address Change`
@@ -495,7 +494,7 @@ export default {
       const filing = await this.saveFiling(true)
       // on success, go to dashboard
       if (filing) {
-        this.$router.push({ name: DASHBOARD })
+        this.$router.push({ name: Routes.DASHBOARD })
       }
       this.savingResuming = false
     },
@@ -528,7 +527,7 @@ export default {
           window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push({ name: DASHBOARD, query: { filing_id: filingId } })
+          this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -701,7 +700,7 @@ export default {
 
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: DASHBOARD })
+      this.$router.push({ name: Routes.DASHBOARD })
     },
 
     resetErrors () {

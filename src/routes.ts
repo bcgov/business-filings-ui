@@ -8,13 +8,12 @@ import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
 
 // Constants
-import { ANNUAL_REPORT, CORRECTION, DASHBOARD, STANDALONE_ADDRESSES, STANDALONE_DIRECTORS,
-  SIGNIN, SIGNOUT } from '@/constants'
+import { Routes } from '@/enums'
 
 export default [
   {
     path: '/',
-    name: DASHBOARD,
+    name: Routes.DASHBOARD,
     component: Dashboard,
     meta: {
       requiresAuth: true
@@ -22,7 +21,7 @@ export default [
   },
   {
     path: '/annual-report',
-    name: ANNUAL_REPORT,
+    name: Routes.ANNUAL_REPORT,
     component: AnnualReport,
     meta: {
       requiresAuth: true,
@@ -31,14 +30,14 @@ export default [
           text: 'File Annual Report',
           disabled: false,
           exact: true,
-          to: { name: ANNUAL_REPORT }
+          to: { name: Routes.ANNUAL_REPORT }
         }
       ]
     }
   },
   {
     path: '/standalone-directors',
-    name: STANDALONE_DIRECTORS,
+    name: Routes.STANDALONE_DIRECTORS,
     component: StandaloneDirectorsFiling,
     meta: {
       requiresAuth: true,
@@ -47,14 +46,14 @@ export default [
           text: 'Director Change',
           disabled: false,
           exact: true,
-          to: { name: STANDALONE_DIRECTORS }
+          to: { name: Routes.STANDALONE_DIRECTORS }
         }
       ]
     }
   },
   {
     path: '/standalone-addresses',
-    name: STANDALONE_ADDRESSES,
+    name: Routes.STANDALONE_ADDRESSES,
     component: StandaloneOfficeAddressFiling,
     meta: {
       requiresAuth: true,
@@ -63,14 +62,14 @@ export default [
           text: 'Address Change',
           disabled: false,
           exact: true,
-          to: { name: STANDALONE_ADDRESSES }
+          to: { name: Routes.STANDALONE_ADDRESSES }
         }
       ]
     }
   },
   {
     path: '/correction',
-    name: CORRECTION,
+    name: Routes.CORRECTION,
     component: Correction,
     meta: {
       requiresAuth: true,
@@ -79,7 +78,7 @@ export default [
           text: 'Correction',
           disabled: false,
           exact: true,
-          to: { name: CORRECTION }
+          to: { name: Routes.CORRECTION }
         }
       ]
     }
@@ -87,7 +86,7 @@ export default [
   {
     // this route is selected by router.beforeEach()
     path: '/signin',
-    name: SIGNIN,
+    name: Routes.SIGNIN,
     component: Signin,
     meta: {
       requiresAuth: false
@@ -96,7 +95,7 @@ export default [
   {
     // this route is selected by SbcHeader -> Logout
     path: '/signout',
-    name: SIGNOUT,
+    name: Routes.SIGNOUT,
     component: Signout,
     props: true,
     meta: {

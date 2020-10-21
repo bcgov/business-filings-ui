@@ -26,6 +26,16 @@ export default {
     return (state.entityType === EntityTypes.BC_CORPORATION)
   },
 
+  /** Is True if entity is a Limited Company. */
+  isLtd (state): boolean {
+    return (state.entityType === EntityTypes.LIMITED_CO)
+  },
+
+  /** Is True if entity is a BC ULC Company. */
+  isUlc (state): boolean {
+    return (state.entityType === EntityTypes.BC_ULC_COMPANY)
+  },
+
   /** Is True if Staff role is set. */
   isRoleStaff (state): boolean {
     return state.keycloakRoles.includes('staff')

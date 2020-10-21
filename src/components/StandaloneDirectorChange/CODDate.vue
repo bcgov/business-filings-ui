@@ -81,7 +81,7 @@ export default class CodDate extends Mixins(DateMixin) {
   readonly lastAnnualReportDate!: string
   readonly lastCODFilingDate!: string
   readonly entityFoundingDate!: string
-  readonly isBComp: boolean
+  readonly isBComp!: boolean
 
   /**
    * Computed value.

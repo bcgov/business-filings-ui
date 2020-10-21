@@ -212,8 +212,8 @@ import { ObjectMixin } from '@/mixins'
 // Interfaces
 import { BaseAddressObjIF, BcorpAddressIf, AddressIF } from '@/interfaces'
 
-// Enums and Constants
-import { ADDRESSCHANGED } from '@/constants'
+// Enums
+import { Actions } from '@/enums'
 
 @Component({
   components: {
@@ -345,13 +345,13 @@ export default class OfficeAddresses extends Mixins(ObjectMixin) {
 
       // if the address has changed from the original, set action flag
       this.addressModified(this.deliveryAddress, this.registeredAddress.deliveryAddress)
-        ? this.addAction(deliveryAddressFinal, ADDRESSCHANGED)
-        : this.removeAction(deliveryAddressFinal, ADDRESSCHANGED)
+        ? this.addAction(deliveryAddressFinal, Actions.ADDRESSCHANGED)
+        : this.removeAction(deliveryAddressFinal, Actions.ADDRESSCHANGED)
 
       // if the address has changed from the original, set action flag
       this.addressModified(this.mailingAddress, this.registeredAddress.mailingAddress)
-        ? this.addAction(mailingAddressFinal, ADDRESSCHANGED)
-        : this.removeAction(mailingAddressFinal, ADDRESSCHANGED)
+        ? this.addAction(mailingAddressFinal, Actions.ADDRESSCHANGED)
+        : this.removeAction(mailingAddressFinal, Actions.ADDRESSCHANGED)
     }
 
     if (this.recordsAddress) {
@@ -360,13 +360,13 @@ export default class OfficeAddresses extends Mixins(ObjectMixin) {
 
       // if the address has changed from the original, set action flag
       this.addressModified(this.recDeliveryAddress, this.recDeliveryAddressOriginal)
-        ? this.addAction(recDeliveryAddressFinal, ADDRESSCHANGED)
-        : this.removeAction(recDeliveryAddressFinal, ADDRESSCHANGED)
+        ? this.addAction(recDeliveryAddressFinal, Actions.ADDRESSCHANGED)
+        : this.removeAction(recDeliveryAddressFinal, Actions.ADDRESSCHANGED)
 
       // if the address has changed from the original, set action flag
       this.addressModified(this.recMailingAddress, this.recMailingAddressOriginal)
-        ? this.addAction(recMailingAddressFinal, ADDRESSCHANGED)
-        : this.removeAction(recMailingAddressFinal, ADDRESSCHANGED)
+        ? this.addAction(recMailingAddressFinal, Actions.ADDRESSCHANGED)
+        : this.removeAction(recMailingAddressFinal, Actions.ADDRESSCHANGED)
     }
 
     if (this.recordsAddress) {

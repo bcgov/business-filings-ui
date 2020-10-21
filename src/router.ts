@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import routes from '@/routes'
-import { SIGNIN } from '@/constants'
+import { Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 /**
@@ -24,7 +24,7 @@ export function getVueRouter () {
   router.beforeEach((to, from, next) => {
     // check if we need to authenticate
     if (requiresAuth(to) && !isAuthenticated()) {
-      next({ name: SIGNIN })
+      next({ name: Routes.SIGNIN })
     } else {
       next()
     }

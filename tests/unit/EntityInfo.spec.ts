@@ -1,20 +1,18 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
-import Vuelidate from 'vuelidate'
 import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
 import mockRouter from './mockRouter'
 
 Vue.use(Vuetify)
-Vue.use(Vuelidate)
 Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-describe('EntityInfo', () => {
+describe('EntityInfo - UI', () => {
   it('displays Business entity info properly', async () => {
     // session storage must be set before mounting component
     sessionStorage.clear()
@@ -135,8 +133,7 @@ describe('EntityInfo', () => {
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
 
-  it('displays the breadcrumb correctly', async () => {
-    const store = getVuexStore()
+  it('displays the breadcrumbs correctly', async () => {
     const router = mockRouter.mock()
 
     sessionStorage.clear()
@@ -159,8 +156,7 @@ describe('EntityInfo', () => {
     expect(crumb3).toBeUndefined()
   })
 
-  it('displays the breadcrumb correctly when navigating to an annual report', async () => {
-    const store = getVuexStore()
+  it('displays the breadcrumbs correctly when navigating to an annual report', async () => {
     const router = mockRouter.mock()
     router.push('annual-report')
 
@@ -185,8 +181,7 @@ describe('EntityInfo', () => {
     expect(crumb3.textContent).toContain('File 2020 Annual Report')
   })
 
-  it('displays the breadcrumb correctly when navigating to an address change', async () => {
-    const store = getVuexStore()
+  it('displays the breadcrumbs correctly when navigating to an address change', async () => {
     const router = mockRouter.mock()
     router.push('standalone-addresses')
 
@@ -210,8 +205,7 @@ describe('EntityInfo', () => {
     expect(crumb3.textContent).toContain('Address Change')
   })
 
-  it('displays the breadcrumb correctly when navigating to a Director Change', async () => {
-    const store = getVuexStore()
+  it('displays the breadcrumbs correctly when navigating to a Director Change', async () => {
     const router = mockRouter.mock()
     router.push('standalone-directors')
 
@@ -233,5 +227,42 @@ describe('EntityInfo', () => {
     expect(divider.textContent).toContain('>')
     expect(crumb2.textContent).toContain('My Named Company')
     expect(crumb3.textContent).toContain('Director Change')
+  })
+})
+
+describe('EntityInfo - Click Tests - Alterations', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Edit URL to view/alter business info', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('SHOW_COMPANY_INFO_BUTTON', 'yes') // FUTURE: remove this
+    store.state.entityIncNo = 'BC1234567'
+    // store.state.entityType = 'LTD' // FUTURE: uncomment this
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    wrapper.find('#company-information-button').trigger('click')
+    await Vue.nextTick()
+
+    // verify redirection
+    const editUrl = 'business/edit/BC1234567/alteration'
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl)
+
+    wrapper.destroy()
   })
 })

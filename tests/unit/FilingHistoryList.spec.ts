@@ -136,7 +136,7 @@ const sampleFilings = [
         'filingId': 9873,
         'availableOnPaperOnly': false,
         'effectiveDate': '2019-12-13T00:00:00+00:00',
-        'status': 'COMPLETE',
+        'status': 'COMPLETED',
         'comments': [
           {
             'comment': {
@@ -1698,7 +1698,7 @@ describe('Filing History List - corrections', () => {
             'filingId': 9873,
             'availableOnPaperOnly': false,
             'effectiveDate': '2019-12-13T00:00:00+00:00',
-            'status': 'COMPLETE'
+            'status': 'COMPLETED'
           },
           'correction': {
             'correctedFilingType': 'annualReport',
@@ -1738,7 +1738,7 @@ describe('Filing History List - corrections', () => {
             'filingId': 9873,
             'availableOnPaperOnly': false,
             'effectiveDate': '2019-12-13T00:00:00+00:00',
-            'status': 'COMPLETE'
+            'status': 'COMPLETED'
           },
           'correction': {
             'correctedFilingType': 'annualReport',

@@ -325,9 +325,8 @@ import {
 // Mixins
 import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
 
-// Enums, Constants and Interfaces
-import { FilingCodes, FilingStatus, FilingTypes, StaffPaymentOptions } from '@/enums'
-import { APPOINTED, CEASED, NAMECHANGED, ADDRESSCHANGED, DASHBOARD } from '@/constants'
+// Enums and Interfaces
+import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
 import { StaffPaymentIF } from '@/interfaces'
 
 export default {
@@ -483,7 +482,7 @@ export default {
 
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
-      this.$router.push({ name: DASHBOARD })
+      this.$router.push({ name: Routes.DASHBOARD })
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
@@ -598,7 +597,8 @@ export default {
 
                 // add filing code for paid changes
                 if (changeOfDirectors.directors.filter(
-                  director => this.hasAction(director, CEASED) || this.hasAction(director, APPOINTED)
+                  director => this.hasAction(director, Actions.CEASED) ||
+                    this.hasAction(director, Actions.APPOINTED)
                 ).length > 0) {
                   // always set Priority flag to false
                   // use existing Waive Fees flag
@@ -608,7 +608,8 @@ export default {
 
                 // add filing code for free changes
                 if (changeOfDirectors.directors.filter(
-                  director => this.hasAction(director, NAMECHANGED) || this.hasAction(director, ADDRESSCHANGED)
+                  director => this.hasAction(director, Actions.NAMECHANGED) ||
+                    this.hasAction(director, Actions.ADDRESSCHANGED)
                 ).length > 0) {
                   // always set Priority flag to false
                   // use existing Waive Fees flag
@@ -732,7 +733,7 @@ export default {
       const filing = await this.saveFiling(true)
       // on success, go to dashboard
       if (filing) {
-        this.$router.push({ name: DASHBOARD })
+        this.$router.push({ name: Routes.DASHBOARD })
       }
       this.savingResuming = false
     },
@@ -765,7 +766,7 @@ export default {
           window.location.assign(payUrl)
         } else {
           // route directly to dashboard
-          this.$router.push({ name: DASHBOARD, query: { filing_id: filingId } })
+          this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: filingId } })
         }
       }
       this.filingPaying = false
@@ -970,7 +971,7 @@ export default {
 
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: DASHBOARD })
+      this.$router.push({ name: Routes.DASHBOARD })
     },
 
     resetErrors () {

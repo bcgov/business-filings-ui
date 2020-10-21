@@ -991,7 +991,7 @@ describe('TodoList - UI - BCOMP', () => {
     wrapper.destroy()
   })
 
-  it('\'File Annual Report\' and verification checkbox are disabled when COA is pending', async () => {
+  it('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1721,7 +1721,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  it('Confirm BCOL error is captured in todo list', async () => {
+  it('captures BCOL error in todo list', async () => {
     sessionStorage.setItem('PAY_API_URL', '')
     // store a task with a filing associated to a BCOL error
     store.state.tasks = [
@@ -2134,9 +2134,125 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
   })
 })
 
+describe('TodoList - Click Tests - IA Corrections', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Edit URL to resume a draft IA correction', async () => {
+    // init store
+    sessionStorage.clear()
+    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityIncNo = 'BC1234567'
+    // init draft Correction filing task
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'correction',
+              status: 'DRAFT',
+              filingId: 123,
+              comments: []
+            },
+            correction: {
+              correctedFilingType: 'incorporationApplication'
+            }
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    store.state.keycloakRoles = ['staff'] // only staff may resume draft corrections
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+    wrapper.find('.btn-corr-draft-resume').trigger('click')
+    await Vue.nextTick()
+
+    // verify redirection
+    const editUrl = 'business/edit/BC1234567/correction?correction-id=123'
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl)
+
+    wrapper.destroy()
+  })
+})
+
+describe('TodoList - Click Tests - Alterations', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Edit URL to resume a draft alteration', async () => {
+    // init store
+    sessionStorage.clear()
+    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('SHOW_COMPANY_INFO_BUTTON', 'yes') // FUTURE: remove this
+    store.state.entityIncNo = 'BC1234567'
+    // store.state.entityType = 'LTD' // FUTURE: uncomment this
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'alteration',
+              status: 'DRAFT',
+              filingId: 123,
+              comments: []
+            },
+            alteration: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+    store.state.keycloakRoles = ['staff'] // only staff may resume draft alterations
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+
+    wrapper.find('.btn-corr-draft-resume').trigger('click')
+    await Vue.nextTick()
+
+    // verify redirection
+    const editUrl = 'business/edit/BC1234567/alteration?alteration-id=123'
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl)
+
+    wrapper.destroy()
+  })
+})
+
 describe('TodoList - Delete Draft', () => {
   const { assign } = window.location
-  let deleteCall
+  let deleteCall: any
 
   beforeAll(() => {
     // mock the window.location.assign function
@@ -2334,7 +2450,7 @@ describe('TodoList - Delete Draft', () => {
 
 describe('TodoList - Cancel Payment', () => {
   const { assign } = window.location
-  let patchCall
+  let patchCall: any
 
   beforeAll(() => {
     // mock the window.location.assign function

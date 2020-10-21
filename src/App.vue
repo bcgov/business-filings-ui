@@ -82,8 +82,7 @@ import { ObjectMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
 import { configJson } from '@/resources'
 
 // Enums and Constants
-import { EntityStatus, EntityTypes, FilingStatus, FilingTypes, NameRequestStates } from '@/enums'
-import { SIGNIN, SIGNOUT, DASHBOARD } from '@/constants'
+import { EntityStatus, EntityTypes, FilingStatus, FilingTypes, NameRequestStates, Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
@@ -152,12 +151,12 @@ export default {
 
     /** True if route is Signin. */
     isSigninRoute (): boolean {
-      return Boolean(this.$route.name === SIGNIN)
+      return Boolean(this.$route.name === Routes.SIGNIN)
     },
 
     /** True if route is Signout. */
     isSignoutRoute (): boolean {
-      return Boolean(this.$route.name === SIGNOUT)
+      return Boolean(this.$route.name === Routes.SIGNOUT)
     },
 
     /** True if user is authenticated. */
@@ -673,7 +672,7 @@ export default {
       // if we (re)route to the dashboard then re-fetch all data
       // - does not fire on initial dashboard load
       // - fires after successful signin
-      if (this.$route.name === DASHBOARD) {
+      if (this.$route.name === Routes.DASHBOARD) {
         await this.startTokenService()
         await this.fetchData()
       }

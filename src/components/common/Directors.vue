@@ -520,9 +520,8 @@ import { WarningPopover } from '@/components/dialogs'
 // Mixins
 import { DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
-// Enums and Constants
-import { FilingStatus } from '@/enums'
-import { CEASED, NAMECHANGED, ADDRESSCHANGED, APPOINTED } from '@/constants'
+// Enums
+import { Actions, FilingStatus } from '@/enums'
 
 // Interfaces
 import { FormIF, BaseAddressIF, AlertMessageIF } from '@/interfaces'
@@ -988,7 +987,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
     }
 
     newDirector = {
-      actions: [APPOINTED],
+      actions: [Actions.APPOINTED],
       id: this.directors.length + 1,
       isDirectorActionable: true,
       isFeeApplied: true,
@@ -1012,7 +1011,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
 
     // if there is also a cease date on this new director, add the ceased action
     if (this.director.cessationDate !== null && this.director.cessationDate !== undefined) {
-      this.addAction(newDirector, CEASED)
+      this.addAction(newDirector, Actions.CEASED)
     }
     this.directors.unshift(newDirector)
   }
@@ -1029,7 +1028,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
     else director.isFeeApplied = false
 
     // reverse "ceased" action
-    this.toggleAction(director, CEASED)
+    this.toggleAction(director, Actions.CEASED)
 
     // either set or undo cessation date
     if (director.cessationDate === null) {
@@ -1134,22 +1133,22 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
       }
 
       /* COMPARE changes to original director data, for existing directors */
-      if (director.actions.indexOf(APPOINTED) < 0) {
+      if (director.actions.indexOf(Actions.APPOINTED) < 0) {
         const origDirector = this.directorsOriginal.filter(el => el.id === id)[0]
 
         // check whether address has changed
         if ((JSON.stringify(origDirector.deliveryAddress) !== JSON.stringify(director.deliveryAddress)) ||
           (JSON.stringify(origDirector.mailingAddress) !== JSON.stringify(director.mailingAddress))) {
-          this.addAction(director, ADDRESSCHANGED)
+          this.addAction(director, Actions.ADDRESSCHANGED)
         } else {
-          this.removeAction(director, ADDRESSCHANGED)
+          this.removeAction(director, Actions.ADDRESSCHANGED)
         }
 
         // check whether name has changed
         if (JSON.stringify(origDirector.officer) !== JSON.stringify(director.officer)) {
-          this.addAction(director, NAMECHANGED)
+          this.addAction(director, Actions.NAMECHANGED)
         } else {
-          this.removeAction(director, NAMECHANGED)
+          this.removeAction(director, Actions.NAMECHANGED)
         }
       }
 
@@ -1186,7 +1185,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
     const director = this.directors[index]
 
     if (isRestore && id >= 0) {
-      this.removeAction(director, NAMECHANGED)
+      this.removeAction(director, Actions.NAMECHANGED)
 
       if (director.officer.prevFirstName && director.officer.prevLastName) {
         director.officer.firstName = director.officer.prevFirstName
@@ -1290,7 +1289,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
    */
   private isNew (director): boolean {
     // helper function - was the director added in this filing?
-    return (director.actions.indexOf(APPOINTED) >= 0)
+    return (director.actions.indexOf(Actions.APPOINTED) >= 0)
   }
 
   /**
@@ -1299,7 +1298,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
    * @returns Whether the director has had the name changed.
    */
   private isNameChanged (director): boolean {
-    return (director.actions.indexOf(NAMECHANGED) >= 0)
+    return (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
   }
 
   /**
@@ -1308,7 +1307,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
    * @returns Whether the director has had the address changed.
    */
   private isAddressChanged (director): boolean {
-    return (director.actions.indexOf(ADDRESSCHANGED) >= 0)
+    return (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
   }
 
   /**
@@ -1318,7 +1317,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
    */
   private isActive (director): boolean {
     // helper function - is the director active, ie: not ceased?
-    return (director.actions.indexOf(CEASED) < 0)
+    return (director.actions.indexOf(Actions.CEASED) < 0)
   }
 
   /**
