@@ -750,7 +750,7 @@ export default {
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDateTime: this.convertUTCTimeToLocalTime(header.date), // used for receipt
-          filingDate: this.convertUTCTimeToLocalTime(correction.correctedFilingDate),
+          filingDate: filingDate,
           isCorrection: true,
           isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || [] as Array<any>,
