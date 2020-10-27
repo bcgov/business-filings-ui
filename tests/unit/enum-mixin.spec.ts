@@ -20,23 +20,23 @@ describe('Enum Mixin', () => {
   })
 
   it('returns correct values for filing status helpers', async () => {
-    expect(vm.isStatusCompleted({ status: 'COMPLETED'})).toBe(true)
-    expect(vm.isStatusDraft({ status: 'DRAFT'})).toBe(true)
-    expect(vm.isStatusEpoch({ status: 'EPOCH'})).toBe(true)
-    expect(vm.isStatusError({ status: 'ERROR'})).toBe(true)
-    expect(vm.isStatusNew({ status: 'NEW'})).toBe(true)
-    expect(vm.isStatusPaid({ status: 'PAID'})).toBe(true)
-    expect(vm.isStatusPending({ status: 'PENDING'})).toBe(true)
-    expect(vm.isStatusCorrectionPending({ status: 'PENDING_CORRECTION'})).toBe(true)
-    expect(vm.isStatusAlterationPending({ status: 'PENDING_ALTERATION'})).toBe(true)
+    expect(vm.isStatusCompleted({ status: 'COMPLETED' })).toBe(true)
+    expect(vm.isStatusDraft({ status: 'DRAFT' })).toBe(true)
+    expect(vm.isStatusEpoch({ status: 'EPOCH' })).toBe(true)
+    expect(vm.isStatusError({ status: 'ERROR' })).toBe(true)
+    expect(vm.isStatusNew({ status: 'NEW' })).toBe(true)
+    expect(vm.isStatusPaid({ status: 'PAID' })).toBe(true)
+    expect(vm.isStatusPending({ status: 'PENDING' })).toBe(true)
+    expect(vm.isStatusCorrectionPending({ status: 'PENDING_CORRECTION' })).toBe(true)
+    expect(vm.isStatusAlterationPending({ status: 'PENDING_ALTERATION' })).toBe(true)
   })
 
   it('returns correct values for filing type helpers', async () => {
-    expect(vm.isTypeAlteration({ filingType: 'alteration'})).toBe(true)
-    expect(vm.isTypeAnnualReport({ filingType: 'annualReport'})).toBe(true)
-    expect(vm.isTypeCorrection({ filingType: 'correction'})).toBe(true)
-    expect(vm.isTypeIncorporationApplication({ filingType: 'incorporationApplication'})).toBe(true)
-    expect(vm.isTypeNameRequest({ filingType: 'nameRequest'})).toBe(true)
+    expect(vm.isTypeAlteration({ filingType: 'alteration' })).toBe(true)
+    expect(vm.isTypeAnnualReport({ filingType: 'annualReport' })).toBe(true)
+    expect(vm.isTypeCorrection({ filingType: 'correction' })).toBe(true)
+    expect(vm.isTypeIncorporationApplication({ filingType: 'incorporationApplication' })).toBe(true)
+    expect(vm.isTypeNameRequest({ filingType: 'nameRequest' })).toBe(true)
   })
 
   it('returns correct values Entity Type to Numbered Description helper', async () => {
