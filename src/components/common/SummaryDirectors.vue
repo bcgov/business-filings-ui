@@ -184,7 +184,7 @@ import { mapGetters } from 'vuex'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { DateMixin, ObjectMixin } from '@/mixins'
+import { CommonMixin, DateMixin } from '@/mixins'
 
 // Enums
 import { Actions } from '@/enums'
@@ -200,7 +200,7 @@ import { DirectorIF } from '@/interfaces'
     ...mapGetters(['isBComp'])
   }
 })
-export default class SummaryDirectors extends Mixins(DateMixin, ObjectMixin) {
+export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   // Local definition of computed property for static type checking.
   readonly isBComp!: boolean
 
@@ -353,9 +353,6 @@ ul {
 .address {
   display: flex;
   width: 14rem;
-}
-
-.same-address {
 }
 
 .address__row {

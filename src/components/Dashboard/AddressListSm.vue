@@ -208,7 +208,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
 
 // Mixins
-import { ObjectMixin, CountriesProvincesMixin } from '@/mixins'
+import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 
 // Interfaces
 import { BaseAddressObjIF } from '@/interfaces'
@@ -219,7 +219,7 @@ import { BaseAddressObjIF } from '@/interfaces'
     ...mapState(['registeredAddress', 'recordsAddress'])
   }
 })
-export default class AddressListSm extends Mixins(ObjectMixin, CountriesProvincesMixin) {
+export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   // Local definitions of computed properties for static type checking.
   readonly isBComp!: boolean
   readonly isCorp!: boolean

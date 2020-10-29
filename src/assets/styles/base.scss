@@ -164,21 +164,12 @@ p {
   font-weight: 600;
 }
 
-.fade-out {
+// class to auto-hide loading containers after 2 seconds
+.auto-fade-out {
   animation: fadeOut 2s forwards;
 }
 
-// styles for 'fade leave' transition
-// NB: 'fade enter' looks better without transition
-// .fade-enter-active,
-.fade-leave-active {
-  transition: opacity .5s;
-}
-// .fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
+// keyframes for auto-fade-out animation
 @keyframes fadeOut {
   0% {
     opacity: 1;

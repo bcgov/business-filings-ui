@@ -207,7 +207,7 @@ import { officeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { ObjectMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 
 // Interfaces
 import { BaseAddressObjIF, BcorpAddressIf, AddressIF } from '@/interfaces'
@@ -224,7 +224,7 @@ import { Actions } from '@/enums'
     ...mapGetters(['isBComp'])
   }
 })
-export default class OfficeAddresses extends Mixins(ObjectMixin) {
+export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Local definition of computed property for static type checking.
   readonly isBComp!: boolean
 
@@ -290,7 +290,7 @@ export default class OfficeAddresses extends Mixins(ObjectMixin) {
   private inheritRecDeliveryAddress: boolean = true
 
   // State of the checkbox for determining whether the Record address is the same as the Registered address
-  private inheritRegisteredAddress: boolean = this.isSame(this.registeredAddress, this.recordsAddress)
+  private inheritRegisteredAddress: boolean = true
 
   // The Address schema containing Vuelidate rules.
   private addressSchema = officeAddressSchema
@@ -299,6 +299,7 @@ export default class OfficeAddresses extends Mixins(ObjectMixin) {
    * Called when component is created.
    */
   private created (): void {
+    this.inheritRegisteredAddress = this.isSame(this.registeredAddress, this.recordsAddress)
     this.initAddresses()
   }
 

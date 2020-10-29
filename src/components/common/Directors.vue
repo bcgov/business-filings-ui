@@ -518,7 +518,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { WarningPopover } from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
 import { Actions, FilingStatus } from '@/enums'
@@ -538,7 +538,7 @@ import { FormIF, BaseAddressIF, AlertMessageIF } from '@/interfaces'
     ...mapGetters(['isBComp', 'lastCODFilingDate'])
   }
 })
-export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMixin, ResourceLookupMixin) {
+export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   // ref: https://github.com/vuejs/vue-class-component/issues/94
@@ -555,7 +555,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
   }
 
   // Props passed into this component.
-  @Prop()
+  @Prop({ default: '' })
   private asOfDate: string
 
   /**
@@ -601,7 +601,7 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
       addressCountry: '',
       deliveryInstructions: ''
     },
-    appointmentDate: this.asOfDate,
+    appointmentDate: null,
     cessationDate: null,
     cessationDateTemp: null
   }
@@ -1355,6 +1355,14 @@ export default class Directors extends Mixins(DateMixin, ObjectMixin, DirectorMi
   @Watch('directorFormValid')
   private onDirectorFormValid (val: boolean): void {
     this.emitDirectorFormValid(val)
+  }
+
+  /**
+   * When as-of date is initialized, set initial director appointment date.
+   */
+  @Watch('asOfDate', { immediate: true })
+  private onAsOfDateInitialized (date: string): void {
+    this.director.appointmentDate = date
   }
 
   /**

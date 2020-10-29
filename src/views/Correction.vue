@@ -36,14 +36,14 @@
     />
 
     <!-- Initial Page Load Transition -->
-    <transition name="fade">
+    <v-fade-transition>
       <div class="loading-container" v-show="showLoadingContainer">
         <div class="loading__content">
           <v-progress-circular color="primary" :size="50" indeterminate />
           <div class="loading-msg">{{loadingMessage}}</div>
         </div>
       </div>
-    </transition>
+    </v-fade-transition>
 
     <v-container id="correction-container" class="view-container" v-show="dataLoaded">
       <v-row>

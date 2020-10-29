@@ -909,6 +909,9 @@ export default {
 
         case FilingTypes.INCORPORATION_APPLICATION:
           try {
+            // show spinner since the network calls below can take a few seconds
+            this.$root.$emit('showSpinner', true)
+
             // Fetch original Incorporation Application
             const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
 
@@ -920,11 +923,15 @@ export default {
             const draftCorrectionId = draftCorrection.header?.filingId
 
             // redirect to Edit web app to correct this Incorporation Application
+            // NB: no need to clear spinner on redirect
             const editUrl = sessionStorage.getItem('EDIT_URL')
-            const url = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
-            // assume Edit URL is always reachable
-            window.location.assign(url)
+            const correctionUrl = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
+            // assume Correction URL is always reachable
+            window.location.assign(correctionUrl)
           } catch (error) {
+            // clear spinner on error
+            this.$root.$emit('showSpinner', false)
+
             // eslint-disable-next-line no-console
             console.log(`Correction Creation error = ${error}`)
             this.loadCorrectionDialog = true

@@ -5,16 +5,7 @@ import { omit, isEqual } from 'lodash'
  * Mixin that provides some useful object utilities.
  */
 @Component({})
-export default class ObjectMixin extends Vue {
-  /**
-   * Removes the specified property from an object.
-   * @param baseObj the base object
-   * @param prop    the property to be removed
-   */
-  omitProp (baseObj: object, prop: Array<string>): object {
-    return omit(baseObj, prop)
-  }
-
+export default class CommonMixin extends Vue {
   /**
    * Removes the specified properties from nested objects.
    * @param baseObj the base object
@@ -22,9 +13,9 @@ export default class ObjectMixin extends Vue {
    * @param prop    the properties to be removed
    */
   omitProps (baseObj: object, keys: Array<string>, prop: Array<string>): object {
-    let parsedObj = {}
-    Object.keys(baseObj).forEach(keys => {
-      parsedObj[keys] = omit(baseObj[keys], prop)
+    const parsedObj: object = {}
+    Object.keys(baseObj).forEach(key => {
+      parsedObj[key] = omit(baseObj[key], prop)
     })
     return parsedObj
   }
@@ -38,6 +29,6 @@ export default class ObjectMixin extends Vue {
    * @returns a boolean indicating a match of objects
    */
   isSame (objA: {}, objB: {}, prop: string = null): boolean {
-    return isEqual({ ...this.omitProp(objA, [prop]) }, { ...this.omitProp(objB, [prop]) })
+    return isEqual({ ...omit(objA, [prop]) }, { ...omit(objB, [prop]) })
   }
 }
