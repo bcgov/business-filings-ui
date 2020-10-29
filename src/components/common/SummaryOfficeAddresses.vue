@@ -8,9 +8,7 @@
           <div class="meta-container__inner">
             <label><strong>Delivery Address</strong></label>
             <div class="address-wrapper">
-              <delivery-address
-                :address="registeredAddress.deliveryAddress"
-              />
+              <delivery-address :address="registeredDeliveryAddress" />
             </div>
           </div>
         </div>
@@ -21,13 +19,11 @@
         <div class="meta-container">
           <label></label>
           <div class="meta-container__inner"
-            v-if="!isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress)"
+            v-if="!isSame(registeredDeliveryAddress, registeredMailingAddress)"
           >
             <label><strong>Mailing Address</strong></label>
             <div class="address-wrapper">
-              <mailing-address
-                :address="registeredAddress.mailingAddress"
-              />
+              <mailing-address :address="registeredMailingAddress" />
             </div>
           </div>
           <span id="sameAsAbove" v-else>Mailing Address same as above</span>
@@ -43,9 +39,7 @@
             <div class="meta-container__inner">
               <label><strong>Delivery Address</strong></label>
               <div class="address-wrapper">
-                <delivery-address
-                  :address="recordsAddress.deliveryAddress"
-                />
+                <delivery-address :address="recordsDeliveryAddress" />
               </div>
             </div>
           </div>
@@ -56,13 +50,11 @@
           <div class="meta-container">
             <label></label>
             <div class="meta-container__inner"
-              v-if="!isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress)"
+              v-if="!isSame(recordsDeliveryAddress, recordsMailingAddress)"
             >
               <label>Mailing Address</label>
               <div class="address-wrapper">
-                <mailing-address
-                  :address="recordsAddress.mailingAddress"
-                />
+                <mailing-address :address="recordsMailingAddress" />
               </div>
             </div>
             <span v-else>Mailing Address same as above</span>
@@ -93,19 +85,19 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 // Mixins
-import { ObjectMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 
 // Interfaces
-import { BaseAddressObjIF } from '@/interfaces'
+import { AddressIF, BaseAddressObjIF } from '@/interfaces'
 
 @Component({
-  mixins: [ObjectMixin],
+  mixins: [CommonMixin],
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
   }
 })
-export default class SummaryOfficeAddresses extends Mixins(ObjectMixin) {
+export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
   /**
    * Registered Office address object passed in from the parent which is pulled from store.
    */
@@ -117,6 +109,26 @@ export default class SummaryOfficeAddresses extends Mixins(ObjectMixin) {
    */
   @Prop({ default: null })
   private recordsAddress: BaseAddressObjIF
+
+  /** The Registered Delivery Address. */
+  private get registeredDeliveryAddress (): AddressIF {
+    return this.registeredAddress?.deliveryAddress
+  }
+
+  /** The Registered Mailing Address. */
+  private get registeredMailingAddress (): AddressIF {
+    return this.registeredAddress?.mailingAddress
+  }
+
+  /** The Records Delivery Address. */
+  private get recordsDeliveryAddress (): AddressIF {
+    return this.recordsAddress?.deliveryAddress
+  }
+
+  /** The Records Mailing Address. */
+  private get recordsMailingAddress (): AddressIF {
+    return this.recordsAddress?.mailingAddress
+  }
 }
 </script>
 

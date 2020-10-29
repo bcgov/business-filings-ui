@@ -122,12 +122,12 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
-import { EnumMixin } from '@/mixins'
+import { CommonMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, EntityTypes, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 
 @Component({
-  mixins: [EnumMixin],
+  mixins: [CommonMixin, EnumMixin],
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
@@ -135,7 +135,7 @@ import { BreadcrumbIF } from '@/interfaces'
     ...mapGetters(['isRoleStaff', 'nrNumber', 'isLtd', 'isUlc'])
   }
 })
-export default class EntityInfo extends Mixins(EnumMixin) {
+export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string

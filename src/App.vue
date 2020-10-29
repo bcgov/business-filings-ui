@@ -3,42 +3,51 @@
     <!-- Dialogs -->
     <dashboard-unavailable-dialog
       :dialog="dashboardUnavailableDialog"
-      @exit="onClickExit"
-      @retry="onClickRetry"
+      @exit="onClickExit()"
+      @retry="onClickRetry()"
       attach="#app"
     />
 
     <business-auth-error-dialog
       :dialog="businessAuthErrorDialog"
-      @exit="onClickExit"
-      @retry="onClickRetry"
+      @exit="onClickExit()"
+      @retry="onClickRetry()"
       attach="#app"
     />
 
     <name-request-auth-error-dialog
       :dialog="nameRequestAuthErrorDialog"
-      @exit="onClickExit"
-      @retry="onClickRetry"
+      @exit="onClickExit()"
+      @retry="onClickRetry()"
       attach="#app"
     />
 
     <name-request-invalid-dialog
       :dialog="nameRequestInvalidDialog"
       :type="nameRequestInvalidType"
-      @exit="onClickExit"
-      @retry="onClickRetry"
+      @exit="onClickExit()"
+      @retry="onClickRetry()"
       attach="#app"
     />
 
     <!-- Initial Page Load Transition -->
-    <transition name="fade">
+    <v-fade-transition>
       <div class="loading-container" v-show="showLoadingContainer">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
           <div class="loading-msg" v-if="!isSignoutRoute">Loading Dashboard</div>
         </div>
       </div>
-    </transition>
+    </v-fade-transition>
+
+    <!-- Alternate Loading Spinner -->
+    <v-fade-transition>
+      <div class="loading-container grayed-out" v-show="showSpinner">
+        <div class="loading__content">
+          <v-progress-circular color="primary" size="50" indeterminate />
+        </div>
+      </div>
+    </v-fade-transition>
 
     <sbc-header />
     <pay-system-alert />
@@ -76,7 +85,7 @@ import {
 } from '@/components/dialogs'
 
 // Mixins
-import { ObjectMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
+import { CommonMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
 
 // Folder containing the array of configuration objects
 import { configJson } from '@/resources'
@@ -88,21 +97,24 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 export default {
   name: 'App',
 
-  mixins: [ObjectMixin, DirectorMixin, NameRequestMixin],
+  mixins: [CommonMixin, DirectorMixin, NameRequestMixin],
 
   data () {
     return {
-      dataLoaded: false as boolean,
-      dashboardUnavailableDialog: false as boolean,
-      businessAuthErrorDialog: false as boolean,
-      nameRequestAuthErrorDialog: false as boolean,
-      nameRequestInvalidDialog: false as boolean,
+      dataLoaded: false,
+      dashboardUnavailableDialog: false,
+      businessAuthErrorDialog: false,
+      nameRequestAuthErrorDialog: false,
+      nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
       currentDateTimerId: null as number,
       localNrNumber: null as string,
 
+      /** Whether to show the alternate loading spinner. */
+      showSpinner: false,
+
       /** Whether the token refresh service is initialized. */
-      tokenService: false as boolean,
+      tokenService: false,
 
       // enums
       EntityStatus,
@@ -180,8 +192,11 @@ export default {
     // init current date
     this.updateCurrentDate()
 
-    // listen for dashboard reload trigger event
+    // listen for dashboard reload trigger events
     this.$root.$on('triggerDashboardReload', () => this.fetchData())
+
+    // listen for spinner show/hide events
+    this.$root.$on('showSpinner', (flag = false) => { this.showSpinner = flag })
   },
 
   async mounted (): Promise<void> {
@@ -195,8 +210,11 @@ export default {
   },
 
   destroyed (): void {
-    // stop listening for dashboard reload trigger event
+    // stop listening for dashboard reload trigger events
     this.$root.$off('triggerDashboardReload')
+
+    // stop listening for spinner show/hide events
+    this.$root.$off('showSpinner')
   },
 
   methods: {
@@ -683,4 +701,11 @@ export default {
 
 <style lang="scss">
 // @import '@/assets/styles/theme.scss';
+
+.loading-container.grayed-out {
+  // these are the same styles as dialog overlay:
+  opacity: 0.46;
+  background-color: rgb(33, 33, 33); // grey darken-4
+  border-color: rgb(33, 33, 33); // grey darken-4
+}
 </style>
