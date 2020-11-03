@@ -436,6 +436,9 @@ export default {
               case FilingTypes.NOTICE_OF_ALTERATION:
                 this.loadNoticeOfAlteration(filing)
                 break
+              case FilingTypes.TRANSITION_APPLICATION:
+                this.loadTransitionFiling(filing)
+                break
               default:
                 // fallback for unknown filings
                 this.loadPaperFiling(filing)
@@ -819,6 +822,64 @@ export default {
       }
     },
 
+    /** Loads A Transition filing into the historyItems list. */
+    loadTransitionFiling (filing: FilingIF) {
+      const header = filing?.header
+      const business = filing?.business
+
+      if (header && business) {
+        const filingType = FilingTypes.TRANSITION_APPLICATION
+
+        let subtitle = ''
+
+        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
+
+        // Effective Date is assigned by the backend when the filing is completed (normally right away).
+        // Effective Date may be in the future (eg, for BCOMP COA filings).
+        // If Effective Date is empty, use Filing Date instead.
+        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+
+        // is this a Future Effective Transition Filing?
+        const isFutureEffectiveTransition = !!filing.header.isFutureEffective
+
+        // is this a Future Effective Transition pending completion?
+        const isFutureEffectiveTransitionPending = isFutureEffectiveTransition && this.isEffectiveDatePast(filing)
+
+        // build filing item
+        const item: HistoryItemIF = {
+          filingType,
+          title: this.filingTypeToName(filingType),
+          subtitle,
+          filingId: header.filingId,
+          filingAuthor: 'Registry Staff', // TBD
+          filingDate,
+          effectiveDateTime, // used in Future Effective IA components
+          isPaid: header.status === FilingStatus.PAID,
+          documents: filing?.documents || ([] as Array<any>),
+          status: header.status,
+          comments: this.flattenAndSortComments(header.comments)
+        }
+
+        // add receipt
+        if (header.paymentToken) {
+          item.documents.push({
+            type: this.DOCUMENT_TYPE_RECEIPT,
+            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            filingDateTime,
+            paymentToken: header.paymentToken,
+            title: 'Receipt',
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+          })
+        }
+
+        this.historyItems.push(item)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('ERROR - missing section in filing =', filing)
+      }
+    },
+
     /** Loads a "paper filing" into the historyItems list. */
     loadPaperFiling (filing: FilingIF) {
       const header = filing?.header
@@ -1156,8 +1217,10 @@ export default {
       const disableThisIaCorrection = (item.filingType === FilingTypes.INCORPORATION_APPLICATION &&
         !featureFlags.getFlag('correction-ui-enabled'))
 
+      const isTransitionFiling = item.filingType === FilingTypes.TRANSITION_APPLICATION
+
       return (this.disableChanges || item.isNoa || item.isCorrection || item.isFutureEffectiveIa ||
-        item.isColinFiling || disableThisIaCorrection)
+        item.isColinFiling || disableThisIaCorrection || isTransitionFiling)
     }
   },
 

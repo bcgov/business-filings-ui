@@ -2074,3 +2074,77 @@ describe('Filing History List - redirections', () => {
     wrapper.destroy()
   })
 })
+
+describe('Filing History List - Transition Filing', () => {
+  it('displays a Transition Filing', async () => {
+    const $route = { query: {} }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.entityType = 'BEN'
+    store.state.entityName = 'ACME Benefit Inc'
+    store.state.filings = [
+      {
+        filing: {
+          header: {
+            name: 'transition',
+            date: '2020-11-01T19:20:05.670859+00:00',
+            status: 'COMPLETED',
+            filingId: 1234,
+            paymentToken: 111
+          },
+          documents: [
+            {
+              'filename': 'BC1234567 - Transition Application - 2020-11-01.pdf',
+              'filingId': 1234,
+              'reportType': null,
+              'title': 'Transition Application',
+              'type': 'REPORT'
+            }
+          ],
+          business: {
+            legalType: 'BEN'
+          },
+          transition: {
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Transition Application')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2020-11-01)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View Documents')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+
+    expect(vm.panel).toBe(0)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find('.download-document-btn').exists()).toBe(true)
+    expect(wrapper.find('.download-receipt-btn').exists()).toBe(true)
+    expect(wrapper.find('.download-all-btn').exists()).toBe(true)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+
+    wrapper.destroy()
+  })
+})
