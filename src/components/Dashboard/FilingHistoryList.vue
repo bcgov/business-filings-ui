@@ -840,11 +840,11 @@ export default {
         // If Effective Date is empty, use Filing Date instead.
         const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
 
-        // is this a Future Effective Incorp NOA?
-        const isFutureEffectiveNoa = !!filing.header.isFutureEffective
+        // is this a Future Effective Transition Filing?
+        const isFutureEffectiveTransition = !!filing.header.isFutureEffective
 
-        // is this a Future Effective NOA pending completion?
-        const isFutureEffectiveNoaPending = isFutureEffectiveNoa && this.isEffectiveDatePast(filing)
+        // is this a Future Effective Transition pending completion?
+        const isFutureEffectiveTransitionPending = isFutureEffectiveTransition && this.isEffectiveDatePast(filing)
 
         // build filing item
         const item: HistoryItemIF = {
