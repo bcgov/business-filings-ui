@@ -42,6 +42,13 @@ module.exports = {
         pathRewrite: {
           '/local-keycloak-config-url': ''
         }
+      },
+      // this is needed to avoid a PAYBC Not Found error when running locally
+      '/status/PAYBC': {
+        target: 'https://status-api-dev.pathfinder.gov.bc.ca/api/v1/status/PAYBC',
+        pathRewrite: {
+          '/status/PAYBC': ''
+        }
       }
     }
   }
