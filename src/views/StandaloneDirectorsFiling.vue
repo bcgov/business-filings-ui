@@ -117,6 +117,7 @@
               </article>
             </v-col>
 
+            <!-- Fee Summary -->
             <v-col cols="12" lg="3" style="position: relative">
               <aside>
                 <affix
@@ -206,6 +207,7 @@
                     <p class="complianceDialogMsg mb-0">{{complianceDialogMsg.msg}}</p>
                   </v-alert>
                 </section>
+
                 <!-- Director Information -->
                 <section>
                   <summary-directors
@@ -239,6 +241,7 @@
               </article>
             </v-col>
 
+            <!-- Fee Summary -->
             <v-col cols="12" lg="3" style="position: relative">
               <aside>
                 <affix

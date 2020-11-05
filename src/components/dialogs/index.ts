@@ -13,6 +13,7 @@ import NameRequestInvalidDialog from './NameRequestInvalidDialog.vue'
 import PaymentErrorDialog from './PaymentErrorDialog.vue'
 import ResumeErrorDialog from './ResumeErrorDialog.vue'
 import SaveErrorDialog from './SaveErrorDialog.vue'
+import StartFilingErrorDialog from './StartFilingErrorDialog.vue'
 import WarningPopover from './WarningPopover.vue'
 
 export {
@@ -31,5 +32,6 @@ export {
   PaymentErrorDialog,
   ResumeErrorDialog,
   SaveErrorDialog,
+  StartFilingErrorDialog,
   WarningPopover
 }

@@ -1,9 +1,3 @@
-import Vue from 'vue'
-
-export interface BaseAddressIF extends Vue {
-  $refs: any;
-}
-
 // Base address Interface to match the address.json schema and it's optional fields.
 export interface AddressIF {
   actions?: string[];
