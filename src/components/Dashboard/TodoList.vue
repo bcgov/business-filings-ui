@@ -636,6 +636,7 @@ export default {
     async loadAnnualReport (task) {
       let date
       const filing: FilingIF = task.task.filing
+      // NB: AR page requires "filing.annualReport"
       if (filing?.header && filing?.annualReport) {
         filing.annualReport.annualReportDate
           ? date = filing.annualReport.annualReportDate
@@ -670,7 +671,8 @@ export default {
 
     async loadChangeOfDirectors (task) {
       const filing: FilingIF = task.task.filing
-      if (filing?.header && filing?.changeOfDirectors) {
+      // no need to check for "filing.changedOfDirectors" as the COD page handles it
+      if (filing?.header) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
 
@@ -693,6 +695,7 @@ export default {
 
     async loadChangeOfAddress (task) {
       const filing: FilingIF = task.task.filing
+      // NB: COA page requires "filing.changeOfAddress"
       if (filing?.header && filing?.changeOfAddress) {
         const bcolErr = filing.header.paymentStatusCode || null
         const bcolObj = bcolErr && await this.getErrorObj(bcolErr)
