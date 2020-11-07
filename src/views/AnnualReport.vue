@@ -110,7 +110,7 @@
                       directors that were ceased at a later date.</p>
                   </header>
                   <directors ref="directorsList"
-                    @directorsChange="directorsChange"
+                    @directorsPaidChange="directorsPaidChange"
                     @directorsFreeChange="directorsFreeChange"
                     @allDirectors="allDirectors=$event"
                     @directorFormValid="directorFormValid=$event"
@@ -458,12 +458,13 @@ export default {
       return (this.totalFee > 0)
     },
 
-    freeDirectorChangeFeeCode (): string {
+    /** The Free Director Change fee code based on entity type. */
+    freeFeeCode (): FilingCodes {
       return this.isBComp ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
     }
   },
 
-  created (): void {
+  async created (): Promise<void> {
     // init
     this.setFilingData([])
 
@@ -486,7 +487,7 @@ export default {
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
-      this.fetchData()
+      await this.fetchData()
     } else {
       // else just load new page
       this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
@@ -526,9 +527,9 @@ export default {
   methods: {
     ...mapActions(['setFilingData']),
 
-    fetchData () {
+    async fetchData (): Promise<void> {
       const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
-      axios.get(url).then(response => {
+      await axios.get(url).then(async response => {
         if (response && response.data) {
           const filing = response.data.filing
           try {
@@ -569,14 +570,21 @@ export default {
               }
             }
 
+            if (filing.header.effectiveDate) {
+              const effectiveDate = this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
+              // restore Draft Date in Directors List component
+              // FUTURE: use props instead of $refs (which cause an error in the unit tests)
+              if (this.$refs.directorsList?.setDraftDate) {
+                this.$refs.directorsList.setDraftDate(effectiveDate)
+              }
+            } else {
+              // eslint-disable-next-line no-console
+              console.log('fetchData() error = missing Effective Date')
+            }
+
             // load Annual Report fields
             const annualReport = filing.annualReport
             if (annualReport) {
-              // set the Draft Date in the Directors List component
-              // FUTURE: use props instead of $refs (which cause an error in the unit tests)
-              if (this.$refs.directorsList && this.$refs.directorsList.setDraftDate) {
-                this.$refs.directorsList.setDraftDate(annualReport.annualGeneralMeetingDate)
-              }
               if (this.isCoop) {
                 // set the new AGM date in the AGM Date component (may be null or empty)
                 this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
@@ -591,39 +599,14 @@ export default {
             const changeOfDirectors = filing.changeOfDirectors
             if (changeOfDirectors) {
               if (changeOfDirectors.directors && changeOfDirectors.directors.length > 0) {
-                if (this.$refs.directorsList && this.$refs.directorsList.setAllDirectors) {
+                if (this.$refs.directorsList?.setAllDirectors) {
                   this.$refs.directorsList.setAllDirectors(changeOfDirectors.directors)
-                }
-
-                // add filing code for paid changes
-                if (changeOfDirectors.directors.filter(
-                  director => this.hasAction(director, Actions.CEASED) ||
-                    this.hasAction(director, Actions.APPOINTED)
-                ).length > 0) {
-                  // always set Priority flag to false
-                  // use existing Waive Fees flag
-                  this.updateFilingData('add', FilingCodes.DIRECTOR_CHANGE_OT, false,
-                    (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-                }
-
-                // add filing code for free changes
-                if (changeOfDirectors.directors.filter(
-                  director => this.hasAction(director, Actions.NAMECHANGED) ||
-                    this.hasAction(director, Actions.ADDRESSCHANGED)
-                ).length > 0) {
-                  // always set Priority flag to false
-                  // use existing Waive Fees flag
-                  this.updateFilingData('add', this.freeDirectorChangeFeeCode, false,
-                    (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
                 }
               } else {
                 throw new Error('Invalid change of directors')
               }
             } else {
-              // To handle the condition of save as draft without change of director
-              if (this.$refs.directorsList && this.$refs.directorsList.getDirectors) {
-                this.$refs.directorsList.getDirectors()
-              }
+              // directors will be fetched when "asOfDate" is updated (in a future time slice)
             }
 
             // load Change of Address fields
@@ -676,7 +659,7 @@ export default {
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 
-    directorsChange (modified: boolean) {
+    directorsPaidChange (modified: boolean) {
       this.haveChanges = true
       // when directors change, update filing data
       // always set Priority flag to false
@@ -690,7 +673,7 @@ export default {
       // when directors change (free filing), update filing data
       // always set Priority flag to false
       // use existing Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', this.freeDirectorChangeFeeCode, false,
+      this.updateFilingData(modified ? 'add' : 'remove', this.freeFeeCode, false,
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     },
 

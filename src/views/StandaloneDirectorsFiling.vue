@@ -77,7 +77,7 @@
                 <!-- Director Information -->
                 <section>
                   <directors ref="directorsList"
-                    @directorsChange="directorsChange"
+                    @directorsPaidChange="directorsPaidChange"
                     @directorsFreeChange="directorsFreeChange"
                     @earliestDateToSet="earliestDateToSet=$event"
                     @directorFormValid="directorFormValid=$event"
@@ -418,17 +418,18 @@ export default {
       return (this.totalFee > 0)
     },
 
-    /** Local computed value for the fee code based on entity type */
-    feeCode (): string {
+    /** The Director Change fee code based on entity type. */
+    feeCode (): FilingCodes {
       return this.isBComp ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
     },
 
-    freeFeeCode (): string {
+    /** The Free Director Change fee code based on entity type. */
+    freeFeeCode (): FilingCodes {
       return this.isBComp ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
     }
   },
 
-  created (): void {
+  async created (): Promise<void> {
     // init
     this.setFilingData([])
 
@@ -451,10 +452,11 @@ export default {
     } else if (this.filingId > 0) {
       // resume draft filing
       this.loadingMessage = `Resuming Your Director Change`
-      this.fetchChangeOfDirectors()
+      await this.fetchChangeOfDirectors()
     } else {
       // else just load new page
       this.loadingMessage = `Preparing Your Director Change`
+      // initialize date in COD Date component
       this.initialCODDate = this.currentDate.split('/').join('-')
     }
   },
@@ -492,7 +494,7 @@ export default {
   methods: {
     ...mapActions(['setFilingData']),
 
-    directorsChange (modified: boolean) {
+    directorsPaidChange (modified: boolean) {
       this.haveChanges = true
       // when directors change, update filing data
       // use existing Priority and Waive Fees flags
@@ -587,7 +589,7 @@ export default {
           name: FilingTypes.CHANGE_OF_DIRECTORS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
-          date: this.currentDate, // API reassign this date according to its clock
+          date: this.currentDate, // NB: API will reassign this date according to its clock
           effectiveDate: this.convertLocalDateToUTCDateTime(this.codDate)
         }
       }
@@ -717,9 +719,9 @@ export default {
       this.$router.push({ name: Routes.DASHBOARD })
     },
 
-    fetchChangeOfDirectors () {
+    async fetchChangeOfDirectors (): Promise<void> {
       const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
-      axios.get(url).then(response => {
+      await axios.get(url).then(async response => {
         if (response && response.data) {
           const filing = response.data.filing
           try {
@@ -760,8 +762,14 @@ export default {
             }
 
             if (filing.header.effectiveDate) {
-              this.initialCODDate =
-                this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
+              const effectiveDate = this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
+              // restore date in COD Date component
+              this.initialCODDate = effectiveDate
+              // restore Draft Date in Directors List component
+              // FUTURE: use props instead of $refs (which cause an error in the unit tests)
+              if (this.$refs.directorsList?.setDraftDate) {
+                this.$refs.directorsList.setDraftDate(effectiveDate)
+              }
             } else {
               // eslint-disable-next-line no-console
               console.log('fetchChangeOfDirectors() error = missing Effective Date')
@@ -770,52 +778,29 @@ export default {
             const changeOfDirectors = filing.changeOfDirectors
             if (changeOfDirectors) {
               if (changeOfDirectors.directors && changeOfDirectors.directors.length > 0) {
-                if (this.$refs.directorsList && this.$refs.directorsList.setAllDirectors) {
+                if (this.$refs.directorsList.setAllDirectors) {
                   this.$refs.directorsList.setAllDirectors(changeOfDirectors.directors)
-                }
-
-                // add filing code for paid changes
-                if (changeOfDirectors.directors.filter(
-                  director => this.hasAction(director, Actions.CEASED) ||
-                    this.hasAction(director, Actions.APPOINTED)
-                ).length > 0) {
-                  // use existing Priority and Waive Fees flags
-                  this.updateFilingData('add', this.feeCode, this.staffPaymentData.isPriority,
-                    (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-                }
-
-                // add filing code for free changes
-                if (changeOfDirectors.directors.filter(
-                  director => this.hasAction(director, Actions.NAMECHANGED) ||
-                    this.hasAction(director, Actions.ADDRESSCHANGED)
-                ).length > 0) {
-                  // use existing Priority and Waive Fees flags
-                  this.updateFilingData('add', this.freeFeeCode, this.staffPaymentData.isPriority,
-                    (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
                 }
               } else {
                 throw new Error('Invalid change of directors')
               }
             } else {
-              // To handle the condition of save as draft without change of director
-              if (this.$refs.directorsList && this.$refs.directorsList.getDirectors) {
-                this.$refs.directorsList.getDirectors()
-              }
+              // directors will be fetched when "asOfDate" is updated (in a future time slice)
             }
           } catch (err) {
             // eslint-disable-next-line no-console
-            console.log(`fetchData() error - ${err.message}, filing = ${filing}`)
+            console.log(`fetchChangeOfDirectors() error - ${err.message}, filing = ${filing}`)
             this.resumeErrorDialog = true
           }
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.log('fetchData() error =', error)
+        console.log('fetchChangeOfDirectors() error =', error)
         this.resumeErrorDialog = true
       })
     },
 
-    resetErrors () {
+    resetErrors (): void {
       this.paymentErrorDialog = false
       this.bcolObj = null
       this.saveErrorDialog = false
@@ -823,7 +808,7 @@ export default {
       this.saveWarnings = []
     },
 
-    hasAction (director, action) {
+    hasAction (director, action): boolean {
       return (director.actions.indexOf(action) >= 0)
     },
 
@@ -847,7 +832,7 @@ export default {
     },
 
     /** Returns True if the specified business has any pending tasks, else False. */
-    async hasTasks (businessId) {
+    async hasTasks (businessId): Promise<boolean> {
       let hasPendingItems = false
       if (this.filingId === 0) {
         const url = `businesses/${businessId}/tasks`

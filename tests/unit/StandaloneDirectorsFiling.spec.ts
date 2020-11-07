@@ -1240,7 +1240,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
-    vm.directorsChange(true)
+    vm.directorsPaidChange(true)
   })
 
   afterEach(() => {
