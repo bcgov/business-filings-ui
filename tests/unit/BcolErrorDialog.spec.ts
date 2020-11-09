@@ -1,12 +1,10 @@
-/* eslint promise/param-names: 0, prefer-promise-reject-errors: 0 */
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import { BcolErrorDialog } from '@/components/dialogs'
-import { FilingTypes } from '@/enums'
-Vue.use(Vuetify)
 
+Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
@@ -15,7 +13,7 @@ describe('BcolErrorDialog - Verify parameters passed in are displayed correctly'
     const wrapper = shallowMount(BcolErrorDialog,
       {
         propsData: {
-          filingType: FilingTypes.ANNUAL_REPORT,
+          filingType: 'annualReport',
           bcolObject: {
             title: 'Error',
             detail: 'A BCOL payment error has occurred'
