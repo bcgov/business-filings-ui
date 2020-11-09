@@ -5,6 +5,12 @@
       attach="#annual-report"
     />
 
+    <fetch-error-dialog
+      :dialog="fetchErrorDialog"
+      @exit="navigateToDashboard(true)"
+      attach="#annual-report"
+    />
+
     <resume-error-dialog
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
@@ -317,10 +323,8 @@ import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOffice
   from '@/components/common'
 
 // Dialogs
-import {
-  ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
-  SaveErrorDialog, BcolErrorDialog
-} from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog }
+  from '@/components/dialogs'
 
 // Mixins
 import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
@@ -346,6 +350,7 @@ export default {
     SummaryDirectors,
     ConfirmDialog,
     PaymentErrorDialog,
+    FetchErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
     BcolErrorDialog
@@ -379,6 +384,7 @@ export default {
       staffPaymentFormValid: null,
 
       // flags for displaying dialogs
+      fetchErrorDialog: false,
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
@@ -468,6 +474,9 @@ export default {
     // init
     this.setFilingData([])
 
+    // listen for fetch error events
+    this.$root.$on('fetch-error-event', () => { this.fetchErrorDialog = true })
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -492,6 +501,11 @@ export default {
       // else just load new page
       this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
     }
+  },
+
+  destroyed (): void {
+    // stop listening for custom events
+    this.$root.$off('fetch-error-event')
   },
 
   beforeRouteLeave (to, from, next) {
@@ -536,31 +550,35 @@ export default {
             // verify data
             if (!filing) throw new Error('Missing filing')
             if (!filing.header) throw new Error('Missing header')
+            const header = filing.header
             if (!filing.business) throw new Error('Missing business')
-            if (filing.header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('Invalid filing type')
-            if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-            if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-            if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+            const business = filing.business
+            if (!filing.annualReport) throw new Error('Missing annual report')
+            const annualReport = filing.annualReport
+            if (header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('Invalid filing type')
+            if (header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
+            if (business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+            if (business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
             // load Certified By (but not Date)
-            this.certifiedBy = filing.header.certifiedBy
+            this.certifiedBy = header.certifiedBy
 
             // load Staff Payment properties
-            if (filing.header.routingSlipNumber) {
+            if (header.routingSlipNumber) {
               this.staffPaymentData = {
                 option: StaffPaymentOptions.FAS,
-                routingSlipNumber: filing.header.routingSlipNumber,
-                isPriority: filing.header.priority
+                routingSlipNumber: header.routingSlipNumber,
+                isPriority: header.priority
               }
-            } else if (filing.header.bcolAccountNumber) {
+            } else if (header.bcolAccountNumber) {
               this.staffPaymentData = {
                 option: StaffPaymentOptions.BCOL,
-                bcolAccountNumber: filing.header.bcolAccountNumber,
-                datNumber: filing.header.datNumber,
-                folioNumber: filing.header.folioNumber,
-                isPriority: filing.header.priority
+                bcolAccountNumber: header.bcolAccountNumber,
+                datNumber: header.datNumber,
+                folioNumber: header.folioNumber,
+                isPriority: header.priority
               }
-            } else if (filing.header.waiveFees) {
+            } else if (header.waiveFees) {
               this.staffPaymentData = {
                 option: StaffPaymentOptions.NO_FEE
               }
@@ -570,12 +588,18 @@ export default {
               }
             }
 
-            if (filing.header.effectiveDate) {
-              const effectiveDate = this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
+            if (header.effectiveDate) {
+              const effectiveDate = this.convertUTCTimeToLocalTime(header.effectiveDate).slice(0, 10)
               // restore Draft Date in Directors List component
               // FUTURE: use props instead of $refs (which cause an error in the unit tests)
               if (this.$refs.directorsList?.setDraftDate) {
                 this.$refs.directorsList.setDraftDate(effectiveDate)
+              }
+            } else if (annualReport.annualGeneralMeetingDate) {
+              // restore Draft Date in Directors List component
+              // FUTURE: use props instead of $refs (which cause an error in the unit tests)
+              if (this.$refs.directorsList?.setDraftDate) {
+                this.$refs.directorsList.setDraftDate(annualReport.annualGeneralMeetingDate)
               }
             } else {
               // eslint-disable-next-line no-console
@@ -583,40 +607,37 @@ export default {
             }
 
             // load Annual Report fields
-            const annualReport = filing.annualReport
-            if (annualReport) {
-              if (this.isCoop) {
-                // set the new AGM date in the AGM Date component (may be null or empty)
-                this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
-                // set the new No AGM flag in the AGM Date component (may be undefined)
-                this.newNoAgm = annualReport.didNotHoldAgm || false
-              }
-            } else {
-              throw new Error('Missing annual report')
+            if (this.isCoop) {
+              // set the new AGM date in the AGM Date component (may be null or empty)
+              this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
+              // set the new No AGM flag in the AGM Date component (may be undefined)
+              this.newNoAgm = annualReport.didNotHoldAgm || false
             }
 
             // load Change of Directors fields
             const changeOfDirectors = filing.changeOfDirectors
             if (changeOfDirectors) {
-              if (changeOfDirectors.directors && changeOfDirectors.directors.length > 0) {
+              if (changeOfDirectors?.directors.length > 0) {
                 if (this.$refs.directorsList?.setAllDirectors) {
                   this.$refs.directorsList.setAllDirectors(changeOfDirectors.directors)
                 }
+                // filing data will be set by Directors events
               } else {
                 throw new Error('Invalid change of directors')
               }
             } else {
+              // changeOfDirectors is optional
               // directors will be fetched when "asOfDate" is updated (in a future time slice)
             }
 
             // load Change of Address fields
-            if (filing.changeOfAddress) {
-              const offices = filing.changeOfAddress.offices
-              if (offices && offices.registeredOffice) {
+            const changeOfAddress = filing.changeOfAddress
+            if (changeOfAddress) {
+              if (changeOfAddress.offices?.registeredOffice) {
                 this.addresses = {
                   registeredOffice: {
-                    deliveryAddress: offices.registeredOffice.deliveryAddress,
-                    mailingAddress: offices.registeredOffice.mailingAddress
+                    deliveryAddress: changeOfAddress.offices.registeredOffice.deliveryAddress,
+                    mailingAddress: changeOfAddress.offices.registeredOffice.mailingAddress
                   }
                 }
                 // always set Priority flag to false
@@ -626,6 +647,9 @@ export default {
               } else {
                 throw new Error('Invalid change of address')
               }
+            } else {
+              // changeOfAddress is optional
+              // addresses will be fetched later
             }
           } catch (err) {
             // eslint-disable-next-line no-console

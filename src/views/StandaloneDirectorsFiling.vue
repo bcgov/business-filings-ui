@@ -5,6 +5,12 @@
       attach="#standalone-directors"
     />
 
+    <fetch-error-dialog
+      :dialog="fetchErrorDialog"
+      @exit="navigateToDashboard(true)"
+      attach="#standalone-directors"
+    />
+
     <resume-error-dialog
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
@@ -320,7 +326,7 @@ import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPa
   from '@/components/common'
 
 // Dialog Components
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog }
+import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog }
   from '@/components/dialogs'
 
 // Mixins
@@ -344,6 +350,7 @@ export default {
     StaffPayment,
     ConfirmDialog,
     PaymentErrorDialog,
+    FetchErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
     BcolErrorDialog
@@ -354,6 +361,7 @@ export default {
   data () {
     return {
       allDirectors: [],
+      fetchErrorDialog: false,
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
@@ -433,6 +441,9 @@ export default {
     // init
     this.setFilingData([])
 
+    // listen for fetch error events
+    this.$root.$on('fetch-error-event', () => { this.fetchErrorDialog = true })
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -459,6 +470,11 @@ export default {
       // initialize date in COD Date component
       this.initialCODDate = this.currentDate.split('/').join('-')
     }
+  },
+
+  destroyed (): void {
+    // stop listening for custom events
+    this.$root.$off('fetch-error-event')
   },
 
   beforeRouteLeave (to, from, next) {

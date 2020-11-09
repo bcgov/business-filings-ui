@@ -1,21 +1,23 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="resume-error-dialog">
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="fetch-error-dialog">
     <v-card>
-      <v-card-title>Unable to Start Filing</v-card-title>
+      <v-card-title id="dialog-title">Unable to Fetch Data</v-card-title>
 
-      <v-card-text>
-        <p class="genErr">We were unable to start your filing. You can return to
-          the Business Dashboard and try again.</p>
+      <v-card-text id="dialog-text">
+        <p class="genErr">
+          We were unable to fetch some data needed for your filing.
+          You can return to the Business Dashboard and try again.
+        </p>
 
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info />
+          <contact-info id="dialog-contact" />
         </template>
       </v-card-text>
 
       <v-divider class="my-0"></v-divider>
 
-      <v-card-actions>
+      <v-card-actions id="dialog-actions">
         <v-spacer></v-spacer>
         <v-btn id="dialog-exit-button" color="primary" text @click="exit()">Return to dashboard</v-btn>
       </v-card-actions>
@@ -35,15 +37,15 @@ import { ContactInfo } from '@/components/common'
   },
   components: { ContactInfo }
 })
-export default class StartFilingErrorDialog extends Vue {
+export default class FetchErrorDialog extends Vue {
   // Getter definition for static type checking.
   readonly isRoleStaff!: boolean
 
   // Prop to display the dialog.
-  @Prop() private dialog: boolean
+  @Prop({ default: false }) private dialog: boolean
 
   // Prop to provide attachment selector.
-  @Prop() private attach: string
+  @Prop({ default: null }) private attach: string
 
   // Pass click event to parent.
   @Emit() private exit () { }

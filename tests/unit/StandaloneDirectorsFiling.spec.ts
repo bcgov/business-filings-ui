@@ -338,26 +338,26 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
       .returns(new Promise((resolve) => resolve({
         data:
         {
-          'filing': {
-            'changeOfDirectors': {
-              'directors': sampleDirectors
+          filing: {
+            changeOfDirectors: {
+              directors: sampleDirectors
             },
-            'business': {
-              'cacheId': 1,
-              'foundingDate': '2007-04-08T00:00:00+00:00',
-              'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-              'legalName': 'Legal Name - CP0001191'
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08T00:00:00+00:00',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfDirectors',
-              'date': '2017-06-06T00:00:00+00:00',
-              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-              'submitter': 'cp0001191',
-              'status': 'DRAFT',
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'filingId': 123,
+            header: {
+              name: 'changeOfDirectors',
+              date: '2017-06-06T00:00:00+00:00',
+              effectiveDate: 'Tue, 06 Jun 2017 18:49:44 GMT',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
               routingSlipNumber: '123456789',
               priority: true
             }
@@ -388,9 +388,28 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)
 
-    // verify that we loaded the director data correctly
-    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
-    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
+    wrapper.destroy()
+  })
+
+  it('updates filing data properly', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // add Paid and Free changes
+    // (Directors component normally emits events to call these)
+    vm.directorsPaidChange(true)
+    vm.directorsFreeChange(true)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTCDR')).toBe(true)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTFDR')).toBe(true)
+
+    // remove Paid and Free changes
+    // (Directors component normally emits events to call these)
+    vm.directorsPaidChange(false)
+    vm.directorsFreeChange(false)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTCDR')).toBe(false)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTFDR')).toBe(false)
 
     wrapper.destroy()
   })
@@ -408,26 +427,26 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
       .returns(new Promise((resolve) => resolve({
         data:
         {
-          'filing': {
-            'changeOfDirectors': {
-              'directors': sampleDirectors
+          filing: {
+            changeOfDirectors: {
+              directors: sampleDirectors
             },
-            'business': {
-              'cacheId': 1,
-              'foundingDate': '2007-04-08T00:00:00+00:00',
-              'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-              'legalName': 'Legal Name - CP0001191'
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08T00:00:00+00:00',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfDirectors',
-              'date': '2017-06-06T00:00:00+00:00',
-              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-              'submitter': 'cp0001191',
-              'status': 'DRAFT',
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'filingId': 123,
+            header: {
+              name: 'changeOfDirectors',
+              date: '2017-06-06T00:00:00+00:00',
+              effectiveDate: 'Tue, 06 Jun 2017 18:49:44 GMT',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
               bcolAccountNumber: '123456',
               datNumber: 'C1234567',
               folioNumber: '123ABCabc',
@@ -462,9 +481,28 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)
 
-    // verify that we loaded the director data correctly
-    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
-    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
+    wrapper.destroy()
+  })
+
+  it('updates filing data properly', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // add Paid and Free changes
+    // (Directors component normally emits events to call these)
+    vm.directorsPaidChange(true)
+    vm.directorsFreeChange(true)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTCDR')).toBe(true)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTFDR')).toBe(true)
+
+    // remove Paid and Free changes
+    // (Directors component normally emits events to call these)
+    vm.directorsPaidChange(false)
+    vm.directorsFreeChange(false)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTCDR')).toBe(false)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTFDR')).toBe(false)
 
     wrapper.destroy()
   })
@@ -482,26 +520,26 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
       .returns(new Promise((resolve) => resolve({
         data:
         {
-          'filing': {
-            'changeOfDirectors': {
-              'directors': sampleDirectors
+          filing: {
+            changeOfDirectors: {
+              directors: sampleDirectors
             },
-            'business': {
-              'cacheId': 1,
-              'foundingDate': '2007-04-08T00:00:00+00:00',
-              'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
-              'legalName': 'Legal Name - CP0001191'
+            business: {
+              cacheId: 1,
+              foundingDate: '2007-04-08T00:00:00+00:00',
+              identifier: 'CP0001191',
+              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
+              legalName: 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfDirectors',
-              'date': '2017-06-06T00:00:00+00:00',
-              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-              'submitter': 'cp0001191',
-              'status': 'DRAFT',
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'filingId': 123,
+            header: {
+              name: 'changeOfDirectors',
+              date: '2017-06-06T00:00:00+00:00',
+              effectiveDate: 'Tue, 06 Jun 2017 18:49:44 GMT',
+              submitter: 'cp0001191',
+              status: 'DRAFT',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
               waiveFees: true
             }
           }
@@ -530,9 +568,28 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
     // verify that we stored the Filing ID
     expect(+vm.filingId).toBe(123)
 
-    // verify that we loaded the director data correctly
-    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTCDR').length).toEqual(1)
-    expect(vm.filingData.filter(el => el.filingTypeCode === 'OTFDR').length).toEqual(1)
+    wrapper.destroy()
+  })
+
+  it('updates filing data properly', async () => {
+    const $route = { params: { filingId: '123' } } // draft filing id
+    const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // add Paid and Free changes
+    // (Directors component normally emits events to call these)
+    vm.directorsPaidChange(true)
+    vm.directorsFreeChange(true)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTCDR')).toBe(true)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTFDR')).toBe(true)
+
+    // remove Paid and Free changes
+    // (Directors component normally emits events to call these)
+    vm.directorsPaidChange(false)
+    vm.directorsFreeChange(false)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTCDR')).toBe(false)
+    expect(vm.filingData.some(el => el.filingTypeCode === 'OTFDR')).toBe(false)
 
     wrapper.destroy()
   })

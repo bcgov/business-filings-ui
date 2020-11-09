@@ -26,11 +26,12 @@ const app: HTMLDivElement = document.createElement('div')
 app.setAttribute('data-app', 'true')
 document.body.append(app)
 
-function click (vm: any, id: string) {
+async function click (vm: any, id: string) {
   const button = vm.$el.querySelector(id)
   const window = button.ownerDocument.defaultView
   const event = new window.Event('click')
   button.dispatchEvent(event)
+  await Vue.nextTick()
 }
 
 function setValue (vm: any, id: string, value: string) {
@@ -43,16 +44,16 @@ function setValue (vm: any, id: string, value: string) {
 
 describe('Directors as a COOP', () => {
   let vm: any
-  let vm2: any
 
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
-    store.state.configObject = configJson.find(x => x.entityType === store.state.entityType)
+    store.state.configObject = configJson.find(x => x.entityType === 'CP')
+    store.state.currentFilingStatus = 'DRAFT'
 
-    // GET directors
+    // mock GET directors
     sinon.stub(axios, 'get')
       .withArgs('businesses/CP0001191/directors?date=2019-04-01')
       .returns(new Promise((resolve) => resolve({
@@ -105,13 +106,8 @@ describe('Directors as a COOP', () => {
     const instance = new Constructor({ store, vuetify })
     vm = instance.$mount()
 
-    // set as-of date
+    // set As Of Date to trigger watcher
     vm.asOfDate = '2019-04-01'
-
-    // set vm2 for draft test (setup is different and does not fire the 'asOfDate' watcher)
-    store.state.currentFilingStatus = 'DRAFT'
-    const instance2 = new Constructor({ store, vuetify, propsData: { asOfDate: '2019-04-01' } })
-    vm2 = instance2.$mount()
   })
 
   afterEach(() => {
@@ -124,13 +120,13 @@ describe('Directors as a COOP', () => {
     expect(vm.directors[1].id).toEqual(2)
   })
 
-  it('check the default warning message for too few directors', () => {
+  it('displays the default warning message for too few directors', () => {
     expect(vm.complianceMsg).toBeDefined()
     const warning = store.state.configObject.flows.find(x => x.feeCode === 'OTCDR').warnings
     expect(vm.complianceMsg.msg).toEqual(warning.minDirectors.message)
   })
 
-  it('check the default warning message for too few Canadian directors', () => {
+  it('displays the default warning message for too few Canadian directors', () => {
     vm.directors.push({
       'actions': [],
       'officer': {
@@ -157,7 +153,7 @@ describe('Directors as a COOP', () => {
     expect(vm.complianceMsg.msg).toEqual(warning.canadianResident.message)
   })
 
-  it('check the default warning message for too few directors from B.C', () => {
+  it('displays the default warning message for too few directors from BC', () => {
     vm.directors.push({
       'actions': [],
       'officer': {
@@ -297,16 +293,16 @@ describe('Directors as a COOP', () => {
     expect(vm.editFormShowHide.showDates).toEqual(true)
   })
 
-  it('director reset button is disabled prior to any editing', async () => {
+  it('disables director reset button prior to any editing', async () => {
     // Open the edit director
     await vm.editDirectorName(0)
 
     // Verify the reset is disabled prior to any director edit
-    const resetBtn = vm.$el.querySelectorAll('.reset-edit-btn')[0]
+    const resetBtn = vm.$el.querySelectorAll('.reset-name-btn')[0]
     expect(resetBtn.disabled).toBe(true)
   })
 
-  it('director reset button is enabled once a director name is edited', async () => {
+  it('enables director reset button once a director name is edited', async () => {
     // Open the edit director
     await vm.editDirectorName(0)
 
@@ -320,7 +316,7 @@ describe('Directors as a COOP', () => {
     expect(vm.directors[0].officer.firstName).toBe('Steve')
 
     // Verify the reset is disabled prior to any director edit
-    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(true)
+    expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(true)
 
     // Click Done btn and update the directors name
     await vm.$el.querySelectorAll('.done-edit-btn')[0].click()
@@ -331,10 +327,10 @@ describe('Directors as a COOP', () => {
     expect(vm.$el.querySelectorAll('.edit-director__first-name input')[0].value).toBe('Steve')
 
     // Verify the reset is now enabled post director name edit
-    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(false)
+    expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(false)
   })
 
-  it('restores the directors name to its value original pre-editing when reset is clicked', async () => {
+  it('restores the directors name to its original value when reset is clicked', async () => {
     // Open the edit director
     await vm.editDirectorName(0)
 
@@ -348,7 +344,7 @@ describe('Directors as a COOP', () => {
     expect(vm.directors[0].officer.firstName).toBe('Steve')
 
     // Verify the reset is disabled prior to any director edit
-    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(true)
+    expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(true)
 
     // Click Done btn and update the directors name
     await vm.$el.querySelectorAll('.done-edit-btn')[0].click()
@@ -363,141 +359,106 @@ describe('Directors as a COOP', () => {
     expect(vm.$el.querySelectorAll('.edit-director__first-name input')[0].value).toBe('Steve')
 
     // Verify the reset is now enabled post director name edit
-    expect(vm.$el.querySelectorAll('.reset-edit-btn')[0].disabled).toBe(false)
+    expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(false)
 
     // Click the reset btn
-    await vm.$el.querySelectorAll('.reset-edit-btn')[0].click()
+    await vm.$el.querySelectorAll('.reset-name-btn')[0].click()
 
     // Verify reset Data in the directors list
     expect(vm.directors[0].officer.firstName).toEqual('Peter')
     expect(vm.directors[0].actions[0]).toBeUndefined()
   })
 
-  it('disables buttons/actions when instructed by parent component', done => {
+  it('disables buttons/actions when instructed by parent component', async () => {
     // clear enabled prop
     vm.componentEnabled = false
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // confirm that flag is set correctly
-      expect(vm.componentEnabled).toEqual(false)
+    // confirm that flag is set correctly
+    expect(vm.componentEnabled).toEqual(false)
 
-      // check that first button in first director is disabled
-      const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-      expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(true)
+    // check that first button in first director is disabled
+    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
+    expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(true)
 
-      // check that Appoint New Director button is not rendered
-      expect(vm.$el.querySelector('.new-director-btn')).toBeNull()
-
-      done()
-    })
+    // check that Appoint New Director button is not rendered
+    expect(vm.$el.querySelector('.new-director-btn')).toBeNull()
   })
 
-  it('enables buttons/actions when instructed by parent component', done => {
+  it('enables buttons/actions when instructed by parent component', async () => {
     // set enabled prop
     vm.componentEnabled = true
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // confirm that flag is set correctly
-      expect(vm.componentEnabled).toEqual(true)
+    // confirm that flag is set correctly
+    expect(vm.componentEnabled).toEqual(true)
 
-      // check that first button in first director is enabled
-      const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-      expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(false)
+    // check that first button in first director is enabled
+    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
+    expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(false)
 
-      // check that Appoint New Director button is enabled
-      expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
-
-      done()
-    })
+    // check that Appoint New Director button is enabled
+    expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
   })
 
-  it('displays Appoint New Director form when button clicked', done => {
+  it('displays Appoint New Director form when button clicked', async () => {
     // set enabled prop
     vm.componentEnabled = true
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // confirm that flag is set correctly
-      expect(vm.componentEnabled).toEqual(true)
+    // confirm that flag is set correctly
+    expect(vm.componentEnabled).toEqual(true)
 
-      // check that Appoint New Director button is enabled
-      expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
+    // check that Appoint New Director button is enabled
+    expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
 
-      // click Appoint New Director button
-      click(vm, '.new-director-btn')
+    // click Appoint New Director button
+    await click(vm, '.new-director-btn')
 
-      Vue.nextTick(() => {
-        // check that button is hidden
-        expect(vm.$el.querySelector('.new-director-btn').closest('#wrapper-add-director')
-          .getAttribute('style')).toContain('height: 0px;')
+    // check that button is hidden
+    expect(vm.$el.querySelector('.new-director-btn').closest('#wrapper-add-director')
+      .getAttribute('style')).toContain('height: 0px;')
 
-        // check that form is showing
-        expect(vm.$el.querySelector('.new-director')
-          .getAttribute('style')).not.toContain('display: none;')
+    // check that form is showing
+    expect(vm.$el.querySelector('.new-director')
+      .getAttribute('style')).not.toContain('display: none;')
 
-        // check that inputs are showing
-        expect(vm.$el.querySelector('#new-director__first-name')).toBeDefined()
-        expect(vm.$el.querySelector('#new-director__middle-initial')).toBeDefined()
-        expect(vm.$el.querySelector('#new-director__last-name')).toBeDefined()
-
-        done()
-      })
-    })
+    // check that inputs are showing
+    expect(vm.$el.querySelector('#new-director__first-name')).toBeDefined()
+    expect(vm.$el.querySelector('#new-director__middle-initial')).toBeDefined()
+    expect(vm.$el.querySelector('#new-director__last-name')).toBeDefined()
   })
 
-  it('handles "ceased" action', done => {
-    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-
+  it('handles "ceased" action', async () => {
     // click first director's cease button
-    click(vm, '#director-1-cease-btn')
+    await click(vm, '#director-1-cease-btn')
 
-    Vue.nextTick(() => {
-      // check that button has changed to "undo"
-      expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Undo')
+    // check that button has changed to "undo"
+    expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Undo')
 
-      // check that director is marked as ceased
-      expect(vm.$el.querySelector('#director-1 .director-status').innerHTML).toContain('Ceased')
+    // check that director is marked as ceased
+    expect(vm.$el.querySelector('#director-1 .director-status').innerHTML).toContain('Ceased')
 
-      // check that director object has the 'CEASED' action
-      expect(vm.directors.filter(el => el.id === 1)[0].actions).toContain('ceased')
-
-      done()
-    })
+    // check that director object has the 'CEASED' action
+    expect(vm.directors.filter(el => el.id === 1)[0].actions).toContain('ceased')
   })
 
-  it('handles "undo ceased" action', done => {
-    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-
+  it('handles "undo ceased" action', async () => {
     // click first director's cease button
-    click(vm, '#director-1-cease-btn')
+    await click(vm, '#director-1-cease-btn')
 
-    Vue.nextTick(() => {
-      // click first director's undo cease button
-      click(vm, '#director-1-cease-btn')
+    // click first director's undo cease button
+    await click(vm, '#director-1-cease-btn')
 
-      Vue.nextTick(() => {
-        // check that button has changed back to "cease"
-        expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Cease')
+    // check that button has changed back to "cease"
+    expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Cease')
 
-        // check that director is not marked as ceased
-        expect(vm.$el.querySelector('#director-1 .director-status .v-chip')
-          .getAttribute('style')).toContain('display: none;')
+    // check that director is not marked as ceased
+    expect(vm.$el.querySelector('#director-1 .director-status .v-chip')
+      .getAttribute('style')).toContain('display: none;')
 
-        // check that director object does not have the 'CEASED' action
-        expect(vm.directors.filter(el => el.id === 1)[0].actions).not.toContain('ceased')
-
-        done()
-      })
-    })
-  })
-
-  it('initializes the original directors when status is DRAFT', done => {
-    // need to setup the instance differently for this test otherwise populated by watcher fn on 'asOfDate'
-    Vue.nextTick(() => {
-      // check that ui got the original directors
-      expect(vm2.directorsOriginal.length).toBeGreaterThan(0)
-
-      done()
-    })
+    // check that director object does not have the 'CEASED' action
+    expect(vm.directors.filter(el => el.id === 1)[0].actions).not.toContain('ceased')
   })
 
   // todo
@@ -505,7 +466,7 @@ describe('Directors as a COOP', () => {
   // })
 
   // todo
-  // it('can remove a director\'s address change', () => {
+  // it('can reset a director\'s address change', () => {
   // })
 
   // todo
@@ -513,14 +474,14 @@ describe('Directors as a COOP', () => {
   // })
 
   // todo
-  // it('can remove a director\'s name change', () => {
+  // it('can reset a director\'s name change', () => {
   // })
 })
 
 describe('Directors as a BCOMP', () => {
   let vm: any
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // init store
     store.state.entityIncNo = 'BC0007291'
     store.state.entityType = 'BEN'
@@ -600,7 +561,7 @@ describe('Directors as a BCOMP', () => {
     vm.asOfDate = '2019-04-01'
 
     // call getDirectors() since it won't be triggered from parent component
-    vm.getDirectors()
+    await vm.getDirectors()
   })
 
   afterEach(() => {
@@ -613,29 +574,27 @@ describe('Directors as a BCOMP', () => {
     expect(vm.directors[1].id).toEqual(2)
   })
 
-  it('non-compliance due to too few directors displays accordingly', done => {
+  it('non-compliance due to too few directors displays accordingly', async () => {
     expect(vm.complianceMsg).toBeNull()
     expect(vm.$el.querySelector('.complianceSection')).toBeNull()
     expect(vm.$el.querySelector('.warning-text')).toBeNull()
+
     // click first director's cease button
-    click(vm, '#director-1-cease-btn')
-    Vue.nextTick(() => {
-      // click second director's cease button
-      click(vm, '#director-2-cease-btn')
-      Vue.nextTick(() => {
-        expect(vm.complianceMsg.msg).toContain('A minimum of one director is required')
-        expect(vm.$el.querySelector('.complianceSection')).not.toBeNull()
-        expect(vm.$el.querySelector('.warning-text')).not.toBeNull()
-        // un-cease director
-        click(vm, '#director-2-cease-btn')
-        Vue.nextTick(() => {
-          expect(vm.complianceMsg).toBeNull()
-          expect(vm.$el.querySelector('.complianceSection')).toBeNull()
-          expect(vm.$el.querySelector('.warning-text')).toBeNull()
-          done()
-        })
-      })
-    })
+    await click(vm, '#director-1-cease-btn')
+
+    // click second director's cease button
+    await click(vm, '#director-2-cease-btn')
+
+    expect(vm.complianceMsg.msg).toContain('A minimum of one director is required')
+    expect(vm.$el.querySelector('.complianceSection')).not.toBeNull()
+    expect(vm.$el.querySelector('.warning-text')).not.toBeNull()
+
+    // un-cease director
+    await click(vm, '#director-2-cease-btn')
+
+    expect(vm.complianceMsg).toBeNull()
+    expect(vm.$el.querySelector('.complianceSection')).toBeNull()
+    expect(vm.$el.querySelector('.warning-text')).toBeNull()
   })
 
   it('initializes the director name data properly', () => {
@@ -688,116 +647,91 @@ describe('Directors as a BCOMP', () => {
     expect(directorListUI[0].innerHTML).toContain('<span>Cease</span>')
   })
 
-  it('disables buttons/actions when instructed by parent component', done => {
+  it('disables buttons/actions when instructed by parent component', async () => {
     // clear enabled prop
     vm.componentEnabled = false
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // confirm that flag is set correctly
-      expect(vm.componentEnabled).toEqual(false)
+    // confirm that flag is set correctly
+    expect(vm.componentEnabled).toEqual(false)
 
-      // check that first button in first director is disabled
-      const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-      expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(true)
+    // check that first button in first director is disabled
+    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
+    expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(true)
 
-      // check that Appoint New Director button is not rendered
-      expect(vm.$el.querySelector('.new-director-btn')).toBeNull()
-
-      done()
-    })
+    // check that Appoint New Director button is not rendered
+    expect(vm.$el.querySelector('.new-director-btn')).toBeNull()
   })
 
-  it('enables buttons/actions when instructed by parent component', done => {
+  it('enables buttons/actions when instructed by parent component', async () => {
     // set enabled prop
     vm.componentEnabled = true
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // confirm that flag is set correctly
-      expect(vm.componentEnabled).toEqual(true)
+    // confirm that flag is set correctly
+    expect(vm.componentEnabled).toEqual(true)
 
-      // check that first button in first director is enabled
-      const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-      expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(false)
+    // check that first button in first director is enabled
+    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
+    expect(directorListUI[0].querySelector('.cease-btn').disabled).toBe(false)
 
-      // check that Appoint New Director button is enabled
-      expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
-
-      done()
-    })
+    // check that Appoint New Director button is enabled
+    expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
   })
 
-  it('displays Appoint New Director form when button clicked', done => {
+  it('displays Appoint New Director form when button clicked', async () => {
     // set enabled prop
     vm.componentEnabled = true
+    await Vue.nextTick()
 
-    Vue.nextTick(() => {
-      // confirm that flag is set correctly
-      expect(vm.componentEnabled).toEqual(true)
+    // confirm that flag is set correctly
+    expect(vm.componentEnabled).toEqual(true)
 
-      // check that Appoint New Director button is enabled
-      expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
+    // check that Appoint New Director button is enabled
+    expect(vm.$el.querySelector('.new-director-btn').disabled).toBe(false)
 
-      // click Appoint New Director button
-      click(vm, '.new-director-btn')
+    // click Appoint New Director button
+    await click(vm, '.new-director-btn')
 
-      Vue.nextTick(() => {
-        // check that button is hidden
-        expect(vm.$el.querySelector('.new-director-btn').closest('#wrapper-add-director')
-          .getAttribute('style')).toContain('height: 0px;')
+    // check that button is hidden
+    expect(vm.$el.querySelector('.new-director-btn').closest('#wrapper-add-director')
+      .getAttribute('style')).toContain('height: 0px;')
 
-        // check that form is showing
-        expect(vm.$el.querySelector('.new-director')
-          .getAttribute('style')).not.toContain('display: none;')
-
-        done()
-      })
-    })
+    // check that form is showing
+    expect(vm.$el.querySelector('.new-director')
+      .getAttribute('style')).not.toContain('display: none;')
   })
 
-  it('handles "ceased" action', done => {
-    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-
+  it('handles "ceased" action', async () => {
     // click first director's cease button
-    click(vm, '#director-1-cease-btn')
+    await click(vm, '#director-1-cease-btn')
 
-    Vue.nextTick(() => {
-      // check that button has changed to "undo"
-      expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Undo')
+    // check that button has changed to "undo"
+    expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Undo')
 
-      // check that director is marked as ceased
-      expect(vm.$el.querySelector('#director-1 .director-status').innerHTML).toContain('Ceased')
+    // check that director is marked as ceased
+    expect(vm.$el.querySelector('#director-1 .director-status').innerHTML).toContain('Ceased')
 
-      // check that director object has the 'CEASED' action
-      expect(vm.directors.filter(el => el.id === 1)[0].actions).toContain('ceased')
-
-      done()
-    })
+    // check that director object has the 'CEASED' action
+    expect(vm.directors.filter(el => el.id === 1)[0].actions).toContain('ceased')
   })
 
-  it('handles "undo ceased" action', done => {
-    const directorListUI = vm.$el.querySelectorAll('.director-list-item')
-
+  it('handles "undo ceased" action', async () => {
     // click first director's cease button
-    click(vm, '#director-1-cease-btn')
+    await click(vm, '#director-1-cease-btn')
 
-    Vue.nextTick(() => {
-      // click first director's undo cease button
-      click(vm, '#director-1-cease-btn')
+    // click first director's undo cease button
+    await click(vm, '#director-1-cease-btn')
 
-      Vue.nextTick(() => {
-        // check that button has changed back to "cease"
-        expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Cease')
+    // check that button has changed back to "cease"
+    expect(vm.$el.querySelector('#director-1-cease-btn').innerHTML).toContain('Cease')
 
-        // check that director is not marked as ceased
-        expect(vm.$el.querySelector('#director-1 .director-status .v-chip')
-          .getAttribute('style')).toContain('display: none;')
+    // check that director is not marked as ceased
+    expect(vm.$el.querySelector('#director-1 .director-status .v-chip')
+      .getAttribute('style')).toContain('display: none;')
 
-        // check that director object does not have the 'CEASED' action
-        expect(vm.directors.filter(el => el.id === 1)[0].actions).not.toContain('ceased')
-
-        done()
-      })
-    })
+    // check that director object does not have the 'CEASED' action
+    expect(vm.directors.filter(el => el.id === 1)[0].actions).not.toContain('ceased')
   })
 })
 
@@ -843,122 +777,122 @@ describe('Appoint New Director tests', () => {
   })
 
   it('accepts valid First Name', async () => {
-    const inputElement = wrapper.find('#new-director__first-name')
-    inputElement.setValue('First First')
+    wrapper.find('#new-director__first-name').setValue('First First')
+    await flushPromises()
+
     expect(vm.director.officer.firstName).toBe('First First')
 
     // verify that there are no validation errors
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toBe('')
   })
 
   it('displays error for invalid First Name - leading spaces', async () => {
-    const inputElement = wrapper.find('#new-director__first-name')
-    inputElement.setValue('  First')
+    wrapper.find('#new-director__first-name').setValue('  First')
+    await flushPromises()
+
     expect(vm.director.officer.firstName).toBe('  First')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
   })
 
   it('displays error for invalid First Name - trailing spaces', async () => {
-    const inputElement = wrapper.find('#new-director__first-name')
-    inputElement.setValue('First  ')
+    wrapper.find('#new-director__first-name').setValue('First  ')
+    await flushPromises()
+
     expect(vm.director.officer.firstName).toBe('First  ')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toContain('Invalid spaces')
   })
 
   it('allows First Name with multiple inline spaces', async () => {
-    const inputElement = wrapper.find('#new-director__first-name')
-    inputElement.setValue('First  First')
+    wrapper.find('#new-director__first-name').setValue('First  First')
+    await flushPromises()
+
     expect(vm.director.officer.firstName).toBe('First  First')
 
     // verify that validation error is not displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[0].textContent).toBe('')
   })
 
   it('accepts valid Middle Initial', async () => {
-    const inputElement = wrapper.find('#new-director__middle-initial')
-    inputElement.setValue('M M')
+    wrapper.find('#new-director__middle-initial').setValue('M M')
+    await flushPromises()
+
     expect(vm.director.officer.middleInitial).toBe('M M')
 
     // verify that there are no validation errors
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
   })
 
   it('displays error for invalid Middle Initial - leading spaces', async () => {
-    const inputElement = wrapper.find('#new-director__middle-initial')
-    inputElement.setValue('  M')
+    wrapper.find('#new-director__middle-initial').setValue('  M')
+    await flushPromises()
+
     expect(vm.director.officer.middleInitial).toBe('  M')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
   })
 
   it('displays error for invalid Middle Initial - trailing spaces', async () => {
-    const inputElement = wrapper.find('#new-director__middle-initial')
-    inputElement.setValue('M  ')
+    wrapper.find('#new-director__middle-initial').setValue('M  ')
+    await flushPromises()
+
     expect(vm.director.officer.middleInitial).toBe('M  ')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toContain('Invalid spaces')
   })
 
   it('allows Middle Initial with multiple inline spaces', async () => {
-    const inputElement = wrapper.find('#new-director__middle-initial')
-    inputElement.setValue('M  M')
+    wrapper.find('#new-director__middle-initial').setValue('M  M')
+    await flushPromises()
+
     expect(vm.director.officer.middleInitial).toBe('M  M')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[1].textContent).toBe('')
   })
 
   it('accepts valid Last Name', async () => {
-    const inputElement = wrapper.find('#new-director__last-name')
-    inputElement.setValue('Last Last')
+    wrapper.find('#new-director__last-name').setValue('Last Last')
+    await flushPromises()
+
     expect(vm.director.officer.lastName).toBe('Last Last')
 
     // verify that there are no validation errors
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
   })
 
   it('displays error for invalid Last Name - leading spaces', async () => {
-    const inputElement = wrapper.find('#new-director__last-name')
-    inputElement.setValue('  Last')
+    wrapper.find('#new-director__last-name').setValue('  Last')
+    await flushPromises()
+
     expect(vm.director.officer.lastName).toBe('  Last')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
   })
 
   it('displays error for invalid Last Name - trailing spaces', async () => {
-    const inputElement = wrapper.find('#new-director__last-name')
-    inputElement.setValue('Last  ')
+    wrapper.find('#new-director__last-name').setValue('Last  ')
+    await flushPromises()
+
     expect(vm.director.officer.lastName).toBe('Last  ')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toContain('Invalid spaces')
   })
 
   it('allows Last Name with multiple inline spaces', async () => {
-    const inputElement = wrapper.find('#new-director__last-name')
-    inputElement.setValue('Last  Last')
+    wrapper.find('#new-director__last-name').setValue('Last  Last')
+    await flushPromises()
+
     expect(vm.director.officer.lastName).toBe('Last  Last')
 
     // verify that validation error is displayed
-    await flushPromises()
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
   })
 
