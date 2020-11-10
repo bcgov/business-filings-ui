@@ -526,6 +526,22 @@ import { Actions, FilingStatus } from '@/enums'
 // Interfaces
 import { FormIF, BaseAddressIF, AlertMessageIF } from '@/interfaces'
 
+const emptyOfficer = {
+  firstName: '',
+  lastName: '',
+  middleInitial: ''
+}
+
+const emptyAddress = {
+  streetAddress: '',
+  streetAddressAdditional: '',
+  addressCity: '',
+  addressRegion: '',
+  postalCode: '',
+  addressCountry: '',
+  deliveryInstructions: ''
+}
+
 @Component({
   components: {
     BaseAddress,
@@ -582,25 +598,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
   private director = {
     id: '',
-    officer: { firstName: '', lastName: '', middleInitial: '' },
-    deliveryAddress: {
-      streetAddress: '',
-      streetAddressAdditional: '',
-      addressCity: '',
-      addressRegion: '',
-      postalCode: '',
-      addressCountry: '',
-      deliveryInstructions: ''
-    },
-    mailingAddress: {
-      streetAddress: '',
-      streetAddressAdditional: '',
-      addressCity: '',
-      addressRegion: '',
-      postalCode: '',
-      addressCountry: '',
-      deliveryInstructions: ''
-    },
+    officer: { ...emptyOfficer },
+    deliveryAddress: { ...emptyAddress },
+    mailingAddress: { ...emptyAddress },
     appointmentDate: null,
     cessationDate: null,
     cessationDateTemp: null
@@ -926,6 +926,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     }
 
     // set form to initial director data again
+    this.director.officer = { ...emptyOfficer }
     this.director.appointmentDate = this.asOfDate
     this.directorEditInProgress = false
   }
