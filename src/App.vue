@@ -677,11 +677,7 @@ export default {
 
     /** Handles Retry click event from dialogs. */
     onClickRetry (): void {
-      this.dashboardUnavailableDialog = false
-      this.businessAuthErrorDialog = false
-      this.nameRequestAuthErrorDialog = false
-      this.nameRequestInvalidDialog = false
-      this.fetchData()
+      location.reload()
     }
   },
 
