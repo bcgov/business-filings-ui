@@ -997,10 +997,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
       isFeeApplied: true,
       officer: {
         firstName: this.director.officer.firstName,
-        middleInitial: this.director.officer.middleInitial,
+        middleInitial: this.director.officer.middleInitial || '',
         lastName: this.director.officer.lastName,
         prevFirstName: this.director.officer.firstName,
-        prevMiddleInitial: this.director.officer.middleInitial,
+        prevMiddleInitial: this.director.officer.middleInitial || '',
         prevLastName: this.director.officer.lastName
       },
       deliveryAddress: { ...this.inProgressAddress },
