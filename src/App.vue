@@ -676,8 +676,14 @@ export default {
     },
 
     /** Handles Retry click event from dialogs. */
-    onClickRetry (): void {
-      location.reload()
+    async onClickRetry (): Promise<void> {
+      this.dashboardUnavailableDialog = false
+      this.businessAuthErrorDialog = false
+      this.nameRequestAuthErrorDialog = false
+      this.nameRequestInvalidDialog = false
+      this.tokenService = false
+      await this.startTokenService()
+      await this.fetchData()
     }
   },
 
