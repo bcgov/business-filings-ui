@@ -677,13 +677,9 @@ export default {
 
     /** Handles Retry click event from dialogs. */
     async onClickRetry (): Promise<void> {
-      this.dashboardUnavailableDialog = false
-      this.businessAuthErrorDialog = false
-      this.nameRequestAuthErrorDialog = false
-      this.nameRequestInvalidDialog = false
-      this.tokenService = false
-      await this.startTokenService()
-      await this.fetchData()
+      // clear KC session variables and hard-reload the page to try again
+      this.clearKeycloakSession()
+      location.reload()
     }
   },
 
