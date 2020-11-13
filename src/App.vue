@@ -677,7 +677,7 @@ export default {
 
     /** Handles Retry click event from dialogs. */
     async onClickRetry (hard = false): Promise<void> {
-      if (hard)
+      if (hard) {
         // clear KC session variables and hard-reload the page
         // to force new login and try again
         this.clearKeycloakSession()
