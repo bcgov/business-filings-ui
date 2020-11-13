@@ -11,14 +11,14 @@
     <business-auth-error-dialog
       :dialog="businessAuthErrorDialog"
       @exit="onClickExit()"
-      @retry="onClickRetry()"
+      @retry="onClickRetry(true)"
       attach="#app"
     />
 
     <name-request-auth-error-dialog
       :dialog="nameRequestAuthErrorDialog"
       @exit="onClickExit()"
-      @retry="onClickRetry()"
+      @retry="onClickRetry(true)"
       attach="#app"
     />
 
@@ -676,14 +676,20 @@ export default {
     },
 
     /** Handles Retry click event from dialogs. */
-    async onClickRetry (): Promise<void> {
-      this.dashboardUnavailableDialog = false
-      this.businessAuthErrorDialog = false
-      this.nameRequestAuthErrorDialog = false
-      this.nameRequestInvalidDialog = false
-      this.tokenService = false
-      await this.startTokenService()
-      await this.fetchData()
+    onClickRetry (hard = false): void {
+      if (hard) {
+        // clear KC session variables and hard-reload the page
+        // to force new login and try again
+        this.clearKeycloakSession()
+        location.reload()
+      } else {
+        // try to fetch the data again
+        this.dashboardUnavailableDialog = false
+        this.businessAuthErrorDialog = false
+        this.nameRequestAuthErrorDialog = false
+        this.nameRequestInvalidDialog = false
+        this.fetchData()
+      }
     }
   },
 
