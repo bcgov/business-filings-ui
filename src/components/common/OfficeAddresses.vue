@@ -8,7 +8,7 @@
         </div>
 
         <!-- Registered Delivery Address -->
-        <li class="address-list-container">
+        <li class="address-list-container registered-delivery-address">
           <div class="meta-container">
             <label v-if="!showAddressForm">Registered Office</label>
             <label v-else>Delivery Address</label>
@@ -60,7 +60,7 @@
         </li>
 
         <!-- Registered Mailing Address -->
-        <li class="address-list-container">
+        <li class="address-list-container registered-mailing-address">
           <div class="meta-container">
             <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
             <div class="meta-container__inner">
@@ -89,7 +89,7 @@
                   @valid="mailingAddressValid=$event"
                 />
               </div>
-              <span v-else id="sameAsAbove">Mailing Address same as above</span>
+              <span v-else id="regMailSameAsDeliv">Mailing Address same as above</span>
             </div>
           </div>
         </li>
@@ -107,7 +107,7 @@
 
           <div v-if="!inheritRegisteredAddress">
             <!-- Records Delivery Address -->
-            <li class="address-list-container">
+            <li class="address-list-container records-delivery-address">
               <div class="meta-container">
                 <label v-if="!showAddressForm">Records Office</label>
                 <label v-else>Delivery Address</label>
@@ -128,7 +128,7 @@
             </li>
 
             <!-- Records Mailing Address -->
-            <li class="address-list-container">
+            <li class="address-list-container records-mailing-address">
               <div class="meta-container">
                 <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
                 <div class="meta-container__inner">
@@ -157,7 +157,7 @@
                       @valid="recMailingAddressValid=$event"
                     />
                   </div>
-                  <span v-else>Mailing Address same as above</span>
+                  <span v-else id="recMailSameAsDeliv">Mailing Address same as above</span>
                 </div>
               </div>
             </li>
@@ -168,7 +168,7 @@
               <div class="meta-container">
                 <label>Records Office</label>
                 <div class="meta-container__inner">
-                  <span id="sameAsRegistered">Same as Registered Office</span>
+                  <span id="recSameAsReg">Same as Registered Office</span>
                 </div>
               </div>
             </li>
@@ -308,8 +308,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         const registeredOffice = response?.data?.registeredOffice
         if (registeredOffice) {
           this.original.registeredOffice = {
-            mailingAddress: { ...registeredOffice.mailingAddress, actions: [] },
-            deliveryAddress: { ...registeredOffice.deliveryAddress, actions: [] }
+            deliveryAddress: { ...registeredOffice.deliveryAddress, actions: [] },
+            mailingAddress: { ...registeredOffice.mailingAddress, actions: [] }
           }
         } else {
           throw new Error('Missing registered office address')
@@ -319,8 +319,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         const recordsOffice = response?.data?.recordsOffice
         if (recordsOffice) {
           this.original.recordsOffice = {
-            mailingAddress: { ...recordsOffice.mailingAddress, actions: [] },
-            deliveryAddress: { ...recordsOffice.deliveryAddress, actions: [] }
+            deliveryAddress: { ...recordsOffice.deliveryAddress, actions: [] },
+            mailingAddress: { ...recordsOffice.mailingAddress, actions: [] }
           }
         } else if (this.isBComp) {
           throw new Error('Missing records office address')
@@ -518,7 +518,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
         return {
           registeredOffice: { deliveryAddress, mailingAddress },
-          recordsOffice: { deliveryAddress, mailingAddress }
+          recordsOffice: { deliveryAddress: recDeliveryAddress, mailingAddress: recMailingAddress }
         } as RegRecAddressesIF
       }
 

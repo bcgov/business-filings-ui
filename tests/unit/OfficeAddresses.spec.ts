@@ -1,21 +1,25 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
+import Vuelidate from 'vuelidate' // needed?
 import Vuetify from 'vuetify'
+import sinon from 'sinon'
+import { mount } from '@vue/test-utils'
+import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import { OfficeAddresses } from '@/components/common'
-import { mount, Wrapper } from '@vue/test-utils'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
+const sinonAxiosGet = sinon.stub(axios, 'get')
 
-function getAddressX (x: number) {
+function getAddressX (x: number, type: string): any {
   return {
     addressCity: `city${x}`,
     addressCountry: 'CA',
     addressRegion: 'BC',
+    addressType: type,
     deliveryInstructions: `instructions${x}`,
     postalCode: `postal${x}`,
     streetAddress: `street${x}`,
@@ -23,297 +27,399 @@ function getAddressX (x: number) {
   }
 }
 
-xdescribe('OfficeAddresses as a COOP', () => {
+describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
     store.state.entityType = 'CP'
+    store.state.entityIncNo = 'CP0000841'
   })
 
-  it('loads the current office addresses from the store', () => {
-    // init store
-    store.state.registeredAddress = {
-      deliveryAddress: getAddressX(1),
-      mailingAddress: getAddressX(2)
-    }
+  it('fetches the original office addresses with different delivery and mailing', async () => {
+    const address1 = getAddressX(1, 'delivery')
+    const address2 = getAddressX(2, 'mailing')
 
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ store, vuetify })
-    const vm: any = instance.$mount()
+    // mock GET addresses
+    sinonAxiosGet
+      .withArgs('businesses/CP0000841/addresses?date=2020-11-16')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          registeredOffice: {
+            deliveryAddress: address1,
+            mailingAddress: address2
+          },
+          recordsOffice: undefined
+        }
+      })))
 
-    // Verify the `same as above text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
+    // mount the component
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
-    const deliveryAddress = vm.registeredAddress.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('street1')
-    expect(deliveryAddress['streetAddressAdditional']).toEqual('additional1')
-    expect(deliveryAddress['addressCity']).toEqual('city1')
-    expect(deliveryAddress['addressRegion']).toEqual('BC')
-    expect(deliveryAddress['postalCode']).toEqual('postal1')
-    expect(deliveryAddress['addressCountry']).toEqual('CA')
-    expect(deliveryAddress['deliveryInstructions']).toEqual('instructions1')
+    // fetch original addresses
+    await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
 
-    const mailingAddress = vm.registeredAddress.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('street2')
-    expect(mailingAddress['streetAddressAdditional']).toEqual('additional2')
-    expect(mailingAddress['addressCity']).toEqual('city2')
-    expect(mailingAddress['addressRegion']).toEqual('BC')
-    expect(mailingAddress['postalCode']).toEqual('postal2')
-    expect(mailingAddress['addressCountry']).toEqual('CA')
-    expect(mailingAddress['deliveryInstructions']).toEqual('instructions2')
+    // verify delivery address
+    const regDelivAddressRows = wrapper.findAll('.registered-delivery-address .address-block__info-row')
+    expect(regDelivAddressRows.at(0).text()).toBe(address1.streetAddress)
+    expect(regDelivAddressRows.at(1).text()).toBe(address1.streetAddressAdditional)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressCity)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressRegion)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.postalCode)
+    expect(regDelivAddressRows.at(3).text()).toBe('Canada')
+    expect(regDelivAddressRows.at(4).text()).toBe(address1.deliveryInstructions)
+  
+    // verify that "mailing address same as above" text is not displayed
+    expect(wrapper.find('#regMailSameAsDeliv').exists()).toBe(false)
+
+    // verify mailing address
+    const regMailAddressRows = wrapper.findAll('.registered-mailing-address .address-block__info-row')
+    expect(regMailAddressRows.at(0).text()).toBe(address2.streetAddress)
+    expect(regMailAddressRows.at(1).text()).toBe(address2.streetAddressAdditional)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.addressCity)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.addressRegion)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.postalCode)
+    expect(regMailAddressRows.at(3).text()).toBe('Canada')
+    expect(regMailAddressRows.at(4).text()).toBe(address2.deliveryInstructions)
+
+    // verify original addresses were emitted
+    const original = wrapper.emitted('original')
+    expect(original.length).toBe(1)
+    expect(original[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        }
+      }]
+    )
+
+    // verify working addresses were emitted
+    const addresses = wrapper.emitted('update:addresses')
+    expect(addresses.length).toBe(1)
+    expect(addresses[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        }
+      }]
+    )
+
+    // verify modified state was emitted
+    const modified = wrapper.emitted('modified')
+    expect(modified.length).toBe(1)
+    expect(modified[0]).toStrictEqual([false])
   })
 
-  it('loads the current office addresses from a draft filing', () => {
-    const draftAddresses = {
-      registeredOffice: {
-        deliveryAddress: getAddressX(1),
-        mailingAddress: getAddressX(2)
-      }
-    }
+  it('fetches the original office addresses with same delivery and mailing', async () => {
+    const address1 = getAddressX(1, 'delivery')
+    const address2 = getAddressX(1, 'mailing')
 
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ propsData: { addresses: draftAddresses }, store, vuetify })
-    const vm: any = instance.$mount()
+    // mock GET addresses
+    sinonAxiosGet
+      .withArgs('businesses/CP0000841/addresses?date=2020-11-16')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          registeredOffice: {
+            deliveryAddress: address1,
+            mailingAddress: address2
+          },
+          recordsOffice: undefined
+        }
+      })))
 
-    // Verify the `same as above text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
+    // mount the component
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
-    const deliveryAddress = vm.addresses.registeredOffice.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('street1')
-    expect(deliveryAddress['streetAddressAdditional']).toEqual('additional1')
-    expect(deliveryAddress['addressCity']).toEqual('city1')
-    expect(deliveryAddress['addressRegion']).toEqual('BC')
-    expect(deliveryAddress['postalCode']).toEqual('postal1')
-    expect(deliveryAddress['addressCountry']).toEqual('CA')
-    expect(deliveryAddress['deliveryInstructions']).toEqual('instructions1')
+    // fetch original addresses
+    await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
 
-    const mailingAddress = vm.addresses.registeredOffice.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('street2')
-    expect(mailingAddress['streetAddressAdditional']).toEqual('additional2')
-    expect(mailingAddress['addressCity']).toEqual('city2')
-    expect(mailingAddress['addressRegion']).toEqual('BC')
-    expect(mailingAddress['postalCode']).toEqual('postal2')
-    expect(mailingAddress['addressCountry']).toEqual('CA')
-    expect(mailingAddress['deliveryInstructions']).toEqual('instructions2')
+    // verify delivery address
+    const regDelivAddressRows = wrapper.findAll('.registered-delivery-address .address-block__info-row')
+    expect(regDelivAddressRows.at(0).text()).toBe(address1.streetAddress)
+    expect(regDelivAddressRows.at(1).text()).toBe(address1.streetAddressAdditional)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressCity)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressRegion)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.postalCode)
+    expect(regDelivAddressRows.at(3).text()).toBe('Canada')
+    expect(regDelivAddressRows.at(4).text()).toBe(address1.deliveryInstructions)
+
+    // verify that "mailing address same as above" text is displayed
+    expect(wrapper.find('#regMailSameAsDeliv').exists()).toBe(true)
+
+    // verify original addresses were emitted
+    const original = wrapper.emitted('original')
+    expect(original.length).toBe(1)
+    expect(original[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        }
+      }]
+    )
+
+    // verify working addresses were emitted
+    const addresses = wrapper.emitted('update:addresses')
+    expect(addresses.length).toBe(1)
+    expect(addresses[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        }
+      }]
+    )
+
+    // verify modified state was emitted
+    const modified = wrapper.emitted('modified')
+    expect(modified.length).toBe(1)
+    expect(modified[0]).toStrictEqual([false])
   })
 
-  it('displays the "same as above" text when the addresses match', () => {
-    store.state.registeredAddress = {
-      deliveryAddress: getAddressX(1),
-      mailingAddress: getAddressX(1)
-    }
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ store, vuetify })
-    const vm: any = instance.$mount()
-
-    // Verify "same as above" text is displayed
-    expect(vm.$el.querySelector('#sameAsAbove').textContent).toBe('Mailing Address same as above')
-
-    expect(vm.mailingAddress).toEqual(vm.deliveryAddress)
-  })
-
-  it('does not display the "same as above" text when the addresses do not match', () => {
-    store.state.registeredAddress = {
-      deliveryAddress: getAddressX(1),
-      mailingAddress: getAddressX(2)
-    }
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ store, vuetify })
-    const vm: any = instance.$mount()
-
-    // Verify "same as above" text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
-
-    expect(vm.mailingAddress).not.toEqual(vm.deliveryAddress)
-  })
-
-  it('has enabled Change button', () => {
-    const wrapper: Wrapper<OfficeAddresses> = mount(OfficeAddresses, {
-      //
-      // TODO: check if we can get rid of sync prop (here and Directors)
-      //
-      sync: false,
-      propsData: { componentEnabled: true },
-      store,
-      vuetify
-    })
+  it('has enabled Change button when enabled', () => {
+    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: true } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
   })
 
-  it('has disabled Change button', () => {
-    const wrapper: Wrapper<OfficeAddresses> = mount(OfficeAddresses, {
-      sync: false,
-      propsData: { componentEnabled: false },
-      store,
-      vuetify
-    })
+  it('has disabled Change button when disabled', () => {
+    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: false } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeDefined()
   })
 })
 
-xdescribe('OfficeAddresses as a BCOMP', () => {
+describe('OfficeAddresses as a BCOMP', () => {
   beforeAll(() => {
     // init store
     store.state.entityType = 'BEN'
+    store.state.entityIncNo = 'BC1218881'
   })
 
-  it('loads the current office addresses from the store', () => {
-    store.state.registeredAddress = {
-      deliveryAddress: getAddressX(1),
-      mailingAddress: getAddressX(2)
-    }
-    store.state.recordsAddress = {
-      deliveryAddress: getAddressX(3),
-      mailingAddress: getAddressX(4)
-    }
+  it('fetches the original office addresses with different registered and records', async () => {
+    const address1 = getAddressX(1, 'delivery')
+    const address2 = getAddressX(2, 'mailing')
+    const address3 = getAddressX(3, 'delivery')
+    const address4 = getAddressX(4, 'mailing')
 
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ store, vuetify })
-    const vm: any = instance.$mount()
+    // mock GET addresses
+    sinonAxiosGet
+      .withArgs('businesses/BC1218881/addresses?date=2020-11-16')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          registeredOffice: {
+            deliveryAddress: address1,
+            mailingAddress: address2
+          },
+          recordsOffice: {
+            deliveryAddress: address3,
+            mailingAddress: address4
+          }
+        }
+      })))
 
-    // Verify the `same as above text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
+    // mount the component
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
-    // Verify the `same as registered` text is not displayed
-    expect(vm.$el.querySelector('#sameAsRegistered')).toBeNull()
+    // fetch original addresses
+    await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
 
-    const deliveryAddress = vm.registeredAddress.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('street1')
-    expect(deliveryAddress['streetAddressAdditional']).toEqual('additional1')
-    expect(deliveryAddress['addressCity']).toEqual('city1')
-    expect(deliveryAddress['addressRegion']).toEqual('BC')
-    expect(deliveryAddress['postalCode']).toEqual('postal1')
-    expect(deliveryAddress['addressCountry']).toEqual('CA')
-    expect(deliveryAddress['deliveryInstructions']).toEqual('instructions1')
+    // verify registered delivery address
+    const regDelivAddressRows = wrapper.findAll('.registered-delivery-address .address-block__info-row')
+    expect(regDelivAddressRows.at(0).text()).toBe(address1.streetAddress)
+    expect(regDelivAddressRows.at(1).text()).toBe(address1.streetAddressAdditional)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressCity)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressRegion)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.postalCode)
+    expect(regDelivAddressRows.at(3).text()).toBe('Canada')
+    expect(regDelivAddressRows.at(4).text()).toBe(address1.deliveryInstructions)
 
-    const mailingAddress = vm.registeredAddress.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('street2')
-    expect(mailingAddress['streetAddressAdditional']).toEqual('additional2')
-    expect(mailingAddress['addressCity']).toEqual('city2')
-    expect(mailingAddress['addressRegion']).toEqual('BC')
-    expect(mailingAddress['postalCode']).toEqual('postal2')
-    expect(mailingAddress['addressCountry']).toEqual('CA')
-    expect(mailingAddress['deliveryInstructions']).toEqual('instructions2')
+    // verify that "mailing address same as above" text is not displayed
+    expect(wrapper.find('#regMailSameAsDeliv').exists()).toBe(false)
 
-    const recDeliveryAddress = vm.recordsAddress.deliveryAddress
-    expect(recDeliveryAddress['streetAddress']).toEqual('street3')
-    expect(recDeliveryAddress['streetAddressAdditional']).toEqual('additional3')
-    expect(recDeliveryAddress['addressCity']).toEqual('city3')
-    expect(recDeliveryAddress['addressRegion']).toEqual('BC')
-    expect(recDeliveryAddress['postalCode']).toEqual('postal3')
-    expect(recDeliveryAddress['addressCountry']).toEqual('CA')
-    expect(recDeliveryAddress['deliveryInstructions']).toEqual('instructions3')
+    // verify registered mailing address
+    const regMailAddressRows = wrapper.findAll('.registered-mailing-address .address-block__info-row')
+    expect(regMailAddressRows.at(0).text()).toBe(address2.streetAddress)
+    expect(regMailAddressRows.at(1).text()).toBe(address2.streetAddressAdditional)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.addressCity)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.addressRegion)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.postalCode)
+    expect(regMailAddressRows.at(3).text()).toBe('Canada')
+    expect(regMailAddressRows.at(4).text()).toBe(address2.deliveryInstructions)
 
-    const recMailingAddress = vm.recordsAddress.mailingAddress
-    expect(recMailingAddress['streetAddress']).toEqual('street4')
-    expect(recMailingAddress['streetAddressAdditional']).toEqual('additional4')
-    expect(recMailingAddress['addressCity']).toEqual('city4')
-    expect(recMailingAddress['addressRegion']).toEqual('BC')
-    expect(recMailingAddress['postalCode']).toEqual('postal4')
-    expect(recMailingAddress['addressCountry']).toEqual('CA')
-    expect(recMailingAddress['deliveryInstructions']).toEqual('instructions4')
+    // verify that "same as registered office" text is not displayed
+    expect(wrapper.find('#recSameAsReg').exists()).toBe(false)
+
+    // verify records delivery address
+    const recDelivAddressRows = wrapper.findAll('.records-delivery-address .address-block__info-row')
+    expect(recDelivAddressRows.at(0).text()).toBe(address3.streetAddress)
+    expect(recDelivAddressRows.at(1).text()).toBe(address3.streetAddressAdditional)
+    expect(recDelivAddressRows.at(2).text()).toContain(address3.addressCity)
+    expect(recDelivAddressRows.at(2).text()).toContain(address3.addressRegion)
+    expect(recDelivAddressRows.at(2).text()).toContain(address3.postalCode)
+    expect(recDelivAddressRows.at(3).text()).toBe('Canada')
+    expect(recDelivAddressRows.at(4).text()).toBe(address3.deliveryInstructions)
+
+    // verify that "mailing address same as above" text is not displayed
+    expect(wrapper.find('#recMailSameAsDeliv').exists()).toBe(false)
+
+    // verify records mailing address
+    const recMailAddressRows = wrapper.findAll('.records-mailing-address .address-block__info-row')
+    expect(recMailAddressRows.at(0).text()).toBe(address4.streetAddress)
+    expect(recMailAddressRows.at(1).text()).toBe(address4.streetAddressAdditional)
+    expect(recMailAddressRows.at(2).text()).toContain(address4.addressCity)
+    expect(recMailAddressRows.at(2).text()).toContain(address4.addressRegion)
+    expect(recMailAddressRows.at(2).text()).toContain(address4.postalCode)
+    expect(recMailAddressRows.at(3).text()).toBe('Canada')
+    expect(recMailAddressRows.at(4).text()).toBe(address4.deliveryInstructions)
+
+    // verify original addresses were emitted
+    const original = wrapper.emitted('original')
+    expect(original.length).toBe(1)
+    expect(original[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        },
+        recordsOffice:
+        {
+          deliveryAddress: { ...address3, actions: [] },
+          mailingAddress: { ...address4, actions: [] }
+        }
+      }]
+    )
+
+    // verify working addresses were emitted
+    const addresses = wrapper.emitted('update:addresses')
+    expect(addresses.length).toBe(1)
+    expect(addresses[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        },
+        recordsOffice:
+        {
+          deliveryAddress: { ...address3, actions: [] },
+          mailingAddress: { ...address4, actions: [] }
+        }
+      }]
+    )
+
+    // verify modified state was emitted
+    const modified = wrapper.emitted('modified')
+    expect(modified.length).toBe(1)
+    expect(modified[0]).toStrictEqual([false])
   })
 
-  it('loads the current office addresses from a draft filing', () => {
-    const draftAddresses = {
-      registeredOffice: {
-        deliveryAddress: getAddressX(1),
-        mailingAddress: getAddressX(2)
-      },
-      recordsOffice: {
-        deliveryAddress: getAddressX(3),
-        mailingAddress: getAddressX(4)
-      }
-    }
+  it('fetches the original office addresses with same registered and records', async () => {
+    const address1 = getAddressX(1, 'delivery')
+    const address2 = getAddressX(2, 'mailing')
 
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ propsData: { addresses: draftAddresses }, store, vuetify })
-    const vm: any = instance.$mount()
+    // mock GET addresses
+    sinonAxiosGet
+      .withArgs('businesses/BC1218881/addresses?date=2020-11-16')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          registeredOffice: {
+            deliveryAddress: address1,
+            mailingAddress: address2
+          },
+          recordsOffice: {
+            deliveryAddress: address1,
+            mailingAddress: address2
+          }
+        }
+      })))
 
-    // Verify the `same as above text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
+    // mount the component
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
-    // Verify the `same as registered` text is not displayed
-    expect(vm.$el.querySelector('#sameAsRegistered')).toBeNull()
+    // fetch original addresses
+    await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
 
-    const deliveryAddress = vm.addresses.registeredOffice.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('street1')
-    expect(deliveryAddress['streetAddressAdditional']).toEqual('additional1')
-    expect(deliveryAddress['addressCity']).toEqual('city1')
-    expect(deliveryAddress['addressRegion']).toEqual('BC')
-    expect(deliveryAddress['postalCode']).toEqual('postal1')
-    expect(deliveryAddress['addressCountry']).toEqual('CA')
-    expect(deliveryAddress['deliveryInstructions']).toEqual('instructions1')
+    // verify registered delivery address
+    const regDelivAddressRows = wrapper.findAll('.registered-delivery-address .address-block__info-row')
+    expect(regDelivAddressRows.at(0).text()).toBe(address1.streetAddress)
+    expect(regDelivAddressRows.at(1).text()).toBe(address1.streetAddressAdditional)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressCity)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.addressRegion)
+    expect(regDelivAddressRows.at(2).text()).toContain(address1.postalCode)
+    expect(regDelivAddressRows.at(3).text()).toBe('Canada')
+    expect(regDelivAddressRows.at(4).text()).toBe(address1.deliveryInstructions)
 
-    const mailingAddress = vm.addresses.registeredOffice.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('street2')
-    expect(mailingAddress['streetAddressAdditional']).toEqual('additional2')
-    expect(mailingAddress['addressCity']).toEqual('city2')
-    expect(mailingAddress['addressRegion']).toEqual('BC')
-    expect(mailingAddress['postalCode']).toEqual('postal2')
-    expect(mailingAddress['addressCountry']).toEqual('CA')
-    expect(mailingAddress['deliveryInstructions']).toEqual('instructions2')
+    // verify that "mailing address same as above" text is not displayed
+    expect(wrapper.find('#regMailSameAsDeliv').exists()).toBe(false)
 
-    const recDeliveryAddress = vm.addresses.recordsOffice.deliveryAddress
-    expect(recDeliveryAddress['streetAddress']).toEqual('street3')
-    expect(recDeliveryAddress['streetAddressAdditional']).toEqual('additional3')
-    expect(recDeliveryAddress['addressCity']).toEqual('city3')
-    expect(recDeliveryAddress['addressRegion']).toEqual('BC')
-    expect(recDeliveryAddress['postalCode']).toEqual('postal3')
-    expect(recDeliveryAddress['addressCountry']).toEqual('CA')
-    expect(recDeliveryAddress['deliveryInstructions']).toEqual('instructions3')
+    // verify registered mailing address
+    const regMailAddressRows = wrapper.findAll('.registered-mailing-address .address-block__info-row')
+    expect(regMailAddressRows.at(0).text()).toBe(address2.streetAddress)
+    expect(regMailAddressRows.at(1).text()).toBe(address2.streetAddressAdditional)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.addressCity)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.addressRegion)
+    expect(regMailAddressRows.at(2).text()).toContain(address2.postalCode)
+    expect(regMailAddressRows.at(3).text()).toBe('Canada')
+    expect(regMailAddressRows.at(4).text()).toBe(address2.deliveryInstructions)
 
-    const recMailingAddress = vm.addresses.recordsOffice.mailingAddress
-    expect(recMailingAddress['streetAddress']).toEqual('street4')
-    expect(recMailingAddress['streetAddressAdditional']).toEqual('additional4')
-    expect(recMailingAddress['addressCity']).toEqual('city4')
-    expect(recMailingAddress['addressRegion']).toEqual('BC')
-    expect(recMailingAddress['postalCode']).toEqual('postal4')
-    expect(recMailingAddress['addressCountry']).toEqual('CA')
-    expect(recMailingAddress['deliveryInstructions']).toEqual('instructions4')
+    // verify that "same as registered office" text is displayed
+    expect(wrapper.find('#recSameAsReg').exists()).toBe(true)
+
+    // verify original addresses were emitted
+    const original = wrapper.emitted('original')
+    expect(original.length).toBe(1)
+    expect(original[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        },
+        recordsOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        }
+      }]
+    )
+
+    // verify working addresses were emitted
+    const addresses = wrapper.emitted('update:addresses')
+    expect(addresses.length).toBe(1)
+    expect(addresses[0]).toStrictEqual(
+      [{
+        registeredOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        },
+        recordsOffice:
+        {
+          deliveryAddress: { ...address1, actions: [] },
+          mailingAddress: { ...address2, actions: [] }
+        }
+      }]
+    )
+
+    // verify modified state was emitted
+    const modified = wrapper.emitted('modified')
+    expect(modified.length).toBe(1)
+    expect(modified[0]).toStrictEqual([false])
   })
 
-  it('displays the "same as registered" text when records and registered addresses match', () => {
-    store.state.registeredAddress = {
-      deliveryAddress: getAddressX(1),
-      mailingAddress: getAddressX(2)
-    }
-    store.state.recordsAddress = {
-      deliveryAddress: getAddressX(1),
-      mailingAddress: getAddressX(2)
-    }
-
-    const Constructor = Vue.extend(OfficeAddresses)
-    const instance = new Constructor({ store, vuetify })
-    const vm: any = instance.$mount()
-
-    // Verify "same as above" text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
-
-    // Verify "same as registered" text is displayed
-    expect(vm.$el.querySelector('#sameAsRegistered').textContent).toBe('Same as Registered Office')
-
-    expect(vm.recordsAddress).toEqual(vm.registeredAddress)
-  })
-
-  it('has enabled Change button', () => {
-    const wrapper: Wrapper<OfficeAddresses> = mount(OfficeAddresses, {
-      sync: false,
-      propsData: { componentEnabled: true },
-      store,
-      vuetify
-    })
+  it('has enabled Change button when enabled', () => {
+    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: true } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
   })
 
-  it('has disabled Change button', () => {
-    const wrapper: Wrapper<OfficeAddresses> = mount(OfficeAddresses, {
-      sync: false,
-      propsData: { componentEnabled: false },
-      store,
-      vuetify
-    })
+  it('has disabled Change button when disabled', () => {
+    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: false } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeDefined()
   })
