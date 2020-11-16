@@ -208,7 +208,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   @Prop({ default: [] })
   private directors: Array<DirectorIF>
 
-  // Local properties.
+  // Local properties
   private directorSummary: Array<DirectorIF> = []
   private directorsCeased: Array<DirectorIF> = []
   private expand: boolean = true

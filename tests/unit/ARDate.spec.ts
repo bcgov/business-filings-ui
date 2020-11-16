@@ -13,7 +13,7 @@ const store = getVuexStore()
 describe('AnnualReport - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
     store.state.nextARDate = '2020-09-18T23:15:53.785045+00:00'
   })
 
@@ -21,7 +21,7 @@ describe('AnnualReport - Part 1 - UI', () => {
     const wrapper = shallowMount(ArDate, { store })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.state.currentDate).toEqual('2019/07/15')
+    expect(vm.$store.state.currentDate).toEqual('2019-07-15')
     expect(vm.$store.state.nextARDate).toEqual('2020-09-18T23:15:53.785045+00:00')
 
     wrapper.destroy()

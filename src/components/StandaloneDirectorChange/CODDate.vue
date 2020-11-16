@@ -98,7 +98,7 @@ export default class CodDate extends Mixins(DateMixin) {
    * @returns The maximum date that can be entered.
    */
   private get maxDate (): string {
-    return this.currentDate ? this.currentDate.split('/').join('-') : null
+    return this.currentDate || null
   }
 
   /**

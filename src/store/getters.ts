@@ -68,7 +68,9 @@ export default {
     return state.currentFilingStatus
   },
 
-  // get last Change of Directors filing from list of past filings
+  /** Returns date of last Change of Directors filing from list of past filings. */
+  // FUTURE: this will break if we only retrieve a page of filings
+  // FUTURE: the API should be giving us this date
   lastCODFilingDate (state): string {
     let lastCOD: string = null
 
@@ -85,7 +87,9 @@ export default {
     return lastCOD
   },
 
-  // get last Change of Address filing from list of past filings
+  /** Returns date of last Change of Address filing from list of past filings. */
+  // FUTURE: this will break if we only retrieve a page of filings
+  // FUTURE: the API should be giving us this date
   lastCOAFilingDate (state): string {
     let lastCOA: string = null
 
@@ -102,7 +106,9 @@ export default {
     return lastCOA
   },
 
-  // get last filing (of any type) from list of past filings
+  /** Returns date of last filing (of any type) from list of past filings. */
+  // FUTURE: this will break if we only retrieve a page of filings
+  // FUTURE: the API should be giving us this date
   lastFilingDate (state): string {
     let lastFilingDate: string = null
 
@@ -117,14 +123,15 @@ export default {
     return lastFilingDate
   },
 
-  // To show Legal Obligations only for a new business that hasn't filed anything else yet and has no tasks
+  /**
+   * This is used to show Legal Obligations only for a new business
+   * that hasn't filed anything yet (except IA) and has no tasks.
+   **/
   isBusinessWithNoMaintenanceFilings (state): boolean {
-    if (state.filings && state.filings.length === 1 &&
+    return (
+      state.filings.length === 1 &&
       state.filings[0].filing.header.name === 'incorporationApplication' &&
-      state.tasks.length === 0) {
-      return true
-    } else {
-      return false
-    }
+      state.tasks.length === 0
+    )
   }
 }

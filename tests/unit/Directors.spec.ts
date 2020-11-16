@@ -560,8 +560,8 @@ describe('Directors as a BCOMP', () => {
     // set as-of date
     vm.asOfDate = '2019-04-01'
 
-    // call getDirectors() since it won't be triggered from parent component
-    await vm.getDirectors()
+    // call fetchDirectors() since it won't be triggered from parent component
+    await vm.fetchDirectors()
   })
 
   afterEach(() => {

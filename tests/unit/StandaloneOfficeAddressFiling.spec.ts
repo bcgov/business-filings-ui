@@ -23,25 +23,26 @@ Vue.config.silent = true
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
+store.state.currentDate = '2019-07-15'
 
 const sampleDeliveryAddress = {
-  'streetAddress': 'delivery street address',
-  'streetAddressAdditional': null,
-  'addressCity': 'deliv address city',
-  'addressCountry': 'deliv country',
-  'postalCode': 'H0H0H0',
-  'addressRegion': 'BC',
-  'deliveryInstructions': null
+  streetAddress: 'delivery street address',
+  streetAddressAdditional: null,
+  addressCity: 'deliv address city',
+  addressCountry: 'deliv country',
+  postalCode: 'H0H0H0',
+  addressRegion: 'BC',
+  deliveryInstructions: null
 }
 
 const sampleMailingAddress = {
-  'streetAddress': 'mailing street address',
-  'streetAddressAdditional': 'Kirkintiloch',
-  'addressCity': 'Glasgow',
-  'addressCountry': 'UK',
-  'postalCode': 'H0H 0H0',
-  'addressRegion': 'Scotland',
-  'deliveryInstructions': 'go to the back'
+  streetAddress: 'mailing street address',
+  streetAddressAdditional: 'Kirkintiloch',
+  addressCity: 'Glasgow',
+  addressCountry: 'UK',
+  postalCode: 'H0H 0H0',
+  addressRegion: 'Scotland',
+  deliveryInstructions: 'go to the back'
 }
 
 describe('Standalone Office Address Filing - Part 1 - UI', () => {
@@ -1775,110 +1776,108 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     sinon.restore()
   })
 
-  it('sets the required fields to display errors from the api after a post call',
-    async () => {
-      const localVue = createLocalVue()
-      localVue.use(VueRouter)
-      const router = mockRouter.mock()
-      router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
+  it('sets the required fields to display errors from the api after a post call', async () => {
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-addresses', params: { filingId: '0' } }) // new filing id
 
-      const wrapper = mount(StandaloneOfficeAddressFiling, {
-        store,
-        localVue,
-        router,
-        stubs: {
-          OfficeAddresses: true,
-          Certify: true,
-          StaffPayment: true,
-          Affix: true,
-          SbcFeeSummary: true,
-          ConfirmDialog: true,
-          PaymentErrorDialog: true,
-          ResumeErrorDialog: true,
-          SaveErrorDialog: true
-        },
-        vuetify
-      })
-      const vm: any = wrapper.vm
+    const wrapper = mount(StandaloneOfficeAddressFiling, {
+      store,
+      localVue,
+      router,
+      stubs: {
+        OfficeAddresses: true,
+        Certify: true,
+        StaffPayment: true,
+        Affix: true,
+        SbcFeeSummary: true,
+        ConfirmDialog: true,
+        PaymentErrorDialog: true,
+        ResumeErrorDialog: true,
+        SaveErrorDialog: true
+      },
+      vuetify
+    })
+    const vm: any = wrapper.vm
 
-      // make sure form is validated
-      vm.officeAddressFormValid = true
-      vm.staffPaymentFormValid = true
-      vm.certifyFormValid = true
+    // make sure form is validated
+    vm.officeAddressFormValid = true
+    vm.staffPaymentFormValid = true
+    vm.certifyFormValid = true
 
-      // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    // sanity check
+    expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+    // TODO: verify that new filing was created
 
-      // click the File & Pay button
-      // wrapper.find('#coa-file-pay-btn').trigger('click')
-      // await flushPromises()
-      // work-around because click trigger isn't working
-      await vm.onClickFilePay()
+    // click the File & Pay button
+    // wrapper.find('#coa-file-pay-btn').trigger('click')
+    // await flushPromises()
+    // work-around because click trigger isn't working
+    await vm.onClickFilePay()
 
-      // verify error dialog values set to what was returned
-      expect(vm.saveErrorDialog).toBe(true)
-      expect(vm.saveErrors.length).toBe(1)
-      expect(vm.saveErrors[0].error).toBe('err msg post')
-      expect(vm.saveWarnings.length).toBe(1)
-      expect(vm.saveWarnings[0].warning).toBe('warn msg post')
+    // verify error dialog values set to what was returned
+    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrors.length).toBe(1)
+    expect(vm.saveErrors[0].error).toBe('err msg post')
+    expect(vm.saveWarnings.length).toBe(1)
+    expect(vm.saveWarnings[0].warning).toBe('warn msg post')
 
-      wrapper.destroy()
-    }
+    wrapper.destroy()
+  }
   )
 
-  it('sets the required fields to display errors from the api after a put call',
-    async () => {
-      const localVue = createLocalVue()
-      localVue.use(VueRouter)
-      const router = mockRouter.mock()
-      router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
+  it('sets the required fields to display errors from the api after a put call', async () => {
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-addresses', params: { filingId: '123' } }) // existing filing id
 
-      const wrapper = mount(StandaloneOfficeAddressFiling, {
-        store,
-        localVue,
-        router,
-        stubs: {
-          OfficeAddresses: true,
-          Certify: true,
-          StaffPayment: true,
-          Affix: true,
-          SbcFeeSummary: true,
-          ConfirmDialog: true,
-          PaymentErrorDialog: true,
-          ResumeErrorDialog: true,
-          SaveErrorDialog: true
-        },
-        vuetify
-      })
-      const vm: any = wrapper.vm
+    const wrapper = mount(StandaloneOfficeAddressFiling, {
+      store,
+      localVue,
+      router,
+      stubs: {
+        OfficeAddresses: true,
+        Certify: true,
+        StaffPayment: true,
+        Affix: true,
+        SbcFeeSummary: true,
+        ConfirmDialog: true,
+        PaymentErrorDialog: true,
+        ResumeErrorDialog: true,
+        SaveErrorDialog: true
+      },
+      vuetify
+    })
+    const vm: any = wrapper.vm
 
-      // make sure form is validated
-      vm.officeAddressFormValid = true
-      vm.staffPaymentFormValid = true
-      vm.certifyFormValid = true
+    // make sure form is validated
+    vm.officeAddressFormValid = true
+    vm.staffPaymentFormValid = true
+    vm.certifyFormValid = true
 
-      // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    // sanity check
+    expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+    // TODO: verify that new filing was created
 
-      // click the File & Pay button
-      // wrapper.find('#coa-file-pay-btn').trigger('click')
-      // await flushPromises()
-      // work-around because click trigger isn't working
-      await vm.onClickFilePay()
+    // click the File & Pay button
+    // wrapper.find('#coa-file-pay-btn').trigger('click')
+    // await flushPromises()
+    // work-around because click trigger isn't working
+    await vm.onClickFilePay()
 
-      // verify error dialog values set to what was returned
-      expect(vm.saveErrorDialog).toBe(true)
-      expect(vm.saveErrors.length).toBe(1)
-      expect(vm.saveErrors[0].error).toBe('err msg put')
-      expect(vm.saveWarnings.length).toBe(1)
-      expect(vm.saveWarnings[0].warning).toBe('warn msg put')
+    // verify error dialog values set to what was returned
+    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrors.length).toBe(1)
+    expect(vm.saveErrors[0].error).toBe('err msg put')
+    expect(vm.saveWarnings.length).toBe(1)
+    expect(vm.saveWarnings[0].warning).toBe('warn msg put')
 
-      wrapper.destroy()
-    }
+    wrapper.destroy()
+  }
   )
 })
 
