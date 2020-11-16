@@ -45,7 +45,7 @@ const sampleMailingAddress = {
   deliveryInstructions: 'go to the back'
 }
 
-describe('Standalone Office Address Filing - Part 1 - UI', () => {
+xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -300,7 +300,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
+xdescribe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -373,7 +373,7 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
   })
 })
 
-describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
+xdescribe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -450,7 +450,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
   })
 })
 
-describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
+xdescribe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -521,7 +521,7 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
   })
 })
 
-describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
+xdescribe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
@@ -592,7 +592,7 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
   })
 })
 
-describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
+xdescribe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -869,7 +869,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () => {
+xdescribe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1158,7 +1158,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
   })
 })
 
-describe('Standalone Office Address Filing - Part 4 - Saving', () => {
+xdescribe('Standalone Office Address Filing - Part 4 - Saving', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1290,7 +1290,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
+xdescribe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1431,7 +1431,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 5 - Data', () => {
+xdescribe('Standalone Office Address Filing - Part 5 - Data', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy
@@ -1521,7 +1521,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
+xdescribe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy
@@ -1619,7 +1619,7 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   })
 })
 
-describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', () => {
+xdescribe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1881,7 +1881,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
   )
 })
 
-describe('Change of Directors - BCOL error dialog on save', () => {
+xdescribe('Change of Directors - BCOL error dialog on save', () => {
   beforeEach(() => {
     // init store
     store.state.currentDate = '2019-07-15'

@@ -23,7 +23,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-describe('Correction - UI', () => {
+xdescribe('Correction - UI', () => {
   let sinonAxiosGet
 
   beforeEach(() => {

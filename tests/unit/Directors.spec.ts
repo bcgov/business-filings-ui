@@ -42,7 +42,7 @@ function setValue (vm: any, id: string, value: string) {
   input.dispatchEvent(event)
 }
 
-describe('Directors as a COOP', () => {
+xdescribe('Directors as a COOP', () => {
   let vm: any
 
   beforeEach(() => {
@@ -478,7 +478,7 @@ describe('Directors as a COOP', () => {
   // })
 })
 
-describe('Directors as a BCOMP', () => {
+xdescribe('Directors as a BCOMP', () => {
   let vm: any
 
   beforeEach(async () => {
@@ -735,7 +735,7 @@ describe('Directors as a BCOMP', () => {
   })
 })
 
-describe('Appoint New Director tests', () => {
+xdescribe('Appoint New Director tests', () => {
   let wrapper: Wrapper<Directors>
   let vm: any
 
