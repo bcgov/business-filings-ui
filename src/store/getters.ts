@@ -1,6 +1,11 @@
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
+  /** Returns true if Jest is running the code. */
+  isJestRunning (): boolean {
+    return (process.env.JEST_WORKER_ID !== undefined)
+  },
+
   /** Get the Current Date */
   getCurrentDate (state): string {
     return state.currentDate

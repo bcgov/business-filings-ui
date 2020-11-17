@@ -239,7 +239,7 @@ export default {
 
   data () {
     return {
-      updatedAddresses: {},
+      updatedAddresses: { registeredOffice: {}, recordsOffice: {} },
       filingId: null,
       loadingMessage: '',
       dataLoaded: false,
@@ -276,7 +276,7 @@ export default {
 
   computed: {
     ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isJestRunning']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -353,12 +353,16 @@ export default {
       await this.fetchDraftFiling()
       // fetch original office addresses
       // update working data only if it wasn't in the draft
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+      }
     } else {
       // this is a new filing
       this.loadingMessage = 'Preparing Your Address Change'
       // fetch original office addresses + update working data
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      }
     }
 
     this.dataLoaded = true
@@ -757,7 +761,9 @@ export default {
       // fetch original office addresses with new date + update working data
       // (this will overwrite the current data)
       this.isFetching = true
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      }
       this.isFetching = false
     },
 

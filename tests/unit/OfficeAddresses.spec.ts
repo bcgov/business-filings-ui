@@ -65,7 +65,7 @@ describe('OfficeAddresses as a COOP', () => {
     expect(regDelivAddressRows.at(2).text()).toContain(address1.postalCode)
     expect(regDelivAddressRows.at(3).text()).toBe('Canada')
     expect(regDelivAddressRows.at(4).text()).toBe(address1.deliveryInstructions)
-  
+
     // verify that "mailing address same as above" text is not displayed
     expect(wrapper.find('#regMailSameAsDeliv').exists()).toBe(false)
 

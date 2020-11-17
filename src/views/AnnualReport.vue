@@ -174,7 +174,6 @@
                 <ar-date />
                 <br>
                 <summary-office-addresses
-                  v-if="originalAddresses"
                   :registeredAddress="originalAddresses.registeredOffice"
                   :recordsAddress="originalAddresses.recordsOffice"
                 />
@@ -393,8 +392,8 @@ export default {
       agmDateValid: false,
 
       // properties for OfficeAddresses component
-      originalAddresses: {},
-      updatedAddresses: {},
+      originalAddresses: { registeredOffice: {}, recordsOffice: {} },
+      updatedAddresses: { registeredOffice: {}, recordsOffice: {} },
       addressesFormValid: null as boolean,
 
       // properties for Directors component
@@ -442,7 +441,7 @@ export default {
       'entityIncNo', 'entityFoundingDate', 'lastPreLoadFilingDate', 'directors', 'filingData']),
 
     ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isAnnualReportEditable', 'reportState', 'lastCOAFilingDate',
-      'lastCODFilingDate']),
+      'lastCODFilingDate', 'isJestRunning']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -530,14 +529,18 @@ export default {
       await this.fetchDraftFiling()
       // fetch original office addresses and directors
       // update working data only if it wasn't in the draft
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmpty(this.updatedAddresses))
-      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmpty(this.updatedAddresses))
+        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
+      }
     } else {
       this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
       // this is a new filing
       // fetch original office addresses and directors + update working data
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
-      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
+        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+      }
     }
 
     this.dataLoaded = true
@@ -1067,8 +1070,10 @@ export default {
       // fetch original office addresses and directors with new date + update working data
       // (this will overwrite the current data)
       this.isFetching = true
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
-      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
+        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+      }
       this.isFetching = false
     },
 

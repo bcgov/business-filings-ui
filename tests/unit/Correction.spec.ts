@@ -14,17 +14,19 @@ import Correction from '@/views/Correction.vue'
 import { DetailComment, Certify, StaffPayment } from '@/components/common'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 
-// suppress "avoid mutating a prop directly" warnings
-// https://vue-test-utils.vuejs.org/api/config.html#silent
+// suppress various warnings:
+// - "Unknown custom element <affix>" warnings
+// - "$listeners is readonly"
+// - "Avoid mutating a prop directly"
+// ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
 
 Vue.use(Vuetify)
 
-const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-xdescribe('Correction - UI', () => {
-  let sinonAxiosGet
+describe('Correction - UI', () => {
+  let sinonAxiosGet: any
 
   beforeEach(() => {
     sinonAxiosGet = sinon.stub(axios, 'get')
@@ -69,7 +71,7 @@ xdescribe('Correction - UI', () => {
 
   it('mounts the sub-components properly', () => {
     // mock $route
-    const $route = { params: {} }
+    const $route = { params: { filingId: '0', correctedFilingId: '123' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -93,9 +95,9 @@ xdescribe('Correction - UI', () => {
     wrapper.destroy()
   })
 
-  it('sets filing data properly', () => {
+  it('sets filing data properly', async () => {
     // mock $route
-    const $route = { params: {} }
+    const $route = { params: { filingId: '0', correctedFilingId: '123' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -104,6 +106,9 @@ xdescribe('Correction - UI', () => {
 
     const wrapper = shallowMount(Correction, { store, mocks: { $route, $router } })
     const vm: any = wrapper.vm
+
+    // wait for fetch to complete
+    await flushPromises()
 
     // verify initial Filing Data
     expect(vm.filingData).not.toBeUndefined()
@@ -139,7 +144,7 @@ xdescribe('Correction - UI', () => {
 
   it('sets computed states properly', () => {
     // mock $route
-    const $route = { params: {} }
+    const $route = { params: { filingId: '0', correctedFilingId: '123' } }
 
     // create local Vue and mock router
     const localVue = createLocalVue()

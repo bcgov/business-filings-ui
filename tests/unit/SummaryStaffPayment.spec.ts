@@ -4,9 +4,6 @@ import { mount } from '@vue/test-utils'
 import { SummaryStaffPayment } from '@/components/common'
 
 Vue.use(Vuetify)
-// suppress "avoid mutating a prop directly" warnings
-// https://vue-test-utils.vuejs.org/api/config.html#silent
-Vue.config.silent = true
 
 const vuetify = new Vuetify({})
 

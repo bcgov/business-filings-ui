@@ -1,3 +1,4 @@
+// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
@@ -16,13 +17,6 @@ import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
-
-// NB: test util async issue
-// in some cases, the elements are not updated during the test (eg, "ld")
-// the work-around is to first initialize the property we are changing
-// suppress update watchers warnings
-// ref: https://github.com/vuejs/vue-test-utils/issues/532
-Vue.config.silent = true
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

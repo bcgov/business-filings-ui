@@ -5,18 +5,9 @@ import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 
-// NB: test util async issue
-// in some cases, the elements are not updated during the test
-// the work-around is to first initialize the property we are changing
-// suppress update watchers warnings
+// suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
-
-// get rid of "Download the Vue Devtools extension for a better development experience" console message
-Vue.config.devtools = false
-
-// get rid of "You are running Vue in development mode" console message
-Vue.config.productionTip = false
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

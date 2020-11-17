@@ -3,10 +3,11 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { StaffPayment } from '@/components/common'
 
-Vue.use(Vuetify)
-// suppress "avoid mutating a prop directly" warnings
-// https://vue-test-utils.vuejs.org/api/config.html#silent
+// suppress "Avoid mutating a prop directly" warnings
+// ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
+
+Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 

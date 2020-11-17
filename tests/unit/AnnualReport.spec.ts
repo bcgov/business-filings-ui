@@ -21,16 +21,20 @@ import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOffice
   from '@/components/common'
 import { configJson } from '@/resources/business-config'
 
-Vue.use(Vuetify)
-Vue.use(Vuelidate)
-// suppress update watchers warnings
+// suppress various warnings:
+// - "Unknown custom element <affix>" warnings
+// - "$listeners is readonly"
+// - "Avoid mutating a prop directly"
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
+
+Vue.use(Vuetify)
+Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-xdescribe('AnnualReport - Part 1 - UI', () => {
+describe('AnnualReport - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -438,7 +442,7 @@ xdescribe('AnnualReport - Part 1 - UI', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 1B - UI (BCOMP)', () => {
+describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businesId = 'BC0007291'
@@ -643,7 +647,7 @@ xdescribe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
+describe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -723,7 +727,7 @@ xdescribe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
+describe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -807,7 +811,7 @@ xdescribe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
+describe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -885,7 +889,7 @@ xdescribe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 3 - Submitting', () => {
+describe('AnnualReport - Part 3 - Submitting', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1167,7 +1171,7 @@ xdescribe('AnnualReport - Part 3 - Submitting', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
+describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1251,6 +1255,7 @@ xdescribe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(AnnualReport, {
+      sync: false,
       store,
       localVue,
       router,
@@ -1279,7 +1284,13 @@ xdescribe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     // make sure a fee is required
     vm.totalFee = 100
 
+    // wait for things to stabilize
+    await flushPromises()
+
+    // sanity checks
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vm.validated).toEqual(true)
+    expect(vm.busySaving).toEqual(false)
 
     const button = wrapper.find('#ar-file-pay-bc-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1296,7 +1307,7 @@ xdescribe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 4 - Saving', () => {
+describe('AnnualReport - Part 4 - Saving', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1443,10 +1454,10 @@ xdescribe('AnnualReport - Part 4 - Saving', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 5 - Data', () => {
+describe('AnnualReport - Part 5 - Data', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
-  let spy
+  let spy: any
 
   const currentFilingYear = 2017
 
@@ -1495,7 +1506,7 @@ xdescribe('AnnualReport - Part 5 - Data', () => {
     vm = wrapper.vm
 
     // set up director data
-    vm.allDirectors = [
+    vm.updatedDirectors = [
       // unchanged director
       {
         officer: {
@@ -1550,7 +1561,7 @@ xdescribe('AnnualReport - Part 5 - Data', () => {
     ]
 
     // stub address data
-    vm.addresses = {
+    vm.updatedAddresses = {
       registeredOffice: {
         deliveryAddress: {},
         mailingAddress: {}
@@ -1717,7 +1728,7 @@ xdescribe('AnnualReport - Part 5 - Data', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 5B - Data (BCOMP)', () => {
+describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy: any
@@ -1770,6 +1781,7 @@ xdescribe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
 
     wrapper = mount(AnnualReport, {
+      sync: false,
       store,
       localVue,
       router,
@@ -1790,81 +1802,7 @@ xdescribe('AnnualReport - Part 5B - Data (BCOMP)', () => {
     })
     vm = wrapper.vm
 
-    // set up director data
-    vm.allDirectors = [
-      // unchanged director
-      {
-        officer: {
-          firstName: 'Unchanged',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        mailingAddress: {
-          streetAddress: 'a2',
-          addressCity: 'cit2',
-          addressCountry: 'country2',
-          postalCode: 'H0H0H02',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: null,
-        actions: []
-      },
-      // appointed director
-      {
-        officer: {
-          firstName: 'Appointed',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        mailingAddress: {
-          streetAddress: 'a2',
-          addressCity: 'cit2',
-          addressCountry: 'country2',
-          postalCode: 'H0H0H02',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: null,
-        actions: ['appointed']
-      },
-      // ceased director
-      {
-        officer: {
-          firstName: 'Ceased',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        mailingAddress: {
-          streetAddress: 'a2',
-          addressCity: 'cit2',
-          addressCountry: 'country2',
-          postalCode: 'H0H0H02',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: '2019-03-25',
-        actions: ['ceased']
-      }
-    ]
+    // no need to set up directors or office addresses - just use initial values
 
     // make sure form is validated
     vm.staffPaymentFormValid = true
@@ -1941,7 +1879,7 @@ xdescribe('AnnualReport - Part 5B - Data (BCOMP)', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
+describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   const { assign } = window.location
@@ -2174,7 +2112,7 @@ xdescribe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
   })
 })
 
-xdescribe('AnnualReport - Part 7 - Concurrent Saves', () => {
+describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -2273,7 +2211,7 @@ xdescribe('AnnualReport - Part 7 - Concurrent Saves', () => {
   })
 })
 
-xdescribe('AnnualReport - BCOL error dialog on save', () => {
+describe('AnnualReport - BCOL error dialog on save', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 

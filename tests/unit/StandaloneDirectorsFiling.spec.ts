@@ -16,12 +16,15 @@ import mockRouter from './mockRouter'
 import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { configJson } from '@/resources/business-config'
 
-Vue.use(Vuetify)
-Vue.use(Vuelidate)
-
-// suppress update watchers warnings
+// suppress various warnings:
+// - "Unknown custom element <affix>" warnings
+// - "$listeners is readonly"
+// - "Avoid mutating a prop directly"
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
+
+Vue.use(Vuetify)
+Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
@@ -69,7 +72,7 @@ const sampleDirectors = [
   }
 ]
 
-xdescribe('Standalone Directors Filing - Part 1 - UI', () => {
+describe('Standalone Directors Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -326,7 +329,7 @@ xdescribe('Standalone Directors Filing - Part 1 - UI', () => {
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payment', () => {
+describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -415,7 +418,7 @@ xdescribe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payme
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payment', () => {
+describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -508,7 +511,7 @@ xdescribe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff paym
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff payment', () => {
+describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -595,7 +598,7 @@ xdescribe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pa
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs to be paid', () => {
+describe('Standalone Directors Filing - Part 3A - Submitting filing that needs to be paid', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -748,6 +751,7 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
+      sync: false,
       store,
       mocks: { $route },
       stubs: {
@@ -774,13 +778,16 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
     vm.certifyFormValid = true
     store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
 
-    expect(vm.validated).toEqual(true)
-
     // make sure a fee is required
     vm.totalFee = 100
 
-    // sanity check
+    // wait for things to stabilize
+    await flushPromises()
+
+    // sanity checks
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vm.validated).toEqual(true)
+    expect(vm.busySaving).toEqual(false)
 
     // TODO: verify that new filing was created
 
@@ -815,6 +822,7 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
+      sync: false,
       store,
       mocks: { $route },
       stubs: {
@@ -838,13 +846,16 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
     vm.certifyFormValid = true
     store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'BEN' }] // dummy data
 
-    expect(vm.validated).toEqual(true)
-
     // make sure a fee is required
     vm.totalFee = 100
 
-    // sanity check
+    // wait for things to stabilize
+    await flushPromises()
+
+    // sanity checks
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vm.validated).toEqual(true)
+    expect(vm.busySaving).toEqual(false)
 
     // TODO: verify that new filing was created
 
@@ -876,6 +887,7 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
 
     const $route = { params: { filingId: 123 } } // existing filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
+      sync: false,
       store,
       mocks: { $route },
       stubs: {
@@ -902,13 +914,16 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
 
-    expect(vm.validated).toEqual(true)
-
     // make sure a fee is required
     vm.totalFee = 100
 
+    // wait for things to stabilize
+    await flushPromises()
+
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vm.validated).toEqual(true)
+    expect(vm.busySaving).toEqual(false)
 
     // TODO: verify that draft filing was fetched
 
@@ -933,7 +948,7 @@ xdescribe('Standalone Directors Filing - Part 3A - Submitting filing that needs 
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'t need to be paid', () => {
+describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'t need to be paid', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -1033,7 +1048,7 @@ xdescribe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 4 - Saving', () => {
+describe('Standalone Directors Filing - Part 4 - Saving', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1191,10 +1206,10 @@ xdescribe('Standalone Directors Filing - Part 4 - Saving', () => {
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 5 - Data', () => {
+describe('Standalone Directors Filing - Part 5 - Data', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
-  let spy
+  let spy: any
 
   beforeEach(() => {
     // init store
@@ -1237,7 +1252,7 @@ xdescribe('Standalone Directors Filing - Part 5 - Data', () => {
     vm = wrapper.vm
 
     // set up director data
-    vm.allDirectors = [
+    vm.updatedDirectors = [
       // unchanged director
       {
         officer: {
@@ -1318,10 +1333,10 @@ xdescribe('Standalone Directors Filing - Part 5 - Data', () => {
     expect(payload.filing).toBeDefined()
     expect(payload.filing.changeOfDirectors).toBeDefined()
 
-    let names = payload.filing.changeOfDirectors.directors.map(el => el.officer.firstName)
-    expect(names).toContain('Unchanged')
-    expect(names).toContain('Appointed')
-    expect(names).toContain('Ceased')
+    const firstNames = payload.filing.changeOfDirectors.directors.map(el => el.officer.firstName)
+    expect(firstNames).toContain('Unchanged')
+    expect(firstNames).toContain('Appointed')
+    expect(firstNames).toContain('Ceased')
   })
 
   it('Includes certification data in the header', async () => {
@@ -1343,7 +1358,7 @@ xdescribe('Standalone Directors Filing - Part 5 - Data', () => {
   })
 })
 
-xdescribe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
+describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1586,7 +1601,7 @@ xdescribe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => 
   )
 })
 
-xdescribe('Change of Directors - BCOL error dialog on save', () => {
+describe('Change of Directors - BCOL error dialog on save', () => {
   beforeEach(() => {
     // init store
     store.state.currentDate = '2019-07-15'

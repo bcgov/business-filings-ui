@@ -14,12 +14,15 @@ import mockRouter from './mockRouter'
 import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { configJson } from '@/resources/business-config'
 
-Vue.use(Vuetify)
-Vue.use(Vuelidate)
-
-// suppress update watchers warnings
+// suppress various warnings:
+// - "Unknown custom element <affix>" warnings
+// - "$listeners is readonly"
+// - "Avoid mutating a prop directly"
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
+
+Vue.use(Vuetify)
+Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
@@ -45,11 +48,12 @@ const sampleMailingAddress = {
   deliveryInstructions: 'go to the back'
 }
 
-xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
+describe('Standalone Office Address Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
+    store.state.entityType = 'CP'
   })
 
   it('renders the filing sub-components properly', () => {
@@ -70,7 +74,9 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
 
-    // component should be displayed
+    // all components should be rendered
+    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.find(Certify).exists()).toBe(true)
     expect(wrapper.find(StaffPayment).exists()).toBe(true)
 
     // reset store
@@ -80,7 +86,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('enables Validated flag when properties are valid', () => {
+  it('enables Validated flag when properties are valid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -88,8 +94,9 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set properties
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
+    await flushPromises()
 
     // confirm that flag is set correctly
     expect(vm.validated).toEqual(true)
@@ -105,7 +112,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set properties
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.officeAddressFormValid = false
+    vm.addressesFormValid = false
     store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
@@ -122,7 +129,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set properties
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = false
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
@@ -138,7 +145,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
 
     // set properties
     vm.certifyFormValid = true
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
 
     // set properties to make only staff payment invalid
@@ -182,7 +189,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set properties
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     store.state.filingData = [] // no data
 
     // confirm that flag is set correctly
@@ -217,7 +224,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set all properties truthy
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
 
     // confirm that button is enabled
@@ -254,7 +261,7 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
     // set all properties falsy
     vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
-    vm.officeAddressFormValid = false
+    vm.addressesFormValid = false
     store.state.filingData = [] // no data
 
     // confirm that button is disabled
@@ -300,12 +307,13 @@ xdescribe('Standalone Office Address Filing - Part 1 - UI', () => {
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
+describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+    store.state.entityType = 'CP'
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
@@ -366,19 +374,20 @@ xdescribe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff 
     expect(+vm.filingId).toBe(123)
 
     // verify that changed addresses were restored
-    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
-    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+    expect(vm.updatedAddresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.updatedAddresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
 
     wrapper.destroy()
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
+describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+    store.state.entityType = 'CP'
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
@@ -443,19 +452,20 @@ xdescribe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff
     expect(+vm.filingId).toBe(123)
 
     // verify that changed addresses were restored
-    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
-    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+    expect(vm.updatedAddresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.updatedAddresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
 
     wrapper.destroy()
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
+describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+    store.state.entityType = 'CP'
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
@@ -514,14 +524,14 @@ xdescribe('Standalone Office Address Filing - Part 2C - Resuming with No Fee sta
     expect(+vm.filingId).toBe(123)
 
     // verify that changed addresses were restored
-    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
-    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+    expect(vm.updatedAddresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.updatedAddresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
 
     wrapper.destroy()
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
+describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
@@ -585,14 +595,14 @@ xdescribe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () =>
     expect(+vm.filingId).toBe(123)
 
     // verify that changed addresses were restored
-    expect(vm.addresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
-    expect(vm.addresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
+    expect(vm.updatedAddresses.registeredOffice.deliveryAddress.streetAddress).toBe('delivery street address')
+    expect(vm.updatedAddresses.registeredOffice.mailingAddress.streetAddress).toBe('mailing street address')
 
     wrapper.destroy()
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 3 - Submitting', () => {
+describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -776,7 +786,7 @@ xdescribe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
@@ -835,7 +845,7 @@ xdescribe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
@@ -869,7 +879,7 @@ xdescribe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () => {
+describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1065,7 +1075,7 @@ xdescribe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () 
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
@@ -1124,7 +1134,7 @@ xdescribe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () 
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
@@ -1158,7 +1168,7 @@ xdescribe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () 
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 4 - Saving', () => {
+describe('Standalone Office Address Filing - Part 4 - Saving', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1176,6 +1186,7 @@ xdescribe('Standalone Office Address Filing - Part 4 - Saving', () => {
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+    store.state.entityType = 'CP'
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
@@ -1240,7 +1251,7 @@ xdescribe('Standalone Office Address Filing - Part 4 - Saving', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.officeAddressFormValid = true
+      vm.addressesFormValid = true
       vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
 
@@ -1273,7 +1284,7 @@ xdescribe('Standalone Office Address Filing - Part 4 - Saving', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
@@ -1290,7 +1301,7 @@ xdescribe('Standalone Office Address Filing - Part 4 - Saving', () => {
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
+describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1381,7 +1392,7 @@ xdescribe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.officeAddressFormValid = true
+      vm.addressesFormValid = true
       vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
 
@@ -1414,7 +1425,7 @@ xdescribe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
@@ -1431,7 +1442,7 @@ xdescribe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 5 - Data', () => {
+describe('Standalone Office Address Filing - Part 5 - Data', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy
@@ -1441,6 +1452,7 @@ xdescribe('Standalone Office Address Filing - Part 5 - Data', () => {
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+    store.state.entityType = 'CP'
 
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
@@ -1481,15 +1493,15 @@ xdescribe('Standalone Office Address Filing - Part 5 - Data', () => {
     vm = wrapper.vm
 
     // stub address data
-    vm.addresses = {
-      'registeredOffice': {
-        'deliveryAddress': {},
-        'mailingAddress': {}
+    vm.updatedAddresses = {
+      registeredOffice: {
+        deliveryAddress: {},
+        mailingAddress: {}
       }
     }
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeModifiedEventHandler(true)
@@ -1521,7 +1533,7 @@ xdescribe('Standalone Office Address Filing - Part 5 - Data', () => {
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
+describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy
@@ -1531,6 +1543,7 @@ xdescribe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     store.state.businessId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
+    store.state.entityType = 'BEN'
 
     // mock "get tasks" endpoint - needed for hasTasks()
     sinon
@@ -1575,19 +1588,19 @@ xdescribe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     vm = wrapper.vm
 
     // stub address data
-    vm.addresses = {
-      'registeredOffice': {
-        'deliveryAddress': {},
-        'mailingAddress': {}
+    vm.updatedAddresses = {
+      registeredOffice: {
+        deliveryAddress: {},
+        mailingAddress: {}
       },
-      'recordsOffice': {
-        'deliveryAddress': {},
-        'mailingAddress': {}
+      recordsOffice: {
+        deliveryAddress: {},
+        mailingAddress: {}
       }
     }
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeModifiedEventHandler(true)
@@ -1619,7 +1632,7 @@ xdescribe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   })
 })
 
-xdescribe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', () => {
+describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1637,6 +1650,7 @@ xdescribe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', (
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
+    store.state.entityType = 'CP'
 
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -1802,7 +1816,7 @@ xdescribe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', (
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
@@ -1854,7 +1868,7 @@ xdescribe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', (
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
@@ -1881,7 +1895,7 @@ xdescribe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', (
   )
 })
 
-xdescribe('Change of Directors - BCOL error dialog on save', () => {
+describe('Change of Directors - BCOL error dialog on save', () => {
   beforeEach(() => {
     // init store
     store.state.currentDate = '2019-07-15'
@@ -1973,11 +1987,11 @@ xdescribe('Change of Directors - BCOL error dialog on save', () => {
     // set all properties truthy
     vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
-    vm.officeAddressFormValid = true
+    vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
 
     // stub address data
-    vm.addresses = {
+    vm.updatedAddresses = {
       registeredOffice: {
         deliveryAddress: {},
         mailingAddress: {}

@@ -52,7 +52,7 @@
               <label class="appoint-header">Appoint New Director</label>
               <div class="meta-container__inner">
                 <v-form ref="newDirectorForm"
-                  class="appoint-form"
+                  name="new-director-form"
                   v-model="directorFormValid"
                   v-on:submit.prevent="addNewDirector"
                   lazy-validation
@@ -185,6 +185,7 @@
           <span v-if="isBComp">Mailing Address</span>
           <span>Appointed/Elected</span>
         </v-subheader>
+
         <!-- START FOR LOOP -->
         <li class="director-list-item"
           v-for="(dir, index) in allDirectors"
@@ -194,7 +195,7 @@
         >
           <div class="meta-container">
             <label>
-              <span>{{dir.officer.firstName}} </span>
+              <span class="director-list__first-name">{{dir.officer.firstName}} </span>
               <span>{{dir.officer.middleInitial}} </span>
               <span>{{dir.officer.lastName}}</span>
               <div class="director-status">
@@ -242,17 +243,20 @@
                   <div class="address">
                     <base-address :address="dir.deliveryAddress" />
                   </div>
+
                   <div class="address same-address" v-if="isBComp">
                     <span v-if="isSame(dir.deliveryAddress, dir.mailingAddress)">
                       Same as Delivery Address
                     </span>
                     <base-address v-else :address="dir.mailingAddress" />
                   </div>
+
                   <div class="director_dates">
                     <div class="director_dates__date">{{ dir.appointmentDate }}</div>
                     <div v-if="dir.cessationDate">Ceased</div>
                     <div class="director_dates__date">{{ dir.cessationDate }}</div>
                   </div>
+
                   <div class="actions" v-show="isActionable(dir)">
                     <!-- Edit menu -->
                     <span v-show="isNew(dir)">
@@ -339,6 +343,7 @@
               <v-expand-transition>
                 <!-- only render the form for the active director -->
                 <v-form ref="editDirectorForm"
+                  name="edit-director-form"
                   v-if="activeIndex === index"
                   v-model="directorFormValid"
                   lazy-validation
@@ -512,10 +517,10 @@
             icon="mdi-information-outline"
             class="white-background icon-blue"
             :id="`director-${dir.id}-alert`"
-            v-if="complianceMsg && index == messageIndex"
+            v-if="complianceMsg && index === messageIndex"
             v-once
           >
-            <div class="complianceSection">
+            <div class="compliance-section">
               <h3>{{ complianceMsg.title }}</h3>
               <p>{{ complianceMsg.msg }}</p>
             </div>
@@ -737,6 +742,29 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     return rules
   }
 
+  /** The array of validation rules for director cessation date. */
+  private get directorCessationDateRules (): Function[] {
+    const rules: Function[] = []
+    let appointmentDate: string = null
+
+    // set appointment date for comparison based on which form we're in
+    if (this.activeIndex >= 0) {
+      appointmentDate = document
+        .getElementsByClassName('edit-director__appointment-date')[this.activeIndex]
+        .getElementsByTagName('input')[0].value
+    } else if (this.showNewDirectorForm) {
+      appointmentDate = this.newDirector.appointmentDate
+    }
+
+    // cessation date must be after appointment date
+    rules.push(v => this.compareDates(v, appointmentDate, '>') || 'Cessation Date must be after Appointment Date')
+
+    // cessation date must be in the past (or today)
+    rules.push(v => this.dateIsNotFuture(v) || 'Cessation Date cannot be in the future')
+
+    return rules
+  }
+
   /**
    * The latest of the following dates:
    * - the last COD filing in filing history (from legal DB)
@@ -759,29 +787,6 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // when earliest date is calculated, inform parent component
     this.emitEarliestDateToSet(earliestDateToSet)
     return earliestDateToSet
-  }
-
-  /** The array of validation rules for director cessation date. */
-  private get directorCessationDateRules (): Function[] {
-    const rules: Function[] = []
-    let appointmentDate: string = null
-
-    // set appointment date for comparison based on which form we're in
-    if (this.activeIndex >= 0) {
-      appointmentDate = document
-        .getElementsByClassName('edit-director__appointment-date')[this.activeIndex]
-        .getElementsByTagName('input')[0].value
-    } else if (this.showNewDirectorForm) {
-      appointmentDate = this.newDirector.appointmentDate
-    }
-
-    // cessation date must be after appointment date
-    rules.push(v => this.compareDates(v, appointmentDate, '>') || 'Cessation Date must be after Appointment Date')
-
-    // cessation date must be in the past (or today)
-    rules.push(v => this.dateIsNotFuture(v) || 'Cessation Date cannot be in the future')
-
-    return rules
   }
 
   /**
@@ -1590,7 +1595,7 @@ ul {
   padding: 1.25rem;
 }
 
-.complianceSection {
+.compliance-section {
   font-size: 0.9rem;
   color: rgba(0,0,0,0.87);
 }
