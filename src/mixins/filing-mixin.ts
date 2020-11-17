@@ -58,7 +58,7 @@ export default class FilingMixin extends Vue {
     priority: boolean | undefined,
     waiveFees: boolean | undefined
   ): void {
-    let myFilingData: Array<FilingDataIF> = this.filingData
+    let myFilingData: Array<FilingDataIF> = [...this.filingData]
     if (filingCode) {
       // always remove code if it already exists
       myFilingData = myFilingData.filter(el => el.filingTypeCode !== filingCode)

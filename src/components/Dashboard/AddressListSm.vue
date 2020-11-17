@@ -211,7 +211,7 @@ import { mapGetters, mapState } from 'vuex'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 
 // Interfaces
-import { BaseAddressObjIF } from '@/interfaces'
+import { OfficeAddressIF } from '@/interfaces'
 
 @Component({
   computed: {
@@ -223,8 +223,8 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   // Local definitions of computed properties for static type checking.
   readonly isBComp!: boolean
   readonly isCorp!: boolean
-  readonly registeredAddress!: BaseAddressObjIF
-  readonly recordsAddress!: BaseAddressObjIF
+  readonly registeredAddress!: OfficeAddressIF
+  readonly recordsAddress!: OfficeAddressIF
 
   /** Whether a COA filing is pending. */
   @Prop({ default: false })

@@ -61,19 +61,19 @@
                     <v-text-field filled class="item"
                       label="First Name"
                       id="new-director__first-name"
-                      v-model="director.officer.firstName"
+                      v-model="newDirector.officer.firstName"
                       :rules="directorFirstNameRules"
                     />
                     <v-text-field filled class="item"
                       label="Initial"
                       id="new-director__middle-initial"
-                      v-model="director.officer.middleInitial"
+                      v-model="newDirector.officer.middleInitial"
                       :rules="directorMiddleInitialRules"
                     />
                     <v-text-field filled class="item"
                       label="Last Name"
                       id="new-director__last-name"
-                      v-model="director.officer.lastName"
+                      v-model="newDirector.officer.lastName"
                       :rules="directorLastNameRules"
                     />
                   </div>
@@ -83,7 +83,7 @@
                     <base-address ref="baseAddressNew"
                       :editing="true"
                       :schema="addressSchema"
-                      @update:address="updateBaseAddress"
+                      @update:address="updateDeliveryAddress"
                     />
                   </div>
 
@@ -118,7 +118,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field box class="item"
                           id="new-director__appointment-date"
-                          v-model.trim="director.appointmentDate"
+                          v-model.trim="newDirector.appointmentDate"
                           label="Appointment / Election Date"
                           hint="YYYY/MM/DD"
                           append-icon="event"
@@ -128,7 +128,7 @@
                       </template>
                       <v-date-picker
                         id="new-director__appointment-date__datepicker"
-                        v-model="director.appointmentDate"
+                        v-model="newDirector.appointmentDate"
                         :min="earliestDateToSet"
                         :max="currentDate"
                         no-title
@@ -145,7 +145,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field box class="item"
                           id="new-director__cessation-date"
-                          v-model.trim="director.cessationDate"
+                          v-model.trim="newDirector.cessationDate"
                           label="Cessation Date"
                           hint="YYYY/MM/DD"
                           append-icon="event"
@@ -155,7 +155,7 @@
                       </template>
                       <v-date-picker
                         id="new-director__cessation-date__datepicker"
-                        v-model="director.cessationDate"
+                        v-model="newDirector.cessationDate"
                         :min="earliestDateToSet"
                         :max="currentDate"
                         no-title
@@ -179,55 +179,56 @@
 
       <!-- Current Director List -->
       <ul class="list director-list">
-        <v-subheader v-if="this.directors.length && !directorEditInProgress" class="director-header">
+        <v-subheader v-if="allDirectors.length && !directorEditInProgress" class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
           <span v-if="isBComp">Mailing Address</span>
           <span>Appointed/Elected</span>
         </v-subheader>
+        <!-- START FOR LOOP -->
         <li class="director-list-item"
-          v-for="(director, index) in directors"
-          :id="`director-${director.id}`"
-          :class="{ 'remove' : !isActive(director) || !isActionable(director)}"
+          v-for="(dir, index) in allDirectors"
+          :id="`director-${dir.id}`"
+          :class="{ 'remove' : !isActive(dir) || !isActionable(dir)}"
           :key="index"
         >
           <div class="meta-container">
             <label>
-              <span>{{director.officer.firstName}} </span>
-              <span>{{director.officer.middleInitial}} </span>
-              <span>{{director.officer.lastName}}</span>
+              <span>{{dir.officer.firstName}} </span>
+              <span>{{dir.officer.middleInitial}} </span>
+              <span>{{dir.officer.lastName}}</span>
               <div class="director-status">
                 <v-scale-transition>
                   <v-chip x-small label color="blue" text-color="white"
-                    v-show="isNew(director) && !director.cessationDate"
+                    v-show="isNew(dir) && !dir.cessationDate"
                   >
                     New
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip x-small label text-color="rgba(0,0,0,.38)"
-                    v-show="!isActive(director) || !isActionable(director)"
+                    v-show="!isActive(dir) || !isActionable(dir)"
                   >
                     Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip x-small label color="blue lighten-2" text-color="white"
-                    v-show="isNew(director) && director.cessationDate"
+                    v-show="isNew(dir) && dir.cessationDate"
                   >
                     Appointed and Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip x-small label color="blue" text-color="white"
-                    v-if="isNameChanged(director)"
+                    v-if="isNameChanged(dir)"
                   >
                     Name Changed
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
                   <v-chip x-small label color="blue" text-color="white"
-                    v-if="isAddressChanged(director)"
+                    v-if="isAddressChanged(dir)"
                   >
                     Address Changed
                   </v-chip>
@@ -239,24 +240,24 @@
               <v-expand-transition>
                 <div class="director-info" v-show="activeIndex !== index">
                   <div class="address">
-                    <base-address :address="director.deliveryAddress" />
+                    <base-address :address="dir.deliveryAddress" />
                   </div>
                   <div class="address same-address" v-if="isBComp">
-                    <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
+                    <span v-if="isSame(dir.deliveryAddress, dir.mailingAddress)">
                       Same as Delivery Address
                     </span>
-                    <base-address v-else :address="director.mailingAddress" />
+                    <base-address v-else :address="dir.mailingAddress" />
                   </div>
                   <div class="director_dates">
-                    <div class="director_dates__date">{{ director.appointmentDate }}</div>
-                    <div v-if="director.cessationDate">Ceased</div>
-                    <div class="director_dates__date">{{ director.cessationDate }}</div>
+                    <div class="director_dates__date">{{ dir.appointmentDate }}</div>
+                    <div v-if="dir.cessationDate">Ceased</div>
+                    <div class="director_dates__date">{{ dir.cessationDate }}</div>
                   </div>
-                  <div class="actions" v-show="isActionable(director)">
+                  <div class="actions" v-show="isActionable(dir)">
                     <!-- Edit menu -->
-                    <span v-show="isNew(director)">
+                    <span v-show="isNew(dir)">
                       <v-btn small text color="primary" :disabled="!componentEnabled || directorEditInProgress"
-                        :id="`director-${director.id}-change-btn`"
+                        :id="`director-${dir.id}-change-btn`"
                         @click="editDirector(index)"
                       >
                         <v-icon small>mdi-pencil</v-icon>
@@ -273,7 +274,7 @@
                           </v-btn>
                         </template>
                         <v-list class="actions__more-actions">
-                          <v-list-tile @click="showDeleteDirectorConfirmation(director)">
+                          <v-list-tile @click="showDeleteDirectorConfirmation(dir)">
                             <v-list-tile-title>Remove</v-list-tile-title>
                           </v-list-tile>
                         </v-list>
@@ -282,18 +283,18 @@
                     </span>
 
                     <!-- Cease menu -->
-                    <span v-show="!isNew(director) && componentEnabled">
+                    <span v-show="!isNew(dir) && componentEnabled">
                       <v-btn small text color="primary" class="cease-btn"
                         :disabled="!componentEnabled || directorEditInProgress"
-                        :id="`director-${director.id}-cease-btn`"
-                        @click="ceaseDirector(director, index)"
+                        :id="`director-${dir.id}-cease-btn`"
+                        @click="ceaseDirector(dir, index)"
                       >
-                        <v-icon small>{{isActive(director) ? 'mdi-close':'mdi-undo'}}</v-icon>
-                        <span>{{isActive(director) ? 'Cease':'Undo'}}</span>
+                        <v-icon small>{{isActive(dir) ? 'mdi-close':'mdi-undo'}}</v-icon>
+                        <span>{{isActive(dir) ? 'Cease':'Undo'}}</span>
                       </v-btn>
 
                       <!-- more actions menu -->
-                      <span v-show="isActive(director)">
+                      <span v-show="isActive(dir)">
                         <v-menu offset-y :disabled="!componentEnabled || directorEditInProgress">
                           <template v-slot:activator="{ on }">
                             <v-btn text small class="actions__more-actions__btn" v-on="on">
@@ -325,11 +326,11 @@
                     v-model="cessationDateTemp"
                     v-show="activeIndexCustomCease === index"
                     no-title
-                    :min="earliestStandaloneCeaseDateToSet(director)"
+                    :min="earliestStandaloneCeaseDateToSet(dir)"
                     :max="currentDate"
                   >
                     <v-btn text color="primary" @click="activeIndexCustomCease = null">Cancel</v-btn>
-                    <v-btn text color="primary" @click="ceaseDirector(director, index)">OK</v-btn>
+                    <v-btn text color="primary" @click="ceaseDirector(dir, index)">OK</v-btn>
                   </v-date-picker>
                 </div>
               </v-expand-transition>
@@ -345,17 +346,17 @@
                   <div class="form__row three-column" v-show="editFormShowHide.showName">
                     <v-text-field filled class="item edit-director__first-name"
                       label="First Name"
-                      v-model="director.officer.firstName"
+                      v-model="dir.officer.firstName"
                       :rules="directorFirstNameRules"
                     />
                     <v-text-field filled class="item edit-director__middle-initial"
                       label="Initial"
-                      v-model="director.officer.middleInitial"
+                      v-model="dir.officer.middleInitial"
                       :rules="directorMiddleInitialRules"
                     />
                     <v-text-field filled class="item edit-director__last-name"
                       label="Last Name"
-                      v-model="director.officer.lastName"
+                      v-model="dir.officer.lastName"
                       :rules="directorLastNameRules"
                     />
                   </div>
@@ -365,10 +366,10 @@
                     <label class="address-sub-header">Delivery Address</label>
                     <div class="address-wrapper">
                       <base-address ref="baseAddressEdit"
-                        :address="director.deliveryAddress"
+                        :address="dir.deliveryAddress"
                         :editing="true"
                         :schema="addressSchema"
-                        @update:address="updateBaseAddress"
+                        @update:address="updateDeliveryAddress"
                         :key="activeIndex"
                       />
                     </div>
@@ -383,7 +384,7 @@
                         <label class="address-sub-header">Mailing Address</label>
                         <div class="address-wrapper">
                           <base-address ref="mailAddressEdit"
-                            :address="director.mailingAddress"
+                            :address="dir.mailingAddress"
                             :editing="true"
                             :schema="addressSchema"
                             @update:address="updateMailingAddress"
@@ -407,7 +408,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                           class="item edit-director__appointment-date"
-                          v-model.trim="director.appointmentDate"
+                          v-model.trim="dir.appointmentDate"
                           label="Apointment / Election Date"
                           hint="YYYY/MM/DD"
                           append-icon="event"
@@ -418,7 +419,7 @@
                       </template>
                       <v-date-picker
                         class="edit-director__appointment-date__datepicker"
-                        v-model="director.appointmentDate"
+                        v-model="dir.appointmentDate"
                         :min="earliestDateToSet"
                         :max="currentDate"
                         no-title
@@ -434,7 +435,7 @@
                       min-width="18rem">
                       <template v-slot:activator="{ on }">
                         <v-text-field class="item edit-director__cessation-date"
-                          v-model.trim="director.cessationDate"
+                          v-model.trim="dir.cessationDate"
                           label="Cessation Date"
                           hint="YYYY/MM/DD"
                           append-icon="event"
@@ -445,7 +446,7 @@
                       </template>
                       <v-date-picker
                         class="edit-director__cessation-date__datepicker"
-                        v-model="director.cessationDate"
+                        v-model="dir.cessationDate"
                         :min="earliestDateToSet"
                         :max="currentDate"
                         no-title
@@ -456,17 +457,17 @@
 
                   <div class="form__row form__btns">
                     <!-- v-show doesn't support <template> so use a <div> instead -->
-                    <div v-show="isNew(director)">
+                    <div v-show="isNew(dir)">
                       <v-btn color="error" outlined
                         class="remove-edit-btn"
-                        @click="deleteDirector(director.id)"
+                        @click="deleteDirector(dir.id)"
                       >
                         <span>Remove</span>
                       </v-btn>
                     </div>
 
                     <!-- v-show doesn't support <template> so use a <div> instead -->
-                    <div v-show="!isNew(director)">
+                    <div v-show="!isNew(dir)">
                       <!-- FUTURE: implement this -->
                       <v-btn color="error" outlined
                         class="reset-address-btn"
@@ -479,8 +480,8 @@
                       <v-btn color="error" outlined
                         class="reset-name-btn"
                         v-show="editFormShowHide.showName"
-                        @click="restoreDirName(director.id, true)"
-                        :disabled="!isNameChanged(director)"
+                        @click="restoreDirName(dir.id, true)"
+                        :disabled="!isNameChanged(dir)"
                       >
                         <span>Reset</span>
                       </v-btn>
@@ -488,13 +489,13 @@
 
                     <v-btn color="primary"
                       class="form-primary-btn done-edit-btn"
-                      @click="saveEditDirector(index, director.id)"
+                      @click="saveEditDirector(index, dir.id)"
                     >
                       <span>Done</span>
                     </v-btn>
 
                     <v-btn class="form-cancel-btn cancel-edit-btn"
-                      @click="cancelEditDirector(director.id)"
+                      @click="cancelEditDirector(dir.id)"
                     >
                       <span>Cancel</span>
                     </v-btn>
@@ -510,7 +511,7 @@
             dismissible
             icon="mdi-information-outline"
             class="white-background icon-blue"
-            :id="`director-${director.id}-alert`"
+            :id="`director-${dir.id}-alert`"
             v-if="complianceMsg && index == messageIndex"
             v-once
           >
@@ -520,9 +521,9 @@
             </div>
           </v-alert>
         </li>
+        <!-- END FOR LOOP -->
       </ul>
     </v-card>
-
   </div>
 </template>
 
@@ -542,31 +543,10 @@ import { WarningPopover } from '@/components/dialogs'
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums
-import { Actions, FilingStatus } from '@/enums'
+import { Actions } from '@/enums'
 
 // Interfaces
-import { FormIF, AddressIF, ComponentIF, AlertMessageIF } from '@/interfaces'
-
-// Interfaces used locally only (since they don't match global interfaces)
-interface OfficerIF {
-  firstName: string
-  lastName: string
-  middleInitial: string
-  [propName: string]: any // excess properties
-}
-
-interface DirectorIF {
-  id: number
-  officer: OfficerIF
-  deliveryAddress: AddressIF
-  mailingAddress?: AddressIF
-  appointmentDate: string
-  cessationDate: string
-  cessationDateTemp?: string
-  isFeeApplied?: boolean
-  isDirectorActionable?: boolean
-  actions: Array<Actions>
-}
+import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -575,8 +555,7 @@ interface DirectorIF {
   },
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['entityIncNo', 'lastPreLoadFilingDate', 'currentDate', 'currentFilingStatus', 'lastAnnualReportDate',
-      'entityFoundingDate']),
+    ...mapState(['entityIncNo', 'lastPreLoadFilingDate', 'currentDate', 'lastAnnualReportDate', 'entityFoundingDate']),
     ...mapGetters(['isBComp', 'lastCODFilingDate'])
   }
 })
@@ -591,37 +570,44 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     mailAddressNew: ComponentIF,
     // form and components to edit an existing director:
     // (there is only 1 at a time but it's still an array)
-    editDirectorForm: Array<FormIF>,
-    baseAddressEdit: Array<ComponentIF>,
-    mailAddressEdit: Array<ComponentIF>
+    editDirectorForm: FormIF[],
+    baseAddressEdit: ComponentIF[],
+    mailAddressEdit: ComponentIF[]
   }
-
-  /** Effective date for querying current directors and appointing/ceasing them. */
-  @Prop({ default: '' })
-  private asOfDate: string
-
-  /** Indicates whether this component should be enabled or not. */
-  @Prop({ default: true })
-  private componentEnabled: boolean
 
   // Local definitions of computed properties for static type checking.
   // NB: use non-null assertion operator to allow use before assignment
-  readonly entityIncNo!: string
-  readonly lastPreLoadFilingDate!: string
-  readonly currentDate!: string
-  readonly currentFilingStatus!: FilingStatus
   readonly isBComp!: boolean
+  readonly entityIncNo!: string
+  readonly currentDate!: string
+  readonly lastPreLoadFilingDate!: string
   readonly lastCODFilingDate!: string
   readonly lastAnnualReportDate!: string
   readonly entityFoundingDate!: string
 
-  // Local properties.
+  /** Indicates whether this component should be enabled or not. */
+  @Prop({ default: true })
+  readonly componentEnabled: boolean
+
+  /**
+   * Directors list from parent page, used to set our working directors list (allDirectors).
+   * As needed, we emit this back to parent (ie, update/sync).
+   */
+  @Prop({ default: () => [] })
+  readonly directors: DirectorIF[]
+
+  /** Effective date for fetching and appointing/ceasing directors. */
+  private asOfDate: string
+
+  /** Original directors from Legal API. */
+  private original: DirectorIF[] = []
+
+  /** Working directors data (also used as v-model for the HTML list). */
+  private allDirectors: DirectorIF[] = []
+
   private directorEditInProgress = false
-  private directors: Array<DirectorIF> = []
-  private directorsOriginal: Array<DirectorIF> = []
   private directorPreEdit = null // officer before edit
   private showNewDirectorForm = false
-  private draftDate: string = null
   private showPopup = false
   private activeIndex = -1
   private activeIndexCustomCease = -1
@@ -629,37 +615,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   private cessationDateTemp: string = null
   private isEditingDirector = false
   private messageIndex = -1
-  private director: DirectorIF = {
-    id: null,
-    officer: {
-      firstName: '',
-      lastName: '',
-      middleInitial: ''
-    },
-    deliveryAddress: {
-      streetAddress: '',
-      streetAddressAdditional: '',
-      addressCity: '',
-      addressRegion: '',
-      postalCode: '',
-      addressCountry: '',
-      deliveryInstructions: ''
-    },
-    mailingAddress: {
-      streetAddress: '',
-      streetAddressAdditional: '',
-      addressCity: '',
-      addressRegion: '',
-      postalCode: '',
-      addressCountry: '',
-      deliveryInstructions: ''
-    },
-    appointmentDate: null,
-    cessationDate: null,
-    cessationDateTemp: null,
-    actions: []
-  }
-  private inProgressAddress: AddressIF = null
+
+  /** V-model for new director form. */
+  private newDirector: DirectorIF = { ...EmptyDirector }
+
+  private inProgressDelivAddress: AddressIF = null
   private inProgressMailAddress: AddressIF = null
   private editFormShowHide = {
     showAddress: true,
@@ -707,7 +667,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
   /** The relevant alert if a director change causes the business to be out of compliance. */
   private get complianceMsg (): AlertMessageIF {
-    return this.directorWarning(this.directors)
+    return this.directorWarning(this.allDirectors)
   }
 
   /**
@@ -715,7 +675,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * NB: Do not validate inter word spacing because the Legal db needs to support
    *     such records in order to correctly update Colin.
    */
-  private readonly directorFirstNameRules: Array<Function> = [
+  private readonly directorFirstNameRules: Function[] = [
     v => !!v || 'A first name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
@@ -726,7 +686,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * NB: Do not validate inter word spacing because the Legal db needs to support
    *     such records in order to correctly update Colin.
    */
-  private readonly directorMiddleInitialRules: Array<Function> = [
+  private readonly directorMiddleInitialRules: Function[] = [
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
   ]
@@ -736,30 +696,25 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * NB: Do not validate inter word spacing because the Legal db needs to support
    *     such records in order to correctly update Colin.
    */
-  private readonly directorLastNameRules: Array<Function> = [
+  private readonly directorLastNameRules: Function[] = [
     v => !!v || 'A last name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
   ]
 
-  /** JSON representation of directors list for detecting array size and property changes. */
-  private get directorsJson (): string {
-    return JSON.stringify(this.directors)
+  /** Returns true if at least one director has a paid change. */
+  private isDirectorsPaidChange (): boolean {
+    return this.allDirectors.some(dir => dir.isFeeApplied)
   }
 
-  /** Whether at least one director has a paid change. */
-  private get directorsPaidChange (): boolean {
-    return this.directors.some(director => director.isFeeApplied)
-  }
-
-  /** Whether at least one director has a free change. */
-  private get directorsFreeChange (): boolean {
-    return this.directors.some(director => this.isNameChanged(director) || this.isAddressChanged(director))
+  /** Returns true if least one director has a free change. */
+  private isDirectorsFreeChange (): boolean {
+    return this.allDirectors.some(dir => this.isNameChanged(dir) || this.isAddressChanged(dir))
   }
 
   /** The array of validation rules for director appointment date. */
-  private get directorAppointmentDateRules (): Array<Function> {
-    const rules: Array<Function> = []
+  private get directorAppointmentDateRules (): Function[] {
+    const rules: Function[] = []
     let cessationDate: string = null
 
     rules.push(v => !!v || 'Appointment Date is required')
@@ -770,7 +725,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
         .getElementsByClassName('edit-director__cessation-date')[this.activeIndex]
         .getElementsByTagName('input')[0].value
     } else if (this.showNewDirectorForm) {
-      cessationDate = this.director.cessationDate
+      cessationDate = this.newDirector.cessationDate
     }
 
     // appointment date must be before cessation date
@@ -807,8 +762,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /** The array of validation rules for director cessation date. */
-  private get directorCessationDateRules (): Array<Function> {
-    const rules: Array<Function> = []
+  private get directorCessationDateRules (): Function[] {
+    const rules: Function[] = []
     let appointmentDate: string = null
 
     // set appointment date for comparison based on which form we're in
@@ -817,7 +772,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
         .getElementsByClassName('edit-director__appointment-date')[this.activeIndex]
         .getElementsByTagName('input')[0].value
     } else if (this.showNewDirectorForm) {
-      appointmentDate = this.director.appointmentDate
+      appointmentDate = this.newDirector.appointmentDate
     }
 
     // cessation date must be after appointment date
@@ -831,98 +786,105 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
   /**
    * Local helper to provide a complete address object including missing/blank fields.
-   * @returns An address object.
+   * @returns a complete address object
    */
-  private formatAddress (address): AddressIF {
+  private formatAddress (address: any): AddressIF {
     return {
-      'addressCity': address.addressCity || '',
-      'addressCountry': address.addressCountry || '',
-      'addressRegion': address.addressRegion || '',
-      'deliveryInstructions': address.deliveryInstructions || '',
-      'postalCode': address.postalCode || '',
-      'streetAddress': address.streetAddress || '',
-      'streetAddressAdditional': address.streetAddressAdditional || ''
+      addressCity: address.addressCity || '',
+      addressCountry: address.addressCountry || '',
+      addressRegion: address.addressRegion || '',
+      deliveryInstructions: address.deliveryInstructions || '',
+      postalCode: address.postalCode || '',
+      streetAddress: address.streetAddress || '',
+      streetAddressAdditional: address.streetAddressAdditional || ''
     }
   }
 
-  /**
-   * Function called externally to set the draft date.
-   * FUTURE: change this to a prop
-   * @param date The draft date to set.
-   */
-  public setDraftDate (date): void {
-    this.draftDate = date
-  }
-
-  /**
-   * Function called internally and externally to fetch the list of directors.
-   */
-  public async getDirectors (getOrigOnly: boolean = false): Promise<void> {
+  /** Fetches the list of directors on As Of Date from the Legal API. */
+  // FUTURE: this API call should be in the parent component or some mixin/service
+  private async fetchDirectors (): Promise<void> {
     if (this.entityIncNo && this.asOfDate) {
       const url = `businesses/${this.entityIncNo}/directors?date=${this.asOfDate}`
-      await axios.get(url)
-        .then(response => {
-          if (response && response.data && response.data.directors) {
-            // note - director list manipulated locally here (attributes added), THEN saved to this.directors,
-            // otherwise new attributes are not reflected in initial draw of HTML list.
+      await axios.get(url).then(response => {
+        if (response?.data?.directors) {
+          const directors = response.data.directors as DirectorIF[]
 
-            let directors = response.data.directors as DirectorIF[]
+          this.original = directors.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
 
-            directors = directors.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
+          this.original.forEach((director, i) => {
+            director.id = i + 1
+            director.isFeeApplied = (director.isFeeApplied !== undefined) ? director.isFeeApplied : false
+            director.isDirectorActionable = (director.cessationDate === null)
+            director.actions = []
 
-            for (let i = 0; i < directors.length; i++) {
-              directors[i].id = i + 1
-              directors[i].isFeeApplied = (directors[i].isFeeApplied !== undefined) ? directors[i].isFeeApplied : false
-              directors[i].isDirectorActionable = (directors[i].cessationDate === null)
-              directors[i].actions = []
+            // if there is no officer middle initial field, add it with blank data
+            if (!director.officer.hasOwnProperty('middleInitial')) director.officer.middleInitial = ''
 
-              // if there is no officer middle initial field, add it with blank data
-              if (!directors[i].officer.hasOwnProperty('middleInitial')) directors[i].officer.middleInitial = ''
+            // save previous officer name data for COLIN to use when updating record
+            director.officer.prevFirstName = director.officer.firstName
+            director.officer.prevLastName = director.officer.lastName
+            director.officer.prevMiddleInitial = director.officer.middleInitial
 
-              // save previous officer name data for COLIN to use when updating record
-              directors[i].officer.prevFirstName = directors[i].officer.firstName
-              directors[i].officer.prevLastName = directors[i].officer.lastName
-              directors[i].officer.prevMiddleInitial = directors[i].officer.middleInitial
-
-              // ensure there is complete address data including missing/blank fields
-              directors[i].deliveryAddress = this.formatAddress(directors[i].deliveryAddress)
-              if (directors[i].mailingAddress) {
-                directors[i].mailingAddress = this.formatAddress(directors[i].mailingAddress)
-              }
+            // save complete address data including missing/blank fields
+            director.deliveryAddress = this.formatAddress(director.deliveryAddress)
+            if (director.mailingAddress) {
+              director.mailingAddress = this.formatAddress(director.mailingAddress)
             }
+          })
+        } else {
+          throw new Error('Invalid directors list')
+        }
+      }).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('fetchDirectors() error =', error)
+        // re-throw error
+        throw error
+      })
+    }
+  }
 
-            // save to component data now that extra attributes are added
-            if (!getOrigOnly) this.directors = directors
+  /** Called externally to _asynchronously_ get the original directors on As Of Date. */
+  // FUTURE: this logic should be in the parent component
+  public async getOrigDirectors (asOfDate: string, updateWorkingDirectors: boolean): Promise<void> {
+    this.asOfDate = asOfDate
 
-            // save version of directors before changes (deep copy, not reference)
-            this.directorsOriginal = cloneDeep(directors)
-          } else {
-            // eslint-disable-next-line no-console
-            console.log('getDirectors() invalid response =', response)
-          }
-        })
-        .catch(error => {
-          // eslint-disable-next-line no-console
-          console.log('getDirectors() error =', error)
+    try {
+      // fetch original directors
+      await this.fetchDirectors()
+      this.emitOriginalDirectors()
 
-          // emit event to parent to display Fetch Error Dialog
-          this.$root.$emit('fetch-error-event')
-        })
+      if (updateWorkingDirectors) {
+        // fill working directors from original and sync them with parent
+        // NB: must deep copy here to avoid object reference issues
+        this.allDirectors = cloneDeep(this.original)
+        this.emitWorkingDirectors()
+      }
+    } catch (e) {
+      // emit event to parent to display Fetch Error Dialog
+      this.$root.$emit('fetch-error-event')
     }
   }
 
   /**
-   * Local helper to add a new director.
-   */
+   * Called when Directors prop changes - this is how we get our working directors, eg:
+   * - after we emit our working directors (ie, sync)
+   * - when a draft filing is loaded
+   **/
+  @Watch('directors', { deep: true })
+  private onDirectorsChanged (): void {
+    // fill working addresses from parent
+    // NB: object assignment is OK here
+    this.allDirectors = this.directors
+  }
+
+  /** Local helper to add a new director. */
   private addNewDirector (): void {
     this.showNewDirectorForm = true
     this.activeIndex = null
     this.directorEditInProgress = true
   }
 
-  /**
-   * Local helper to cancel adding a new director.
-   */
+  /** Local helper to cancel adding a new director. */
   private cancelNewDirector (): void {
     this.showNewDirectorForm = false
     this.$refs.newDirectorForm.reset()
@@ -932,7 +894,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     }
 
     // set form to initial director data again
-    this.director.appointmentDate = this.asOfDate
+    this.newDirector = { ...EmptyDirector, appointmentDate: this.asOfDate }
     this.directorEditInProgress = false
   }
 
@@ -951,8 +913,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param id The id of the director to delete
    */
   private deleteDirector (id: number): void {
-    const newList = this.directors.filter(director => director.id !== id)
-    this.directors = newList
+    const newList = this.directors.filter(dir => dir.id !== id)
+    this.allDirectors = newList
 
     this.activeIndex = null
     this.showPopup = false
@@ -960,9 +922,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.directorEditInProgress = false
   }
 
-  /**
-   * Local helper to validate the new director form.
-   */
+  /** Local helper to validate the new director form. */
   private validateNewDirectorForm (): void {
     var mainFormIsValid = this.$refs.newDirectorForm.validate()
     var addressFormIsValid = this.$refs.baseAddressNew.$refs.addressForm.validate()
@@ -981,43 +941,40 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // else do nothing - validator handles validation messaging
   }
 
-  /**
-   * Local helper push the current (new) director data into the list.
-   */
+  /** Local helper push the current (new) director data into the list. */
   private pushNewDirectorData (): void {
-    let newDirector: DirectorIF
     if (this.inheritDeliveryAddress) {
-      this.inProgressMailAddress = { ...this.inProgressAddress }
+      this.inProgressMailAddress = { ...this.inProgressDelivAddress }
     }
 
-    newDirector = {
+    const director: DirectorIF = {
       actions: [Actions.APPOINTED],
-      id: this.directors.length + 1,
+      id: this.allDirectors.length + 1,
       isDirectorActionable: true,
       isFeeApplied: true,
       officer: {
-        firstName: this.director.officer.firstName,
-        middleInitial: this.director.officer.middleInitial,
-        lastName: this.director.officer.lastName,
-        prevFirstName: this.director.officer.firstName,
-        prevMiddleInitial: this.director.officer.middleInitial,
-        prevLastName: this.director.officer.lastName
+        firstName: this.newDirector.officer.firstName,
+        middleInitial: this.newDirector.officer.middleInitial,
+        lastName: this.newDirector.officer.lastName,
+        prevFirstName: this.newDirector.officer.firstName,
+        prevMiddleInitial: this.newDirector.officer.middleInitial,
+        prevLastName: this.newDirector.officer.lastName
       },
-      deliveryAddress: { ...this.inProgressAddress },
-      appointmentDate: this.asOfDate, // when implemented: this.director.appointmentDate,
-      cessationDate: null // when implemented: this.director.cessationDate
+      deliveryAddress: { ...this.inProgressDelivAddress },
+      appointmentDate: this.asOfDate, // when implemented: this.newDirector.appointmentDate,
+      cessationDate: null // when implemented: this.newDirector.cessationDate
     }
 
     // Add the mailing address property if the entity is a BCOMP
     if (this.isBComp) {
-      newDirector = { ...newDirector, mailingAddress: { ...this.inProgressMailAddress } }
+      director.mailingAddress = { ...this.inProgressMailAddress }
     }
 
     // if there is also a cease date on this new director, add the ceased action
-    if (this.director.cessationDate !== null && this.director.cessationDate !== undefined) {
-      this.addAction(newDirector, Actions.CEASED)
+    if (this.newDirector.cessationDate !== null && this.newDirector.cessationDate !== undefined) {
+      this.addAction(director, Actions.CEASED)
     }
-    this.directors.unshift(newDirector)
+    this.allDirectors.unshift(director)
   }
 
   /**
@@ -1028,8 +985,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // if this is a Cease, apply a fee
     // otherwise it's just undoing a cease or undoing a new director, so remove fee
     this.messageIndex = index
-    if (this.isActive(director)) director.isFeeApplied = true
-    else director.isFeeApplied = false
+    director.isFeeApplied = this.isActive(director)
 
     // reverse "ceased" action
     this.toggleAction(director, Actions.CEASED)
@@ -1037,7 +993,9 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     // either set or undo cessation date
     if (director.cessationDate === null) {
       director.cessationDate = this.cessationDateTemp || this.asOfDate
-    } else director.cessationDate = null
+    } else {
+      director.cessationDate = null
+    }
 
     // close standalone cessation date picker and reset date
     this.cessationDateTemp = null
@@ -1050,7 +1008,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   private editDirector (index: number): void {
     // clear in-progress director data from form in BaseAddress component - ie: start fresh
-    this.inProgressAddress = null
+    this.inProgressDelivAddress = null
     this.inProgressMailAddress = null
     this.directorEditInProgress = true
     this.activeIndex = index
@@ -1077,7 +1035,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param index The index of the director to edit.
    */
   private editDirectorName (index: number): void {
-    this.directorPreEdit = { ...this.directors[index].officer }
+    this.directorPreEdit = { ...this.allDirectors[index].officer }
     this.editFormShowHide = {
       showAddress: false,
       showName: true,
@@ -1109,7 +1067,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    */
   private saveEditDirector (index: number, id: number): void {
     // get current director (object reference)
-    const director = this.directors[index]
+    const director = this.allDirectors[index]
 
     let mainFormIsValid = this.$refs.editDirectorForm[0].validate()
     let addressFormIsValid = this.$refs.baseAddressEdit[0].$refs.addressForm.validate() as boolean
@@ -1124,8 +1082,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     if (mainFormIsValid && addressFormIsValid) {
       // save data from BaseAddress component
       // - only save address if a change was made, ie there is an in-progress address from the component
-      if (!Object.values(this.inProgressAddress).every(el => el === undefined)) {
-        director.deliveryAddress = this.inProgressAddress
+      if (!Object.values(this.inProgressDelivAddress).every(el => el === undefined)) {
+        director.deliveryAddress = this.inProgressDelivAddress
       }
 
       if (this.isBComp) {
@@ -1140,7 +1098,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
       /* COMPARE changes to original director data, for existing directors */
       if (director.actions.indexOf(Actions.APPOINTED) < 0) {
-        const origDirector = this.directorsOriginal.find(director => director.id === id)
+        const origDirector = this.original.find(director => director.id === id)
 
         // safety check
         if (!origDirector) {
@@ -1193,8 +1151,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param isRestore Boolean indicating a hard or soft name reset.
    */
   private restoreDirName (id: number, isRestore: boolean): void {
-    const index = this.directors.findIndex(director => director.id === id)
-    const director = this.directors[index]
+    const index = this.allDirectors.findIndex(director => director.id === id)
+    const director = this.allDirectors[index]
 
     if (isRestore && id >= 0) {
       this.removeAction(director, Actions.NAMECHANGED)
@@ -1214,30 +1172,21 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /**
-   * Local helper to watch changes to the address data in BaseAddress component, and to update
-   * our inProgressAddress holder. To be used when we want to save the data.
+   * Called when BaseAddress component has an updated delivery address.
+   * To be used when we want to save the data.
    * @param val The new value.
    */
-  private updateBaseAddress (val: AddressIF): void {
-    this.inProgressAddress = val
+  private updateDeliveryAddress (val: AddressIF): void {
+    this.inProgressDelivAddress = val
   }
 
   /**
-   * Local helper to watch changes to the mailing address data in BaseAddress component, and to update
-   * our inProgressMailAddress holder. To be used when we want to save the data.
+   * called when BaseAddress component has an updated mailing address.
+   * To be used when we want to save the data.
    * @param val The new value.
    */
   private updateMailingAddress (val: AddressIF): void {
     this.inProgressMailAddress = val
-  }
-
-  /**
-   * Function called externally to set all directors from existing filing.
-   * FUTURE: change this to a prop
-   * @param directors The list of directors to set.
-   */
-  public setAllDirectors (directors: DirectorIF[]): void {
-    this.directors = directors
   }
 
   /**
@@ -1268,15 +1217,14 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param val The action value to add or remove.
    */
   private toggleAction (director: DirectorIF, val: Actions): void {
-    // add or remove action value from actions list
+    // if director has specified action (eg, CEASED) then remove it, otherwise add it
     const index = director.actions.indexOf(val)
     if (index >= 0) director.actions.splice(index)
     else director.actions.push(val)
   }
 
   /**
-   * Local helper to add an action value to a director's actions list, if it doesn't
-   * already exist (to ensure no multiples).
+   * Adds an action value to a director's actions list, if it doesn't already exist.
    * @param director The director to change.
    * @param val The action value to add.
    */
@@ -1285,12 +1233,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   }
 
   /**
-   * Local helper to remove an action value from a director's actions list, if it exists.
+   * Removes an action value from a director's actions list, if it already exists.
    * @param director The director to change.
    * @param val The action value to remove.
    */
   private removeAction (director: DirectorIF, val: Actions): void {
-    // remove an action, if it already exists
     director.actions = director.actions.filter(action => action !== val)
   }
 
@@ -1341,70 +1288,32 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     return (director.isDirectorActionable !== undefined) ? director.isDirectorActionable : true
   }
 
-  /** Called when there is a change (ie, some <-> none) in directors with a paid change. */
-  @Watch('directorsPaidChange')
-  private onDirectorsChange (val: boolean): void {
-    // emit event back up to parent
-    this.emitDirectorsChange(val)
-  }
-
-  /** Called when there is a change (ie, some <-> none) in directors with a free change. */
-  @Watch('directorsFreeChange')
-  private onDirectorsFreeChange (val: boolean): void {
-    // emit event back up to parent
-    this.emitDirectorsFreeChange(val)
-  }
-
   /** Called when a director form's validity changes. */
   @Watch('directorFormValid')
-  private onDirectorFormValid (val: boolean): void {
+  private onDirectorFormValidChanged (): void {
     // emit event back up to parent
-    this.emitDirectorFormValid(val)
+    this.emitDirectorFormValid()
   }
 
-  /** Called when As Of Date is set or changes (from parent component). */
-  @Watch('asOfDate')
-  private async onAsOfDateChange (date: string): Promise<void> {
-    // set director appoinment date for new directors
-    this.director.appointmentDate = date
-
-    if (this.currentFilingStatus === FilingStatus.NEW) {
-      // load both this.directorsOriginal + this.directors
-      await this.getDirectors()
-    }
-
-    if (this.currentFilingStatus === FilingStatus.DRAFT) {
-      if ((this.directorsPaidChange || this.directorsFreeChange) && this.draftDate === date) {
-        // user has made changes and date is unchanged
-        // reload only this.directorsOriginal - do not overwrite the user's changes
-        await this.getDirectors(true)
-      } else {
-        // user has made no changes or date has changed
-        // reload both this.directors + this.directorsOriginal
-        await this.getDirectors()
-      }
-    }
-  }
-
-  /** Called when the directors list content changes. */
-  @Watch('directorsJson')
-  private onDirectorsJsonChange (): void {
+  /** Called when the directors list changes for any reason. */
+  @Watch('allDirectors', { deep: true })
+  private onAllDirectorsChanged (): void {
     // emit events back up to parent
-    // NB: no ceased directors
-    this.emitAllDirectors(this.directors)
-    this.emitActiveDirectors(this.directors.filter(director => director.cessationDate === null))
+    this.emitWorkingDirectors()
+    this.emitDirectorsPaidChange()
+    this.emitDirectorsFreeChange()
   }
 
   @Watch('directorEditInProgress')
-  private onDirectorEditActionChange (val: boolean): void {
+  private onDirectorEditActionChanged (): void {
     // emit event back up to parent
-    this.emitDirectorEditInProgress(val)
+    this.emitDirectorEditInProgress()
   }
 
   @Watch('complianceMsg')
-  private onComplianceMsgChange (val: AlertMessageIF): void {
+  private onComplianceMsgChanged (): void {
     // emit event back up to parent
-    this.emitcomplianceDialogMsg(val)
+    this.emitcomplianceDialogMsg()
   }
 
   /** Emits an event containing the earliest director change date. */
@@ -1413,31 +1322,45 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
   /** Emits an event containing this component's paid change state. */
   @Emit('directorsPaidChange')
-  private emitDirectorsChange (val: boolean): void { }
+  private emitDirectorsPaidChange (): boolean {
+    return this.isDirectorsPaidChange()
+  }
 
   /** Emits an event containing this component's free change state. */
   @Emit('directorsFreeChange')
-  private emitDirectorsFreeChange (val: boolean): void { }
+  private emitDirectorsFreeChange (): boolean {
+    return this.isDirectorsFreeChange()
+  }
 
   /** Emits an event containing the director form's validity. */
   @Emit('directorFormValid')
-  private emitDirectorFormValid (val: boolean): void { }
-
-  /** Emits an event containing the complete directors list. */
-  @Emit('allDirectors')
-  private emitAllDirectors (val: DirectorIF[]): void { }
-
-  /** Emits an event containing the active directors list. */
-  @Emit('activeDirectors')
-  private emitActiveDirectors (val: DirectorIF[]): void { }
+  private emitDirectorFormValid (): boolean {
+    return this.directorFormValid
+  }
 
   /** Emits an event that indicates whether a director edit is in progress. */
   @Emit('directorEditAction')
-  private emitDirectorEditInProgress (val: boolean): void { }
+  private emitDirectorEditInProgress (): boolean {
+    return this.directorEditInProgress
+  }
 
   /** Emits an event that indicates a director compliance warning has been triggered. */
   @Emit('complianceDialogMsg')
-  private emitcomplianceDialogMsg (val: AlertMessageIF): void { }
+  private emitcomplianceDialogMsg (): AlertMessageIF {
+    return this.complianceMsg
+  }
+
+  /** Emits original addresses object to the parent page. */
+  @Emit('original')
+  private emitOriginalDirectors (): DirectorIF[] {
+    return this.original
+  }
+
+  /** Emits updated addresses object to the parent page (ie, sync). */
+  @Emit('update:directors')
+  private emitWorkingDirectors (): DirectorIF[] {
+    return this.allDirectors
+  }
 }
 </script>
 

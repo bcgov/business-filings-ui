@@ -43,12 +43,24 @@
     />
 
     <!-- Initial Page Load Transition -->
-    <div class="loading-container auto-fade-out">
-      <div class="loading__content">
-        <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
-        <div class="loading-msg">{{loadingMessage}}</div>
+    <v-fade-transition>
+      <div class="loading-container" v-show="showLoadingContainer">
+        <div class="loading__content">
+          <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
+          <div class="loading-msg">{{loadingMessage}}</div>
+        </div>
       </div>
-    </div>
+    </v-fade-transition>
+
+    <!-- Alternate Loading Spinner -->
+    <v-fade-transition>
+      <div class="loading-container grayed-out" v-show="isFetching">
+        <div class="loading__content">
+          <v-progress-circular color="primary" size="50" indeterminate />
+          <div class="loading-msg white--text">Fetching updated data</div>
+        </div>
+      </div>
+    </v-fade-transition>
 
     <!-- Change of Directors Filing -->
     <v-fade-transition hide-on-leave>
@@ -82,15 +94,15 @@
 
                 <!-- Director Information -->
                 <section>
-                  <directors ref="directorsList"
+                  <directors
+                    ref="directorsComponent"
+                    :directors.sync="updatedDirectors"
                     @directorsPaidChange="directorsPaidChange"
                     @directorsFreeChange="directorsFreeChange"
-                    @earliestDateToSet="earliestDateToSet=$event"
                     @directorFormValid="directorFormValid=$event"
-                    @allDirectors="allDirectors=$event"
                     @directorEditAction="directorEditInProgress=$event"
+                    @earliestDateToSet="earliestDateToSet=$event"
                     @complianceDialogMsg="complianceDialogMsg=$event"
-                    :asOfDate="codDate"
                   />
                 </section>
 
@@ -131,8 +143,8 @@
                   :offset="{ top: 120, bottom: 40 }"
                 >
                   <sbc-fee-summary
-                    v-bind:filingData="[...filingData]"
-                    v-bind:payURL="payApiUrl"
+                    :filingData="filingData"
+                    :payURL="payApiUrl"
                     @total-fee="totalFee=$event"
                   />
                 </affix>
@@ -217,7 +229,7 @@
                 <!-- Director Information -->
                 <section>
                   <summary-directors
-                    :directors="allDirectors"
+                    :directors="updatedDirectors"
                   />
                 </section>
 
@@ -255,8 +267,8 @@
                   :offset="{ top: 120, bottom: 40 }"
                 >
                   <sbc-fee-summary
-                    v-bind:filingData="[...filingData]"
-                    v-bind:payURL="payApiUrl"
+                    :filingData="filingData"
+                    :payURL="payApiUrl"
                   />
                 </affix>
               </aside>
@@ -317,6 +329,7 @@
 import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
+import { isEmpty } from 'lodash'
 
 // Components
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
@@ -360,12 +373,12 @@ export default {
 
   data () {
     return {
-      allDirectors: [],
+      updatedDirectors: [],
       fetchErrorDialog: false,
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
-      earliestDateToSet: 'your last filing',
+      earliestDateToSet: 'your last filing', // default
       inFilingReview: false,
       isCertified: false,
       certifiedBy: '',
@@ -373,7 +386,9 @@ export default {
       directorFormValid: true,
       directorEditInProgress: false,
       filingId: null,
-      loadingMessage: 'Loading...', // initial generic message
+      loadingMessage: '',
+      dataLoaded: false,
+      isFetching: false,
       saving: false as boolean, // true only when saving
       savingResuming: false as boolean, // true only when saving and resuming
       filingPaying: false as boolean, // true only when filing and paying
@@ -403,6 +418,12 @@ export default {
     ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
     ...mapGetters(['isBComp', 'isRoleStaff']),
+
+    /** Returns True if loading container should be shown, else False. */
+    showLoadingContainer (): boolean {
+      return (!this.dataLoaded && !this.fetchErrorDialog && !this.resumeErrorDialog &&
+        !this.saveErrorDialog && !this.paymentErrorDialog)
+    },
 
     validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
@@ -437,7 +458,7 @@ export default {
     }
   },
 
-  async created (): Promise<void> {
+  created (): void {
     // init
     this.setFilingData([])
 
@@ -460,16 +481,29 @@ export default {
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.filingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
-    } else if (this.filingId > 0) {
-      // resume draft filing
-      this.loadingMessage = `Resuming Your Director Change`
-      await this.fetchChangeOfDirectors()
-    } else {
-      // else just load new page
-      this.loadingMessage = `Preparing Your Director Change`
-      // initialize date in COD Date component
-      this.initialCODDate = this.currentDate.split('/').join('-')
     }
+  },
+
+  async mounted (): Promise<void> {
+    // initial value
+    // may be overwritten by resumed draft
+    this.initialCODDate = this.currentDate
+
+    if (this.filingId > 0) {
+      this.loadingMessage = 'Resuming Your Director Change'
+      // resume draft filing
+      await this.fetchDraftFiling()
+      // fetch original directors
+      // update working data only if it wasn't in the draft
+      await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, isEmpty(this.updatedDirectors))
+    } else {
+      // this is a new filing
+      this.loadingMessage = 'Preparing Your Director Change'
+      // fetch original directors + update working data
+      await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, true)
+    }
+
+    this.dataLoaded = true
   },
 
   destroyed (): void {
@@ -510,8 +544,79 @@ export default {
   methods: {
     ...mapActions(['setFilingData']),
 
+    async fetchDraftFiling (): Promise<void> {
+      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+      await axios.get(url).then(async response => {
+        const filing: any = response?.data?.filing
+
+        // verify data
+        if (!filing) throw new Error('Missing filing')
+        if (!filing.header) throw new Error('Missing header')
+        if (!filing.business) throw new Error('Missing business')
+        if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('Invalid filing type')
+        if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+        if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+
+        // restore Certified By (but not Date)
+        this.certifiedBy = filing.header.certifiedBy
+
+        // restore Staff Payment data
+        if (filing.header.routingSlipNumber) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.FAS,
+            routingSlipNumber: filing.header.routingSlipNumber,
+            isPriority: filing.header.priority
+          }
+        } else if (filing.header.bcolAccountNumber) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.BCOL,
+            bcolAccountNumber: filing.header.bcolAccountNumber,
+            datNumber: filing.header.datNumber,
+            folioNumber: filing.header.folioNumber,
+            isPriority: filing.header.priority
+          }
+        } else if (filing.header.waiveFees) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.NO_FEE
+          }
+        } else {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.NONE
+          }
+        }
+
+        // restore COD Date
+        if (filing.header.effectiveDate) {
+          this.initialCODDate = this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
+        } else if (filing.header.date) {
+          this.initialCODDate = this.convertUTCTimeToLocalTime(filing.header.date).slice(0, 10)
+        } else {
+          throw new Error('Missing effective date')
+        }
+
+        // restore Change of Directors data
+        const changeOfDirectors = filing.changeOfDirectors
+        if (changeOfDirectors) {
+          if (changeOfDirectors.directors?.length > 0) {
+            this.updatedDirectors = changeOfDirectors.directors
+            // NB: filing data will be set by director paid/free events
+          } else {
+            throw new Error('Invalid change of directors object')
+          }
+        } else {
+          // changeOfDirectors is optional
+          // leave existing directors intact
+        }
+      }).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('fetchDraftFiling() error =', error)
+        this.resumeErrorDialog = true
+      })
+    },
+
     directorsPaidChange (modified: boolean) {
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
       // when directors change, update filing data
       // use existing Priority and Waive Fees flags
       this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.staffPaymentData.isPriority,
@@ -519,7 +624,8 @@ export default {
     },
 
     directorsFreeChange (modified: boolean) {
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
       // when directors change (free filing), update filing data
       // use existing Priority and Waive Fees flags
       this.updateFilingData(modified ? 'add' : 'remove', this.freeFeeCode,
@@ -639,11 +745,10 @@ export default {
         }
       }
 
-      if (this.hasFilingCode(this.feeCode) ||
-        this.hasFilingCode(this.freeFeeCode)) {
+      if (this.hasFilingCode(this.feeCode) || this.hasFilingCode(this.freeFeeCode)) {
         changeOfDirectors = {
           changeOfDirectors: {
-            directors: this.allDirectors
+            directors: this.updatedDirectors
           }
         }
       }
@@ -735,87 +840,6 @@ export default {
       this.$router.push({ name: Routes.DASHBOARD })
     },
 
-    async fetchChangeOfDirectors (): Promise<void> {
-      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
-      await axios.get(url).then(async response => {
-        if (response && response.data) {
-          const filing = response.data.filing
-          try {
-            // verify data
-            if (!filing) throw new Error('Missing filing')
-            if (!filing.header) throw new Error('Missing header')
-            if (!filing.business) throw new Error('Missing business')
-            if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('Invalid filing type')
-            if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-            if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
-
-            // load Certified By (but not Date)
-            this.certifiedBy = filing.header.certifiedBy
-
-            // load Staff Payment properties
-            if (filing.header.routingSlipNumber) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.FAS,
-                routingSlipNumber: filing.header.routingSlipNumber,
-                isPriority: filing.header.priority
-              }
-            } else if (filing.header.bcolAccountNumber) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.BCOL,
-                bcolAccountNumber: filing.header.bcolAccountNumber,
-                datNumber: filing.header.datNumber,
-                folioNumber: filing.header.folioNumber,
-                isPriority: filing.header.priority
-              }
-            } else if (filing.header.waiveFees) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.NO_FEE
-              }
-            } else {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.NONE
-              }
-            }
-
-            if (filing.header.effectiveDate) {
-              const effectiveDate = this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
-              // restore date in COD Date component
-              this.initialCODDate = effectiveDate
-              // restore Draft Date in Directors List component
-              // FUTURE: use props instead of $refs (which cause an error in the unit tests)
-              if (this.$refs.directorsList?.setDraftDate) {
-                this.$refs.directorsList.setDraftDate(effectiveDate)
-              }
-            } else {
-              // eslint-disable-next-line no-console
-              console.log('fetchChangeOfDirectors() error = missing Effective Date')
-            }
-
-            const changeOfDirectors = filing.changeOfDirectors
-            if (changeOfDirectors) {
-              if (changeOfDirectors.directors && changeOfDirectors.directors.length > 0) {
-                if (this.$refs.directorsList.setAllDirectors) {
-                  this.$refs.directorsList.setAllDirectors(changeOfDirectors.directors)
-                }
-              } else {
-                throw new Error('Invalid change of directors')
-              }
-            } else {
-              // directors will be fetched when "asOfDate" is updated (in a future time slice)
-            }
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`fetchChangeOfDirectors() error - ${err.message}, filing = ${filing}`)
-            this.resumeErrorDialog = true
-          }
-        }
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('fetchChangeOfDirectors() error =', error)
-        this.resumeErrorDialog = true
-      })
-    },
-
     resetErrors (): void {
       this.paymentErrorDialog = false
       this.bcolObj = null
@@ -838,9 +862,7 @@ export default {
       document.documentElement.scrollTop = 0 // For Chrome, Firefox and IE
     },
 
-    /**
-     * Local method to change the state of the view and render the editable directors list
-     */
+    /** Local method to change the state of the view and render the editable directors list. */
     returnToFiling (): void {
       this.inFilingReview = false
       document.body.scrollTop = 0 // For Safari
@@ -874,14 +896,27 @@ export default {
   },
 
   watch: {
+    async codDate () {
+      // ignore changes before data is loaded
+      if (!this.dataLoaded) return null
+
+      // fetch original directors with new date + update working data
+      // (this will overwrite the current data)
+      this.isFetching = true
+      await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
+      this.isFetching = false
+    },
+
     /** Called when Is Certified changes. */
     isCertified (val: boolean) {
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
     },
 
     /** Called when Certified By changes. */
     certifiedBy (val: string) {
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
     },
 
     /** Called when Staff Payment Data changes. */
@@ -894,10 +929,11 @@ export default {
         this.updateFilingData('add', this.feeCode, val.isPriority, waiveFees)
       }
 
-      // add/remove Waive Fees flag to all filing codes
+      // add/remove Waive Fees flag to/from all filing codes
       this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
 
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
     }
   }
 }
@@ -960,5 +996,12 @@ h2 {
 .complianceDialogMsg {
   font-size: 1rem;
   color: $gray7;
+}
+
+.loading-container.grayed-out {
+  // these are the same styles as dialog overlay:
+  opacity: 0.46;
+  background-color: rgb(33, 33, 33); // grey darken-4
+  border-color: rgb(33, 33, 33); // grey darken-4
 }
 </style>

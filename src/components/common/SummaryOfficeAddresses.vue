@@ -88,7 +88,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { CommonMixin } from '@/mixins'
 
 // Interfaces
-import { AddressIF, BaseAddressObjIF } from '@/interfaces'
+import { AddressIF, OfficeAddressIF } from '@/interfaces'
 
 @Component({
   mixins: [CommonMixin],
@@ -102,13 +102,13 @@ export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
    * Registered Office address object passed in from the parent which is pulled from store.
    */
   @Prop({ default: null })
-  private registeredAddress: BaseAddressObjIF
+  private registeredAddress: OfficeAddressIF
 
   /**
    * Records Office address object passed in from the parent which is pulled from store.
    */
   @Prop({ default: null })
-  private recordsAddress: BaseAddressObjIF
+  private recordsAddress: OfficeAddressIF
 
   /** The Registered Delivery Address. */
   private get registeredDeliveryAddress (): AddressIF {

@@ -105,7 +105,7 @@
               :offset="{ top: 120, bottom: 40 }"
             >
               <sbc-fee-summary
-                :filingData="[...filingData]"
+                :filingData="filingData"
                 :payURL="payApiUrl"
                 @total-fee="totalFee=$event"
               />
@@ -237,7 +237,7 @@ export default {
       // other program state
       totalFee: 0,
       dataLoaded: false,
-      loadingMessage: 'Loading...', // initial generic message
+      loadingMessage: '',
       filingId: 0, // id of this correction filing
       correctedFilingId: 0, // id of filing to correct
       origFiling: null, // copy of original filing
@@ -326,7 +326,7 @@ export default {
   },
 
   /** Called when component is created. */
-  async created (): Promise<void> {
+  created (): void {
     // init
     this.setFilingData([])
 
@@ -350,20 +350,26 @@ export default {
     // if required data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.correctedFilingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
-    } else {
-      this.dataLoaded = false
-      this.loadingMessage = `Preparing Your Correction`
-      // first fetch original filing, then fetch draft (which may overwrite some properties)
-      await this.fetchOrigFiling()
-      if (this.filingId > 0) {
-        await this.fetchDraftFiling()
-      }
-      this.dataLoaded = true
     }
   },
 
   /** Called when component is mounted. */
-  mounted (): void {
+  async mounted (): Promise<void> {
+    if (this.filingId > 0) {
+      this.loadingMessage = `Resuming Your Correction`
+    } else {
+      this.loadingMessage = `Preparing Your Correction`
+    }
+
+    // first fetch original filing
+    // then fetch draft (which may overwrite some properties)
+    await this.fetchOrigFiling()
+    if (this.filingId > 0) {
+      await this.fetchDraftFiling()
+    }
+
+    this.dataLoaded = true
+
     // always include correction code
     // use existing Priority and Waive Fees flags
     this.updateFilingData('add', FilingCodes.CORRECTION, this.staffPaymentData.isPriority,
@@ -408,60 +414,49 @@ export default {
     async fetchDraftFiling (): Promise<void> {
       const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
       await axios.get(url).then(res => {
-        if (res && res.data) {
-          const filing: any = res.data.filing
-          try {
-            // verify data
-            if (!filing) throw new Error('Missing filing')
-            if (!filing.header) throw new Error('Missing header')
-            if (!filing.business) throw new Error('Missing business')
-            if (!filing.correction) throw new Error('Missing correction')
-            if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
-            if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-            if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-            if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+        const filing: any = res?.data?.filing
 
-            // load Certified By (but not Date)
-            this.certifiedBy = filing.header.certifiedBy
+        // verify data
+        if (!filing) throw new Error('Missing filing')
+        if (!filing.header) throw new Error('Missing header')
+        if (!filing.business) throw new Error('Missing business')
+        if (!filing.correction) throw new Error('Missing correction')
+        if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
+        if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
+        if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+        if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
-            // load Staff Payment properties
-            if (filing.header.routingSlipNumber) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.FAS,
-                routingSlipNumber: filing.header.routingSlipNumber,
-                isPriority: filing.header.priority
-              }
-            } else if (filing.header.bcolAccountNumber) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.BCOL,
-                bcolAccountNumber: filing.header.bcolAccountNumber,
-                datNumber: filing.header.datNumber,
-                folioNumber: filing.header.folioNumber,
-                isPriority: filing.header.priority
-              }
-            } else if (filing.header.waiveFees) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.NO_FEE
-              }
-            } else {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.NONE
-              }
-            }
+        // load Certified By (but not Date)
+        this.certifiedBy = filing.header.certifiedBy
 
-            // load Detail Comment, removing the first line (default comment)
-            const comment: string = filing.correction.comment || ''
-            this.detailComment = comment.split('\n').slice(1).join('\n')
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`fetchDraftFiling() error - ${err.message}, filing = ${filing}`)
-            this.resumeErrorDialog = true
+        // load Staff Payment properties
+        if (filing.header.routingSlipNumber) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.FAS,
+            routingSlipNumber: filing.header.routingSlipNumber,
+            isPriority: filing.header.priority
+          }
+        } else if (filing.header.bcolAccountNumber) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.BCOL,
+            bcolAccountNumber: filing.header.bcolAccountNumber,
+            datNumber: filing.header.datNumber,
+            folioNumber: filing.header.folioNumber,
+            isPriority: filing.header.priority
+          }
+        } else if (filing.header.waiveFees) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.NO_FEE
           }
         } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchDraftFiling() error - invalid response =', res)
-          this.resumeErrorDialog = true
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.NONE
+          }
         }
+
+        // load Detail Comment, removing the first line (default comment)
+        const comment: string = filing.correction.comment || ''
+        this.detailComment = comment.split('\n').slice(1).join('\n')
       }).catch(error => {
         // eslint-disable-next-line no-console
         console.log('fetchDraftFiling() error =', error)
@@ -473,30 +468,19 @@ export default {
     async fetchOrigFiling (): Promise<void> {
       const url = `businesses/${this.entityIncNo}/filings/${this.correctedFilingId}`
       await axios.get(url).then(res => {
-        if (res && res.data) {
-          this.origFiling = res.data.filing
-          try {
-            // verify data
-            if (!this.origFiling) throw new Error('Missing filing')
-            if (!this.origFiling.header) throw new Error('Missing header')
-            if (!this.origFiling.business) throw new Error('Missing business')
-            if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
-            if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-            if (this.origFiling.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+        this.origFiling = res?.data?.filing
 
-            // FUTURE:
-            // use original Certified By name
-            // this.certifiedBy = this.origFiling.header.certifiedBy || ''
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`fetchOrigFiling() error - ${err.message}, origFiling =${this.origFiling}`)
-            this.loadCorrectionDialog = true
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchOrigFiling() error - invalid response =', res)
-          this.loadCorrectionDialog = true
-        }
+        // verify data
+        if (!this.origFiling) throw new Error('Missing filing')
+        if (!this.origFiling.header) throw new Error('Missing header')
+        if (!this.origFiling.business) throw new Error('Missing business')
+        if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
+        if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+        if (this.origFiling.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+
+        // FUTURE:
+        // use original Certified By name
+        // this.certifiedBy = this.origFiling.header.certifiedBy || ''
       }).catch(error => {
         // eslint-disable-next-line no-console
         console.log('fetchOrigFiling() error =', error)
@@ -733,7 +717,7 @@ export default {
           })
           .catch(error => {
             // eslint-disable-next-line no-console
-            console.log('fetchData() error =', error)
+            console.log('hasTasks() error =', error)
             this.saveErrorDialog = true
           })
       }

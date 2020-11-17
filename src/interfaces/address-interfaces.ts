@@ -1,23 +1,34 @@
-// Base address Interface to match the address.json schema and it's optional fields.
+/** Address interface to match the address.json schema plus optional fields. */
 export interface AddressIF {
-  actions?: string[];
-  addressCity: string;
-  addressCountry: string;
-  addressRegion: string;
-  deliveryInstructions?: string;
-  postalCode: string;
-  streetAddress: string;
-  streetAddressAdditional?: string;
+  actions?: string[]
+  addressCity: string
+  addressCountry: string
+  addressRegion: string
+  deliveryInstructions?: string
+  postalCode: string
+  streetAddress: string
+  streetAddressAdditional?: string
+  addressType?: 'mailing' | 'delivery'
 }
 
-// Interface to define the joint base address response
-export interface BaseAddressObjIF {
-  deliveryAddress: AddressIF;
-  mailingAddress: AddressIF;
+/** Office address interface (eg, Registered or Records). */
+export interface OfficeAddressIF {
+  deliveryAddress: AddressIF
+  mailingAddress: AddressIF
 }
 
-// Interface to define the Bcorps address response
-export interface BcorpAddressIf {
-  registeredOffice: BaseAddressObjIF;
-  recordsOffice: BaseAddressObjIF;
+/** Combined Registered + Records office addresses interface. */
+export interface RegRecAddressesIF {
+  registeredOffice: OfficeAddressIF
+  recordsOffice: OfficeAddressIF
+}
+
+export const EmptyAddress: AddressIF = {
+  streetAddress: '',
+  streetAddressAdditional: '',
+  addressCity: '',
+  addressRegion: '',
+  postalCode: '',
+  addressCountry: '',
+  deliveryInstructions: ''
 }

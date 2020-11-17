@@ -25,7 +25,7 @@ describe('CodDate for COOPS', () => {
 
   beforeEach(() => {
     // init store
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
     store.state.entityFoundingDate = '2018-03-01T00:00:00'
@@ -86,7 +86,7 @@ describe('CodDate for COOPS', () => {
   })
 
   it('sets Max Date to current date in store', () => {
-    expect(vm.maxDate).toBe(vm.$store.state.currentDate.split('/').join('-'))
+    expect(vm.maxDate).toBe(vm.$store.state.currentDate)
   })
 
   it('Shows error message when date has invalid length', () => {
@@ -168,7 +168,7 @@ describe('CodDate for BCOMP', () => {
 
   beforeEach(() => {
     // init store
-    store.state.currentDate = '2019/07/15'
+    store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
     store.state.entityFoundingDate = '2018-03-01T00:00:00'

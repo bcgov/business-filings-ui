@@ -30,7 +30,7 @@ Vue.config.silent = true
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-describe('AnnualReport - Part 1 - UI', () => {
+xdescribe('AnnualReport - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -438,7 +438,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 })
 
-describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
+xdescribe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businesId = 'BC0007291'
@@ -643,7 +643,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
+xdescribe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -723,7 +723,7 @@ describe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
   })
 })
 
-describe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
+xdescribe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -807,7 +807,7 @@ describe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
   })
 })
 
-describe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
+xdescribe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -885,7 +885,7 @@ describe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
   })
 })
 
-describe('AnnualReport - Part 3 - Submitting', () => {
+xdescribe('AnnualReport - Part 3 - Submitting', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1167,7 +1167,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
   })
 })
 
-describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
+xdescribe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1296,7 +1296,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 4 - Saving', () => {
+xdescribe('AnnualReport - Part 4 - Saving', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1443,7 +1443,7 @@ describe('AnnualReport - Part 4 - Saving', () => {
   })
 })
 
-describe('AnnualReport - Part 5 - Data', () => {
+xdescribe('AnnualReport - Part 5 - Data', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy
@@ -1717,7 +1717,7 @@ describe('AnnualReport - Part 5 - Data', () => {
   })
 })
 
-describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
+xdescribe('AnnualReport - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy: any
@@ -1941,7 +1941,7 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
+xdescribe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   const { assign } = window.location
@@ -2174,7 +2174,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
   })
 })
 
-describe('AnnualReport - Part 7 - Concurrent Saves', () => {
+xdescribe('AnnualReport - Part 7 - Concurrent Saves', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -2273,7 +2273,7 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   })
 })
 
-describe('AnnualReport - BCOL error dialog on save', () => {
+xdescribe('AnnualReport - BCOL error dialog on save', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 

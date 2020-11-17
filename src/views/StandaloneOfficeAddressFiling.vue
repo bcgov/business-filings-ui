@@ -5,6 +5,12 @@
       attach="#standalone-office-address"
     />
 
+    <fetch-error-dialog
+      :dialog="fetchErrorDialog"
+      @exit="navigateToDashboard(true)"
+      attach="#standalone-office-address"
+    />
+
     <resume-error-dialog
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
@@ -37,12 +43,24 @@
     />
 
     <!-- Initial Page Load Transition -->
-    <div class="loading-container auto-fade-out">
-      <div class="loading__content">
-        <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
-        <div class="loading-msg">{{loadingMessage}}</div>
+    <v-fade-transition>
+      <div class="loading-container" v-show="showLoadingContainer">
+        <div class="loading__content">
+          <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
+          <div class="loading-msg">{{loadingMessage}}</div>
+        </div>
       </div>
-    </div>
+    </v-fade-transition>
+
+    <!-- Alternate Loading Spinner -->
+    <v-fade-transition>
+      <div class="loading-container grayed-out" v-show="isFetching">
+        <div class="loading__content">
+          <v-progress-circular color="primary" size="50" indeterminate />
+          <div class="loading-msg white--text">Fetching updated data</div>
+        </div>
+      </div>
+    </v-fade-transition>
 
     <v-container id="standalone-office-address-container" class="view-container">
       <v-row>
@@ -68,11 +86,10 @@
             <!-- Office Addresses -->
             <section>
               <office-addresses
-                :addresses.sync="addresses"
-                :registeredAddress.sync="registeredAddress"
-                :recordsAddress.sync="recordsAddress"
+                ref="officeAddressesComponent"
+                :addresses.sync="updatedAddresses"
                 @modified="officeModifiedEventHandler($event)"
-                @valid="officeAddressFormValid = $event"
+                @valid="addressesFormValid=$event"
               />
             </section>
 
@@ -112,8 +129,8 @@
               :offset="{ top: 120, bottom: 40 }"
             >
               <sbc-fee-summary
-                v-bind:filingData="[...filingData]"
-                v-bind:payURL="payApiUrl"
+                :filingData="filingData"
+                :payURL="payApiUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -180,12 +197,14 @@
 
 <script lang="ts">
 // Libraries
+import Vue from 'vue'
 import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
+import { isEmpty } from 'lodash'
 
 // Dialogs
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog,
-  SaveErrorDialog, BcolErrorDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog }
+  from '@/components/dialogs'
 
 // Components
 import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
@@ -195,7 +214,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -211,25 +230,29 @@ export default {
     StaffPayment,
     ConfirmDialog,
     PaymentErrorDialog,
+    FetchErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
     BcolErrorDialog
   },
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin],
 
   data () {
     return {
-      addresses: null,
+      updatedAddresses: {},
       filingId: null,
-      loadingMessage: 'Loading...', // initial generic message
-      showLoading: false,
+      loadingMessage: '',
+      dataLoaded: false,
+      isFetching: false,
+      fetchErrorDialog: false,
       resumeErrorDialog: false,
       saveErrorDialog: false,
       paymentErrorDialog: false,
+      coaDate: '',
       isCertified: false,
       certifiedBy: '',
       certifyFormValid: false,
-      officeAddressFormValid: true,
+      addressesFormValid: null as boolean,
       saving: false, // true only when saving
       savingResuming: false, // true only when saving and resuming
       filingPaying: false, // true only when filing and paying
@@ -252,15 +275,20 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo',
-      'entityFoundingDate', 'registeredAddress', 'recordsAddress', 'filingData']),
+    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
     ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff']),
+
+    /** Returns True if loading container should be shown, else False. */
+    showLoadingContainer (): boolean {
+      return (!this.dataLoaded && !this.fetchErrorDialog && !this.resumeErrorDialog &&
+        !this.saveErrorDialog && !this.paymentErrorDialog)
+    },
 
     validated (): boolean {
       const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
       const filingDataValid = (this.filingData.length > 0)
 
-      return (staffPaymentValid && this.certifyFormValid && this.officeAddressFormValid && filingDataValid)
+      return (staffPaymentValid && this.certifyFormValid && this.addressesFormValid && filingDataValid)
     },
 
     /** True when saving, saving and resuming, or filing and paying. */
@@ -270,7 +298,7 @@ export default {
 
     saveAsDraftEnabled (): boolean {
       const filingDataValid = (this.filingData.length > 0)
-      return (this.officeAddressFormValid && filingDataValid)
+      return (this.addressesFormValid && filingDataValid)
     },
 
     payApiUrl (): string {
@@ -292,6 +320,9 @@ export default {
     // init
     this.setFilingData([])
 
+    // listen for fetch error events
+    this.$root.$on('fetch-error-event', () => { this.fetchErrorDialog = true })
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -308,14 +339,34 @@ export default {
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.filingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
-    } else if (this.filingId > 0) {
-      // resume draft filing
-      this.loadingMessage = `Resuming Your Address Change`
-      this.fetchChangeOfAddressFiling()
-    } else {
-      // else just load new page
-      this.loadingMessage = `Preparing Your Address Change`
     }
+  },
+
+  async mounted (): Promise<void> {
+    // initial value
+    // since user cannot change it from the UI, this will always be "today"
+    this.coaDate = this.currentDate
+
+    if (this.filingId > 0) {
+      this.loadingMessage = 'Resuming Your Address Change'
+      // resume draft filing
+      await this.fetchDraftFiling()
+      // fetch original office addresses
+      // update working data only if it wasn't in the draft
+      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+    } else {
+      // this is a new filing
+      this.loadingMessage = 'Preparing Your Address Change'
+      // fetch original office addresses + update working data
+      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+    }
+
+    this.dataLoaded = true
+  },
+
+  destroyed (): void {
+    // stop listening for custom events
+    this.$root.$off('fetch-error-event')
   },
 
   beforeRouteLeave (to, from, next) {
@@ -351,121 +402,88 @@ export default {
   methods: {
     ...mapActions(['setFilingData']),
 
-    formatAddress (address) {
-      return {
-        'actions': address.actions || [],
-        'addressCity': address.addressCity || '',
-        'addressCountry': address.addressCountry || '',
-        'addressRegion': address.addressRegion || '',
-        'addressType': address.addressType || '',
-        'deliveryInstructions': address.deliveryInstructions || '',
-        'postalCode': address.postalCode || '',
-        'streetAddress': address.streetAddress || '',
-        'streetAddressAdditional': address.streetAddressAdditional || ''
-      }
-    },
-
-    fetchChangeOfAddressFiling () {
+    async fetchDraftFiling (): Promise<void> {
       const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
-      axios.get(url).then(response => {
-        if (response && response.data) {
-          const filing = response.data.filing
-          try {
-            // verify data
-            if (!filing) throw new Error('Missing filing')
-            if (!filing.header) throw new Error('Missing header')
-            if (!filing.business) throw new Error('Missing business')
-            if (filing.header.name !== FilingTypes.CHANGE_OF_ADDRESS) throw new Error('Invalid filing type')
-            if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-            if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+      await axios.get(url).then(response => {
+        const filing: any = response?.data?.filing
 
-            // load Certified By (but not Date)
-            this.certifiedBy = filing.header.certifiedBy
+        // verify data
+        if (!filing) throw new Error('Missing filing')
+        if (!filing.header) throw new Error('Missing header')
+        if (!filing.business) throw new Error('Missing business')
+        if (filing.header.name !== FilingTypes.CHANGE_OF_ADDRESS) throw new Error('Invalid filing type')
+        if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
+        if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
 
-            // load Staff Payment properties
-            if (filing.header.routingSlipNumber) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.FAS,
-                routingSlipNumber: filing.header.routingSlipNumber,
-                isPriority: filing.header.priority
-              }
-            } else if (filing.header.bcolAccountNumber) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.BCOL,
-                bcolAccountNumber: filing.header.bcolAccountNumber,
-                datNumber: filing.header.datNumber,
-                folioNumber: filing.header.folioNumber,
-                isPriority: filing.header.priority
-              }
-            } else if (filing.header.waiveFees) {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.NO_FEE
-              }
-            } else {
-              this.staffPaymentData = {
-                option: StaffPaymentOptions.NONE
-              }
-            }
+        // restore Certified By (but not Date)
+        this.certifiedBy = filing.header.certifiedBy
 
-            // load Annual Report fields
-            if (!filing.changeOfAddress) throw new Error('Missing change of address')
-
-            const changeOfAddress = filing.changeOfAddress.offices
-            if (changeOfAddress) {
-              if (changeOfAddress.recordsOffice) {
-                this.addresses = {
-                  registeredOffice: {
-                    deliveryAddress: changeOfAddress.registeredOffice.deliveryAddress,
-                    mailingAddress: changeOfAddress.registeredOffice.mailingAddress
-                  },
-                  recordsOffice: {
-                    deliveryAddress: changeOfAddress.recordsOffice.deliveryAddress,
-                    mailingAddress: changeOfAddress.recordsOffice.mailingAddress
-                  }
-                }
-                // use existing Priority and Waive Fees flags
-                // apply this flag to BCOMPs only
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_BC, this.staffPaymentData.isPriority,
-                  (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-              } else {
-                this.addresses = {
-                  registeredOffice: {
-                    deliveryAddress: changeOfAddress.registeredOffice.deliveryAddress,
-                    mailingAddress: changeOfAddress.registeredOffice.mailingAddress
-                  }
-                }
-                // use existing Priority and Waive Fees flags
-                // apply this flag to all OTHER entity types
-                this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, this.staffPaymentData.isPriority,
-                  (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-              }
-            }
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`fetchData() error - ${err.message}, filing = ${filing}`)
-            this.resumeErrorDialog = true
-            throw new Error('Invalid change of address')
+        // restore Staff Payment data
+        if (filing.header.routingSlipNumber) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.FAS,
+            routingSlipNumber: filing.header.routingSlipNumber,
+            isPriority: filing.header.priority
+          }
+        } else if (filing.header.bcolAccountNumber) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.BCOL,
+            bcolAccountNumber: filing.header.bcolAccountNumber,
+            datNumber: filing.header.datNumber,
+            folioNumber: filing.header.folioNumber,
+            isPriority: filing.header.priority
+          }
+        } else if (filing.header.waiveFees) {
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.NO_FEE
           }
         } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchData() error - invalid response =', response)
-          this.resumeErrorDialog = true
+          this.staffPaymentData = {
+            option: StaffPaymentOptions.NONE
+          }
+        }
+
+        // do not restore COA Date
+        // since user cannot change it from the UI, it will always be "today"
+
+        // restore Change of Address data
+        const changeOfAddress = filing.changeOfAddress
+        if (changeOfAddress) {
+          // registered office is required
+          // records office is required for BCOMP only
+          const registeredOffice = changeOfAddress.offices?.registeredOffice
+          const recordsOffice = changeOfAddress.offices?.recordsOffice
+          if (this.isBComp && registeredOffice && recordsOffice) {
+            this.updatedAddresses = { registeredOffice, recordsOffice }
+          } else if (!this.isBComp && registeredOffice) {
+            this.updatedAddresses = { registeredOffice }
+          } else {
+            throw new Error('Invalid change of address object')
+          }
+
+          // update filing data
+          // use existing Priority and Waive Fees flags
+          this.updateFilingData('add', this.feeCode, this.staffPaymentData.isPriority,
+            (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+        } else {
+          // changeOfAddress is optional
+          // leave existing office addresses intact
         }
       }).catch(error => {
         // eslint-disable-next-line no-console
-        console.log('fetchData() error =', error)
+        console.log('fetchDraftFiling() error =', error)
         this.resumeErrorDialog = true
       })
     },
 
     /**
      * Callback method for the "modified" event from OfficeAddresses component.
-     *
      * @param modified a boolean indicating whether or not the office address(es) have been modified from their
      * original values.
      */
     officeModifiedEventHandler (modified: boolean): void {
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
       // when addresses change, update filing data
       // use existing Priority and Waive Fees flags
       this.updateFilingData(modified ? 'add' : 'remove', this.feeCode, this.staffPaymentData.isPriority,
@@ -552,7 +570,8 @@ export default {
           name: FilingTypes.CHANGE_OF_ADDRESS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
-          date: this.currentDate
+          date: this.currentDate, // NB: API will reassign this date according to its clock
+          effectiveDate: this.convertLocalDateToUTCDateTime(this.coaDate)
         }
       }
 
@@ -584,33 +603,25 @@ export default {
           legalName: this.entityName
         }
       }
-      if (this.hasFilingCode(this.feeCode) && this.addresses) {
-        if (this.addresses.recordsOffice) {
-          changeOfAddress = {
-            changeOfAddress: {
-              legalType: this.entityType,
-              offices: {
-                registeredOffice: {
-                  deliveryAddress: this.formatAddress(this.addresses.registeredOffice['deliveryAddress']),
-                  mailingAddress: this.formatAddress(this.addresses.registeredOffice['mailingAddress'])
-                },
-                recordsOffice: {
-                  deliveryAddress: this.formatAddress(this.addresses.recordsOffice['deliveryAddress']),
-                  mailingAddress: this.formatAddress(this.addresses.recordsOffice['mailingAddress'])
-                }
-              }
+
+      if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
+        changeOfAddress = {
+          changeOfAddress: {
+            legalType: this.entityType,
+            offices: {
+              registeredOffice: this.updatedAddresses.registeredOffice
             }
           }
-        } else {
-          changeOfAddress = {
-            changeOfAddress: {
-              legalType: this.entityType,
-              offices: {
-                registeredOffice: {
-                  deliveryAddress: this.formatAddress(this.addresses.registeredOffice['deliveryAddress']),
-                  mailingAddress: this.formatAddress(this.addresses.registeredOffice['mailingAddress'])
-                }
-              }
+        }
+      }
+
+      if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_BC)) {
+        changeOfAddress = {
+          changeOfAddress: {
+            legalType: this.entityType,
+            offices: {
+              registeredOffice: this.updatedAddresses.registeredOffice,
+              recordsOffice: this.updatedAddresses.recordsOffice
             }
           }
         }
@@ -640,7 +651,7 @@ export default {
           this.haveChanges = false
         }).catch(async error => {
           if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            // Changes were saved if a 402 is received. haveChanges flag is cleared.
+            // Changes were saved if a 402 is received - clear chaveChanges flag
             this.haveChanges = false
             const errCode = this.getErrorCode(error)
             if (errCode) {
@@ -738,14 +749,28 @@ export default {
   },
 
   watch: {
+    // FOR FUTURE USE (since COA date cannot be changed, this method is not called atm)
+    async coaDate () {
+      // ignore changes before data is loaded
+      if (!this.dataLoaded) return null
+
+      // fetch original office addresses with new date + update working data
+      // (this will overwrite the current data)
+      this.isFetching = true
+      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      this.isFetching = false
+    },
+
     /** Called when Is Certified changes. */
-    isCertified (val: boolean) {
-      this.haveChanges = true
+    isCertified () {
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
     },
 
     /** Called when Certified By changes. */
-    certifiedBy (val: string) {
-      this.haveChanges = true
+    certifiedBy () {
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
     },
 
     /** Called when Staff Payment Data changes. */
@@ -758,10 +783,11 @@ export default {
         this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, val.isPriority, waiveFees)
       }
 
-      // add/remove Waive Fees flag to all filing codes
+      // add/remove Waive Fees flag to/from all filing codes
       this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
 
-      this.haveChanges = true
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
     }
   }
 }
@@ -818,5 +844,12 @@ h2 {
   #coa-cancel-btn {
     margin-left: 0.5rem;
   }
+}
+
+.loading-container.grayed-out {
+  // these are the same styles as dialog overlay:
+  opacity: 0.46;
+  background-color: rgb(33, 33, 33); // grey darken-4
+  border-color: rgb(33, 33, 33); // grey darken-4
 }
 </style>

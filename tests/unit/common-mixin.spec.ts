@@ -72,8 +72,8 @@ describe('Common Mixin', () => {
     expect(vm.isSame(objA, objE)).toBe(false)
 
     // verify object comparisons with omitted property
-    expect(vm.isSame(objA, objB, 'prop1')).toBe(true)
-    expect(vm.isSame(objA, objC, 'prop2')).toBe(true)
-    expect(vm.isSame(objA, objD, 'prop3')).toBe(true)
+    expect(vm.isSame(objA, objB, ['prop1'])).toBe(true)
+    expect(vm.isSame(objA, objC, ['prop2'])).toBe(true)
+    expect(vm.isSame(objA, objD, ['prop3'])).toBe(true)
   })
 })
