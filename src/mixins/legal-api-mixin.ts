@@ -1,5 +1,5 @@
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 
 // Interfaces

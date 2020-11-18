@@ -214,7 +214,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -235,7 +235,7 @@ export default {
     SaveErrorDialog,
     BcolErrorDialog
   },
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin],
 
   data () {
     return {
@@ -276,7 +276,7 @@ export default {
 
   computed: {
     ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isJestRunning']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {

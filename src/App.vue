@@ -67,7 +67,7 @@
 
 <script lang="ts">
 // Libraries
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import * as Sentry from '@sentry/browser'
@@ -135,8 +135,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isJestRunning']),
-
     ...mapState(['tasks', 'filings', 'entityType', 'entityStatus']),
 
     /** The Auth API string. */

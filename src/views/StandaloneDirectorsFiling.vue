@@ -343,7 +343,7 @@ import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog,
   from '@/components/dialogs'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -369,7 +369,7 @@ export default {
     BcolErrorDialog
   },
 
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin],
 
   data () {
     return {
@@ -417,7 +417,7 @@ export default {
   computed: {
     ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isBComp', 'isRoleStaff', 'isJestRunning']),
+    ...mapGetters(['isBComp', 'isRoleStaff']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {

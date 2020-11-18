@@ -353,7 +353,7 @@ import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog,
   from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin } from '@/mixins'
+import { DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin, CommonMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -362,7 +362,7 @@ import { StaffPaymentIF } from '@/interfaces'
 export default {
   name: 'AnnualReport',
 
-  mixins: [DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin],
+  mixins: [DateMixin, FilingMixin, ResourceLookupMixin, BcolMixin, CommonMixin],
 
   components: {
     ArDate,
@@ -441,7 +441,7 @@ export default {
       'entityIncNo', 'entityFoundingDate', 'lastPreLoadFilingDate', 'directors', 'filingData']),
 
     ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isAnnualReportEditable', 'reportState', 'lastCOAFilingDate',
-      'lastCODFilingDate', 'isJestRunning']),
+      'lastCODFilingDate']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
