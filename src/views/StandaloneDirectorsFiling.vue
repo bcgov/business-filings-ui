@@ -343,7 +343,7 @@ import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog,
   from '@/components/dialogs'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -369,7 +369,7 @@ export default {
     BcolErrorDialog
   },
 
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin],
 
   data () {
     return {
@@ -495,12 +495,16 @@ export default {
       await this.fetchDraftFiling()
       // fetch original directors
       // update working data only if it wasn't in the draft
-      await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, isEmpty(this.updatedDirectors))
+      if (!this.isJestRunning) {
+        await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, isEmpty(this.updatedDirectors))
+      }
     } else {
       // this is a new filing
       this.loadingMessage = 'Preparing Your Director Change'
       // fetch original directors + update working data
-      await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, true)
+      }
     }
 
     this.dataLoaded = true
@@ -903,7 +907,9 @@ export default {
       // fetch original directors with new date + update working data
       // (this will overwrite the current data)
       this.isFetching = true
-      await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
+      }
       this.isFetching = false
     },
 

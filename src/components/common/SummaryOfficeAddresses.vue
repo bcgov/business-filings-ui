@@ -26,7 +26,7 @@
               <mailing-address :address="registeredMailingAddress" />
             </div>
           </div>
-          <span id="sameAsAbove" v-else>Mailing Address same as above</span>
+          <span id="regMailSameAsDeliv" v-else>Mailing Address same as above</span>
         </div>
       </li>
 
@@ -66,7 +66,7 @@
           <div class="meta-container">
             <label>Records Office</label>
             <div class="meta-container__inner">
-              <span id="sameAsRegistered">
+              <span id="recSameAsReg">
                 Same as Registered Office
               </span>
             </div>

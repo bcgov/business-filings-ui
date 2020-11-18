@@ -177,11 +177,6 @@ export default {
       return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
     },
 
-    /** True if Jest is running the code. */
-    isJestRunning (): boolean {
-      return (process.env.JEST_WORKER_ID !== undefined)
-    },
-
     /** The About text. */
     aboutText (): string {
       return process.env.ABOUT_TEXT

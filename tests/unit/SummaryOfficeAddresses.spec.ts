@@ -10,11 +10,6 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-// Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
-const app: HTMLDivElement = document.createElement('div')
-app.setAttribute('data-app', 'true')
-document.body.append(app)
-
 describe('Summary Office Addresses (BCOMP)', () => {
   let vm: any
 
@@ -77,10 +72,10 @@ describe('Summary Office Addresses (BCOMP)', () => {
     vm = instance.$mount()
 
     // Verify the `same as above text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
+    expect(vm.$el.querySelector('#regMailSameAsDeliv')).toBeNull()
 
     // Verify the `same as registered` text is not displayed
-    expect(vm.$el.querySelector('#sameAsRegistered')).toBeNull()
+    expect(vm.$el.querySelector('#recSameAsReg')).toBeNull()
 
     const deliveryAddress = vm.registeredAddress.deliveryAddress
     expect(deliveryAddress['streetAddress']).toEqual('delStreet')
@@ -153,10 +148,10 @@ describe('Summary Office Addresses (BCOMP)', () => {
     vm = instance.$mount()
 
     // Verify the `same as above text is not displayed
-    expect(vm.$el.querySelector('#sameAsAbove')).toBeNull()
+    expect(vm.$el.querySelector('#regMailSameAsDeliv')).toBeNull()
 
     // Verify the `same as registered` text is not displayed
-    expect(vm.$el.querySelector('#sameAsRegistered').textContent).toContain('Same as Registered Office')
+    expect(vm.$el.querySelector('#recSameAsReg').textContent).toContain('Same as Registered Office')
 
     const deliveryAddress = vm.registeredAddress.deliveryAddress
     expect(deliveryAddress['streetAddress']).toEqual('delStreet')

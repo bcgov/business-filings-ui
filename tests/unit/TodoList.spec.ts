@@ -1,3 +1,4 @@
+// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
@@ -9,14 +10,12 @@ import mockRouter from './mockRouter'
 import { getVuexStore } from '@/store'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import flushPromises from 'flush-promises'
+
 // Components
 import { DetailsList } from '@/components/common'
 import Vue2Filters from 'vue2-filters'
 
-// NB: test util async issue
-// in some cases, the elements are not updated during the test
-// the work-around is to first initialize the property we are changing
-// suppress update watchers warnings
+// suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
 Vue.config.silent = true
 

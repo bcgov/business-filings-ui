@@ -214,7 +214,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { PAYMENT_REQUIRED, BAD_REQUEST } from 'http-status-codes'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin } from '@/mixins'
+import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -235,11 +235,11 @@ export default {
     SaveErrorDialog,
     BcolErrorDialog
   },
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin],
+  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin],
 
   data () {
     return {
-      updatedAddresses: {},
+      updatedAddresses: { registeredOffice: {}, recordsOffice: {} },
       filingId: null,
       loadingMessage: '',
       dataLoaded: false,
@@ -353,12 +353,16 @@ export default {
       await this.fetchDraftFiling()
       // fetch original office addresses
       // update working data only if it wasn't in the draft
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+      }
     } else {
       // this is a new filing
       this.loadingMessage = 'Preparing Your Address Change'
       // fetch original office addresses + update working data
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      }
     }
 
     this.dataLoaded = true
@@ -757,7 +761,9 @@ export default {
       // fetch original office addresses with new date + update working data
       // (this will overwrite the current data)
       this.isFetching = true
-      await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+      }
       this.isFetching = false
     },
 

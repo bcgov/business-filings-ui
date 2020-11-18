@@ -2,10 +2,15 @@ import { Component, Vue } from 'vue-property-decorator'
 import { omit, isEqual } from 'lodash'
 
 /**
- * Mixin that provides some useful object utilities.
+ * Mixin that provides some useful common utilities.
  */
 @Component({})
 export default class CommonMixin extends Vue {
+  /** True if Jest is running the code. */
+  get isJestRunning (): boolean {
+    return (process.env.JEST_WORKER_ID !== undefined)
+  }
+
   /**
    * Removes the specified properties from nested objects.
    * @param baseObj the base object
