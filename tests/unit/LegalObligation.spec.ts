@@ -100,6 +100,10 @@ async function waitForUpdate () {
 }
 
 describe('Legal Obligation', () => {
+  beforeAll(() => {
+    store.state.entityType = 'BEN'
+  })
+
   it('do not show the legal obligation section if there are no filings', async () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []

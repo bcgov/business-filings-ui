@@ -62,6 +62,7 @@ import { mapGetters } from 'vuex'
 })
 export default class LegalObligation extends Vue {
   readonly isBusinessWithNoMaintenanceFilings!: boolean
+  readonly isBComp!: boolean
   private readMoreFlag: boolean = false
   private showLegalObligation: boolean = true
 
