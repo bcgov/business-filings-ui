@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showLegalObligation && isBusinessWithNoMaintenanceFilings && !tempRegNumber"
+  <div v-if="showLegalObligation && isBComp && isBusinessWithNoMaintenanceFilings && !tempRegNumber"
     class="legal-obligation-container"
   >
     <v-card flat class="legal-obligation-section">
@@ -57,11 +57,12 @@ import { mapGetters } from 'vuex'
 
 @Component({
   computed: {
-    ...mapGetters(['isBusinessWithNoMaintenanceFilings'])
+    ...mapGetters(['isBComp', 'isBusinessWithNoMaintenanceFilings'])
   }
 })
 export default class LegalObligation extends Vue {
   readonly isBusinessWithNoMaintenanceFilings!: boolean
+  readonly isBComp!: boolean
   private readMoreFlag: boolean = false
   private showLegalObligation: boolean = true
 
