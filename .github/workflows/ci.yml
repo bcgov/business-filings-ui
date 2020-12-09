@@ -6,11 +6,11 @@ on:
 
 jobs:
   business-filings-ui-ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.15.1]
 
     steps:
       - uses: actions/checkout@v2
@@ -18,19 +18,19 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: install
+      - name: Install
         run: |
-          npm ci
+          make setup
         env:
           CI: true
-      - name: lint
+      - name: Run Lint
         run: |
-          npm run lint
+          make lint
         env:
           CI: true
-      - name: unit test
+      - name: Run Unit Tests
         run: |
-          npm run test:unit --coverage
+          make test
         env:
           CI: true
       - name: Upload coverage to Codecov
@@ -40,6 +40,6 @@ jobs:
           fail_ci_if_error: true
       - name: build to check strictness
         run: |
-          npm run build
+          make build-nc
         env:
           CI: true
