@@ -1,5 +1,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../LICENSE)
 [![codecov](https://codecov.io/gh/bcgov/business-filings-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/business-filings-ui)
+![Lifecycle](https://img.shields.io/badge/Lifecycle-Stable-97ca00)
 
 ---
 description: business-filings-ui readme
