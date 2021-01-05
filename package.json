@@ -19,7 +19,7 @@
     "@mdi/font": "^5.0.45",
     "@sentry/browser": "^5.21.1",
     "@sentry/integrations": "^5.21.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "country-list": "^2.2.0",
     "http-status-codes": "^1.3.2",
