@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import PaperFiling from '@/components/Dashboard/PaperFiling.vue'
+import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)

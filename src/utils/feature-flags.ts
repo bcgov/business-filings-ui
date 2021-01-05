@@ -52,11 +52,11 @@ export const initLDClient = () : Promise<any> => {
   return new Promise((resolve) => {
     ldClient.on('initialized', () => {
       featureFlags.setFlags(ldClient.allFlags())
-      resolve()
+      resolve(null)
     })
     ldClient.on('failed', () => {
       featureFlags.setFlags(defaultFlagSet)
-      resolve()
+      resolve(null)
     })
   })
 }

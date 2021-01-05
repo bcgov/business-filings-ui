@@ -1,5 +1,5 @@
 <template>
-  <div class="pending-filing-body body-2">
+  <div class="pending-filing body-2">
     <h4>Filing Pending</h4>
 
     <p>This {{title}} is paid, but the filing has not been completed by the BC
@@ -9,10 +9,7 @@
     <contact-info class="pt-3" />
 
     <div class="to-dashboard-container">
-      <v-btn
-        color="primary"
-        @click.native.stop="returnToDashboard()"
-        >
+      <v-btn color="primary" @click.native.stop="returnToDashboard()">
         <span>Return to Dashboard</span>
       </v-btn>
     </div>
@@ -30,7 +27,7 @@ export default class PendingFiling extends Vue {
   /** The subject filing. */
   @Prop() private filing: any
 
-  /** The tite of the subject filing. */
+  /** The title of the subject filing. */
   private get title (): string {
     return this.filing?.title || 'filing'
   }

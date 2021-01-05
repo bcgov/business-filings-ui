@@ -314,13 +314,13 @@ import { mapGetters, mapState } from 'vuex'
 import { featureFlags } from '@/utils'
 
 // Components
-import ColinFiling from './ColinFiling.vue'
-import CompletedIa from './CompletedIa.vue'
-import FutureEffectiveIa from './FutureEffectiveIa.vue'
-import FutureEffectiveIaPending from './FutureEffectiveIaPending.vue'
-import NoticeOfAlteration from './NoticeOfAlteration.vue'
-import PaperFiling from './PaperFiling.vue'
-import PendingFiling from './PendingFiling.vue'
+import ColinFiling from './FilingHistoryList/ColinFiling.vue'
+import CompletedIa from './FilingHistoryList/CompletedIa.vue'
+import FutureEffectiveIa from './FilingHistoryList/FutureEffectiveIa.vue'
+import FutureEffectiveIaPending from './FilingHistoryList/FutureEffectiveIaPending.vue'
+import NoticeOfAlteration from './FilingHistoryList/NoticeOfAlteration.vue'
+import PaperFiling from './FilingHistoryList/PaperFiling.vue'
+import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import { DetailsList } from '@/components/common'
 
 // Dialogs

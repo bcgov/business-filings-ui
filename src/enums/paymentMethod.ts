@@ -1,0 +1,6 @@
+export enum PaymentMethod {
+  CREDIT_CARD = 'CC',
+  DIRECT_PAY = 'DIRECT_PAY',
+  DRAWDOWN = 'DRAWDOWN',
+  ONLINE_BANKING = 'ONLINE_BANKING'
+}

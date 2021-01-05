@@ -1,4 +1,4 @@
-import { FilingTypes } from '@/enums'
+import { FilingTypes, PaymentMethod } from '@/enums'
 
 /** A task item in the Todo List. */
 export interface TaskItemIF {
@@ -11,6 +11,7 @@ export interface TaskItemIF {
   status: string;
   enabled: boolean;
   order: number;
+  paymentMethod?: PaymentMethod;
   paymentToken?: number;
   nextArDate?: string; // for AR Todo only
   bcolErrObj?: any;

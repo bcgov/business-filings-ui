@@ -9,13 +9,13 @@ import sinon from 'sinon'
 
 // Components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
-import ColinFiling from '@/components/Dashboard/ColinFiling.vue'
-import CompletedIa from '@/components/Dashboard/CompletedIa.vue'
-import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
-import FutureEffectiveIaPending from '@/components/Dashboard/FutureEffectiveIaPending.vue'
-import NoticeOfAlteration from '@/components/Dashboard/NoticeOfAlteration.vue'
-import PaperFiling from '@/components/Dashboard/PaperFiling.vue'
-import PendingFiling from '@/components/Dashboard/PendingFiling.vue'
+import ColinFiling from '@/components/Dashboard/FilingHistoryList/ColinFiling.vue'
+import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
+import FutureEffectiveIa from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIa.vue'
+import FutureEffectiveIaPending from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIaPending.vue'
+import NoticeOfAlteration from '@/components/Dashboard/FilingHistoryList/NoticeOfAlteration.vue'
+import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vue'
+import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import { DetailsList } from '@/components/common'
 
 Vue.use(Vuetify)

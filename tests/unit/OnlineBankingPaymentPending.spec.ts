@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
+import OnlineBankingPaymentPending from '@/components/Dashboard/TodoList/OnlineBankingPaymentPending.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-describe('Pending Filing', () => {
+xdescribe('Online Banking Payment Pending', () => {
   it('Displays expected content with no data', () => {
-    const wrapper = mount(PendingFiling, { vuetify })
+    const wrapper = mount(OnlineBankingPaymentPending, { vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Filing Pending')
@@ -24,7 +24,7 @@ describe('Pending Filing', () => {
   })
 
   it('Displays expected content with a filing', () => {
-    const wrapper = mount(PendingFiling, { vuetify,
+    const wrapper = mount(OnlineBankingPaymentPending, { vuetify,
       propsData: { filing: { title: 'Incorporation Application' } }
     })
 

@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
-
 import { mount } from '@vue/test-utils'
-import FutureEffectiveIa from '@/components/Dashboard/FutureEffectiveIa.vue'
+import FutureEffectiveIa from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIa.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
