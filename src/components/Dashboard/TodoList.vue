@@ -280,7 +280,7 @@
                   <!-- no action button in this case -->
                 </template>
 
-                <template v-if="isStatusDraft(task)">
+                <template v-else-if="isStatusDraft(task)">
                   <v-btn class="btn-draft-resume"
                     color="primary"
                     :disabled="!task.enabled"

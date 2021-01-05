@@ -2,40 +2,21 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import PaymentIncomplete from '@/components/Dashboard/TodoList/PaymentIncomplete.vue'
-import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-xdescribe('Payment Incomplete', () => {
-  it('Displays expected content with no data', () => {
+describe('Payment Incomplete', () => {
+  it('Displays expected content', () => {
     const wrapper = mount(PaymentIncomplete, { vuetify })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Filing Pending')
+    expect(wrapper.find('h4').text()).toBe('Payment Incomplete')
+
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('This filing is paid')
-    expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Displays expected content with a filing', () => {
-    const wrapper = mount(PaymentIncomplete, { vuetify,
-      propsData: { filing: { title: 'Incorporation Application' } }
-    })
-
-    // verify content
-    expect(wrapper.find('h4').text()).toBe('Filing Pending')
-    const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
-    expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
+    expect(paragraphs.at(0).text()).toContain('This filing is pending payment')
+    expect(paragraphs.at(1).text()).toContain('You may continue this filing')
 
     wrapper.destroy()
   })

@@ -3,7 +3,7 @@
     <h4>Payment Incomplete</h4>
 
     <p>This filing is pending payment. The payment may still be in progress or may have been
-      interrupted for some reason.<p>
+      interrupted for some reason.</p>
 
     <p>You may continue this filing by selecting "Resume Payment".</p>
   </div>

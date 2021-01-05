@@ -2,40 +2,49 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import OnlineBankingPaymentPending from '@/components/Dashboard/TodoList/OnlineBankingPaymentPending.vue'
-import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-xdescribe('Online Banking Payment Pending', () => {
+describe('Online Banking Payment Pending', () => {
   it('Displays expected content with no data', () => {
     const wrapper = mount(OnlineBankingPaymentPending, { vuetify })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Filing Pending')
-    const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('This filing is paid')
-    expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
+    expect(wrapper.find('h4').text()).toBe('Online Banking Payment Pending')
+
+    expect(wrapper.find('p').text()).toContain('This filing is pending')
+
+    const listItems = wrapper.findAll('li')
+    expect(listItems.length).toBe(4)
+    expect(listItems.at(0).text()).toContain('If you have not done so')
+    expect(listItems.at(1).text()).toContain('Once submitted through your bank')
+    expect(listItems.at(2).text()).toContain('Changes based on this filing')
+    expect(listItems.at(2).text()).toContain('for this filing is received')
+    expect(listItems.at(3).text()).toContain('You can use a credit card')
+    expect(listItems.at(3).text()).toContain('for this filing immediately')
 
     wrapper.destroy()
   })
 
   it('Displays expected content with a filing', () => {
     const wrapper = mount(OnlineBankingPaymentPending, { vuetify,
-      propsData: { filing: { title: 'Incorporation Application' } }
+      propsData: { filing: { draftTitle: 'Director Change' } }
     })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Filing Pending')
-    const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
-    expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
+    expect(wrapper.find('h4').text()).toBe('Online Banking Payment Pending')
+
+    expect(wrapper.find('p').text()).toContain('This Director Change is pending')
+
+    const listItems = wrapper.findAll('li')
+    expect(listItems.length).toBe(4)
+    expect(listItems.at(0).text()).toContain('If you have not done so')
+    expect(listItems.at(1).text()).toContain('Once submitted through your bank')
+    expect(listItems.at(2).text()).toContain('Changes based on this Director Change')
+    expect(listItems.at(2).text()).toContain('for this Director Change is received')
+    expect(listItems.at(3).text()).toContain('You can use a credit card')
+    expect(listItems.at(3).text()).toContain('for this Director Change immediately')
 
     wrapper.destroy()
   })
