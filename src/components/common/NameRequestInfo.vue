@@ -1,7 +1,7 @@
 <template>
-  <div id="name-request-summary">
+  <div class="name-request-info">
     <v-row>
-      <v-col id="name-request-info" cols="4">
+      <v-col cols="4">
         <ul>
           <li>
             <label>
@@ -164,7 +164,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
     list-style-type: none;
   }
 
-  #name-request-summary {
+  .name-request-info {
     font-size: 0.9rem;
     margin-left: 0.875rem
   }

@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { EntityTypes, FilingNames, FilingStatus, FilingTypes } from '@/enums'
+import { EntityTypes, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -82,6 +82,30 @@ export default class EnumMixin extends Vue {
   /** Returns True if task type is Name Request. */
   isTypeNameRequest (item: any): boolean {
     return (item.filingType === FilingTypes.NAME_REQUEST)
+  }
+
+  //
+  // Payment Method helpers
+  //
+
+  /** Returns True if payment method is Credit Card. */
+  isPayMethodCreditCard (item: any): boolean {
+    return (item.paymentMethod === PaymentMethod.CREDIT_CARD)
+  }
+
+  /** Returns True if payment method is Direct Pay. */
+  isPayMethodDirectPay (item: any): boolean {
+    return (item.paymentMethod === PaymentMethod.DIRECT_PAY)
+  }
+
+  /** Returns True if payment method is Drawdown. */
+  isPayMethodDrawdown (item: any): boolean {
+    return (item.paymentMethod === PaymentMethod.DRAWDOWN)
+  }
+
+  /** Returns True if payment method is Online Banking. */
+  isPayMethodOnlineBanking (item: any): boolean {
+    return (item.paymentMethod === PaymentMethod.ONLINE_BANKING)
   }
 
   //

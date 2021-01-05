@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import NoticeOfAlteration from '@/components/Dashboard/NoticeOfAlteration.vue'
+import NoticeOfAlteration from '@/components/Dashboard/FilingHistoryList/NoticeOfAlteration.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)

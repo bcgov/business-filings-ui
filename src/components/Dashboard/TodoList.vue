@@ -55,7 +55,7 @@
                   <v-icon left>mdi-information-outline</v-icon>
                   {{ (panel === index) ? "Hide Details" : "View Details" }}
                 </v-btn>
-              </h3>
+              </h3> <!-- end of title -->
 
               <div v-if="businessId && isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)"
                 class="bcorps-ar-subtitle"
@@ -69,7 +69,7 @@
                   v-model="enableCheckbox[index]"
                   @click.native.stop
                 />
-              </div>
+              </div> <!-- end of BCOMP AR subtitle -->
 
               <div v-else class="list-item__subtitle">
                 <div v-if="task.subtitle && isTypeAnnualReport(task)" class="todo-subtitle">
@@ -146,6 +146,27 @@
                   </v-btn>
                 </div>
 
+                <div v-else-if="isStatusPending(task) && isPayMethodOnlineBanking(task)" class="todo-subtitle">
+                  <div>FILING PENDING</div>
+                  <div class="vert-pipe"></div>
+                  <div class="payment-status" v-if="inProcessFiling === task.id">
+                    PROCESSING...
+                  </div>
+                  <div class="payment-status" v-else>
+                    <span>ONLINE BANKING PAYMENT PENDING</span>
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="blue darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
+                </div>
+
                 <div v-else-if="isStatusPending(task)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
@@ -208,17 +229,19 @@
                     </v-btn>
                   </div>
                 </div>
-              </div> <!-- end of subtitle -->
+              </div> <!-- end of other subtitles -->
             </div>
 
             <div class="list-item__actions">
               <div style="width:100%">
-                <p class="date-subtitle" v-if="isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)"
+                <!-- BCOMP special case -->
+                <p v-if="isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)"
+                  class="date-subtitle"
                 >
                   Due {{task.arDueDate}}
                 </p>
 
-                <!-- pre-empt any buttons below -->
+                <!-- this loading button pre-empts all buttons below -->
                 <template v-if="inProcessFiling === task.id">
                   <v-btn text loading disabled />
                 </template>
@@ -253,101 +276,137 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="!isTypeCorrection(task) && !isTypeAlteration(task)">
-                  <template v-if="isStatusDraft(task)">
-                    <v-btn class="btn-draft-resume"
-                      color="primary"
-                      :disabled="!task.enabled"
-                      @click.native.stop="doResumeFiling(task)"
-                    >
-                      <template v-if="isTypeIncorporationApplication(task) && task.isEmptyFiling">
-                        <span v-if="nameRequest">Incorporate using this NR</span>
-                        <span v-else>Incorporate a Numbered Company</span>
-                      </template>
-                      <span v-else>Resume</span>
-                    </v-btn>
-                    <!-- dropdown menu -->
-                    <v-menu offset-y left>
-                      <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="actions__more-actions__btn px-0"
-                          v-on="on" id="menu-activator" :disabled="!task.enabled"
-                        >
-                          <v-icon>mdi-menu-down</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list class="actions__more-actions">
-                        <v-list-item
-                          v-if="businessId"
-                          id="btn-delete-draft"
-                          @click="confirmDeleteDraft(task)"
-                        >
-                          <v-list-item-title>Delete Draft</v-list-item-title>
-                        </v-list-item>
+                <template v-else-if="isTypeCorrection(task) || isTypeAlteration(task)">
+                  <!-- no action button in this case -->
+                </template>
 
-                        <v-list-item
-                          v-if="tempRegNumber"
-                          id="btn-delete-incorporation"
-                          @click="confirmDeleteIncorporation(task)"
-                        >
-                          <v-list-item-title>Delete Incorporation Application</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </template>
+                <template v-else-if="isStatusDraft(task)">
+                  <v-btn class="btn-draft-resume"
+                    color="primary"
+                    :disabled="!task.enabled"
+                    @click.native.stop="doResumeFiling(task)"
+                  >
+                    <template v-if="isTypeIncorporationApplication(task) && task.isEmptyFiling">
+                      <span v-if="nameRequest">Incorporate using this NR</span>
+                      <span v-else>Incorporate a Numbered Company</span>
+                    </template>
+                    <span v-else>Resume</span>
+                  </v-btn>
+                  <!-- dropdown menu -->
+                  <v-menu offset-y left>
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary" class="actions__more-actions__btn px-0"
+                        v-on="on" id="menu-activator" :disabled="!task.enabled"
+                      >
+                        <v-icon>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list class="actions__more-actions">
+                      <v-list-item
+                        v-if="businessId"
+                        id="btn-delete-draft"
+                        @click="confirmDeleteDraft(task)"
+                      >
+                        <v-list-item-title>Delete Draft</v-list-item-title>
+                      </v-list-item>
 
-                  <template v-else-if="isStatusPending(task)">
-                    <v-btn class="btn-resume-payment"
-                      color="primary"
-                      :disabled="!task.enabled"
-                      @click.native.stop="doResumePayment(task)"
-                    >
-                      <span>Resume Payment</span>
-                    </v-btn>
-                    <!-- dropdown menu -->
-                    <v-menu offset-y left>
-                      <template v-slot:activator="{ on }">
-                        <v-btn color="primary"
-                          v-on="on" id="pending-item-menu-activator" :disabled="!task.enabled"
-                          class="actions__more-actions__btn px-0"
-                          @click.native.stop
-                          data-test-id="btn-pending-filing-menu"
-                        >
-                          <v-icon>mdi-menu-down</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list class="actions__more-actions">
-                        <v-list-item id="btn-cancel-payment" @click="confirmCancelPayment(task)"
-                          data-test-id="btn-cancel-payment"
-                        >
-                          <v-list-item-title>Cancel Payment</v-list-item-title>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </template>
+                      <v-list-item
+                        v-if="tempRegNumber"
+                        id="btn-delete-incorporation"
+                        @click="confirmDeleteIncorporation(task)"
+                      >
+                        <v-list-item-title>Delete Incorporation Application</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
 
-                  <template v-else-if="isStatusError(task)">
-                    <v-btn class="btn-retry-payment"
-                      color="primary"
-                      :disabled="!task.enabled"
-                      @click.native.stop="doResumePayment(task)"
-                    >
-                      <span>Retry Payment</span>
-                    </v-btn>
-                  </template>
+                <template v-else-if="isStatusPending(task) && isPayMethodOnlineBanking(task)">
+                  <v-btn class="btn-change-payment-type"
+                    color="primary"
+                    :disabled="!task.enabled"
+                    @click.native.stop="doResumePayment(task)"
+                  >
+                    <span>Change Payment Type</span>
+                  </v-btn>
+                  <!-- dropdown menu -->
+                  <v-menu offset-y left>
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary"
+                        v-on="on" id="pending-item-menu-activator"
+                        :disabled="!task.enabled"
+                        class="actions__more-actions__btn px-0"
+                        data-test-id="btn-pending-filing-menu"
+                        @click.native.stop
+                      >
+                        <v-icon>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list class="actions__more-actions">
+                      <v-list-item id="btn-cancel-payment"
+                        data-test-id="btn-cancel-payment"
+                        @click="confirmCancelPayment(task)"
+                      >
+                        <v-list-item-title>Cancel Payment</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
 
-                  <template v-else-if="isStatusPaid(task)">
-                    <!-- no action button in this case -->
-                  </template>
+                <template v-else-if="isStatusPending(task)">
+                  <v-btn class="btn-resume-payment"
+                    color="primary"
+                    :disabled="!task.enabled"
+                    @click.native.stop="doResumePayment(task)"
+                  >
+                    <span>Resume Payment</span>
+                  </v-btn>
+                  <!-- dropdown menu -->
+                  <v-menu offset-y left>
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary"
+                        v-on="on" id="pending-item-menu-activator"
+                        :disabled="!task.enabled"
+                        class="actions__more-actions__btn px-0"
+                        data-test-id="btn-pending-filing-menu"
+                        @click.native.stop
+                      >
+                        <v-icon>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list class="actions__more-actions">
+                      <v-list-item id="btn-cancel-payment"
+                        data-test-id="btn-cancel-payment"
+                        @click="confirmCancelPayment(task)"
+                      >
+                        <v-list-item-title>Cancel Payment</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
 
-                  <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
-                    <v-btn class="btn-file-now"
-                      color="primary"
-                      :disabled="!task.enabled || coaPending || ( isBComp && !enableCheckbox[index] ) || disableChanges"
-                      @click.native.stop="doFileNow(task)"
-                    >
-                      <span>File Annual Report</span>
-                    </v-btn>
-                  </template>
+                <template v-else-if="isStatusError(task)">
+                  <v-btn class="btn-retry-payment"
+                    color="primary"
+                    :disabled="!task.enabled"
+                    @click.native.stop="doResumePayment(task)"
+                  >
+                    <span>Retry Payment</span>
+                  </v-btn>
+                </template>
+
+                <template v-else-if="isStatusPaid(task)">
+                  <!-- no action button in this case -->
+                </template>
+
+                <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
+                  <v-btn class="btn-file-now"
+                    color="primary"
+                    :disabled="!task.enabled || coaPending || ( isBComp && !enableCheckbox[index] ) || disableChanges"
+                    @click.native.stop="doFileNow(task)"
+                  >
+                    <span>File Annual Report</span>
+                  </v-btn>
                 </template>
               </div>
             </div> <!-- end of actions -->
@@ -355,12 +414,9 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <div v-if="isBcolError(task)" class="todo-list-detail bcol-todo-list-detail body-2">
-            <template v-if="task.bcolErrObj && task.bcolErrObj.title && task.bcolErrObj.detail">
-              <h4>Payment Incomplete - {{task.bcolErrObj.title}}</h4>
-              <p v-html="task.bcolErrObj.detail" />
-            </template>
-          </div>
+          <template v-if="isBcolError(task)">
+            <payment-incomplete-bcol :filing=task />
+          </template>
 
           <template v-else-if="isTypeCorrection(task) || isTypeAlteration(task)">
             <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail body-2">
@@ -390,26 +446,23 @@
             </div>
           </template>
 
-          <div v-else-if="isStatusPending(task)" data-test-class="payment-incomplete" class="todo-list-detail body-2">
-            <h4>Payment Incomplete</h4>
-            <p>This filing is pending payment. The payment may still be in progress or may have been
-              interrupted for some reason.<p>
-            <p>You may continue this filing by selecting "Resume Payment".</p>
+          <template v-else-if="isStatusPending(task) && isPayMethodOnlineBanking(task)">
+            <online-banking-payment-pending :filing=task />
+          </template>
+
+          <template v-else-if="isStatusPending(task)">
+            <payment-incomplete />
+          </template>
+
+          <template v-else-if="isStatusError(task)">
+            <payment-unsuccessful />
+          </template>
+
+          <div v-else-if="isStatusPaid(task)">
+            <payment-paid />
           </div>
 
-          <div v-else-if="isStatusError(task)" data-test-class="payment-unsuccessful" class="todo-list-detail body-2">
-            <p class="font-weight-bold black--text">Payment Unsuccessful</p>
-            <p>This filing is pending payment. The payment appears to have been unsuccessful for some
-              reason.</p>
-            <p>You may continue this filing by selecting "Retry Payment".</p>
-          </div>
-
-          <div v-else-if="isStatusPaid(task)" data-test-class="payment-paid" class="todo-list-detail body-2">
-            <p class="font-weight-bold black--text">Paid</p>
-            <p>This filing is paid but the filing is not yet complete. Please check again later.</p>
-          </div>
-
-          <div v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)" data-test-class="nr-details">
+          <div v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)">
             <name-request-info :nameRequest="task.nameRequest" />
           </div>
         </v-expansion-panel-content>
@@ -431,17 +484,22 @@ import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
+// Dialogs
+import { AddCommentDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
+
 // Components
 import { DetailsList, NameRequestInfo } from '@/components/common'
-
-// Dialogs
-import { AddCommentDialog, ConfirmDialog, DeleteErrorDialog, CancelPaymentErrorDialog } from '@/components/dialogs'
+import OnlineBankingPaymentPending from './TodoList/OnlineBankingPaymentPending.vue'
+import PaymentIncomplete from './TodoList/PaymentIncomplete.vue'
+import PaymentIncompleteBcol from './TodoList/PaymentIncompleteBcol.vue'
+import PaymentPaid from './TodoList/PaymentPaid.vue'
+import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 
 // Mixins
 import { BcolMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { FilingNames, FilingStatus, FilingTypes, PaymentMethod, Routes } from '@/enums'
 import { FilingIF, TaskItemIF } from '@/interfaces'
 
 export default {
@@ -453,7 +511,12 @@ export default {
     ConfirmDialog,
     DeleteErrorDialog,
     DetailsList,
-    NameRequestInfo
+    NameRequestInfo,
+    OnlineBankingPaymentPending,
+    PaymentIncomplete,
+    PaymentIncompleteBcol,
+    PaymentPaid,
+    PaymentUnsuccessful
   },
 
   mixins: [BcolMixin, DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
@@ -624,6 +687,7 @@ export default {
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
+          paymentMethod: filing.header.paymentMethod || null,
           paymentToken: filing.header.paymentToken || null,
           comments: this.flattenAndSortComments(filing.header.comments)
         })
@@ -656,6 +720,7 @@ export default {
             status: filing.header.status || FilingStatus.NEW,
             enabled: Boolean(task.enabled),
             order: task.order,
+            paymentMethod: filing.header.paymentMethod || null,
             paymentToken: filing.header.paymentToken || null,
             bcolErrObj: bcolObj
           })
@@ -684,6 +749,7 @@ export default {
           status: filing.header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
+          paymentMethod: filing.header.paymentMethod || null,
           paymentToken: filing.header.paymentToken || null,
           bcolErrObj: bcolObj
         })
@@ -708,6 +774,7 @@ export default {
           status: filing.header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
+          paymentMethod: filing.header.paymentMethod || null,
           paymentToken: filing.header.paymentToken || null,
           bcolErrObj: bcolObj
         })
@@ -734,6 +801,7 @@ export default {
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
+          paymentMethod: filing.header.paymentMethod || null,
           paymentToken: filing.header.paymentToken || null,
           comments: this.flattenAndSortComments(filing.header.comments)
         })
@@ -775,6 +843,7 @@ export default {
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
+          paymentMethod: filing.header.paymentMethod || null,
           paymentToken: filing.header.paymentToken || null,
           bcolErrObj: bcolObj,
           isEmptyFiling: !haveData,
@@ -1136,6 +1205,7 @@ export default {
     min-width: 103px;
   }
 
+  .btn-change-payment-type,
   .btn-resume-payment {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -1232,10 +1302,6 @@ export default {
 
 .bcol-error {
   border-top: solid #a94442 3px;
-}
-
-.bcol-todo-list-detail {
-  background-color: #f1f1f1 !important;
 }
 
 .contact-info-container {

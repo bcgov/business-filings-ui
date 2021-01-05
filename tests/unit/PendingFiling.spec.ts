@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import PendingFiling from '@/components/Dashboard/PendingFiling.vue'
+import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)

@@ -1,6 +1,6 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import Vue2Filters from 'vue2-filters'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 import { createLocalVue, mount } from '@vue/test-utils'
@@ -13,7 +13,11 @@ import flushPromises from 'flush-promises'
 
 // Components
 import { DetailsList } from '@/components/common'
-import Vue2Filters from 'vue2-filters'
+import OnlineBankingPaymentPending from '@/components/Dashboard/TodoList/OnlineBankingPaymentPending.vue'
+import PaymentIncomplete from '@/components/Dashboard/TodoList/PaymentIncomplete.vue'
+import PaymentIncompleteBcol from '@/components/Dashboard/TodoList/PaymentIncompleteBcol.vue'
+import PaymentPaid from '@/components/Dashboard/TodoList/PaymentPaid.vue'
+import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsuccessful.vue'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -173,7 +177,7 @@ describe('TodoList - UI', () => {
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(item.querySelector('.todo-label .list-item__title').textContent).toContain('File 2019 Annual Report')
+    expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
     expect(item.querySelector('.list-item__subtitle').textContent)
       .toContain('(including Address and/or Director Change)')
 
@@ -478,7 +482,7 @@ describe('TodoList - UI', () => {
     // Validate the child component does NOT exist on the parent before opening the dropdown
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
-    // Open the details list dropdown
+    // click the View Details button
     const button = item.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
     await button.click()
 
@@ -592,7 +596,7 @@ describe('TodoList - UI', () => {
     // Validate the child component does NOT exist on the parent before opening the dropdown
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
-    // Open the details list dropdown
+    // click the View Details button
     const button = item.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
     await button.click()
 
@@ -649,6 +653,13 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
 
+    // click the View Details button
+    wrapper.find('.expand-btn').trigger('click')
+    await flushPromises()
+
+    // validate that child component exists
+    expect(wrapper.find(PaymentIncomplete).exists()).toBe(true)
+
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
     expect(button.querySelector('.v-btn__content').textContent).toContain('Resume Payment')
@@ -697,9 +708,72 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT UNSUCCESSFUL')
 
+    // click the View Details button
+    wrapper.find('.expand-btn').trigger('click')
+    await flushPromises()
+
+    // validate that child component exists
+    expect(wrapper.find(PaymentUnsuccessful).exists()).toBe(true)
+
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
     expect(button.querySelector('.v-btn__content').textContent).toContain('Retry Payment')
+
+    wrapper.destroy()
+  })
+
+  it('displays a FILING PENDING - ONLINE BANKING PAYMENT PENDING task', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'PENDING',
+              filingId: 1,
+              paymentToken: 12345678,
+              paymentMethod: 'ONLINE_BANKING'
+            },
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
+            },
+            changeOfAddress: {},
+            changeOfDirectors: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const vm = wrapper.vm as any
+    await flushPromises()
+
+    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('ONLINE BANKING PAYMENT PENDING')
+
+    // click the View Details button
+    wrapper.find('.expand-btn').trigger('click')
+    await flushPromises()
+
+    // validate that child component exists
+    expect(wrapper.find(OnlineBankingPaymentPending).exists()).toBe(true)
+
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.disabled).toBe(false)
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Change Payment Type')
 
     wrapper.destroy()
   })
@@ -737,6 +811,13 @@ describe('TodoList - UI', () => {
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAID')
+
+    // click the View Details button
+    wrapper.find('.expand-btn').trigger('click')
+    await flushPromises()
+
+    // validate that child component exists
+    expect(wrapper.find(PaymentPaid).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button).toBeNull()
@@ -1720,6 +1801,55 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
+  it('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('AUTH_URL', 'auth/')
+
+    // init store
+    store.state.tasks = [
+      {
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'PENDING',
+              filingId: 789,
+              paymentToken: 987,
+              paymentMethod: 'ONLINE_BANKING'
+            },
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
+            },
+            changeOfAddress: {},
+            changeOfDirectors: {}
+          }
+        },
+        enabled: true,
+        order: 1
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    const item = vm.$el.querySelector('.list-item')
+    const button = item.querySelector('.list-item__actions .v-btn')
+    expect(button.getAttribute('disabled')).toBeNull()
+    expect(button.querySelector('.v-btn__content').textContent).toContain('Change Payment Type')
+
+    await button.click()
+
+    // verify redirection
+    const payURL = 'auth/makepayment/987/' + encodeURIComponent('business/?filing_id=789')
+    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+
+    wrapper.destroy()
+  })
+
   it('captures BCOL error in todo list', async () => {
     sessionStorage.setItem('PAY_API_URL', '')
     // store a task with a filing associated to a BCOL error
@@ -1760,15 +1890,26 @@ describe('TodoList - Click Tests', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    // the class appended to a todo div when an item has a bcol error
+    // validate that todo item exists
     const todoItem = vm.$el.querySelector('.bcol-error')
     expect(todoItem).toBeDefined()
 
+    // validate the title and sub-title
+    const item = vm.$el.querySelector('.list-item')
+    expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT UNSUCCESSFUL')
+
+    // click the View Details button
     wrapper.find('.expand-btn').trigger('click')
     await flushPromises()
 
+    // validate that child component exists
+    expect(wrapper.find(PaymentIncompleteBcol).exists()).toBe(true)
+
     // confirm the message is visible after expansion panel clicked
-    const bcolPanel = vm.$el.querySelector('.bcol-todo-list-detail')
+    const bcolPanel = vm.$el.querySelector('.payment-incomplete-bcol')
+    expect(bcolPanel.textContent).toContain('Payment Incomplete - Error')
     expect(bcolPanel.textContent).toContain('An error has occurred')
 
     wrapper.destroy()

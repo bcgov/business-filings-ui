@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import ColinFiling from '@/components/Dashboard/ColinFiling.vue'
+import ColinFiling from '@/components/Dashboard/FilingHistoryList/ColinFiling.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
