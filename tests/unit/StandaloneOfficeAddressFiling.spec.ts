@@ -701,15 +701,16 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfAddress',
-              'date': '2017-06-06',
-              'submitter': 'cp0001191',
-              'status': 'PENDING',
-              'filingId': 123,
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'paymentToken': '321'
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'PENDING',
+              filingId: 123,
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              paymentToken: '321',
+              isPaymentActionRequired: true
             }
           }
         }
@@ -736,15 +737,16 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfAddress',
-              'date': '2017-06-06',
-              'submitter': 'cp0001191',
-              'status': 'PENDING',
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'filingId': 123,
-              'paymentToken': '321'
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'cp0001191',
+              status: 'PENDING',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
+              paymentToken: '321',
+              isPaymentActionRequired: false
             }
           }
         }
@@ -814,12 +816,12 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     wrapper.destroy()
   })
 
-  it('updates an existing filing and redirects to Pay URL when this is a draft filing and the File & Pay button ' +
-    'is clicked', async () => {
+  it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
+    'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
 
+    // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -871,9 +873,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
-    // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    // verify routing back to Dashboard URL
+    expect(vm.$route.name).toBe('dashboard')
 
     wrapper.destroy()
   })
@@ -986,15 +987,16 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
-            'header': {
-              'name': 'changeOfAddress',
-              'date': '2017-06-06',
-              'submitter': 'BC0007291',
-              'status': 'PENDING',
-              'filingId': 123,
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'paymentToken': '321'
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'BC0007291',
+              status: 'PENDING',
+              filingId: 123,
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              paymentToken: '321',
+              isPaymentActionRequired: true
             }
           }
         }
@@ -1025,15 +1027,16 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
-            'header': {
-              'name': 'changeOfAddress',
-              'date': '2017-06-06',
-              'submitter': 'BC0007291',
-              'status': 'PENDING',
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'filingId': 123,
-              'paymentToken': '321'
+            header: {
+              name: 'changeOfAddress',
+              date: '2017-06-06',
+              submitter: 'BC0007291',
+              status: 'PENDING',
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              filingId: 123,
+              paymentToken: '321',
+              isPaymentActionRequired: false
             }
           }
         }
@@ -1103,12 +1106,12 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     wrapper.destroy()
   })
 
-  it('updates an existing filing and redirects to Pay URL when this is a draft filing and the File & Pay button ' +
-    'is clicked', async () => {
+  it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
+    'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
 
+    // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -1160,9 +1163,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
-    // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    // verify routing back to Dashboard URL
+    expect(vm.$route.name).toBe('dashboard')
 
     wrapper.destroy()
   })

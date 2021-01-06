@@ -689,16 +689,17 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfDirectors',
-              'date': '2017-06-06T00:00:00+00:00',
-              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-              'submitter': 'cp0001191',
-              'status': 'PENDING',
-              'filingId': 123,
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'paymentToken': '321'
+            header: {
+              name: 'changeOfDirectors',
+              date: '2017-06-06T00:00:00+00:00',
+              effectiveDate: 'Tue, 06 Jun 2017 18:49:44 GMT',
+              submitter: 'cp0001191',
+              status: 'PENDING',
+              filingId: 123,
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              paymentToken: '321',
+              isPaymentActionRequired: true
             }
           }
         }
@@ -720,16 +721,17 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
-            'header': {
-              'name': 'changeOfDirectors',
-              'date': '2017-06-06T00:00:00+00:00',
-              'effectiveDate': 'Tue, 06 Jun 2017 18:49:44 GMT',
-              'submitter': 'cp0001191',
-              'status': 'PENDING',
-              'filingId': 123,
-              'certifiedBy': 'Full Name',
-              'email': 'no_one@never.get',
-              'paymentToken': '321'
+            header: {
+              name: 'changeOfDirectors',
+              date: '2017-06-06T00:00:00+00:00',
+              effectiveDate: 'Tue, 06 Jun 2017 18:49:44 GMT',
+              submitter: 'cp0001191',
+              status: 'PENDING',
+              filingId: 123,
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              paymentToken: '321',
+              isPaymentActionRequired: false
             }
           }
         }
@@ -879,17 +881,21 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     wrapper.destroy()
   })
 
-  it('updates an existing filing and redirects to Pay URL when this is a draft filing and the File & Pay button ' +
-    'is clicked', async () => {
+  it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
+    'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
 
-    const $route = { params: { filingId: 123 } } // existing filing id
+    // create local Vue and mock router
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'standalone-directors', params: { filingId: '123' } }) // existing filing id
+    
     const wrapper = mount(StandaloneDirectorsFiling, {
-      sync: false,
       store,
-      mocks: { $route },
+      localVue,
+      router,
       stubs: {
         CodDate: true,
         Directors: true,
@@ -940,9 +946,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
-    // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    // verify routing back to Dashboard URL
+    expect(vm.$route.name).toBe('dashboard')
 
     wrapper.destroy()
   })

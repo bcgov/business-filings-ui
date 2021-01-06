@@ -71,6 +71,7 @@ import { mapState, mapActions } from 'vuex'
 import axios from '@/axios-auth'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import * as Sentry from '@sentry/browser'
+import { updateLdUser } from '@/utils'
 
 // Components
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
@@ -292,6 +293,15 @@ export default {
         return // do not execute remaining code
       }
 
+      // fetch user info and update Launch Darkly
+      try {
+        const userInfo = await this.getUserInfo()
+        await this.updateLaunchDarkly(userInfo)
+      } catch (error) {
+        // just log the error -- no need to halt app
+        console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
+      }
+
       // is this a business entity?
       if (this.businessId) {
         try {
@@ -402,6 +412,29 @@ export default {
       } else {
         throw new Error('Invalid auth roles')
       }
+    },
+
+    /** Fetches current user info. */
+    async getUserInfo (): Promise<any> {
+      const config = { baseURL: this.authApiUrl }
+      return axios.get('users/@me', config)
+        .then(response => {
+          if (response?.data) return response.data
+          else throw new Error('Invalid user info')
+        })
+    },
+
+    /** Updates Launch Darkly with current user info. */
+    async updateLaunchDarkly (userInfo: any): Promise<any> {
+      // since username is unique, use it as the user key
+      const key: string = userInfo.username
+      const email: string = userInfo.contacts[0]?.email || userInfo.email
+      const firstName: string = userInfo?.firstname
+      const lastName: string = userInfo?.lastname
+      // remove leading { and trailing } and tokenize string
+      const custom: any = { roles: userInfo.roles?.slice(1, -1).split(',') }
+
+      await updateLdUser(key, email, firstName, lastName, custom)
     },
 
     /** Gets business info from Auth API. */
@@ -703,8 +736,6 @@ export default {
 </script>
 
 <style lang="scss">
-// @import '@/assets/styles/theme.scss';
-
 .loading-container.grayed-out {
   // these are the same styles as dialog overlay:
   opacity: 0.46;

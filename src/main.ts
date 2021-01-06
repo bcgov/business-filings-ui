@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { fetchConfig, initLDClient } from '@/utils'
+import { fetchConfig, initLdClient } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -42,7 +42,7 @@ async function start () {
 
   // initialize Launch Darkly
   if (window['ldClientId']) {
-    await initLDClient()
+    await initLdClient()
   }
 
   // configure Keycloak Service
