@@ -64,7 +64,7 @@
 
         <div class="right-column text-right align-self-end">
           <template v-if="businessId">
-            <!-- if LTD or ULC, show _new_ menu -->
+            <!-- if LTD or ULC, show new menu -->
             <div v-if="isLtdOrUlc">
               <v-btn small text color="primary" id="company-information-button" @click="viewChangeCompanyInfo()">
                 <v-icon small>mdi-pencil</v-icon>
@@ -98,7 +98,7 @@
               </template>
             </dl>
 
-            <!-- if not LTD or ULC, show _old_ menu -->
+            <!-- if not LTD or ULC, show old menu -->
             <v-menu v-if="!isLtdOrUlc" bottom left offset-y>
               <template v-slot:activator="{ on }">
                 <v-btn id="entity-settings-button" small icon color="primary" v-on="on" class="mt-n4 ml-1">
@@ -122,6 +122,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
+import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, EntityTypes, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
@@ -155,6 +156,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   /** True if current company is LTD or ULC. */
   private get isLtdOrUlc (): boolean {
     // return (this.isLtd || this.isUlc)
+    // return getFeatureFlag('alteration-ui-enabled')
     // FOR NOW, FOR TESTING, LOOK FOR A SESSION STORAGE ITEM
     return Boolean(sessionStorage.getItem('SHOW_COMPANY_INFO_BUTTON'))
   }

@@ -672,13 +672,10 @@ export default {
       // on success, redirect to Pay URL
       if (filing && filing.header) {
         const filingId: number = +filing.header.filingId
+        const isPaymentActionRequired: boolean = filing.header?.isPaymentActionRequired
 
-        // whether this is a staff or no-fee filing
-        const paymentCompleted = filing.header?.paymentStatusCode === 'COMPLETED'
-        const prePaidFiling = (this.isRoleStaff || !this.isPayRequired || paymentCompleted)
-
-        // if filing needs to be paid, redirect to Pay URL
-        if (!prePaidFiling) {
+        // if payment action is required, redirect to Pay URL
+        if (isPaymentActionRequired) {
           const paymentToken = filing.header.paymentToken
           const baseUrl = sessionStorage.getItem('BASE_URL')
           const returnUrl = encodeURIComponent(baseUrl + '?filing_id=' + filingId)

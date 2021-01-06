@@ -16,7 +16,7 @@ export default class LegalApiMixin extends Vue {
    * @param filingId The filing identifier
    * @returns a promise to return the filing
    */
-  fetchFilingById (businessId: string, filingId: number): Promise<any> {
+  async fetchFilingById (businessId: string, filingId: number): Promise<any> {
     const url = `businesses/${businessId}/filings/${filingId}`
     return axios.get(url)
       .then(response => {
@@ -36,7 +36,7 @@ export default class LegalApiMixin extends Vue {
    * @param filing the object body of the request
    * @returns a promise to return the filing
    */
-  createCorrection (businessId: string, filing: CorrectionFilingIF): Promise<any> {
+  async createCorrection (businessId: string, filing: CorrectionFilingIF): Promise<any> {
     // Post base filing to filings endpoint
     let url = `businesses/${businessId}/filings?draft=true`
 

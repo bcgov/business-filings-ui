@@ -978,7 +978,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
                   filingId: 123,
                   certifiedBy: 'Full Name',
                   email: 'no_one@never.get',
-                  paymentToken: '321'
+                  paymentToken: '321',
+                  isPaymentActionRequired: true
                 }
               }
             }
@@ -1013,7 +1014,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
                   filingId: 123,
                   certifiedBy: 'Full Name',
                   email: 'no_one@never.get',
-                  paymentToken: '321'
+                  paymentToken: '321',
+                  isPaymentActionRequired: false
                 }
               }
             }
@@ -1098,12 +1100,12 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     wrapper.destroy()
   })
 
-  it('updates an existing filing and redirects to Pay URL when this is a draft AR and the File & Pay button ' +
-    'is clicked', async () => {
+  it('updates an existing filing and routes to the dashboard when this is a draft AR and the File & Pay button ' +
+    'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
 
+    // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -1163,9 +1165,8 @@ describe('AnnualReport - Part 3 - Submitting', () => {
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 
-    // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    // verify routing back to Dashboard URL
+    expect(vm.$route.name).toBe('dashboard')
 
     wrapper.destroy()
   })
@@ -1230,7 +1231,8 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
                   filingId: 123,
                   certifiedBy: 'Full Name',
                   email: 'no_one@never.get',
-                  paymentToken: '321'
+                  paymentToken: '321',
+                  isPaymentActionRequired: true
                 }
               }
             }
@@ -1249,6 +1251,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('AUTH_URL', 'auth/')
 
+    // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
