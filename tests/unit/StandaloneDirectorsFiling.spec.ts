@@ -891,7 +891,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     router.push({ name: 'standalone-directors', params: { filingId: '123' } }) // existing filing id
-    
+
     const wrapper = mount(StandaloneDirectorsFiling, {
       store,
       localVue,
