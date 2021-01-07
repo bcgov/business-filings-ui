@@ -425,7 +425,7 @@ export default {
     },
 
     /** Updates Launch Darkly with current user info. */
-    async updateLaunchDarkly (userInfo: any): Promise<any> {
+    async updateLaunchDarkly (userInfo: any): Promise<void> {
       // since username is unique, use it as the user key
       const key: string = userInfo.username
       const email: string = userInfo.contacts[0]?.email || userInfo.email
