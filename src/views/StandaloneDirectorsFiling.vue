@@ -1,24 +1,25 @@
 <template>
   <div id="standalone-directors">
     <confirm-dialog
-      ref="confirm"
       attach="#standalone-directors"
+      ref="confirm"
     />
 
     <fetch-error-dialog
+      attach="#standalone-directors"
       :dialog="fetchErrorDialog"
       @exit="navigateToDashboard(true)"
-      attach="#standalone-directors"
     />
 
     <resume-error-dialog
+      attach="#standalone-directors"
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
-      attach="#standalone-directors"
     />
 
     <save-error-dialog
-      filing="Change of Directors"
+      attach="#standalone-directors"
+      filingName="Change of Directors"
       :dialog="saveErrorDialog"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -26,20 +27,15 @@
       @exit="navigateToDashboard(true)"
       @retry="onClickFilePay()"
       @okay="resetErrors()"
-      attach="#standalone-directors"
     />
 
     <payment-error-dialog
+      attach="#standalone-directors"
+      filingName="Change of Directors"
       :dialog="paymentErrorDialog"
+      :errors="saveErrors"
+      :warnings="saveWarnings"
       @exit="navigateToDashboard(true)"
-      attach="#standalone-directors"
-    />
-
-    <bcol-error-dialog
-      :bcolObject="bcolObj"
-      :filingType="FilingTypes.CHANGE_OF_DIRECTORS"
-      @exit="navigateToDashboard(true)"
-      attach="#standalone-directors"
     />
 
     <!-- Initial Page Load Transition -->
@@ -328,7 +324,7 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
-import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
+import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 
 // Components
@@ -339,11 +335,11 @@ import { Certify, StaffPayment, SummaryDirectors, SummaryCertify, SummaryStaffPa
   from '@/components/common'
 
 // Dialog Components
-import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog, SaveErrorDialog, BcolErrorDialog }
+import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 
 // Mixins
-import { FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -365,11 +361,10 @@ export default {
     PaymentErrorDialog,
     FetchErrorDialog,
     ResumeErrorDialog,
-    SaveErrorDialog,
-    BcolErrorDialog
+    SaveErrorDialog
   },
 
-  mixins: [FilingMixin, ResourceLookupMixin, BcolMixin, DateMixin, CommonMixin],
+  mixins: [CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin],
 
   data () {
     return {
@@ -404,9 +399,6 @@ export default {
       // properties for StaffPayment component
       staffPaymentData: { option: StaffPaymentOptions.NONE } as StaffPaymentIF,
       staffPaymentFormValid: null,
-
-      // bcol error variables
-      bcolObj: null,
 
       // enums in template
       FilingCodes,
@@ -672,7 +664,7 @@ export default {
       // on success, redirect to Pay URL
       if (filing && filing.header) {
         const filingId: number = +filing.header.filingId
-        const isPaymentActionRequired: boolean = filing.header?.isPaymentActionRequired
+        const isPaymentActionRequired: boolean = filing.header?.isPaymentActionRequired || false
 
         // if payment action is required, redirect to Pay URL
         if (isPaymentActionRequired) {
@@ -763,76 +755,48 @@ export default {
         )
       }
 
-      if (this.filingId > 0) {
-        // we have a filing id, so we are updating an existing filing
-        let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
-        if (isDraft) {
-          url += '?draft=true'
+      try {
+        let response
+
+        if (this.filingId > 0) {
+          // we have a filing id, so update (put) an existing filing
+          let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+          if (isDraft) { url += '?draft=true' }
+          response = await axios.put(url, data)
+        } else {
+          // filing id is 0, so create (post) a new filing
+          let url = `businesses/${this.entityIncNo}/filings`
+          if (isDraft) { url += '?draft=true' }
+          response = await axios.post(url, data)
         }
-        let filing = null
-        await axios.put(url, data).then(res => {
-          if (!res || !res.data || !res.data.filing) {
-            throw new Error('Invalid API response')
-          }
-          filing = res.data.filing
-          this.haveChanges = false
-        }).catch(async error => {
-          if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            // Changes were saved if a 402 is received. haveChanges flag is cleared.
-            this.haveChanges = false
-            const errCode = this.getErrorCode(error)
-            if (errCode) {
-              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
-            } else {
-              this.paymentErrorDialog = true
-            }
-          } else if (error && error.response && error.response.status === BAD_REQUEST) {
-            if (error.response.data.errors) {
-              this.saveErrors = error.response.data.errors
-            }
-            if (error.response.data.warnings) {
-              this.saveWarnings = error.response.data.warnings
-            }
-            this.saveErrorDialog = true
-          } else {
-            this.saveErrorDialog = true
-          }
-        })
-        return filing
-      } else {
-        // filing id is 0, so we are saving a new filing
-        let url = `businesses/${this.entityIncNo}/filings`
-        if (isDraft) {
-          url += '?draft=true'
+
+        const filing = response?.data?.filing
+        if (!filing) {
+          throw new Error('Invalid API response')
         }
-        let filing = null
-        await axios.post(url, data).then(res => {
-          if (!res || !res.data || !res.data.filing) {
-            throw new Error('Invalid API response')
-          }
-          filing = res.data.filing
-          this.haveChanges = false
-        }).catch(async error => {
-          if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            const errCode = this.getErrorCode(error)
-            if (errCode) {
-              this.bcolObj = await this.getErrorObj(errCode.payment_error_type)
-            } else {
-              this.paymentErrorDialog = true
-            }
-          } else if (error && error.response && error.response.status === BAD_REQUEST) {
-            if (error.response.data.errors) {
-              this.saveErrors = error.response.data.errors
-            }
-            if (error.response.data.warnings) {
-              this.saveWarnings = error.response.data.warnings
-            }
-            this.saveErrorDialog = true
-          } else {
-            this.saveErrorDialog = true
-          }
-        })
+
+        // clear flag
+        this.haveChanges = false
         return filing
+      } catch (error) {
+        this.saveErrors = error?.response?.data?.errors || []
+        this.saveWarnings = error?.response?.data?.warnings || []
+
+        if (error?.response?.status === PAYMENT_REQUIRED) {
+          // changes were saved if a 402 is received, so clear flag
+          this.haveChanges = false
+          this.paymentErrorDialog = true
+          // save succeeded, so return filing
+          return error?.response?.data?.filing
+        } else {
+          if (!this.isJestRunning) {
+            // eslint-disable-next-line no-console
+            console.log('saveFiling() error =', error)
+          }
+          this.saveErrorDialog = true
+          // save failed, so return null
+          return null
+        }
       }
     },
 
@@ -843,7 +807,6 @@ export default {
 
     resetErrors (): void {
       this.paymentErrorDialog = false
-      this.bcolObj = null
       this.saveErrorDialog = false
       this.saveErrors = []
       this.saveWarnings = []

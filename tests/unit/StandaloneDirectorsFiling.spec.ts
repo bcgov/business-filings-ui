@@ -13,7 +13,6 @@ import { getVuexStore } from '@/store'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { configJson } from '@/resources/business-config'
 
 // suppress various warnings:
@@ -1439,19 +1438,13 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     // mock "file post" endpoint
     const p1 = Promise.reject({
       response: {
-        status: BAD_REQUEST,
+        status: 400,
         data: {
           'errors': [
-            {
-              'error': 'err msg post',
-              'path': 'swkmc/sckmr'
-            }
+            { 'error': 'err msg post' }
           ],
           'warnings': [
-            {
-              'warning': 'warn msg post',
-              'path': 'swkmc/sckmr'
-            }
+            { 'warning': 'warn msg post' }
           ],
           'filing': {
             'changeOfDirectors': {
@@ -1485,19 +1478,13 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     // mock "file put" endpoint
     const p2 = Promise.reject({
       response: {
-        status: BAD_REQUEST,
+        status: 400,
         data: {
           'errors': [
-            {
-              'error': 'err msg put',
-              'path': 'swkmc/sckmr'
-            }
+            { 'error': 'err msg put' }
           ],
           'warnings': [
-            {
-              'warning': 'warn msg put',
-              'path': 'swkmc/sckmr'
-            }
+            { 'warning': 'warn msg put' }
           ],
           'filing': {
             'changeOfDirectors': {
@@ -1606,7 +1593,19 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
   )
 })
 
-describe('Change of Directors - BCOL error dialog on save', () => {
+describe('Standalone Directors Filing - payment required error', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
   beforeEach(() => {
     // init store
     store.state.currentDate = '2019-07-15'
@@ -1617,15 +1616,13 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 
-    // mock "file post" endpoint, with a BCOL error response
+    // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({
       response: {
-        status: PAYMENT_REQUIRED,
+        status: 402,
         data: {
           errors: [
-            {
-              payment_error_type: 'BCOL_ERROR'
-            }
+            { message: 'payment required' }
           ],
           filing: {
             annualReport: {
@@ -1645,22 +1642,18 @@ describe('Change of Directors - BCOL error dialog on save', () => {
               status: 'DRAFT',
               certifiedBy: 'Full Name',
               email: 'no_one@never.get',
-              filingId: 123
+              filingId: 123,
+              isPaymentActionRequired: true
             }
           }
         }
       }
     })
-
     p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
-
-    sinon
-      .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings')
-      .returns(p1)
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 
-  it('Attempts to file and pay with a BCOL error', async () => {
+  it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
@@ -1684,7 +1677,6 @@ describe('Change of Directors - BCOL error dialog on save', () => {
         ConfirmDialog: true,
         PaymentErrorDialog: true,
         ResumeErrorDialog: true,
-        BcolErrorDialog: true,
         SaveErrorDialog: true
       },
       vuetify
@@ -1712,19 +1704,10 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(vm.bcolObj).toBeNull()
+    expect(vm.saveErrors).toStrictEqual([])
 
     const button = wrapper.find('#cod-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
-
-    // Stub out a response from the Error endpoint in Pay API
-    get.withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({
-        data: {
-          detail: 'An error has occurred',
-          title: 'Error'
-        }
-      })))
 
     // click the File & Pay button
     // button.trigger('click')
@@ -1733,8 +1716,7 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     await vm.onClickFilePay()
 
     // verify an error has been received
-    expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)
-    expect(vm.bcolObj?.title?.length).toBeGreaterThan(0)
+    expect(vm.saveErrors).toStrictEqual([{ message: 'payment required' }])
 
     wrapper.destroy()
   })

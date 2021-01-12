@@ -1,4 +1,5 @@
 import { FilingTypes, PaymentMethod } from '@/enums'
+import { PaymentErrorIF } from '@/interfaces'
 
 /** A task item in the Todo List. */
 export interface TaskItemIF {
@@ -14,7 +15,7 @@ export interface TaskItemIF {
   paymentMethod?: PaymentMethod;
   paymentToken?: number;
   nextArDate?: string; // for AR Todo only
-  bcolErrObj?: any;
+  payErrorObj?: PaymentErrorIF;
   correctedFilingId?: number; // for correction only
   correctedFilingType?: string; // for correction only
   isEmptyFiling?: boolean; // for IA only

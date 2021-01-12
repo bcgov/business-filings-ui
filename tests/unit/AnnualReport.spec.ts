@@ -9,7 +9,6 @@ import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
-import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { shallowMount, createLocalVue, mount, Wrapper } from '@vue/test-utils'
 
 // Components
@@ -34,7 +33,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-describe('AnnualReport - Part 1 - UI', () => {
+describe('Annual Report - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -442,7 +441,7 @@ describe('AnnualReport - Part 1 - UI', () => {
   })
 })
 
-describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
+describe('Annual Report - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businesId = 'BC0007291'
@@ -647,7 +646,7 @@ describe('AnnualReport - Part 1B - UI (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
+describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -727,7 +726,7 @@ describe('AnnualReport - Part 2A - Resuming with FAS staff payment', () => {
   })
 })
 
-describe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
+describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -811,7 +810,7 @@ describe('AnnualReport - Part 2B - Resuming with BCOL staff payment', () => {
   })
 })
 
-describe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
+describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
     store.state.entityIncNo = 'CP0001191'
@@ -889,7 +888,7 @@ describe('AnnualReport - Part 2C - Resuming with No Fee staff payment', () => {
   })
 })
 
-describe('AnnualReport - Part 3 - Submitting', () => {
+describe('Annual Report - Part 3 - Submitting', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1172,7 +1171,7 @@ describe('AnnualReport - Part 3 - Submitting', () => {
   })
 })
 
-describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
+describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -1310,7 +1309,7 @@ describe('AnnualReport - Part 3B - Submitting (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 4 - Saving', () => {
+describe('Annual Report - Part 4 - Saving', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1457,7 +1456,7 @@ describe('AnnualReport - Part 4 - Saving', () => {
   })
 })
 
-describe('AnnualReport - Part 5 - Data', () => {
+describe('Annual Report - Part 5 - Data', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy: any
@@ -1731,7 +1730,7 @@ describe('AnnualReport - Part 5 - Data', () => {
   })
 })
 
-describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
+describe('Annual Report - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let spy: any
@@ -1882,7 +1881,7 @@ describe('AnnualReport - Part 5B - Data (BCOMP)', () => {
   })
 })
 
-describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
+describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   const { assign } = window.location
@@ -1915,19 +1914,13 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
     // mock "file post" endpoint
     const p1 = Promise.reject({
       response: {
-        status: BAD_REQUEST,
+        status: 400,
         data: {
           errors: [
-            {
-              error: 'err msg post',
-              path: 'swkmc/sckmr'
-            }
+            { error: 'err msg post' }
           ],
           warnings: [
-            {
-              warning: 'warn msg post',
-              path: 'swkmc/sckmr'
-            }
+            { warning: 'warn msg post' }
           ],
           filing: {
             annualReport: {
@@ -1954,27 +1947,18 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
-    sinon
-      .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings')
-      .returns(p1)
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
     const p2 = Promise.reject({
       response: {
-        status: BAD_REQUEST,
+        status: 400,
         data: {
           errors: [
-            {
-              error: 'err msg put',
-              path: 'swkmc/sckmr'
-            }
+            { error: 'err msg put' }
           ],
           warnings: [
-            {
-              warning: 'warn msg put',
-              path: 'swkmc/sckmr'
-            }
+            { warning: 'warn msg put' }
           ],
           filing: {
             annualReport: {
@@ -2001,10 +1985,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
       }
     })
     p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
-    sinon
-      .stub(axios, 'put')
-      .withArgs('businesses/CP0001191/filings/123')
-      .returns(p2)
+    sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -2115,7 +2096,7 @@ describe('AnnualReport - Part 6 - Error/Warning Dialogs', () => {
   })
 })
 
-describe('AnnualReport - Part 7 - Concurrent Saves', () => {
+describe('Annual Report - Part 7 - Concurrent Saves', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -2214,9 +2195,21 @@ describe('AnnualReport - Part 7 - Concurrent Saves', () => {
   })
 })
 
-describe('AnnualReport - BCOL error dialog on save', () => {
+describe('Annual Report - payment required error', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
+
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
 
   beforeEach(() => {
     // init store
@@ -2227,15 +2220,13 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 
-    // mock "file post" endpoint, with a BCOL error response
+    // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({
       response: {
-        status: PAYMENT_REQUIRED,
+        status: 402,
         data: {
           errors: [
-            {
-              payment_error_type: 'BCOL_ERROR'
-            }
+            { message: 'payment required' }
           ],
           filing: {
             annualReport: {
@@ -2255,19 +2246,15 @@ describe('AnnualReport - BCOL error dialog on save', () => {
               status: 'DRAFT',
               certifiedBy: 'Full Name',
               email: 'no_one@never.get',
-              filingId: 123
+              filingId: 123,
+              isPaymentActionRequired: true
             }
           }
         }
       }
     })
-
     p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
-
-    sinon
-      .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings')
-      .returns(p1)
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -2290,8 +2277,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
         ConfirmDialog: true,
         PaymentErrorDialog: true,
         ResumeErrorDialog: true,
-        SaveErrorDialog: true,
-        BcolErrorDialog: true
+        SaveErrorDialog: true
       },
       vuetify
     })
@@ -2303,7 +2289,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     wrapper.destroy()
   })
 
-  it('Attempt to file and pay with a BCOL error', async () => {
+  it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
@@ -2334,19 +2320,10 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(vm.bcolObj).toBeNull()
+    expect(vm.saveErrors).toStrictEqual([])
 
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
-
-    // Stub out a response from the Error endpoint in Pay API
-    get.withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({
-        data: {
-          detail: 'An error has occurred',
-          title: 'Error'
-        }
-      })))
 
     // click the File & Pay button
     // button.trigger('click')
@@ -2355,8 +2332,7 @@ describe('AnnualReport - BCOL error dialog on save', () => {
     await vm.onClickFilePay()
 
     // verify an error has been received
-    expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)
-    expect(vm.bcolObj?.title?.length).toBeGreaterThan(0)
+    expect(vm.saveErrors).toStrictEqual([{ message: 'payment required' }])
 
     wrapper.destroy()
   })

@@ -973,17 +973,23 @@ export default {
             // show spinner since the network calls below can take a few seconds
             this.$root.$emit('showSpinner', true)
 
-            // Fetch original Incorporation Application
+            // fetch original IA
             const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
 
-            // Create a Draft Incorporation Application Correction Filing
+            if (!iaFiling) {
+              throw new Error('Invalid API response')
+            }
+
+            // create draft IA Correction filing
             const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-            const draftCorrection = await this.createCorrection(this.getEntityIncNo, correctionIaFiling)
+            const draftCorrection = await this.createFiling(this.getEntityIncNo, correctionIaFiling, true)
+            const draftCorrectionId = +draftCorrection?.header?.filingId
 
-            // Retrieve the Filing ID from the newly created Draft
-            const draftCorrectionId = draftCorrection.header?.filingId
+            if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
+              throw new Error('Invalid API response')
+            }
 
-            // redirect to Edit web app to correct this Incorporation Application
+            // redirect to Edit web app to correct this IA
             // NB: no need to clear spinner on redirect
             const editUrl = sessionStorage.getItem('EDIT_URL')
             const correctionUrl = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`

@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import OnlineBankingPaymentPending from '@/components/Dashboard/TodoList/OnlineBankingPaymentPending.vue'
+import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-describe('Online Banking Payment Pending', () => {
+describe('Payment Pending Online Banking', () => {
   it('Displays expected content with no data', () => {
-    const wrapper = mount(OnlineBankingPaymentPending, { vuetify })
+    const wrapper = mount(PaymentPendingOnlineBanking, { vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Online Banking Payment Pending')
@@ -28,7 +28,7 @@ describe('Online Banking Payment Pending', () => {
   })
 
   it('Displays expected content with a filing', () => {
-    const wrapper = mount(OnlineBankingPaymentPending, { vuetify,
+    const wrapper = mount(PaymentPendingOnlineBanking, { vuetify,
       propsData: { filing: { draftTitle: 'Director Change' } }
     })
 

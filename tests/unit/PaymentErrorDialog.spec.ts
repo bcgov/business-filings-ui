@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount, mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { SaveErrorDialog } from '@/components/dialogs'
+import { PaymentErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -13,12 +13,12 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('Save Error Dialog', () => {
+describe('Payment Error Dialog', () => {
   it('displays generic message for normal users', () => {
     // init store
     store.state.keycloakRoles = []
 
-    const wrapper = shallowMount(SaveErrorDialog,
+    const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
           filingName: 'FILING',
@@ -28,15 +28,15 @@ describe('Save Error Dialog', () => {
         vuetify
       })
 
-    expect(wrapper.attributes('content-class')).toBe('save-error-dialog')
+    expect(wrapper.attributes('content-class')).toBe('payment-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to save FILING')
-    expect(wrapper.find('#dialog-text').text()).toContain('We were unable to save your FILING.')
-    expect(wrapper.find('#dialog-text').text()).toContain('If you exit this FILING,')
-    expect(wrapper.find('#dialog-text').text()).toContain('If this error persists, please contact us:')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('This FILING has been')
+    expect(wrapper.find('#dialog-text').text()).toContain('PayBC is normally available')
+    expect(wrapper.find('#dialog-text').text()).toContain('If this error persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('#dialog-exit-button')).toBeDefined()
-    expect(wrapper.find('#dialog-retry-button')).toBeDefined()
+    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -45,7 +45,7 @@ describe('Save Error Dialog', () => {
     // init store
     store.state.keycloakRoles = ['staff']
 
-    const wrapper = shallowMount(SaveErrorDialog,
+    const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
           filingName: 'FILING',
@@ -55,13 +55,15 @@ describe('Save Error Dialog', () => {
         vuetify
       })
 
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to save FILING')
-    expect(wrapper.find('#dialog-text').text()).toContain('We were unable to save your FILING.')
-    expect(wrapper.find('#dialog-text').text()).toContain('If you exit this FILING,')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('If this error persists, please contact us:')
+    expect(wrapper.attributes('content-class')).toBe('payment-error-dialog')
+    expect(wrapper.isVisible()).toBe(true)
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('This FILING has been')
+    expect(wrapper.find('#dialog-text').text()).not.toContain('PayBC is normally available')
+    expect(wrapper.find('#dialog-text').text()).not.toContain('If this error persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(false)
-    expect(wrapper.find('#dialog-exit-button')).toBeDefined()
-    expect(wrapper.find('#dialog-retry-button')).toBeDefined()
+    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -70,7 +72,7 @@ describe('Save Error Dialog', () => {
     // init store
     store.state.keycloakRoles = []
 
-    const wrapper = shallowMount(SaveErrorDialog,
+    const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
           dialog: true,
@@ -82,9 +84,10 @@ describe('Save Error Dialog', () => {
     const vm: any = wrapper.vm
 
     expect(vm.errors[0].error).toBe('error msg')
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to save Filing')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
     expect(wrapper.find('#dialog-text').text())
-      .toContain('We were unable to save your Filing due to the following errors:')
+      .toContain('We were unable to process your payment due to the following errors:')
     expect(wrapper.find('#dialog-text').text()).toContain('error msg')
     expect(wrapper.find('#dialog-ok-button')).toBeDefined()
 
@@ -92,7 +95,7 @@ describe('Save Error Dialog', () => {
   })
 
   it('displays warnings', () => {
-    const wrapper = shallowMount(SaveErrorDialog,
+    const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
           dialog: true,
@@ -104,7 +107,8 @@ describe('Save Error Dialog', () => {
     const vm: any = wrapper.vm
 
     expect(vm.warnings[0].warning).toBe('warning msg')
-    expect(wrapper.find('#dialog-title').text()).toBe('Filing saved with warnings')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
     expect(wrapper.find('#dialog-text').text()).toContain('Please note the following warnings:')
     expect(wrapper.find('#dialog-text').text()).toContain('warning msg')
     expect(wrapper.find('#dialog-ok-button')).toBeDefined()
@@ -116,7 +120,7 @@ describe('Save Error Dialog', () => {
     // init store
     store.state.keycloakRoles = []
 
-    const wrapper = mount(SaveErrorDialog,
+    const wrapper = mount(PaymentErrorDialog,
       {
         vuetify,
         store,
@@ -127,7 +131,7 @@ describe('Save Error Dialog', () => {
 
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-exit-button')
-    expect(exitButton.text()).toBe('Exit without saving')
+    expect(exitButton.text()).toBe('Back to My Dashboard')
     exitButton.trigger('click')
     await Vue.nextTick()
 
