@@ -2,52 +2,77 @@
 import { Component, Vue } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 
-// Interfaces
-import { CorrectionFilingIF } from '@/interfaces'
-
 /**
- * Mixin that provides the integration with the legal api.
+ * Mixin that provides integration with the Legal API.
  */
 @Component({})
 export default class LegalApiMixin extends Vue {
   /**
    * Fetches a filing by its id.
-   * @param businessId The business identifier
-   * @param filingId The filing identifier
-   * @returns a promise to return the filing
+   * @param businessId the business identifier (aka entity inc no)
+   * @param filingId the filing identifier
+   * @returns a promise to return the filing from the response
    */
   async fetchFilingById (businessId: string, filingId: number): Promise<any> {
     const url = `businesses/${businessId}/filings/${filingId}`
     return axios.get(url)
       .then(response => {
-        if (response && response.data) {
-          return response.data.filing
-        } else {
+        const filing = response?.data?.filing
+        if (!filing) {
           // eslint-disable-next-line no-console
           console.log('fetchFilingById() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
+        return filing
       })
   }
 
   /**
-   * Create a draft correction filing.
-   * @param businessId The business identifier
+   * Creates (posts) a filing.
+   * @param businessId the business identifier (aka entity inc no)
    * @param filing the object body of the request
-   * @returns a promise to return the filing
+   * @param isDraft whether this is a draft or whether to also file this filing
+   * @returns a promise to return the filing from the response
    */
-  async createCorrection (businessId: string, filing: CorrectionFilingIF): Promise<any> {
-    // Post base filing to filings endpoint
-    let url = `businesses/${businessId}/filings?draft=true`
+  async createFiling (businessId: string, filing: any, isDraft: boolean): Promise<any> {
+    let url = `businesses/${businessId}/filings`
+    if (isDraft) {
+      url += '?draft=true'
+    }
+    return axios.post(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('createFiling() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+        return filing
+      })
+  }
 
-    return axios.post(url, { filing }).then(response => {
-      const filing = response?.data?.filing
-      const filingId = +filing?.header?.filingId
-      if (!filing || !filingId) {
-        throw new Error('Invalid API response')
-      }
-
-      return filing
-    })
+  /**
+   * Updates (puts) a filing.
+   * @param businessId the business identifier (aka entity inc no)
+   * @param filing the object body of the request
+   * @param filingId the filing identifier
+   * @param isDraft whether this is a draft or whether to also file this filing
+   * @returns a promise to return the filing from the response
+   */
+  async updateFiling (businessId: string, filing: any, filingId: number, isDraft: boolean): Promise<any> {
+    let url = `businesses/${businessId}/filings/${filingId}`
+    if (isDraft) {
+      url += '?draft=true'
+    }
+    return axios.put(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('updateFiling() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+        return filing
+      })
   }
 }

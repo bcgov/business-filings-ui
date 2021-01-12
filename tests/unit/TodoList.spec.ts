@@ -13,9 +13,9 @@ import flushPromises from 'flush-promises'
 
 // Components
 import { DetailsList } from '@/components/common'
-import OnlineBankingPaymentPending from '@/components/Dashboard/TodoList/OnlineBankingPaymentPending.vue'
+import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
+import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentIncomplete from '@/components/Dashboard/TodoList/PaymentIncomplete.vue'
-import PaymentIncompleteBcol from '@/components/Dashboard/TodoList/PaymentIncompleteBcol.vue'
 import PaymentPaid from '@/components/Dashboard/TodoList/PaymentPaid.vue'
 import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsuccessful.vue'
 
@@ -658,7 +658,7 @@ describe('TodoList - UI', () => {
     await flushPromises()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentIncomplete).exists()).toBe(true)
+    expect(wrapper.find(PaymentPending).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -769,7 +769,7 @@ describe('TodoList - UI', () => {
     await flushPromises()
 
     // validate that child component exists
-    expect(wrapper.find(OnlineBankingPaymentPending).exists()).toBe(true)
+    expect(wrapper.find(PaymentPendingOnlineBanking).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -1850,9 +1850,9 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  it('captures BCOL error in todo list', async () => {
+  it('captures payment error in todo list', async () => {
     sessionStorage.setItem('PAY_API_URL', '')
-    // store a task with a filing associated to a BCOL error
+    // store a task with a filing associated to a payment error
     store.state.tasks = [
       {
         'task': {
@@ -1891,24 +1891,23 @@ describe('TodoList - Click Tests', () => {
     await flushPromises()
 
     // validate that todo item exists
-    const todoItem = vm.$el.querySelector('.bcol-error')
+    const todoItem = vm.$el.querySelector('.pay-error')
     expect(todoItem).toBeDefined()
 
     // validate the title and sub-title
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
-    expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
-    expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT UNSUCCESSFUL')
+    expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
 
     // click the View Details button
     wrapper.find('.expand-btn').trigger('click')
     await flushPromises()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentIncompleteBcol).exists()).toBe(true)
+    expect(wrapper.find(PaymentIncomplete).exists()).toBe(true)
 
     // confirm the message is visible after expansion panel clicked
-    const bcolPanel = vm.$el.querySelector('.payment-incomplete-bcol')
+    const bcolPanel = vm.$el.querySelector('.payment-incomplete')
     expect(bcolPanel.textContent).toContain('Payment Incomplete - Error')
     expect(bcolPanel.textContent).toContain('An error has occurred')
 

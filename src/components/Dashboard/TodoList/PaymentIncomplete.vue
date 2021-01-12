@@ -1,33 +1,39 @@
 <template>
-  <div class="payment-incomplete body-2">
-    <h4>Payment Incomplete</h4>
+  <div class="payment-incomplete body-2 pa-4 mb-2">
+    <h4>Payment Incomplete - {{title}}</h4>
 
-    <p>This filing is pending payment. The payment may still be in progress or may have been
-      interrupted for some reason.</p>
-
-    <p>You may continue this filing by selecting "Resume Payment".</p>
+    <p class="pt-3 mb-0" v-html="detail" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
-export default class PaymentIncomplete extends Vue {}
+export default class PaymentIncomplete extends Vue {
+  /** The subject filing. */
+  @Prop() private filing: any
+
+  /** The title of the subject filing. */
+  private get title (): string {
+    return this.filing?.payErrorObj?.title || ''
+  }
+
+  /** The detail of the subject filing. */
+  private get detail (): string {
+    return this.filing?.payErrorObj?.detail || ''
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+div {
+  background-color: #f1f1f1 !important;
+}
+
 h4 {
   letter-spacing: 0;
   font-size: 0.9375rem;
   font-weight: 700;
-}
-
-p:first-of-type {
-  padding-top: 0.75rem;
-}
-
-p {
-  margin-bottom: 0.5rem !important;
 }
 </style>

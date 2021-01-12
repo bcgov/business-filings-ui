@@ -1,24 +1,25 @@
 <template>
   <div id="correction">
     <confirm-dialog
-      ref="confirm"
       attach="#correction"
+      ref="confirm"
     />
 
     <load-correction-dialog
+      attach="#correction"
       :dialog="loadCorrectionDialog"
       @exit="navigateToDashboard(true)"
-      attach="#correction"
     />
 
     <resume-error-dialog
+      attach="#correction"
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
-      attach="#correction"
     />
 
     <save-error-dialog
-      filing="Correction"
+      attach="#correction"
+      filingName="Correction"
       :dialog="saveErrorDialog"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -26,13 +27,15 @@
       @exit="navigateToDashboard(true)"
       @retry="onClickFilePay()"
       @okay="resetErrors()"
-      attach="#correction"
     />
 
     <payment-error-dialog
-      :dialog="paymentErrorDialog"
-      @exit="navigateToDashboard(true)"
       attach="#correction"
+      filingName="Correction"
+      :dialog="paymentErrorDialog"
+      :errors="saveErrors"
+      :warnings="saveWarnings"
+      @exit="navigateToDashboard(true)"
     />
 
     <!-- Initial Page Load Transition -->
@@ -178,7 +181,7 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
-import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
+import { PAYMENT_REQUIRED } from 'http-status-codes'
 
 // Components
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -189,7 +192,7 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
+import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
   from '@/mixins'
 
 // Enums and Interfaces
@@ -199,7 +202,7 @@ import { StaffPaymentIF } from '@/interfaces'
 export default {
   name: 'Correction',
 
-  mixins: [DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin],
+  mixins: [CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin],
 
   components: {
     Certify,
@@ -623,66 +626,47 @@ export default {
         )
       }
 
-      if (this.filingId > 0) {
-        // we have a filing id, so we are updating an existing filing
-        let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
-        if (isDraft) {
-          url += '?draft=true'
+      try {
+        let response
+
+        if (this.filingId > 0) {
+          // we have a filing id, so update (put) an existing filing
+          let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+          if (isDraft) { url += '?draft=true' }
+          response = await axios.put(url, data)
+        } else {
+          // filing id is 0, so create (post) a new filing
+          let url = `businesses/${this.entityIncNo}/filings`
+          if (isDraft) { url += '?draft=true' }
+          response = await axios.post(url, data)
         }
-        let filing: any = null
-        await axios.put(url, data).then(res => {
-          if (!res || !res.data || !res.data.filing) {
-            throw new Error('Invalid API response')
-          }
-          filing = res.data.filing
-          this.haveChanges = false
-        }).catch(error => {
-          if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            this.paymentErrorDialog = true
-          } else if (error && error.response && error.response.status === BAD_REQUEST) {
-            if (error.response.data.errors) {
-              this.saveErrors = error.response.data.errors
-            }
-            if (error.response.data.warnings) {
-              this.saveWarnings = error.response.data.warnings
-            }
-            this.saveErrorDialog = true
-          } else {
-            this.saveErrorDialog = true
-          }
-        })
-        return filing
-      } else {
-        // filing id is 0, so we are saving a new filing
-        let url = `businesses/${this.entityIncNo}/filings`
-        if (isDraft) {
-          url += '?draft=true'
+
+        const filing = response?.data?.filing
+        if (!filing) {
+          throw new Error('Invalid API response')
         }
-        let filing: any = null
-        await axios.post(url, data).then(res => {
-          if (!res || !res.data || !res.data.filing) {
-            throw new Error('Invalid API response')
-          }
-          filing = res.data.filing
-          this.haveChanges = false
-        }).catch(error => {
-          if (error && error.response && error.response.status === PAYMENT_REQUIRED) {
-            // Changes were saved if a 402 is received. haveChanges flag is cleared.
-            this.haveChanges = false
-            this.paymentErrorDialog = true
-          } else if (error && error.response && error.response.status === BAD_REQUEST) {
-            if (error.response.data.errors) {
-              this.saveErrors = error.response.data.errors
-            }
-            if (error.response.data.warnings) {
-              this.saveWarnings = error.response.data.warnings
-            }
-            this.saveErrorDialog = true
-          } else {
-            this.saveErrorDialog = true
-          }
-        })
+
+        // clear flag
+        this.haveChanges = false
         return filing
+      } catch (error) {
+        this.saveErrors = error?.response?.data?.errors || []
+        this.saveWarnings = error?.response?.data?.warnings || []
+
+        if (error?.response?.status === PAYMENT_REQUIRED) {
+          // changes were saved if a 402 is received, so clear flag
+          this.haveChanges = false
+          this.paymentErrorDialog = true
+          // save succeeded, so return filing
+          return error?.response?.data?.filing
+        } else {
+          if (!this.isJestRunning) {
+            // eslint-disable-next-line no-console
+            console.log('saveFiling() error =', error)
+          }
+          this.saveErrorDialog = true
+          // save failed, so return null
+        }
       }
     },
 

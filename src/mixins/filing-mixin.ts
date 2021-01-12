@@ -92,7 +92,8 @@ export default class FilingMixin extends Vue {
   }
 
   /**
-   * Builds an Incorporation Application Correction filing body from IA filing. Used when creating a IA Correction.
+   * Builds an Incorporation Application Correction filing body from IA filing.
+   * Used when creating an IA Correction.
    * @returns the IA Correction filing body
    */
   buildIaCorrectionFiling (iaFiling: any): CorrectionFilingIF {

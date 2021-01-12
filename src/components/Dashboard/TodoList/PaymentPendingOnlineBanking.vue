@@ -22,7 +22,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
-export default class OnlineBankingPaymentPending extends Vue {
+export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
   @Prop() private filing: any
 

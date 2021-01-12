@@ -7,16 +7,33 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 describe('Payment Incomplete', () => {
-  it('Displays expected content', () => {
+  it('Displays expected content with no data', () => {
     const wrapper = mount(PaymentIncomplete, { vuetify })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Payment Incomplete')
+    expect(wrapper.find('h4').text()).toBe('Payment Incomplete -') // NB: no trailling space
 
-    const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('This filing is pending payment')
-    expect(paragraphs.at(1).text()).toContain('You may continue this filing')
+    expect(wrapper.find('p').text()).toBe('')
+
+    wrapper.destroy()
+  })
+
+  it('Displays expected content with a filing', () => {
+    const wrapper = mount(PaymentIncomplete, { vuetify,
+      propsData: {
+        filing: {
+          payErrorObj: {
+            title: 'Payment Error',
+            detail: 'Something went <i>wrong</i>.'
+          }
+        }
+      }
+    })
+
+    // verify content
+    expect(wrapper.find('h4').text()).toBe('Payment Incomplete - Payment Error')
+
+    expect(wrapper.find('p').text()).toBe('Something went wrong.')
 
     wrapper.destroy()
   })

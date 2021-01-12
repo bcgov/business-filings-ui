@@ -11,7 +11,6 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { BAD_REQUEST, PAYMENT_REQUIRED } from 'http-status-codes'
 import { configJson } from '@/resources/business-config'
 
 // suppress various warnings:
@@ -1700,19 +1699,13 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // mock "file post" endpoint
     const p1 = Promise.reject({
       response: {
-        status: BAD_REQUEST,
+        status: 400,
         data: {
           'errors': [
-            {
-              'error': 'err msg post',
-              'path': 'swkmc/sckmr'
-            }
+            { 'error': 'err msg post' }
           ],
           'warnings': [
-            {
-              'warning': 'warn msg post',
-              'path': 'swkmc/sckmr'
-            }
+            { 'warning': 'warn msg post' }
           ],
           'filing': {
             'changeOfAddress': {
@@ -1745,19 +1738,13 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // mock "file put" endpoint
     const p2 = Promise.reject({
       response: {
-        status: BAD_REQUEST,
+        status: 400,
         data: {
           'errors': [
-            {
-              'error': 'err msg put',
-              'path': 'swkmc/sckmr'
-            }
+            { 'error': 'err msg put' }
           ],
           'warnings': [
-            {
-              'warning': 'warn msg put',
-              'path': 'swkmc/sckmr'
-            }
+            { 'warning': 'warn msg put' }
           ],
           'filing': {
             'changeOfAddress': {
@@ -1792,7 +1779,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     sinon.restore()
   })
 
-  it('sets the required fields to display errors from the api after a post call', async () => {
+  it('sets the required fields to display errors from the api after a POST call', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -1844,7 +1831,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
   }
   )
 
-  it('sets the required fields to display errors from the api after a put call', async () => {
+  it('sets the required fields to display errors from the api after a PUT call', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -1897,7 +1884,19 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
   )
 })
 
-describe('Change of Directors - BCOL error dialog on save', () => {
+describe('Standalone Office Address Filing - payment required error', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
   beforeEach(() => {
     // init store
     store.state.currentDate = '2019-07-15'
@@ -1908,15 +1907,13 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 
-    // mock "file post" endpoint, with a BCOL error response
+    // mock "file post" endpoint, with a pay error response
     const p1 = Promise.reject({
       response: {
-        status: PAYMENT_REQUIRED,
+        status: 402,
         data: {
           errors: [
-            {
-              payment_error_type: 'BCOL_ERROR'
-            }
+            { message: 'payment required' }
           ],
           filing: {
             annualReport: {
@@ -1936,22 +1933,18 @@ describe('Change of Directors - BCOL error dialog on save', () => {
               status: 'DRAFT',
               certifiedBy: 'Full Name',
               email: 'no_one@never.get',
-              filingId: 123
+              filingId: 123,
+              isPaymentActionRequired: true
             }
           }
         }
       }
     })
-
     p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
-
-    sinon
-      .stub(axios, 'post')
-      .withArgs('businesses/CP0001191/filings')
-      .returns(p1)
+    sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 
-  it('Attempts to file and pay with a BCOL error', async () => {
+  it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
@@ -1979,7 +1972,6 @@ describe('Change of Directors - BCOL error dialog on save', () => {
         ConfirmDialog: true,
         PaymentErrorDialog: true,
         ResumeErrorDialog: true,
-        BcolErrorDialog: true,
         SaveErrorDialog: true
       },
       vuetify
@@ -2004,19 +1996,10 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(vm.bcolObj).toBeNull()
+    expect(vm.saveErrors).toStrictEqual([])
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
-
-    // Stub out a response from the Error endpoint in Pay API
-    get.withArgs('codes/errors/BCOL_ERROR')
-      .returns(new Promise(resolve => resolve({
-        data: {
-          detail: 'An error has occurred',
-          title: 'Error'
-        }
-      })))
 
     // click the File & Pay button
     // button.trigger('click')
@@ -2024,9 +2007,8 @@ describe('Change of Directors - BCOL error dialog on save', () => {
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 
-    // verify a bcol error message was retrieved
-    expect(vm.bcolObj?.detail?.length).toBeGreaterThan(0)
-    expect(vm.bcolObj?.title?.length).toBeGreaterThan(0)
+    // verify an error message was retrieved
+    expect(vm.saveErrors).toStrictEqual([{ message: 'payment required' }])
 
     wrapper.destroy()
   })
