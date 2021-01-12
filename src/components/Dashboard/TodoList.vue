@@ -97,7 +97,7 @@
                   <v-btn
                     class="expand-btn"
                     outlined
-                    color="blue darken-2"
+                    color="red darken-4"
                     :ripple=false
                     @click.stop="togglePanel(index)"
                   >
