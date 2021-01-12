@@ -368,7 +368,7 @@
         <v-expansion-panel-content>
           <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-          <template v-if="isPayError(task)">
+          <template v-if="isStatusDraft(task) && isPayError(task)">
             <payment-incomplete :filing=task />
           </template>
 
