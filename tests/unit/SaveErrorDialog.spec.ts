@@ -81,7 +81,7 @@ describe('Save Error Dialog', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.errors[0].error).toBe('error msg')
+    expect(vm.numErrors).toBe(1)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to save Filing')
     expect(wrapper.find('#dialog-text').text())
       .toContain('We were unable to save your Filing due to the following errors:')
@@ -103,7 +103,7 @@ describe('Save Error Dialog', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.warnings[0].warning).toBe('warning msg')
+    expect(vm.numWarnings).toBe(1)
     expect(wrapper.find('#dialog-title').text()).toBe('Filing saved with warnings')
     expect(wrapper.find('#dialog-text').text()).toContain('Please note the following warnings:')
     expect(wrapper.find('#dialog-text').text()).toContain('warning msg')

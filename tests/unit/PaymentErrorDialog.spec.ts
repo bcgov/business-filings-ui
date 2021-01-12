@@ -76,14 +76,14 @@ describe('Payment Error Dialog', () => {
       {
         propsData: {
           dialog: true,
-          errors: [{ error: 'error msg' }]
+          errors: [{ message: 'error msg' }]
         },
         store,
         vuetify
       })
     const vm: any = wrapper.vm
 
-    expect(vm.errors[0].error).toBe('error msg')
+    expect(vm.numErrors).toBe(1)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
     expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
     expect(wrapper.find('#dialog-text').text())
@@ -99,14 +99,14 @@ describe('Payment Error Dialog', () => {
       {
         propsData: {
           dialog: true,
-          warnings: [{ warning: 'warning msg' }]
+          warnings: [{ message: 'warning msg' }]
         },
         store,
         vuetify
       })
     const vm: any = wrapper.vm
 
-    expect(vm.warnings[0].warning).toBe('warning msg')
+    expect(vm.numWarnings).toBe(1)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
     expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
     expect(wrapper.find('#dialog-text').text()).toContain('Please note the following warnings:')
