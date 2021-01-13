@@ -37,13 +37,16 @@
         class="align-items-top todo-item"
         v-for="(task, index) in orderBy(taskItems, 'order')"
         :key="index"
-        :class="{ 'disabled': !task.enabled, 'pay-error': isPayError(task) }"
+        :class="{
+          'disabled': !task.enabled,
+          'pay-error': isStatusDraft(task) && isPayError(task)
+        }"
       >
         <v-expansion-panel-header class="no-dropdown-icon">
           <div class="list-item">
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
-                <v-btn v-if="(isTypeCorrection(task) || isTypeAlteration(task)) && isStatusDraft(task)"
+                <v-btn v-if="isStatusDraft(task) && (isTypeCorrection(task) || isTypeAlteration(task))"
                   class="expand-btn ml-0"
                   outlined
                   color="red"
@@ -400,12 +403,9 @@
             </div>
           </template>
 
-          <template v-else-if="isStatusPending(task) && isPayMethodOnlineBanking(task)">
-            <payment-pending-online-banking :filing=task />
-          </template>
-
           <template v-else-if="isStatusPending(task)">
-            <payment-pending />
+            <payment-pending-online-banking v-if="isPayMethodOnlineBanking(task)" :filing=task />
+            <payment-pending v-else />
           </template>
 
           <template v-else-if="isStatusError(task)">
@@ -549,10 +549,10 @@ export default {
       // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
       // This indicates that a new filing cannot be started because this item has to be completed first.
       this.$emit('has-blocker-task',
-        this.taskItems.filter(item => {
+        this.taskItems.find(item => {
           return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
             this.isStatusPaid(item) || this.isTypeCorrection(item) || this.isTypeAlteration(item))
-        }).length > 0
+        }) !== undefined
       )
     },
 
