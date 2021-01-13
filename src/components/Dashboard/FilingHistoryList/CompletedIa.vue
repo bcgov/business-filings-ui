@@ -6,10 +6,7 @@
     <p>Return to your Manage Businesses dashboard to access your business and file changes.</p>
 
     <div class="to-dashboard-container">
-      <v-btn
-        color="primary"
-        @click.native.stop="returnToDashboard()"
-      >
+      <v-btn color="primary" @click.native.stop="returnToDashboard()">
         <span>Return to Dashboard</span>
       </v-btn>
     </div>
