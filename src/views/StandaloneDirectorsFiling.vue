@@ -477,29 +477,33 @@ export default {
   },
 
   async mounted (): Promise<void> {
-    // initial value
-    // may be overwritten by resumed draft
-    this.initialCODDate = this.currentDate
+    // wait until entire view is rendered (including all child components)
+    // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
+    this.$nextTick(async () => {
+      // initial value
+      // may be overwritten by resumed draft
+      this.initialCODDate = this.currentDate
 
-    if (this.filingId > 0) {
-      this.loadingMessage = 'Resuming Your Director Change'
-      // resume draft filing
-      await this.fetchDraftFiling()
-      // fetch original directors
-      // update working data only if it wasn't in the draft
-      if (!this.isJestRunning) {
-        await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, isEmpty(this.updatedDirectors))
+      if (this.filingId > 0) {
+        this.loadingMessage = 'Resuming Your Director Change'
+        // resume draft filing
+        await this.fetchDraftFiling()
+        // fetch original directors
+        // update working data only if it wasn't in the draft
+        if (!this.isJestRunning) {
+          await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, isEmpty(this.updatedDirectors))
+        }
+      } else {
+        // this is a new filing
+        this.loadingMessage = 'Preparing Your Director Change'
+        // fetch original directors + update working data
+        if (!this.isJestRunning) {
+          await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, true)
+        }
       }
-    } else {
-      // this is a new filing
-      this.loadingMessage = 'Preparing Your Director Change'
-      // fetch original directors + update working data
-      if (!this.isJestRunning) {
-        await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, true)
-      }
-    }
 
-    this.dataLoaded = true
+      this.dataLoaded = true
+    })
   },
 
   destroyed (): void {

@@ -358,25 +358,29 @@ export default {
 
   /** Called when component is mounted. */
   async mounted (): Promise<void> {
-    if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Correction`
-    } else {
-      this.loadingMessage = `Preparing Your Correction`
-    }
+    // wait until entire view is rendered (including all child components)
+    // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
+    this.$nextTick(async () => {
+      if (this.filingId > 0) {
+        this.loadingMessage = `Resuming Your Correction`
+      } else {
+        this.loadingMessage = `Preparing Your Correction`
+      }
 
-    // first fetch original filing
-    // then fetch draft (which may overwrite some properties)
-    await this.fetchOrigFiling()
-    if (this.filingId > 0) {
-      await this.fetchDraftFiling()
-    }
+      // first fetch original filing
+      // then fetch draft (which may overwrite some properties)
+      await this.fetchOrigFiling()
+      if (this.filingId > 0) {
+        await this.fetchDraftFiling()
+      }
 
-    this.dataLoaded = true
+      this.dataLoaded = true
 
-    // always include correction code
-    // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.CORRECTION, this.staffPaymentData.isPriority,
-      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+      // always include correction code
+      // use existing Priority and Waive Fees flags
+      this.updateFilingData('add', FilingCodes.CORRECTION, this.staffPaymentData.isPriority,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    })
   },
 
   /** Called before routing away from this component. */
