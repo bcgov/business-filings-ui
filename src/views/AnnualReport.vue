@@ -516,36 +516,40 @@ export default {
     }
   },
 
-  async mounted (): Promise<void> {
-    if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
-      // resume draft filing
-      await this.fetchDraftFiling()
-      // fetch original office addresses and directors
-      // update working data only if it wasn't in the draft
-      if (!this.isJestRunning) {
-        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmpty(this.updatedAddresses))
-        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
+  mounted (): void {
+    // wait until entire view is rendered (including all child components)
+    // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
+    this.$nextTick(async () => {
+      if (this.filingId > 0) {
+        this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
+        // resume draft filing
+        await this.fetchDraftFiling()
+        // fetch original office addresses and directors
+        // update working data only if it wasn't in the draft
+        if (!this.isJestRunning) {
+          await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmpty(this.updatedAddresses))
+          await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
+        }
+      } else {
+        this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
+        // this is a new filing
+        // fetch original office addresses and directors + update working data
+        if (!this.isJestRunning) {
+          await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
+          await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+        }
       }
-    } else {
-      this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
-      // this is a new filing
-      // fetch original office addresses and directors + update working data
-      if (!this.isJestRunning) {
-        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
-        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+
+      this.dataLoaded = true
+
+      // for BComp, add AR filing code now
+      // for Coop, code is added when AGM Date becomes valid
+      // use existing Priority and Waive Fees flags
+      if (this.isBComp) {
+        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
+          (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
       }
-    }
-
-    this.dataLoaded = true
-
-    // for BComp, add AR filing code now
-    // for Coop, code is added when AGM Date becomes valid
-    // use existing Priority and Waive Fees flags
-    if (this.isBComp) {
-      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
-        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-    }
+    })
   },
 
   destroyed (): void {

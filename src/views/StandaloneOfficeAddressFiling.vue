@@ -335,29 +335,33 @@ export default {
   },
 
   async mounted (): Promise<void> {
-    // initial value
-    // since user cannot change it from the UI, this will always be "today"
-    this.coaDate = this.currentDate
+    // wait until entire view is rendered (including all child components)
+    // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
+    this.$nextTick(async () => {
+      // initial value
+      // since user cannot change it from the UI, this will always be "today"
+      this.coaDate = this.currentDate
 
-    if (this.filingId > 0) {
-      this.loadingMessage = 'Resuming Your Address Change'
-      // resume draft filing
-      await this.fetchDraftFiling()
-      // fetch original office addresses
-      // update working data only if it wasn't in the draft
-      if (!this.isJestRunning) {
-        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+      if (this.filingId > 0) {
+        this.loadingMessage = 'Resuming Your Address Change'
+        // resume draft filing
+        await this.fetchDraftFiling()
+        // fetch original office addresses
+        // update working data only if it wasn't in the draft
+        if (!this.isJestRunning) {
+          await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmpty(this.updatedAddresses))
+        }
+      } else {
+        // this is a new filing
+        this.loadingMessage = 'Preparing Your Address Change'
+        // fetch original office addresses + update working data
+        if (!this.isJestRunning) {
+          await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
+        }
       }
-    } else {
-      // this is a new filing
-      this.loadingMessage = 'Preparing Your Address Change'
-      // fetch original office addresses + update working data
-      if (!this.isJestRunning) {
-        await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
-      }
-    }
 
-    this.dataLoaded = true
+      this.dataLoaded = true
+    })
   },
 
   destroyed (): void {
