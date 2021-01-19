@@ -11,17 +11,20 @@ export default {
   currentDate (state, currentDate: string) {
     state.currentDate = currentDate
   },
-  lastAgmDate (state, lastAgmDate: string) {
-    state.lastAgmDate = lastAgmDate
-  },
   nextARDate (state, nextARDate: string) {
     state.nextARDate = nextARDate
   },
   nameRequest (state, nameRequest: object) {
     state.nameRequest = nameRequest
   },
-  ARFilingYear (state, ARFilingYear: number) {
-    state.ARFilingYear = ARFilingYear
+  ARFilingYear (state, year: number) {
+    state.ARFilingYear = year
+  },
+  arMinDate (state, date: string) {
+    state.arMinDate = date
+  },
+  arMaxDate (state, date: string) {
+    state.arMaxDate = date
   },
   entityBusinessNo (state, entityBusinessNo: string) {
     state.entityBusinessNo = entityBusinessNo
@@ -49,9 +52,6 @@ export default {
   },
   businessPhoneExtension (state, businessPhoneExtension: string) {
     state.businessPhoneExtension = businessPhoneExtension
-  },
-  lastPreLoadFilingDate (state, lastPreLoadFilingDate: string) {
-    state.lastPreLoadFilingDate = lastPreLoadFilingDate
   },
   currentFilingStatus (state, currentFilingStatus: FilingStatus) {
     state.currentFilingStatus = currentFilingStatus

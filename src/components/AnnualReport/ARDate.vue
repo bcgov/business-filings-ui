@@ -1,29 +1,32 @@
 <template>
-  <v-card flat class="ar-date-container">
+  <v-card flat class="ar-date-container" v-if="isBComp">
     <div class="timeline">
       <label>Annual Report Date</label>
-      <span class="date ar-date">{{this.toReadableDate(this.nextARDate)}}</span>
+      <span class="date ar-date">{{simpleDateToDisplayDate(nextARDate)}}</span>
       <label>Filing Date</label>
-      <span class="date file-date">Today ({{this.toReadableDate(new Date())}})</span>
+      <span class="date file-date">Today ({{simpleDateToDisplayDate(currentDate)}})</span>
     </div>
   </v-card>
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Component, Mixins } from 'vue-property-decorator'
+import { mapState, mapGetters } from 'vuex'
 
 // Mixins
 import { DateMixin } from '@/mixins'
 
 @Component({
   computed: {
-    ...mapState(['nextARDate'])
+    ...mapState(['nextARDate', 'currentDate']),
+    ...mapGetters(['isBComp'])
   }
 })
-export default class ArDate extends DateMixin {
+export default class ArDate extends Mixins(DateMixin) {
   readonly nextARDate!: string
+  readonly currentDate!: string
+  readonly isBComp!: boolean
 }
 </script>
 

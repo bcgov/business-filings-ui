@@ -9,6 +9,8 @@ export interface TaskItemIF {
   draftTitle?: string;
   subtitle?: string;
   ARFilingYear: number; // for AR only
+  arMinDate?: string; // for COOP AR only
+  arMaxDate?: string; // for COOP AR only
   status: string;
   enabled: boolean;
   order: number;

@@ -394,7 +394,7 @@ ul {
 
   span {
     width: 14rem;
-    color: #000014;
+    color: $app-almost-black;
     font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.1875rem;
@@ -410,6 +410,6 @@ ul {
 }
 
 .cease-btn {
-  color: #1876D2;
+  color: $BCgovIconBlue;
 }
 </style>

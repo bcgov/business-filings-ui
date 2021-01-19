@@ -327,8 +327,8 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
-import { EntityTypes, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { AlterationIF, BusinessIF, CorrectionFilingIF, FilingIF, HeaderIF, HistoryItemIF } from '@/interfaces'
+import { FilingStatus, FilingTypes, Routes } from '@/enums'
+import { FilingIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
@@ -375,6 +375,16 @@ export default {
     ...mapGetters(['getEntityIncNo', 'isBComp', 'isRoleStaff', 'nrNumber']),
 
     ...mapState(['filings', 'entityName', 'entityType']),
+
+    /** The Pay API URL string. */
+    payApiUrl (): string {
+      return sessionStorage.getItem('PAY_API_URL')
+    },
+
+    /** The Edit URL string. */
+    editUrl (): string {
+      return sessionStorage.getItem('EDIT_URL')
+    },
 
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
@@ -470,7 +480,7 @@ export default {
           const filingType = FilingTypes.ANNUAL_REPORT
           const agmYear = +date.slice(0, 4)
 
-          const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+          const filingDateTime = this.apiToSimpleDateTime(header.date)
           const filingDate = filingDateTime?.slice(0, 10)
 
           // build filing item
@@ -518,13 +528,13 @@ export default {
       if (header && incorporationApplication) {
         const filingType = FilingTypes.INCORPORATION_APPLICATION
 
-        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for Incorp App future effective filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
 
         // is this a Future Effective Incorp App?
         const isFutureEffectiveIa = !!filing.header.isFutureEffective
@@ -602,13 +612,13 @@ export default {
           subtitle = 'Share Structure'
         }
 
-        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for BCOMP COA filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
 
         // is this a Future Effective Incorp NOA?
         const isFutureEffectiveNoa = !!filing.header.isFutureEffective
@@ -662,13 +672,13 @@ export default {
       if (header && section) {
         const filingType = header.name
 
-        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for BCOMP COA filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
         const effectiveDate = effectiveDateTime?.slice(0, 10)
 
         // is this a BCOMP Future Effective Change of Address?
@@ -743,7 +753,7 @@ export default {
       const header = filing?.header
       const correction = filing?.correction
 
-      const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+      const filingDateTime = this.apiToSimpleDateTime(header.date)
       const filingDate = filingDateTime?.slice(0, 10)
 
       if (header && correction) {
@@ -752,7 +762,7 @@ export default {
           title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
-          filingDateTime: this.convertUTCTimeToLocalTime(header.date), // used for receipt
+          filingDateTime: this.apiToSimpleDateTime(header.date), // used for receipt
           filingDate,
           isCorrection: true,
           isPaid: (header.status === FilingStatus.PAID),
@@ -797,7 +807,7 @@ export default {
           title = this.filingTypeToName(filingType)
         }
 
-        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
         const filingYear = filingDate?.slice(0, 4)
 
@@ -832,13 +842,13 @@ export default {
 
         let subtitle = ''
 
-        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for BCOMP COA filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.convertUTCTimeToLocalTime(header.effectiveDate) || filingDateTime
+        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
 
         // is this a Future Effective Transition Filing?
         const isFutureEffectiveTransition = !!filing.header.isFutureEffective
@@ -896,7 +906,7 @@ export default {
           title = this.filingTypeToName(filingType)
         }
 
-        const filingDateTime = this.convertUTCTimeToLocalTime(header.date)
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
         const filingYear = filingDate?.slice(0, 4)
 
@@ -991,10 +1001,8 @@ export default {
 
             // redirect to Edit web app to correct this IA
             // NB: no need to clear spinner on redirect
-            const editUrl = sessionStorage.getItem('EDIT_URL')
-            const correctionUrl = `${editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
-            // assume Correction URL is always reachable
-            window.location.assign(correctionUrl)
+            const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
+            window.location.assign(correctionUrl) // assume URL is always reachable
           } catch (error) {
             // clear spinner on error
             this.$root.$emit('showSpinner', false)
@@ -1104,7 +1112,7 @@ export default {
       const config = {
         headers: { 'Accept': 'application/pdf' },
         responseType: 'blob' as 'json',
-        baseURL: sessionStorage.getItem('PAY_API_URL') + 'payment-requests/'
+        baseURL: this.payApiUrl + 'payment-requests/'
       }
 
       await axios.post(url, data, config).then(response => {

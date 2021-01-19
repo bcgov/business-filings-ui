@@ -76,7 +76,6 @@ import { mapState } from 'vuex'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 
 @Component({
-  mixins: [CommonMixin, CountriesProvincesMixin],
   computed: {
     ...mapState(['directors'])
   }

@@ -32,9 +32,13 @@ export default class PendingFiling extends Vue {
     return this.filing?.title || 'filing'
   }
 
+  /** The Manage Businesses URL string. */
+  private get manageBusinessesUrl (): string {
+    return sessionStorage.getItem('AUTH_URL') + 'business'
+  }
+
   private returnToDashboard (): void {
-    const businessesUrl = sessionStorage.getItem('BUSINESSES_URL') + 'business'
-    window.location.assign(businessesUrl)
+    window.location.assign(this.manageBusinessesUrl) // assume URL is always reachable
   }
 }
 </script>

@@ -1,9 +1,9 @@
 import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
-  /** Get the Current Date */
-  getCurrentDate (state): string {
-    return state.currentDate
+  /** The current year. */
+  currentYear (state): number {
+    return state.currentDate ? +state.currentDate.substring(0, 4) : 0
   },
 
   /** Get Entity Incorporation Number */
@@ -56,7 +56,7 @@ export default {
     return state.nameRequest?.nrNum || state.nameRequest?.nrNumber
   },
 
-  isAnnualReportEditable (state): boolean {
+  isCurrentFilingEditable (state): boolean {
     return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
   },
 
@@ -76,6 +76,7 @@ export default {
 
     for (let i = 0; i < state.filings.length; i++) {
       let filing = state.filings[i].filing
+      // NB: these dates are UTC
       let filingDate = filing.header.effectiveDate || filing.header.date
       filingDate = filingDate.slice(0, 10)
       if (filing.hasOwnProperty(FilingTypes.CHANGE_OF_DIRECTORS)) {
@@ -95,6 +96,7 @@ export default {
 
     for (let i = 0; i < state.filings.length; i++) {
       let filing = state.filings[i].filing
+      // NB: these dates are UTC
       let filingDate = filing.header.effectiveDate || filing.header.date
       filingDate = filingDate.slice(0, 10)
       if (filing.hasOwnProperty(FilingTypes.CHANGE_OF_ADDRESS)) {
@@ -114,6 +116,7 @@ export default {
 
     for (let i = 0; i < state.filings.length; i++) {
       let filing = state.filings[i].filing
+      // NB: these dates are UTC
       let filingDate = filing.header.effectiveDate || filing.header.date
       filingDate = filingDate.slice(0, 10)
       if (lastFilingDate === null || filingDate.split('-').join('') > lastFilingDate.split('-').join('')) {

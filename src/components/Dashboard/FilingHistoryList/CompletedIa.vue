@@ -25,16 +25,21 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class CompletedIa extends Vue {
   readonly entityName!: string
 
-  /** Determine the name for the entity.
-   * Use the entity name if it is available, otherwise build name for numbered company.
+  /**
+   * Determine the name for the entity.
+   * Use the entity name if it is available.
    */
   private get name (): string {
     return this.entityName || 'A numbered benefit company'
   }
 
+  /** The Manage Businesses URL string. */
+  private get manageBusinessesUrl (): string {
+    return sessionStorage.getItem('AUTH_URL') + 'business'
+  }
+
   private returnToDashboard (): void {
-    const businessesUrl = sessionStorage.getItem('BUSINESSES_URL') + 'business'
-    window.location.assign(businessesUrl)
+    window.location.assign(this.manageBusinessesUrl) // assume URL is always reachable
   }
 }
 </script>

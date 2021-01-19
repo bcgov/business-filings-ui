@@ -91,7 +91,6 @@ import { CommonMixin } from '@/mixins'
 import { AddressIF, OfficeAddressIF } from '@/interfaces'
 
 @Component({
-  mixins: [CommonMixin],
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress

@@ -128,7 +128,6 @@ import { EntityStatus, EntityTypes, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 
 @Component({
-  mixins: [CommonMixin, EnumMixin],
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
@@ -166,9 +165,24 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
+  /** The Edit URL string. */
+  private get editUrl (): string {
+    return sessionStorage.getItem('EDIT_URL')
+  }
+
+  /** The Business Profile URL string. */
+  private get businessProfileUrl (): string {
+    return sessionStorage.getItem('AUTH_URL') + 'businessprofile'
+  }
+
   /** The Incorporation Application's Temporary Registration Number string. */
   private get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
+
+  /** The Manage Businesses URL string. */
+  private get manageBusinessesUrl (): string {
+    return sessionStorage.getItem('AUTH_URL') + 'business'
   }
 
   /** The entity description. */
@@ -213,20 +227,13 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** Redirects the user to the Edit UI to view or change their company information. */
   private viewChangeCompanyInfo (): void {
-    const editUrl = sessionStorage.getItem('EDIT_URL')
-    const url = `${editUrl}${this.entityIncNo}/alteration`
-
-    // assume Edit URL is always reachable
-    window.location.assign(url)
+    const url = `${this.editUrl}${this.entityIncNo}/alteration`
+    window.location.assign(url) // assume URL is always reachable
   }
 
   /** Redirects the user to the Auth UI to update their business profile. */
   private editBusinessProfile (): void {
-    const authUrl = sessionStorage.getItem('AUTH_URL')
-    const businessProfileUrl = authUrl + 'businessprofile'
-
-    // assume Business Profile URL is always reachable
-    window.location.assign(businessProfileUrl)
+    window.location.assign(this.businessProfileUrl) // assume URL is always reachable
   }
 
   /** Downloads business summary PDF. */
@@ -246,7 +253,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       {
         text: 'Manage Businesses Dashboard',
         disabled: false,
-        href: `${sessionStorage.getItem('AUTH_URL')}business`
+        href: this.manageBusinessesUrl
       },
       {
         text: this.entityName || this.entityTypeToNumberedDescription(this.entityType),

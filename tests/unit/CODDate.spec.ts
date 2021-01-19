@@ -57,7 +57,6 @@ describe('CodDate for COOPS', () => {
   it('sets Min Date properly based on global properties', () => {
     // verify initial state
     expect(vm.$store.state.filings).toEqual([])
-    expect(vm.$store.state.lastPreLoadFilingDate).toBeNull()
 
     // verify default Min Date
     expect(vm.minDate).toBe('2018-03-01')
@@ -71,7 +70,6 @@ describe('CodDate for COOPS', () => {
 
     // cleanup
     store.state.filings = []
-    store.state.lastPreLoadFilingDate = null
   })
 
   it('sets Min Date to entity founding date if no filings are present', () => {
