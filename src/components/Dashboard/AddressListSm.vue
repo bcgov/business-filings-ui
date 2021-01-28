@@ -290,7 +290,7 @@ $icon-width: 2.75rem;
 }
 
 .v-list-item__subtitle {
-  line-height: 1.25rem;
+  line-height: 1.25rem !important;
 }
 
 .v-list-item__content {

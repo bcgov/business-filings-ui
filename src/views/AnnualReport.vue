@@ -66,74 +66,74 @@
             <article
               v-if="isCoop"
               class="annual-report-article"
-              :class="agmDate ? 'agm-date-selected' : 'no-agm-date-selected'"
             >
               <!-- Page Title -->
               <header>
                 <h1 id="AR-header">File {{ARFilingYear}} Annual Report
                   <span class="font-italic" v-if="reportState"> &mdash; {{reportState}}</span>
                 </h1>
-                <p>Please verify or change your Office Addresses and Directors.</p>
+                <p>Select your Annual General Meeting date, then verify or change your Office Addresses
+                  and Directors</p>
               </header>
 
-              <template v-if="isAnnualReportEditable">
-                <!-- Annual General Meeting Date -->
-                <section>
-                  <header>
-                    <h2 id="AR-step-1-header">1. Annual General Meeting Date</h2>
-                    <p>Select your Annual General Meeting (AGM) date.</p>
-                  </header>
-                  <agm-date
-                    :newAgmDate="newAgmDate"
-                    :newNoAgm="newNoAgm"
-                    :allowCOA="allowChange('coa')"
-                    :allowCOD="allowChange('cod')"
-                    @agmDate="onAgmDateChange($event)"
-                    @noAgm="onNoAgmChange($event)"
-                    @valid="onAgmDateValidChange($event)"
-                  />
-                </section>
+              <!-- Annual General Meeting Date -->
+              <section>
+                <header>
+                  <h2 id="AR-step-1-header">1. Annual General Meeting Date</h2>
+                  <p>Select your Annual General Meeting (AGM) date</p>
+                </header>
+                <agm-date
+                  :newAgmDate="newAgmDate"
+                  :newAgmExtension="newAgmExtension"
+                  :newNoAgm="newNoAgm"
+                  :allowCOA="allowChange('coa')"
+                  :allowCOD="allowChange('cod')"
+                  @agmDate="onAgmDateChange($event)"
+                  @agmExtension="onAgmExtensionChange($event)"
+                  @noAgm="onNoAgmChange($event)"
+                  @valid="onAgmDateValidChange($event)"
+                />
+              </section>
 
-                <!-- Registered Office Addresses -->
-                <section v-show="agmDate || noAgm">
-                  <header>
-                    <h2 id="AR-step-2-header">2. Registered Office Addresses
-                      <span class="as-of-date" v-if="agmDate">(as of {{ARFilingYear}} Annual General Meeting)</span>
-                      <span class="as-of-date" v-else>(as of {{asOfDate}})</span>
-                    </h2>
-                    <p>Verify or change your Registered Office Addresses.</p>
-                  </header>
-                  <office-addresses
-                    ref="officeAddressesComponent"
-                    :addresses.sync="updatedAddresses"
-                    :componentEnabled="allowChange('coa')"
-                    @original="originalAddresses=$event"
-                    @modified="officeModifiedEventHandler($event)"
-                    @valid="addressesFormValid=$event"
-                  />
-                </section>
+              <!-- Registered Office Addresses -->
+              <section v-show="agmDateValid">
+                <header>
+                  <h2 id="AR-step-2-header">2. Registered Office Addresses
+                    <span class="as-of-date" v-if="agmDate">(as of {{ARFilingYear}} Annual General Meeting)</span>
+                    <span class="as-of-date" v-else>(as of {{asOfDate}})</span>
+                  </h2>
+                  <p>Verify or change your Registered Office Addresses</p>
+                </header>
+                <office-addresses
+                  ref="officeAddressesComponent"
+                  :addresses.sync="updatedAddresses"
+                  :componentEnabled="allowChange('coa')"
+                  @original="originalAddresses=$event"
+                  @modified="officeModifiedEventHandler($event)"
+                  @valid="addressesFormValid=$event"
+                />
+              </section>
 
-                <!-- Directors -->
-                <section v-show="agmDate || noAgm">
-                  <header>
-                    <h2 id="AR-step-3-header">3. Directors</h2>
-                    <p v-if="allowChange('cod')">Tell us who was elected or appointed and who ceased to be
-                      a director at your {{ARFilingYear}} AGM.</p>
-                    <p v-else>This is your list of directors active as of {{asOfDate}}, including
-                      directors that were ceased at a later date.</p>
-                  </header>
-                  <directors
-                    ref="directorsComponent"
-                    :directors.sync="updatedDirectors"
-                    :componentEnabled="allowChange('cod')"
-                    @original="originalDirectors=$event"
-                    @directorsPaidChange="directorsPaidChange"
-                    @directorsFreeChange="directorsFreeChange"
-                    @directorFormValid="directorFormValid=$event"
-                    @directorEditAction="directorEditInProgress=$event"
-                  />
-                </section>
-              </template>
+              <!-- Directors -->
+              <section v-show="agmDateValid">
+                <header>
+                  <h2 id="AR-step-3-header">3. Directors</h2>
+                  <p v-if="allowChange('cod')">Tell us who was elected or appointed and who ceased to be
+                    a director at your {{ARFilingYear}} AGM</p>
+                  <p v-else>This is your list of directors active as of {{asOfDate}}, including
+                    directors that were ceased at a later date</p>
+                </header>
+                <directors
+                  ref="directorsComponent"
+                  :directors.sync="updatedDirectors"
+                  :componentEnabled="allowChange('cod')"
+                  @original="originalDirectors=$event"
+                  @directorsPaidChange="directorsPaidChange"
+                  @directorsFreeChange="directorsFreeChange"
+                  @directorFormValid="directorFormValid=$event"
+                  @directorEditAction="directorEditInProgress=$event"
+                />
+              </section>
             </article>
 
             <!-- BCOMP only: -->
@@ -146,7 +146,7 @@
                 <h1 id="AR-header-BC">File {{ARFilingYear}} Annual Report
                   <span style="font-style: italic" v-if="reportState"> &mdash; {{reportState}}</span>
                 </h1>
-                <p>Please review all the information before you file and pay.</p>
+                <p>Please review all the information before you file and pay</p>
               </header>
 
               <!-- these components are needed for fetching original office addresses and directors -->
@@ -189,11 +189,11 @@
             <!-- Both COOP and BCOMP: -->
 
             <!-- Certify -->
-            <section v-show="isBComp || agmDate || noAgm">
+            <section v-show="isBComp || agmDateValid">
               <header>
                 <h2 id="AR-step-4-header" v-if="isBComp">3. Certify</h2>
                 <h2 id="AR-step-4-header" v-else>4. Certify</h2>
-                <p>Enter the legal name of the person authorized to complete and submit this Annual Report.</p>
+                <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
               <certify
                 :isCertified.sync="isCertified"
@@ -205,7 +205,7 @@
             </section>
 
             <!-- Staff Payment -->
-            <section v-if="isRoleStaff" v-show="isBComp || agmDate || noAgm">
+            <section v-if="isRoleStaff" v-show="isBComp || agmDateValid">
               <header>
                 <h2 id="AR-step-5-header">5. Staff Payment</h2>
               </header>
@@ -239,7 +239,7 @@
     >
       <div class="buttons-left">
         <v-btn id="ar-save-btn" large
-          v-if="isAnnualReportEditable"
+          v-if="isCurrentFilingEditable"
           :disabled="busySaving"
           :loading="saving"
           @click="onClickSave()"
@@ -247,7 +247,7 @@
           <span>Save</span>
         </v-btn>
         <v-btn id="ar-save-resume-btn" large
-          v-if="isAnnualReportEditable"
+          v-if="isCurrentFilingEditable"
           :disabled="busySaving"
           :loading="savingResuming"
           @click="onClickSaveResume()"
@@ -261,7 +261,7 @@
           <template v-slot:activator="{ on }">
             <div v-on="on" class="d-inline">
               <v-btn
-                v-if="isAnnualReportEditable"
+                v-if="isCurrentFilingEditable"
                 id="ar-file-pay-btn"
                 color="primary"
                 large
@@ -381,8 +381,10 @@ export default {
     return {
       // properties for AgmDate component
       newAgmDate: null, // for resuming draft
+      newAgmExtension: null, // for resuming draft
       newNoAgm: null, // for resuming draft
       agmDate: null,
+      agmExtension: null,
       noAgm: null,
       agmDateValid: false,
 
@@ -431,11 +433,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'ARFilingYear', 'nextARDate', 'lastAgmDate', 'entityType', 'entityName',
-      'entityIncNo', 'entityFoundingDate', 'lastPreLoadFilingDate', 'directors', 'filingData']),
+    ...mapState(['currentDate', 'ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityType',
+      'entityName', 'entityIncNo', 'entityFoundingDate', 'directors', 'filingData']),
 
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isAnnualReportEditable', 'reportState', 'lastCOAFilingDate',
-      'lastCODFilingDate']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'reportState',
+      'lastCOAFilingDate', 'lastCODFilingDate', 'currentYear']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -443,19 +445,22 @@ export default {
         !this.saveErrorDialog && !this.paymentErrorDialog)
     },
 
-    /** The As Of date, used to query data, as Effective Date, and as Annual Report Date. */
+    /**
+     * The As Of date, used to query data, as Effective Date, and as Annual Report Date.
+     * (Depends on whether entity is a Coop or BComp.)
+     */
     asOfDate (): string {
-      // if AGM Date is set then use it
-      if (this.agmDate) return this.agmDate
-      // if filing is in past year then use last day in that year
-      if (this.ARFilingYear < this.currentYear) return `${this.ARFilingYear}-12-31`
-      // otherwise use current date (BCOMP only - should never happen for COOP)
+      if (this.isCoop) {
+        // if AGM Date is set then use it
+        if (this.agmDate) return this.agmDate
+        // if filing is in past year then use last day in that year
+        if (this.ARFilingYear < this.currentYear) return `${this.ARFilingYear}-12-31`
+      }
+      if (this.isBComp) {
+        return this.nextARDate
+      }
+      // should never get here
       return this.currentDate
-    },
-
-    /** The current year. */
-    currentYear (): number {
-      return this.currentDate ? +this.currentDate.substring(0, 4) : 0
     },
 
     certifyMessage (): string {
@@ -465,8 +470,19 @@ export default {
       return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
     },
 
+    /** The Pay API URL string. */
     payApiUrl (): string {
       return sessionStorage.getItem('PAY_API_URL')
+    },
+
+    /** The Auth URL string. */
+    authUrl (): string {
+      return sessionStorage.getItem('AUTH_URL')
+    },
+
+    /** The Base URL string. */
+    baseUrl (): string {
+      return sessionStorage.getItem('BASE_URL')
     },
 
     validated (): boolean {
@@ -506,33 +522,46 @@ export default {
       }
     }
 
-    // NB: filing id of 0 means "new AR"
-    // otherwise it's a draft AR filing id
-    this.filingId = +this.$route.params.filingId // number (may be NaN)
-
-    // if tombstone data isn't set, go back to dashboard
-    if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
-      this.$router.push({ name: Routes.DASHBOARD })
-    }
+    // Filing ID may be 0, N or NaN
+    this.filingId = +this.$route.params.filingId
   },
 
   mounted (): void {
+    // if tombstone data isn't set, go back to dashboard
+    if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
+      console.log('Annual Report error - missing Entity Inc No, AR Filing Year, or Filing ID!')
+      this.$router.push({ name: Routes.DASHBOARD })
+      return // don't continue
+    }
+    if (this.isCoop && (!this.arMinDate || !this.arMaxDate)) {
+      console.log('Annual Report error - missing AR Min Date or AR Max Date!')
+      this.$router.push({ name: Routes.DASHBOARD })
+      return // don't continue
+    }
+    if (this.isBComp && !this.nextARDate) {
+      console.log('Annual Report error - missing Next AR Date!')
+      this.$router.push({ name: Routes.DASHBOARD })
+      return // don't continue
+    }
+
     // wait until entire view is rendered (including all child components)
     // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
     this.$nextTick(async () => {
       if (this.filingId > 0) {
-        this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
         // resume draft filing
+        this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
         await this.fetchDraftFiling()
         // fetch original office addresses and directors
         // update working data only if it wasn't in the draft
         if (!this.isJestRunning) {
-          await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmpty(this.updatedAddresses))
+          const isEmptyAddresses =
+            (isEmpty(this.updatedAddresses.recordsOffice) && isEmpty(this.updatedAddresses.registeredOffice))
+          await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmptyAddresses)
           await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
         }
       } else {
-        this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
         // this is a new filing
+        this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
         // fetch original office addresses and directors + update working data
         if (!this.isJestRunning) {
           await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
@@ -649,7 +678,10 @@ export default {
           // otherwise asOfDate will be calculated some other way (see getter)
         }
 
-        // restore Change of Directors data
+        // restore AGM Extension flag
+        this.newAgmExtension = annualReport.agmExtension || false
+
+        // restore Change of Directors data (if it was saved)
         const changeOfDirectors = filing.changeOfDirectors
         if (changeOfDirectors) {
           if (changeOfDirectors.directors?.length > 0) {
@@ -663,7 +695,7 @@ export default {
           // leave existing directors intact
         }
 
-        // restore Change of Address data
+        // restore Change of Address data (if it was saved)
         const changeOfAddress = filing.changeOfAddress
         if (changeOfAddress) {
           // registered office is required
@@ -735,9 +767,14 @@ export default {
       this.agmDate = val
     },
 
+    onAgmExtensionChange (val: boolean) {
+      // only record changes once the initial data is loaded
+      this.haveChanges = this.dataLoaded
+      this.agmExtension = val
+    },
+
     onNoAgmChange (val: boolean) {
-      // when this is TRUE, As Of Date is "today"
-      // when this is FALSE, As Of Date is from date picker (see getter)
+      // either this property is True, or else AGM Date must be set
       // only record changes once the initial data is loaded
       this.haveChanges = this.dataLoaded
       this.noAgm = val
@@ -792,10 +829,8 @@ export default {
         // if payment action is required, redirect to Pay URL
         if (isPaymentActionRequired) {
           const paymentToken = filing.header.paymentToken
-          const baseUrl = sessionStorage.getItem('BASE_URL')
-          const returnUrl = encodeURIComponent(baseUrl + '?filing_id=' + filingId)
-          const authUrl = sessionStorage.getItem('AUTH_URL')
-          const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+          const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
+          const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later
@@ -830,8 +865,16 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate, // NB: API will reassign this date according to its clock
-          effectiveDate: this.convertLocalDateToUTCDateTime(this.asOfDate)
+          ARFilingYear: this.ARFilingYear,
+          effectiveDate: this.simpleDateToApi(this.asOfDate)
         }
+      }
+
+      // save AR min and max dates (COOP only)
+      // NB: save in local tz
+      if (this.isCoop) {
+        header.header['arMinDate'] = this.arMinDate
+        header.header['arMaxDate'] = this.arMaxDate
       }
 
       switch (this.staffPaymentData.option) {
@@ -867,8 +910,10 @@ export default {
         annualReport = {
           annualReport: {
             annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
+            // save AGM Extension as false if No AGM is true
+            agmExtension: (!this.noAgm && this.agmExtension) || false,
             didNotHoldAgm: this.noAgm || false,
-            annualReportDate: this.asOfDate,
+            annualReportDate: this.asOfDate, // use by COOP only
             // NB: there was an enrichment ticket to populate offices and directors here
             offices: {
               registeredOffice: this.updatedAddresses.registeredOffice
@@ -882,7 +927,7 @@ export default {
         annualReport = {
           annualReport: {
             annualReportDate: this.asOfDate,
-            nextARDate: this.dateToUsableString(new Date(this.nextARDate)),
+            nextARDate: this.nextARDate, // used by BCOMP only
             // NB: there was an enrichment ticket to populate offices and directors here
             offices: {
               registeredOffice: this.originalAddresses.registeredOffice,
@@ -993,9 +1038,7 @@ export default {
       if (type === 'cod') {
         earliestAllowedDate = this.lastCODFilingDate
       }
-      return Boolean(
-        this.agmDateValid && this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>=')
-      )
+      return Boolean(this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
     },
 
     hasAction (director, action) {

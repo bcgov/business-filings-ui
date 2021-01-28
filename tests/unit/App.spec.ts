@@ -219,7 +219,10 @@ describe('App as a COOP', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET business info from Auth API
     get.withArgs('CP0001191')
@@ -250,7 +253,6 @@ describe('App as a COOP', () => {
             identifier: 'CP0001191',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
             foundingDate: '2000-07-13T00:00:00+00:00',
-            lastAnnualGeneralMeetingDate: '2019-08-16',
             legalType: null
           }
         }
@@ -466,9 +468,7 @@ describe('App as a COOP', () => {
     expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
     expect(vm.$store.state.entityIncNo).toBe('CP0001191')
-    expect(vm.$store.state.lastPreLoadFilingDate).toBe('2019-08-14')
     expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.state.lastAgmDate).toBe('2019-08-16')
   })
 
   it('fetches Tasks properly', () => {
@@ -538,7 +538,10 @@ describe('App as a BCOMP', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET business info from Auth API
     get.withArgs('BC0007291')
@@ -568,7 +571,6 @@ describe('App as a BCOMP', () => {
             identifier: 'BC0007291',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
             foundingDate: '2000-07-13T00:00:00+00:00',
-            lastAnnualGeneralMeetingDate: '2019-08-16',
             legalType: null
           }
         }
@@ -739,9 +741,7 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
     expect(vm.$store.state.entityIncNo).toBe('BC0007291')
-    expect(vm.$store.state.lastPreLoadFilingDate).toBe('2019-08-14')
     expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.state.lastAgmDate).toBe('2019-08-16')
   })
 
   it('fetches Tasks properly', () => {
@@ -815,7 +815,10 @@ xdescribe('App as a Name Request', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
@@ -979,7 +982,10 @@ describe('App as a Draft IA with approved NR', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
@@ -1110,7 +1116,10 @@ describe('App as a Draft IA with conditional-not required', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
@@ -1227,7 +1236,10 @@ describe('App as a Draft IA with conditional-received NR', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
@@ -1344,7 +1356,10 @@ describe('App as a Draft IA with conditional-waived NR', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
@@ -1461,7 +1476,10 @@ describe('App as a Paid Incorporation Application', () => {
       })))
 
     // GET user info from auth API
-    get.withArgs('users/@me').returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')

@@ -19,7 +19,7 @@ describe('Enum Mixin', () => {
     await Vue.nextTick()
   })
 
-  it('returns correct values for filing status helpers', async () => {
+  it('returns correct values for filing status helpers', () => {
     expect(vm.isStatusCompleted({ status: 'COMPLETED' })).toBe(true)
     expect(vm.isStatusDraft({ status: 'DRAFT' })).toBe(true)
     expect(vm.isStatusEpoch({ status: 'EPOCH' })).toBe(true)
@@ -31,7 +31,7 @@ describe('Enum Mixin', () => {
     expect(vm.isStatusAlterationPending({ status: 'PENDING_ALTERATION' })).toBe(true)
   })
 
-  it('returns correct values for filing type helpers', async () => {
+  it('returns correct values for filing type helpers', () => {
     expect(vm.isTypeAlteration({ filingType: 'alteration' })).toBe(true)
     expect(vm.isTypeAnnualReport({ filingType: 'annualReport' })).toBe(true)
     expect(vm.isTypeCorrection({ filingType: 'correction' })).toBe(true)
@@ -39,7 +39,7 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeNameRequest({ filingType: 'nameRequest' })).toBe(true)
   })
 
-  it('returns correct values Entity Type to Numbered Description helper', async () => {
+  it('returns correct values Entity Type to Numbered Description helper', () => {
     expect(vm.entityTypeToNumberedDescription('BCC')).toBe('Numbered Company')
     expect(vm.entityTypeToNumberedDescription('CR')).toBe('Numbered Corporation')
     expect(vm.entityTypeToNumberedDescription('ULC')).toBe('Numbered Unlimited Liability Company')
@@ -48,7 +48,7 @@ describe('Enum Mixin', () => {
     expect(vm.entityTypeToNumberedDescription('')).toBe('Unknown')
   })
 
-  it('returns correct values Entity Type To Description helper', async () => {
+  it('returns correct values Entity Type To Description helper', () => {
     expect(vm.entityTypeToDescription('BCC')).toBe('BC Company')
     expect(vm.entityTypeToDescription('CR')).toBe('BC Corporation')
     expect(vm.entityTypeToDescription('ULC')).toBe('BC Unlimited Liability Company')
@@ -57,7 +57,7 @@ describe('Enum Mixin', () => {
     expect(vm.entityTypeToDescription('')).toBe('Unknown')
   })
 
-  it('returns correct values Filing Type To Name helper', async () => {
+  it('returns correct values Filing Type To Name helper', () => {
     expect(vm.filingTypeToName('annualReport', '2020')).toBe('Annual Report (2020)')
     expect(vm.filingTypeToName('changeOfAddress')).toBe('Address Change')
     expect(vm.filingTypeToName('changeOfDirectors')).toBe('Director Change')

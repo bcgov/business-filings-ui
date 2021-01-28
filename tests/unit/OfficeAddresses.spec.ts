@@ -185,10 +185,10 @@ describe('OfficeAddresses as a COOP', () => {
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
   })
 
-  it('has disabled Change button when disabled', () => {
+  it('has no Change button when component is disabled', () => {
     const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: false } })
 
-    expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('#reg-off-addr-change-btn').exists()).toBe(false)
   })
 })
 
@@ -418,9 +418,9 @@ describe('OfficeAddresses as a BCOMP', () => {
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
   })
 
-  it('has disabled Change button when disabled', () => {
+  it('has no Change button when component is disabled', () => {
     const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: false } })
 
-    expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('#reg-off-addr-change-btn').exists()).toBe(false)
   })
 })

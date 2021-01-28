@@ -1,53 +1,68 @@
 import { Component, Vue } from 'vue-property-decorator'
+import { mapState } from 'vuex'
+import { isDate } from 'lodash'
+
+const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
 /**
  * Mixin that provides some useful date utilities.
  */
-@Component({})
+@Component({
+  computed: {
+    ...mapState(['currentDate'])
+  }
+})
 export default class DateMixin extends Vue {
-  readonly MS_IN_A_DAY = (1000 * 60 * 60 * 24)
+  readonly currentDate!: string
 
   /**
-   * Converts a JavaScript date object to a simple date string.
-   * @param date The date to convert.
-   * @returns A simple date string formatted as YYYY-MM-DD.
+   * Converts a JavaScript date object to a simple date string (YYYY-MM-DD) in Pacific timezone.
+   * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
+   * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
+   * @example "2021-01-01 00:00:00 PST" -> "2021-01-01"
+   * @example "2021-01-01 23:59:59 PST" -> "2021-01-01"
    */
-  dateToUsableString (date: Date): string {
-    if (!date || date.toString() === 'Invalid Date') return null
+  dateToSimpleDate (date: Date): string {
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
 
     const yyyy = date.getFullYear().toString()
     const mm = (date.getMonth() + 1).toString().padStart(2, '0')
     const dd = date.getDate().toString().padStart(2, '0')
+
     return `${yyyy}-${mm}-${dd}`
   }
 
   /**
-   * Converts a number (YYYYMMDD) to a simple date string.
-   * @param n The number to convert.
-   * @returns A simple date string formatted as YYYY-MM-DD.
+   * Converts a number (YYYYMMDD) to a simple date string (YYYY-MM-DD).
+   * @example 20191231 -> "2019-12-31"
    */
-  numToUsableString (val: number | string): string {
-    if (!val || val.toString().length !== 8) return null
+  numToSimpleDate (num: number): string {
+    // safety check
+    if (num?.toString().length !== 8) return null
 
-    val = val.toString()
+    const str = num.toString()
 
-    const yyyy = val.substr(0, 4)
-    const mm = val.substr(4, 2)
-    const dd = val.substr(6, 2)
+    // get date parts
+    const yyyy = str.substr(0, 4)
+    const mm = str.substr(4, 2)
+    const dd = str.substr(6, 2)
+
     return `${yyyy}-${mm}-${dd}`
   }
 
   /**
-   * Compares simple date strings (YYYY-MM-DD).
-   * @param date1 The first date to compare.
-   * @param date2 The second date to compare.
-   * @param operator The operator to use for comparison.
-   * @returns The result of the comparison (true or false).
+   * Compares two simple date strings (YYYY-MM-DD).
+   * @param date1 the first date to compare
+   * @param date2 the second date to compare
+   * @param operator the operator to use for comparison
+   * @returns the result of the comparison (true or false)
    */
   compareDates (date1: string, date2: string, operator: string): boolean {
+    // safety check
     if (!date1 || !date2 || !operator) return true
 
-    // convert dates to numbers YYYYMMDD
+    // convert dates to numbers (YYYYMMDD)
     date1 = date1.split('-').join('')
     date2 = date2.split('-').join('')
 
@@ -55,32 +70,66 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Formats a simple date string (YYYY-MM-DD) to (Month Day, Year) for readability.
-   *
-   * @param date The date string to format.
-   * @returns The re-formatted date string without the day name.
+   * Returns the earliest of two simple date strings.
+   * @param date1 first date
+   * @param date2 second date
    */
-  toReadableDate (date: string): string {
-    // Cast to a workable dateString
-    // Split into an array.
-    let formatDate = (new Date(date).toDateString()).split(' ')
+  earliestDate (date1: string, date2: string): string {
+    // safety check
+    if (!date1 && !date2) return null
 
-    // Remove the 'weekday' from the array
-    // Join the array
-    // Add a comma to the date output.
-    const regex = / (?!.* )/
-    return formatDate.slice(1).join(' ').replace(regex, ', ')
+    // edge cases
+    if (!date1) return date2
+    if (!date2) return date1
+
+    return (this.compareDates(date1, date2, '<') ? date1 : date2)
   }
 
   /**
-     * API always returns the UTC date time in ISO format. This needs to be
-     * converted to local time zone. Consistently in API and UI, America/Vancouver
-     * is the timezone to be used.
-     */
-  convertUTCTimeToLocalTime (date: string): string {
-    if (!date) return null // safety check
+   * Returns the latest of two simple date strings.
+   * @param date1 first date
+   * @param date2 second date
+   */
+  latestDate (date1: string, date2: string): string {
+    // safety check
+    if (!date1 && !date2) return null
 
-    const UTCTime: string = date.slice(0, 19) + 'Z'
+    // edge cases
+    if (!date1) return date2
+    if (!date2) return date1
+
+    return (this.compareDates(date1, date2, '>') ? date1 : date2)
+  }
+
+  /**
+   * Converts a simple date string (YYYY-MM-DD) to the preferred display format (mmm dd, yyyy).
+   * @example "2020-01-01" -> "Jan 1, 2020"
+   */
+  simpleDateToDisplayDate (date: string): string {
+    // safety check
+    if (date?.length !== 10) return null
+
+    // split into its components (in absolute/UTC time)
+    // eg, "2020-01-01" -> "Wed, 01 Jan 2020 00:00:00 GMT"
+    const [weekday, day, month, year, time, tz] = (new Date(date).toUTCString()).split(' ')
+
+    // NB: convert day to number so that "01" -> "1"
+    return `${month} ${+day}, ${year}`
+  }
+
+  /**
+   * Converts an API datetime string (in UTC) to a simple date-time string (YYYY-MM-DD HH:MM:SS AM/PM)
+   * in Pacific timezone.
+   * @example "2021-01-01T00:00:00.000000+00:00" -> "2020-12-31 04:00:00 PM" (PST)
+   * @example "2021-07-01T00:00:00.000000+00:00" -> "2021-06-30 05:00:00 PM" (PDT)
+   */
+  apiToSimpleDateTime (date: string): string {
+    // safety check
+    if (!date) return null
+
+    // convert from API format
+    const utc = new Date(date.replace('+00:00', 'Z'))
+
     const options = {
       year: 'numeric',
       month: '2-digit',
@@ -92,49 +141,50 @@ export default class DateMixin extends Vue {
       timeZone: 'America/Vancouver'
     }
 
-    // locale 'en-CA' is the only one consistent between IE11 and other browsers
-    // example output: "2019-12-31 04:00:00 PM"
-    let localTime = new Intl.DateTimeFormat('en-CA', options).format(new Date(UTCTime))
+    // NB: locale 'en-CA' is the only one consistent between IE11 and other browsers
+    // eg, "2019-12-31 04:00:00 PM"
+    let pacific = new Intl.DateTimeFormat('en-CA', options).format(utc)
 
     // misc cleanup
-    localTime = localTime.replace(',', '')
-    localTime = localTime.replace('a.m.', 'AM')
-    localTime = localTime.replace('p.m.', 'PM')
+    pacific = pacific.replace(',', '')
+    pacific = pacific.replace('a.m.', 'AM')
+    pacific = pacific.replace('p.m.', 'PM')
 
     // fix for Jest (which outputs MM/DD/YYYY no matter which 'en' locale is used)
-    if (localTime.indexOf('/') >= 0) {
-      const date = localTime.substr(0, 10).split('/')
-      const time = localTime.slice(11)
+    if (pacific.indexOf('/') >= 0) {
+      const date = pacific.substr(0, 10).split('/')
+      const time = pacific.slice(11)
       // set as YYYY-MM-DD HH:MM:SS AM/PM
-      localTime = `${date[2]}-${date[0]}-${date[1]} ${time}`
+      pacific = `${date[2]}-${date[0]}-${date[1]} ${time}`
     }
 
-    return localTime
+    return pacific
   }
 
   /**
-    * API always expects the datetime in  UTC ISO format.
-    * This function expects date (YYYY-MM-DD) without time.
-    * It converts to UTC ISO datetime.
-    */
-  convertLocalDateToUTCDateTime (date: string): string {
-    if (!date || date.length !== 10) return null // safety check
+   * Converts a simple date string (YYYY-MM-DD) to an API datetime string (in UTC).
+   * @example "2021-01-01" -> 2021-01-01T08:00:00+00:00" // PST
+   * @example "2021-07-01" -> 2021-07-01T07:00:00+00:00" // PDT
+   */
+  simpleDateToApi (date: string): string {
+    // safety check
+    if (date?.length !== 10) return null
 
     // make sure the date is in correct format
     if (date.indexOf('/') >= 0) {
       date = date.replace('/', '-')
     }
 
-    // date object with local timezone
-    // if date=2020-08-26 and the local timezone is GMT-0700 (Pacific Daylight Time)
-    // localDate will be `Wed Aug 26 2020 00:00:00 GMT-0700 (Pacific Daylight Time)`
-    const localDate = new Date(date + 'T00:00:00')
-    let isoDate = localDate.toISOString() // "2020-08-26T07:00:00.000Z"
-    if (isoDate.endsWith('.000Z')) {
-      isoDate = isoDate.replace('.000Z', '+00:00') // API expects timezone in this format.
-    }
+    // create date using local timezone
+    // eg, if `date` is "2020-08-26" and the local timezone is PDT
+    // then `iso` will be "2020-08-26T07:00:00.000Z"
+    const iso = new Date(date + 'T00:00:00').toISOString()
 
-    return isoDate // "2020-08-26T07:00:00+00:00"
+    // convert to API format
+    // eg "2020-08-26T07:00:00.000Z" -> "2020-08-26T07:00:00+00:00"
+    const api = iso.replace('.000Z', '+00:00')
+
+    return api
   }
 
   /**
@@ -145,10 +195,12 @@ export default class DateMixin extends Vue {
    * @returns NaN in case of error
    */
   daysFromToday (date: string): number {
+    // safety check
     if (!date) return NaN
+
     // calculate difference between start of "today" and start of "date" (in local time)
-    const todayLocalMs = new Date().setHours(0, 0, 0, 0)
+    const todayLocalMs = new Date(this.currentDate).setHours(0, 0, 0, 0)
     const dateLocalMs = new Date(date).setHours(0, 0, 0, 0)
-    return Math.round((dateLocalMs - todayLocalMs) / this.MS_IN_A_DAY)
+    return Math.round((dateLocalMs - todayLocalMs) / MS_IN_A_DAY)
   }
 }

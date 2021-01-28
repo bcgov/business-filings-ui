@@ -1,20 +1,19 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import Vuelidate from 'vuelidate'
 import { getVuexStore } from '@/store'
 import { shallowMount } from '@vue/test-utils'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 
 Vue.use(Vuetify)
-Vue.use(Vuelidate)
 
 const store = getVuexStore()
 
-describe('AnnualReport - Part 1 - UI', () => {
-  beforeEach(() => {
+describe('AnnualReport - UI', () => {
+  beforeAll(() => {
     // init store
     store.state.currentDate = '2019-07-15'
-    store.state.nextARDate = '2020-09-18T23:15:53.785045+00:00'
+    store.state.nextARDate = '2020-09-18'
+    store.state.entityType = 'BEN'
   })
 
   it('initializes the store variables properly', () => {
@@ -22,7 +21,7 @@ describe('AnnualReport - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     expect(vm.$store.state.currentDate).toEqual('2019-07-15')
-    expect(vm.$store.state.nextARDate).toEqual('2020-09-18T23:15:53.785045+00:00')
+    expect(vm.$store.state.nextARDate).toEqual('2020-09-18')
 
     wrapper.destroy()
   })
@@ -30,11 +29,9 @@ describe('AnnualReport - Part 1 - UI', () => {
   it('succeeds when the Annual report date outputs are correct', () => {
     const wrapper = shallowMount(ArDate, { store })
     const vm: any = wrapper.vm
-    const regex = / (?!.* )/
-    const today = new Date().toDateString().split(' ').slice(1).join(' ').replace(regex, ', ')
 
     expect(vm.$el.querySelector('.ar-date').textContent).toContain('Sep 18, 2020')
-    expect(vm.$el.querySelector('.file-date').textContent).toContain(`Today (${today})`)
+    expect(vm.$el.querySelector('.file-date').textContent).toContain(`Today (Jul 15, 2019)`)
 
     wrapper.destroy()
   })

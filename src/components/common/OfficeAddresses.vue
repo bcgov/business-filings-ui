@@ -34,8 +34,7 @@
                     text
                     id="reg-off-addr-change-btn"
                     small
-                    v-if="!showAddressForm"
-                    :disabled="!componentEnabled"
+                    v-if="!showAddressForm && componentEnabled"
                     @click="showAddressForm=true"
                   >
                     <v-icon small>mdi-pencil</v-icon>

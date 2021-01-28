@@ -289,7 +289,7 @@ export default {
     /** Returns date of original filing in format "yyyy-mm-dd". */
     originalFilingDate (): string | null {
       if (this.origFiling && this.origFiling.header && this.origFiling.header.date) {
-        const localDateTime: string = this.convertUTCTimeToLocalTime(this.origFiling.header.date)
+        const localDateTime: string = this.apiToSimpleDateTime(this.origFiling.header.date)
         return localDateTime.split(' ')[0]
       }
       return null
@@ -306,9 +306,19 @@ export default {
       return 4096 - this.defaultComment.length - 1
     },
 
-    /** Returns Pay API URL. */
+    /** The Pay API URL string. */
     payApiUrl (): string {
       return sessionStorage.getItem('PAY_API_URL')
+    },
+
+    /** The Auth URL string. */
+    authUrl (): string {
+      return sessionStorage.getItem('AUTH_URL')
+    },
+
+    /** The Base URL string. */
+    baseUrl (): string {
+      return sessionStorage.getItem('BASE_URL')
     },
 
     /** Returns True if page is valid, else False. */
@@ -538,10 +548,8 @@ export default {
         // if this is a regular user, redirect to Pay URL
         if (!this.isRoleStaff) {
           const paymentToken: string = filing.header.paymentToken
-          const baseUrl: string = sessionStorage.getItem('BASE_URL')
-          const returnUrl: string = encodeURIComponent(baseUrl + '?filing_id=' + filingId)
-          const authUrl: string = sessionStorage.getItem('AUTH_URL')
-          const payUrl: string = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+          const returnUrl: string = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
+          const payUrl: string = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later

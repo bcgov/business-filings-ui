@@ -22,7 +22,7 @@
           <v-list-item-title class="body-2">
             <strong v-if="!isRoleStaff">Registry Staff</strong>
             <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
-            ({{convertUTCTimeToLocalTime(comment.timestamp)}})
+            ({{apiToSimpleDateTime(comment.timestamp)}})
           </v-list-item-title>
           <v-list-item-subtitle class="body-2">
             <div class="pre-line">{{comment.comment}}</div>

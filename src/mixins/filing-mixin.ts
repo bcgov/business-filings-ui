@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { CorrectionFilingIF, FilingDataIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
 
@@ -8,8 +8,7 @@ import { EntityTypes, FilingCodes, FilingTypes } from '@/enums'
  */
 @Component({
   computed: {
-    ...mapState(['filingData', 'entityType']),
-    ...mapGetters(['getCurrentDate'])
+    ...mapState(['currentDate', 'filingData', 'entityType'])
   },
   methods: {
     ...mapActions(['setFilingData'])
@@ -19,8 +18,8 @@ export default class FilingMixin extends Vue {
   // store actions
   readonly setFilingData!: (x: any) => void
 
-  // store getters
-  readonly getCurrentDate!: string
+  // store states
+  readonly currentDate!: string
   readonly filingData!: Array<FilingDataIF>
   readonly entityType!: EntityTypes
 
@@ -101,7 +100,7 @@ export default class FilingMixin extends Vue {
       header: {
         name: FilingTypes.CORRECTION,
         certifiedBy: iaFiling.header.certifiedBy,
-        date: this.getCurrentDate
+        date: this.currentDate
       },
       business: {
         legalType: iaFiling.business.legalType,

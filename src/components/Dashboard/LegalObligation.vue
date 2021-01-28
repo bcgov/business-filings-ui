@@ -68,10 +68,11 @@ export default class LegalObligation extends Vue {
 
   private get detailInfoURL () {
     return 'https://www2.gov.bc.ca/gov/content/employment-business/business/' +
-    'managing-a-business/permits-licences/businesses-incorporated-companies/' +
-    'incorporated-companies/make-changes'
+      'managing-a-business/permits-licences/businesses-incorporated-companies/' +
+      'incorporated-companies/make-changes'
   }
 
+  /** The Incorporation Application's Temporary Registration Number string. */
   private get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }

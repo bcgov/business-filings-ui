@@ -8,16 +8,19 @@ export interface TaskItemIF {
   title: string;
   draftTitle?: string;
   subtitle?: string;
-  ARFilingYear: number; // for AR only
+  ARFilingYear: number; // for ARs only
+  arMinDate?: string; // for COOP ARs only
+  arMaxDate?: string; // for COOP ARs only
   status: string;
   enabled: boolean;
   order: number;
   paymentMethod?: PaymentMethod;
   paymentToken?: number;
-  nextArDate?: string; // for AR Todo only
+  nextArDate?: string; // for BCOMP ARs only
+  arDueDate?: string; // for BCOMP ARs only
   payErrorObj?: PaymentErrorIF;
-  correctedFilingId?: number; // for correction only
-  correctedFilingType?: string; // for correction only
-  isEmptyFiling?: boolean; // for IA only
-  nameRequest?: any; // for IA only
+  correctedFilingId?: number; // for Corrections only
+  correctedFilingType?: string; // for Corrections only
+  isEmptyFiling?: boolean; // for IAs only
+  nameRequest?: any; // for IAs only
 }

@@ -1,68 +1,114 @@
 <template>
-  <v-card flat class="agm-date-container">
+  <v-card flat id="agm-date-container" v-if="isCoop">
     <div class="meta-container">
       <label>Annual General<br>Meeting Date</label>
 
-      <v-form ref="form" class="value date">
-        <v-menu
-          ref="menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          max-width="290"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              data-test-id="agm-date-text"
-              v-model="dateText"
-              :disabled="noAgm"
-              :rules="agmDateRules"
-              label="Annual General Meeting Date"
-              placeholder="Select your Annual General Meeting Date"
-              prepend-icon="mdi-calendar"
-              v-on="on"
-              readonly
-              filled
+      <div>
+        <v-form ref="form" class="value date">
+          <!-- date picker -->
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            nudge-right="50"
+            transition="scale-transition"
+            max-width="290"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                data-test-id="agm-date-text"
+                class="pt-0"
+                v-model="dateText"
+                :disabled="noAgm"
+                :rules="agmDateRules"
+                label="Annual General Meeting Date"
+                placeholder="Select your Annual General Meeting Date"
+                append-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                filled
+              />
+            </template>
+            <v-date-picker
+              data-test-id="agm-date-picker"
+              v-model="datePicker"
+              :min=arMinDate
+              :max=arMaxDate
+              no-title
+              @input="menu=false"
+              @change="onDatePickerChanged($event)"
             />
-          </template>
-          <v-date-picker
-            data-test-id="agm-date-picker"
-            v-model="datePicker"
-            :min=minDate
-            :max=maxDate
-            no-title
-            @input="menu=false"
-            @change="onDatePickerChanged($event)"
-          />
-        </v-menu>
+          </v-menu>
 
-        <!-- only display this info if a date has been selected -->
-        <div class="validationErrorInfo" v-if="dateText">
-          <span v-if="!allowCOA && !allowCOD">
-            You can not change your Registered Office Addresses or Directors in this Annual Report because your AGM
-            predates another filing that may have conflicting changes.
-          </span>
-          <span v-else-if="!allowCOA">
-            You can not change your Registered Office Addresses in this Annual Report because your AGM predates another
-            filing that may have conflicting changes.
-          </span>
-          <span v-else-if="!allowCOD">
-            You can not change your Directors in this Annual Report because your AGM predates another
-            filing that may have conflicting changes.
-          </span>
-        </div>
-      </v-form>
+          <!-- restriction messages -->
+          <!-- date must have been selected first -->
+          <div v-if="dateText" class="restriction-messages mt-4">
+            <span v-if="!allowCOA && !allowCOD">
+              You cannot change your Registered Office Addresses or Directors in this Annual Report
+              because your AGM predates another filing that may have conflicting changes.
+            </span>
+            <span v-else-if="!allowCOA">
+              You cannot change your Registered Office Addresses in this Annual Report because your AGM
+              predates another filing that may have conflicting changes.
+            </span>
+            <span v-else-if="!allowCOD">
+              You cannot change your Directors in this Annual Report because your AGM predates another
+              filing that may have conflicting changes.
+            </span>
+          </div>
+        </v-form>
+
+        <!-- special AGM Extension message and checkbox -->
+        <v-expand-transition>
+          <div v-if="showAgmExtensionCheckbox" class="agm-extension-container mt-4">
+            <p>The selected Annual General Meeting date is beyond April 30, 2021 and would have required
+              an extension of the Annual General Meeting date.</p>
+            <p>The Registrar granted an extension for all Cooperatives that wished to extend their Annual
+              General Meeting (AGM) up to and including October 31, 2021. You did not need to make an
+              application to the Registrar to request an extension of your AGM; however, you must have
+              informed your members that the AGM date was extended.</p>
+
+            <v-checkbox
+              id="agm-extension-checkbox"
+              v-model="agmExtension"
+              hide-details
+              @change="onAgmExtensionChanged($event)"
+            >
+              <template slot="label">
+                <span class="font-weight-bold">The Cooperative Association extended its Annual General Meeting
+                  date and notified its members of this extension (required for this date selection)</span>
+              </template>
+            </v-checkbox>
+          </div>
+        </v-expand-transition>
+
+        <!-- No AGM checkbox -->
+        <v-checkbox v-if="showNoAgmCheckbox"
+          id="no-agm-checkbox"
+          v-model="noAgm"
+          hide-details
+          :label=noAgmLabel
+          @change="onNoAgmCheckboxChanged($event)"
+        />
+
+        <!-- No AGM message -->
+        <v-expand-transition>
+          <div v-if="noAgm" class="no-agm-container d-flex align-start mt-4">
+            <v-icon color="primary">mdi-information-outline</v-icon>
+
+            <div class="ml-3">
+              <p>A general meeting of every association must be held at least once in every calendar year
+                within 4 months after the end of its financial year, to be in compliance with the Cooperative
+                Association Act (Section 143).</p>
+              <p>You can continue your filing, and there is no fee enforced by BC Registries and Online
+                Services for being out of compliance with legislation. However, it is important to hold a valid
+                AGM in the next calendar year to be in compliance with the Cooperative Association Act.</p>
+            </div>
+          </div>
+        </v-expand-transition>
+      </div>
     </div>
-
-    <!-- don't show checkbox in current year -->
-    <v-checkbox id="agm-checkbox"
-      v-if="this.ARFilingYear && this.ARFilingYear < this.currentYear"
-      v-model="noAgm"
-      :label=checkBoxLabel
-      @change="onCheckboxChanged($event)"
-    />
   </v-card>
 </template>
 
@@ -73,11 +119,10 @@ import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
 
 @Component({
-  mixins: [DateMixin],
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['ARFilingYear', 'currentDate', 'lastPreLoadFilingDate', 'lastAnnualReportDate']),
-    ...mapGetters(['lastFilingDate'])
+    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'currentDate', 'lastAnnualReportDate']),
+    ...mapGetters(['currentYear', 'lastFilingDate', 'isCoop'])
   }
 })
 export default class AgmDate extends Mixins(DateMixin) {
@@ -88,93 +133,86 @@ export default class AgmDate extends Mixins(DateMixin) {
     form: FormIF
   }
 
-  // Prop passed into this component.
+  /** New AGM Date (from a resumed draft). */
   @Prop({ default: null })
-  private newAgmDate: string | null
+  private newAgmDate: string
 
+  /** New AGM Extension flag (from a resumed draft). */
   @Prop({ default: null })
-  private newNoAgm: string | null
+  private newAgmExtension: boolean
 
+  /** New No AGM flag (from a resumed draft). */
+  @Prop({ default: null })
+  private newNoAgm: boolean
+
+  /** Whether to allow changing the addresses. */
   @Prop({ default: true })
   private allowCOA: boolean
 
+  /** Whether to allow changing the directors. */
   @Prop({ default: true })
   private allowCOD: boolean
 
   // Local properties.
-  private dateText: string = '' // value in text field
-  private datePicker: string = '' // value in date picker
-  private menu: boolean = false // whether calendar menu is visible
-  private noAgm: boolean = false // whether checkbox is checked
-  private backupDate: string = '' // for toggling No AGM
+  private dateText = '' // value in text field
+  private datePicker = '' // value in date picker
+  private menu = false // whether calendar menu is visible
+  private agmExtension = false // whether checkbox is checked
+  private noAgm = false // whether checkbox is checked
+  private backupDate = '' // for toggling No AGM
 
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
   readonly ARFilingYear!: number
+  readonly arMinDate!: string
+  readonly arMaxDate!: string
   readonly currentDate!: string
-  readonly lastPreLoadFilingDate!: string
-  readonly lastFilingDate!: string
   readonly lastAnnualReportDate!: string
+  readonly currentYear!: number
+  readonly lastFilingDate!: string
+  readonly isCoop!: boolean
 
-  /**
-   * The array of validations rules for the AGM Date text field.
-   */
+  /** The array of validations rule(s) for the AGM Date text field. */
   private get agmDateRules (): Array<Function> {
     return [
       v => this.noAgm || !!v || 'An Annual General Meeting date is required.'
     ]
   }
 
-  /**
-   * The label for the checkbox.
-   */
-  private get checkBoxLabel (): string {
-    return 'We did not hold an Annual General Meeting in ' + this.ARFilingYear
+  /** The label for the No AGM checkbox. */
+  private get noAgmLabel (): string {
+    return `We did not hold an Annual General Meeting for our ${this.ARFilingYear} Financial Year`
   }
 
-  /**
-   * The maximum date that can be entered.
-   */
-  private get maxDate (): string {
-    /*
-     * If filing is in past year then use last day in that year,
-     * otherwise use current date.
-     */
-    return (this.ARFilingYear < this.currentYear) ? `${this.ARFilingYear}-12-31` : this.currentDate
+  /** Whether to show the AGM Extension checkbox. */
+  private get showAgmExtensionCheckbox (): boolean {
+    // don't show if No AGM is checked
+    // a date must be entered
+    // applies only to 2020 ARs
+    // show if entered date is past normal max AGM date
+    return (
+      !this.noAgm &&
+      !!this.dateText &&
+      (this.ARFilingYear === 2020) &&
+      this.compareDates(this.dateText, '2021-04-30', '>')
+    )
   }
 
-  /**
-   * The minimum date that can be entered.
-   */
-  private get minDate (): string {
-    /*
-     * Determine the latest of the following dates:
-     * - the first day of the AR filing year
-     * - the last Annual Report date
-     */
-    const firstDayOfYear = +`${this.ARFilingYear}-01-01`.split('-').join('')
-    const lastAnnualReportDate = this.lastAnnualReportDate ? +this.lastAnnualReportDate.split('-').join('') : 0
-    return this.numToUsableString(Math.max(firstDayOfYear, lastAnnualReportDate))
+  /** Whether to show the No AGM checkbox. */
+  private get showNoAgmCheckbox (): boolean {
+    if (!this.ARFilingYear) return false // safety check
+    // only show checkbox if 'today' is past max AGM date
+    const max = `${this.ARFilingYear}-04-30`
+    return (this.compareDates(this.currentDate, max, '>'))
   }
 
-  /**
-   * The current year.
-   */
-  private get currentYear (): number {
-    return this.currentDate ? +this.currentDate.substring(0, 4) : 0
-  }
-
-  /**
-   * Called when component is mounted.
-   */
+  /** Called when component is mounted. */
   private mounted (): void {
-    // initialize date picker but not text field
-    this.datePicker = this.newAgmDate || this.maxDate
+    // set date picker but not text field
+    this.datePicker = this.newAgmDate || this.arMaxDate
   }
 
-  /**
-   * Called when prop changes (ie, due to resuming a draft).
-   */
+  /** Called when prop changes (ie, due to resuming a draft). */
   @Watch('newAgmDate')
   private onNewAgmDateChanged (val: string): void {
     // always update text field
@@ -186,9 +224,17 @@ export default class AgmDate extends Mixins(DateMixin) {
     this.emitValid()
   }
 
-  /**
-   * Called when prop changes (ie, due to resuming a draft)
-   */
+  /** Called when prop changes (ie, due to resuming a draft) */
+  @Watch('newAgmExtension')
+  private onNewAgmExtension (val: boolean): void {
+    // update model value
+    this.agmExtension = val
+    // update parent
+    this.emitAgmExtension()
+    this.emitValid()
+  }
+
+  /** Called when prop changes (ie, due to resuming a draft) */
   @Watch('newNoAgm')
   private onNewNoAgmChanged (val: boolean): void {
     // update model value
@@ -198,9 +244,7 @@ export default class AgmDate extends Mixins(DateMixin) {
     this.emitValid()
   }
 
-  /**
-   * Called when date picker changes.
-   */
+  /** Called when date picker changes. */
   private onDatePickerChanged (val: string): void {
     // update text field
     this.dateText = val
@@ -209,10 +253,15 @@ export default class AgmDate extends Mixins(DateMixin) {
     this.emitValid()
   }
 
-  /**
-   * Called when checkbox changes.
-   */
-  private onCheckboxChanged (val: boolean): void {
+  /** Called when AGM Extension checkbox changes. */
+  private onAgmExtensionChanged (val: boolean): void {
+    // update parent
+    this.emitAgmExtension()
+    this.emitValid()
+  }
+
+  /** Called when checkbox changes. */
+  private onNoAgmCheckboxChanged (val: boolean): void {
     if (val) {
       // save and clear text field
       this.backupDate = this.dateText
@@ -229,17 +278,19 @@ export default class AgmDate extends Mixins(DateMixin) {
     this.emitValid()
   }
 
-  /**
-   * Emits an event with the new value of AGM Date (from text field, which may be empty).
-   */
+  /** Emits an event with the new value of AGM Date (from text field, which may be empty). */
   @Emit('agmDate')
   private emitAgmDate (): string {
     return this.dateText
   }
 
-  /**
-   * Emits an event with the new value of No AGM.
-   */
+  /** Emits an event with the new value of No AGM. */
+  @Emit('agmExtension')
+  private emitAgmExtension (): boolean {
+    return this.agmExtension
+  }
+
+  /** Emits an event with the new value of No AGM. */
   @Emit('noAgm')
   private emitNoAgm (): boolean {
     return this.noAgm
@@ -251,26 +302,23 @@ export default class AgmDate extends Mixins(DateMixin) {
    */
   @Emit('valid')
   private emitValid (): boolean {
-    return this.noAgm || !!this.dateText
+    // valid if checkbox is not applicable, or is checked
+    const validAgmExtension = (!this.showAgmExtensionCheckbox || this.agmExtension)
+    // valid if No AGM was checked, or a date was entered and AGM extension is valid
+    return (this.noAgm || (!!this.dateText && validAgmExtension))
   }
 }
 </script>
 
 <style lang="scss" scoped>
-// @import "@/assets/styles/theme.scss";
+@import "@/assets/styles/theme.scss";
 
-.agm-date-container {
+#agm-date-container {
   padding: 1.25rem;
 }
 
-.validationErrorInfo {
+.restriction-messages {
   color: red;
-}
-
-.value.date {
-  .v-text-field {
-    min-width: 25rem;
-  }
 }
 
 .meta-container {
@@ -278,25 +326,58 @@ export default class AgmDate extends Mixins(DateMixin) {
   flex-flow: column nowrap;
   position: relative;
 
-  > label:first-child {
+  > label {
     font-weight: 700;
     margin-bottom: 2rem;
   }
+
+  > div {
+    width: 100%;
+  }
+}
+
+.v-form {
+  max-width: 27rem;
 }
 
 @media (min-width: 768px) {
   .meta-container {
     flex-flow: row nowrap;
 
-    > label:first-child {
+    > label {
       flex: 0 0 auto;
-      padding-right: 2rem;
       width: 12rem;
+    }
+
+    > div {
+      margin-left: 2rem;
     }
   }
 }
 
-::v-deep .v-input--checkbox .v-label {
-  color: rgba(0,0,0,0.87);
+@media (min-width: 960px) {
+  .v-form {
+    max-width: 25rem;
+  }
+}
+
+.agm-extension-container {
+  padding: 1.125rem;
+  font-size: 1rem;
+  line-height: normal;
+  background-color: $app-bg-gray;
+}
+
+// reduce date input height when there are no error messages
+::v-deep .v-text-field:not(.error--text) {
+  margin-bottom: -30px;
+}
+
+::v-deep .v-input--checkbox {
+  padding-top: 0;
+
+  .v-label {
+    color: rgba(0,0,0,0.87);
+  }
 }
 </style>

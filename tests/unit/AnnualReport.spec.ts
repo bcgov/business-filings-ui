@@ -39,6 +39,8 @@ describe('Annual Report - Part 1 - UI', () => {
     store.state.businessId = 'CP0001191'
     store.state.entityIncNo = 'CP0001191'
     store.state.ARFilingYear = 2017
+    store.state.arMinDate = '2017-01-01'
+    store.state.arMaxDate = '2018-04-30'
     store.state.currentFilingStatus = 'NEW'
     store.state.entityType = 'CP'
   })
@@ -163,7 +165,6 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables address component when agm date < last COA', () => {
-    store.state.lastPreLoadFilingDate = '2019-02-10'
     store.state.filings = [
       {
         filing: {
@@ -197,8 +198,7 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('has no effect on address component when last COA is null and agm date < lastPreLoadFilingDate', () => {
-    store.state.lastPreLoadFilingDate = '2019-02-10'
+  it('has no effect on address component when last COA is null', () => {
     store.state.filings = []
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
@@ -220,7 +220,6 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables directors component agm date < lastCOD', () => {
-    store.state.lastPreLoadFilingDate = '2019-02-10'
     store.state.filings = [
       {
         filing: {
@@ -254,8 +253,7 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component when last COD is null and agm date < lastPreLoadFilingDate', () => {
-    store.state.lastPreLoadFilingDate = '2019-02-10'
+  it('disables directors component when last COD is null', () => {
     store.state.filings = []
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
@@ -447,7 +445,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     store.state.businesId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.ARFilingYear = 2018
-    store.state.nextARDate = '2019-09-26T00:00:00+00:00'
+    store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
     store.state.entityType = 'BEN'
   })
@@ -490,7 +488,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     expect(vm.$store.state.entityIncNo).toEqual('BC0007291')
     expect(vm.$store.state.entityType).toEqual('BEN')
     expect(vm.$store.state.ARFilingYear).toEqual(2018)
-    expect(vm.$store.state.nextARDate).toEqual('2019-09-26T00:00:00+00:00')
+    expect(vm.$store.state.nextARDate).toEqual('2018-09-26')
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
 
     // check titles and sub-titles
@@ -1191,7 +1189,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     store.state.entityName = 'Legal Name - BC0007291'
     store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
-    store.state.nextARDate = '2019-09-26T00:00:00+00:00'
+    store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
     store.state.registeredAddress = {}
     store.state.recordsAddress = {}
@@ -1213,7 +1211,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
               filing: {
                 annualReport: {
                   annualReportDate: '2019-09-21',
-                  nextARDate: '2019-09-20'
+                  nextARDate: '2018-09-20'
                 },
                 business: {
                   cacheId: 1,
@@ -1745,7 +1743,7 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
     store.state.currentDate = '2018-09-26'
-    store.state.nextARDate = '2019-09-26T00:00:00+00:00'
+    store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
     store.state.registeredAddress = {}
     store.state.recordsAddress = {}

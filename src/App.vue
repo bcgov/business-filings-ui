@@ -108,7 +108,6 @@ export default {
       nameRequestAuthErrorDialog: false,
       nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
-      currentDateTimerId: null as number,
       localNrNumber: null as string,
 
       /** Whether to show the alternate loading spinner. */
@@ -143,6 +142,11 @@ export default {
       return sessionStorage.getItem('AUTH_API_URL')
     },
 
+    /** The BCROS Home URL string. */
+    bcrosHomeUrl (): string {
+      return sessionStorage.getItem('BUSINESSES_URL')
+    },
+
     /** The Business ID string. */
     businessId (): string {
       return sessionStorage.getItem('BUSINESS_ID')
@@ -174,8 +178,9 @@ export default {
 
     /** True if user is authenticated. */
     isAuthenticated (): boolean {
+      const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
       // FUTURE: also check that token isn't expired!
-      return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+      return Boolean(keycloakToken)
     },
 
     /** The About text. */
@@ -185,9 +190,6 @@ export default {
   },
 
   created (): void {
-    // init current date
-    this.updateCurrentDate()
-
     // listen for dashboard reload trigger events
     this.$root.$on('triggerDashboardReload', () => this.fetchData())
 
@@ -216,27 +218,9 @@ export default {
   methods: {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
-      'setEntityBusinessNo', 'setEntityIncNo', 'setLastPreLoadFilingDate', 'setEntityFoundingDate', 'setLastAgmDate',
-      'setNextARDate', 'setTasks', 'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors',
-      'setLastAnnualReportDate', 'setConfigObject', 'setNameRequest']),
-
-    /** Stores today's date and sets timeout to keep it updated. */
-    updateCurrentDate (): void {
-      // clear previous timeout, if any
-      clearTimeout(this.currentDateTimerId)
-
-      // set current date
-      const now = new Date()
-      const date = this.dateToUsableString(now)
-      this.setCurrentDate(date)
-
-      // set timeout to run this again at midnight
-      const hoursToMidnight = 23 - now.getHours()
-      const minutesToMidnight = 59 - now.getMinutes()
-      const secondsToMidnight = 59 - now.getSeconds()
-      const timeout = ((((hoursToMidnight * 60) + minutesToMidnight) * 60) + secondsToMidnight) * 1000
-      this.currentDateTimerId = setTimeout(this.updateCurrentDate, timeout)
-    },
+      'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
+      'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
+      'setConfigObject', 'setNameRequest']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -272,6 +256,14 @@ export default {
     async fetchData (): Promise<void> {
       this.dataLoaded = false
 
+      // store today's date every time the dashboard is loaded
+      // FUTURE: get from API to prevent users spoofing their date
+      {
+        const now = new Date()
+        const date = this.dateToSimpleDate(now)
+        this.setCurrentDate(date)
+      }
+
       try {
         // get Keycloak roles
         const jwt = this.getJWT()
@@ -297,9 +289,9 @@ export default {
       try {
         const userInfo = await this.getUserInfo()
         await this.updateLaunchDarkly(userInfo)
-      } catch (error) {
+      } catch (err) {
         // just log the error -- no need to halt app
-        console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
+        console.log('Launch Darkly update error =', err) // eslint-disable-line no-console
       }
 
       // is this a business entity?
@@ -365,9 +357,9 @@ export default {
 
     /** Gets Keycloak JWT and parses it. */
     getJWT (): any {
-      const token = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-      if (token) {
-        return this.parseToken(token)
+      const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
+      if (keycloakToken) {
+        return this.parseToken(keycloakToken)
       }
       throw new Error('Error getting Keycloak token')
     },
@@ -416,7 +408,9 @@ export default {
 
     /** Fetches current user info. */
     async getUserInfo (): Promise<any> {
-      const config = { baseURL: this.authApiUrl }
+      const config = {
+        baseURL: this.authApiUrl
+      }
       return axios.get('users/@me', config)
         .then(response => {
           if (response?.data) return response.data
@@ -474,29 +468,13 @@ export default {
       if (business) {
         this.setEntityName(business.legalName)
         this.setEntityType(business.legalType)
-        this.setNextARDate(business.nextAnnualReport)
         this.setEntityStatus(business.status)
         this.setEntityBusinessNo(business.taxId)
         this.setEntityIncNo(business.identifier)
-        this.setLastPreLoadFilingDate(business.lastLedgerTimestamp
-          ? business.lastLedgerTimestamp.split('T')[0] : null)
         this.setEntityFoundingDate(business.foundingDate) // datetime
         this.setLastAnnualReportDate(business.lastAnnualReport)
 
         this.storeConfigObject(business.legalType)
-
-        const date = business.lastAnnualGeneralMeetingDate
-        if (
-          date &&
-          date.length === 10 &&
-          date.indexOf('-') === 4 &&
-          date.indexOf('-', 5) === 7 &&
-          date.indexOf('-', 8) === -1
-        ) {
-          this.setLastAgmDate(date)
-        } else {
-          this.setLastAgmDate(null)
-        }
       } else {
         throw new Error('Invalid entity info')
       }
@@ -697,10 +675,7 @@ export default {
 
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
-      // redirect to Business Registry home page
-      const businessesUrl = sessionStorage.getItem('BUSINESSES_URL')
-      // assume Businesses URL is always reachable
-      window.location.assign(businessesUrl)
+      window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
     },
 
     /** Handles Retry click event from dialogs. */

@@ -342,7 +342,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
 import { StaffPaymentIF } from '@/interfaces'
 
 export default {
@@ -430,8 +430,19 @@ export default {
       return (this.saving || this.savingResuming || this.filingPaying)
     },
 
+    /** The Pay API URL string. */
     payApiUrl (): string {
       return sessionStorage.getItem('PAY_API_URL')
+    },
+
+    /** The Auth URL string. */
+    authUrl (): string {
+      return sessionStorage.getItem('AUTH_URL')
+    },
+
+    /** The Base URL string. */
+    baseUrl (): string {
+      return sessionStorage.getItem('BASE_URL')
     },
 
     isPayRequired (): boolean {
@@ -466,17 +477,18 @@ export default {
       }
     }
 
-    // NB: filing id of 0 means "new"
-    // otherwise it's a draft filing id
-    this.filingId = +this.$route.params.filingId // number (may be NaN)
-
-    // if tombstone data isn't set, go back to dashboard
-    if (!this.entityIncNo || isNaN(this.filingId)) {
-      this.$router.push({ name: Routes.DASHBOARD })
-    }
+    // Filing ID may be 0, N or NaN
+    this.filingId = +this.$route.params.filingId
   },
 
   async mounted (): Promise<void> {
+    // if tombstone data isn't set, go back to dashboard
+    if (!this.entityIncNo || isNaN(this.filingId)) {
+      console.log('Standalone Directors Filing error - missing Entity Inc No or Filing ID!')
+      this.$router.push({ name: Routes.DASHBOARD })
+      return // don't continue
+    }
+
     // wait until entire view is rendered (including all child components)
     // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
     this.$nextTick(async () => {
@@ -485,8 +497,8 @@ export default {
       this.initialCODDate = this.currentDate
 
       if (this.filingId > 0) {
-        this.loadingMessage = 'Resuming Your Director Change'
         // resume draft filing
+        this.loadingMessage = 'Resuming Your Director Change'
         await this.fetchDraftFiling()
         // fetch original directors
         // update working data only if it wasn't in the draft
@@ -587,9 +599,9 @@ export default {
 
         // restore COD Date
         if (filing.header.effectiveDate) {
-          this.initialCODDate = this.convertUTCTimeToLocalTime(filing.header.effectiveDate).slice(0, 10)
+          this.initialCODDate = this.apiToSimpleDateTime(filing.header.effectiveDate).slice(0, 10)
         } else if (filing.header.date) {
-          this.initialCODDate = this.convertUTCTimeToLocalTime(filing.header.date).slice(0, 10)
+          this.initialCODDate = this.apiToSimpleDateTime(filing.header.date).slice(0, 10)
         } else {
           throw new Error('Missing effective date')
         }
@@ -673,10 +685,8 @@ export default {
         // if payment action is required, redirect to Pay URL
         if (isPaymentActionRequired) {
           const paymentToken = filing.header.paymentToken
-          const baseUrl = sessionStorage.getItem('BASE_URL')
-          const returnUrl = encodeURIComponent(baseUrl + '?filing_id=' + filingId)
-          const authUrl = sessionStorage.getItem('AUTH_URL')
-          const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+          const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
+          const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
           // assume Pay URL is always reachable
           // otherwise, user will have to retry payment later
@@ -709,7 +719,7 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate, // NB: API will reassign this date according to its clock
-          effectiveDate: this.convertLocalDateToUTCDateTime(this.codDate)
+          effectiveDate: this.simpleDateToApi(this.codDate)
         }
       }
 

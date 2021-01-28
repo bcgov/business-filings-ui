@@ -11,17 +11,20 @@ export default {
   setCurrentDate ({ commit }, currentDate: string) {
     commit('currentDate', currentDate)
   },
-  setLastAgmDate ({ commit }, lastAgmDate: string) {
-    commit('lastAgmDate', lastAgmDate)
-  },
   setNextARDate ({ commit }, nextARDate: string) {
     commit('nextARDate', nextARDate)
   },
   setNameRequest ({ commit }, nameRequest: object) {
     commit('nameRequest', nameRequest)
   },
-  setARFilingYear ({ commit }, ARFilingYear: number) {
-    commit('ARFilingYear', ARFilingYear)
+  setARFilingYear ({ commit }, year: number) {
+    commit('ARFilingYear', year)
+  },
+  setArMinDate ({ commit }, date: string) {
+    commit('arMinDate', date)
+  },
+  setArMaxDate ({ commit }, date: string) {
+    commit('arMaxDate', date)
   },
   setEntityBusinessNo ({ commit }, entityBusinessNo: string) {
     commit('entityBusinessNo', entityBusinessNo)
@@ -49,9 +52,6 @@ export default {
   },
   setBusinessPhoneExtension ({ commit }, businessPhoneExtension: string) {
     commit('businessPhoneExtension', businessPhoneExtension)
-  },
-  setLastPreLoadFilingDate ({ commit }, lastPreLoadFilingDate: string) {
-    commit('lastPreLoadFilingDate', lastPreLoadFilingDate)
   },
   setCurrentFilingStatus ({ commit }, currentFilingStatus: FilingStatus) {
     commit('currentFilingStatus', currentFilingStatus)

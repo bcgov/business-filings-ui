@@ -27,8 +27,10 @@ export default class PaymentIncomplete extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
 div {
-  background-color: #f1f1f1 !important;
+  background-color: $app-bg-gray !important;
 }
 
 h4 {
