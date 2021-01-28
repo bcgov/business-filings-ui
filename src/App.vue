@@ -218,9 +218,9 @@ export default {
   methods: {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
-      'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate',
-      'setNextARDate', 'setTasks', 'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors',
-      'setLastAnnualReportDate', 'setConfigObject', 'setNameRequest']),
+      'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
+      'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
+      'setConfigObject', 'setNameRequest']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -468,13 +468,6 @@ export default {
       if (business) {
         this.setEntityName(business.legalName)
         this.setEntityType(business.legalType)
-
-        // currently this date is, eg, "2021-11-17T00:00:00+00:00"
-        // which refers to Nov 17, 2021 (Pacific)
-        // FUTURE: convert this from UTC -> local
-        // NB: this value is only used for BCOMP
-        this.setNextARDate(business.nextAnnualReport?.slice(0, 10))
-
         this.setEntityStatus(business.status)
         this.setEntityBusinessNo(business.taxId)
         this.setEntityIncNo(business.identifier)

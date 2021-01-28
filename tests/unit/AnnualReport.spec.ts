@@ -445,7 +445,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     store.state.businesId = 'BC0007291'
     store.state.entityIncNo = 'BC0007291'
     store.state.ARFilingYear = 2018
-    store.state.nextARDate = '2019-09-26'
+    store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
     store.state.entityType = 'BEN'
   })
@@ -488,7 +488,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     expect(vm.$store.state.entityIncNo).toEqual('BC0007291')
     expect(vm.$store.state.entityType).toEqual('BEN')
     expect(vm.$store.state.ARFilingYear).toEqual(2018)
-    expect(vm.$store.state.nextARDate).toEqual('2019-09-26')
+    expect(vm.$store.state.nextARDate).toEqual('2018-09-26')
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
 
     // check titles and sub-titles
@@ -1189,7 +1189,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     store.state.entityName = 'Legal Name - BC0007291'
     store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
-    store.state.nextARDate = '2019-09-26'
+    store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
     store.state.registeredAddress = {}
     store.state.recordsAddress = {}
@@ -1211,7 +1211,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
               filing: {
                 annualReport: {
                   annualReportDate: '2019-09-21',
-                  nextARDate: '2019-09-20'
+                  nextARDate: '2018-09-20'
                 },
                 business: {
                   cacheId: 1,
@@ -1743,7 +1743,7 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
     store.state.currentDate = '2018-09-26'
-    store.state.nextARDate = '2019-09-26'
+    store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
     store.state.registeredAddress = {}
     store.state.recordsAddress = {}

@@ -450,11 +450,16 @@ export default {
      * (Depends on whether entity is a Coop or BComp.)
      */
     asOfDate (): string {
-      // if AGM Date is set then use it (COOP only)
-      if (this.agmDate) return this.agmDate
-      // if filing is in past year then use last day in that year (COOP No AGM or BCOMP)
-      if (this.ARFilingYear < this.currentYear) return `${this.ARFilingYear}-12-31`
-      // otherwise use current date (BCOMP only - should never happen for COOP)
+      if (this.isCoop) {
+        // if AGM Date is set then use it
+        if (this.agmDate) return this.agmDate
+        // if filing is in past year then use last day in that year
+        if (this.ARFilingYear < this.currentYear) return `${this.ARFilingYear}-12-31`
+      }
+      if (this.isBComp) {
+        return this.nextARDate
+      }
+      // should never get here
       return this.currentDate
     },
 

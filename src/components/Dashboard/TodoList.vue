@@ -554,7 +554,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setCurrentFilingStatus']),
+    ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setNextARDate', 'setCurrentFilingStatus']),
 
     async loadData () {
       this.taskItems = []
@@ -621,10 +621,11 @@ export default {
     /** Loads a NEW Annual Report todo. */
     loadAnnualReportTodo (task) {
       const todo: FilingIF = task.task.todo
-      if (todo?.header) {
+      if (todo?.header && todo?.business) {
         const ARFilingYear: number = todo.header.ARFilingYear
-
         const subtitle: string = task.enabled && !this.isBComp ? '(including Address and/or Director Change)' : null
+        // nextAnnualReport (and nextArDate and arDueDate below) are only used for BCOMP ARs
+        const nextArSimpleDateTime: string = this.apiToSimpleDateTime(todo.business.nextAnnualReport)
 
         this.taskItems.push({
           id: -1, // not falsy
@@ -632,19 +633,17 @@ export default {
           title: `File ${ARFilingYear} Annual Report`,
           subtitle,
           ARFilingYear,
-          // FUTURE: delete fallbacks when API returns these values:
-          // NB: these dates are in local tz
-          arMinDate: todo.header.arMinDate || this.getArMinDate(ARFilingYear),
-          arMaxDate: todo.header.arMaxDate || this.getArMaxDate(ARFilingYear),
+          arMinDate: todo.header.arMinDate, // COOP only
+          arMaxDate: todo.header.arMaxDate, // COOP only
           status: todo.header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          nextArDate: this.simpleDateToDisplayDate(todo.business?.nextAnnualReport),
-          arDueDate: this.arDueDate(todo.header?.ARFilingYear, todo.business?.foundingDate)
+          nextArDate: nextArSimpleDateTime.slice(0, 10), // BCOMP only
+          arDueDate: this.arDueDate(nextArSimpleDateTime) // BCOMP only
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid todo or header in task =', task)
+        console.log('ERROR - invalid todo or header or business in task =', task)
       }
     },
 
@@ -653,22 +652,22 @@ export default {
       if (filing?.header) {
         switch (filing.header.name) {
           case FilingTypes.ANNUAL_REPORT:
-            await this.loadAnnualReportTask(task)
+            await this.loadAnnualReportFiling(task)
             break
           case FilingTypes.CHANGE_OF_DIRECTORS:
-            await this.loadChangeOfDirectorsTask(task)
+            await this.loadChangeOfDirectorsFiling(task)
             break
           case FilingTypes.CHANGE_OF_ADDRESS:
-            await this.loadChangeOfAddressTask(task)
+            await this.loadChangeOfAddressFiling(task)
             break
           case FilingTypes.CORRECTION:
-            this.loadCorrectionTask(task)
+            this.loadCorrectionFiling(task)
             break
           case FilingTypes.INCORPORATION_APPLICATION:
-            await this.loadIncorporationApplicationTask(task)
+            await this.loadIncorporationApplicationFiling(task)
             break
           case FilingTypes.NOTICE_OF_ALTERATION:
-            this.loadAlterationTask(task)
+            this.loadAlterationFiling(task)
             break
           default:
             // eslint-disable-next-line no-console
@@ -681,8 +680,9 @@ export default {
       }
     },
 
-    loadAlterationTask (task) {
+    loadAlterationFiling (task) {
       const filing: FilingIF = task.task.filing
+      // verify both "header" and "alteration"
       if (filing?.header && filing?.alteration) {
         this.taskItems.push({
           filingType: FilingTypes.NOTICE_OF_ALTERATION,
@@ -704,53 +704,45 @@ export default {
       }
     },
 
-    /** Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing. */
-    async loadAnnualReportTask (task) {
+    /**
+     * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
+     * (Currently used for Coop ARs only, as BComps can't save draft ARs atm.)
+     */
+    async loadAnnualReportFiling (task) {
       const filing: FilingIF = task.task.filing
-      // NB: verify "filing.annualReport" as the AR page will need it
+      // verify both "header" and "annualReport"
       if (filing?.header && filing?.annualReport) {
-        // try to restore AR Filing Year (if it was saved)
-        // otherwise try to use Annual Report Date (for COOPs)
-        // otherwise try to use Next AR Date (for BCOMPs)
-        const ARFilingYear =
-          +filing.header.ARFilingYear ||
-          +filing.annualReport.annualReportDate?.substring(0, 4) ||
-          +filing.annualReport.nextARDate?.substring(0, 4)
+        // FUTURE: delete fallback when all draft ARs contain ARFilingYear
+        const ARFilingYear: number =
+          filing.header.ARFilingYear || filing.annualReport.annualReportDate?.substring(0, 4)
+        const paymentStatusCode = filing.header.paymentStatusCode
+        const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
 
-        if (ARFilingYear) {
-          const paymentStatusCode = filing.header.paymentStatusCode
-          const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
-
-          this.taskItems.push({
-            filingType: FilingTypes.ANNUAL_REPORT,
-            id: filing.header.filingId,
-            title: `File ${ARFilingYear} Annual Report`,
-            draftTitle: `${ARFilingYear} Annual Report`,
-            ARFilingYear,
-            // FUTURE: delete fallbacks when all draft ARs contain these values:
-            // NB: these dates are in local tz
-            arMinDate: filing.header.arMinDate || this.getArMinDate(ARFilingYear),
-            arMaxDate: filing.header.arMaxDate || this.getArMaxDate(ARFilingYear),
-            status: filing.header.status || FilingStatus.NEW,
-            enabled: Boolean(task.enabled),
-            order: task.order,
-            paymentMethod: filing.header.paymentMethod || null,
-            paymentToken: filing.header.paymentToken || null,
-            payErrorObj
-          })
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('ERROR - invalid date in filing =', filing)
-        }
+        this.taskItems.push({
+          filingType: FilingTypes.ANNUAL_REPORT,
+          id: filing.header.filingId,
+          title: `File ${ARFilingYear} Annual Report`,
+          draftTitle: `${ARFilingYear} Annual Report`,
+          ARFilingYear,
+          // FUTURE: delete fallbacks when all draft ARs contain arMinDate and arMaxDate
+          arMinDate: filing.header.arMinDate || this.getArMinDate(ARFilingYear), // COOP only
+          arMaxDate: filing.header.arMaxDate || this.getArMaxDate(ARFilingYear), // COOP only
+          status: filing.header.status || FilingStatus.NEW,
+          enabled: Boolean(task.enabled),
+          order: task.order,
+          paymentMethod: filing.header.paymentMethod || null,
+          paymentToken: filing.header.paymentToken || null,
+          payErrorObj
+        })
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - invalid filing or header or annualReport in task =', task)
       }
     },
 
-    async loadChangeOfDirectorsTask (task) {
+    async loadChangeOfDirectorsFiling (task) {
       const filing: FilingIF = task.task.filing
-      // no need to verify "filing.changedOfDirectors" as the COD page handles it
+      // only verify "header" as "changeOfDirectors" may be empty
       if (filing?.header) {
         const paymentStatusCode = filing.header.paymentStatusCode || null
         const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
@@ -773,9 +765,9 @@ export default {
       }
     },
 
-    async loadChangeOfAddressTask (task) {
+    async loadChangeOfAddressFiling (task) {
       const filing: FilingIF = task.task.filing
-      // NB: verify "filing.changeOfAddress" as the COA page will need it
+      // verify both "header" and "changeOfAddress"
       if (filing?.header && filing?.changeOfAddress) {
         const paymentStatusCode = filing.header.paymentStatusCode || null
         const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
@@ -798,9 +790,9 @@ export default {
       }
     },
 
-    loadCorrectionTask (task) {
+    loadCorrectionFiling (task) {
       const filing: FilingIF = task.task.filing
-      // NB: verify "filing.correction" as the COA page will need it
+      // verify both "header" and "correction"
       if (filing?.header && filing?.correction) {
         this.taskItems.push({
           filingType: FilingTypes.CORRECTION,
@@ -826,8 +818,9 @@ export default {
       }
     },
 
-    async loadIncorporationApplicationTask (task) {
+    async loadIncorporationApplicationFiling (task) {
       const filing: FilingIF = task.task.filing
+      // only verify "header" as "incorporationApplication" may be empty
       if (filing?.header) {
         const title = this.nameRequest
           ? `${this.entityTypeToDescription(this.entityType)} Incorporation Application - ${this.entityName}`
@@ -878,6 +871,7 @@ export default {
           this.setARFilingYear(task.ARFilingYear)
           this.setArMinDate(task.arMinDate)
           this.setArMaxDate(task.arMaxDate)
+          this.setNextARDate(task.nextArDate)
           this.setCurrentFilingStatus(FilingStatus.NEW)
           this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
           break
@@ -1158,7 +1152,7 @@ export default {
 
     /**
      * Returns AR Min Date in case a draft filing doesn't contain it.
-     * NB: Delete this "in a while" when all AR drafts contain new arMinDate.
+     * NB: Delete this when all AR drafts contain new arMinDate.
      */
     getArMinDate (ARFilingYear: number): string {
       // min date is the AR year on Jan 1
@@ -1169,7 +1163,7 @@ export default {
 
     /**
      * Returns AR Max Date in case a draft filing doesn't contain it.
-     * NB: Delete this "in a while" when all AR drafts contain new arMaxDate.
+     * NB: Delete this when all AR drafts contain new arMaxDate.
      */
     getArMaxDate (ARFilingYear: number): string {
       if (ARFilingYear === 2020) {
@@ -1185,13 +1179,16 @@ export default {
       }
     },
 
-    /** Determine the Annual Report Due date for a given filing. */
-    arDueDate (filingYear: number, foundingDate: Date) {
-      const dueDate = new Date(foundingDate)
-      dueDate.setFullYear(filingYear)
-      // The due date is 60 days AFTER the anniversary date for a given year
-      dueDate.setDate(dueDate.getDate() + 60)
-      return this.simpleDateToDisplayDate(dueDate)
+    /**
+     * Returns the formatted BCOMP AR Due Date.
+     * Used for Todo List display only.
+     */
+    arDueDate (nextArSimpleDateTime: string): string {
+      // due date is 60 days after the next AR date
+      const date = new Date(nextArSimpleDateTime)
+      date.setDate(date.getDate() + 60)
+      const simpleDate = this.dateToSimpleDate(date)
+      return this.simpleDateToDisplayDate(simpleDate)
     }
   },
 
