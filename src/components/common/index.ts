@@ -4,6 +4,7 @@ import DetailComment from './DetailComment.vue'
 import DetailsList from './DetailsList.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
+import StaffComments from './StaffComments.vue'
 import StaffPayment from './StaffPayment.vue'
 import SummaryCertify from './SummaryCertify.vue'
 import SummaryDirectors from './SummaryDirectors.vue'
@@ -20,6 +21,7 @@ export {
   DetailsList,
   NameRequestInfo,
   OfficeAddresses,
+  StaffComments,
   StaffPayment,
   SummaryCertify,
   SummaryDirectors,

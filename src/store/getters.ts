@@ -6,11 +6,6 @@ export default {
     return state.currentDate ? +state.currentDate.substring(0, 4) : 0
   },
 
-  /** Get Entity Incorporation Number */
-  getEntityIncNo (state): string {
-    return state.entityIncNo
-  },
-
   /** Is True if entity is a Benefit Company. */
   isBComp (state): boolean {
     return (state.entityType === EntityTypes.BENEFIT_COMPANY)

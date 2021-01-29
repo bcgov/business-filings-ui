@@ -465,19 +465,23 @@ export default {
 
     storeEntityInfo (response: any): void {
       const business = response?.data?.business
-      if (business) {
-        this.setEntityName(business.legalName)
-        this.setEntityType(business.legalType)
-        this.setEntityStatus(business.status)
-        this.setEntityBusinessNo(business.taxId)
-        this.setEntityIncNo(business.identifier)
-        this.setEntityFoundingDate(business.foundingDate) // datetime
-        this.setLastAnnualReportDate(business.lastAnnualReport)
 
-        this.storeConfigObject(business.legalType)
-      } else {
+      if (!business) {
         throw new Error('Invalid entity info')
       }
+
+      if (this.businessId !== business.identifier) {
+        throw new Error('Business identifier mismatch')
+      }
+
+      this.setEntityName(business.legalName)
+      this.setEntityType(business.legalType)
+      this.setEntityStatus(business.status)
+      this.setEntityBusinessNo(business.taxId)
+      this.setEntityIncNo(business.identifier)
+      this.setEntityFoundingDate(business.foundingDate) // datetime
+      this.setLastAnnualReportDate(business.lastAnnualReport)
+      this.storeConfigObject(business.legalType)
     },
 
     /** Gets the Incorp App filing from Legal API. */

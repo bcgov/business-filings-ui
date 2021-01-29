@@ -67,3 +67,16 @@
 .v-application--is-ltr .v-list-item__icon:first-child {
   margin-right: 1rem;
 }
+
+// Error Colours
+// needed because Vuetify doesn't use its theme colours for these
+// NB: these need to be MORE SPECIFIC than the default Vuetify selectors
+.v-application.app-container .error {
+  background-color: $app-red !important;
+  border-color: $app-red !important;
+}
+
+.v-application.app-container .error--text {
+  color: $app-red !important;
+  caret-color: $app-red !important;
+}

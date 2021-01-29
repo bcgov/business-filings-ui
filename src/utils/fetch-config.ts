@@ -66,15 +66,15 @@ export async function fetchConfig (): Promise<void> {
 
   const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY']
   window['addressCompleteKey'] = addressCompleteKey
-  console.info('Set Address Complete Key.')
+  addressCompleteKey && console.info('Set Address Complete Key.')
 
   const ldClientId = response.data['LD_CLIENT_ID']
   window['ldClientId'] = ldClientId
-  console.info('Set Launch Darkly Client ID.')
+  ldClientId && console.info('Set Launch Darkly Client ID.')
 
   const sentryDsn = response.data['SENTRY_DSN'];
   (<any>window).sentryDsn = sentryDsn
-  console.info('Set Sentry DSN.')
+  sentryDsn && console.info('Set Sentry DSN.')
 
   // get Business ID / Temp Reg Number and validate that it looks OK
   // it should be first token after Base URL in Pathname

@@ -311,7 +311,6 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapGetters, mapState } from 'vuex'
-import { getFeatureFlag } from '@/utils'
 
 // Components
 import ColinFiling from './FilingHistoryList/ColinFiling.vue'
@@ -372,9 +371,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getEntityIncNo', 'isBComp', 'isRoleStaff', 'nrNumber']),
+    ...mapGetters(['isBComp', 'isRoleStaff', 'nrNumber']),
 
-    ...mapState(['filings', 'entityName', 'entityType']),
+    ...mapState(['filings', 'entityIncNo', 'entityName', 'entityType']),
 
     /** The Pay API URL string. */
     payApiUrl (): string {
@@ -507,7 +506,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -543,9 +542,9 @@ export default {
 
         let receiptFilename: string
         if (isFutureEffectiveIa) {
-          receiptFilename = `${this.getEntityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
+          receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
         } else {
-          receiptFilename = `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+          receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
         const corpName = this.entityName || this.entityTypeToNumberedDescription(this.entityType)
@@ -651,7 +650,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -709,7 +708,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -778,7 +777,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
         this.historyItems.push(item)
@@ -876,7 +875,7 @@ export default {
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
-            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
           })
         }
 
@@ -981,7 +980,7 @@ export default {
             this.$root.$emit('showSpinner', true)
 
             // fetch original IA
-            const iaFiling = await this.fetchFilingById(this.getEntityIncNo, item.filingId)
+            const iaFiling = await this.fetchFilingById(this.entityIncNo, item.filingId)
 
             if (!iaFiling) {
               throw new Error('Invalid API response')
@@ -989,7 +988,7 @@ export default {
 
             // create draft IA Correction filing
             const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-            const draftCorrection = await this.createFiling(this.getEntityIncNo, correctionIaFiling, true)
+            const draftCorrection = await this.createFiling(this.entityIncNo, correctionIaFiling, true)
             const draftCorrectionId = +draftCorrection?.header?.filingId
 
             if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
@@ -998,7 +997,7 @@ export default {
 
             // redirect to Edit web app to correct this IA
             // NB: no need to clear spinner on redirect
-            const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
+            const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${draftCorrectionId}`
             window.location.assign(correctionUrl) // assume URL is always reachable
           } catch (error) {
             // clear spinner on error
@@ -1046,7 +1045,7 @@ export default {
       // safety check
       if (!document.filingId || !document.filename) return
 
-      let url = `businesses/${this.getEntityIncNo}/filings/${document.filingId}`
+      let url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
       const headers = { 'Accept': 'application/pdf' }
 
       // Notice of articles or certificate will come in as a document report type
@@ -1183,7 +1182,7 @@ export default {
 
       if (filing) {
         // fetch latest comments for this filing
-        const url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
+        const url = `businesses/${this.entityIncNo}/filings/${filingId}`
         await axios.get(url).then(res => {
           if (res && res.data && res.data.filing && res.data.filing.header) {
             // reassign just the comments
@@ -1224,16 +1223,11 @@ export default {
 
     /** Whether to disable correction for this history item. */
     disableCorrection (item: HistoryItemIF): boolean {
-      // feature flag code to disable correction for an Incorp App
-      const disableThisIaCorrection = (
-        (item.filingType === FilingTypes.INCORPORATION_APPLICATION) &&
-        !getFeatureFlag('correction-ui-enabled')
-      )
-
-      const isTransitionFiling = item.filingType === FilingTypes.TRANSITION_APPLICATION
+      const isIncorpApplication = (item.filingType === FilingTypes.INCORPORATION_APPLICATION)
+      const isTransitionFiling = (item.filingType === FilingTypes.TRANSITION_APPLICATION)
 
       return (this.disableChanges || item.isNoa || item.isCorrection || item.isFutureEffectiveIa ||
-        item.isColinFiling || disableThisIaCorrection || isTransitionFiling)
+        item.isColinFiling || isIncorpApplication || isTransitionFiling)
     }
   },
 

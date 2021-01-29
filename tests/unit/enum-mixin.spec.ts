@@ -45,7 +45,7 @@ describe('Enum Mixin', () => {
     expect(vm.entityTypeToNumberedDescription('ULC')).toBe('Numbered Unlimited Liability Company')
     expect(vm.entityTypeToNumberedDescription('BEN')).toBe('Numbered Benefit Company')
     expect(vm.entityTypeToNumberedDescription('CP')).toBe('Numbered Cooperative')
-    expect(vm.entityTypeToNumberedDescription('')).toBe('Unknown')
+    expect(vm.entityTypeToNumberedDescription('')).toBe('')
   })
 
   it('returns correct values Entity Type To Description helper', () => {
@@ -54,7 +54,7 @@ describe('Enum Mixin', () => {
     expect(vm.entityTypeToDescription('ULC')).toBe('BC Unlimited Liability Company')
     expect(vm.entityTypeToDescription('BEN')).toBe('BC Benefit Company')
     expect(vm.entityTypeToDescription('CP')).toBe('BC Cooperative')
-    expect(vm.entityTypeToDescription('')).toBe('Unknown')
+    expect(vm.entityTypeToDescription('')).toBe('')
   })
 
   it('returns correct values Filing Type To Name helper', () => {
