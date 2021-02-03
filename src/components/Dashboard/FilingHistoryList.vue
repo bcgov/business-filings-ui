@@ -475,46 +475,43 @@ export default {
       const annualReport = filing?.annualReport
 
       if (header && annualReport) {
-        const date = annualReport.annualReportDate
-        if (date) {
-          const filingType = FilingTypes.ANNUAL_REPORT
-          const agmYear = +date.slice(0, 4)
+        const filingType = FilingTypes.ANNUAL_REPORT
 
-          const filingDateTime = this.apiToSimpleDateTime(header.date)
-          const filingDate = filingDateTime?.slice(0, 10)
+        // get AR Filing Year from header if available
+        // otherwise get year from Annual Report Date
+        const agmYear = header.ARFilingYear || +annualReport.annualReportDate.slice(0, 4)
 
-          // build filing item
-          const item: HistoryItemIF = {
-            filingType,
-            title: this.filingTypeToName(filingType, agmYear),
-            filingId: header.filingId,
-            filingAuthor: header.certifiedBy,
-            filingDate,
-            isPaid: (header.status === FilingStatus.PAID),
-            documents: filing?.documents || [] as Array<any>,
-            status: header.status,
-            isCorrected: (header.isCorrected || false),
-            isCorrectionPending: (header.isCorrectionPending || false),
-            comments: this.flattenAndSortComments(header.comments)
-          }
+        const filingDateTime = this.apiToSimpleDateTime(header.date)
+        const filingDate = filingDateTime?.slice(0, 10)
 
-          // add receipt
-          if (header.paymentToken) {
-            item.documents.push({
-              type: this.DOCUMENT_TYPE_RECEIPT,
-              corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
-              filingDateTime,
-              paymentToken: header.paymentToken,
-              title: 'Receipt',
-              filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
-            })
-          }
-
-          this.historyItems.push(item)
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('ERROR - invalid Annual Report Date in filing =', filing)
+        // build filing item
+        const item: HistoryItemIF = {
+          filingType,
+          title: this.filingTypeToName(filingType, agmYear),
+          filingId: header.filingId,
+          filingAuthor: header.certifiedBy,
+          filingDate,
+          isPaid: (header.status === FilingStatus.PAID),
+          documents: filing?.documents || [] as Array<any>,
+          status: header.status,
+          isCorrected: (header.isCorrected || false),
+          isCorrectionPending: (header.isCorrectionPending || false),
+          comments: this.flattenAndSortComments(header.comments)
         }
+
+        // add receipt
+        if (header.paymentToken) {
+          item.documents.push({
+            type: this.DOCUMENT_TYPE_RECEIPT,
+            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            filingDateTime,
+            paymentToken: header.paymentToken,
+            title: 'Receipt',
+            filename: `${this.getEntityIncNo} - Receipt - ${filingDate}.pdf`
+          })
+        }
+
+        this.historyItems.push(item)
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - missing section in filing =', filing)
