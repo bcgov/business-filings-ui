@@ -529,16 +529,19 @@ export default {
   mounted (): void {
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
+      // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Entity Inc No, AR Filing Year, or Filing ID!')
       this.$router.push({ name: Routes.DASHBOARD })
       return // don't continue
     }
     if (this.isCoop && (!this.arMinDate || !this.arMaxDate)) {
+      // eslint-disable-next-line no-console
       console.log('Annual Report error - missing AR Min Date or AR Max Date!')
       this.$router.push({ name: Routes.DASHBOARD })
       return // don't continue
     }
     if (this.isBComp && !this.nextARDate) {
+      // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Next AR Date!')
       this.$router.push({ name: Routes.DASHBOARD })
       return // don't continue
