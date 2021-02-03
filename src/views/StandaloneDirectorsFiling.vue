@@ -484,6 +484,7 @@ export default {
   async mounted (): Promise<void> {
     // if tombstone data isn't set, go back to dashboard
     if (!this.entityIncNo || isNaN(this.filingId)) {
+      // eslint-disable-next-line no-console
       console.log('Standalone Directors Filing error - missing Entity Inc No or Filing ID!')
       this.$router.push({ name: Routes.DASHBOARD })
       return // don't continue
