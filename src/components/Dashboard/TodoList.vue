@@ -498,7 +498,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getEntityIncNo', 'isBComp', 'isCoop', 'isRoleStaff', 'currentYear']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate', 'lastAnnualReportDate']),
 
@@ -917,7 +917,7 @@ export default {
         case FilingTypes.CORRECTION:
           if (task.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
             // redirect to Edit web app to correct this Incorporation Application
-            const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${task.id}`
+            const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${task.id}`
             window.location.assign(correctionUrl) // assume URL is always reachable
           } else {
             // resume this Correction Filing
@@ -936,7 +936,7 @@ export default {
 
         case FilingTypes.NOTICE_OF_ALTERATION:
           // redirect to Edit web app to alter this company
-          const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${task.id}`
+          const alterationUrl = `${this.editUrl}${this.entityIncNo}/alteration?alteration-id=${task.id}`
           window.location.assign(alterationUrl) // assume URL is always reachable
           break
 

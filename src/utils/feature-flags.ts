@@ -5,11 +5,11 @@ declare const window: any
 
 /**
  * Default flag values when LD is not available.
- * Uses "business-edit" project (per LD client id in config).
+ * NB: Uses "business-edit" project (per LD client id in config).
  */
 const defaultFlagSet: LDFlagSet = {
-  'correction-ui-enabled': false,
-  'alteration-ui-enabled': false
+  'alteration-ui-enabled': false,
+  'download-summary-enabled': false
 }
 
 /**

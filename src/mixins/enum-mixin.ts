@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { EntityTypes, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
+import { EntityTypes, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -125,7 +125,7 @@ export default class EnumMixin extends Vue {
       case EntityTypes.BENEFIT_COMPANY: return 'Numbered Benefit Company'
       case EntityTypes.COOP: return 'Numbered Cooperative'
     }
-    return 'Unknown' // should never happen
+    return '' // should never happen
   }
 
   /**
@@ -141,7 +141,24 @@ export default class EnumMixin extends Vue {
       case EntityTypes.BENEFIT_COMPANY: return 'BC Benefit Company'
       case EntityTypes.COOP: return 'BC Cooperative'
     }
-    return 'Unknown' // should never happen
+    return '' // should never happen
+  }
+
+  /**
+   * Converts the entity status and type to a description.
+   * @param status the entity status to convert
+   * @param type the entity type to convert
+   * @returns the description
+   */
+  entityStatusToDescription (status: EntityStatus, type: EntityTypes): string {
+    switch (status) {
+      case EntityStatus.NAME_REQUEST:
+        return `${this.entityTypeToDescription(type)} Name Request`
+      case EntityStatus.DRAFT_INCORP_APP:
+      case EntityStatus.FILED_INCORP_APP:
+        return `${this.entityTypeToDescription(type)} Incorporation Application`
+    }
+    return '' // should never happen
   }
 
   /**

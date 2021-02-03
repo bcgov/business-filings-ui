@@ -2347,7 +2347,6 @@ describe('TodoList - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    sessionStorage.setItem('SHOW_COMPANY_INFO_BUTTON', 'yes') // FUTURE: remove this
     store.state.entityIncNo = 'BC1234567'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
     store.state.tasks = [

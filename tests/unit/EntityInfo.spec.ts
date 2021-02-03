@@ -36,8 +36,8 @@ describe('EntityInfo - UI', () => {
     expect(wrapper.find('#entity-status').text()).toBe('In Good Standing')
     expect(wrapper.find('#entity-business-number').text()).toBe('123456789')
     expect(wrapper.find('#entity-incorporation-number').text()).toBe('CP0001191')
-    expect(wrapper.find('#entity-business-email').text()).toBe('business@mail.zzz')
-    expect(wrapper.find('#entity-business-phone').text()).toBe('(111)222-3333 x444')
+    expect(wrapper.find('#entity-business-email span').text()).toBe('business@mail.zzz')
+    expect(wrapper.find('#entity-business-phone span').text()).toBe('(111)222-3333 x444')
     expect(wrapper.find('#nr-subtitle').exists()).toBeFalsy()
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
@@ -119,6 +119,7 @@ describe('EntityInfo - UI', () => {
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
+    store.state.nameRequest = null
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify })
     await Vue.nextTick()
@@ -248,12 +249,19 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    sessionStorage.setItem('SHOW_COMPANY_INFO_BUTTON', 'yes') // FUTURE: remove this
     store.state.entityIncNo = 'BC1234567'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
     const router = mockRouter.mock()
-    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    const wrapper = mount(EntityInfo, {
+      vuetify,
+      store,
+      router,
+      computed: {
+        // mock this getter to override FF check
+        viewChangeInfoEnabled () { return true }
+      }
+    })
     await Vue.nextTick()
 
     wrapper.find('#company-information-button').trigger('click')

@@ -1,7 +1,7 @@
 <template>
-  <div id="entity-info" :class="{ 'staff': isRoleStaff }">
-    <v-container class="py-2 pb-6">
-      <v-breadcrumbs :items="breadcrumbs" divider=">" class="pa-0">
+  <div id="entity-info" :class="{ 'staff': isRoleStaff, 'hover': showHoverStyle }">
+    <v-container class="pt-0 pb-0">
+      <v-breadcrumbs :items="breadcrumbs" divider=">" class="mt-1 pa-0">
         <v-breadcrumbs-item
           slot="item"
           slot-scope="{ item }"
@@ -13,17 +13,18 @@
         </v-breadcrumbs-item>
       </v-breadcrumbs>
 
-      <!-- Entity Name, Entity Status -->
-      <div class="d-flex justify-space-between mt-5">
-        <div class="left-column align-self-end">
-          <div class="title-container">
-            <div v-if="businessId" class="mb-1" id="entity-legal-name" aria-label="Business Legal Name">
+      <v-row no-gutters class="pt-3 pb-4">
+        <v-col cols="12" md="9">
+          <header>
+            <!-- Entity Name / IA Title -->
+            <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
               <span>{{ entityName || 'Unknown Name' }}</span>
             </div>
-            <div v-if="tempRegNumber" class="mb-1" id="incorp-app-title" aria-label="Incorporation Application Title">
+            <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
               <span>{{ entityName || entityTypeToNumberedDescription(entityType)}}</span>
             </div>
 
+            <!-- Entity Status -->
             <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
               <span>In Good Standing</span>
             </v-chip>
@@ -33,88 +34,96 @@
             <v-chip v-else-if="isNotInCompliance" class="red" id="entity-status" small label text-color="white">
               <span>Not in Compliance</span>
             </v-chip>
-          </div>
 
-          <!-- Business Number, Incorporation Number -->
-          <template v-if="businessId">
-            <dl class="business-info">
-              <!-- FUTURE?
-              <dt class="sr-only mr-2">Description:</dt>
-              <dd id="entity-business-number">{{ entityDescription || 'Not Available' }}</dd>
-              -->
-              <dt class="mr-2">Business No:</dt>
-              <dd id="entity-business-number">{{ entityBusinessNo || 'Not Available' }}</dd>
-              <dt class="mr-2">Incorporation No:</dt>
-              <dd id="entity-incorporation-number">{{ entityIncNo || 'Not Available' }}</dd>
-            </dl>
-          </template>
+            <!-- Entity Type -->
+            <div v-if="entityDescription" id="entity-description">{{ entityDescription }}</div>
+            <div v-if="nrDescription" id="nr-subtitle">{{ nrDescription }}</div>
+          </header>
 
-          <!-- NR Subtitle, NR Number -->
-          <template v-if="tempRegNumber">
-            <dl class="nr-info">
-              <dt><span class="sr-only mr-2">Sub Title:</span></dt>
-              <dd id="nr-subtitle">{{ nrSubtitle }}</dd>
-              <template v-if="nrNumber">
-                <dt class="mr-2">Name Request No:</dt>
-                <dd id="nr-number">{{ nrNumber }}</dd>
-              </template>
-            </dl>
-          </template>
-        </div>
+          <menu class="mt-4 ml-n3">
+            <!-- Staff Comments -->
+            <span v-if="businessId && isRoleStaff">
+              <staff-comments
+                :axios="axios"
+                :businessId="businessId"
+                :maxLength="2000"
+              />
+            </span>
 
-        <div class="right-column text-right align-self-end">
-          <template v-if="businessId">
-            <!-- if LTD or ULC, show new menu -->
-            <div v-if="isLtdOrUlc">
-              <v-btn small text color="primary" id="company-information-button" @click="viewChangeCompanyInfo()">
-                <v-icon small>mdi-pencil</v-icon>
+            <!-- View and Change Company Information -->
+            <span v-if="viewChangeInfoEnabled">
+              <v-btn
+                small text color="primary"
+                id="company-information-button"
+                @click="viewChangeCompanyInfo()"
+                @mouseenter="showHoverStyle = true"
+                @mouseleave="showHoverStyle = false"
+              >
+                <v-icon medium>mdi-file-document-edit-outline</v-icon>
                 <span>View and Change Company Information</span>
               </v-btn>
+            </span>
 
-              <v-menu offset-y>
-                <template v-slot:activator="{ on }">
-                  <!-- FUTURE? -> remove disabled prop -->
-                  <v-btn id="menu-down-button" small icon color="primary" v-on="on" disabled>
-                    <v-icon small>mdi-menu-down</v-icon>
-                  </v-btn>
-                </template>
+            <!-- Download Summary -->
+            <span v-if="downloadSummaryEnabled">
+              <v-btn
+                small text color="primary"
+                id="download-summary-button"
+                @click="downloadBusinessSummary()"
+              >
+                <v-icon medium>mdi-file-pdf-outline</v-icon>
+                <span>Download Summary</span>
+              </v-btn>
+            </span>
+          </menu>
+        </v-col>
 
-                <v-list class="pt-0 pb-0">
-                  <v-list-item id="business-summary-menuitem" @click="downloadBusinessSummary()">
-                    <v-icon>mdi-download</v-icon>
-                    <v-list-item-title class="pl-1">Download Business Summary</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </div>
+        <v-col cols="12" md="3">
+          <dl>
+            <!-- Business Number -->
+            <template v-if="businessId">
+              <dt class="mr-2">Business Number:</dt>
+              <dd id="entity-business-number">{{ entityBusinessNo || 'Not Available' }}</dd>
+            </template>
 
-            <!-- Business Email, Phone -->
-            <dl class="profile-info">
-              <dt><span class="sr-only mr-2">Business Email:</span></dt>
-              <dd id="entity-business-email">{{businessEmail || 'Unknown Email'}}</dd>
-              <template v-if="fullPhoneNumber">
-                <dt><span class="sr-only mr-2">Business Phone:</span></dt>
-                <dd id="entity-business-phone">{{fullPhoneNumber}}</dd>
-              </template>
-            </dl>
+            <!-- Incorporation Number -->
+            <template v-if="businessId">
+              <dt class="mr-2">Incorporation Number:</dt>
+              <dd id="entity-incorporation-number">{{ entityIncNo || 'Not Available' }}</dd>
+            </template>
 
-            <!-- if not LTD or ULC, show old menu -->
-            <v-menu v-if="!isLtdOrUlc" bottom left offset-y>
-              <template v-slot:activator="{ on }">
-                <v-btn id="entity-settings-button" small icon color="primary" v-on="on" class="mt-n4 ml-1">
-                  <v-icon small>mdi-cog</v-icon>
+            <!-- NR Number -->
+            <template v-if="nrNumber">
+              <dt class="mr-2">Name Request Number:</dt>
+              <dd id="nr-number">{{ nrNumber }}</dd>
+            </template>
+
+            <!-- Email -->
+            <template v-if="businessId">
+              <dt class="mr-2">Email:</dt>
+              <dd id="entity-business-email" @click="editBusinessProfile()">
+                <span>{{businessEmail || 'Not Available'}}</span>
+                <v-btn small text color="primary" id="change-email-button">
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Change</span>
                 </v-btn>
-              </template>
+              </dd>
+            </template>
 
-              <v-list class="pt-0 pb-0">
-                <v-list-item id="update-business-profile-menuitem" @click="editBusinessProfile()">
-                  <v-list-item-title>Update business profile</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </template>
-        </div>
-      </div>
+            <!-- Phone -->
+            <template v-if="businessId">
+              <dt class="mr-2">Phone:</dt>
+              <dd id="entity-business-phone" @click="editBusinessProfile()">
+                <span>{{fullPhoneNumber || 'Not Available'}}</span>
+                <v-btn small text color="primary" id="change-phone-button">
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Change</span>
+                </v-btn>
+              </dd>
+            </template>
+          </dl>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -126,14 +135,17 @@ import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, EntityTypes, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
+import { StaffComments } from '@/components/common'
+import axios from '@/axios-auth'
 
 @Component({
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
-      'businessEmail', 'businessPhone', 'businessPhoneExtension']),
+    ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
+      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension']),
     ...mapGetters(['isRoleStaff', 'nrNumber', 'isLtd', 'isUlc'])
-  }
+  },
+  components: { StaffComments }
 })
 export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   // Local definitions of computed properties for static type checking.
@@ -152,12 +164,19 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   readonly isUlc!: boolean
   readonly nrNumber!: string
 
-  /** True if current company is LTD or ULC. */
-  private get isLtdOrUlc (): boolean {
-    // return (this.isLtd || this.isUlc)
-    // return getFeatureFlag('alteration-ui-enabled')
-    // FOR NOW, FOR TESTING, LOOK FOR A SESSION STORAGE ITEM
-    return Boolean(sessionStorage.getItem('SHOW_COMPANY_INFO_BUTTON'))
+  readonly axios = axios // for template
+
+  /** Whether to show the hover style. */
+  private showHoverStyle = false
+
+  /** True if View and Change Company Info button should be rendered. */
+  private get viewChangeInfoEnabled (): boolean {
+    return (this.isLtd || this.isUlc) && getFeatureFlag('alteration-ui-enabled')
+  }
+
+  /** True if Download Summary button should be rendered. */
+  private get downloadSummaryEnabled (): boolean {
+    return getFeatureFlag('download-summary-enabled')
   }
 
   /** The Business ID string. */
@@ -190,16 +209,9 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     return this.entityTypeToDescription(this.entityType)
   }
 
-  /** The NR Subtitle string. */
-  private get nrSubtitle (): string {
-    switch (this.entityStatus) {
-      case EntityStatus.NAME_REQUEST:
-        return `${this.entityTypeToDescription(this.entityType)} Name Request`
-      case EntityStatus.DRAFT_INCORP_APP:
-      case EntityStatus.FILED_INCORP_APP:
-        return `${this.entityTypeToDescription(this.entityType)} Incorporation Application`
-    }
-    return '' // should never happen
+  /** The NR description. */
+  private get nrDescription (): string {
+    return this.entityStatusToDescription(this.entityStatus, this.entityType)
   }
 
   /** The business phone number and optional extension. */
@@ -273,6 +285,16 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
 #entity-info {
   background: $BCgovInputBG;
+
+  &.hover {
+    background: $app-bg-lt-blue;
+  }
+
+  // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
+  // &.staff {
+  //   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='105' height='100'><text x='0' y='105' font-size='30' transform='rotate(-45 10,40)' opacity='0.1'>STAFF</text></svg>");
+  //   background-repeat: repeat-x;
+  // }
 }
 
 .v-breadcrumbs li {
@@ -289,50 +311,62 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   }
 }
 
-// ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
-// #entity-info.staff {
-//   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='105' height='100'><text x='0' y='105' font-size='30' transform='rotate(-45 10,40)' opacity='0.1'>STAFF</text></svg>");
-//   background-repeat: repeat-x;
-// }
-
 #entity-legal-name,
 #incorp-app-title {
   display: inline-block;
   color: $gray9;
   letter-spacing: -0.01rem;
-  font-size: 1.125rem;
+  font-size: 1.375rem;
   font-weight: 700;
   text-transform: uppercase;
 }
 
 #entity-status {
-  margin-top: 0.25rem;
+  margin-top: 5px;
   margin-left: 0.5rem;
   vertical-align: top;
 }
 
-dl {
-  display: inline-block;
-  overflow: hidden;
-  color: $gray6;
+#entity-description,
+#nr-subtitle {
+  font-size: 0.875rem;
+  color: $gray9;
 }
 
-dd, dt {
-  float: left;
+// vertical lines between buttons:
+menu > span + span {
+  border-left: 1px solid $gray3;
+  border-radius: 0;
+}
+
+dl {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
 }
 
 dt {
-  position: relative;
+  color: $gray9;
+  font-weight: bold;
+  float: left;
+  clear: left;
+  margin-right: 0.5rem;
 }
 
-dd + dt:before {
-  content: "•";
-  display: inline-block;
-  margin-right: 0.75rem;
-  margin-left: 0.75rem;
+dd {
+  // margin-left: 0;
+  cursor: pointer;
 }
 
-#company-information-button {
-  border-right: 1px solid $gray1;
+// hide change buttons when not hovering on value:
+dd:not(:hover) > button {
+  display: none;
+}
+
+#change-email-button,
+#change-phone-button {
+  height: 1.125rem;
+  padding: 0.25rem 0.5rem;
+  margin-top: -0.125rem;
+  margin-left: 0.125rem;
 }
 </style>

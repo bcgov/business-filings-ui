@@ -1,6 +1,6 @@
 import 'core-js/stable' // to polyfill ECMAScript features
 import 'regenerator-runtime/runtime' // to use transpiled generator functions
-import '@mdi/font/css/materialdesignicons.min.css' // ensure you are using css-loader
+import '@mdi/font/css/materialdesignicons.min.css'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
@@ -34,14 +34,21 @@ async function start () {
   await fetchConfig()
 
   // initialize Sentry
-  console.info('Initializing Sentry...') // eslint-disable-line no-console
-  Sentry.init({
-    dsn: window['sentryDsn'],
-    integrations: [new Integrations.Vue({ Vue, attachProps: true })]
-  })
+  const sentryDsn = window['sentryDsn']
+  if (sentryDsn) {
+    console.info('Initializing Sentry...') // eslint-disable-line no-console
+    Sentry.init({
+      dsn: sentryDsn,
+      integrations: [
+        new Integrations.Vue({ Vue, attachProps: true }),
+        new Integrations.CaptureConsole({ levels: ['error'] })
+      ]
+    })
+  }
 
   // initialize Launch Darkly
   if (window['ldClientId']) {
+    console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
     await initLdClient()
   }
 
