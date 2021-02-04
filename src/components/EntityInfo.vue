@@ -135,7 +135,7 @@ import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, EntityTypes, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
-import { StaffComments } from '@/components/common'
+import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 
 @Component({
@@ -353,7 +353,6 @@ dt {
 }
 
 dd {
-  // margin-left: 0;
   cursor: pointer;
 }
 
