@@ -1223,11 +1223,10 @@ export default {
 
     /** Whether to disable correction for this history item. */
     disableCorrection (item: HistoryItemIF): boolean {
-      const isIncorpApplication = (item.filingType === FilingTypes.INCORPORATION_APPLICATION)
       const isTransitionFiling = (item.filingType === FilingTypes.TRANSITION_APPLICATION)
 
       return (this.disableChanges || item.isNoa || item.isCorrection || item.isFutureEffectiveIa ||
-        item.isColinFiling || isIncorpApplication || isTransitionFiling)
+        item.isColinFiling || isTransitionFiling)
     }
   },
 
