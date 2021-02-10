@@ -39,24 +39,6 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeNameRequest({ filingType: 'nameRequest' })).toBe(true)
   })
 
-  it('returns correct values Entity Type to Numbered Description helper', () => {
-    expect(vm.entityTypeToNumberedDescription('BCC')).toBe('Numbered Company')
-    expect(vm.entityTypeToNumberedDescription('CR')).toBe('Numbered Corporation')
-    expect(vm.entityTypeToNumberedDescription('ULC')).toBe('Numbered Unlimited Liability Company')
-    expect(vm.entityTypeToNumberedDescription('BEN')).toBe('Numbered Benefit Company')
-    expect(vm.entityTypeToNumberedDescription('CP')).toBe('Numbered Cooperative')
-    expect(vm.entityTypeToNumberedDescription('')).toBe('')
-  })
-
-  it('returns correct values Entity Type To Description helper', () => {
-    expect(vm.entityTypeToDescription('BCC')).toBe('BC Company')
-    expect(vm.entityTypeToDescription('CR')).toBe('BC Corporation')
-    expect(vm.entityTypeToDescription('ULC')).toBe('BC Unlimited Liability Company')
-    expect(vm.entityTypeToDescription('BEN')).toBe('BC Benefit Company')
-    expect(vm.entityTypeToDescription('CP')).toBe('BC Cooperative')
-    expect(vm.entityTypeToDescription('')).toBe('')
-  })
-
   it('returns correct values Filing Type To Name helper', () => {
     expect(vm.filingTypeToName('annualReport', '2020')).toBe('Annual Report (2020)')
     expect(vm.filingTypeToName('changeOfAddress')).toBe('Address Change')

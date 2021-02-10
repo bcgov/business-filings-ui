@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { EntityTypes, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
+import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription } from '@/modules/corp-type-module'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -112,37 +113,10 @@ export default class EnumMixin extends Vue {
   // Conversion helpers
   //
 
-  /**
-   * Converts the entity type to a numbered corp description.
-   * @param type the entity type to convert
-   * @returns the numbered corp description
-   */
-  entityTypeToNumberedDescription (type: EntityTypes): string {
-    switch (type) {
-      case EntityTypes.BC_COMPANY: return 'Numbered Company'
-      case EntityTypes.BC_CORPORATION: return 'Numbered Corporation'
-      case EntityTypes.BC_ULC_COMPANY: return 'Numbered Unlimited Liability Company'
-      case EntityTypes.BENEFIT_COMPANY: return 'Numbered Benefit Company'
-      case EntityTypes.COOP: return 'Numbered Cooperative'
-    }
-    return '' // should never happen
-  }
-
-  /**
-   * Converts the entity type to a corp description.
-   * @param type the entity type to convert
-   * @returns the corp description
-   */
-  entityTypeToDescription (type: EntityTypes): string {
-    switch (type) {
-      case EntityTypes.BC_COMPANY: return 'BC Company'
-      case EntityTypes.BC_CORPORATION: return 'BC Corporation'
-      case EntityTypes.BC_ULC_COMPANY: return 'BC Unlimited Liability Company'
-      case EntityTypes.BENEFIT_COMPANY: return 'BC Benefit Company'
-      case EntityTypes.COOP: return 'BC Cooperative'
-    }
-    return '' // should never happen
-  }
+  // from external module
+  getCorpTypeInfo = GetCorpInfoObject
+  getCorpTypeDescription = GetCorpFullDescription
+  getCorpTypeNumberedDescription = GetCorpNumberedDescription
 
   /**
    * Converts the entity status and type to a description.
@@ -150,13 +124,13 @@ export default class EnumMixin extends Vue {
    * @param type the entity type to convert
    * @returns the description
    */
-  entityStatusToDescription (status: EntityStatus, type: EntityTypes): string {
+  entityStatusToDescription (status: EntityStatus, type: CorpTypeCd): string {
     switch (status) {
       case EntityStatus.NAME_REQUEST:
-        return `${this.entityTypeToDescription(type)} Name Request`
+        return `${this.getCorpTypeDescription(type)} Name Request`
       case EntityStatus.DRAFT_INCORP_APP:
       case EntityStatus.FILED_INCORP_APP:
-        return `${this.entityTypeToDescription(type)} Incorporation Application`
+        return `${this.getCorpTypeDescription(type)} Incorporation Application`
     }
     return '' // should never happen
   }

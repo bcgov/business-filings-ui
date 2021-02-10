@@ -1,4 +1,4 @@
-import { EntityTypes, FilingCodes } from '@/enums'
+import { CorpTypeCd, FilingCodes } from '@/enums'
 
 export class Flow {
   feeCode: FilingCodes
@@ -7,14 +7,14 @@ export class Flow {
 }
 
 export class Business {
-  entityType: EntityTypes
+  entityType: CorpTypeCd
   displayName: string
   flows: Array<Flow>
 }
 
 export const configJson = [
   {
-    entityType: EntityTypes.BENEFIT_COMPANY,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     displayName: 'Benefit Company',
     flows: [
       {
@@ -50,7 +50,7 @@ export const configJson = [
     ]
   },
   {
-    entityType: EntityTypes.COOP,
+    entityType: CorpTypeCd.COOP,
     displayName: 'Cooperative',
     flows: [
       {

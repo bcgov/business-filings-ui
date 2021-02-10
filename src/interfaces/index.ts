@@ -1,3 +1,9 @@
+// from external module
+// NB: this is how to re-export a type in TS
+// https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/
+import type { CorpInfoIF } from '@/modules/corp-type-module'
+export type { CorpInfoIF }
+
 export * from './address-interfaces'
 export * from './alertMessage-interface'
 export * from './alteration-interface'

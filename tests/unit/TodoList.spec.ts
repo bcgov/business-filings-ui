@@ -1421,7 +1421,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent)
-      .toContain('BC Benefit Company Incorporation Application')
+      .toContain('Benefit Company Incorporation Application')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
     expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('NR APPROVED')
     expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('FILING PENDING')
@@ -1469,7 +1469,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent)
-      .toContain('BC Benefit Company Incorporation Application - My Business Inc')
+      .toContain('Benefit Company Incorporation Application - My Business Inc')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('NR APPROVED')
     expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('DRAFT')
     expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('FILING PENDING')
@@ -1516,7 +1516,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent)
-      .toContain('BC Benefit Company Incorporation Application')
+      .toContain('Benefit Company Incorporation Application')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
     expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('DRAFT')
@@ -1565,7 +1565,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent)
-      .toContain('BC Benefit Company Incorporation Application - My Business Inc')
+      .toContain('Benefit Company Incorporation Application - My Business Inc')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
     expect(item.querySelector('.list-item__subtitle').textContent).not.toContain('DRAFT')

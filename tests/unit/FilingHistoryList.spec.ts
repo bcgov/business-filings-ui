@@ -582,7 +582,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('Numbered Benefit Company')
     const spans = wrapper.findAll('.list-item__subtitle span')
@@ -630,7 +630,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
@@ -688,7 +688,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
@@ -785,7 +785,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
@@ -883,7 +883,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
@@ -984,7 +984,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     expect(wrapper.find('.list-item__subtitle span').text())
@@ -1081,7 +1081,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
@@ -1181,7 +1181,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('BC Benefit Company')
+    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     expect(wrapper.find('.list-item__subtitle span').text())
@@ -1276,7 +1276,7 @@ describe('Filing History List - Alteration Notices', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text())
-      .toContain('BC Unlimited Liability Company to BC Benefit Company')
+      .toContain('BC Unlimited Liability Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1323,7 +1323,7 @@ describe('Filing History List - Alteration Notices', () => {
             filingId: 85114
           },
           business: {
-            legalType: 'BCC' // 'from' type
+            legalType: 'BC' // 'from' type
           },
           alteration: {
             alterCorpType: {
@@ -1343,7 +1343,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Company to BC Benefit Company')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Limited Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded

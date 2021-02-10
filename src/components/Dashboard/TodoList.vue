@@ -823,8 +823,8 @@ export default {
       // only verify "header" as "incorporationApplication" may be empty
       if (filing?.header) {
         const title = this.nameRequest
-          ? `${this.entityTypeToDescription(this.entityType)} Incorporation Application - ${this.entityName}`
-          : `${this.entityTypeToDescription(this.entityType)} Incorporation Application`
+          ? `${this.getCorpTypeDescription(this.entityType)} Incorporation Application - ${this.entityName}`
+          : `${this.getCorpTypeDescription(this.entityType)} Incorporation Application`
 
         // set subtitle only if DRAFT
         let subtitle

@@ -1,4 +1,4 @@
-import { EntityTypes, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, FilingStatus, FilingTypes } from '@/enums'
 
 export default {
   /** The current year. */
@@ -8,27 +8,27 @@ export default {
 
   /** Is True if entity is a Benefit Company. */
   isBComp (state): boolean {
-    return (state.entityType === EntityTypes.BENEFIT_COMPANY)
+    return (state.entityType === CorpTypeCd.BENEFIT_COMPANY)
   },
 
   /** Is True if entity is a Cooperative. */
   isCoop (state): boolean {
-    return (state.entityType === EntityTypes.COOP)
+    return (state.entityType === CorpTypeCd.COOP)
   },
 
   /** Is True if entity is a BC Corporation. */
   isCorp (state): boolean {
-    return (state.entityType === EntityTypes.BC_CORPORATION)
+    return (state.entityType === CorpTypeCd.BC_CORPORATION)
   },
 
   /** Is True if entity is a Limited Company. */
   isLtd (state): boolean {
-    return (state.entityType === EntityTypes.LIMITED_CO)
+    return (state.entityType === CorpTypeCd.LIMITED_CO)
   },
 
   /** Is True if entity is a BC ULC Company. */
   isUlc (state): boolean {
-    return (state.entityType === EntityTypes.BC_ULC_COMPANY)
+    return (state.entityType === CorpTypeCd.BC_ULC_COMPANY)
   },
 
   /** Is True if Staff role is set. */
