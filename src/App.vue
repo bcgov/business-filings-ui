@@ -109,6 +109,7 @@ export default {
       nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
       localNrNumber: null as string,
+      corpTypeCd: null as string,
 
       /** Whether to show the alternate loading spinner. */
       showSpinner: false,
@@ -452,6 +453,8 @@ export default {
           this.setBusinessPhone(contact.phone)
           this.setBusinessPhoneExtension(contact.phoneExtension)
         }
+        // save Corp Type Code locally to compare with Legal Type below
+        this.corpTypeCd = response?.data?.corpType?.code
       } else {
         throw new Error('Invalid business contact info')
       }
@@ -472,6 +475,13 @@ export default {
 
       if (this.businessId !== business.identifier) {
         throw new Error('Business identifier mismatch')
+      }
+
+      // these should match, but don't error out if they don't
+      // hopefully ops will see this error in Sentry
+      if (this.corpTypeCd && business.legalType !== this.corpTypeCd) {
+        // eslint-disable-next-line no-console
+        console.error('WARNING: Legal Type in Legal db does not match Corp Type in Auth db!')
       }
 
       this.setEntityName(business.legalName)
