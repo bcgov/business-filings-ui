@@ -11,4 +11,4 @@ export * from './roles'
 export * from './routes'
 export * from './staffPaymentsOptions'
 // from external module
-export { CorpTypeCd, CorpClass } from '@/modules/corp-type-module'
+export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'

@@ -1,6 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
-import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription } from '@/modules/corp-type-module'
+import {
+  GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription
+} from '@bcrs-shared-components/corp-type-module'
 
 /**
  * Mixin that provides some useful enum-related utilities.
