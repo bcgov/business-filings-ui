@@ -1,4 +1,4 @@
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 /**
  * Name Request State interface.
@@ -6,7 +6,7 @@ import { EntityTypes } from '@/enums'
  */
 export interface NameRequestIF {
     nrNumber: string;
-    entityType: EntityTypes;
+    entityType: CorpTypeCd;
     details: NameRequestDetailsIF;
     applicant: NameRequestApplicantIF;
     filingId: number | null;

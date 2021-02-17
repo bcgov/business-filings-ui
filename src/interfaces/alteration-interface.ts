@@ -1,7 +1,7 @@
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 export interface AlterCorpTypeIF {
-  corpType: EntityTypes;
+  corpType: CorpTypeCd;
   [propName: string]: any; // excess properties
 }
 

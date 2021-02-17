@@ -47,7 +47,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
 
@@ -92,7 +92,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** The entity title  */
   private entityTypeDescription (): string {
-    return this.entityTypeToDescription(this.parsedNameRequest.entityType)
+    return this.getCorpTypeDescription(this.parsedNameRequest.entityType)
   }
 
   /** The request type */

@@ -502,7 +502,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -547,12 +547,12 @@ export default {
           receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
         }
 
-        const corpName = this.entityName || this.entityTypeToNumberedDescription(this.entityType)
+        const corpName = this.entityName || this.getCorpTypeNumberedDescription(this.entityType)
 
         // build filing item
         const item: HistoryItemIF = {
           filingType,
-          title: `${this.entityTypeToDescription(this.entityType)} ${name} - ${corpName}`,
+          title: `${this.getCorpTypeDescription(this.entityType)} ${name} - ${corpName}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
@@ -598,8 +598,8 @@ export default {
 
         let subtitle = ''
         if (alteration.alterCorpType) {
-          subtitle = this.entityTypeToDescription(business.legalType) + ' to ' +
-            this.entityTypeToDescription(alteration.alterCorpType.corpType)
+          subtitle = this.getCorpTypeDescription(business.legalType) + ' to ' +
+            this.getCorpTypeDescription(alteration.alterCorpType.corpType)
         } else if (alteration.alterCorpName) {
           subtitle = 'Company Name'
         } else if (alteration.alterNameTranslations) {
@@ -646,7 +646,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -704,7 +704,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -773,7 +773,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',
@@ -871,7 +871,7 @@ export default {
         if (header.paymentToken) {
           item.documents.push({
             type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
             filingDateTime,
             paymentToken: header.paymentToken,
             title: 'Receipt',

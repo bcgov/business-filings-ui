@@ -21,7 +21,7 @@
               <span>{{ entityName || 'Unknown Name' }}</span>
             </div>
             <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ entityName || entityTypeToNumberedDescription(entityType)}}</span>
+              <span>{{ entityName || getCorpTypeNumberedDescription(entityType)}}</span>
             </div>
 
             <!-- Entity Status -->
@@ -133,7 +133,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
 import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
-import { EntityStatus, EntityTypes, Routes } from '@/enums'
+import { EntityStatus, CorpTypeCd, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -152,7 +152,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   // Use non-null assertion operator to allow use before assignment.
   readonly entityName!: string
   readonly ARFilingYear!: string
-  readonly entityType!: EntityTypes
+  readonly entityType!: CorpTypeCd
   readonly entityStatus!: EntityStatus
   readonly entityBusinessNo!: string
   readonly entityIncNo!: number
@@ -206,7 +206,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** The entity description. */
   private get entityDescription (): string {
-    return this.entityTypeToDescription(this.entityType)
+    return this.getCorpTypeDescription(this.entityType)
   }
 
   /** The NR description. */
@@ -268,7 +268,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
         href: this.manageBusinessesUrl
       },
       {
-        text: this.entityName || this.entityTypeToNumberedDescription(this.entityType),
+        text: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
         disabled: false,
         exact: true,
         to: { name: Routes.DASHBOARD }
