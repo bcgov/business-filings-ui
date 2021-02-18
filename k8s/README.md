@@ -1,9 +1,23 @@
 ## Build the pipeline
 
+```bash
+oc process -f templates/pipeline.yaml -p TAG=dev -p JENKINS_FILE=./Jenkinsfiles/dev.groovy | oc create -f -
+oc process -f templates/pipeline.yaml -p TAG=test -p JENKINS_FILE=./Jenkinsfiles/test.groovy | oc create -f -
+oc process -f templates/pipeline.yaml -p TAG=prod -p JENKINS_FILE=./Jenkinsfiles/prod.groovy | oc create -f -
+```
 
-1. **Setup parameters** Alter, or copy the _bcrs-entities-create-ui-build-pipeline.param_ updating the values for your pipeline.
-2. **Create the pipeline** process the template referencing your parameter file.
+## BuildConfig
 
-```bash 
-oc process -f templates/bcrs-entities-create-ui-pipeline.json -p bcrs-entities-create-ui-build-pipeline.param  | oc create -f -
+```bash
+oc process -f templates/bc.yaml | oc create -f -
+```
+
+## DeploymentConfig
+
+```bash
+oc process -f templates/dc.yaml -p TAG=dev -p APPLICATION_DOMAIN=business-filings-dev.apps.silver.devops.gov.bc.ca | oc create -f -
+oc process -f templates/dc.yaml -p TAG=test -p APPLICATION_DOMAIN=business-filings-test.apps.silver.devops.gov.bc.ca | oc create -f -
+oc process -f templates/dc.yaml -p TAG=prod -p APPLICATION_DOMAIN=business-filings.apps.silver.devops.gov.bc.ca | oc create -f -
+
+
 ```
