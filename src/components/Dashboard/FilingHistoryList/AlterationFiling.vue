@@ -16,7 +16,7 @@ import { ContactInfo } from '@/components/common'
 @Component({
   components: { ContactInfo }
 })
-export default class NoticeOfAlteration extends Vue {}
+export default class AlterationFiling extends Vue {}
 </script>
 
 <style lang="scss" scoped>

@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import NoticeOfAlteration from '@/components/Dashboard/FilingHistoryList/NoticeOfAlteration.vue'
+import AlterationFiling from '@/components/Dashboard/FilingHistoryList/AlterationFiling.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-describe('Notice of Alteration Filing', () => {
+describe('Alteration Filing', () => {
   it('Displays expected content', () => {
-    const wrapper = mount(NoticeOfAlteration, { vuetify })
+    const wrapper = mount(AlterationFiling, { vuetify })
 
     // verify content
     const paragraphs = wrapper.findAll('p')

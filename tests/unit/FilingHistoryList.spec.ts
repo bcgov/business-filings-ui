@@ -13,7 +13,7 @@ import ColinFiling from '@/components/Dashboard/FilingHistoryList/ColinFiling.vu
 import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
 import FutureEffectiveIa from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIa.vue'
 import FutureEffectiveIaPending from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIaPending.vue'
-import NoticeOfAlteration from '@/components/Dashboard/FilingHistoryList/NoticeOfAlteration.vue'
+import AlterationFiling from '@/components/Dashboard/FilingHistoryList/AlterationFiling.vue'
 import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vue'
 import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import { DetailsList } from '@/components/common'
@@ -1299,7 +1299,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(AlterationFiling).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1366,7 +1366,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(AlterationFiling).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1429,7 +1429,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(AlterationFiling).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1492,7 +1492,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(AlterationFiling).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1555,7 +1555,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(AlterationFiling).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1619,7 +1619,7 @@ describe('Filing History List - Colin filings', () => {
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(false)
+    expect(wrapper.find(AlterationFiling).exists()).toBe(false)
     expect(wrapper.find(ColinFiling).exists()).toBe(true)
 
     sessionStorage.removeItem('BUSINESS_ID')
