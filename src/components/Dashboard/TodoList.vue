@@ -254,9 +254,9 @@
                   </v-menu>
                 </template>
 
+                <!-- Alteration Actions -->
                 <template v-else-if="isTypeAlteration(task) && isStatusDraft(task)">
-                  <!-- no action button in this case -->
-                  <v-btn class="btn-corr-draft-resume"
+                  <v-btn class="btn-alt-draft-resume"
                          color="primary"
                          :disabled="!task.enabled"
                          @click.native.stop="doResumeFiling(task)"
@@ -266,7 +266,7 @@
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" class="actions__more-actions__btn px-0"
-                             v-on="on" id="menu-activator-staff" :disabled="!task.enabled"
+                             v-on="on" id="menu-activator-alt" :disabled="!task.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -274,7 +274,7 @@
                     <v-list class="actions__more-actions">
                       <v-list-item
                               v-if="businessId"
-                              id="btn-delete-draft-staff"
+                              id="btn-delete-draft-alt"
                               @click="confirmDeleteDraft(task)"
                       >
                         <v-list-item-title>Delete changes to company information</v-list-item-title>
