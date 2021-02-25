@@ -1,5 +1,5 @@
 <template>
-  <div class="colin-filing-body body-2">
+  <div class="colin-filing-details body-2">
     <p>Documents for this filing are available on <a :href="colinUrl" rel="noopener noreferrer"
       target="_blank">Corporate Online</a> or <a :href="bcolUrl" rel="noopener noreferrer"
       target="_blank">BC Online</a>.</p>

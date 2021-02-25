@@ -1,8 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
-import {
-  GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription
-} from '@bcrs-shared-components/corp-type-module'
+import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription }
+  from '@bcrs-shared-components/corp-type-module'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -64,7 +63,7 @@ export default class EnumMixin extends Vue {
 
   /** Returns True if task type is Alteration. */
   isTypeAlteration (item: any): boolean {
-    return (item.filingType === FilingTypes.NOTICE_OF_ALTERATION)
+    return (item.filingType === FilingTypes.ALTERATION)
   }
 
   /** Returns True if task type is Annual Report. */
@@ -152,7 +151,7 @@ export default class EnumMixin extends Vue {
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
-      case FilingTypes.NOTICE_OF_ALTERATION: return FilingNames.NOTICE_OF_ALTERATION
+      case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
       case FilingTypes.TRANSITION_APPLICATION: return FilingNames.TRANSITION_APPLICATION

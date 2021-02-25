@@ -80,10 +80,8 @@ import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
-import {
-  DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErrorDialog,
-  NameRequestInvalidDialog
-} from '@/components/dialogs'
+import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErrorDialog, NameRequestInvalidDialog }
+  from '@/components/dialogs'
 
 // Mixins
 import { CommonMixin, DirectorMixin, NameRequestMixin } from '@/mixins'

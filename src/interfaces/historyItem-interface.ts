@@ -21,9 +21,11 @@ export interface HistoryItemIF {
   isCorrection?: boolean;
   isFutureEffectiveIa?: boolean;
   isFutureEffectiveIaPending?: boolean;
-  isFutureEffectiveNoa?: boolean;
-  isFutureEffectiveNoaPending?: boolean;
-  isNoa?: boolean;
+
+  isAlterationFiling?: boolean;
+  isFutureEffectiveAlteration?: boolean;
+  isFutureEffectiveAlterationPending?: boolean;
+
   isPaid: boolean;
   isPaperFiling?: boolean;
   status: string;

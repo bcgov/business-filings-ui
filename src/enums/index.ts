@@ -11,7 +11,6 @@ export * from './roles'
 export * from './routes'
 export * from './staffPaymentsOptions'
 
-// from external module
+// external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
-
 export { ActionTypes } from '@bcrs-shared-components/enums'

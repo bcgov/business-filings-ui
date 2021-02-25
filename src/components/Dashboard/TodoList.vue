@@ -666,7 +666,7 @@ export default {
           case FilingTypes.INCORPORATION_APPLICATION:
             await this.loadIncorporationApplicationFiling(task)
             break
-          case FilingTypes.NOTICE_OF_ALTERATION:
+          case FilingTypes.ALTERATION:
             this.loadAlterationFiling(task)
             break
           default:
@@ -685,12 +685,12 @@ export default {
       // verify both "header" and "alteration"
       if (filing?.header && filing?.alteration) {
         this.taskItems.push({
-          filingType: FilingTypes.NOTICE_OF_ALTERATION,
+          filingType: FilingTypes.ALTERATION,
           id: filing.header.filingId,
           // FUTURE
           filingDate: filing.header.date,
           title: this.priorityAlterationTitle(filing.header.priority),
-          draftTitle: this.filingTypeToName(FilingTypes.NOTICE_OF_ALTERATION),
+          draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
@@ -934,7 +934,7 @@ export default {
           window.location.assign(incorpAppUrl) // assume URL is always reachable
           break
 
-        case FilingTypes.NOTICE_OF_ALTERATION:
+        case FilingTypes.ALTERATION:
           // redirect to Edit web app to alter this company
           const alterationUrl = `${this.editUrl}${this.entityIncNo}/alteration?alteration-id=${task.id}`
           window.location.assign(alterationUrl) // assume URL is always reachable
@@ -1135,7 +1135,7 @@ export default {
 
     priorityAlterationTitle (priority: boolean): string {
       let title = priority ? 'Priority ' : ''
-      title += this.filingTypeToName(FilingTypes.NOTICE_OF_ALTERATION)
+      title += this.filingTypeToName(FilingTypes.ALTERATION)
       return title
     },
 

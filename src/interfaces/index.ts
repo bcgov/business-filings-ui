@@ -1,13 +1,13 @@
-// from external module
+// external interfaces
 // NB: this is how to re-export a type in TS
 // https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/
 import type { CorpInfoIF } from '@bcrs-shared-components/corp-type-module'
-
-import type {
-  AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, ShareStructureIF
-} from '@bcrs-shared-components/interfaces'
+import type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
+  NameRequestApplicantIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
 export type { CorpInfoIF }
-export type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
+
+export type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
+  NameRequestApplicantIF, ShareStructureIF }
 
 export * from './address-interfaces'
 export * from './alertMessage-interface'
