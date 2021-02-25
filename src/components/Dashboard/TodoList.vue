@@ -254,6 +254,10 @@
                   </v-menu>
                 </template>
 
+                <template v-else-if="isTypeCorrection(task)">
+                  <!-- no action button in this case -->
+                </template>
+
                 <!-- Alteration Actions -->
                 <template v-else-if="isTypeAlteration(task) && isStatusDraft(task)">
                   <v-btn class="btn-alt-draft-resume"
@@ -723,7 +727,6 @@ export default {
           paymentToken: filing.header.paymentToken || null,
           comments: this.flattenAndSortComments(filing.header.comments)
         })
-        console.log(this.taskItems)
       } else {
         // eslint-disable-next-line no-console
         console.log('ERROR - invalid filing or header or alteration in task =', task)
