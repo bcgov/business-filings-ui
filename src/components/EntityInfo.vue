@@ -55,6 +55,7 @@
               <v-btn
                 small text color="primary"
                 id="company-information-button"
+                :disabled="hasBlockerTask"
                 @click="viewChangeCompanyInfo()"
                 @mouseenter="showHoverStyle = true"
                 @mouseleave="showHoverStyle = false"
@@ -143,7 +144,7 @@ import axios from '@/axios-auth'
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
       'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension']),
-    ...mapGetters(['isRoleStaff', 'nrNumber', 'isLtd', 'isUlc'])
+    ...mapGetters(['isRoleStaff', 'nrNumber', 'isLtd', 'isUlc', 'hasBlockerTask'])
   },
   components: { StaffComments }
 })
@@ -286,9 +287,10 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 #entity-info {
   background: $BCgovInputBG;
 
-  &.hover {
-    background: $app-bg-lt-blue;
-  }
+  // TODO: Curious about this one. Is this a design requirement?
+  // &.hover {
+  //  background: $app-bg-lt-blue;
+  // }
 
   // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
   // &.staff {

@@ -79,5 +79,8 @@ export default {
   },
   setFilingData ({ commit }, filingData: Array<FilingDataIF>) {
     commit('filingData', filingData)
+  },
+  setHasBlockertask ({ commit }, hasBlockerTask: boolean) {
+    commit('hasBlockerTask', hasBlockerTask)
   }
 }

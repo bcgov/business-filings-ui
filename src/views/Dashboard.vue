@@ -28,7 +28,7 @@
                 :disableChanges="disableChanges"
                 @task-count="taskCount = $event"
                 @task-items="taskItems = $event"
-                @has-blocker-task="hasBlockerTask = $event"
+                @has-blocker-task="updateBlockerTasks($event)"
               />
             </section>
 
@@ -142,7 +142,6 @@ export default {
 
   data () {
     return {
-      hasBlockerTask: false,
       hasPendingFiling: false,
       taskCount: 0,
       taskItems: [] as Array<TaskItemIF>,
@@ -160,7 +159,7 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
-    ...mapGetters(['isBComp']),
+    ...mapGetters(['isBComp', 'hasBlockerTask']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -189,7 +188,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setCurrentFilingStatus']),
+    ...mapActions(['setCurrentFilingStatus', 'setHasBlockertask']),
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
@@ -199,6 +198,10 @@ export default {
     goToStandaloneAddresses () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
       this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
+    },
+
+    updateBlockerTasks (hasBlockerTask: boolean) {
+      this.setHasBlockertask(hasBlockerTask)
     },
 
     checkToReloadDashboard () {

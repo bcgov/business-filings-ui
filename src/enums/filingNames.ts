@@ -6,7 +6,7 @@ export enum FilingNames {
   CORRECTION = 'Correction',
   INCORPORATION_APPLICATION = 'Incorporation Application',
   NAME_REQUEST = 'Name Request',
-  NOTICE_OF_ALTERATION = 'Alteration Notice',
+  NOTICE_OF_ALTERATION = 'Changes to Company Information',
   SPECIAL_RESOLUTION = 'Special Resolution',
   VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
   TRANSITION_APPLICATION = 'Transition Application'
