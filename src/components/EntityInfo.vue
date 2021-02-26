@@ -287,10 +287,9 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 #entity-info {
   background: $BCgovInputBG;
 
-  // TODO: Curious about this one. Is this a design requirement?
-  // &.hover {
-  //  background: $app-bg-lt-blue;
-  // }
+  &.hover {
+    background: $app-bg-lt-blue;
+  }
 
   // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
   // &.staff {
