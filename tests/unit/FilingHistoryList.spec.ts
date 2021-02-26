@@ -1274,7 +1274,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Changes to Company Information')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text())
       .toContain('BC Unlimited Liability Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
@@ -1342,7 +1342,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Changes to Company Information')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('BC Limited Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
@@ -1405,7 +1405,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Changes to Company Information')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
@@ -1468,7 +1468,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Changes to Company Information')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name Translation')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
@@ -1531,7 +1531,7 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Changes to Company Information')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
     expect(wrapper.find('h4.list-item__title').text()).toContain('Share Structure')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')

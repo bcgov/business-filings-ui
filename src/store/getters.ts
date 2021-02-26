@@ -26,8 +26,8 @@ export default {
     return (state.entityType === CorpTypeCd.BC_CORPORATION)
   },
 
-  /** Is True if entity is a Limited Company. */
-  isLtd (state): boolean {
+  /** Is True if entity is a BC Company. */
+  isBcCompany (state): boolean {
     return (state.entityType === CorpTypeCd.BC_COMPANY)
   },
 

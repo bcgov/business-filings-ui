@@ -144,7 +144,7 @@ import axios from '@/axios-auth'
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
       'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension']),
-    ...mapGetters(['isRoleStaff', 'nrNumber', 'isLtd', 'isUlc', 'hasBlockerTask'])
+    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBcCompany', 'isUlc', 'hasBlockerTask'])
   },
   components: { StaffComments }
 })
@@ -161,7 +161,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   readonly businessPhone!: string
   readonly businessPhoneExtension!: string
   readonly isRoleStaff!: boolean
-  readonly isLtd!: boolean
+  readonly isBcCompany!: boolean
   readonly isUlc!: boolean
   readonly nrNumber!: string
 
@@ -172,7 +172,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** True if View and Change Company Info button should be rendered. */
   private get viewChangeInfoEnabled (): boolean {
-    return (this.isLtd || this.isUlc) && getFeatureFlag('alteration-ui-enabled')
+    return (this.isBcCompany || this.isUlc) && getFeatureFlag('alteration-ui-enabled')
   }
 
   /** True if Download Summary button should be rendered. */

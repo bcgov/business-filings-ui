@@ -47,7 +47,7 @@ describe('Enum Mixin', () => {
     expect(vm.filingTypeToName('correction')).toBe('Correction')
     expect(vm.filingTypeToName('incorporationApplication')).toBe('Incorporation Application')
     expect(vm.filingTypeToName('nameRequest')).toBe('Name Request')
-    expect(vm.filingTypeToName('alteration')).toBe('Changes to Company Information')
+    expect(vm.filingTypeToName('alteration')).toBe('Alteration Notice')
     expect(vm.filingTypeToName('specialResolution')).toBe('Special Resolution')
     expect(vm.filingTypeToName('voluntaryDissolution')).toBe('Voluntary Dissolution')
     expect(vm.filingTypeToName('someUnknownFiling')).toBe('Some Unknown Filing')
