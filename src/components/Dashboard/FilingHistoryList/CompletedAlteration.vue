@@ -10,7 +10,7 @@
 
     <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
 
-    <p v-if="filing.isArrangement">Part of an arrangement</p>
+    <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
   </div>
 </template>
 

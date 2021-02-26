@@ -1,9 +1,14 @@
 <template>
-  <div class="pending-filing-details body-2">
+  <div v-if="filing" class="pending-filing-details body-2">
     <h4>Filing Pending</h4>
 
     <p>This {{title}} is paid, but the filing has not been completed by the BC
       Registry yet. Some filings may take longer than expected.</p>
+
+    <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
+
+    <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
+
     <p>If this issue persists, please contact us.</p>
 
     <contact-info class="pt-3" />
@@ -19,17 +24,21 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
+import { HistoryItemIF } from '@/interfaces'
+import { FilingTypes } from '@/enums'
 
 @Component({
   components: { ContactInfo }
 })
 export default class PendingFiling extends Vue {
   /** The subject filing. */
-  @Prop() private filing: any
+  @Prop({ required: true }) private filing: HistoryItemIF
 
   /** The title of the subject filing. */
   private get title (): string {
-    return this.filing?.title || 'filing'
+    if (this.filing.filingType === FilingTypes.ALTERATION) return 'Alteration'
+    if (this.filing.title) return this.filing.title
+    return 'Filing'
   }
 
   /** The Manage Businesses URL string. */
@@ -55,7 +64,8 @@ h4 {
   font-weight: 700;
 }
 
-p:first-of-type {
+p:first-of-type,
+p:last-of-type {
   padding-top: 0.75rem;
 }
 

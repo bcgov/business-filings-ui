@@ -11,7 +11,6 @@ export interface HistoryItemIF {
   filingId: number;
   filingType: FilingTypes | 'unknown';
   filingYear?: string;
-  isCompleted?: boolean;
   isCorrected?: boolean;
   isPaid: boolean;
   isColinFiling?: boolean;
@@ -30,6 +29,7 @@ export interface HistoryItemIF {
   correctedFilingType?: FilingTypes // corrections only
 
   // IAs only
+  isCompletedIa?: boolean;
   isFutureEffectiveIa?: boolean
   isFutureEffectiveIaPending?: boolean
 

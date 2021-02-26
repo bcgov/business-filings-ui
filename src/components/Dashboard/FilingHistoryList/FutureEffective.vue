@@ -3,15 +3,19 @@
     <h4>{{_.subtitle}}</h4>
 
     <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      will be {{effectiveDateTime}} Pacific Time.</p>
+      will be <strong>{{effectiveDateTime}} Pacific Time</strong>.</p>
 
-    <template v-if="filing.isFutureEffectiveIa">
-        <p>If you wish to change the information in this application you must
-          contact Registry Staff to file a withdrawal.</p>
+    <p>If you wish to change the information in this {{_.filingLabel}}, you must
+      contact Registry Staff to file a withdrawal.</p>
 
-      <p>Withdrawing this Incorporation Application will remove this application
-        and all associated information, and will incur a $20.00 fee.</p>
-    </template>
+    <p>Withdrawing this {{_.filingTitle}} will remove this {{_.filingLabel}}
+      and all associated information, and will incur a $20.00 fee.</p>
+
+    <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
+
+    <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
+
+    <p>Registries contact information:</p>
 
     <contact-info class="pt-3" />
   </div>
@@ -21,6 +25,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { ContactInfo } from '@/components/common'
+import { HistoryItemIF } from '@/interfaces'
 
 @Component({
   computed: { ...mapState(['entityName']) },
@@ -30,7 +35,7 @@ export default class FutureEffective extends Vue {
   readonly entityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: any
+  @Prop({ required: true }) private filing: HistoryItemIF
 
   /** Data for the subject filing. */
   private get _ (): any {
@@ -38,20 +43,23 @@ export default class FutureEffective extends Vue {
       return {
         subtitle: 'Future Effective Incorporation Date',
         filingLabel: 'incorporation',
-        companyLabel: (this.entityName || 'this Numbered Benefit Company')
+        companyLabel: (this.entityName || 'this Numbered Benefit Company'),
+        filingTitle: 'Incorporation Application'
       }
     }
     if (this.filing.isFutureEffectiveAlteration) {
       return {
         subtitle: 'Future Effective Alteration Date',
         filingLabel: 'alteration',
-        companyLabel: (this.entityName || 'this company')
+        companyLabel: (this.entityName || 'this company'),
+        filingTitle: 'Alteration Notice'
       }
     }
     return {
       subtitle: 'Future Effective Filing Date',
       filingLabel: 'filing',
-      companyLabel: (this.entityName || 'this company')
+      companyLabel: (this.entityName || 'this company'),
+      filingTitle: 'Filing'
     }
   }
 
@@ -69,7 +77,8 @@ h4 {
   font-weight: 700;
 }
 
-p:first-of-type {
+p:first-of-type,
+p:last-of-type {
   padding-top: 0.75rem;
 }
 

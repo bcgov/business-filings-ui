@@ -7,6 +7,10 @@
 
     <p>It may take up to one hour to process this filing.</p>
 
+    <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
+
+    <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
+
     <p>If this issue persists, please contact us.</p>
 
     <contact-info class="pt-3" />
@@ -17,6 +21,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { ContactInfo } from '@/components/common'
+import { HistoryItemIF } from '@/interfaces'
 
 @Component({
   computed: { ...mapState(['entityName']) },
@@ -26,7 +31,7 @@ export default class FutureEffectivePending extends Vue {
   readonly entityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: any
+  @Prop({ required: true }) private filing: HistoryItemIF
 
   /** Data for the subject filing. */
   private get _ (): any {
@@ -65,7 +70,8 @@ h4 {
   font-weight: 700;
 }
 
-p:first-of-type {
+p:first-of-type,
+p:last-of-type {
   padding-top: 0.75rem;
 }
 

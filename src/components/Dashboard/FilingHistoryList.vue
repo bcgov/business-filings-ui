@@ -33,6 +33,8 @@
               <h4 v-if="filing.subtitle" class="list-item__title mt-1">{{filing.subtitle}}</h4>
 
               <div class="list-item__subtitle d-flex">
+                <!-- NB: blocks below are mutually exclusive, and order is important -->
+
                 <!-- is this a BCOMP FE COA? -->
                 <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
                   <span>{{ filedLabel('FILED AND PENDING', filing) }}</span>
@@ -48,7 +50,7 @@
                 </div>
 
                 <!-- is this a COMPLETED IA? (incorp app mode only) -->
-                <div v-else-if="tempRegNumber && filing.isCompleted" class="filing-subtitle">
+                <div v-else-if="tempRegNumber && filing.isCompletedIa" class="filing-subtitle">
                   <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
                   <v-btn
                     class="details-btn"
@@ -96,6 +98,40 @@
                   </v-btn>
                 </div>
 
+                <!-- is this a PENDING (ie, not completed) FE alteration? -->
+                <div v-else-if="filing.isFutureEffectiveAlterationPending" class="filing-subtitle">
+                  <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
+                  <span class="vert-pipe"></span>
+                  <span>PAID</span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="orange darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon left>mdi-alert</v-icon>
+                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  </v-btn>
+                </div>
+
+                <!-- is this a FE alteration still waiting for effective date/time? -->
+                <div v-else-if="filing.isFutureEffectiveAlteration" class="filing-subtitle">
+                  <span>FUTURE EFFECTIVE ALTERATION</span>
+                  <span class="vert-pipe"></span>
+                  <span>{{ filedLabel('PAID', filing) }}</span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="blue darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index)"
+                  >
+                    <v-icon left>mdi-information-outline</v-icon>
+                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  </v-btn>
+                </div>
+
                 <!-- is this a PAID (ie, not completed) filing? -->
                 <div v-else-if="filing.isPaid" class="filing-subtitle">
                   <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
@@ -113,7 +149,7 @@
                   </v-btn>
                 </div>
 
-                <!-- else must be a COMPLETED filing -->
+                <!-- else this must be a COMPLETED filing -->
                 <!-- NB: no details button -->
                 <div v-else class="filing-subtitle">
                   <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
@@ -193,7 +229,7 @@
           <template v-if="filing.isBcompCoaFutureEffective" />
 
           <!-- is this a COMPLETED IA? (incorp app mode only) -->
-          <template v-else-if="tempRegNumber && filing.isCompleted">
+          <template v-else-if="tempRegNumber && filing.isCompletedIa">
             <completed-ia />
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
@@ -210,7 +246,7 @@
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
 
-          <!-- is this a PENDING FE Alteration? -->
+          <!-- is this a PENDING (ie, not completed) FE Alteration? -->
           <template v-else-if="filing.isFutureEffectiveAlterationPending">
             <future-effective-pending :filing=filing />
             <v-divider class="mt-7 mb-5"></v-divider>
@@ -575,7 +611,7 @@ export default {
           isFutureEffectiveIa,
           isFutureEffectiveIaPending,
           isPaid: (header.status === FilingStatus.PAID),
-          isCompleted: (header.status === FilingStatus.COMPLETED),
+          isCompletedIa: (header.status === FilingStatus.COMPLETED),
           documents: filing?.documents || [] as Array<any>,
           status: header.status,
           isCorrected: (header.isCorrected || false),
@@ -611,14 +647,14 @@ export default {
       if (header && alteration && business) {
         const newLegalType = this.getCorpTypeDescription(alteration.business?.legalType)
         const oldLegalType = this.getCorpTypeDescription(business.legalType)
-        const courtOrderNumber = '' // 'S-74745' // *** TODO
-        const isArrangement = false // true // *** TODO
+        const courtOrderNumber = '' // FUTURE
+        const isArrangement = false // FUTURE
 
-        let subtitle: string
+        let title = 'Alteration'
         if (newLegalType !== oldLegalType) {
-          subtitle = `${oldLegalType} to ${newLegalType}`
+          title += ` - ${oldLegalType} to a ${newLegalType}`
         } else {
-          subtitle = 'Change of Company Information'
+          title += ' - Change of Company Information'
         }
 
         const filingDateTime = this.apiToSimpleDateTime(header.date)
@@ -638,10 +674,9 @@ export default {
         // build filing item
         const item: HistoryItemIF = {
           filingType: FilingTypes.ALTERATION,
-          title: this.filingTypeToName(FilingTypes.ALTERATION),
-          subtitle,
+          title,
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy || 'Registry Staff', // *** IS THIS CORRECT?
+          filingAuthor: header.certifiedBy || 'Registry Staff',
           filingDate,
           effectiveDateTime, // used in Future Effective component
           isFutureEffectiveAlteration,
@@ -773,7 +808,7 @@ export default {
           filingType: FilingTypes.CORRECTION,
           title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
+          filingAuthor: header.certifiedBy || 'Registry Staff',
           filingDateTime: this.apiToSimpleDateTime(header.date), // used for receipt
           filingDate,
           isPaid: (header.status === FilingStatus.PAID),
@@ -876,7 +911,7 @@ export default {
           filingAuthor: 'Registry Staff', // TBD
           filingDate,
           effectiveDateTime, // used in Future Effective IA components
-          isPaid: header.status === FilingStatus.PAID,
+          isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || ([] as Array<any>),
           status: header.status,
           comments: this.flattenAndSortComments(header.comments)

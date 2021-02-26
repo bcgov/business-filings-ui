@@ -1265,8 +1265,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Change of Company Information')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - Change of Company Information')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1332,8 +1331,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Limited Company to Benefit Company')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - BC Limited Company to a Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1399,8 +1397,8 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to Benefit Company')
+    expect(wrapper.find('h3.list-item__title').text())
+      .toBe('Alteration - BC Unlimited Liability Company to a Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1449,7 +1447,7 @@ describe('Filing History List - alterations', () => {
             filingId: 85114
           },
           business: {
-            legalType: 'ULC' // 'from' type
+            legalType: 'BC' // 'from' type
           },
           alteration: {
             business: {
@@ -1468,8 +1466,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to Benefit Company')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - BC Limited Company to a Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PENDING (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1518,7 +1515,7 @@ describe('Filing History List - alterations', () => {
             filingId: 85114
           },
           business: {
-            legalType: 'ULC' // 'from' type
+            legalType: 'BC' // 'from' type
           },
           alteration: {
             business: {
@@ -1537,10 +1534,10 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to Benefit Company')
-    expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PENDING (filed by Registry Staff on 2020-03-24)')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - BC Limited Company to a Benefit Company')
+    expect(wrapper.findAll('.list-item__subtitle span').at(0).text()).toBe('FUTURE EFFECTIVE ALTERATION')
+    expect(wrapper.findAll('.list-item__subtitle span').at(2).text())
+      .toBe('PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 

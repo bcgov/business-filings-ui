@@ -106,7 +106,9 @@ describe('Future Effective Pending', () => {
       propsData: {
         filing: {
           isFutureEffectiveAlterationPending: true,
-          effectiveDateTime: '2020-05-15 12:00:00 PM'
+          effectiveDateTime: '2020-05-15 12:00:00 PM',
+          courtOrderNumber: 'NUMBER',
+          isArrangement: true
         }
       }
     })
@@ -114,11 +116,13 @@ describe('Future Effective Pending', () => {
     // verify content
     expect(wrapper.find('h4').text()).toBe('Alteration Pending')
     const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(3)
+    expect(paragraphs.length).toBe(5)
     expect(paragraphs.at(0).text()).toContain('The alteration date and time for My Alteration')
     expect(paragraphs.at(0).text()).toContain('has been recorded as 2020-05-15 12:00:00 PM Pacific Time.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing.')
-    expect(paragraphs.at(2).text()).toContain('If this issue persists, please contact us.')
+    expect(paragraphs.at(2).text()).toContain('Court Order Number: NUMBER')
+    expect(paragraphs.at(3).text()).toContain('Pursuant to a Plan of Arrangement')
+    expect(paragraphs.at(4).text()).toContain('If this issue persists, please contact us.')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()

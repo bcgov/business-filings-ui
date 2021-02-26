@@ -63,7 +63,7 @@ describe('Alteration Filing', () => {
     expect(paragraphs.at(0).text()).toContain('to a NEW TYPE')
     expect(paragraphs.at(0).text()).toContain('on DATE & TIME Pacific Time.')
     expect(paragraphs.at(1).text()).toContain('Court Order Number: NUMBER')
-    expect(paragraphs.at(2).text()).toContain('Part of an arrangement')
+    expect(paragraphs.at(2).text()).toContain('Pursuant to a Plan of Arrangement')
 
     wrapper.destroy()
   })
