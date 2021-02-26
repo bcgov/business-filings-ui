@@ -11,6 +11,8 @@ const vuetify = new Vuetify({})
 describe('Complete Filing', () => {
   it('Displays expected content with entityName', () => {
     store.state.entityName = 'My Business'
+    store.state.entityIncNo = null
+
     const wrapper = shallowMount(CompletedIa, { store, vuetify })
 
     // verify content
@@ -28,13 +30,14 @@ describe('Complete Filing', () => {
   it('Displays expected content with entityIncNo', () => {
     store.state.entityName = null
     store.state.entityIncNo = 'BC1234567'
+
     const wrapper = shallowMount(CompletedIa, { store, vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Incorporation Complete')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('A numbered benefit company has been successfully incorporated.')
+    expect(paragraphs.at(0).text()).toContain('A Numbered Benefit Company has been successfully incorporated.')
     expect(paragraphs.at(1).text())
       .toContain('Return to your Manage Businesses dashboard to access your business and file changes.')
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)

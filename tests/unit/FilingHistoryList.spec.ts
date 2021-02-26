@@ -11,9 +11,9 @@ import sinon from 'sinon'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import ColinFiling from '@/components/Dashboard/FilingHistoryList/ColinFiling.vue'
 import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
-import FutureEffectiveIa from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIa.vue'
-import FutureEffectiveIaPending from '@/components/Dashboard/FilingHistoryList/FutureEffectiveIaPending.vue'
-import NoticeOfAlteration from '@/components/Dashboard/FilingHistoryList/NoticeOfAlteration.vue'
+import FutureEffective from '@/components/Dashboard/FilingHistoryList/FutureEffective.vue'
+import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/FutureEffectivePending.vue'
+import CompletedAlteration from '@/components/Dashboard/FilingHistoryList/CompletedAlteration.vue'
 import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vue'
 import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import { DetailsList } from '@/components/common'
@@ -394,7 +394,7 @@ describe('Filing History List - regular filings', () => {
     // verify details
     expect(vm.panel).toBe(1) // second row is expanded
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(true)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
     expect(wrapper.find('.download-document-btn').exists()).toBe(false)
@@ -490,7 +490,7 @@ describe('Filing History List - regular filings', () => {
     // verify details
     expect(vm.panel).toBe(1) // second row is expanded
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
     expect(wrapper.find('.download-document-btn').exists()).toBe(true)
@@ -658,11 +658,11 @@ describe('Filing History List - incorporation applications', () => {
             availableOnPaperOnly: false,
             certifiedBy: 'Full Name',
             date: '2020-05-06T19:00:00+00:00',
+            isFutureEffective: true,
             effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: true,
             status: 'PAID'
           },
           documents: [
@@ -708,8 +708,8 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(true)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
@@ -756,11 +756,11 @@ describe('Filing History List - incorporation applications', () => {
             availableOnPaperOnly: false,
             certifiedBy: 'Full Name',
             date: '2020-04-28T19:14:45.589328+00:00',
-            effectiveDate: '2099-05-08T19:00:00+00:00', // way in the future so it's always > now
+            isFutureEffective: true,
+            effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: true,
             status: 'PAID'
           },
           documents: [
@@ -805,8 +805,8 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(true)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(true)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
@@ -858,7 +858,6 @@ describe('Filing History List - incorporation applications', () => {
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: false,
             status: 'PAID'
           },
           documents: [
@@ -903,8 +902,8 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(true)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
@@ -951,11 +950,10 @@ describe('Filing History List - incorporation applications', () => {
             availableOnPaperOnly: false,
             certifiedBy: 'Full Name',
             date: '2020-04-28T19:14:45.589328+00:00',
-            effectiveDate: '2099-05-08T19:00:00+00:00', // way in the future so it's always > now
+            effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: false,
             status: 'COMPLETED'
           },
           documents: [
@@ -1003,8 +1001,8 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(true)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
@@ -1056,7 +1054,6 @@ describe('Filing History List - incorporation applications', () => {
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: false,
             status: 'PAID'
           },
           documents: [
@@ -1101,8 +1098,8 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(true)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
@@ -1202,8 +1199,8 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
@@ -1237,8 +1234,8 @@ describe('Filing History List - incorporation applications', () => {
   })
 })
 
-describe('Filing History List - Alteration Notices', () => {
-  it('displays a Corp Type alteration (BC ULC to BCOMP)', async () => {
+describe('Filing History List - alterations', () => {
+  it('displays "empty" alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1254,14 +1251,8 @@ describe('Filing History List - Alteration Notices', () => {
             status: 'COMPLETED',
             filingId: 85114
           },
-          business: {
-            legalType: 'ULC' // 'from' type
-          },
-          alteration: {
-            alterCorpType: {
-              corpType: 'BEN' // 'to' type
-            }
-          }
+          business: {},
+          alteration: {}
         }
       }
     ]
@@ -1274,39 +1265,37 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text())
-      .toContain('BC Unlimited Liability Company to Benefit Company')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - Change of Company Information')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 
-  it('displays a Corp Type alteration (BC COMP to BCOMP)', async () => {
+  it('displays a BC Limited Company to Benefit Company alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1326,8 +1315,8 @@ describe('Filing History List - Alteration Notices', () => {
             legalType: 'BC' // 'from' type
           },
           alteration: {
-            alterCorpType: {
-              corpType: 'BEN' // 'to' type
+            business: {
+              legalType: 'BEN' // 'to' type
             }
           }
         }
@@ -1342,38 +1331,37 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Limited Company to Benefit Company')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - BC Limited Company to a Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 
-  it('displays a Company Name alteration', async () => {
+  it('displays a BC ULC Company to Benefit Company alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1389,9 +1377,13 @@ describe('Filing History List - Alteration Notices', () => {
             status: 'COMPLETED',
             filingId: 85114
           },
-          business: {},
+          business: {
+            legalType: 'ULC' // 'from' type
+          },
           alteration: {
-            alterCorpName: {}
+            business: {
+              legalType: 'BEN' // 'to' type
+            }
           }
         }
       }
@@ -1405,38 +1397,38 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name')
+    expect(wrapper.find('h3.list-item__title').text())
+      .toBe('Alteration - BC Unlimited Liability Company to a Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 
-  it('displays a Company Name Translation alteration', async () => {
+  it('displays a pending future-effective alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1449,12 +1441,18 @@ describe('Filing History List - Alteration Notices', () => {
           header: {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
-            status: 'COMPLETED',
+            isFutureEffective: true,
+            effectiveDate: '2020-04-24T19:20:05.670859+00:00', // date in the past
+            status: 'PAID',
             filingId: 85114
           },
-          business: {},
+          business: {
+            legalType: 'BC' // 'from' type
+          },
           alteration: {
-            alterNameTranslations: {}
+            business: {
+              legalType: 'BEN' // 'to' type
+            }
           }
         }
       }
@@ -1468,38 +1466,37 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name Translation')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - BC Limited Company to a Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+      .toBe('FILED AND PENDING (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 
-  it('displays a Share Structure alteration', async () => {
+  it('displays a future-effective alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1512,12 +1509,18 @@ describe('Filing History List - Alteration Notices', () => {
           header: {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
-            status: 'COMPLETED',
+            isFutureEffective: true,
+            effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
+            status: 'PAID',
             filingId: 85114
           },
-          business: {},
+          business: {
+            legalType: 'BC' // 'from' type
+          },
           alteration: {
-            alterShareStructure: {}
+            business: {
+              legalType: 'BEN' // 'to' type
+            }
           }
         }
       }
@@ -1531,31 +1534,31 @@ describe('Filing History List - Alteration Notices', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Share Structure')
-    expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - BC Limited Company to a Benefit Company')
+    expect(wrapper.findAll('.list-item__subtitle span').at(0).text()).toBe('FUTURE EFFECTIVE ALTERATION')
+    expect(wrapper.findAll('.list-item__subtitle span').at(2).text())
+      .toBe('PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(true)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1613,13 +1616,13 @@ describe('Filing History List - Colin filings', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectiveIaPending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(NoticeOfAlteration).exists()).toBe(false)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
     expect(wrapper.find(ColinFiling).exists()).toBe(true)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -1663,7 +1666,7 @@ describe('Filing History List - corrections', () => {
 
     // verify that Details List component does not exist until the item is expanded
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
@@ -1676,7 +1679,7 @@ describe('Filing History List - corrections', () => {
 
     // verify that Details List component is displayed after the item is expanded
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(true)
 
@@ -1716,7 +1719,7 @@ describe('Filing History List - corrections', () => {
 
     // verify that Details List component does not exist
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
@@ -2075,7 +2078,7 @@ describe('Filing History List - redirections', () => {
   })
 })
 
-describe('Filing History List - Transition Filing', () => {
+describe('Filing History List - transition filing', () => {
   it('displays a Transition Filing', async () => {
     const $route = { query: {} }
 
@@ -2136,7 +2139,7 @@ describe('Filing History List - Transition Filing', () => {
 
     expect(vm.panel).toBe(0)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectiveIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
     expect(wrapper.find('.download-document-btn').exists()).toBe(true)

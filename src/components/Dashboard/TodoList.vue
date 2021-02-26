@@ -681,22 +681,22 @@ export default {
       if (filing?.header) {
         switch (filing.header.name) {
           case FilingTypes.ANNUAL_REPORT:
-            await this.loadAnnualReportFiling(task)
+            await this.loadAnnualReport(task)
             break
           case FilingTypes.CHANGE_OF_DIRECTORS:
-            await this.loadChangeOfDirectorsFiling(task)
+            await this.loadChangeOfDirectors(task)
             break
           case FilingTypes.CHANGE_OF_ADDRESS:
-            await this.loadChangeOfAddressFiling(task)
+            await this.loadChangeOfAddress(task)
             break
           case FilingTypes.CORRECTION:
-            this.loadCorrectionFiling(task)
+            this.loadCorrection(task)
             break
           case FilingTypes.INCORPORATION_APPLICATION:
-            await this.loadIncorporationApplicationFiling(task)
+            await this.loadIncorporationApplication(task)
             break
-          case FilingTypes.NOTICE_OF_ALTERATION:
-            this.loadAlterationFiling(task)
+          case FilingTypes.ALTERATION:
+            this.loadAlteration(task)
             break
           default:
             // eslint-disable-next-line no-console
@@ -709,17 +709,17 @@ export default {
       }
     },
 
-    loadAlterationFiling (task) {
+    loadAlteration (task) {
       const filing: FilingIF = task.task.filing
       // verify both "header" and "alteration"
       if (filing?.header && filing?.alteration) {
         this.taskItems.push({
-          filingType: FilingTypes.NOTICE_OF_ALTERATION,
+          filingType: FilingTypes.ALTERATION,
           id: filing.header.filingId,
           // FUTURE
           filingDate: filing.header.date,
           title: this.priorityAlterationTitle(filing.header.priority),
-          draftTitle: this.filingTypeToName(FilingTypes.NOTICE_OF_ALTERATION),
+          draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
@@ -737,7 +737,7 @@ export default {
      * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
      * (Currently used for Coop ARs only, as BComps can't save draft ARs atm.)
      */
-    async loadAnnualReportFiling (task) {
+    async loadAnnualReport (task) {
       const filing: FilingIF = task.task.filing
       // verify both "header" and "annualReport"
       if (filing?.header && filing?.annualReport) {
@@ -769,7 +769,7 @@ export default {
       }
     },
 
-    async loadChangeOfDirectorsFiling (task) {
+    async loadChangeOfDirectors (task) {
       const filing: FilingIF = task.task.filing
       // only verify "header" as "changeOfDirectors" may be empty
       if (filing?.header) {
@@ -794,7 +794,7 @@ export default {
       }
     },
 
-    async loadChangeOfAddressFiling (task) {
+    async loadChangeOfAddress (task) {
       const filing: FilingIF = task.task.filing
       // verify both "header" and "changeOfAddress"
       if (filing?.header && filing?.changeOfAddress) {
@@ -819,7 +819,7 @@ export default {
       }
     },
 
-    loadCorrectionFiling (task) {
+    loadCorrection (task) {
       const filing: FilingIF = task.task.filing
       // verify both "header" and "correction"
       if (filing?.header && filing?.correction) {
@@ -847,7 +847,7 @@ export default {
       }
     },
 
-    async loadIncorporationApplicationFiling (task) {
+    async loadIncorporationApplication (task) {
       const filing: FilingIF = task.task.filing
       // only verify "header" as "incorporationApplication" may be empty
       if (filing?.header) {
@@ -963,7 +963,7 @@ export default {
           window.location.assign(incorpAppUrl) // assume URL is always reachable
           break
 
-        case FilingTypes.NOTICE_OF_ALTERATION:
+        case FilingTypes.ALTERATION:
           // redirect to Edit web app to alter this company
           const alterationUrl = `${this.editUrl}${this.entityIncNo}/alteration?alteration-id=${task.id}`
           window.location.assign(alterationUrl) // assume URL is always reachable
@@ -1164,7 +1164,7 @@ export default {
 
     priorityAlterationTitle (priority: boolean): string {
       let title = priority ? 'Priority ' : ''
-      title += this.filingTypeToName(FilingTypes.NOTICE_OF_ALTERATION)
+      title += this.filingTypeToName(FilingTypes.ALTERATION)
       return title
     },
 
