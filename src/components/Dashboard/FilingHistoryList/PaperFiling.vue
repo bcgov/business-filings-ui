@@ -1,5 +1,5 @@
 <template>
-  <div class="paper-filing-body body-2">
+  <div class="paper-filing-details body-2">
     <p>Filings completed <strong>before March 10, 2019</strong> are only available from the BC Registry
       as paper documents.</p>
     <p>To request copies of paper documents, contact BC Registry Staff with the document you require and

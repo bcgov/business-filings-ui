@@ -6,8 +6,8 @@ export enum FilingTypes {
   CORRECTION = 'correction',
   INCORPORATION_APPLICATION = 'incorporationApplication',
   NAME_REQUEST = 'nameRequest',
-  NOTICE_OF_ALTERATION = 'alteration',
+  ALTERATION = 'alteration',
   SPECIAL_RESOLUTION = 'specialResolution',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
-  TRANSITION_APPLICATION = 'transition'
+  TRANSITION = 'transition'
 }
