@@ -34,5 +34,6 @@ export default {
 
   currentFilingStatus: null as FilingStatus,
   configObject: null as object,
-  filingData: [] as Array<FilingDataIF>
+  filingData: [] as Array<FilingDataIF>,
+  hasBlockerTask: null as boolean
 }

@@ -46,7 +46,7 @@
           <div class="list-item">
             <div class="todo-label">
               <h3 class="list-item__title">{{task.title}}
-                <v-btn v-if="isStatusDraft(task) && (isTypeCorrection(task) || isTypeAlteration(task))"
+                <v-btn v-if="isStatusDraft(task) && isTypeCorrection(task)"
                   class="expand-btn ml-0"
                   outlined
                   color="red"
@@ -254,8 +254,37 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="isTypeCorrection(task) || isTypeAlteration(task)">
+                <template v-else-if="isTypeCorrection(task)">
                   <!-- no action button in this case -->
+                </template>
+
+                <!-- Alteration Actions -->
+                <template v-else-if="isTypeAlteration(task) && isStatusDraft(task)">
+                  <v-btn class="btn-alt-draft-resume"
+                         color="primary"
+                         :disabled="!task.enabled"
+                         @click.native.stop="doResumeFiling(task)"
+                  >
+                    <span>Resume</span>
+                  </v-btn>
+                  <v-menu offset-y left>
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary" class="actions__more-actions__btn px-0"
+                             v-on="on" id="menu-activator-alt" :disabled="!task.enabled"
+                      >
+                        <v-icon>mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list class="actions__more-actions">
+                      <v-list-item
+                              v-if="businessId"
+                              id="btn-delete-draft-alt"
+                              @click="confirmDeleteDraft(task)"
+                      >
+                        <v-list-item-title>Delete changes to company information</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
                 </template>
 
                 <template v-else-if="isStatusDraft(task)">
@@ -375,7 +404,7 @@
             <payment-incomplete :filing=task />
           </template>
 
-          <template v-else-if="isTypeCorrection(task) || isTypeAlteration(task)">
+          <template v-else-if="isTypeCorrection(task)">
             <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail body-2">
               <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
@@ -969,7 +998,7 @@ export default {
           persistent: true,
           yes: 'Delete',
           no: null,
-          cancel: 'Don\'t delete'
+          cancel: 'Cancel'
         }
       ).then(async (confirm) => {
         // if we get here, Delete was clicked

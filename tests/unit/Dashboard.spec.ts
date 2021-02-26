@@ -171,6 +171,10 @@ describe('Dashboard - In Process Tests', () => {
 })
 
 describe('Dashboard - Click Tests', () => {
+  beforeAll(() => {
+    store.state.hasBlockerTask = false
+  })
+
   it('routes to Standalone Office Address Filing page when EDIT is clicked', async () => {
     // init store
     store.state.businessId = 'CP0001191'

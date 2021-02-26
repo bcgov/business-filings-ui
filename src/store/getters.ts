@@ -6,6 +6,11 @@ export default {
     return state.currentDate ? +state.currentDate.substring(0, 4) : 0
   },
 
+  /** Is True if there is any pending tasks. */
+  hasBlockerTask (state): boolean {
+    return state.hasBlockerTask
+  },
+
   /** Is True if entity is a Benefit Company. */
   isBComp (state): boolean {
     return (state.entityType === CorpTypeCd.BENEFIT_COMPANY)
@@ -21,9 +26,9 @@ export default {
     return (state.entityType === CorpTypeCd.BC_CORPORATION)
   },
 
-  /** Is True if entity is a Limited Company. */
-  isLtd (state): boolean {
-    return (state.entityType === CorpTypeCd.LIMITED_CO)
+  /** Is True if entity is a BC Company. */
+  isBcCompany (state): boolean {
+    return (state.entityType === CorpTypeCd.BC_COMPANY)
   },
 
   /** Is True if entity is a BC ULC Company. */

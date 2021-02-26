@@ -79,5 +79,8 @@ export default {
   },
   filingData (state, filingData: Array<FilingDataIF>) {
     state.filingData = filingData
+  },
+  hasBlockerTask (state, hasBlockerTask: boolean) {
+    state.hasBlockerTask = hasBlockerTask
   }
 }
