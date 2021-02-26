@@ -614,7 +614,7 @@ export default {
         const courtOrderNumber = '' // 'S-74745' // *** TODO
         const isArrangement = false // true // *** TODO
 
-        let subtitle
+        let subtitle: string
         if (newLegalType !== oldLegalType) {
           subtitle = `${oldLegalType} to ${newLegalType}`
         } else {
@@ -629,10 +629,10 @@ export default {
         // If Effective Date is empty, use Filing Date instead.
         const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
 
-        // is this a Future Effective Incorp NOA?
+        // is this a Future Effective alteration?
         const isFutureEffectiveAlteration = !!filing.header.isFutureEffective
 
-        // is this a Future Effective NOA pending completion?
+        // is this a Future Effective alteration pending completion?
         const isFutureEffectiveAlterationPending = isFutureEffectiveAlteration && this.isEffectiveDatePast(filing)
 
         // build filing item

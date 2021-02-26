@@ -658,11 +658,11 @@ describe('Filing History List - incorporation applications', () => {
             availableOnPaperOnly: false,
             certifiedBy: 'Full Name',
             date: '2020-05-06T19:00:00+00:00',
+            isFutureEffective: true,
             effectiveDate: '2020-05-06T19:00:00+00:00', // date in the past
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: true,
             status: 'PAID'
           },
           documents: [
@@ -756,11 +756,11 @@ describe('Filing History List - incorporation applications', () => {
             availableOnPaperOnly: false,
             certifiedBy: 'Full Name',
             date: '2020-04-28T19:14:45.589328+00:00',
-            effectiveDate: '2099-05-08T19:00:00+00:00', // way in the future so it's always > now
+            isFutureEffective: true,
+            effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: true,
             status: 'PAID'
           },
           documents: [
@@ -858,7 +858,6 @@ describe('Filing History List - incorporation applications', () => {
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: false,
             status: 'PAID'
           },
           documents: [
@@ -951,11 +950,10 @@ describe('Filing History List - incorporation applications', () => {
             availableOnPaperOnly: false,
             certifiedBy: 'Full Name',
             date: '2020-04-28T19:14:45.589328+00:00',
-            effectiveDate: '2099-05-08T19:00:00+00:00', // way in the future so it's always > now
+            effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: false,
             status: 'COMPLETED'
           },
           documents: [
@@ -1056,7 +1054,6 @@ describe('Filing History List - incorporation applications', () => {
             filingId: 85114,
             name: 'incorporationApplication',
             paymentToken: 1971,
-            isFutureEffective: false,
             status: 'PAID'
           },
           documents: [
@@ -1237,8 +1234,8 @@ describe('Filing History List - incorporation applications', () => {
   })
 })
 
-xdescribe('Filing History List - Alteration Notices', () => {
-  it('displays a Corp Type alteration (BC ULC to BCOMP)', async () => {
+describe('Filing History List - alterations', () => {
+  it('displays "empty" alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1254,14 +1251,8 @@ xdescribe('Filing History List - Alteration Notices', () => {
             status: 'COMPLETED',
             filingId: 85114
           },
-          business: {
-            legalType: 'ULC' // 'from' type
-          },
-          alteration: {
-            business: {
-              legalType: 'BEN' // 'to' type
-            }
-          }
+          business: {},
+          alteration: {}
         }
       }
     ]
@@ -1275,21 +1266,20 @@ xdescribe('Filing History List - Alteration Notices', () => {
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text())
-      .toContain('BC Unlimited Liability Company to Benefit Company')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('Change of Company Information')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1306,7 +1296,7 @@ xdescribe('Filing History List - Alteration Notices', () => {
     wrapper.destroy()
   })
 
-  it('displays a Corp Type alteration (BC COMP to BCOMP)', async () => {
+  it('displays a BC Limited Company to Benefit Company alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1349,14 +1339,14 @@ xdescribe('Filing History List - Alteration Notices', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1373,7 +1363,7 @@ xdescribe('Filing History List - Alteration Notices', () => {
     wrapper.destroy()
   })
 
-  it('displays a Company Name alteration', async () => {
+  it('displays a BC ULC Company to Benefit Company alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1389,8 +1379,14 @@ xdescribe('Filing History List - Alteration Notices', () => {
             status: 'COMPLETED',
             filingId: 85114
           },
-          business: {},
-          alteration: {}
+          business: {
+            legalType: 'ULC' // 'from' type
+          },
+          alteration: {
+            business: {
+              legalType: 'BEN' // 'to' type
+            }
+          }
         }
       }
     ]
@@ -1404,20 +1400,20 @@ xdescribe('Filing History List - Alteration Notices', () => {
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
       .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1434,7 +1430,7 @@ xdescribe('Filing History List - Alteration Notices', () => {
     wrapper.destroy()
   })
 
-  it('displays a Company Name Translation alteration', async () => {
+  it('displays a pending future-effective alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1447,11 +1443,19 @@ xdescribe('Filing History List - Alteration Notices', () => {
           header: {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
-            status: 'COMPLETED',
+            isFutureEffective: true,
+            effectiveDate: '2020-04-24T19:20:05.670859+00:00', // date in the past
+            status: 'PAID',
             filingId: 85114
           },
-          business: {},
-          alteration: {}
+          business: {
+            legalType: 'ULC' // 'from' type
+          },
+          alteration: {
+            business: {
+              legalType: 'BEN' // 'to' type
+            }
+          }
         }
       }
     ]
@@ -1465,37 +1469,37 @@ xdescribe('Filing History List - Alteration Notices', () => {
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Company Name Translation')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+      .toBe('FILED AND PENDING (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
     expect(wrapper.find(FutureEffective).exists()).toBe(false)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 
-  it('displays a Share Structure alteration', async () => {
+  it('displays a future-effective alteration', async () => {
     const $route = { query: {} }
 
     // init store
@@ -1508,11 +1512,19 @@ xdescribe('Filing History List - Alteration Notices', () => {
           header: {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
-            status: 'COMPLETED',
+            isFutureEffective: true,
+            effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
+            status: 'PAID',
             filingId: 85114
           },
-          business: {},
-          alteration: {}
+          business: {
+            legalType: 'ULC' // 'from' type
+          },
+          alteration: {
+            business: {
+              legalType: 'BEN' // 'to' type
+            }
+          }
         }
       }
     ]
@@ -1526,30 +1538,30 @@ xdescribe('Filing History List - Alteration Notices', () => {
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration Notice')
-    expect(wrapper.find('h4.list-item__title').text()).toContain('Share Structure')
+    expect(wrapper.find('h4.list-item__title').text()).toContain('BC Unlimited Liability Company to Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24)')
+      .toBe('FILED AND PENDING (filed by Registry Staff on 2020-03-24)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // verify Request a Copy button and toggle panel
+    // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
-    expect(detailsBtn.text()).toContain('Request a Copy')
+    expect(detailsBtn.text()).toContain('View Documents')
     detailsBtn.trigger('click')
     await flushPromises()
 
-    // verify Close button
-    expect(wrapper.find('.expand-btn').text()).toContain('Close')
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
     expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(true)
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(PaperFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
     expect(wrapper.find(ColinFiling).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
@@ -2069,7 +2081,7 @@ describe('Filing History List - redirections', () => {
   })
 })
 
-describe('Filing History List - Transition Filing', () => {
+describe('Filing History List - transition filing', () => {
   it('displays a Transition Filing', async () => {
     const $route = { query: {} }
 
