@@ -1,12 +1,9 @@
-import { FilingTypes } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 /** A history item in the Filing History List. */
 export interface HistoryItemIF {
   comments: Array<any>;
-  correctedFilingId?: number; // correction only
-  correctedFilingType?: FilingTypes; // correction only
   documents?: Array<any>;
-  effectiveDate?: string; // BCOMP COA only
   effectiveDateTime?: string;
   filingAuthor: string;
   filingDate: string;
@@ -14,22 +11,33 @@ export interface HistoryItemIF {
   filingId: number;
   filingType: FilingTypes | 'unknown';
   filingYear?: string;
-  isBcompCoaFutureEffective?: boolean;
-  isColinFiling?: boolean;
   isCompleted?: boolean;
   isCorrected?: boolean;
-  isCorrection?: boolean;
-  isFutureEffectiveIa?: boolean;
-  isFutureEffectiveIaPending?: boolean;
-
-  isAlterationFiling?: boolean;
-  isFutureEffectiveAlteration?: boolean;
-  isFutureEffectiveAlterationPending?: boolean;
-
   isPaid: boolean;
+  isColinFiling?: boolean;
   isPaperFiling?: boolean;
   status: string;
-  isCorrectionPending?: boolean;
   subtitle?: string;
   title: string;
+
+  // BCOMP COAs only
+  effectiveDate?: string
+  isBcompCoaFutureEffective?: boolean
+
+  // corrections only
+  isCorrectionPending?: boolean
+  correctedFilingId?: number // corrections only
+  correctedFilingType?: FilingTypes // corrections only
+
+  // IAs only
+  isFutureEffectiveIa?: boolean
+  isFutureEffectiveIaPending?: boolean
+
+  // alterations only
+  isFutureEffectiveAlteration?: boolean
+  isFutureEffectiveAlterationPending?: boolean
+  oldLegalType?: CorpTypeCd
+  newLegalType?: CorpTypeCd
+  courtOrderNumber?: string
+  isArrangement?: boolean
 }

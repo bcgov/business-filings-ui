@@ -154,7 +154,7 @@ export default class EnumMixin extends Vue {
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-      case FilingTypes.TRANSITION_APPLICATION: return FilingNames.TRANSITION_APPLICATION
+      case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
     }
     // fallback for unknown filings
     return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())

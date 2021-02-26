@@ -45,8 +45,8 @@ describe('Alteration Filing', () => {
       vuetify,
       propsData: {
         filing: {
-          oldEntityType: 'OLD TYPE',
-          newEntityType: 'NEW TYPE',
+          oldLegalType: 'OLD TYPE',
+          newLegalType: 'NEW TYPE',
           effectiveDateTime: 'DATE & TIME',
           courtOrderNumber: 'NUMBER',
           isArrangement: true

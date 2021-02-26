@@ -143,7 +143,7 @@
                 :ripple=false
                 @click.stop="togglePanel(index)"
               >
-                <span v-if="filing.isAlterationFiling || filing.isColinFiling || filing.isPaperFiling">
+                <span v-if="filing.isColinFiling || filing.isPaperFiling">
                   {{ (panel === index) ? "Close" : "Request a Copy" }}</span>
                 <span v-else>{{ (panel === index) ? "Hide Documents" : "View Documents" }}</span>
               </v-btn>
@@ -229,7 +229,7 @@
           </template>
 
           <!-- is this an Alteration filing? -->
-          <template v-else-if="filing.isAlterationFiling">
+          <template v-else-if="filing.filingType === FilingTypes.ALTERATION">
             <completed-alteration :filing=filing />
             <v-divider class="mt-7 mb-5"></v-divider>
           </template>
@@ -376,7 +376,8 @@ export default {
       loadingReceipt: false,
       loadingAll: false,
       currentFilingId: null as number,
-      downloadingDocIndex: -1
+      downloadingDocIndex: -1,
+      FilingTypes // enum for template
     }
   },
 
@@ -433,7 +434,7 @@ export default {
             // filings on or after Bob Date
             switch (filing.header.name) {
               case FilingTypes.ANNUAL_REPORT:
-                this.loadAnnualReportFiling(filing)
+                this.loadAnnualReport(filing)
                 break
               case FilingTypes.CHANGE_OF_DIRECTORS:
                 this.loadOtherFiling(filing, filing.changeOfDirectors)
@@ -445,10 +446,10 @@ export default {
                 this.loadOtherFiling(filing, filing.changeOfName)
                 break
               case FilingTypes.CORRECTION:
-                this.loadCorrectionFiling(filing)
+                this.loadCorrection(filing)
                 break
               case FilingTypes.INCORPORATION_APPLICATION:
-                this.loadIncorporationApplicationFiling(filing)
+                this.loadIncorporationApplication(filing)
                 break
               case FilingTypes.SPECIAL_RESOLUTION:
                 this.loadOtherFiling(filing, filing.specialResolution)
@@ -457,9 +458,9 @@ export default {
                 this.loadOtherFiling(filing, filing.voluntaryDissolution)
                 break
               case FilingTypes.ALTERATION:
-                this.loadAlterationFiling(filing)
+                this.loadAlteration(filing)
                 break
-              case FilingTypes.TRANSITION_APPLICATION:
+              case FilingTypes.TRANSITION:
                 this.loadTransitionFiling(filing)
                 break
               default:
@@ -483,7 +484,7 @@ export default {
       if (highlightId) { this.highlightFiling(highlightId) }
     },
 
-    loadAnnualReportFiling (filing: FilingIF) {
+    loadAnnualReport (filing: FilingIF) {
       const header = filing?.header
       const annualReport = filing?.annualReport
 
@@ -531,7 +532,7 @@ export default {
       }
     },
 
-    loadIncorporationApplicationFiling (filing: FilingIF) {
+    loadIncorporationApplication (filing: FilingIF) {
       const header = filing?.header
       const incorporationApplication = filing?.incorporationApplication
 
@@ -602,34 +603,23 @@ export default {
     },
 
     /** Loads an "Alteration" filing into the historyItems list. */
-    loadAlterationFiling (filing: FilingIF) {
+    loadAlteration (filing: FilingIF) {
       const header = filing?.header
       const alteration = filing?.alteration
       const business = filing?.business
 
       if (header && alteration && business) {
-        const filingType = FilingTypes.ALTERATION
+        const newLegalType = this.getCorpTypeDescription(alteration.business?.legalType)
+        const oldLegalType = this.getCorpTypeDescription(business.legalType)
+        const courtOrderNumber = '' // 'S-74745' // *** TODO
+        const isArrangement = false // true // *** TODO
 
-        // *** WIP
-
-        // update subtitle to:
-        // "[old corp type] to [new corp type]""
-        // "Change of company information"
-
-        const oldEntityType = business.legalType
-        const newEntityType = alteration.business?.legalType
-
-        let subtitle = 'Change of company information'
-        // if (alteration.alterCorpType) {
-        //   subtitle = this.getCorpTypeDescription(business.legalType) + ' to ' +
-        //     this.getCorpTypeDescription(alteration.alterCorpType.corpType)
-        // } else if (alteration.alterCorpName) {
-        //   subtitle = 'Company Name'
-        // } else if (alteration.alterNameTranslations) {
-        //   subtitle = 'Company Name Translation'
-        // } else if (alteration.alterShareStructure) {
-        //   subtitle = 'Share Structure'
-        // }
+        let subtitle
+        if (newLegalType !== oldLegalType) {
+          subtitle = `${oldLegalType} to ${newLegalType}`
+        } else {
+          subtitle = 'Change of Company Information'
+        }
 
         const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
@@ -647,16 +637,19 @@ export default {
 
         // build filing item
         const item: HistoryItemIF = {
-          filingType,
-          title: this.filingTypeToName(filingType),
+          filingType: FilingTypes.ALTERATION,
+          title: this.filingTypeToName(FilingTypes.ALTERATION),
           subtitle,
           filingId: header.filingId,
-          filingAuthor: 'Registry Staff', // *** TODO: can also be a regular user
+          filingAuthor: header.certifiedBy || 'Registry Staff', // *** IS THIS CORRECT?
           filingDate,
           effectiveDateTime, // used in Future Effective component
-          isAlterationFiling: true,
           isFutureEffectiveAlteration,
           isFutureEffectiveAlterationPending,
+          newLegalType,
+          oldLegalType,
+          courtOrderNumber,
+          isArrangement,
           isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || [] as Array<any>,
           status: header.status,
@@ -768,7 +761,7 @@ export default {
       return false
     },
 
-    loadCorrectionFiling (filing: FilingIF) {
+    loadCorrection (filing: FilingIF) {
       const header = filing?.header
       const correction = filing?.correction
 
@@ -783,7 +776,6 @@ export default {
           filingAuthor: header.certifiedBy,
           filingDateTime: this.apiToSimpleDateTime(header.date), // used for receipt
           filingDate,
-          isCorrection: true,
           isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || [] as Array<any>,
           status: header.status,
@@ -857,9 +849,9 @@ export default {
       const business = filing?.business
 
       if (header && business) {
-        const filingType = FilingTypes.TRANSITION_APPLICATION
+        const filingType = FilingTypes.TRANSITION
 
-        let subtitle = ''
+        let subtitle = '' // FUTURE- add to this
 
         const filingDateTime = this.apiToSimpleDateTime(header.date)
         const filingDate = filingDateTime?.slice(0, 10)
@@ -1246,10 +1238,12 @@ export default {
 
     /** Whether to disable correction for this history item. */
     disableCorrection (item: HistoryItemIF): boolean {
-      const isTransitionFiling = (item.filingType === FilingTypes.TRANSITION_APPLICATION)
+      const isAlterationFiling = (item.filingType === FilingTypes.ALTERATION)
+      const isCorrectionFiling = (item.filingType === FilingTypes.CORRECTION)
+      const isTransitionFiling = (item.filingType === FilingTypes.TRANSITION)
 
-      return (this.disableChanges || item.isAlterationFiling || item.isCorrection || item.isFutureEffectiveIa ||
-        item.isColinFiling || isTransitionFiling)
+      return (this.disableChanges || isAlterationFiling || isCorrectionFiling || isTransitionFiling ||
+        item.isCorrected || item.isFutureEffectiveIa || item.isColinFiling)
     }
   },
 

@@ -107,7 +107,7 @@ export default {
       nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
       localNrNumber: null as string,
-      corpTypeCd: null as string,
+      corpTypeCd: null as CorpTypeCd,
 
       /** Whether to show the alternate loading spinner. */
       showSpinner: false,
