@@ -1,10 +1,10 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="coa-warning-dialog">
     <v-card>
-      <v-card-title>Address Change Effective 12:01 AM</v-card-title>
+      <v-card-title>Address Change Effective 12:01 am</v-card-title>
 
       <v-card-text>
-        <p class="genErr">Address changes take effect at 12:01 AM (Pacific Time).
+        <p class="genErr">Address changes take effect at 12:01 am Pacific time.
           No other filings can be performed until an Address Change has taken effect.</p>
         <p class="genErr">If you need to perform other filings today, file them prior to
           your Address Change filing.</p>

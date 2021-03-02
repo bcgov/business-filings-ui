@@ -118,17 +118,18 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Converts an API datetime string (in UTC) to a simple date-time string (YYYY-MM-DD HH:MM:SS AM/PM)
+   * Converts an API datetime string (in UTC) to a simple date-time string (YYYY-MM-DD at HH:MM am/pm)
    * in Pacific timezone.
-   * @example "2021-01-01T00:00:00.000000+00:00" -> "2020-12-31 04:00:00 PM" (PST)
-   * @example "2021-07-01T00:00:00.000000+00:00" -> "2021-06-30 05:00:00 PM" (PDT)
+   * @example "2021-01-01T00:00:00.000000+00:00" -> "2020-12-31 at 04:00 PM" (PST example)
+   * @example "2021-07-01T00:00:00.000000+00:00" -> "2021-06-30 at 05:00 PM" (PDT example)
    */
-  apiToSimpleDateTime (date: string): string {
-    // safety check
-    if (!date) return null
+  apiToSimpleDateTime (dateString: string): string {
+    if (!dateString) return null // safety check
 
-    // convert from API format
-    const utc = new Date(date.replace('+00:00', 'Z'))
+    // chop off the milliseconds and append "Zulu" timezone abbreviation
+    // eg, 2020-08-28T21:53:58Z
+    dateString = dateString.slice(0, 19) + 'Z'
+    const utc = new Date(dateString)
 
     const options = {
       year: 'numeric',
@@ -136,25 +137,24 @@ export default class DateMixin extends Vue {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hour12: true,
       timeZone: 'America/Vancouver'
     }
 
     // NB: locale 'en-CA' is the only one consistent between IE11 and other browsers
-    // eg, "2019-12-31 04:00:00 PM"
+    // eg, "2019-12-31 04:00 PM"
     let pacific = new Intl.DateTimeFormat('en-CA', options).format(utc)
 
     // misc cleanup
-    pacific = pacific.replace(',', '')
-    pacific = pacific.replace('a.m.', 'AM')
-    pacific = pacific.replace('p.m.', 'PM')
+    pacific = pacific.replace(', ', ' at ')
+    pacific = pacific.replace('a.m.', 'am')
+    pacific = pacific.replace('p.m.', 'pm')
 
     // fix for Jest (which outputs MM/DD/YYYY no matter which 'en' locale is used)
     if (pacific.indexOf('/') >= 0) {
       const date = pacific.substr(0, 10).split('/')
       const time = pacific.slice(11)
-      // set as YYYY-MM-DD HH:MM:SS AM/PM
+      // set as YYYY-MM-DD HH:MM am/pm
       pacific = `${date[2]}-${date[0]}-${date[1]} ${time}`
     }
 
