@@ -113,13 +113,13 @@ const sampleFilings = [
     'filing': {
       'header': {
         'name': 'changeOfAddress',
-        'date': '2019-12-12T19:22:59.003777+00:00', // filed Dec 12 at 11:22:59 AM
+        'date': '2019-12-12T19:22:59.003777+00:00', // Dec 12 at 11:22:59 am Pacific
         'paymentToken': 7891,
         'certifiedBy': 'Cameron',
         'filingId': 9873,
         'availableOnPaperOnly': false,
         // Effective Date is way in the future so it's always > now
-        'effectiveDate': '2099-12-13T08:00:00+00:00', // in UTC (Dec 13 at 00:00:00 AM Pacific)
+        'effectiveDate': '2099-12-13T08:00:00+00:00', // Dec 13 at 00:00:00 am Pacific
         'status': 'PAID'
       },
       'changeOfAddress': {

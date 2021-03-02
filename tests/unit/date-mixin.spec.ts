@@ -80,8 +80,8 @@ describe('Date Mixin', () => {
   })
 
   it('returns correct values for apiToSimpleDateTime()', () => {
-    expect(vm.apiToSimpleDateTime('2021-01-01T00:00:00+00:00')).toBe('2020-12-31 04:00:00 PM') // PST
-    expect(vm.apiToSimpleDateTime('2021-07-01T00:00:00+00:00')).toBe('2021-06-30 05:00:00 PM') // PDT
+    expect(vm.apiToSimpleDateTime('2021-01-01T00:00:00+00:00')).toBe('2020-12-31 at 04:00 pm') // PST
+    expect(vm.apiToSimpleDateTime('2021-07-01T00:00:00+00:00')).toBe('2021-06-30 at 05:00 pm') // PDT
   })
 
   // FUTURE: fix so this works in GH CI action

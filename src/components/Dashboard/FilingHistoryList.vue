@@ -45,7 +45,7 @@
                       </div>
                     </template>
                     <span>The updated office addresses will be legally effective on {{filing.effectiveDate}},
-                      12:01 AM (Pacific Time). No other filings are allowed until then.</span>
+                      12:01 am Pacific time. No other filings are allowed until then.</span>
                   </v-tooltip>
                 </div>
 
