@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "3.8.4",
+  "version": "3.8.5",
   "private": true,
   "appName": "Manage UI",
   "sbcName": "SBC Common Components",
@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@babel/compat-data": "^7.9.0",
-    "@bcrs-shared-components/corp-type-module": "^1.0.1",
-    "@bcrs-shared-components/enums": "^1.0.8",
-    "@bcrs-shared-components/interfaces": "^1.0.13",
-    "@bcrs-shared-components/staff-comments": "^1.0.3",
+    "@bcrs-shared-components/corp-type-module": "1.0.3",
+    "@bcrs-shared-components/enums": "1.0.8",
+    "@bcrs-shared-components/interfaces": "1.0.13",
+    "@bcrs-shared-components/staff-comments": "1.0.3",
     "@mdi/font": "^5.0.45",
     "@sentry/browser": "^5.21.1",
     "@sentry/integrations": "^5.21.1",
