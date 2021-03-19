@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "3.8.3",
+  "version": "3.8.4",
   "private": true,
   "appName": "Manage UI",
   "sbcName": "SBC Common Components",
@@ -70,7 +70,7 @@
     "vue-plugin-helper-decorator": "^0.0.12",
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.11",
-    "vue-test-utils-helpers": "git+https://github.com/AmpleOrganics/vue-test-utils-helpers.git",
+    "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
     "vuex-module-decorators": "^0.16.1"
   }
 }
