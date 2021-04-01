@@ -38,7 +38,7 @@ module.exports = {
     proxy: {
       // this is needed to prevent a CORS error when running locally
       '/local-keycloak-config-url/*': {
-        target: 'https://business-filings-dev.pathfinder.gov.bc.ca/businesses/edit/config/kc/',
+        target: 'https://dev.bcregistry.ca/business/config/kc/',
         pathRewrite: {
           '/local-keycloak-config-url': ''
         }

@@ -375,7 +375,7 @@ import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/c
 
 // Enums and Interfaces
 import { FilingStatus, FilingTypes, Routes } from '@/enums'
-import { FilingIF, HistoryItemIF } from '@/interfaces'
+import { CourtOrderIF, FilingIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
@@ -647,8 +647,11 @@ export default {
       if (header && alteration && business) {
         const newLegalType = this.getCorpTypeDescription(alteration.business?.legalType)
         const oldLegalType = this.getCorpTypeDescription(business.legalType)
-        const courtOrderNumber = '' // FUTURE
-        const isArrangement = false // FUTURE
+        const courtOrder = alteration.courtOrder
+        const courtOrderNumber = courtOrder?.fileNumber ? courtOrder.fileNumber : ''
+
+        // isArrangement is true when effect of order value returned by BE is 'planOfArrangement'
+        const isArrangement = this.isPlanOfArrangement(courtOrder)
 
         let title = 'Alteration'
         if (newLegalType !== oldLegalType) {
@@ -794,6 +797,15 @@ export default {
         }
       }
       return false
+    },
+
+    /** Whether this filing(alteration) is pursuant to a plan of arrangement  */
+    isPlanOfArrangement (courtOrder: CourtOrderIF): boolean {
+      if (!courtOrder || !courtOrder.effectOfOrder) {
+        return false
+      }
+
+      return this.isEffectOfOrderPlanOfArrangement(courtOrder)
     },
 
     loadCorrection (filing: FilingIF) {

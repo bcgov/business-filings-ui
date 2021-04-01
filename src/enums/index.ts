@@ -10,6 +10,7 @@ export * from './paymentMethod'
 export * from './roles'
 export * from './routes'
 export * from './staffPaymentsOptions'
+export * from './effectOfOrderTypes'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
