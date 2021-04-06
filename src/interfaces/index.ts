@@ -3,11 +3,13 @@
 // https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/
 import type { CorpInfoIF } from '@bcrs-shared-components/corp-type-module'
 import type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
-  NameRequestApplicantIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
+  NameRequestApplicantIF, ShareStructureIF, CourtOrderIF, IncorporationApplicationIF, IncorporationAddressIf,
+  ShareClassIF } from '@bcrs-shared-components/interfaces'
 export type { CorpInfoIF }
 
 export type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
-  NameRequestApplicantIF, ShareStructureIF }
+  NameRequestApplicantIF, ShareStructureIF, CourtOrderIF, IncorporationApplicationIF, IncorporationAddressIf,
+  ShareClassIF }
 
 export * from './address-interfaces'
 export * from './alertMessage-interface'

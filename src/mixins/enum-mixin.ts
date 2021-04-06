@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod, EffectOfOrderTypes }
+  from '@/enums'
 import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
 
@@ -108,6 +109,15 @@ export default class EnumMixin extends Vue {
   /** Returns True if payment method is Online Banking. */
   isPayMethodOnlineBanking (item: any): boolean {
     return (item.paymentMethod === PaymentMethod.ONLINE_BANKING)
+  }
+
+  //
+  // Effect of Order helpers
+  //
+
+  /** Returns True if effect of order is Plan of Arrangement. */
+  isEffectOfOrderPlanOfArrangement (item: any): boolean {
+    return (item.effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
   }
 
   //
