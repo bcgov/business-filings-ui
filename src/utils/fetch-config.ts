@@ -20,7 +20,8 @@ export async function fetchConfig (): Promise<void> {
   // fetch config from API
   // eg, http://localhost:8080/business/config/configuration.json
   // eg, https://dev.bcregistry.ca/business/config/configuration.json
-  const url = `${windowLocationOrigin}${processEnvBaseUrl}config/configuration.json`
+  let random = new Date().toISOString().substring(0, 10)
+  const url = `${windowLocationOrigin}${processEnvBaseUrl}config/configuration.json?${random}`
   const headers = {
     'Accept': 'application/json',
     'ResponseType': 'application/json',
