@@ -3,7 +3,7 @@ name: Business Filings UI CD
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     inputs:
       environement:
@@ -20,26 +20,32 @@ jobs:
       - name: Set env by input
         run: |
           echo "TAG_NAME=${{ github.event.inputs.environement }}" >> $GITHUB_ENV
-
-      - name: Set env by master branch
-        if: env.TAG_NAME == '' && github.ref == 'refs/heads/master'
+      - name: Set env by main branch
+        if: env.TAG_NAME == '' && github.ref == 'refs/heads/main'
         run: |
           echo "TAG_NAME=dev" >> $GITHUB_ENV
 
-      - uses: pwei1018/bcrs-cd-action@versioning
-        with:
-          WORKING_DIRECTORY: "."
-          APP_NAME: "business-filings"
-          VAULTS: ""
-          SKIP_OP: "true"
-          DEPLOYMENT: "true"
-          OP_PARAMETERS: ""
-          OPENSHIFT_LOGIN_REGISTRY: ${{ secrets.OPENSHIFT4_LOGIN_REGISTRY }}
+      - name: Login Openshift
+        shell: bash
+        run: |
+          oc login --server=${{ secrets.OPENSHIFT4_LOGIN_REGISTRY }} --token=${{ secrets.OPENSHIFT4_SA_TOKEN }}
+
+      - name: CD Flow (build/update env/push/tag)
+        shell: bash
+        env:
+          OPS_REPOSITORY: ${{ secrets.OPS_REPOSITORY }}
           OPENSHIFT_DOCKER_REGISTRY: ${{ secrets.OPENSHIFT4_DOCKER_REGISTRY }}
           OPENSHIFT_SA_NAME: ${{ secrets.OPENSHIFT4_SA_NAME }}
           OPENSHIFT_SA_TOKEN: ${{ secrets.OPENSHIFT4_SA_TOKEN }}
           OPENSHIFT_REPOSITORY: ${{ secrets.OPENSHIFT4_REPOSITORY }}
-          OPENSHIFT_REPOSITORY_DEPLOYMENT: ${{ secrets.OPENSHIFT4_REPOSITORY_DEPLOYMENT }}
+          TAG_NAME: ${{ env.TAG_NAME }}
+        run: |
+          make cd
+
+      - name: Watch new rollout (trigger by image change in Openshift)
+        shell: bash
+        run: |
+          oc rollout status dc/${{ env.APP_NAME }}-${{ env.TAG_NAME }} -n ${{ secrets.OPENSHIFT4_REPOSITORY }}-${{ env.TAG_NAME }} -w
 
       - name: Rocket.Chat Notification
         uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
