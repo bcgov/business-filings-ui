@@ -14,6 +14,14 @@ on:
 jobs:
   business-filings-ui-cd:
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./
+
+    env:
+      APP_NAME: "business-filings"    
+    
     if: github.repository == 'bcgov/business-filings-ui'
     steps:
       - uses: actions/checkout@v2
