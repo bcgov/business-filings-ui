@@ -9,5 +9,6 @@
   "LD_CLIENT_ID": "5f4d47179db2f40a33e88d32",
   "LEGAL_API_URL":"https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v1/",
   "PAY_API_URL":"https://pay-api-dev.apps.silver.devops.gov.bc.ca/api/v1/",
+  "SBC_CONFIG_AUTH_API_URL":"https://auth-api-dev.apps.silver.devops.gov.bc.ca/api/v1",
   "SENTRY_DSN": ""
 }
