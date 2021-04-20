@@ -90,7 +90,7 @@
                   Before you can alter your business it must be in good standing with the Business Registry.
                   There may be several reasons a business is not be in good standing, but the most
                   common reason is an overdue annual report.<br>
-                  To resolve this issue, you MUST contact registries staff:
+                  To resolve this issue, you MUST contact Registry Staff:
                   <contact-info class="pt-3" />
                 </div>
                 <div
