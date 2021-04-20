@@ -213,21 +213,6 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     return ''
   }
 
-  /** True if the entity has the subject status. */
-  private get isGoodStanding (): boolean {
-    return (this.entityStatus === EntityStatus.GOOD_STANDING)
-  }
-
-  /** True if the entity has the subject status. */
-  private get isPendingDissolution (): boolean {
-    return (this.entityStatus === EntityStatus.PENDING_DISSOLUTION)
-  }
-
-  /** True if the entity has the subject status. */
-  private get isNotInCompliance (): boolean {
-    return (this.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
-  }
-
   /** Redirects the user to the Edit UI to view or change their company information. */
   private viewChangeCompanyInfo (): void {
     const url = `${this.editUrl}${this.entityIncNo}/alteration`
