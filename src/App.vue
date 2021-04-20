@@ -484,7 +484,13 @@ export default {
 
       this.setEntityName(business.legalName)
       this.setEntityType(business.legalType)
-      this.setEntityStatus(business.status)
+      if ('goodStanding' in business) {
+        if (business.goodStanding === true) {
+          this.setEntityStatus(EntityStatus.GOOD_STANDING)
+        } else {
+          this.setEntityStatus(EntityStatus.NOT_IN_COMPLIANCE)
+        }
+      }
       this.setEntityBusinessNo(business.taxId)
       this.setEntityIncNo(business.identifier)
       this.setEntityFoundingDate(business.foundingDate) // datetime

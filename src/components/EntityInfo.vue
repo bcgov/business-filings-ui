@@ -24,17 +24,6 @@
               <span>{{ entityName || getCorpTypeNumberedDescription(entityType)}}</span>
             </div>
 
-            <!-- Entity Status -->
-            <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
-              <span>In Good Standing</span>
-            </v-chip>
-            <v-chip v-else-if="isPendingDissolution" class="red" id="entity-status" small label text-color="white">
-              <span>Pending Dissolution</span>
-            </v-chip>
-            <v-chip v-else-if="isNotInCompliance" class="red" id="entity-status" small label text-color="white">
-              <span>Not in Compliance</span>
-            </v-chip>
-
             <!-- Entity Type -->
             <div v-if="entityDescription" id="entity-description">{{ entityDescription }}</div>
             <div v-if="nrDescription" id="nr-subtitle">{{ nrDescription }}</div>
