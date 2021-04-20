@@ -248,7 +248,7 @@ describe('App as a COOP', () => {
           // Legal API Business data
           business: {
             legalName: 'TEST NAME',
-            status: 'GOODSTANDING',
+            goodStanding: true,
             taxId: '123456789',
             identifier: 'CP0001191',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',

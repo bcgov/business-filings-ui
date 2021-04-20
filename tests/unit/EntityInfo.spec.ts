@@ -33,7 +33,6 @@ describe('EntityInfo - UI', () => {
 
     // verify displayed text
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
-    expect(wrapper.find('#entity-status').text()).toBe('In Good Standing')
     expect(wrapper.find('#entity-business-number').text()).toBe('123456789')
     expect(wrapper.find('#entity-incorporation-number').text()).toBe('CP0001191')
     expect(wrapper.find('#entity-business-email span').text()).toBe('business@mail.zzz')
