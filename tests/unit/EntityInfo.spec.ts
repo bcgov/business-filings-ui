@@ -249,6 +249,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.entityIncNo = 'BC1234567'
+    store.state.entityStatus = 'GOODSTANDING'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
     const router = mockRouter.mock()
