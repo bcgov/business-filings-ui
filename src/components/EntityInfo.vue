@@ -44,7 +44,7 @@
               <v-btn
                 small text color="primary"
                 id="company-information-button"
-                :disabled="hasBlockerTask"
+                :disabled="hasBlockerTask || !isInGoodStanding"
                 @click="viewChangeCompanyInfo()"
                 @mouseenter="showHoverStyle = true"
                 @mouseleave="showHoverStyle = false"
@@ -132,7 +132,7 @@ import axios from '@/axios-auth'
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
-      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension']),
+      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension', 'entityStatus']),
     ...mapGetters(['isRoleStaff', 'nrNumber', 'isBComp', 'isBcCompany', 'isUlc', 'hasBlockerTask'])
   },
   components: { StaffComments }
@@ -211,6 +211,11 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
     }
     return ''
+  }
+
+  /** Returns whether business is in good standing */
+  private get isInGoodStanding (): boolean {
+    return this.entityStatus === EntityStatus.GOOD_STANDING
   }
 
   /** Redirects the user to the Edit UI to view or change their company information. */
