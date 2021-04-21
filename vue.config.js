@@ -31,7 +31,9 @@ module.exports = {
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/service-worker.js'
+      swSrc: 'src/service-worker.js',
+      // skip precaching json files such as configs
+      exclude: [/\.json$/]
     }
   },
   devServer: {
