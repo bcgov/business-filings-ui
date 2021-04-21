@@ -79,7 +79,23 @@
                   <span>{{ task.subtitle }}</span>
                 </div>
 
-                <div v-else-if="isStatusDraft(task) && (isTypeCorrection(task) || isTypeAlteration(task))"
+                <div v-else-if="isStatusDraft(task) && isTypeAlteration(task) && !task.goodStanding"
+                  class="todo-list-detail body-2"
+                >
+                  <p class="red--text">
+                    <v-icon color="red" left>mdi-information-outline</v-icon>
+                    This business is not in good standing.
+                  </p>
+
+                  Before you can alter your business it must be in good standing with the Business Registry.
+                  There may be several reasons a business is not be in good standing, but the most
+                  common reason is an overdue annual report.<br>
+                  To resolve this issue, you MUST contact Registry Staff:
+                  <contact-info class="pt-3" />
+                </div>
+                <div
+                  v-else-if="isStatusDraft(task) && (isTypeCorrection(task) ||
+                  (isTypeAlteration(task) && task.goodStanding))"
                   class="todo-subtitle"
                 >
                   <div>DRAFT</div>
@@ -94,7 +110,6 @@
                     {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
                 </div>
-
                 <div v-else-if="isStatusDraft(task) && isPayError(task)" class="todo-subtitle">
                   <div>PAYMENT INCOMPLETE</div>
                   <v-btn
@@ -471,7 +486,7 @@ import Vue2Filters from 'vue2-filters' // needed for orderBy
 import { AddCommentDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
 
 // Components
-import { DetailsList, NameRequestInfo } from '@/components/common'
+import { DetailsList, NameRequestInfo, ContactInfo } from '@/components/common'
 import PaymentIncomplete from './TodoList/PaymentIncomplete.vue'
 import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
@@ -482,7 +497,7 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { FilingNames, FilingStatus, FilingTypes, Routes, EntityStatus } from '@/enums'
 import { FilingIF, PaymentErrorIF, TaskItemIF } from '@/interfaces'
 
 export default {
@@ -499,7 +514,8 @@ export default {
     PaymentPaid,
     PaymentPending,
     PaymentPendingOnlineBanking,
-    PaymentUnsuccessful
+    PaymentUnsuccessful,
+    ContactInfo
   },
 
   mixins: [DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
@@ -529,7 +545,8 @@ export default {
   computed: {
     ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear']),
 
-    ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate', 'lastAnnualReportDate']),
+    ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate',
+      'lastAnnualReportDate', 'entityStatus']),
 
     /** The Pay API URL string. */
     payApiUrl (): string {
@@ -584,6 +601,7 @@ export default {
 
   methods: {
     ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setNextARDate', 'setCurrentFilingStatus']),
+    ...mapGetters(['isInGoodStanding']),
 
     async loadData () {
       this.taskItems = []
@@ -711,6 +729,10 @@ export default {
 
     loadAlteration (task) {
       const filing: FilingIF = task.task.filing
+      if (!this.isInGoodStanding() && this.isStatusDraft(filing.header)) {
+        task.enabled = false
+      }
+
       // verify both "header" and "alteration"
       if (filing?.header && filing?.alteration) {
         this.taskItems.push({
@@ -723,6 +745,7 @@ export default {
           status: filing.header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
+          goodStanding: this.isInGoodStanding(),
           paymentMethod: filing.header.paymentMethod || null,
           paymentToken: filing.header.paymentToken || null,
           comments: this.flattenAndSortComments(filing.header.comments)
@@ -1241,6 +1264,11 @@ export default {
   // enable all buttons (that aren't explicitly disabled)
   .v-btn:not(:disabled) {
     pointer-events: auto;
+  }
+  .theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+    color: white !important;
+    background-color: $app-blue !important;
+    opacity: 0.2;
   }
 
   // specifically enable COA checkbox

@@ -33,7 +33,6 @@ describe('EntityInfo - UI', () => {
 
     // verify displayed text
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
-    expect(wrapper.find('#entity-status').text()).toBe('In Good Standing')
     expect(wrapper.find('#entity-business-number').text()).toBe('123456789')
     expect(wrapper.find('#entity-incorporation-number').text()).toBe('CP0001191')
     expect(wrapper.find('#entity-business-email span').text()).toBe('business@mail.zzz')
@@ -250,6 +249,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.entityIncNo = 'BC1234567'
+    store.state.entityStatus = 'GOODSTANDING'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
     const router = mockRouter.mock()
