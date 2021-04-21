@@ -51,8 +51,8 @@ export default {
     return state.authRoles.includes('view')
   },
 
-  /** Returns whether business is in good standing */
-  isInGoodStanding(state): boolean {
+  /** Returns whether business is in good standing. */
+  isInGoodStanding (state): boolean {
     return state.entityStatus === EntityStatus.GOOD_STANDING
   },
 

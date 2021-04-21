@@ -543,7 +543,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear', 'isInGoodStanding']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate',
       'lastAnnualReportDate', 'entityStatus']),
@@ -601,6 +601,7 @@ export default {
 
   methods: {
     ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setNextARDate', 'setCurrentFilingStatus']),
+    ...mapGetters(['isInGoodStanding']),
 
     async loadData () {
       this.taskItems = []
