@@ -1,4 +1,4 @@
-import { CorpTypeCd, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, FilingStatus, FilingTypes, EntityStatus } from '@/enums'
 
 export default {
   /** The current year. */
@@ -49,6 +49,11 @@ export default {
   /** Is True if View role is set. */
   isRoleView (state): boolean {
     return state.authRoles.includes('view')
+  },
+
+  /** Returns whether business is in good standing */
+  isInGoodStanding(state): boolean {
+    return state.entityStatus === EntityStatus.GOOD_STANDING
   },
 
   nrNumber (state): string {

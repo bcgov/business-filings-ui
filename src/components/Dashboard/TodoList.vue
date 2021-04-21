@@ -543,7 +543,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear', 'isInGoodStanding']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate',
       'lastAnnualReportDate', 'entityStatus']),
@@ -1182,10 +1182,6 @@ export default {
 
     isPayError (task: TaskItemIF): boolean {
       return !!task.payErrorObj
-    },
-
-    isInGoodStanding (): boolean {
-      return this.entityStatus === EntityStatus.GOOD_STANDING
     },
 
     priorityAlterationTitle (priority: boolean): string {
