@@ -95,12 +95,14 @@
                   <span>Change</span>
                 </v-btn>
               </header>
-              <v-card flat>
-                <director-list-sm
-                  :showCompleteYourFilingMessage="isIncorpAppTask"
-                  :showGrayedOut="isIncorpAppFiling"
-                />
-              </v-card>
+              <div class="scrollable-container" style="max-height: 890px">
+                <v-card flat>
+                  <director-list-sm
+                    :showCompleteYourFilingMessage="isIncorpAppTask"
+                    :showGrayedOut="isIncorpAppFiling"
+                  />
+                </v-card>
+              </div>
             </section>
           </v-col>
         </v-row>

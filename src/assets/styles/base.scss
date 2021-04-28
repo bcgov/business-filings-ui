@@ -17,14 +17,14 @@
 @font-face {
   font-family: 'BCSans';
   font-style: normal;
-  font-weight: 700; 
+  font-weight: 700;
   src: url('../fonts/BCSans/BCSans-Bold.woff2') format('woff2'), /* Modern Browsers */
        url('../fonts/BCSans/BCSans-Bold.woff') format('woff'); /* Optimized for very modern browsers */
 }
 @font-face {
   font-family: 'BCSans';
   font-style: italic;
-  font-weight: 700; 
+  font-weight: 700;
   src: url('../fonts/BCSans/BCSans-BoldItalic.woff2') format('woff2'), /* Modern Browsers */
        url('../fonts/BCSans/BCSans-BoldItalic.woff') format('woff'); /* Optimized for very modern browsers */
 }
@@ -66,6 +66,10 @@ h1 {
 
 p {
   font-weight: 400;
+}
+
+.app-action {
+  color: $app-blue !important;
 }
 
 .v-application {
