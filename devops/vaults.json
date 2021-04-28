@@ -1,0 +1,23 @@
+[
+    {
+        "vault": "keycloak",
+        "application": [
+            "base",
+            "web-base",
+            "entity-web"
+        ]
+    },
+    {
+        "vault": "shared",
+        "application": [
+            "address-key"
+        ]
+    },
+    {
+        "vault": "entity",
+        "application": [
+            "business-ui-base",
+            "business-filings-ui"
+        ]
+    }
+]

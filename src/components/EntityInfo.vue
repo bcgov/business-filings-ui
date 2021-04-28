@@ -24,17 +24,6 @@
               <span>{{ entityName || getCorpTypeNumberedDescription(entityType)}}</span>
             </div>
 
-            <!-- Entity Status -->
-            <v-chip v-if="isGoodStanding" class="blue" id="entity-status" small label text-color="white">
-              <span>In Good Standing</span>
-            </v-chip>
-            <v-chip v-else-if="isPendingDissolution" class="red" id="entity-status" small label text-color="white">
-              <span>Pending Dissolution</span>
-            </v-chip>
-            <v-chip v-else-if="isNotInCompliance" class="red" id="entity-status" small label text-color="white">
-              <span>Not in Compliance</span>
-            </v-chip>
-
             <!-- Entity Type -->
             <div v-if="entityDescription" id="entity-description">{{ entityDescription }}</div>
             <div v-if="nrDescription" id="nr-subtitle">{{ nrDescription }}</div>
@@ -55,7 +44,7 @@
               <v-btn
                 small text color="primary"
                 id="company-information-button"
-                :disabled="hasBlockerTask"
+                :disabled="hasBlockerTask || !isInGoodStanding"
                 @click="viewChangeCompanyInfo()"
                 @mouseenter="showHoverStyle = true"
                 @mouseleave="showHoverStyle = false"
@@ -143,8 +132,8 @@ import axios from '@/axios-auth'
   computed: {
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
-      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension']),
-    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBcCompany', 'isUlc', 'hasBlockerTask'])
+      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension', 'entityStatus']),
+    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBComp', 'isBcCompany', 'isUlc', 'hasBlockerTask', 'isInGoodStanding'])
   },
   components: { StaffComments }
 })
@@ -161,6 +150,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   readonly businessPhone!: string
   readonly businessPhoneExtension!: string
   readonly isRoleStaff!: boolean
+  readonly isBComp!: boolean
   readonly isBcCompany!: boolean
   readonly isUlc!: boolean
   readonly nrNumber!: string
@@ -172,7 +162,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** True if View and Change Company Info button should be rendered. */
   private get viewChangeInfoEnabled (): boolean {
-    return (this.isBcCompany || this.isUlc) && getFeatureFlag('alteration-ui-enabled')
+    return (this.isBComp || this.isBcCompany || this.isUlc) && getFeatureFlag('alteration-ui-enabled')
   }
 
   /** True if Download Summary button should be rendered. */
@@ -221,21 +211,6 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
     }
     return ''
-  }
-
-  /** True if the entity has the subject status. */
-  private get isGoodStanding (): boolean {
-    return (this.entityStatus === EntityStatus.GOOD_STANDING)
-  }
-
-  /** True if the entity has the subject status. */
-  private get isPendingDissolution (): boolean {
-    return (this.entityStatus === EntityStatus.PENDING_DISSOLUTION)
-  }
-
-  /** True if the entity has the subject status. */
-  private get isNotInCompliance (): boolean {
-    return (this.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
   }
 
   /** Redirects the user to the Edit UI to view or change their company information. */
