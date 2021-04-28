@@ -19,7 +19,7 @@
       attach="#filing-history-list"
     />
 
-    <div class="scrollable-container" style="max-height: 1000px">
+    <div class="scrollable-container" style="max-height: 56rem">
       <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
         <v-expansion-panel
           class="align-items-top filing-history-item"

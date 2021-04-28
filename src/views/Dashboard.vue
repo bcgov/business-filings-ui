@@ -95,7 +95,7 @@
                   <span>Change</span>
                 </v-btn>
               </header>
-              <div class="scrollable-container" style="max-height: 890px">
+              <div class="scrollable-container" style="max-height: 49rem">
                 <v-card flat>
                   <director-list-sm
                     :showCompleteYourFilingMessage="isIncorpAppTask"
