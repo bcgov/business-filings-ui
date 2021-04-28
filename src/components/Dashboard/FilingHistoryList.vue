@@ -19,328 +19,330 @@
       attach="#filing-history-list"
     />
 
-    <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
-      <v-expansion-panel
-        class="align-items-top filing-history-item"
-        v-for="(filing, index) in historyItems"
-        :key="index"
-      >
-        <!-- NB: bottom padding for when panel is collapsed -->
-        <v-expansion-panel-header class="no-dropdown-icon">
-          <div class="list-item">
-            <div class="filing-label">
-              <h3 class="list-item__title">{{filing.title}}{{correctionTag(filing)}}</h3>
-              <h4 v-if="filing.subtitle" class="list-item__title mt-1">{{filing.subtitle}}</h4>
+    <div class="scrollable-container" style="max-height: 56rem">
+      <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
+        <v-expansion-panel
+          class="align-items-top filing-history-item"
+          v-for="(filing, index) in historyItems"
+          :key="index"
+        >
+          <!-- NB: bottom padding for when panel is collapsed -->
+          <v-expansion-panel-header class="no-dropdown-icon">
+            <div class="list-item">
+              <div class="filing-label">
+                <h3 class="list-item__title">{{filing.title}}{{correctionTag(filing)}}</h3>
+                <h4 v-if="filing.subtitle" class="list-item__title mt-1">{{filing.subtitle}}</h4>
 
-              <div class="list-item__subtitle d-flex">
-                <!-- NB: blocks below are mutually exclusive, and order is important -->
+                <div class="list-item__subtitle d-flex">
+                  <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-                <!-- is this a BCOMP FE COA? -->
-                <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
-                  <span>{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                  <v-tooltip top content-class="pending-tooltip">
-                    <template v-slot:activator="{ on }">
-                      <div class="pending-alert" v-on="on">
-                        <v-icon color="orange darken-2">mdi-alert</v-icon>
-                      </div>
-                    </template>
-                    <span>The updated office addresses will be legally effective on {{filing.effectiveDate}},
-                      12:01 am Pacific time. No other filings are allowed until then.</span>
-                  </v-tooltip>
-                </div>
+                  <!-- is this a BCOMP FE COA? -->
+                  <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
+                    <span>{{ filedLabel('FILED AND PENDING', filing) }}</span>
+                    <v-tooltip top content-class="pending-tooltip">
+                      <template v-slot:activator="{ on }">
+                        <div class="pending-alert" v-on="on">
+                          <v-icon color="orange darken-2">mdi-alert</v-icon>
+                        </div>
+                      </template>
+                      <span>The updated office addresses will be legally effective on {{filing.effectiveDate}},
+                        12:01 am Pacific time. No other filings are allowed until then.</span>
+                    </v-tooltip>
+                  </div>
 
-                <!-- is this a COMPLETED IA? (incorp app mode only) -->
-                <div v-else-if="tempRegNumber && filing.isCompletedIa" class="filing-subtitle">
-                  <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="blue darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon left>mdi-information-outline</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
-                  </v-btn>
-                </div>
+                  <!-- is this a COMPLETED IA? (incorp app mode only) -->
+                  <div v-else-if="tempRegNumber && filing.isCompletedIa" class="filing-subtitle">
+                    <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
+                    <v-btn
+                      class="details-btn"
+                      outlined
+                      color="blue darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
 
-                <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
-                <div v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending" class="filing-subtitle">
-                  <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                  <span class="vert-pipe"></span>
-                  <span>PAID</span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="orange darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon left>mdi-alert</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
-                  </v-btn>
-                </div>
+                  <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
+                  <div v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending" class="filing-subtitle">
+                    <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
+                    <span class="vert-pipe"></span>
+                    <span>PAID</span>
+                    <v-btn
+                      class="details-btn"
+                      outlined
+                      color="orange darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-alert</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
 
-                <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
-                <div v-else-if="tempRegNumber && filing.isFutureEffectiveIa" class="filing-subtitle">
-                  <span>FUTURE EFFECTIVE INCORPORATION</span>
-                  <span class="vert-pipe"></span>
-                  <span>{{ filedLabel('PAID', filing) }}</span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="blue darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon left>mdi-information-outline</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
-                  </v-btn>
-                </div>
+                  <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
+                  <div v-else-if="tempRegNumber && filing.isFutureEffectiveIa" class="filing-subtitle">
+                    <span>FUTURE EFFECTIVE INCORPORATION</span>
+                    <span class="vert-pipe"></span>
+                    <span>{{ filedLabel('PAID', filing) }}</span>
+                    <v-btn
+                      class="details-btn"
+                      outlined
+                      color="blue darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
 
-                <!-- is this a PENDING (ie, not completed) FE alteration? -->
-                <div v-else-if="filing.isFutureEffectiveAlterationPending" class="filing-subtitle">
-                  <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                  <span class="vert-pipe"></span>
-                  <span>PAID</span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="orange darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon left>mdi-alert</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
-                  </v-btn>
-                </div>
+                  <!-- is this a PENDING (ie, not completed) FE alteration? -->
+                  <div v-else-if="filing.isFutureEffectiveAlterationPending" class="filing-subtitle">
+                    <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
+                    <span class="vert-pipe"></span>
+                    <span>PAID</span>
+                    <v-btn
+                      class="details-btn"
+                      outlined
+                      color="orange darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-alert</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
 
-                <!-- is this a FE alteration still waiting for effective date/time? -->
-                <div v-else-if="filing.isFutureEffectiveAlteration" class="filing-subtitle">
-                  <span>FUTURE EFFECTIVE ALTERATION</span>
-                  <span class="vert-pipe"></span>
-                  <span>{{ filedLabel('PAID', filing) }}</span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="blue darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon left>mdi-information-outline</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
-                  </v-btn>
-                </div>
+                  <!-- is this a FE alteration still waiting for effective date/time? -->
+                  <div v-else-if="filing.isFutureEffectiveAlteration" class="filing-subtitle">
+                    <span>FUTURE EFFECTIVE ALTERATION</span>
+                    <span class="vert-pipe"></span>
+                    <span>{{ filedLabel('PAID', filing) }}</span>
+                    <v-btn
+                      class="details-btn"
+                      outlined
+                      color="blue darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-information-outline</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
 
-                <!-- is this a PAID (ie, not completed) filing? -->
-                <div v-else-if="filing.isPaid" class="filing-subtitle">
-                  <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                  <span class="vert-pipe"></span>
-                  <span>PAID</span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="orange darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon left>mdi-alert</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
-                  </v-btn>
-                </div>
+                  <!-- is this a PAID (ie, not completed) filing? -->
+                  <div v-else-if="filing.isPaid" class="filing-subtitle">
+                    <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
+                    <span class="vert-pipe"></span>
+                    <span>PAID</span>
+                    <v-btn
+                      class="details-btn"
+                      outlined
+                      color="orange darken-2"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon left>mdi-alert</v-icon>
+                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    </v-btn>
+                  </div>
 
-                <!-- else this must be a COMPLETED filing -->
-                <!-- NB: no details button -->
-                <div v-else class="filing-subtitle">
-                  <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
-                </div>
+                  <!-- else this must be a COMPLETED filing -->
+                  <!-- NB: no details button -->
+                  <div v-else class="filing-subtitle">
+                    <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
+                  </div>
 
-                <!-- details (comments) button -->
-                <div v-if="filing.comments.length > 0" class="filing-subtitle">
-                  <v-btn
-                    class="comments-btn"
-                    outlined
-                    color="primary"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
-                  >
-                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                    Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
-                  </v-btn>
-                </div>
-              </div> <!-- end of subtitle -->
-            </div> <!-- end of filing-label -->
+                  <!-- details (comments) button -->
+                  <div v-if="filing.comments.length > 0" class="filing-subtitle">
+                    <v-btn
+                      class="comments-btn"
+                      outlined
+                      color="primary"
+                      :ripple=false
+                      @click.stop="togglePanel(index)"
+                    >
+                      <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                      Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
+                    </v-btn>
+                  </div>
+                </div> <!-- end of subtitle -->
+              </div> <!-- end of filing-label -->
 
-            <!-- the action button/menu -->
-            <div class="filing-item__actions">
-              <v-btn
-                class="expand-btn"
-                outlined
-                :ripple=false
-                @click.stop="togglePanel(index)"
-              >
-                <span v-if="filing.isColinFiling || filing.isPaperFiling">
-                  {{ (panel === index) ? "Close" : "Request a Copy" }}</span>
-                <span v-else>{{ (panel === index) ? "Hide Documents" : "View Documents" }}</span>
-              </v-btn>
+              <!-- the action button/menu -->
+              <div class="filing-item__actions">
+                <v-btn
+                  class="expand-btn"
+                  outlined
+                  :ripple=false
+                  @click.stop="togglePanel(index)"
+                >
+                  <span v-if="filing.isColinFiling || filing.isPaperFiling" class="app-action">
+                    {{ (panel === index) ? "Close" : "Request a Copy" }}</span>
+                  <span v-else class="app-action">{{ (panel === index) ? "Hide Documents" : "View Documents" }}</span>
+                </v-btn>
 
-              <!-- the drop-down menu -->
-              <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff">
-                <template v-slot:activator="{ on }">
-                  <v-btn text v-on="on" class="menu-btn">
-                    <v-icon>mdi-menu-down</v-icon>
-                  </v-btn>
-                </template>
-                <v-list dense>
-                  <v-list-item-group color="primary">
-                    <v-list-item :disabled="disableCorrection(filing)">
-                      <v-list-item-icon>
-                        <v-icon>mdi-file-document-edit-outline</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title
-                        class="file-correction-item"
-                        @click="correctThisFiling(filing)"
-                      >
-                        File a Correction
-                      </v-list-item-title>
-                    </v-list-item>
+                <!-- the drop-down menu -->
+                <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff">
+                  <template v-slot:activator="{ on }">
+                    <v-btn text v-on="on" class="menu-btn">
+                      <v-icon>mdi-menu-down</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list dense>
+                    <v-list-item-group color="primary">
+                      <v-list-item :disabled="disableCorrection(filing)">
+                        <v-list-item-icon>
+                          <v-icon class="app-action">mdi-file-document-edit-outline</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title
+                          class="file-correction-item"
+                          @click="correctThisFiling(filing)"
+                        >
+                          <span class="app-action">File a Correction</span>
+                        </v-list-item-title>
+                      </v-list-item>
 
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-comment-plus</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title
-                        class="add-detail-comment-item"
-                        @click="showCommentDialog(filing.filingId)"
-                      >
-                        Add Detail
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-menu>
+                      <v-list-item>
+                        <v-list-item-icon>
+                          <v-icon class="app-action">mdi-comment-plus</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title
+                          class="add-detail-comment-item"
+                          @click="showCommentDialog(filing.filingId)"
+                        >
+                          <span class="app-action">Add Detail</span>
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                </v-menu>
+              </div>
             </div>
-          </div>
-        </v-expansion-panel-header>
+          </v-expansion-panel-header>
 
-        <v-expansion-panel-content>
-          <!-- is this a BCOMP FE COA filing? -->
-          <!-- NB: no details -->
-          <template v-if="filing.isBcompCoaFutureEffective" />
+          <v-expansion-panel-content>
+            <!-- is this a BCOMP FE COA filing? -->
+            <!-- NB: no details -->
+            <template v-if="filing.isBcompCoaFutureEffective" />
 
-          <!-- is this a COMPLETED IA? (incorp app mode only) -->
-          <template v-else-if="tempRegNumber && filing.isCompletedIa">
-            <completed-ia />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this a COMPLETED IA? (incorp app mode only) -->
+            <template v-else-if="tempRegNumber && filing.isCompletedIa">
+              <completed-ia />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
-          <template v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending">
-            <future-effective-pending :filing=filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
+            <template v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending">
+              <future-effective-pending :filing=filing />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
-          <template v-else-if="tempRegNumber && filing.isFutureEffectiveIa">
-            <future-effective :filing=filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
+            <template v-else-if="tempRegNumber && filing.isFutureEffectiveIa">
+              <future-effective :filing=filing />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this a PENDING (ie, not completed) FE Alteration? -->
-          <template v-else-if="filing.isFutureEffectiveAlterationPending">
-            <future-effective-pending :filing=filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this a PENDING (ie, not completed) FE Alteration? -->
+            <template v-else-if="filing.isFutureEffectiveAlterationPending">
+              <future-effective-pending :filing=filing />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this a FE Alteration still waiting for effective date/time?  -->
-          <template v-else-if="filing.isFutureEffectiveAlteration">
-            <future-effective :filing=filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this a FE Alteration still waiting for effective date/time?  -->
+            <template v-else-if="filing.isFutureEffectiveAlteration">
+              <future-effective :filing=filing />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this a PAID (ie, not completed) filing? -->
-          <template v-else-if="filing.isPaid">
-            <pending-filing :filing=filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this a PAID (ie, not completed) filing? -->
+            <template v-else-if="filing.isPaid">
+              <pending-filing :filing=filing />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this an Alteration filing? -->
-          <template v-else-if="filing.filingType === FilingTypes.ALTERATION">
-            <completed-alteration :filing=filing />
-            <v-divider class="mt-7 mb-5"></v-divider>
-          </template>
+            <!-- is this an Alteration filing? -->
+            <template v-else-if="filing.filingType === FilingTypes.ALTERATION">
+              <completed-alteration :filing=filing />
+              <v-divider class="mt-7 mb-5"></v-divider>
+            </template>
 
-          <!-- is this a Colin filing? -->
-          <template v-else-if="filing.isColinFiling">
-            <colin-filing />
-            <!-- NB: no documents so no divider needed -->
-          </template>
+            <!-- is this a Colin filing? -->
+            <template v-else-if="filing.isColinFiling">
+              <colin-filing />
+              <!-- NB: no documents so no divider needed -->
+            </template>
 
-          <!-- is this a paper filing? -->
-          <template v-else-if="filing.isPaperFiling">
-            <paper-filing />
-            <!-- NB: no documents so no divider needed -->
-          </template>
+            <!-- is this a paper filing? -->
+            <template v-else-if="filing.isPaperFiling">
+              <paper-filing />
+              <!-- NB: no documents so no divider needed -->
+            </template>
 
-          <!-- else must be a COMPLETED filing -->
-          <!-- NB: no details -->
-          <template v-else />
+            <!-- else must be a COMPLETED filing -->
+            <!-- NB: no details -->
+            <template v-else />
 
-          <!-- the list of documents -->
-          <v-list dense class="document-list py-0" v-if="filing.documents">
-            <v-list-item
-              v-for="(document, index) in filing.documents"
-              :key="index"
-            >
-              <v-btn v-if="document.type === DOCUMENT_TYPE_REPORT"
-                text color="primary"
-                class="download-document-btn"
-                @click="downloadDocument(document, index)"
-                :disabled="loadingDocument || loadingReceipt || loadingAll"
-                :loading="loadingDocument && index===downloadingDocIndex"
+            <!-- the list of documents -->
+            <v-list dense class="document-list py-0" v-if="filing.documents">
+              <v-list-item
+                v-for="(document, index) in filing.documents"
+                :key="index"
               >
-                <v-icon>mdi-file-pdf-outline</v-icon>
-                <span>{{document.title}}</span>
-              </v-btn>
+                <v-btn v-if="document.type === DOCUMENT_TYPE_REPORT"
+                  text color="primary"
+                  class="download-document-btn"
+                  @click="downloadDocument(document, index)"
+                  :disabled="loadingDocument || loadingReceipt || loadingAll"
+                  :loading="loadingDocument && index===downloadingDocIndex"
+                >
+                  <v-icon>mdi-file-pdf-outline</v-icon>
+                  <span>{{document.title}}</span>
+                </v-btn>
 
-              <v-btn v-if="document.type === DOCUMENT_TYPE_RECEIPT"
-                text color="primary"
-                class="download-receipt-btn"
-                @click="downloadReceipt(document)"
-                :disabled="loadingReceipt || loadingDocument || loadingAll"
-                :loading="loadingReceipt"
-              >
-                <v-icon>mdi-file-pdf-outline</v-icon>
-                <span>{{document.title}}</span>
-              </v-btn>
-            </v-list-item>
+                <v-btn v-if="document.type === DOCUMENT_TYPE_RECEIPT"
+                  text color="primary"
+                  class="download-receipt-btn"
+                  @click="downloadReceipt(document)"
+                  :disabled="loadingReceipt || loadingDocument || loadingAll"
+                  :loading="loadingReceipt"
+                >
+                  <v-icon>mdi-file-pdf-outline</v-icon>
+                  <span>{{document.title}}</span>
+                </v-btn>
+              </v-list-item>
 
-            <v-list-item v-if="filing.documents.length > 1">
-              <v-btn text color="primary"
-                class="download-all-btn"
-                @click="downloadAll(filing)"
-                :disabled="loadingAll || loadingDocument || loadingReceipt"
-                :loading="loadingAll"
-              >
-                <v-icon>mdi-download</v-icon>
-                <span>Download All</span>
-              </v-btn>
-            </v-list-item>
-          </v-list>
+              <v-list-item v-if="filing.documents.length > 1">
+                <v-btn text color="primary"
+                  class="download-all-btn"
+                  @click="downloadAll(filing)"
+                  :disabled="loadingAll || loadingDocument || loadingReceipt"
+                  :loading="loadingAll"
+                >
+                  <v-icon>mdi-download</v-icon>
+                  <span>Download All</span>
+                </v-btn>
+              </v-list-item>
+            </v-list>
 
-          <!-- the details (comments) section -->
-          <template v-if="filing.comments.length > 0">
-            <v-divider class="mt-6"></v-divider>
-            <details-list
-              :filing=filing
-              :isTask="false"
-              @showCommentDialog="showCommentDialog($event)"
-            />
-          </template>
+            <!-- the details (comments) section -->
+            <template v-if="filing.comments.length > 0">
+              <v-divider class="mt-6"></v-divider>
+              <details-list
+                :filing=filing
+                :isTask="false"
+                @showCommentDialog="showCommentDialog($event)"
+              />
+            </template>
 
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
 
     <!-- No Results Message -->
     <v-card class="no-results" flat v-if="!historyItems.length">
@@ -1270,11 +1272,15 @@ export default {
 
     /** Returns "filed" label with conditional author and date. */
     filedLabel (status: string, item: HistoryItemIF): string {
+      // Remove everything after the Date
+      const effectiveDate = item.effectiveDateTime?.replace(/ .*/, '')
+      const appendEffectiveDate = `| EFFECTIVE as of ${effectiveDate}`
+
       const a = item.filingAuthor
       const d = item.filingDate
-      if (a && d) return `${status} (filed by ${a} on ${d})`
-      if (a) return `${status} (filed by ${a})`
-      if (d) return `${status} (filed on ${d})`
+      if (a && d) return `${status} (filed by ${a} on ${d}) ${effectiveDate ? appendEffectiveDate : ''}`
+      if (a) return `${status} (filed by ${a}) ${effectiveDate ? appendEffectiveDate : ''}`
+      if (d) return `${status} (filed on ${d}) ${effectiveDate ? appendEffectiveDate : ''}`
       return status
     },
 
@@ -1398,11 +1404,16 @@ export default {
     height: unset !important;
     min-width: unset !important;
     padding: 0.25rem !important;
+    color: $app-blue
   }
 }
 
 .document-list .v-list-item {
   padding-left: 0;
   min-height: 1.5rem;
+}
+
+::v-deep .theme--light.v-list-item--disabled {
+  opacity: 0.38 !important;
 }
 </style>
