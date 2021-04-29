@@ -113,10 +113,6 @@ li {
   color: $primary-blue;
 }
 
-.bold-text {
-  font-weight: bold;
-}
-
 .legal-obligation-btn-panel {
   float: right;
   margin-top: 1.5rem;

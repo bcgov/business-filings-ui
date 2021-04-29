@@ -72,6 +72,14 @@ p {
   color: $app-blue !important;
 }
 
+.bold-text {
+  font-weight: bold !important;
+}
+
+.error-text {
+  color: $app-red !important;
+}
+
 .v-application {
   // BC Government Font
   font-family: 'BCSans', Verdana, Arial, sans-serif;
@@ -276,4 +284,9 @@ ul.list {
 // Vue Affix
 .vue-affix {
   width: 282px;
+}
+
+// Error Border
+.invalid-section {
+  border-left: 3px solid $app-red;
 }
