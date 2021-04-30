@@ -5,7 +5,7 @@
     <v-card flat class="legal-obligation-section">
       <v-icon color="blue darken-2" class="info-icon">mdi-information-outline</v-icon>
       <div class="share-structure-check-text">
-        <span class="bold-text">Legal Obligations:</span>
+        <span class="font-weight-bold">Legal Obligations:</span>
         You are required by the <em>Business Corporations Act</em> to keep the information about your corporation up
         to date with the Registrar: For example, you must file annual reports, director changes and address changes.
         <span class="read-more-btn" @click="readMoreFlag = true">
@@ -19,17 +19,17 @@
           <div class="read-more-line">
             <ul>
               <li>
-                <span class="bold-text">Annual Reports</span> - file an annual report each year within two months after
-                each anniversary of the date on which the company was recognized. This ensures your company remains in
-                good standing with the Registrar.
+                <span class="font-weight-bold">Annual Reports</span> - file an annual report each year within two
+                months after each anniversary of the date on which the company was recognized. This ensures your
+                company remains in good standing with the Registrar.
               </li>
               <li>
-                <span class="bold-text">Director changes</span> - update director information within 15 days of any
-                change (appointing, ceasing or updating an existing director's name or address)
+                <span class="font-weight-bold">Director changes</span> - update director information within 15 days of
+                any change (appointing, ceasing or updating an existing director's name or address)
               </li>
               <li>
-                <span class="bold-text">Company address changes</span> - update any changes to a company's registered or
-                records office addresses as they occur.
+                <span class="font-weight-bold">Company address changes</span> - update any changes to a company's
+                registered or records office addresses as they occur.
               </li>
             </ul>
           </div>

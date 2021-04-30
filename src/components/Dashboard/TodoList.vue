@@ -85,7 +85,7 @@
                 <div v-else-if="isStatusDraft(task) && isTypeAlteration(task) && !task.goodStanding"
                   class="todo-list-detail body-2"
                 >
-                  <p class="error-text bold-text">
+                  <p class="error-text font-weight-bold">
                     <v-icon small color="error">mdi-alert</v-icon>
                     This business is not in good standing.
                   </p>
