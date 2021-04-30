@@ -92,13 +92,35 @@
 
                   <p>Before you can alter your business it must be in good standing with the Business Registry.
                   There may be several reasons a business is not in good standing, but the most
-                  common reason is an overdue annual report.</p><br>
+                  common reason is an overdue annual report.
+                  </p>
                   <p>To resolve this issue, you MUST contact Registry Staff:</p>
                   <contact-info class="pt-3" />
                 </div>
+
                 <div
-                  v-else-if="isStatusDraft(task) && (isTypeCorrection(task) ||
-                  (isTypeAlteration(task) && task.goodStanding))"
+                  v-else-if="isTypeAlteration(task) && task.goodStanding && !isBComp && !isCoop"
+                  class="todo-subtitle my-4"
+                >
+                  <span>
+                    Your business is ready to alter from a {{ task.legalType }} to a BC
+                    Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make any other
+                    changes to your business until the alteration is complete.
+                  </span>
+                  <v-btn
+                    v-if="task.comments.length > 0"
+                    class="expand-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                  >
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
+                  </v-btn>
+                </div>
+
+                <div
+                  v-else-if="isStatusDraft(task) && (isTypeCorrection(task) || isTypeAlteration(task))"
                   class="todo-subtitle"
                 >
                   <div>DRAFT</div>
@@ -113,6 +135,7 @@
                     {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
                 </div>
+
                 <div v-else-if="isStatusDraft(task) && isPayError(task)" class="todo-subtitle">
                   <div>PAYMENT INCOMPLETE</div>
                   <v-btn
@@ -753,7 +776,7 @@ export default {
         this.taskItems.push({
           filingType: FilingTypes.ALTERATION,
           id: filing.header.filingId,
-          // FUTURE
+          legalType: this.getCorpTypeDescription(filing.business?.legalType),
           filingDate: filing.header.date,
           title: this.alterationTitle(filing.header.priority, this.getCorpTypeDescription(filing.business?.legalType)),
           draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
@@ -1385,6 +1408,7 @@ export default {
 }
 
 .todo-subtitle {
+  color: $gray7;
   display: flex;
   align-items: center;
   justify-content: flex-start;

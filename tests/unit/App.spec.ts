@@ -566,7 +566,7 @@ describe('App as a BCOMP', () => {
           // Legal API Business data
           business: {
             legalName: 'TEST NAME',
-            status: 'GOODSTANDING',
+            goodStanding: true,
             taxId: '123456789',
             identifier: 'BC0007291',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
@@ -736,7 +736,7 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.state.currentDate).toEqual(currentDate)
   })
 
-  it('fetches Entity Info properly', () => {
+  it.only('fetches Entity Info properly', () => {
     expect(vm.$store.state.entityName).toBe('TEST NAME')
     expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')

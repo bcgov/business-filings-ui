@@ -484,7 +484,7 @@ export default {
 
       this.setEntityName(business.legalName)
       this.setEntityType(business.legalType)
-      if (business.goodStanding && business.goodStanding === true) {
+      if (business.goodStanding === true) {
         this.setEntityStatus(EntityStatus.GOOD_STANDING)
       } else {
         this.setEntityStatus(EntityStatus.NOT_IN_COMPLIANCE)

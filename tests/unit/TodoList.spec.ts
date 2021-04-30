@@ -2349,7 +2349,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.entityIncNo = 'BC1234567'
     store.state.entityStatus = 'GOODSTANDING'
-    // store.state.entityType = 'LTD' // FUTURE: uncomment this
+    store.state.entityType = 'BEN'
     store.state.tasks = [
       {
         task: {
