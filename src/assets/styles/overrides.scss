@@ -37,6 +37,7 @@
     .v-card__text {
       padding: 1.5rem !important;
       font-weight: 300;
+      color: $gray7 !important;
     }
 
     .v-card__actions {
@@ -56,7 +57,7 @@
     margin-top: 0;
   }
 }
- 
+
 .v-expansion-panel-header.no-dropdown-icon {
   .v-expansion-panel-header__icon {
     display: none;

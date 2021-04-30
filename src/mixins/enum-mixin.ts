@@ -1,8 +1,18 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, PaymentMethod, EffectOfOrderTypes }
-  from '@/enums'
-import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription }
-  from '@bcrs-shared-components/corp-type-module'
+import {
+  CorpTypeCd,
+  EffectOfOrderTypes,
+  EntityStatus,
+  FilingNames,
+  FilingStatus,
+  FilingTypes,
+  PaymentMethod
+} from '@/enums'
+import {
+  GetCorpFullDescription,
+  GetCorpInfoObject,
+  GetCorpNumberedDescription
+} from '@bcrs-shared-components/corp-type-module'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -150,8 +160,9 @@ export default class EnumMixin extends Vue {
    * Converts the filing type to a filing name.
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
+   * @param alterationRequired A boolean indicating a required business type change
    */
-  filingTypeToName (type: FilingTypes | string, agmYear: string = null): string {
+  filingTypeToName (type: FilingTypes | string, agmYear: string = null, alterationRequired: boolean = false): string {
     if (!type) return '' // safety check
     switch (type) {
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
@@ -161,7 +172,8 @@ export default class EnumMixin extends Vue {
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
-      case FilingTypes.ALTERATION: return FilingNames.ALTERATION
+      case FilingTypes.ALTERATION:
+        return alterationRequired ? FilingNames.ALTERATION : FilingNames.CHANGE_OF_COMPANY_INFO
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION

@@ -566,7 +566,7 @@ describe('App as a BCOMP', () => {
           // Legal API Business data
           business: {
             legalName: 'TEST NAME',
-            status: 'GOODSTANDING',
+            goodStanding: true,
             taxId: '123456789',
             identifier: 'BC0007291',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',

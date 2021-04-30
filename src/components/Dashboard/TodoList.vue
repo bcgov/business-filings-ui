@@ -42,10 +42,13 @@
           'pay-error': isStatusDraft(task) && isPayError(task)
         }"
       >
-        <v-expansion-panel-header class="no-dropdown-icon">
+        <v-expansion-panel-header
+          class="no-dropdown-icon"
+          :class="{'invalid-section': isTypeAlteration(task) && requiresAlteration && !task.goodStanding}"
+        >
           <div class="list-item">
             <div class="todo-label">
-              <h3 class="list-item__title">{{task.title}}
+              <h3 class="list-item__title pt-2">{{task.title}}
                 <v-btn v-if="isStatusDraft(task) && isTypeCorrection(task)"
                   class="expand-btn ml-0"
                   outlined
@@ -82,20 +85,42 @@
                 <div v-else-if="isStatusDraft(task) && isTypeAlteration(task) && !task.goodStanding"
                   class="todo-list-detail body-2"
                 >
-                  <p class="red--text">
-                    <v-icon color="red" left>mdi-information-outline</v-icon>
+                  <p class="error-text font-weight-bold">
+                    <v-icon small color="error">mdi-alert</v-icon>
                     This business is not in good standing.
                   </p>
 
-                  Before you can alter your business it must be in good standing with the Business Registry.
-                  There may be several reasons a business is not be in good standing, but the most
-                  common reason is an overdue annual report.<br>
-                  To resolve this issue, you MUST contact Registry Staff:
+                  <p>Before you can alter your business it must be in good standing with the Business Registry.
+                  There may be several reasons a business is not in good standing, but the most
+                  common reason is an overdue annual report.
+                  </p>
+                  <p>To resolve this issue, you MUST contact Registry Staff:</p>
                   <contact-info class="pt-3" />
                 </div>
+
                 <div
-                  v-else-if="isStatusDraft(task) && (isTypeCorrection(task) ||
-                  (isTypeAlteration(task) && task.goodStanding))"
+                  v-else-if="isTypeAlteration(task) && task.goodStanding && !isBComp && !isCoop"
+                  class="todo-subtitle my-4"
+                >
+                  <span>
+                    Your business is ready to alter from a {{ task.legalType }} to a BC
+                    Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make any other
+                    changes to your business until the alteration is complete.
+                  </span>
+                  <v-btn
+                    v-if="task.comments.length > 0"
+                    class="expand-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                  >
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
+                  </v-btn>
+                </div>
+
+                <div
+                  v-else-if="isStatusDraft(task) && (isTypeCorrection(task) || isTypeAlteration(task))"
                   class="todo-subtitle"
                 >
                   <div>DRAFT</div>
@@ -110,6 +135,7 @@
                     {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
                   </v-btn>
                 </div>
+
                 <div v-else-if="isStatusDraft(task) && isPayError(task)" class="todo-subtitle">
                   <div>PAYMENT INCOMPLETE</div>
                   <v-btn
@@ -280,9 +306,9 @@
                          :disabled="!task.enabled"
                          @click.native.stop="doResumeFiling(task)"
                   >
-                    <span>Resume</span>
+                    <span>{{alterationBtnLabel}}</span>
                   </v-btn>
-                  <v-menu offset-y left>
+                  <v-menu v-if="!requiresAlteration" offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" class="actions__more-actions__btn px-0"
                              v-on="on" id="menu-activator-alt" :disabled="!task.enabled"
@@ -543,7 +569,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'currentYear']),
+    ...mapGetters(['isBComp', 'isBcCompany', 'isCoop', 'isRoleStaff', 'currentYear']),
 
     ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate',
       'lastAnnualReportDate', 'entityStatus']),
@@ -591,6 +617,18 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    /** The condition if filing an Alteration is required. */
+    requiresAlteration (): boolean {
+      return (this.isBcCompany || this.isUlc)
+        ? this.tasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
+        : false
+    },
+
+    /** Alteration action button label. */
+    alterationBtnLabel (): string {
+      return this.requiresAlteration ? 'Alter Now' : 'Resume'
     }
   },
 
@@ -738,9 +776,9 @@ export default {
         this.taskItems.push({
           filingType: FilingTypes.ALTERATION,
           id: filing.header.filingId,
-          // FUTURE
+          legalType: this.getCorpTypeDescription(filing.business?.legalType),
           filingDate: filing.header.date,
-          title: this.priorityAlterationTitle(filing.header.priority),
+          title: this.alterationTitle(filing.header.priority, this.getCorpTypeDescription(filing.business?.legalType)),
           draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
           status: filing.header.status,
           enabled: Boolean(task.enabled),
@@ -1185,9 +1223,14 @@ export default {
       return !!task.payErrorObj
     },
 
-    priorityAlterationTitle (priority: boolean): string {
+    alterationTitle (priority: boolean, oldLegalType: string): string {
       let title = priority ? 'Priority ' : ''
-      title += this.filingTypeToName(FilingTypes.ALTERATION)
+      if (this.requiresAlteration) {
+        title += this.filingTypeToName(FilingTypes.ALTERATION, null, true)
+        title += ` - ${oldLegalType} to a BC Benefit Company`
+      } else {
+        title += this.filingTypeToName(FilingTypes.ALTERATION)
+      }
       return title
     },
 
@@ -1235,11 +1278,15 @@ export default {
      * Returns the formatted BCOMP AR Due Date.
      * Used for Todo List display only.
      */
-    arDueDate (nextArSimpleDateTime: string): string {
+    arDueDate (arDateTime: string): string {
+      // Get just the Date
+      const arDate = arDateTime.replace(/ .*/, '')
+
       // due date is 60 days after the next AR date
-      const date = new Date(nextArSimpleDateTime)
-      date.setDate(date.getDate() + 60)
-      const simpleDate = this.dateToSimpleDate(date)
+      const dueDate = new Date(arDate)
+      dueDate.setDate(dueDate.getDate() + 60)
+
+      const simpleDate = this.dateToSimpleDate(dueDate)
       return this.simpleDateToDisplayDate(simpleDate)
     }
   },
@@ -1279,12 +1326,16 @@ export default {
   // specifically enable events on this div
   .todo-list-detail {
     pointer-events: auto;
+    p {
+      color: $gray7;
+    }
   }
 }
 
 .todo-item .list-item {
   padding: 0;
   justify-content: space-evenly;
+  align-items: flex-start;
 
   .bcorps-ar-subtitle {
     padding: 1rem 0 .5rem 0;
@@ -1357,6 +1408,7 @@ export default {
 }
 
 .todo-subtitle {
+  color: $gray7;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -1400,6 +1452,10 @@ export default {
 
 .v-expansion-panel-header:before {
   background-color: white !important;
+}
+
+::v-deep .v-expansion-panel-content__wrap {
+  padding-bottom: 0px;
 }
 
 .pay-error {
