@@ -28,12 +28,12 @@ export default {
 
   /** Is True if entity is a BC Company. */
   isBcCompany (state): boolean {
-    return (state?.entityType === CorpTypeCd.BC_COMPANY)
+    return (state.entityType === CorpTypeCd.BC_COMPANY)
   },
 
   /** Is True if entity is a BC ULC Company. */
   isUlc (state): boolean {
-    return (state?.entityType === CorpTypeCd.BC_ULC_COMPANY)
+    return (state.entityType === CorpTypeCd.BC_ULC_COMPANY)
   },
 
   /** Is True if Staff role is set. */

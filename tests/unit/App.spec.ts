@@ -736,7 +736,7 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.state.currentDate).toEqual(currentDate)
   })
 
-  it.only('fetches Entity Info properly', () => {
+  it('fetches Entity Info properly', () => {
     expect(vm.$store.state.entityName).toBe('TEST NAME')
     expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')

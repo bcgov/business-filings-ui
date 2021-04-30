@@ -172,7 +172,8 @@ export default class EnumMixin extends Vue {
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
-      case FilingTypes.ALTERATION: return alterationRequired ? FilingNames.ALTERATION : FilingNames.CHANGE_OF_COMPANY
+      case FilingTypes.ALTERATION:
+        return alterationRequired ? FilingNames.ALTERATION : FilingNames.CHANGE_OF_COMPANY_INFO
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION

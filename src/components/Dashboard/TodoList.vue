@@ -44,7 +44,7 @@
       >
         <v-expansion-panel-header
           class="no-dropdown-icon"
-          :class="{'invalid-section': requiresAlteration && !task.goodStanding}"
+          :class="{'invalid-section': isTypeAlteration(task) && requiresAlteration && !task.goodStanding}"
         >
           <div class="list-item">
             <div class="todo-label">
@@ -306,7 +306,7 @@
                          :disabled="!task.enabled"
                          @click.native.stop="doResumeFiling(task)"
                   >
-                    <span>{{alterBtnLabel}}</span>
+                    <span>{{alterationBtnLabel}}</span>
                   </v-btn>
                   <v-menu v-if="!requiresAlteration" offset-y left>
                     <template v-slot:activator="{ on }">
@@ -619,15 +619,15 @@ export default {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
     },
 
-    /** Flag alteration filing is required before all else. */
+    /** The condition if filing an Alteration is required. */
     requiresAlteration (): boolean {
       return (this.isBcCompany || this.isUlc)
         ? this.tasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
         : false
     },
 
-    /** Alteration action btn label. */
-    alterBtnLabel (): string {
+    /** Alteration action button label. */
+    alterationBtnLabel (): string {
       return this.requiresAlteration ? 'Alter Now' : 'Resume'
     }
   },
