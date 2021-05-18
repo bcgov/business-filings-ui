@@ -6,7 +6,7 @@
         <div id="notation-text" class="mb-4 mt-2 default-text">
             Enter a {{itemName}} that will appear on the ledger for this entity
         </div>
-        <v-form ref="notationFormRef" v-model="notationFormValid">
+        <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
             <v-textarea
                 v-model="notation"
                 class="text-input-field mb-2"
@@ -14,7 +14,7 @@
                 :label="itemName"
                 id="notation"
                 rows="4"
-                :rules="getNotationRules()"
+                :rules="notationRules"
                 :counter="notationMaxLength"
             />
         </v-form>
@@ -62,7 +62,7 @@ import { FormIF } from '@/interfaces'
 
 @Component({
   computed: {
-    ...mapState(['entityIncNo'])
+    // ...mapState(['entityIncNo'])
   },
   components: {
     CourtOrderPoa
@@ -73,28 +73,23 @@ export default class AddStaffNotationDialog extends Vue {
     courtOrderPoaRef: FormIF,
     notationFormRef: FormIF
   }
-  readonly entityIncNo!: number
 
   /** Prop for the item's name of the dialog. */
-  @Prop() private itemName: string
+  @Prop() readonly itemName: string
 
   /** Prop to display the dialog. */
-  @Prop() private dialog: boolean
-
-  /** Prop to provide the Filing ID. */
-  @Prop() private filingId: number
+  @Prop() readonly dialog: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop() private attach: string
+  @Prop() readonly attach: string
+
+  private dialogFromParent = true
 
   /** The notation text. */
   private notation: string = ''
 
-  /** Whether the detail component is valid. */
-  private detailNotationValid: boolean = false
-
   /** Whether this component is currently saving. */
-  private saving: boolean = false
+  private saving = false
 
   /** Court Order component key */
   private courtOrderKey = 0
@@ -102,7 +97,7 @@ export default class AddStaffNotationDialog extends Vue {
   private notationFormValid = false
   private notationMaxLength = 2000
 
-  private getNotationRules (): Array<Function> {
+  private get notationRules (): Array<Function> {
     return [
       (v: string) => !!v || `Enter a ${this.itemName}`,
       (v: string) => v.length <= this.notationMaxLength || 'Maximum characters exceeded.'
