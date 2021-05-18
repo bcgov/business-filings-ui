@@ -2,7 +2,7 @@
   "name": "business-filings-ui",
   "version": "3.9.0",
   "private": true,
-  "appName": "Manage UI",
+  "appName": "Filings UI",
   "sbcName": "SBC Common Components",
   "scripts": {
     "serve": "vue-cli-service serve",
