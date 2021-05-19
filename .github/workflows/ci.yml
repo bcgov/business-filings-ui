@@ -4,8 +4,22 @@ on:
   pull_request:
     types: [assigned, synchronize]
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  business-filings-ui-ci:
+  setup-job:
+    runs-on: ubuntu-20.04
+
+    if: github.repository == 'bcgov/business-filings-ui'
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: "true"
+
+  linting:
+    needs: setup-job
     runs-on: ubuntu-20.04
 
     strategy:
@@ -18,28 +32,47 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install
+      - name: Install dependencies
         run: |
           make setup
-        env:
-          CI: true
-      - name: Run Lint
+      - name: Linting
         run: |
           make lint
-        env:
-          CI: true
-      - name: Run Unit Tests
+
+  testing-coverage:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [14.15.1]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          make setup
+      - name: Test with Jest
+        id: test
         run: |
           make test
-        env:
-          CI: true
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           name: codecov-business-filings
           fail_ci_if_error: true
+
+  build-check:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
       - name: build to check strictness
+        id: build
         run: |
           make build-nc
-        env:
-          CI: true

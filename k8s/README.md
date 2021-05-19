@@ -1,11 +1,3 @@
-## Build the pipeline
-
-```bash
-oc process -f templates/pipeline.yaml -p TAG=dev -p JENKINS_FILE=./Jenkinsfiles/dev.groovy | oc create -f -
-oc process -f templates/pipeline.yaml -p TAG=test -p JENKINS_FILE=./Jenkinsfiles/test.groovy | oc create -f -
-oc process -f templates/pipeline.yaml -p TAG=prod -p JENKINS_FILE=./Jenkinsfiles/prod.groovy | oc create -f -
-```
-
 ## BuildConfig
 
 ```bash
