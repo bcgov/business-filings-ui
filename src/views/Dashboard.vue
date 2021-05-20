@@ -40,7 +40,7 @@
                 <staff-notation
                   v-if="visibleForStaff"
                   addScrollbarOffset="true"
-                  @hasAddedFiling="reloadDashboardIfNeeded($event)"
+                  @close="reloadDashboardIfNeeded($event)"
                 />
               </header>
               <filing-history-list

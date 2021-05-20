@@ -93,29 +93,27 @@ export default class StaffNotation extends Vue {
   showRegistrarsNotationDialog (filingId: number): void {
     this.isAddingRegistrarsNotation = true
   }
-  async hideRegistrarsNotationDialog (needReload: boolean): Promise<void> {
+  hideRegistrarsNotationDialog (needReload: boolean): void {
     this.isAddingRegistrarsNotation = false
-    this.hasAddedFiling(needReload)
+    this.close(needReload)
   }
   showRegistrarsOrderDialog (filingId: number): void {
     this.isAddingRegistrarsOrder = true
   }
-  async hideRegistrarsOrderDialog (needReload: boolean): Promise<void> {
+  hideRegistrarsOrderDialog (needReload: boolean): void {
     this.isAddingRegistrarsOrder = false
-    this.hasAddedFiling(needReload)
+    this.close(needReload)
   }
   showCourtOrderDialog (filingId: number): void {
     this.isAddingCourtOrder = true
   }
-  async hideCourtOrderDialog (needReload: boolean): Promise<void> {
+  hideCourtOrderDialog (needReload: boolean): void {
     this.isAddingCourtOrder = false
-    this.hasAddedFiling(needReload)
+    this.close(needReload)
   }
 
-  @Emit('hasAddedFiling')
-  private hasAddedFiling (needReload: boolean): void {
-    console.log('calling hasAddedFiling', needReload)
-  }
+  @Emit('close')
+  private close (needReload: boolean): void {}
 }
 </script>
 
