@@ -113,7 +113,9 @@ export default class StaffNotation extends Vue {
   }
 
   @Emit('close')
-  private close (needReload: boolean): void {}
+  private close (needReload: boolean): void {
+    // Intentionally empty
+  }
 }
 </script>
 
