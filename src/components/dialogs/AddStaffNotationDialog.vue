@@ -143,7 +143,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       await Vue.nextTick()
       this.$refs.notationFormRef.resetValidation()
 
-      // This will make CourtOrderPoa to re-render as it will have a different key everytime it open the dialog.
+      // This will make CourtOrderPoa to re-render as it will have a different key every time it opens the dialog.
       // Source: https://michaelnthiessen.com/force-re-render/
       this.courtOrderKey++
     }
