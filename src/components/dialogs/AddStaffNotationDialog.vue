@@ -4,32 +4,33 @@
       <v-card-title id="dialog-title">Add a {{itemName}}</v-card-title>
       <v-card-text>
         <div id="notation-text" class="mb-4 mt-2 default-text">
-            Enter a {{itemName}} that will appear on the ledger for this entity
+          Enter a {{itemName}} that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
-            <v-textarea
-                v-model="notation"
-                class="text-input-field mb-2"
-                filled
-                :label="itemName"
-                id="notation"
-                rows="4"
-                :rules="notationRules"
-                :counter="notationMaxLength"
-            />
+          <v-textarea
+            v-model="notation"
+            class="text-input-field mb-2"
+            filled
+            :label="itemName"
+            id="notation"
+            rows="4"
+            :rules="notationRules"
+            :counter="notationMaxLength"
+          />
         </v-form>
         <div class="default-text">
-            If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
-            to a plan of arrangement, enter the court order number and select Plan of Arrangement.
+          If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
+          to a plan of arrangement, enter the court order number and select Plan of Arrangement.
         </div>
         <CourtOrderPoa
-            id="court-order"
-            @emitCourtNumber="setFileNumber($event)"
-            @emitPoa="setHasPlanOfArrangement($event)"
-            :displaySideLabels="false"
-            :key="courtOrderKey"
-            autoValidation="true"
-            ref="courtOrderPoaRef"
+          id="court-order"
+          @emitCourtNumber="setFileNumber($event)"
+          @emitPoa="setHasPlanOfArrangement($event)"
+          :displaySideLabels="false"
+          :key="courtOrderKey"
+          :autoValidation="enableValidation"
+          :courtOrderNumberRequired="courtOrderNumberRequired"
+          ref="courtOrderPoaRef"
         />
       </v-card-text>
       <v-divider class="mb-4"></v-divider>
@@ -54,7 +55,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { DateMixin } from '@/mixins'
 import { mapState } from 'vuex'
 import axios from '@/axios-auth'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -62,13 +64,13 @@ import { FormIF } from '@/interfaces'
 
 @Component({
   computed: {
-    // ...mapState(['entityIncNo'])
+    ...mapState(['entityIncNo'])
   },
   components: {
     CourtOrderPoa
   }
 })
-export default class AddStaffNotationDialog extends Vue {
+export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   $refs!: Vue['$refs'] & {
     courtOrderPoaRef: FormIF,
     notationFormRef: FormIF
@@ -77,16 +79,29 @@ export default class AddStaffNotationDialog extends Vue {
   /** Prop for the item's name of the dialog. */
   @Prop() readonly itemName: string
 
+  /** Prop for the item's filing type. */
+  @Prop() readonly filingType: string
+
   /** Prop to display the dialog. */
   @Prop() readonly dialog: boolean
 
   /** Prop to provide attachment selector. */
   @Prop() readonly attach: string
 
-  private dialogFromParent = true
+  /** Prop to require court order number regardless the plan of arrangement. */
+  @Prop() readonly courtOrderNumberRequired: boolean
+
+  /** Entity number */
+  readonly entityIncNo!: string
 
   /** The notation text. */
   private notation: string = ''
+
+  /** Court Order Number */
+  private courtOrderNumber:string = null
+
+  /** Whether has plan of arrangement */
+  private planOfArrangement = false
 
   /** Whether this component is currently saving. */
   private saving = false
@@ -94,16 +109,31 @@ export default class AddStaffNotationDialog extends Vue {
   /** Court Order component key */
   private courtOrderKey = 0
 
+  /** Notation form validity */
   private notationFormValid = false
+
+  /** Notation max length */
   private notationMaxLength = 2000
 
+  /** Flag to enable validation in this component */
+  private enableValidation = false
+
   private get notationRules (): Array<Function> {
-    return [
-      (v: string) => !!v || `Enter a ${this.itemName}`,
-      (v: string) => v.length <= this.notationMaxLength || 'Maximum characters exceeded.'
-    ]
+    if (this.enableValidation) {
+      return [
+        (v: string) => !!v || `Enter a ${this.itemName}`,
+        (v: string) => v.length <= this.notationMaxLength || 'Maximum characters exceeded.'
+      ]
+    } else return []
   }
 
+  private setFileNumber (courtOrderNumber: string): void {
+    this.courtOrderNumber = courtOrderNumber
+  }
+
+  private setHasPlanOfArrangement (planOfArrangement: boolean):void {
+    this.planOfArrangement = planOfArrangement
+  }
   /** Called when prop changes (ie, dialog is shown/hidden). */
   @Watch('dialog')
   private async onDialogChanged (val: boolean): Promise<void> {
@@ -124,7 +154,9 @@ export default class AddStaffNotationDialog extends Vue {
    * @param needReload Whether the dashboard needs to be reloaded.
    */
   @Emit('close')
-  private emitClose (needReload: boolean): void { }
+  private emitClose (needReload: boolean): void {
+    this.enableValidation = false
+  }
 
   /** WIP */
   /** Saves the current notation. */
@@ -132,59 +164,73 @@ export default class AddStaffNotationDialog extends Vue {
     // prevent double saving
     if (this.saving) return
 
+    this.enableValidation = true
+    await this.$nextTick()
     const isNotationFormRefValid = this.$refs.notationFormRef.validate()
     const isCourtOrderPoaFormRefValid = this.$refs.courtOrderPoaRef.validate()
     if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
-      console.log('Form invalid')
       return
     }
 
     this.saving = true
 
-    // const data = {
-    //   notation: {
-    //     filingId: this.filingId,
-    //     notation: this.notation
-    //   }
-    // }
+    const data = {
+      'filing': {
+        'header': {
+          'name': this.filingType,
+          'date': this.currentDate
+          // 'certifiedBy': 'full name',
+          // 'email': 'no_one@never.get',
+          // 'filingId': 1
+        },
+        'business': {
+          // 'foundingDate': '2018-01-01T00:00:00+00:00',
+          'identifier': this.entityIncNo
+          // 'legalName': 'legal name - Test',
+          // 'legalType': 'BC'
+        },
+        'registrarsNotation': {
+          'fileNumber': this.courtOrderNumber,
+          'effectOfOrder': (this.planOfArrangement ? 'planOfArrangement' : ''),
+          'orderDetails': this.notation
+        }
+      }
+    }
 
-    // const url = `businesses/${this.entityIncNo}/filings/${this.filingId}/notations`
-    // let success = false
-    // await axios.post(url, data).then(res => {
-    //   success = true
-    // }).catch(error => {
-    //   // eslint-disable-next-line no-console
-    //   console.log('save() error =', error)
-    //   alert('Could not save your notation. Please try again or cancel.')
-    // })
-    await setTimeout(() => {
+    const url = `businesses/${this.entityIncNo}/filings/`
+    let success = false
+    await axios.post(url, data).then(res => {
+      success = true
+    }).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('save() error =', error)
+      alert('Could not save your notation. Please try again or cancel.')
       this.saving = false
-      // if (success)
-      this.emitClose(true)
-    }, 2000)
+    })
+
+    this.saving = false
+    if (success) this.emitClose(true)
   }
-  private setFileNumber (courtOrderNumber):void {}
-  private setHasPlanOfArrangement (planOfArrangement):void {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 ::v-deep {
-    #court-order div.pl-2 {
-        padding-left: 0 !important;
-    }
-    #court-order {
-        padding-right: 0 !important;
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    #court-num-form div.v-input__slot {
-        margin-bottom: 0 !important;
-    }
-    #court-order .v-input--checkbox .v-input__slot {
-        margin-bottom: 0 !important;
-    }
+  #court-order div.pl-2 {
+    padding-left: 0 !important;
+  }
+  #court-order {
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  #court-num-form div.v-input__slot {
+    margin-bottom: 0 !important;
+  }
+  #court-order .v-input--checkbox .v-input__slot {
+    margin-bottom: 0 !important;
+  }
 }
 </style>

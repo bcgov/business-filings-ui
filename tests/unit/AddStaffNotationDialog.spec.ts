@@ -12,7 +12,6 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
-
 describe('AddStaffNotationDialog', () => {
   it('renders the page contents correctly', () => {
     const wrapper = shallowMount(AddStaffNotationDialog,
@@ -45,12 +44,13 @@ describe('AddStaffNotationDialog', () => {
           itemName: 'Test'
         },
         store,
-        vuetify
+        vuetify,
+        sync: false
       })
 
     // click the Cancel button
     wrapper.find('#dialog-cancel-button').trigger('click')
-    await flushPromises()
+    await Vue.nextTick()
 
     // verify Close event
     expect(wrapper.emitted('close').pop()).toEqual([false])
@@ -63,13 +63,18 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          itemName: 'Test',
+          courtOrderNumberRequired: true
         },
         store,
-        vuetify
+        vuetify,
+        sync: false
       })
 
+    // Should not start with validation
     expect(wrapper.find('#notation-form').text()).not.toContain('Enter a Test')
+
+    // Should validate after clicking on 'Save'
     wrapper.find('#dialog-save-button').trigger('click')
     await flushPromises()
     expect(wrapper.find('#notation-form').text()).toContain('Enter a Test')
@@ -82,15 +87,21 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          itemName: 'Test',
+          courtOrderNumberRequired: true
         },
         store,
-        vuetify
+        vuetify,
+        sync: false
       })
+
+    // Valid data should be allowed
     wrapper.find('#notation').setValue('a'.repeat(2000))
+    wrapper.find('#dialog-save-button').trigger('click')
     await flushPromises()
     expect(wrapper.find('#notation-form').text()).not.toContain('Maximum characters exceeded.')
 
+    // Larger than allowed
     wrapper.find('#notation').setValue('a'.repeat(2001))
     await flushPromises()
     expect(wrapper.find('#notation-form').text()).toContain('Maximum characters exceeded.')
@@ -106,18 +117,48 @@ describe('AddStaffNotationDialog', () => {
           itemName: 'Test'
         },
         store,
-        vuetify
+        vuetify,
+        sync: false
       })
 
+    // Enables validation
+    wrapper.find('#dialog-save-button').trigger('click')
+
+    // Should not validate if plan of arrangement is not checked
     expect(wrapper.find('#court-order').text()).not.toContain('A Court Order number is required')
+
     wrapper.find('#plan-of-arrangement-checkbox').trigger('click')
+    await Vue.nextTick()
+    expect(wrapper.find('#court-order').text()).toContain('A Court Order number is required')
+
+    wrapper.destroy()
+  })
+
+  it('validates court order number is required when courtOrderNumberRequired is true', async () => {
+    const wrapper = mount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          itemName: 'Test',
+          courtOrderNumberRequired: true
+        },
+        store,
+        vuetify,
+        sync: false
+      })
+
+    // Should not start with validation
+    expect(wrapper.find('#court-order').text()).not.toContain('A Court Order number is required')
+
+    // Validates on 'Save'
+    wrapper.find('#dialog-save-button').trigger('click')
     await flushPromises()
     expect(wrapper.find('#court-order').text()).toContain('A Court Order number is required')
 
     wrapper.destroy()
   })
 
-  it('validates court order number has correct lenght', async () => {
+  it('validates court order number has correct min length', async () => {
     const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
@@ -125,29 +166,57 @@ describe('AddStaffNotationDialog', () => {
           itemName: 'Test'
         },
         store,
-        vuetify
+        vuetify,
+        sync: false
       })
 
-    expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
-    wrapper.find('#court-order-number-input').setValue('1234')
+    // Less than allowed
+    wrapper.find('#court-order-number-input').setValue('a'.repeat(4))
+    wrapper.find('#dialog-save-button').trigger('click')
     await flushPromises()
     expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
-    wrapper.find('#court-order-number-input').setValue('12345')
-    await flushPromises()
+
+    // Allowed length
+    wrapper.find('#court-order-number-input').setValue('a'.repeat(5))
+    await Vue.nextTick()
     expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
-    wrapper.find('#court-order-number-input').setValue('a'.repeat(20))
-    await flushPromises()
-    expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
-    wrapper.find('#court-order-number-input').setValue('a'.repeat(21))
-    await flushPromises()
-    expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
+
     wrapper.destroy()
   })
 
-  xit('saves notation filing when user clicks Save button', async () => {
+  it('validates court order number has correct max length', async () => {
+    const wrapper = mount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          itemName: 'Test'
+        },
+        store,
+        vuetify,
+        sync: false
+      })
+
+    // Max length is valid
+    wrapper.find('#court-order-number-input').setValue('a'.repeat(20))
+    wrapper.find('#dialog-save-button').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
+
+    // Greater than allowed
+    wrapper.find('#court-order-number-input').setValue('a'.repeat(21))
+    await Vue.nextTick()
+    expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
+
+    wrapper.destroy()
+  })
+
+  it('saves notation filing when user clicks Save button', async () => {
+    // init store
+    store.state.entityIncNo = 'BC0870669'
+
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/xyz')
+      .withArgs('businesses/BC0870669/filings/')
       .returns(
         new Promise(resolve =>
           resolve({
@@ -156,16 +225,16 @@ describe('AddStaffNotationDialog', () => {
         )
       )
 
-    const wrapper = shallowMount(AddStaffNotationDialog,
+    const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
           dialog: true
         },
         store,
-        vuetify
+        vuetify,
+        sync: false
       })
-    const vm: any = wrapper.vm
-
+    wrapper.find('#notation').setValue('Notation...')
     wrapper.find('#dialog-save-button').trigger('click')
     await flushPromises()
 

@@ -37,7 +37,11 @@
                 <h2 class="mb-3" data-test-id="dashboard-filing-history-subtitle">
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
-                <staff-notation addScrollbarOffset="true"/>
+                <staff-notation
+                  v-if="visibleForStaff"
+                  addScrollbarOffset="true"
+                  @hasAddedFiling="reloadDashboardIfNeeded($event)"
+                />
               </header>
               <filing-history-list
                 :disableChanges="disableChanges"
@@ -164,7 +168,7 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlockerTask']),
+    ...mapGetters(['isBComp', 'hasBlockerTask', 'isRoleStaff']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -189,6 +193,10 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    visibleForStaff (): boolean {
+      return this.isRoleStaff
     }
   },
 
@@ -207,6 +215,10 @@ export default {
 
     updateBlockerTasks (hasBlockerTask: boolean) {
       this.setHasBlockertask(hasBlockerTask)
+    },
+
+    reloadDashboardIfNeeded (needReload: boolean) {
+      if (needReload) this.$root.$emit('triggerDashboardReload')
     },
 
     checkToReloadDashboard () {

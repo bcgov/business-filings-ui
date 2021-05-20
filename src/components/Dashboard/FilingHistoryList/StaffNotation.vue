@@ -5,25 +5,25 @@
             @close="hideRegistrarsNotationDialog($event)"
             attach="#staff-notation"
             itemName="Registrar's Notation"
+            filingType="registrarsNotation"
         />
         <add-staff-notation-dialog
             :dialog="isAddingRegistrarsOrder"
             @close="hideRegistrarsOrderDialog($event)"
             attach="#staff-notation"
             itemName="Registrar's Order"
+            filingType="registrarsOrder"
         />
         <add-staff-notation-dialog
             :dialog="isAddingCourtOrder"
             @close="hideCourtOrderDialog($event)"
             attach="#staff-notation"
             itemName="Court Order"
+            filingType="courtOrder"
+            courtOrderNumberRequired="true"
         />
         <div class="filing-item__actions">
-            <v-menu
-                offset-y
-                left
-                transition="slide-y-transition"
-                v-if="isRoleStaff">
+            <v-menu offset-y left transition="slide-y-transition">
                 <template v-slot:activator="{ on }">
                     <span>
                         <span
@@ -72,20 +72,15 @@
     </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 
 // Dialog
 import { AddStaffNotationDialog } from '@/components/dialogs'
 
 @Component({
-  computed: {
-    ...mapGetters(['isRoleStaff'])
-  },
   components: { AddStaffNotationDialog }
 })
 export default class StaffNotation extends Vue {
-  readonly isRoleStaff!: boolean
   private currentFilingId: number = null
   private isAddingRegistrarsNotation = false
   private isAddingRegistrarsOrder = false
@@ -100,18 +95,26 @@ export default class StaffNotation extends Vue {
   }
   async hideRegistrarsNotationDialog (needReload: boolean): Promise<void> {
     this.isAddingRegistrarsNotation = false
+    this.hasAddedFiling(needReload)
   }
   showRegistrarsOrderDialog (filingId: number): void {
     this.isAddingRegistrarsOrder = true
   }
   async hideRegistrarsOrderDialog (needReload: boolean): Promise<void> {
     this.isAddingRegistrarsOrder = false
+    this.hasAddedFiling(needReload)
   }
   showCourtOrderDialog (filingId: number): void {
     this.isAddingCourtOrder = true
   }
   async hideCourtOrderDialog (needReload: boolean): Promise<void> {
     this.isAddingCourtOrder = false
+    this.hasAddedFiling(needReload)
+  }
+
+  @Emit('hasAddedFiling')
+  private hasAddedFiling (needReload: boolean): void {
+    console.log('calling hasAddedFiling', needReload)
   }
 }
 </script>
