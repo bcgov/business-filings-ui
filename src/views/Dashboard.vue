@@ -38,7 +38,7 @@
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
                 <staff-notation
-                  v-if="visibleForStaff"
+                  v-if="this.isRoleStaff"
                   addScrollbarOffset="true"
                   @close="reloadDashboardIfNeeded($event)"
                 />
@@ -127,7 +127,7 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
-import StaffNotation from '@/components/Dashboard/FilingHistoryList/StaffNotation.vue'
+import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
@@ -193,10 +193,6 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    visibleForStaff (): boolean {
-      return this.isRoleStaff
     }
   },
 

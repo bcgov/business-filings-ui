@@ -25,22 +25,20 @@
         <div class="filing-item__actions">
             <v-menu offset-y left transition="slide-y-transition">
                 <template v-slot:activator="{ on }">
-                    <span>
-                        <span
-                            v-on="on"
-                            id="add-staff-filing-label"
-                            @click="expand = !expand">
-                            <v-icon id="add-staff-filing-icon">mdi-plus</v-icon>Add Staff Filing
-                        </span>
-                        <v-btn
-                            text
-                            v-on="on"
-                            class="menu-btn"
-                            :class="{active: expand}"
-                            @click="expand = !expand" >
-                            <v-icon>mdi-menu-down</v-icon>
-                        </v-btn>
+                    <span
+                        v-on="on"
+                        id="add-staff-filing-label"
+                        @click="expand = !expand">
+                        <v-icon id="add-staff-filing-icon">mdi-plus</v-icon>Add Staff Filing
                     </span>
+                    <v-btn
+                        text
+                        v-on="on"
+                        class="menu-btn"
+                        :class="{active: expand}"
+                        @click="expand = !expand" >
+                        <v-icon>mdi-menu-down</v-icon>
+                    </v-btn>
                 </template>
                 <v-list dense>
                     <v-list-item-group color="primary">
@@ -130,6 +128,8 @@ export default class StaffNotation extends Vue {
     padding-right: 1.5rem;
 }
 
+// This class will be applied when addScrollbarOffset prop is true
+// This is necessary to align with FilingHistoryList component that may have an active scroll bar
 .add-scrollbar-offset {
     overflow-y: scroll;
     scrollbar-color: transparent transparent; // FireFox uses this property
@@ -173,5 +173,5 @@ export default class StaffNotation extends Vue {
 }
 .v-btn.active .v-icon {
     transform: rotate(-180deg);
-  }
+}
 </style>

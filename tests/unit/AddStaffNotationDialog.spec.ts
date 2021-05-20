@@ -21,8 +21,7 @@ describe('AddStaffNotationDialog', () => {
           itemName: 'Test',
           attach: '#parent-page'
         },
-        store,
-        vuetify
+        store
       })
     const vm: any = wrapper.vm
 
@@ -44,7 +43,6 @@ describe('AddStaffNotationDialog', () => {
           itemName: 'Test'
         },
         store,
-        vuetify,
         sync: false
       })
 

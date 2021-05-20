@@ -56,16 +56,14 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import axios from '@/axios-auth'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { FormIF } from '@/interfaces'
 
 @Component({
-  computed: {
-    ...mapState(['entityIncNo'])
-  },
   components: {
     CourtOrderPoa
   }
@@ -83,16 +81,16 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   @Prop() readonly filingType: string
 
   /** Prop to display the dialog. */
-  @Prop() readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog: boolean
 
   /** Prop to provide attachment selector. */
   @Prop() readonly attach: string
 
   /** Prop to require court order number regardless the plan of arrangement. */
-  @Prop() readonly courtOrderNumberRequired: boolean
+  @Prop({ default: false }) readonly courtOrderNumberRequired: boolean
 
   /** Entity number */
-  readonly entityIncNo!: string
+  @Getter entityIncNo!: string
 
   /** The notation text. */
   private notation: string = ''
@@ -163,36 +161,36 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   private async save (): Promise<void> {
     // prevent double saving
     if (this.saving) return
+    this.saving = true
 
     this.enableValidation = true
     await this.$nextTick()
     const isNotationFormRefValid = this.$refs.notationFormRef.validate()
     const isCourtOrderPoaFormRefValid = this.$refs.courtOrderPoaRef.validate()
     if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
+      this.saving = false
       return
     }
 
-    this.saving = true
-
     const data = {
-      'filing': {
-        'header': {
-          'name': this.filingType,
-          'date': this.currentDate
-          // 'certifiedBy': 'full name',
-          // 'email': 'no_one@never.get',
-          // 'filingId': 1
+      filing: {
+        header: {
+          name: this.filingType,
+          date: this.currentDate
+          // certifiedBy: full name,
+          // email: no_one@never.get,
+          // filingId: 1
         },
-        'business': {
-          // 'foundingDate': '2018-01-01T00:00:00+00:00',
-          'identifier': this.entityIncNo
-          // 'legalName': 'legal name - Test',
-          // 'legalType': 'BC'
+        business: {
+          // foundingDate: 2018-01-01T00:00:00+00:00,
+          identifier: this.entityIncNo
+          // legalName: legal name - Test,
+          // legalType: BC
         },
-        'registrarsNotation': {
-          'fileNumber': this.courtOrderNumber,
-          'effectOfOrder': (this.planOfArrangement ? 'planOfArrangement' : ''),
-          'orderDetails': this.notation
+        registrarsNotation: {
+          fileNumber: this.courtOrderNumber,
+          effectOfOrder: (this.planOfArrangement ? 'planOfArrangement' : ''),
+          orderDetails: this.notation
         }
       }
     }

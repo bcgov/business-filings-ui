@@ -72,6 +72,7 @@
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.11",
     "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
+    "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^0.16.1"
   }
 }
