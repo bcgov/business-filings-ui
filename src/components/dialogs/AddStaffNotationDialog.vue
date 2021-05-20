@@ -216,19 +216,21 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-::v-deep #court-order div.pl-2 {
-  padding-left: 0 !important;
-}
-::v-deep #court-order {
-  padding-right: 0 !important;
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-::v-deep #court-num-form div.v-input__slot {
-  margin-bottom: 0 !important;
-}
-::v-deep #court-order .v-input--checkbox .v-input__slot {
-  margin-bottom: 0 !important;
+::v-deep {
+  #court-order div.pl-2 {
+    padding-left: 0 !important;
+  }
+  #court-order {
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  #court-num-form div.v-input__slot {
+    margin-bottom: 0 !important;
+  }
+  #court-order .v-input--checkbox .v-input__slot {
+    margin-bottom: 0 !important;
+  }
 }
 </style>
