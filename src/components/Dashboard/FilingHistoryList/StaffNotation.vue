@@ -37,28 +37,28 @@
                             v-on="on"
                             class="menu-btn"
                             :class="{active: expand}"
-                            @click="expand = !expand">
+                            @click="expand = !expand" >
                             <v-icon>mdi-menu-down</v-icon>
                         </v-btn>
                     </span>
                 </template>
                 <v-list dense>
                     <v-list-item-group color="primary">
-                        <v-list-item @click="showRegistrarsNotationDialog(1)">
+                        <v-list-item @click="showRegistrarsNotationDialog();expand = !expand">
                             <v-list-item-title
                                 class="file-correction-item"
                             >
                                 <span class="app-action">Add Registrar's Notation</span>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="showRegistrarsOrderDialog(1)">
+                        <v-list-item @click="showRegistrarsOrderDialog();expand = !expand">
                             <v-list-item-title
                                 class="add-detail-comment-item"
                             >
                                 <span class="app-action">Add Registrar's Order</span>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="showCourtOrderDialog(1)">
+                        <v-list-item @click="showCourtOrderDialog();expand = !expand">
                             <v-list-item-title
                                 class="add-detail-comment-item"
                             >
@@ -81,7 +81,6 @@ import { AddStaffNotationDialog } from '@/components/dialogs'
   components: { AddStaffNotationDialog }
 })
 export default class StaffNotation extends Vue {
-  private currentFilingId: number = null
   private isAddingRegistrarsNotation = false
   private isAddingRegistrarsOrder = false
   private isAddingCourtOrder = false
@@ -90,21 +89,21 @@ export default class StaffNotation extends Vue {
   /** Prop for the scrollbar offset to be added. */
   @Prop() private addScrollbarOffset: string
 
-  showRegistrarsNotationDialog (filingId: number): void {
+  showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
   }
   hideRegistrarsNotationDialog (needReload: boolean): void {
     this.isAddingRegistrarsNotation = false
     this.close(needReload)
   }
-  showRegistrarsOrderDialog (filingId: number): void {
+  showRegistrarsOrderDialog (): void {
     this.isAddingRegistrarsOrder = true
   }
   hideRegistrarsOrderDialog (needReload: boolean): void {
     this.isAddingRegistrarsOrder = false
     this.close(needReload)
   }
-  showCourtOrderDialog (filingId: number): void {
+  showCourtOrderDialog (): void {
     this.isAddingCourtOrder = true
   }
   hideCourtOrderDialog (needReload: boolean): void {
