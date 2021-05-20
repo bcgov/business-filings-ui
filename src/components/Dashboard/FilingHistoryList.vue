@@ -541,7 +541,7 @@ export default {
           filingType,
           title: this.filingTypeToName(filingType, agmYear),
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
+          filingAuthor: this.filingAuthor(filing),
           filingDate,
           isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || [] as Array<any>,
@@ -607,7 +607,7 @@ export default {
           filingType,
           title: `${this.getCorpTypeDescription(this.entityType)} ${name} - ${corpName}`,
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
+          filingAuthor: this.filingAuthor(filing),
           filingDate,
           effectiveDateTime, // used in Future Effective component
           isFutureEffectiveIa,
@@ -681,7 +681,7 @@ export default {
           filingType: FilingTypes.ALTERATION,
           title,
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy || 'Registry Staff',
+          filingAuthor: this.filingAuthor(filing),
           filingDate,
           effectiveDateTime, // used in Future Effective component
           isFutureEffectiveAlteration,
@@ -744,7 +744,7 @@ export default {
           filingType,
           title: this.filingTypeToName(filingType),
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
+          filingAuthor: this.filingAuthor(filing),
           filingDate,
           effectiveDate, // used for BCOMP COA Future Effective tooltip
           isBcompCoaFutureEffective,
@@ -822,7 +822,7 @@ export default {
           filingType: FilingTypes.CORRECTION,
           title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
           filingId: header.filingId,
-          filingAuthor: header.certifiedBy || 'Registry Staff',
+          filingAuthor: this.filingAuthor(filing),
           filingDateTime: this.apiToSimpleDateTime(header.date), // used for receipt
           filingDate,
           isPaid: (header.status === FilingStatus.PAID),
@@ -922,7 +922,7 @@ export default {
           title: this.filingTypeToName(filingType),
           subtitle,
           filingId: header.filingId,
-          filingAuthor: 'Registry Staff', // TBD
+          filingAuthor: 'Registry Staff',
           filingDate,
           effectiveDateTime, // used in Future Effective IA components
           isPaid: (header.status === FilingStatus.PAID),
@@ -989,6 +989,14 @@ export default {
         // eslint-disable-next-line no-console
         console.log('ERROR - missing section in filing =', filing)
       }
+    },
+
+    /** Returns the computed filing author. */
+    filingAuthor (filing: FilingIF): string {
+      const header = filing.header
+      if (header.isStaff) return 'Registry Staff'
+      if (header.certifiedBy) return header.certifiedBy
+      return 'Unknown'
     },
 
     /** Expands the panel of the specified Filing ID. */

@@ -1255,7 +1255,8 @@ describe('Filing History List - alterations', () => {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
             status: 'COMPLETED',
-            filingId: 85114
+            filingId: 85114,
+            isStaff: true
           },
           business: {},
           alteration: {}
@@ -1315,7 +1316,8 @@ describe('Filing History List - alterations', () => {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
             status: 'COMPLETED',
-            filingId: 85114
+            filingId: 85114,
+            isStaff: true
           },
           business: {
             legalType: 'BC' // 'from' type
@@ -1382,7 +1384,8 @@ describe('Filing History List - alterations', () => {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
             status: 'COMPLETED',
-            filingId: 85114
+            filingId: 85114,
+            isStaff: true
           },
           business: {
             legalType: 'ULC' // 'from' type
@@ -1451,7 +1454,8 @@ describe('Filing History List - alterations', () => {
             isFutureEffective: true,
             effectiveDate: '2020-04-24T19:20:05.670859+00:00', // date in the past
             status: 'PAID',
-            filingId: 85114
+            filingId: 85114,
+            isStaff: true
           },
           business: {
             legalType: 'BC' // 'from' type
@@ -1520,7 +1524,8 @@ describe('Filing History List - alterations', () => {
             isFutureEffective: true,
             effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
             status: 'PAID',
-            filingId: 85114
+            filingId: 85114,
+            isStaff: true
           },
           business: {
             legalType: 'BC' // 'from' type
@@ -2104,7 +2109,8 @@ describe('Filing History List - transition filing', () => {
             date: '2020-11-01T19:20:05.670859+00:00',
             status: 'COMPLETED',
             filingId: 1234,
-            paymentToken: 111
+            paymentToken: 111,
+            isStaff: true
           },
           documents: [
             {
