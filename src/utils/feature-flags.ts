@@ -9,7 +9,8 @@ declare const window: any
  */
 const defaultFlagSet: LDFlagSet = {
   'alteration-ui-enabled': false,
-  'download-summary-enabled': false
+  'download-summary-enabled': false,
+  'staff-notation-enabled': false
 }
 
 /**

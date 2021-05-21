@@ -38,7 +38,7 @@
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
                 <staff-notation
-                  v-if="this.isRoleStaff"
+                  v-if="visibleForStaff"
                   addScrollbarOffset="true"
                   @close="reloadDashboardIfNeeded($event)"
                 />
@@ -120,6 +120,7 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import { getFeatureFlag } from '@/utils'
 
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -193,6 +194,11 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    /** True if StaffNotation menu should be rendered. */
+    visibleForStaff (): boolean {
+      return getFeatureFlag('staff-notation-enabled') && this.isRoleStaff
     }
   },
 

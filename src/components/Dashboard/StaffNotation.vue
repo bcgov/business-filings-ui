@@ -1,5 +1,5 @@
 <template>
-    <div id="staff-notation" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
+    <div id="staff-notation" class="pr-6" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
         <add-staff-notation-dialog
             :dialog="isAddingRegistrarsNotation"
             @close="hideRegistrarsNotationDialog($event)"
@@ -23,7 +23,7 @@
             courtOrderNumberRequired="true"
         />
         <div class="filing-item__actions">
-            <v-menu offset-y left transition="slide-y-transition">
+            <v-menu offset-y left transition="slide-y-transition" v-model="expand">
                 <template v-slot:activator="{ on }">
                     <span
                         v-on="on"
@@ -42,24 +42,18 @@
                 </template>
                 <v-list dense>
                     <v-list-item-group color="primary">
-                        <v-list-item @click="showRegistrarsNotationDialog();expand = !expand">
-                            <v-list-item-title
-                                class="file-correction-item"
-                            >
+                        <v-list-item @click="showRegistrarsNotationDialog()">
+                            <v-list-item-title>
                                 <span class="app-action">Add Registrar's Notation</span>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="showRegistrarsOrderDialog();expand = !expand">
-                            <v-list-item-title
-                                class="add-detail-comment-item"
-                            >
+                        <v-list-item @click="showRegistrarsOrderDialog()">
+                            <v-list-item-title>
                                 <span class="app-action">Add Registrar's Order</span>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="showCourtOrderDialog();expand = !expand">
-                            <v-list-item-title
-                                class="add-detail-comment-item"
-                            >
+                        <v-list-item @click="showCourtOrderDialog()">
+                            <v-list-item-title>
                                 <span class="app-action">Add Court Order</span>
                             </v-list-item-title>
                         </v-list-item>
@@ -122,10 +116,7 @@ export default class StaffNotation extends Vue {
     padding-right: 0.725rem;
     font-size: 0.875rem;
     color: $app-blue;
-}
-
-#staff-notation {
-    padding-right: 1.5rem;
+    border-right: 1px solid $gray3;
 }
 
 // This class will be applied when addScrollbarOffset prop is true
@@ -139,10 +130,7 @@ export default class StaffNotation extends Vue {
         background: transparent;
     }
 }
-#staff-notation > div.filing-item__actions > button {
-    font-size: 0.875rem;
-    color: $app-blue;
-}
+
 #add-staff-filing-icon {
     font-size: 1.2rem;
     padding: 0.2rem;
@@ -150,26 +138,8 @@ export default class StaffNotation extends Vue {
     color: $app-blue;
 }
 
-.filing-item__actions {
-  display: inline-block;
-  margin-right: 0.5rem;
-
-  .expand-btn {
-    letter-spacing: -0.01rem;
-    font-size: 0.875rem;
-    font-weight: 700;
-  }
-
-  // make menu button slightly smaller
-  .menu-btn {
-    height: unset !important;
-    min-width: unset !important;
-    padding: 0.25rem !important;
-    color: $app-blue
-  }
-}
 #app > div.v-menu__content {
-    margin: 0.625rem 0 0 0;
+    margin: 0.625rem 0 0 2rem;
 }
 .v-btn.active .v-icon {
     transform: rotate(-180deg);

@@ -14,6 +14,7 @@
             :label="itemName"
             id="notation"
             rows="4"
+            :no-resize="true"
             :rules="notationRules"
             :counter="notationMaxLength"
           />
@@ -41,8 +42,9 @@
             id="dialog-save-button"
             :loading="saving"
             @click.native="save()"
+            class="save-btn"
           >Save</v-btn>
-          <v-btn text color="secondary"
+          <v-btn text color="primary"
             id="dialog-cancel-button"
             :disabled="saving"
             :loading="saving"
@@ -229,5 +231,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   #court-order .v-input--checkbox .v-input__slot {
     margin-bottom: 0 !important;
   }
+}
+.save-btn {
+  font-weight: 700;
 }
 </style>
