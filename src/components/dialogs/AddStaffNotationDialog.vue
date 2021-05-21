@@ -219,9 +219,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     margin-top: 0 !important;
     padding-bottom: 0 !important;
   }
-  #court-num-form div.v-input__slot {
-    margin-bottom: 0 !important;
-  }
   #court-order .v-input--checkbox .v-input__slot {
     margin-bottom: 0 !important;
   }
