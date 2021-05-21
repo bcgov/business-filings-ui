@@ -1,4 +1,5 @@
 import AddCommentDialog from './AddCommentDialog.vue'
+import AddStaffNotationDialog from './AddStaffNotationDialog.vue'
 import BusinessAuthErrorDialog from './BusinessAuthErrorDialog.vue'
 import CancelPaymentErrorDialog from './CancelPaymentErrorDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
@@ -17,6 +18,7 @@ import WarningPopover from './WarningPopover.vue'
 
 export {
   AddCommentDialog,
+  AddStaffNotationDialog,
   BusinessAuthErrorDialog,
   CancelPaymentErrorDialog,
   CoaWarningDialog,

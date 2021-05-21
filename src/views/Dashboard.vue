@@ -37,6 +37,11 @@
                 <h2 class="mb-3" data-test-id="dashboard-filing-history-subtitle">
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
+                <staff-notation
+                  v-if="visibleForStaff"
+                  addScrollbarOffset="true"
+                  @close="reloadDashboardIfNeeded($event)"
+                />
               </header>
               <filing-history-list
                 :disableChanges="disableChanges"
@@ -115,6 +120,7 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import { getFeatureFlag } from '@/utils'
 
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -122,6 +128,7 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
+import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 
 // Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
@@ -139,7 +146,8 @@ export default {
     AddressListSm,
     DirectorListSm,
     CoaWarningDialog,
-    LegalObligation
+    LegalObligation,
+    StaffNotation
   },
 
   data () {
@@ -161,7 +169,7 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlockerTask']),
+    ...mapGetters(['isBComp', 'hasBlockerTask', 'isRoleStaff']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -186,6 +194,11 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    /** True if StaffNotation menu should be rendered. */
+    visibleForStaff (): boolean {
+      return getFeatureFlag('staff-notation-enabled') && this.isRoleStaff
     }
   },
 
@@ -204,6 +217,10 @@ export default {
 
     updateBlockerTasks (hasBlockerTask: boolean) {
       this.setHasBlockertask(hasBlockerTask)
+    },
+
+    reloadDashboardIfNeeded (needReload: boolean) {
+      if (needReload) this.$root.$emit('triggerDashboardReload')
     },
 
     checkToReloadDashboard () {

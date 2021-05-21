@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "3.9.0",
+  "version": "3.9.1",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@babel/compat-data": "^7.9.0",
     "@bcrs-shared-components/corp-type-module": "1.0.3",
+    "@bcrs-shared-components/court-order-poa": "1.0.11",
     "@bcrs-shared-components/enums": "1.0.8",
     "@bcrs-shared-components/interfaces": "1.0.17",
     "@bcrs-shared-components/staff-comments": "1.0.3",
@@ -71,6 +72,7 @@
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.11",
     "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
+    "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^0.16.1"
   }
 }

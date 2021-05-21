@@ -141,5 +141,10 @@ export default {
       state.filings[0].filing.header.name === 'incorporationApplication' &&
       state.tasks.length === 0
     )
+  },
+
+  /** The Entity Number */
+  entityIncNo (state): string {
+    return state.entityIncNo
   }
 }
