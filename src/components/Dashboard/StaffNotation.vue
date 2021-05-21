@@ -25,20 +25,22 @@
         <div class="filing-item__actions">
             <v-menu offset-y left transition="slide-y-transition" v-model="expand">
                 <template v-slot:activator="{ on }">
-                    <span
-                        v-on="on"
-                        id="add-staff-filing-label"
-                        @click="expand = !expand">
-                        <v-icon id="add-staff-filing-icon">mdi-plus</v-icon>Add Staff Filing
+                    <span><!-- This span is needed to fix a positioning issue with the menu -->
+                        <span
+                            v-on="on"
+                            id="add-staff-filing-label"
+                            @click="expand = !expand">
+                            <v-icon id="add-staff-filing-icon">mdi-plus</v-icon>Add Staff Filing
+                        </span>
+                        <v-btn
+                            text
+                            v-on="on"
+                            class="menu-btn"
+                            :class="{active: expand}"
+                            @click="expand = !expand" >
+                            <v-icon>mdi-menu-down</v-icon>
+                        </v-btn>
                     </span>
-                    <v-btn
-                        text
-                        v-on="on"
-                        class="menu-btn"
-                        :class="{active: expand}"
-                        @click="expand = !expand" >
-                        <v-icon>mdi-menu-down</v-icon>
-                    </v-btn>
                 </template>
                 <v-list dense>
                     <v-list-item-group color="primary">
@@ -139,7 +141,7 @@ export default class StaffNotation extends Vue {
 }
 
 #app > div.v-menu__content {
-    margin: 0.625rem 0 0 2rem;
+    margin: 0.625rem 0 0 0;
 }
 .v-btn.active .v-icon {
     transform: rotate(-180deg);

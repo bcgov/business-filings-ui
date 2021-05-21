@@ -81,22 +81,3 @@
   color: $app-red !important;
   caret-color: $app-red !important;
 }
-
-.filing-item__actions {
-  display: inline-block;
-  margin-right: 0.5rem;
-
-  .expand-btn {
-    letter-spacing: -0.01rem;
-    font-size: 0.875rem;
-    font-weight: 700;
-  }
-
-  // make menu button slightly smaller
-  .menu-btn {
-    height: unset !important;
-    min-width: unset !important;
-    padding: 0.25rem !important;
-    color: $app-blue
-  }
-}
