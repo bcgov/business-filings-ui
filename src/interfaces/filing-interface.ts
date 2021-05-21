@@ -11,5 +11,8 @@ export interface FilingIF {
   header: HeaderIF,
   incorporationApplication?: any;
   alteration?: AlterationIF;
+  registrarsNotation?: any;
+  registrarsOrder?: any;
+  courtOrder?: any;
   [propName: string]: any; // excess properties
 }

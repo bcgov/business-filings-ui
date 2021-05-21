@@ -285,6 +285,14 @@
               <!-- NB: no documents so no divider needed -->
             </template>
 
+            <!-- is this a staff only filing? -->
+            <template v-else-if="isStaffFiling(filing.filingType)" id="staff-filings-info">
+              <p class="info-text">{{filing.notationOrOrder}}</p>
+              <p class="info-text my-0">Court Order Number: {{filing.fileNumber}}</p>
+              <p class="info-text my-0">{{filing.planOfArrangement}}</p>
+              <!-- NB: no documents so no divider needed -->
+            </template>
+
             <!-- else must be a COMPLETED filing -->
             <!-- NB: no details -->
             <template v-else />
@@ -765,6 +773,23 @@ export default {
           isCorrected: (header.isCorrected || false),
           isCorrectionPending: (header.isCorrectionPending || false),
           comments: this.flattenAndSortComments(header.comments)
+        }
+
+        // Apply additional properties for Staff Only Filings
+        if (this.isStaffFiling(filingType)) {
+          let baseFiling
+          switch (filingType) {
+            case FilingTypes.REGISTRARS_NOTATION: baseFiling = filing.registrarsNotation
+              break
+            case FilingTypes.REGISTRARS_ORDER: baseFiling = filing.registrarsOrder
+              break
+            case FilingTypes.COURT_ORDER: baseFiling = filing.courtOrder
+              break
+          }
+
+          item.notationOrOrder = baseFiling.orderDetails
+          item.fileNumber = baseFiling.fileNumber
+          item.planOfArrangement = baseFiling.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
         }
 
         // add receipt

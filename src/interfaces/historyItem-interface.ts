@@ -40,4 +40,9 @@ export interface HistoryItemIF {
   newLegalType?: CorpTypeCd
   courtOrderNumber?: string
   isArrangement?: boolean
+
+  // Staff only filings
+  notationOrOrder?: string
+  fileNumber?: string
+  planOfArrangement?: string
 }

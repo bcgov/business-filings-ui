@@ -72,6 +72,12 @@ p {
   color: $app-blue !important;
 }
 
+.info-text {
+  font-size: .875rem;
+  color: $gray7;
+  font-weight: normal;
+}
+
 .error-text {
   color: $app-red !important;
 }
