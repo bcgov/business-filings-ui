@@ -31,136 +31,136 @@ document.body.append(app)
 
 const sampleFilings = [
   {
-    'filing': {
-      'header': {
-        'name': 'annualReport',
-        'date': '2019-06-02T19:22:59.003777+00:00',
-        'paymentToken': 123,
-        'certifiedBy': 'Full Name 1',
-        'filingId': 321,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-06-02T19:22:59.003777+00:00'
+    filing: {
+      header: {
+        name: 'annualReport',
+        date: '2019-06-02T19:22:59.003777+00:00',
+        paymentToken: 123,
+        certifiedBy: 'Full Name 1',
+        submitter: 'Pegg Staff 1',
+        isStaff: true,
+        filingId: 321,
+        availableOnPaperOnly: false,
+        effectiveDate: '2019-06-02T19:22:59.003777+00:00'
       },
-      'annualReport': {
-        'annualGeneralMeetingDate': '2019-12-31',
-        'annualReportDate': '2019-12-31'
+      annualReport: {
+        annualGeneralMeetingDate: '2019-12-31',
+        annualReportDate: '2019-12-31'
       }
     }
   },
   {
-    'filing': {
-      'header': {
-        'name': 'changeOfDirectors',
-        'date': '2019-03-09T19:22:59.003777+00:00',
-        'paymentToken': 456,
-        'certifiedBy': 'Full Name 2',
-        'filingId': 654,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-03-09T19:22:59.003777+00:00'
+    filing: {
+      header: {
+        name: 'changeOfDirectors',
+        date: '2019-03-09T19:22:59.003777+00:00',
+        paymentToken: 456,
+        certifiedBy: 'Full Name 2',
+        submitter: 'Pegg Staff 2',
+        isStaff: false,
+        filingId: 654,
+        availableOnPaperOnly: false,
+        effectiveDate: '2019-03-09T19:22:59.003777+00:00'
       },
-      'changeOfDirectors': {
+      changeOfDirectors: {}
+    }
+  },
+  {
+    filing: {
+      header: {
+        name: 'changeOfAddress',
+        date: '2019-05-06T19:22:59.003777+00:00',
+        paymentToken: 789,
+        certifiedBy: 'Full Name 3',
+        filingId: 987,
+        availableOnPaperOnly: false,
+        effectiveDate: '2019-05-06T19:22:59.003777+00:00'
+      },
+      changeOfAddress: {}
+    }
+  },
+  {
+    filing: {
+      header: {
+        name: 'annualReport',
+        date: '2019-03-02T19:22:59.003777+00:00',
+        paymentToken: 100,
+        certifiedBy: 'Full Name 4',
+        filingId: 3212,
+        availableOnPaperOnly: true,
+        effectiveDate: '2019-03-02T19:22:59.003777+00:00'
+      },
+      annualReport: {
+        annualGeneralMeetingDate: '2019-01-01',
+        annualReportDate: '2019-01-01'
       }
     }
   },
   {
-    'filing': {
-      'header': {
-        'name': 'changeOfAddress',
-        'date': '2019-05-06T19:22:59.003777+00:00',
-        'paymentToken': 789,
-        'certifiedBy': 'Full Name 3',
-        'filingId': 987,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-05-06T19:22:59.003777+00:00'
+    filing: {
+      header: {
+        name: 'changeOfDirectors',
+        date: '2019-02-04T19:22:59.003777+00:00',
+        paymentToken: 4561,
+        certifiedBy: 'Full Name 5',
+        filingId: 6541,
+        availableOnPaperOnly: true,
+        effectiveDate: '2019-02-04T19:22:59.003777+00:00'
       },
-      'changeOfAddress': {
-      }
+      changeOfDirectors: {}
     }
   },
   {
-    'filing': {
-      'header': {
-        'name': 'annualReport',
-        'date': '2019-03-02T19:22:59.003777+00:00',
-        'paymentToken': 100,
-        'certifiedBy': 'Full Name 1',
-        'filingId': 3212,
-        'availableOnPaperOnly': true,
-        'effectiveDate': '2019-03-02T19:22:59.003777+00:00'
-      },
-      'annualReport': {
-        'annualGeneralMeetingDate': '2019-01-01',
-        'annualReportDate': '2019-01-01'
-      }
-    }
-  },
-  {
-    'filing': {
-      'header': {
-        'name': 'changeOfDirectors',
-        'date': '2019-02-04T19:22:59.003777+00:00',
-        'paymentToken': 4561,
-        'certifiedBy': 'Full Name 2',
-        'filingId': 6541,
-        'availableOnPaperOnly': true,
-        'effectiveDate': '2019-02-04T19:22:59.003777+00:00'
-      },
-      'changeOfDirectors': {
-      }
-    }
-  },
-  {
-    'filing': {
-      'header': {
-        'name': 'changeOfAddress',
-        'date': '2019-12-12T19:22:59.003777+00:00', // Dec 12 at 11:22:59 am Pacific
-        'paymentToken': 7891,
-        'certifiedBy': 'Cameron',
-        'filingId': 9873,
-        'availableOnPaperOnly': false,
+    filing: {
+      header: {
+        name: 'changeOfAddress',
+        date: '2019-12-12T19:22:59.003777+00:00', // Dec 12 at 11:22:59 am Pacific
+        paymentToken: 7891,
+        certifiedBy: 'Full Name 6',
+        filingId: 9873,
+        availableOnPaperOnly: false,
         // Effective Date is way in the future so it's always > now
-        'effectiveDate': '2099-12-13T08:00:00+00:00', // Dec 13 at 00:00:00 am Pacific
-        'status': 'PAID'
+        effectiveDate: '2099-12-13T08:00:00+00:00', // Dec 13 at 00:00:00 am Pacific
+        status: 'PAID'
       },
-      'changeOfAddress': {
-      }
+      changeOfAddress: {}
     }
   },
   {
-    'filing': {
-      'header': {
-        'name': 'correction',
-        'date': '2019-04-06T19:22:59.003777+00:00',
-        'paymentToken': 7891,
-        'certifiedBy': 'Cameron',
-        'filingId': 9873,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-12-13T00:00:00+00:00',
-        'status': 'COMPLETED',
-        'comments': [
+    filing: {
+      header: {
+        name: 'correction',
+        date: '2019-04-06T19:22:59.003777+00:00',
+        paymentToken: 7891,
+        certifiedBy: 'Full Name 7',
+        filingId: 9873,
+        availableOnPaperOnly: false,
+        effectiveDate: '2019-12-13T00:00:00+00:00',
+        status: 'COMPLETED',
+        comments: [
           {
-            'comment': {
-              'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
-              'filingId': 9873,
-              'id': 1,
-              'submitterDisplayName': 'cbIdIr1234',
-              'timestamp': '2020-03-02T20:26:31.697044+00:00'
+            comment: {
+              comment: 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+              filingId: 9873,
+              id: 1,
+              submitterDisplayName: 'cbIdIr1234',
+              timestamp: '2020-03-02T20:26:31.697044+00:00'
             }
           },
           {
-            'comment': {
-              'comment': 'This is an additional comment',
-              'filingId': 9873,
-              'id': 2,
-              'submitterDisplayName': 'cbIdIr1234',
-              'timestamp': '2020-03-03T20:26:31.697044+00:00'
+            comment: {
+              comment: 'This is an additional comment',
+              filingId: 9873,
+              id: 2,
+              submitterDisplayName: 'cbIdIr1234',
+              timestamp: '2020-03-03T20:26:31.697044+00:00'
             }
           }
         ]
       },
-      'correction': {
-        'correctedFilingType': 'annualReport',
-        'correctedFilingDate': '2019-12-31'
+      correction: {
+        correctedFilingType: 'annualReport',
+        correctedFilingDate: '2019-12-31'
       }
     }
   }
@@ -212,103 +212,99 @@ describe('Filing History List - regular filings', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
       {
-        'filing': {
-          'header': {
-            'name': 'annualReport',
-            'date': '2019-07-02',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 123,
-            'certifiedBy': 'Full Name 1',
-            'filingId': 321,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+        filing: {
+          header: {
+            name: 'annualReport',
+            date: '2019-07-02',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 123,
+            certifiedBy: 'Full Name 1',
+            filingId: 321,
+            status: 'COMPLETED',
+            availableOnPaperOnly: false
           },
-          'annualReport': {
-            'annualGeneralMeetingDate': '2019-12-31',
-            'annualReportDate': '2019-12-31'
+          annualReport: {
+            annualGeneralMeetingDate: '2019-12-31',
+            annualReportDate: '2019-12-31'
           }
         }
       },
       {
-        'filing': {
-          'header': {
-            'name': 'changeOfDirectors',
-            'date': '2019-04-04',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 456,
-            'certifiedBy': 'Full Name 2',
-            'filingId': 654,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+        filing: {
+          header: {
+            name: 'changeOfDirectors',
+            date: '2019-04-04',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 456,
+            certifiedBy: 'Full Name 2',
+            filingId: 654,
+            status: 'COMPLETED',
+            availableOnPaperOnly: false
           },
-          'changeOfDirectors': {
+          changeOfDirectors: {}
+        }
+      },
+      {
+        filing: {
+          header: {
+            name: 'changeOfAddress',
+            date: '2019-05-06',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 789,
+            certifiedBy: 'Full Name 3',
+            filingId: 987,
+            status: 'COMPLETED',
+            availableOnPaperOnly: false
+          },
+          changeOfAddress: {}
+        }
+      },
+      {
+        filing: {
+          header: {
+            name: 'annualReport',
+            date: '2019-03-02',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 100,
+            certifiedBy: 'Full Name 4',
+            filingId: 3212,
+            status: 'COMPLETED',
+            availableOnPaperOnly: true
+          },
+          annualReport: {
+            annualGeneralMeetingDate: '2019-01-01',
+            annualReportDate: '2019-01-01'
           }
         }
       },
       {
-        'filing': {
-          'header': {
-            'name': 'changeOfAddress',
-            'date': '2019-05-06',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 789,
-            'certifiedBy': 'Full Name 3',
-            'filingId': 987,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+        filing: {
+          header: {
+            name: 'changeOfDirectors',
+            date: '2019-02-04',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 4561,
+            certifiedBy: 'Full Name 5',
+            filingId: 6541,
+            status: 'COMPLETED',
+            availableOnPaperOnly: true
           },
-          'changeOfAddress': {
-          }
+          changeOfDirectors: {}
         }
       },
       {
-        'filing': {
-          'header': {
-            'name': 'annualReport',
-            'date': '2019-03-02',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 100,
-            'certifiedBy': 'Full Name 1',
-            'filingId': 3212,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
+        filing: {
+          header: {
+            name: 'changeOfAddress',
+            date: '2019-01-06',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 7891,
+            certifiedBy: 'Full Name 6',
+            filingId: 9871,
+            status: 'COMPLETED',
+            availableOnPaperOnly: true
           },
-          'annualReport': {
-            'annualGeneralMeetingDate': '2019-01-01',
-            'annualReportDate': '2019-01-01'
-          }
-        }
-      },
-      {
-        'filing': {
-          'header': {
-            'name': 'changeOfDirectors',
-            'date': '2019-02-04',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 4561,
-            'certifiedBy': 'Full Name 2',
-            'filingId': 6541,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
-          },
-          'changeOfDirectors': {
-          }
-        }
-      },
-      {
-        'filing': {
-          'header': {
-            'name': 'changeOfAddress',
-            'date': '2019-01-06',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 7891,
-            'certifiedBy': 'Full Name 3',
-            'filingId': 9871,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
-          },
-          'changeOfAddress': {
-          }
+          changeOfAddress: {}
         }
       }
     ]
@@ -333,37 +329,36 @@ describe('Filing History List - regular filings', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
       {
-        'filing': {
-          'header': {
-            'name': 'annualReport',
-            'date': '2019-06-02',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 123,
-            'certifiedBy': 'Full Name 1',
-            'filingId': 321,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+        filing: {
+          header: {
+            name: 'annualReport',
+            date: '2019-06-02',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 123,
+            certifiedBy: 'Full Name 1',
+            filingId: 321,
+            status: 'COMPLETED',
+            availableOnPaperOnly: false
           },
-          'annualReport': {
-            'annualGeneralMeetingDate': '2019-12-31',
-            'annualReportDate': '2019-12-31'
+          annualReport: {
+            annualGeneralMeetingDate: '2019-12-31',
+            annualReportDate: '2019-12-31'
           }
         }
       },
       {
-        'filing': {
-          'header': {
-            'name': 'changeOfDirectors',
-            'date': '2019-03-09',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 456,
-            'certifiedBy': 'Full Name 2',
-            'filingId': 654,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
+        filing: {
+          header: {
+            name: 'changeOfDirectors',
+            date: '2019-03-09',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 456,
+            certifiedBy: 'Full Name 2',
+            filingId: 654,
+            status: 'COMPLETED',
+            availableOnPaperOnly: true
           },
-          'changeOfDirectors': {
-          }
+          changeOfDirectors: {}
         }
       }
     ]
@@ -411,54 +406,53 @@ describe('Filing History List - regular filings', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
       {
-        'filing': {
-          'header': {
-            'name': 'changeOfDirectors',
-            'date': '2019-03-09',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 456,
-            'certifiedBy': 'Full Name 2',
-            'filingId': 654,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': true
+        filing: {
+          header: {
+            name: 'changeOfDirectors',
+            date: '2019-03-09',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 456,
+            certifiedBy: 'Full Name 1',
+            filingId: 654,
+            status: 'COMPLETED',
+            availableOnPaperOnly: true
           },
-          'documents': [
+          documents: [
             {
-              'filename': 'BC1111111 - Director Change - 2020-06-01.pdf',
-              'filingId': 654,
-              'reportType': null,
-              'title': 'Director Change',
-              'type': 'REPORT'
+              filename: 'BC1111111 - Director Change - 2020-06-01.pdf',
+              filingId: 654,
+              reportType: null,
+              title: 'Director Change',
+              type: 'REPORT'
             }
           ],
-          'changeOfDirectors': {
-          }
+          changeOfDirectors: {}
         }
       },
       {
-        'filing': {
-          'header': {
-            'name': 'annualReport',
-            'date': '2019-06-02',
-            'effectiveDate': 'Wed, 20 Nov 2019 22:17:54 GMT',
-            'paymentToken': 123,
-            'certifiedBy': 'Full Name 1',
-            'filingId': 321,
-            'status': 'COMPLETED',
-            'availableOnPaperOnly': false
+        filing: {
+          header: {
+            name: 'annualReport',
+            date: '2019-06-02',
+            effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
+            paymentToken: 123,
+            certifiedBy: 'Full Name 2',
+            filingId: 321,
+            status: 'COMPLETED',
+            availableOnPaperOnly: false
           },
-          'documents': [
+          documents: [
             {
-              'filename': 'BC1111111 - Annual Report - 2020-06-01.pdf',
-              'filingId': 321,
-              'reportType': null,
-              'title': 'Annual Report',
-              'type': 'REPORT'
+              filename: 'BC1111111 - Annual Report - 2020-06-01.pdf',
+              filingId: 321,
+              reportType: null,
+              title: 'Annual Report',
+              type: 'REPORT'
             }
           ],
-          'annualReport': {
-            'annualGeneralMeetingDate': '2019-12-31',
-            'annualReportDate': '2019-12-31'
+          annualReport: {
+            annualGeneralMeetingDate: '2019-12-31',
+            annualReportDate: '2019-12-31'
           }
         }
       }
@@ -515,11 +509,68 @@ describe('Filing History List - regular filings', () => {
     expect(vm.historyItems.length).toEqual(7)
     const item = wrapper.findAll('.filing-history-item').at(5)
     expect(item.find('.list-item__subtitle').text())
-      .toContain('FILED AND PENDING (filed by Cameron on 2019-12-12')
+      .toContain('FILED AND PENDING (filed by Full Name 6 on 2019-12-12)')
     expect(item.find('.list-item__subtitle').text())
       .toContain('The updated office addresses will be legally effective')
 
     expect(item.text()).toContain('The updated office addresses will be legally effective on 2099-12-13')
+
+    wrapper.destroy()
+  })
+
+  it('shows "filed by [staff name]" when filed by staff and current user is staff', async () => {
+    const $route = { query: { filing_id: '654' } }
+
+    // init store
+    store.state.keycloakRoles = ['staff']
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = sampleFilings
+
+    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify Filed By for 1st item
+    expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Pegg Staff 1 on 2019-06-02)')
+
+    // cleanup
+    store.state.keycloakRoles = []
+    wrapper.destroy()
+  })
+
+  it('shows "filed by Registry Staff" when filed by staff and current user is not staff', async () => {
+    const $route = { query: { filing_id: '654' } }
+
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = sampleFilings
+
+    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify Filed By for 1st item
+    expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Registry Staff on 2019-06-02)')
+
+    wrapper.destroy()
+  })
+
+  it('shows "filed by [user name]" when filed by regular user', async () => {
+    const $route = { query: { filing_id: '654' } }
+
+    // init store
+    store.state.entityIncNo = 'CP0001191'
+    store.state.filings = sampleFilings
+
+    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify Filed By for 2nd item
+    expect(wrapper.findAll('.filing-history-item').at(1).find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Full Name 2 on 2019-03-09)')
 
     wrapper.destroy()
   })
@@ -1255,7 +1306,8 @@ describe('Filing History List - alterations', () => {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
             status: 'COMPLETED',
-            filingId: 85114
+            filingId: 85114,
+            isStaff: true
           },
           business: {},
           alteration: {}
@@ -1315,7 +1367,8 @@ describe('Filing History List - alterations', () => {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
             status: 'COMPLETED',
-            filingId: 85114
+            filingId: 85115,
+            isStaff: true
           },
           business: {
             legalType: 'BC' // 'from' type
@@ -1382,7 +1435,8 @@ describe('Filing History List - alterations', () => {
             name: 'alteration',
             date: '2020-03-24T19:20:05.670859+00:00',
             status: 'COMPLETED',
-            filingId: 85114
+            filingId: 85116,
+            isStaff: true
           },
           business: {
             legalType: 'ULC' // 'from' type
@@ -1451,7 +1505,8 @@ describe('Filing History List - alterations', () => {
             isFutureEffective: true,
             effectiveDate: '2020-04-24T19:20:05.670859+00:00', // date in the past
             status: 'PAID',
-            filingId: 85114
+            filingId: 85117,
+            isStaff: true
           },
           business: {
             legalType: 'BC' // 'from' type
@@ -1520,7 +1575,8 @@ describe('Filing History List - alterations', () => {
             isFutureEffective: true,
             effectiveDate: '2099-12-31T23:59:59+00:00', // way in the future so it's always > now
             status: 'PAID',
-            filingId: 85114
+            filingId: 85118,
+            isStaff: true
           },
           business: {
             legalType: 'BC' // 'from' type
@@ -1702,20 +1758,20 @@ describe('Filing History List - corrections', () => {
     // init store
     store.state.filings = [
       {
-        'filing': {
-          'header': {
-            'name': 'correction',
-            'date': '2019-04-06T19:22:59.003777+00:00',
-            'paymentToken': 7891,
-            'certifiedBy': 'Cameron',
-            'filingId': 9873,
-            'availableOnPaperOnly': false,
-            'effectiveDate': '2019-12-13T00:00:00+00:00',
-            'status': 'COMPLETED'
+        filing: {
+          header: {
+            name: 'correction',
+            date: '2019-04-06T19:22:59.003777+00:00',
+            paymentToken: 7891,
+            certifiedBy: 'Cameron',
+            filingId: 9873,
+            availableOnPaperOnly: false,
+            effectiveDate: '2019-12-13T00:00:00+00:00',
+            status: 'COMPLETED'
           },
-          'correction': {
-            'correctedFilingType': 'annualReport',
-            'correctedFilingDate': '2019-12-31'
+          correction: {
+            correctedFilingType: 'annualReport',
+            correctedFilingDate: '2019-12-31'
           }
         }
       }
@@ -1742,22 +1798,22 @@ describe('Filing History List - corrections', () => {
     // init store
     store.state.filings = [
       {
-        'filing': {
-          'header': {
-            'name': 'correction',
-            'date': '2019-04-06T19:22:59.003777+00:00',
-            'paymentToken': 7891,
-            'certifiedBy': 'Cameron',
-            'filingId': 9873,
-            'availableOnPaperOnly': false,
-            'effectiveDate': '2019-12-13T00:00:00+00:00',
-            'status': 'COMPLETED'
+        filing: {
+          header: {
+            name: 'correction',
+            date: '2019-04-06T19:22:59.003777+00:00',
+            paymentToken: 7891,
+            certifiedBy: 'Cameron',
+            filingId: 9873,
+            availableOnPaperOnly: false,
+            effectiveDate: '2019-12-13T00:00:00+00:00',
+            status: 'COMPLETED'
           },
-          'correction': {
-            'correctedFilingType': 'annualReport',
-            'correctedFilingDate': '2019-12-31'
+          correction: {
+            correctedFilingType: 'annualReport',
+            correctedFilingDate: '2019-12-31'
           },
-          'documents': [
+          documents: [
             {
               filename: 'BC1234567 - Incorporation Application (Corrected) - 2020-06-02.pdf',
               filingId: 85114,
@@ -1816,159 +1872,159 @@ describe('Filing History List - redirections', () => {
 
   const mockIncorporationApplication = {
     nameRequest: {
-      'legalType': 'BEN'
+      legalType: 'BEN'
     },
-    nameTranslations: { 'new': ['ABC Ltd.', 'Financière de l’Odet', 'Société Générale'] },
+    nameTranslations: { new: ['ABC Ltd.', 'Financière de l’Odet', 'Société Générale'] },
     offices: {
-      'registeredOffice': {
-        'deliveryAddress': {
-          'streetAddress': 'delivery_address - address line one',
-          'addressCity': 'delivery_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+      registeredOffice: {
+        deliveryAddress: {
+          streetAddress: 'delivery_address - address line one',
+          addressCity: 'delivery_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         },
-        'mailingAddress': {
-          'streetAddress': 'mailing_address - address line one',
-          'addressCity': 'mailing_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+        mailingAddress: {
+          streetAddress: 'mailing_address - address line one',
+          addressCity: 'mailing_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         }
       },
-      'recordsOffice': {
-        'deliveryAddress': {
-          'streetAddress': 'delivery_address - address line one',
-          'addressCity': 'delivery_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+      recordsOffice: {
+        deliveryAddress: {
+          streetAddress: 'delivery_address - address line one',
+          addressCity: 'delivery_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         },
-        'mailingAddress': {
-          'streetAddress': 'mailing_address - address line one',
-          'addressCity': 'mailing_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+        mailingAddress: {
+          streetAddress: 'mailing_address - address line one',
+          addressCity: 'mailing_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         }
       }
     },
     parties: [
       {
-        'officer': {
-          'id': 1,
-          'firstName': 'Joe',
-          'lastName': 'Swanson',
-          'middleName': 'P',
-          'email': 'joe@email.com',
-          'orgName': '',
-          'partyType': 'person'
+        officer: {
+          id: 1,
+          firstName: 'Joe',
+          lastName: 'Swanson',
+          middleName: 'P',
+          email: 'joe@email.com',
+          orgName: '',
+          partyType: 'person'
         },
-        'mailingAddress': {
-          'streetAddress': 'mailing_address - address line one',
-          'streetAddressAdditional': '',
-          'addressCity': 'mailing_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+        mailingAddress: {
+          streetAddress: 'mailing_address - address line one',
+          streetAddressAdditional: '',
+          addressCity: 'mailing_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         },
-        'deliveryAddress': {
-          'streetAddress': 'delivery_address - address line one',
-          'streetAddressAdditional': '',
-          'addressCity': 'delivery_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+        deliveryAddress: {
+          streetAddress: 'delivery_address - address line one',
+          streetAddressAdditional: '',
+          addressCity: 'delivery_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         },
-        'roles': [
+        roles: [
           {
-            'roleType': 'Completing Party',
-            'appointmentDate': '2018-01-01'
+            roleType: 'Completing Party',
+            appointmentDate: '2018-01-01'
 
           },
           {
-            'roleType': 'Director',
-            'appointmentDate': '2018-01-01'
+            roleType: 'Director',
+            appointmentDate: '2018-01-01'
 
           }
         ]
       },
       {
-        'officer': {
-          'id': 2,
-          'firstName': '',
-          'lastName': '',
-          'middleName': '',
-          'orgName': 'Xyz Inc.',
-          'partyType': 'org'
+        officer: {
+          id: 2,
+          firstName: '',
+          lastName: '',
+          middleName: '',
+          orgName: 'Xyz Inc.',
+          partyType: 'org'
         },
-        'mailingAddress': {
-          'streetAddress': 'mailing_address - address line one',
-          'streetAddressAdditional': '',
-          'addressCity': 'mailing_address city',
-          'addressCountry': 'CA',
-          'postalCode': 'H0H0H0',
-          'addressRegion': 'BC'
+        mailingAddress: {
+          streetAddress: 'mailing_address - address line one',
+          streetAddressAdditional: '',
+          addressCity: 'mailing_address city',
+          addressCountry: 'CA',
+          postalCode: 'H0H0H0',
+          addressRegion: 'BC'
         },
-        'roles': [
+        roles: [
           {
-            'roleType': 'Incorporator',
-            'appointmentDate': '2018-01-01'
+            roleType: 'Incorporator',
+            appointmentDate: '2018-01-01'
           }
         ]
       }
     ],
     shareStructure: {
-      'shareClasses': [
+      shareClasses: [
         {
-          'id': 1,
-          'name': 'Share Class 1',
-          'priority': 1,
-          'hasMaximumShares': true,
-          'maxNumberOfShares': 100,
-          'hasParValue': true,
-          'parValue': 10,
-          'currency': 'CAD',
-          'hasRightsOrRestrictions': true,
-          'series': [
+          id: 1,
+          name: 'Share Class 1',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: 100,
+          hasParValue: true,
+          parValue: 10,
+          currency: 'CAD',
+          hasRightsOrRestrictions: true,
+          series: [
             {
-              'id': 1,
-              'name': 'Share Series 1',
-              'priority': 1,
-              'hasMaximumShares': true,
-              'maxNumberOfShares': 50,
-              'hasRightsOrRestrictions': true
+              id: 1,
+              name: 'Share Series 1',
+              priority: 1,
+              hasMaximumShares: true,
+              maxNumberOfShares: 50,
+              hasRightsOrRestrictions: true
             },
             {
-              'id': 2,
-              'name': 'Share Series 2',
-              'priority': 2,
-              'hasMaximumShares': true,
-              'maxNumberOfShares': 100,
-              'hasRightsOrRestrictions': true
+              id: 2,
+              name: 'Share Series 2',
+              priority: 2,
+              hasMaximumShares: true,
+              maxNumberOfShares: 100,
+              hasRightsOrRestrictions: true
             }
           ]
         },
         {
-          'id': 2,
-          'name': 'Share Class 2',
-          'priority': 1,
-          'hasMaximumShares': true,
-          'maxNumberOfShares': null,
-          'hasParValue': true,
-          'parValue': null,
-          'currency': null,
-          'hasRightsOrRestrictions': true,
-          'series': []
+          id: 2,
+          name: 'Share Class 2',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: null,
+          hasParValue: true,
+          parValue: null,
+          currency: null,
+          hasRightsOrRestrictions: true,
+          series: []
         }
       ]
     },
     contactPoint: {
-      'email': 'no_one@never.get',
-      'phone': '123-456-7890'
+      email: 'no_one@never.get',
+      phone: '123-456-7890'
     },
     incorporationAgreement: {
-      'agreementType': 'sample'
+      agreementType: 'sample'
     }
   }
 
@@ -1997,9 +2053,9 @@ describe('Filing History List - redirections', () => {
               status: 'COMPLETED'
             },
             business: {
-              'identifier': 'BC1234567',
-              'legalName': 'legal name - BC1234567',
-              'legalType': 'BEN'
+              identifier: 'BC1234567',
+              legalName: 'legal name - BC1234567',
+              legalType: 'BEN'
             },
             incorporationApplication: mockIncorporationApplication
           }
@@ -2084,6 +2140,8 @@ describe('Filing History List - redirections', () => {
     const createUrl = 'business/edit/BC1234567/correction?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
+    // cleanup
+    store.state.keycloakRoles = []
     wrapper.destroy()
   })
 })
@@ -2104,22 +2162,22 @@ describe('Filing History List - transition filing', () => {
             date: '2020-11-01T19:20:05.670859+00:00',
             status: 'COMPLETED',
             filingId: 1234,
-            paymentToken: 111
+            paymentToken: 111,
+            isStaff: true
           },
           documents: [
             {
-              'filename': 'BC1234567 - Transition Application - 2020-11-01.pdf',
-              'filingId': 1234,
-              'reportType': null,
-              'title': 'Transition Application',
-              'type': 'REPORT'
+              filename: 'BC1234567 - Transition Application - 2020-11-01.pdf',
+              filingId: 1234,
+              reportType: null,
+              title: 'Transition Application',
+              type: 'REPORT'
             }
           ],
           business: {
             legalType: 'BEN'
           },
-          transition: {
-          }
+          transition: {}
         }
       }
     ]
