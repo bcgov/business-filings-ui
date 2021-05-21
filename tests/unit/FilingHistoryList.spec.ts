@@ -2161,3 +2161,216 @@ describe('Filing History List - transition filing', () => {
     wrapper.destroy()
   })
 })
+
+describe('Filing History List - registrars notation', () => {
+  it('displays a Registrars Notation Filing', async () => {
+    const $route = { query: {} }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1230072')
+    store.state.entityType = 'BEN'
+    store.state.entityName = '1230072 B.C. LTD.'
+    store.state.filings = [
+      {
+        filing: {
+          registrarsNotation: {
+            fileNumber: '#1234-5678/90',
+            orderDate: '2021-01-30T09:56:01+08:00',
+            effectOfOrder: 'planOfArrangement',
+            orderDetails: 'A note about order'
+          },
+          business: {
+            foundingDate: '2021-01-13T21:37:19.844203+00:00',
+            identifier: 'BC1230072',
+            legalName: '1230072 B.C. LTD.',
+            legalType: 'BEN'
+          },
+          documents: [],
+          header: {
+            name: 'registrarsNotation',
+            date: '2021-05-06',
+            certifiedBy: 'Cameron',
+            email: 'no_one@never.get',
+            filingId: 112040,
+            effectiveDate: '2021-05-05T20:37:44.613716+00:00'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Registrars Notation')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Cameron on 2021-05-05)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide')
+
+    expect(vm.panel).toBe(0)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - registrars order', () => {
+  it('displays a Registrars Order Filing', async () => {
+    const $route = { query: {} }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1230072')
+    store.state.entityType = 'BEN'
+    store.state.entityName = '1230072 B.C. LTD.'
+    store.state.filings = [
+      {
+        filing: {
+          registrarsOrder: {
+            fileNumber: '#1234-5678/90',
+            orderDate: '2021-01-30T09:56:01+08:00',
+            effectOfOrder: 'planOfArrangement',
+            orderDetails: 'A note about order'
+          },
+          business: {
+            foundingDate: '2021-01-13T21:37:19.844203+00:00',
+            identifier: 'BC1230072',
+            legalName: '1230072 B.C. LTD.',
+            legalType: 'BEN'
+          },
+          documents: [],
+          header: {
+            name: 'registrarsOrder',
+            date: '2021-05-06',
+            certifiedBy: 'Cameron',
+            email: 'no_one@never.get',
+            filingId: 112040,
+            effectiveDate: '2021-05-05T20:37:44.613716+00:00'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Registrars Order')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Cameron on 2021-05-05)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide')
+
+    expect(vm.panel).toBe(0)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - Court Order', () => {
+  it('displays a Court Order Filing', async () => {
+    const $route = { query: {} }
+
+    // init store
+    sessionStorage.setItem('BUSINESS_ID', 'BC1230072')
+    store.state.entityType = 'BEN'
+    store.state.entityName = '1230072 B.C. LTD.'
+    store.state.filings = [
+      {
+        filing: {
+          courtOrder: {
+            fileNumber: '#1234-5678/90',
+            orderDate: '2021-01-30T09:56:01+08:00',
+            effectOfOrder: 'planOfArrangement',
+            orderDetails: 'A note about order'
+          },
+          business: {
+            foundingDate: '2021-01-13T21:37:19.844203+00:00',
+            identifier: 'BC1230072',
+            legalName: '1230072 B.C. LTD.',
+            legalType: 'BEN'
+          },
+          documents: [],
+          header: {
+            name: 'courtOrder',
+            date: '2021-05-06',
+            certifiedBy: 'Cameron',
+            email: 'no_one@never.get',
+            filingId: 112040,
+            effectiveDate: '2021-05-05T20:37:44.613716+00:00'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
+    expect(wrapper.emitted('history-count')).toEqual([[1]])
+
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Court Order')
+    expect(wrapper.find('.list-item__subtitle span').text())
+      .toBe('FILED AND PAID (filed by Cameron on 2021-05-05)')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify Request a Copy button and toggle panel
+    const detailsBtn = wrapper.find('.expand-btn')
+    expect(detailsBtn.text()).toContain('View')
+    detailsBtn.trigger('click')
+    await flushPromises()
+
+    // verify Close button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide')
+
+    expect(vm.panel).toBe(0)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+
+    wrapper.destroy()
+  })
+})

@@ -9,5 +9,9 @@ export enum FilingTypes {
   ALTERATION = 'alteration',
   SPECIAL_RESOLUTION = 'specialResolution',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
-  TRANSITION = 'transition'
+  TRANSITION = 'transition',
+  REGISTRARS_NOTATION = 'registrarsNotation',
+  REGISTRARS_ORDER = 'registrarsOrder',
+  COURT_ORDER = 'courtOrder',
+  UNKNOWN = 'unknown'
 }

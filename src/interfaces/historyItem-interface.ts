@@ -9,7 +9,7 @@ export interface HistoryItemIF {
   filingDate: string;
   filingDateTime?: string;
   filingId: number;
-  filingType: FilingTypes | 'unknown';
+  filingType: FilingTypes;
   filingYear?: string;
   isCorrected?: boolean;
   isPaid: boolean;
