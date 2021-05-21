@@ -314,7 +314,7 @@
                   <span>{{document.title}}</span>
                 </v-btn>
 
-                <v-btn v-if="document.type === DOCUMENT_TYPE_RECEIPT"
+                <v-btn v-if="document.type === DOCUMENT_TYPE_RECEIPT && !isStaffFiling(filing.filingType)"
                   text color="primary"
                   class="download-receipt-btn"
                   @click="downloadReceipt(document)"
