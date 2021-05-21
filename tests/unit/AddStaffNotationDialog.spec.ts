@@ -13,6 +13,9 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 describe('AddStaffNotationDialog', () => {
+  // Avoid vuetify warnings related to v-dialog
+  document.body.setAttribute('data-app', 'true')
+
   it('renders the page contents correctly', () => {
     const wrapper = shallowMount(AddStaffNotationDialog,
       {
