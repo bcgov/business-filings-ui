@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title id="dialog-title">Add a {{itemName}}</v-card-title>
       <v-card-text>
-        <div id="notation-text" class="mb-4 mt-2 default-text">
+        <div id="notation-text" class="mb-4 mt-2">
           Enter a {{itemName}} that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -19,7 +19,7 @@
             :counter="notationMaxLength"
           />
         </v-form>
-        <div class="default-text">
+        <div>
           If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
           to a plan of arrangement, enter the court order number and select Plan of Arrangement.
         </div>
@@ -234,5 +234,10 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 }
 .save-btn {
   font-weight: 700;
+}
+.v-card__subtitle, .v-card__text {
+  font-weight: normal;
+  color: $gray7;
+  font-size: 1rem;
 }
 </style>
