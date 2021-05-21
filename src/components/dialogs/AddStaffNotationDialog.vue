@@ -157,7 +157,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     this.enableValidation = false
   }
 
-  /** WIP */
   /** Saves the current notation. */
   private async save (): Promise<void> {
     // prevent double saving
@@ -177,26 +176,21 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       filing: {
         header: {
           name: this.filingType,
-          date: this.currentDate
-          // certifiedBy: full name,
-          // email: no_one@never.get,
-          // filingId: 1
+          date: this.currentDate,
+          certifiedBy: ''
         },
         business: {
-          // foundingDate: 2018-01-01T00:00:00+00:00,
           identifier: this.entityIncNo
-          // legalName: legal name - Test,
-          // legalType: BC
         },
-        registrarsNotation: {
-          fileNumber: this.courtOrderNumber,
+        [this.filingType]: {
+          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
           effectOfOrder: (this.planOfArrangement ? 'planOfArrangement' : ''),
           orderDetails: this.notation
         }
       }
     }
 
-    const url = `businesses/${this.entityIncNo}/filings/`
+    const url = `businesses/${this.entityIncNo}/filings`
     let success = false
     await axios.post(url, data).then(res => {
       success = true
@@ -233,7 +227,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   }
 }
 .save-btn {
-  font-weight: 700;
+  font-weight: bold;
 }
 .v-card__subtitle, .v-card__text {
   font-weight: normal;

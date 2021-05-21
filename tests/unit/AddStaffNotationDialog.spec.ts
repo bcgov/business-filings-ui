@@ -214,7 +214,7 @@ describe('AddStaffNotationDialog', () => {
 
     sinon
       .stub(axios, 'post')
-      .withArgs('businesses/BC0870669/filings/')
+      .withArgs('businesses/BC0870669/filings')
       .returns(
         new Promise(resolve =>
           resolve({
