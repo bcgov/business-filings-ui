@@ -182,7 +182,9 @@
                 >
                   <span v-if="filing.isColinFiling || filing.isPaperFiling" class="app-action">
                     {{ (panel === index) ? "Close" : "Request a Copy" }}</span>
-                  <span v-else class="app-action">{{ (panel === index) ? "Hide Documents" : "View Documents" }}</span>
+                  <span v-else class="app-action">
+                    {{ (panel === index) ? hideLabel(filing) : viewLabel(filing) }}
+                  </span>
                 </v-btn>
 
                 <!-- the drop-down menu -->
@@ -194,7 +196,7 @@
                   </template>
                   <v-list dense>
                     <v-list-item-group color="primary">
-                      <v-list-item :disabled="disableCorrection(filing)">
+                      <v-list-item v-if="!isStaffFiling(filing.filingType)" :disabled="disableCorrection(filing)">
                         <v-list-item-icon>
                           <v-icon class="app-action">mdi-file-document-edit-outline</v-icon>
                         </v-list-item-icon>
@@ -280,6 +282,14 @@
             <!-- is this a paper filing? -->
             <template v-else-if="filing.isPaperFiling">
               <paper-filing />
+              <!-- NB: no documents so no divider needed -->
+            </template>
+
+            <!-- is this a staff only filing? -->
+            <template v-else-if="isStaffFiling(filing.filingType)" id="staff-filings-info">
+              <p class="info-text">{{filing.notationOrOrder}}</p>
+              <p class="info-text my-0">Court Order Number: {{filing.fileNumber}}</p>
+              <p class="info-text my-0">{{filing.planOfArrangement}}</p>
               <!-- NB: no documents so no divider needed -->
             </template>
 
@@ -500,6 +510,15 @@ export default {
                 break
               case FilingTypes.TRANSITION:
                 this.loadTransitionFiling(filing)
+                break
+              case FilingTypes.REGISTRARS_NOTATION:
+                this.loadOtherFiling(filing, filing.registrarsNotation)
+                break
+              case FilingTypes.REGISTRARS_ORDER:
+                this.loadOtherFiling(filing, filing.registrarsOrder)
+                break
+              case FilingTypes.COURT_ORDER:
+                this.loadOtherFiling(filing, filing.courtOrder)
                 break
               default:
                 // fallback for unknown filings
@@ -756,6 +775,23 @@ export default {
           comments: this.flattenAndSortComments(header.comments)
         }
 
+        // Apply additional properties for Staff Only Filings
+        if (this.isStaffFiling(filingType)) {
+          let baseFiling
+          switch (filingType) {
+            case FilingTypes.REGISTRARS_NOTATION: baseFiling = filing.registrarsNotation
+              break
+            case FilingTypes.REGISTRARS_ORDER: baseFiling = filing.registrarsOrder
+              break
+            case FilingTypes.COURT_ORDER: baseFiling = filing.courtOrder
+              break
+          }
+
+          item.notationOrOrder = baseFiling?.orderDetails
+          item.fileNumber = baseFiling?.fileNumber
+          item.planOfArrangement = baseFiling?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
+        }
+
         // add receipt
         if (header.paymentToken) {
           item.documents.push({
@@ -857,7 +893,7 @@ export default {
 
       if (header) {
         // since name is not guaranteed to exist, provide a fallback
-        const filingType = header.name || 'unknown'
+        const filingType = header.name || FilingTypes.UNKNOWN
 
         let title: string
         if (filing.annualReport?.annualReportDate) {
@@ -956,7 +992,7 @@ export default {
 
       if (header) {
         // since name is not guaranteed to exist, provide a fallback
-        const filingType = header.name || 'unknown'
+        const filingType = header.name || FilingTypes.UNKNOWN
 
         let title: string
         if (filing.annualReport?.annualReportDate) {
@@ -1289,6 +1325,15 @@ export default {
       this.panel = (this.panel === index) ? null : index
     },
 
+    /** Identify Staff-Only filings by filing type. */
+    isStaffFiling (filingType: FilingTypes): boolean {
+      return [
+        FilingTypes.REGISTRARS_NOTATION,
+        FilingTypes.REGISTRARS_ORDER,
+        FilingTypes.COURT_ORDER
+      ].includes(filingType)
+    },
+
     /** Whether to disable correction for this history item. */
     disableCorrection (item: HistoryItemIF): boolean {
       const isAlterationFiling = (item.filingType === FilingTypes.ALTERATION)
@@ -1296,7 +1341,17 @@ export default {
       const isTransitionFiling = (item.filingType === FilingTypes.TRANSITION)
 
       return (this.disableChanges || isAlterationFiling || isCorrectionFiling || isTransitionFiling ||
-        item.isCorrected || item.isFutureEffectiveIa || item.isColinFiling)
+        this.isStaffFiling(item.filingType) || item.isCorrected || item.isFutureEffectiveIa || item.isColinFiling)
+    },
+
+    /** The action label to display documents and/or detail comments. */
+    viewLabel (item: HistoryItemIF): string {
+      return this.isStaffFiling(item.filingType) ? 'View' : 'View Documents'
+    },
+
+    /** The action label to hide documents and/or detail comments. */
+    hideLabel (item: HistoryItemIF): string {
+      return this.isStaffFiling(item.filingType) ? 'Hide' : 'Hide Documents'
     }
   },
 
