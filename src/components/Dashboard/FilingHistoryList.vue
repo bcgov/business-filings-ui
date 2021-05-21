@@ -787,9 +787,9 @@ export default {
               break
           }
 
-          item.notationOrOrder = baseFiling.orderDetails
-          item.fileNumber = baseFiling.fileNumber
-          item.planOfArrangement = baseFiling.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
+          item.notationOrOrder = baseFiling?.orderDetails
+          item.fileNumber = baseFiling?.fileNumber
+          item.planOfArrangement = baseFiling?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
         }
 
         // add receipt
