@@ -13,7 +13,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 describe('AddStaffNotationDialog', () => {
-  // Avoid vuetify warnings related to v-dialog
+  // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
   document.body.setAttribute('data-app', 'true')
 
   it('renders the page contents correctly', () => {
