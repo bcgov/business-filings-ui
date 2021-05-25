@@ -13,7 +13,7 @@
             filled
             :label="itemName"
             id="notation"
-            rows="4"
+            rows="5"
             :no-resize="true"
             :rules="notationRules"
             :counter="notationMaxLength"
@@ -221,6 +221,10 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   }
   #court-order .v-input--checkbox .v-input__slot {
     margin-bottom: 0 !important;
+  }
+  #court-order .v-input--checkbox {
+    margin-top: 0.5rem;
+    padding-top: 0;
   }
 }
 .save-btn {
