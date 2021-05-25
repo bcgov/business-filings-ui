@@ -41,6 +41,7 @@
                   v-if="visibleForStaff"
                   addScrollbarOffset="true"
                   @close="reloadDashboardIfNeeded($event)"
+                  class="mt-n3"
                 />
               </header>
               <filing-history-list
