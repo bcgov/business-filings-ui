@@ -22,7 +22,7 @@
             filingType="courtOrder"
             courtOrderNumberRequired="true"
         />
-        <div class="filing-item__actions">
+        <div class="filing-item__actions mb-2">
             <v-menu offset-y left transition="slide-y-transition" v-model="expand">
                 <template v-slot:activator="{ on }">
                     <span><!-- This span is needed to fix a positioning issue with the menu -->
