@@ -34,17 +34,17 @@
 
             <section>
               <header>
-                <h2 class="mb-3" data-test-id="dashboard-filing-history-subtitle">
+                <h2 data-test-id="dashboard-filing-history-subtitle">
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
                 <staff-notation
                   v-if="visibleForStaff"
                   addScrollbarOffset="true"
                   @close="reloadDashboardIfNeeded($event)"
-                  class="mt-n3"
                 />
               </header>
               <filing-history-list
+                 class="mt-3"
                 :disableChanges="disableChanges"
                 @history-count="historyCount = $event"
                 @history-items="historyItems = $event"
