@@ -288,7 +288,7 @@
             <!-- is this a staff only filing? -->
             <template v-else-if="isStaffFiling(filing.filingType)" id="staff-filings-info">
               <p class="info-text">{{filing.notationOrOrder}}</p>
-              <p class="info-text my-0">Court Order Number: {{filing.fileNumber}}</p>
+              <p class="info-text my-0" v-if="filing.fileNumber">Court Order Number: {{filing.fileNumber}}</p>
               <p class="info-text my-0">{{filing.planOfArrangement}}</p>
               <!-- NB: no documents so no divider needed -->
             </template>
