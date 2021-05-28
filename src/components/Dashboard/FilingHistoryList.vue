@@ -36,8 +36,13 @@
                 <div class="list-item__subtitle d-flex">
                   <!-- NB: blocks below are mutually exclusive, and order is important -->
 
+                  <!-- is this a STAFF ONLY filing -->
+                  <div v-if="isStaffFiling(filing.filingType)" class="filing-subtitle">
+                    <span>{{ filedLabel('FILED BY', filing) }}</span>
+                  </div>
+
                   <!-- is this a BCOMP FE COA? -->
-                  <div v-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
+                  <div v-else-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
                     <span>{{ filedLabel('FILED AND PENDING', filing) }}</span>
                     <v-tooltip top content-class="pending-tooltip">
                       <template v-slot:activator="{ on }">
@@ -790,6 +795,8 @@ export default {
           item.notationOrOrder = baseFiling?.orderDetails
           item.fileNumber = baseFiling?.fileNumber
           item.planOfArrangement = baseFiling?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
+
+          item.filingAuthor = this.isRoleStaff ? header.submitter : 'Registry Staff'
         }
 
         // add receipt
