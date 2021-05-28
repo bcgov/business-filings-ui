@@ -2192,7 +2192,8 @@ describe('Filing History List - registrars notation', () => {
             certifiedBy: 'Cameron',
             email: 'no_one@never.get',
             filingId: 112040,
-            effectiveDate: '2021-05-05T20:37:44.613716+00:00'
+            effectiveDate: '2021-05-05T20:37:44.613716+00:00',
+            submitter: 'Cameron'
           }
         }
       }
@@ -2206,9 +2207,9 @@ describe('Filing History List - registrars notation', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Registrars Notation')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Registrar\'s Notation')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Cameron on 2021-05-05)')
+      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2263,7 +2264,8 @@ describe('Filing History List - registrars order', () => {
             certifiedBy: 'Cameron',
             email: 'no_one@never.get',
             filingId: 112040,
-            effectiveDate: '2021-05-05T20:37:44.613716+00:00'
+            effectiveDate: '2021-05-05T20:37:44.613716+00:00',
+            submitter: 'Cameron'
           }
         }
       }
@@ -2277,9 +2279,9 @@ describe('Filing History List - registrars order', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('h3.list-item__title').text()).toBe('Registrars Order')
+    expect(wrapper.find('h3.list-item__title').text()).toBe('Registrar\'s Order')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Cameron on 2021-05-05)')
+      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2334,7 +2336,8 @@ describe('Filing History List - Court Order', () => {
             certifiedBy: 'Cameron',
             email: 'no_one@never.get',
             filingId: 112040,
-            effectiveDate: '2021-05-05T20:37:44.613716+00:00'
+            effectiveDate: '2021-05-05T20:37:44.613716+00:00',
+            submitter: 'Cameron'
           }
         }
       }
@@ -2350,7 +2353,7 @@ describe('Filing History List - Court Order', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Court Order')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Cameron on 2021-05-05)')
+      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
