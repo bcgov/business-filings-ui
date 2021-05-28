@@ -2209,7 +2209,7 @@ describe('Filing History List - registrars notation', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Registrar\'s Notation')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('Filed by Cameron on 2021-05-05')
+      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2281,7 +2281,7 @@ describe('Filing History List - registrars order', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Registrar\'s Order')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('Filed by Cameron on 2021-05-05')
+      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2353,7 +2353,7 @@ describe('Filing History List - Court Order', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Court Order')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('Filed by Cameron on 2021-05-05')
+      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 

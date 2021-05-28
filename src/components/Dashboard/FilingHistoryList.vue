@@ -769,7 +769,7 @@ export default {
           title: this.filingTypeToName(filingType),
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
-          filingDate,
+          filingDate: this.isStaffFiling(filingType) ? filingDateTime : filingDate,
           effectiveDate, // used for BCOMP COA Future Effective tooltip
           isBcompCoaFutureEffective,
           isPaid: (header.status === FilingStatus.PAID),
@@ -1321,6 +1321,7 @@ export default {
 
       const a = item.filingAuthor
       const d = item.filingDate
+
       if (this.isStaffFiling(item.filingType)) {
         return `Filed by ${a} on ${d}`
       }
