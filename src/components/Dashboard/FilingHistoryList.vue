@@ -38,7 +38,7 @@
 
                   <!-- is this a STAFF ONLY filing -->
                   <div v-if="isStaffFiling(filing.filingType)" class="filing-subtitle">
-                    <span>{{ filedLabel('FILED BY', filing) }}</span>
+                    <span>{{ filedLabel('', filing) }}</span>
                   </div>
 
                   <!-- is this a BCOMP FE COA? -->
@@ -1321,6 +1321,9 @@ export default {
 
       const a = item.filingAuthor
       const d = item.filingDate
+      if (this.isStaffFiling(item.filingType)) {
+        return `Filed by ${a} on ${d}`
+      }
       if (a && d) return `${status} (filed by ${a} on ${d}) ${effectiveDate ? appendEffectiveDate : ''}`
       if (a) return `${status} (filed by ${a}) ${effectiveDate ? appendEffectiveDate : ''}`
       if (d) return `${status} (filed on ${d}) ${effectiveDate ? appendEffectiveDate : ''}`
