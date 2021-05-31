@@ -137,6 +137,11 @@ export default class StaffNotation extends Vue {
     }
 }
 
+// Fix the transparent added by .add-scrollbar-offset (Firefox only)
+::v-deep .add-notation-dialog {
+    scrollbar-color: auto;
+}
+
 #add-staff-filing-icon {
     font-size: 1.2rem;
     padding: 0.2rem;
