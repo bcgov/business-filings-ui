@@ -1029,7 +1029,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -1246,7 +1246,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -2291,7 +2291,7 @@ describe('Annual Report - payment required error', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')

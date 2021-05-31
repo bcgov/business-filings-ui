@@ -1704,7 +1704,7 @@ describe('TodoList - Click Tests', () => {
   it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     // init store
     store.state.tasks = [
@@ -1754,7 +1754,7 @@ describe('TodoList - Click Tests', () => {
   it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     // init store
     store.state.tasks = [
@@ -1802,7 +1802,7 @@ describe('TodoList - Click Tests', () => {
   it('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     // init store
     store.state.tasks = [
@@ -2057,7 +2057,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     // init store
     store.state.tasks = [
@@ -2107,7 +2107,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     // init store
     store.state.tasks = [

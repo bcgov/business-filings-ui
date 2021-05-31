@@ -578,7 +578,7 @@ export default {
 
     /** The Auth URL string. */
     authUrl (): string {
-      return sessionStorage.getItem('AUTH_URL')
+      return sessionStorage.getItem('AUTH_WEB_URL')
     },
 
     /** The Edit URL string. */
@@ -593,7 +593,7 @@ export default {
 
     /** The Manage Businesses URL string. */
     manageBusinessesUrl (): string {
-      return sessionStorage.getItem('AUTH_URL') + 'business'
+      return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
     },
 
     /** The BCROS Home URL string. */

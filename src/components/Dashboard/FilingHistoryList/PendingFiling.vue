@@ -43,7 +43,7 @@ export default class PendingFiling extends Vue {
 
   /** The Manage Businesses URL string. */
   private get manageBusinessesUrl (): string {
-    return sessionStorage.getItem('AUTH_URL') + 'business'
+    return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
   }
 
   private returnToDashboard (): void {

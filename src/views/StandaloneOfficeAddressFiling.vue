@@ -301,7 +301,7 @@ export default {
 
     /** The Auth URL string. */
     authUrl (): string {
-      return sessionStorage.getItem('AUTH_URL')
+      return sessionStorage.getItem('AUTH_WEB_URL')
     },
 
     /** The Base URL string. */

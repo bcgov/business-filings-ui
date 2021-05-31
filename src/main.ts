@@ -33,17 +33,19 @@ async function start () {
   // must come first as inits below depend on config
   await fetchConfig()
 
-  // initialize Sentry
-  const sentryDsn = window['sentryDsn']
-  if (sentryDsn) {
-    console.info('Initializing Sentry...') // eslint-disable-line no-console
-    Sentry.init({
-      dsn: sentryDsn,
-      integrations: [
-        new Integrations.Vue({ Vue, attachProps: true }),
-        new Integrations.CaptureConsole({ levels: ['error'] })
-      ]
-    })
+  if (window['sentryEnable'] === 'true') {
+    // initialize Sentry
+    const sentryDsn = window['sentryDsn']
+    if (sentryDsn) {
+      console.info('Initializing Sentry...') // eslint-disable-line no-console
+      Sentry.init({
+        dsn: sentryDsn,
+        integrations: [
+          new Integrations.Vue({ Vue, attachProps: true }),
+          new Integrations.CaptureConsole({ levels: ['error'] })
+        ]
+      })
+    }
   }
 
   // initialize Launch Darkly
