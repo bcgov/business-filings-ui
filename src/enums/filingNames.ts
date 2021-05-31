@@ -10,5 +10,7 @@ export enum FilingNames {
   CHANGE_OF_COMPANY_INFO = 'Change of Company Information',
   SPECIAL_RESOLUTION = 'Special Resolution',
   VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
-  TRANSITION_APPLICATION = 'Transition Application'
+  TRANSITION_APPLICATION = 'Transition Application',
+  REGISTRARS_NOTATION = 'Registrar\'s Notation',
+  REGISTRARS_ORDER = 'Registrar\'s Order'
 }

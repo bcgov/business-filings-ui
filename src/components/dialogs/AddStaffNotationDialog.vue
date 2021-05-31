@@ -47,7 +47,6 @@
           <v-btn text color="primary"
             id="dialog-cancel-button"
             :disabled="saving"
-            :loading="saving"
             @click.native="emitClose(false)"
           >Cancel</v-btn>
         </div>
