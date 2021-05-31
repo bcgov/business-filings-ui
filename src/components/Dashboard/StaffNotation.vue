@@ -119,6 +119,10 @@ export default class StaffNotation extends Vue {
     font-size: 0.875rem;
     color: $app-blue;
     border-right: 1px solid $gray3;
+
+    &:hover {
+      cursor: pointer;
+    }
 }
 
 // This class will be applied when addScrollbarOffset prop is true
