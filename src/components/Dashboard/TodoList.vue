@@ -1,23 +1,18 @@
 <template>
   <div id="todo-list">
-    <add-comment-dialog
+    <AddCommentDialog
       :dialog="addCommentDialog"
       :filingId="currentFilingId"
       @close="hideCommentDialog($event)"
       attach="#todo-list"
     />
 
-    <confirm-dialog
+    <ConfirmDialog
       ref="confirm"
       attach="#todo-list"
     />
 
-    <confirm-dialog
-      ref="confirmCancelPaymentDialog"
-      attach="#todo-list"
-    />
-
-    <delete-error-dialog
+    <DeleteErrorDialog
       :dialog="deleteErrorDialog"
       :errors="deleteErrors"
       :warnings="deleteWarnings"
@@ -25,7 +20,7 @@
       attach="#todo-list"
     />
 
-    <cancel-payment-error-dialog
+    <CancelPaymentErrorDialog
       :dialog="cancelPaymentErrorDialog"
       :errors="cancelPaymentErrors"
       @okay="resetCancelPaymentErrors"
@@ -95,7 +90,7 @@
                   common reason is an overdue annual report.
                   </p>
                   <p>To resolve this issue, you MUST contact Registry Staff:</p>
-                  <contact-info class="pt-3" />
+                  <ContactInfo class="pt-3" />
                 </div>
 
                 <div
@@ -255,7 +250,7 @@
               <div style="width:100%">
                 <!-- BCOMP AR special case -->
                 <template v-if="isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)">
-                  <p class="date-subtitle">Due {{task.arDueDate}}</p>
+                  <p class="date-subtitle">Due: {{task.arDueDate}}</p>
                 </template>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
@@ -442,7 +437,7 @@
           <!-- NB: blocks below are mutually exclusive, and order is important -->
 
           <template v-if="isStatusDraft(task) && isPayError(task)">
-            <payment-incomplete :filing=task />
+            <PaymentIncomplete :filing=task />
           </template>
 
           <template v-else-if="isTypeCorrection(task)">
@@ -452,7 +447,7 @@
               </p>
               <v-divider class="mt-6"></v-divider>
               <!-- the detail comments section -->
-              <details-list
+              <DetailsList
                 :filing=task
                 :isTask="true"
                 @showCommentDialog="showCommentDialog($event)"
@@ -465,7 +460,7 @@
               </p>
               <v-divider class="mt-6"></v-divider>
               <!-- the detail comments section -->
-              <details-list
+              <DetailsList
                 :filing=task
                 :isTask="true"
                 @showCommentDialog="showCommentDialog($event)"
@@ -474,20 +469,20 @@
           </template>
 
           <template v-else-if="isStatusPending(task)">
-            <payment-pending-online-banking v-if="isPayMethodOnlineBanking(task)" :filing=task />
-            <payment-pending v-else />
+            <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(task)" :filing=task />
+            <PaymentPending v-else />
           </template>
 
           <template v-else-if="isStatusError(task)">
-            <payment-unsuccessful />
+            <PaymentUnsuccessful />
           </template>
 
           <template v-else-if="isStatusPaid(task)">
-            <payment-paid />
+            <PaymentPaid />
           </template>
 
           <template v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)">
-            <name-request-info :nameRequest="task.nameRequest" />
+            <NameRequestInfo :nameRequest="task.nameRequest" />
           </template>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -523,25 +518,27 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { FilingNames, FilingStatus, FilingTypes, Routes, EntityStatus } from '@/enums'
+import { FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { FilingIF, PaymentErrorIF, TaskItemIF } from '@/interfaces'
 
 export default {
   name: 'TodoList',
 
   components: {
+    // dialogs
     AddCommentDialog,
     CancelPaymentErrorDialog,
     ConfirmDialog,
     DeleteErrorDialog,
+    // components
     DetailsList,
     NameRequestInfo,
+    ContactInfo,
     PaymentIncomplete,
     PaymentPaid,
     PaymentPending,
     PaymentPendingOnlineBanking,
-    PaymentUnsuccessful,
-    ContactInfo
+    PaymentUnsuccessful
   },
 
   mixins: [DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
@@ -709,8 +706,6 @@ export default {
       if (todo?.header && todo?.business) {
         const ARFilingYear: number = todo.header.ARFilingYear
         const subtitle: string = task.enabled && !this.isBComp ? '(including Address and/or Director Change)' : null
-        // nextAnnualReport (and nextArDate and arDueDate below) are only used for BCOMP ARs
-        const nextArSimpleDateTime: string = this.apiToSimpleDateTime(todo.business.nextAnnualReport)
 
         this.taskItems.push({
           id: -1, // not falsy
@@ -723,8 +718,8 @@ export default {
           status: todo.header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          nextArDate: nextArSimpleDateTime.slice(0, 10), // BCOMP only
-          arDueDate: this.arDueDate(nextArSimpleDateTime) // BCOMP only
+          nextArDate: this.nextArDate(todo.business.nextAnnualReport), // BCOMP only
+          arDueDate: this.arDueDate(todo.business.nextAnnualReport) // BCOMP only
         })
       } else {
         // eslint-disable-next-line no-console
@@ -1153,7 +1148,7 @@ export default {
 
     confirmCancelPayment (task: TaskItemIF) {
       // open confirmation dialog and wait for response
-      this.$refs.confirmCancelPaymentDialog.open(
+      this.$refs.confirm.open(
         'Cancel Payment?',
         'Cancel payment for your ' + task.draftTitle + '?',
         {
@@ -1275,19 +1270,24 @@ export default {
     },
 
     /**
-     * Returns the formatted BCOMP AR Due Date.
-     * Used for Todo List display only.
+     * Returns the BCOMP Next AR Date. Used for Annual Report filing.
+     * @returns for example, "2021-05-28"
      */
-    arDueDate (arDateTime: string): string {
-      // Get just the Date
-      const arDate = arDateTime.replace(/ .*/, '')
+    nextArDate (nextAnnualReport: string): string {
+      const date: Date = this.apiToDate(nextAnnualReport)
+      return this.dateToDateString(date)
+    },
 
+    /**
+     * Returns the BCOMP AR Due Date. Used for Todo List display.
+     * @returns for example, "May 28, 2021"
+     */
+    arDueDate (nextAnnualReport: string): string {
       // due date is 60 days after the next AR date
-      const dueDate = new Date(arDate)
-      dueDate.setDate(dueDate.getDate() + 60)
-
-      const simpleDate = this.dateToSimpleDate(dueDate)
-      return this.simpleDateToDisplayDate(simpleDate)
+      const date: Date = this.apiToDate(nextAnnualReport)
+      date.setDate(date.getDate() + 60)
+      const pacificDate: string = this.dateToPacificDate(date)
+      return pacificDate
     }
   },
 

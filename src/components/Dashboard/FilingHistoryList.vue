@@ -557,8 +557,8 @@ export default {
         // otherwise get year from Annual Report Date
         const agmYear = header.ARFilingYear || +annualReport.annualReportDate.slice(0, 4)
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
+        const filingDateTime = this.apiToPacificDateTime(header.date)
+        const filingDate = this.apiToPacificDate(header.date)
 
         // build filing item
         const item: HistoryItemIF = {
@@ -601,13 +601,15 @@ export default {
       if (header && incorporationApplication) {
         const filingType = FilingTypes.INCORPORATION_APPLICATION
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
+        const filingDateTime = this.apiToPacificDateTime(header.date)
+        const filingDate = this.apiToPacificDate(header.date)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for Incorp App future effective filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
+        const effectiveDate = header.effectiveDate
+          ? this.apiToPacificDate(header.effectiveDate)
+          : filingDate
 
         // is this a Future Effective Incorp App?
         const isFutureEffectiveIa = !!filing.header.isFutureEffective
@@ -633,7 +635,7 @@ export default {
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
           filingDate,
-          effectiveDateTime, // used in Future Effective component
+          effectiveDate, // used in Future Effective component
           isFutureEffectiveIa,
           isFutureEffectiveIaPending,
           isPaid: (header.status === FilingStatus.PAID),
@@ -686,13 +688,15 @@ export default {
           title += ' - Change of Company Information'
         }
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
+        const filingDateTime = this.apiToPacificDateTime(header.date)
+        const filingDate = this.apiToPacificDate(header.date)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for BCOMP COA filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
+        const effectiveDate = header.effectiveDate
+          ? this.apiToPacificDate(header.effectiveDate)
+          : filingDate
 
         // is this a Future Effective alteration?
         const isFutureEffectiveAlteration = !!filing.header.isFutureEffective
@@ -707,7 +711,7 @@ export default {
           filingId: header.filingId,
           filingAuthor: header.certifiedBy || 'Registry Staff',
           filingDate,
-          effectiveDateTime, // used in Future Effective component
+          effectiveDate, // used in Future Effective component
           isFutureEffectiveAlteration,
           isFutureEffectiveAlterationPending,
           newLegalType,
@@ -748,14 +752,15 @@ export default {
       if (header && section) {
         const filingType = header.name
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
+        const filingDateTime = this.apiToPacificDateTime(header.date)
+        const filingDate = this.apiToPacificDate(header.date)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for BCOMP COA filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
-        const effectiveDate = effectiveDateTime?.slice(0, 10)
+        const effectiveDate = header.effectiveDate
+          ? this.apiToPacificDate(header.effectiveDate)
+          : filingDate
 
         // is this a BCOMP Future Effective Change of Address?
         const isBcompCoaFutureEffective = this.isBComp &&
@@ -769,7 +774,7 @@ export default {
           title: this.filingTypeToName(filingType),
           filingId: header.filingId,
           filingAuthor: header.certifiedBy,
-          filingDate: this.isStaffFiling(filingType) ? filingDateTime : filingDate,
+          filingDate: this.isStaffFiling(filingType) ? filingDateTime : filingDate, // special case
           effectiveDate, // used for BCOMP COA Future Effective tooltip
           isBcompCoaFutureEffective,
           isPaid: (header.status === FilingStatus.PAID),
@@ -857,8 +862,8 @@ export default {
       const header = filing?.header
       const correction = filing?.correction
 
-      const filingDateTime = this.apiToSimpleDateTime(header.date)
-      const filingDate = filingDateTime?.slice(0, 10)
+      const filingDateTime = this.apiToPacificDateTime(header.date)
+      const filingDate = this.apiToPacificDate(header.date)
 
       if (header && correction) {
         const item: HistoryItemIF = {
@@ -866,7 +871,6 @@ export default {
           title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
           filingId: header.filingId,
           filingAuthor: header.certifiedBy || 'Registry Staff',
-          filingDateTime: this.apiToSimpleDateTime(header.date), // used for receipt
           filingDate,
           isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || [] as Array<any>,
@@ -894,7 +898,7 @@ export default {
       }
     },
 
-    /** Loads a "Colin filing" into the historyItems list. */
+    /** Loads a Colin filing into the historyItems list. */
     loadColinFiling (filing: FilingIF) {
       const header = filing?.header
 
@@ -910,9 +914,8 @@ export default {
           title = this.filingTypeToName(filingType)
         }
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
-        const filingYear = filingDate?.slice(0, 4)
+        const filingDate = this.apiToPacificDate(header.date)
+        const filingYear = this.apiToDate(header.date)?.getFullYear()
 
         const item: HistoryItemIF = {
           filingType,
@@ -935,7 +938,7 @@ export default {
       }
     },
 
-    /** Loads A Transition filing into the historyItems list. */
+    /** Loads a Transition filing into the historyItems list. */
     loadTransitionFiling (filing: FilingIF) {
       const header = filing?.header
       const business = filing?.business
@@ -945,13 +948,15 @@ export default {
 
         let subtitle = '' // FUTURE- add to this
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
+        const filingDateTime = this.apiToPacificDateTime(header.date)
+        const filingDate = this.apiToPacificDate(header.date)
 
         // Effective Date is assigned by the backend when the filing is completed (normally right away).
         // Effective Date may be in the future (eg, for BCOMP COA filings).
         // If Effective Date is empty, use Filing Date instead.
-        const effectiveDateTime = this.apiToSimpleDateTime(header.effectiveDate) || filingDateTime
+        const effectiveDate = header.effectiveDate
+          ? this.apiToPacificDate(header.effectiveDate)
+          : filingDate
 
         // is this a Future Effective Transition Filing?
         const isFutureEffectiveTransition = !!filing.header.isFutureEffective
@@ -967,7 +972,7 @@ export default {
           filingId: header.filingId,
           filingAuthor: 'Registry Staff', // TBD
           filingDate,
-          effectiveDateTime, // used in Future Effective IA components
+          effectiveDate, // used in Future Effective IA components
           isPaid: (header.status === FilingStatus.PAID),
           documents: filing?.documents || ([] as Array<any>),
           status: header.status,
@@ -993,7 +998,7 @@ export default {
       }
     },
 
-    /** Loads a "paper filing" into the historyItems list. */
+    /** Loads a paper filing into the historyItems list. */
     loadPaperFiling (filing: FilingIF) {
       const header = filing?.header
 
@@ -1009,9 +1014,8 @@ export default {
           title = this.filingTypeToName(filingType)
         }
 
-        const filingDateTime = this.apiToSimpleDateTime(header.date)
-        const filingDate = filingDateTime?.slice(0, 10)
-        const filingYear = filingDate?.slice(0, 4)
+        const filingDate = this.apiToPacificDate(header.date)
+        const filingYear = this.apiToDate(header.date)?.getFullYear()
 
         const item: HistoryItemIF = {
           filingType,
@@ -1315,19 +1319,15 @@ export default {
 
     /** Returns "filed" label with conditional author and date. */
     filedLabel (status: string, item: HistoryItemIF): string {
-      // Remove everything after the Date
-      const effectiveDate = item.effectiveDateTime?.replace(/ .*/, '')
-      const appendEffectiveDate = `| EFFECTIVE as of ${effectiveDate}`
-
+      const appendEffectiveDate = `| EFFECTIVE as of ${item.effectiveDate}`
       const a = item.filingAuthor
       const d = item.filingDate
 
-      if (this.isStaffFiling(item.filingType)) {
-        return `Filed by ${a} on ${d}`
-      }
-      if (a && d) return `${status} (filed by ${a} on ${d}) ${effectiveDate ? appendEffectiveDate : ''}`
-      if (a) return `${status} (filed by ${a}) ${effectiveDate ? appendEffectiveDate : ''}`
-      if (d) return `${status} (filed on ${d}) ${effectiveDate ? appendEffectiveDate : ''}`
+      if (this.isStaffFiling(item.filingType)) return `Filed by ${a} on ${d}`
+
+      if (a && d) return `${status} (filed by ${a} on ${d}) ${item.effectiveDate ? appendEffectiveDate : ''}`
+      if (a) return `${status} (filed by ${a}) ${item.effectiveDate ? appendEffectiveDate : ''}`
+      if (d) return `${status} (filed on ${d}) ${item.effectiveDate ? appendEffectiveDate : ''}`
       return status
     },
 

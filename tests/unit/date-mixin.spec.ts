@@ -20,30 +20,24 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: fix so this works in GH CI action
-  xit('returns correct values for dateToSimpleDate()', () => {
-    expect(vm.dateToSimpleDate(null)).toBeNull()
-    expect(vm.dateToSimpleDate(new Date('not a date'))).toBeNull()
+  xit('returns correct values for dateToDateString()', () => {
+    expect(vm.dateToDateString(null)).toBeNull()
+    expect(vm.dateToDateString(new Date('not a date'))).toBeNull()
     // verify that GMT/UTC is correctly converted to Pacific
-    expect(vm.dateToSimpleDate(new Date('2021-01-01 07:00:00 GMT'))).toBe('2020-12-31') // Standard Time
-    expect(vm.dateToSimpleDate(new Date('2021-01-01 08:00:00 GMT'))).toBe('2021-01-01') // Standard Time
-    expect(vm.dateToSimpleDate(new Date('2021-07-01 06:00:00 GMT'))).toBe('2021-06-30') // Daylight Time
-    expect(vm.dateToSimpleDate(new Date('2021-07-01 07:00:00 GMT'))).toBe('2021-07-01') // Daylight Time
+    expect(vm.dateToDateString(new Date('2021-01-01 07:00:00 GMT'))).toBe('2020-12-31') // Standard Time
+    expect(vm.dateToDateString(new Date('2021-01-01 08:00:00 GMT'))).toBe('2021-01-01') // Standard Time
+    expect(vm.dateToDateString(new Date('2021-07-01 06:00:00 GMT'))).toBe('2021-06-30') // Daylight Time
+    expect(vm.dateToDateString(new Date('2021-07-01 07:00:00 GMT'))).toBe('2021-07-01') // Daylight Time
     // verify that Pacific is correctly converted to Pacific
-    expect(vm.dateToSimpleDate(new Date('2021-01-01 00:00:00 PST'))).toBe('2021-01-01')
-    expect(vm.dateToSimpleDate(new Date('2021-01-01 23:59:59 PST'))).toBe('2021-01-01')
-    expect(vm.dateToSimpleDate(new Date('2021-07-01 00:00:00 PDT'))).toBe('2021-07-01')
-    expect(vm.dateToSimpleDate(new Date('2021-07-01 23:59:59 PDT'))).toBe('2021-07-01')
+    expect(vm.dateToDateString(new Date('2021-01-01 00:00:00 PST'))).toBe('2021-01-01')
+    expect(vm.dateToDateString(new Date('2021-01-01 23:59:59 PST'))).toBe('2021-01-01')
+    expect(vm.dateToDateString(new Date('2021-07-01 00:00:00 PDT'))).toBe('2021-07-01')
+    expect(vm.dateToDateString(new Date('2021-07-01 23:59:59 PDT'))).toBe('2021-07-01')
     // verify that Eastern is correctly converted to Pacific
-    expect(vm.dateToSimpleDate(new Date('2021-01-01 02:00:00 EST'))).toBe('2020-12-31')
-    expect(vm.dateToSimpleDate(new Date('2021-01-01 03:00:00 EST'))).toBe('2021-01-01')
-    expect(vm.dateToSimpleDate(new Date('2021-07-01 02:00:00 EDT'))).toBe('2021-06-30')
-    expect(vm.dateToSimpleDate(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01')
-  })
-
-  it('returns correct values for numToSimpleDate()', () => {
-    expect(vm.numToSimpleDate(null)).toBeNull()
-    expect(vm.numToSimpleDate(1234567)).toBeNull()
-    expect(vm.numToSimpleDate(20210120)).toBe('2021-01-20')
+    expect(vm.dateToDateString(new Date('2021-01-01 02:00:00 EST'))).toBe('2020-12-31')
+    expect(vm.dateToDateString(new Date('2021-01-01 03:00:00 EST'))).toBe('2021-01-01')
+    expect(vm.dateToDateString(new Date('2021-07-01 02:00:00 EDT'))).toBe('2021-06-30')
+    expect(vm.dateToDateString(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01')
   })
 
   it('returns correct values for compareDates()', () => {
@@ -73,21 +67,21 @@ describe('Date Mixin', () => {
     expect(vm.latestDate('2020-01-01', '2019-12-31')).toBe('2020-01-01')
   })
 
-  it('returns correct values for simpleDateToDisplayDate()', () => {
-    expect(vm.simpleDateToDisplayDate(null)).toBeNull()
-    expect(vm.simpleDateToDisplayDate('123456789')).toBeNull()
-    expect(vm.simpleDateToDisplayDate('2020-01-01')).toBe('Jan 1, 2020')
+  it('returns correct values for formatDateString()', () => {
+    expect(vm.formatDateString(null)).toBeNull()
+    expect(vm.formatDateString('123456789')).toBeNull()
+    expect(vm.formatDateString('2020-01-01')).toBe('Jan 1, 2020')
   })
 
-  it('returns correct values for apiToSimpleDateTime()', () => {
-    expect(vm.apiToSimpleDateTime('2021-01-01T00:00:00+00:00')).toBe('2020-12-31 at 04:00 pm') // PST
-    expect(vm.apiToSimpleDateTime('2021-07-01T00:00:00+00:00')).toBe('2021-06-30 at 05:00 pm') // PDT
+  it('returns correct values for apiToPacificDateTime()', () => {
+    expect(vm.apiToPacificDateTime('2021-01-01T00:00:00+00:00')).toBe('Dec 31, 2020 at 4:00 pm Pacific time') // PST
+    expect(vm.apiToPacificDateTime('2021-07-01T00:00:00+00:00')).toBe('Jun 30, 2021 at 5:00 pm Pacific time') // PDT
   })
 
   // FUTURE: fix so this works in GH CI action
-  xit('returns correct values for simpleDateToApi()', () => {
-    expect(vm.simpleDateToApi('2021-01-01')).toBe('2021-01-01T08:00:00+00:00') // PST
-    expect(vm.simpleDateToApi('2021-07-01')).toBe('2021-07-01T07:00:00+00:00') // PDT
+  xit('returns correct values for dateStringToApi()', () => {
+    expect(vm.dateStringToApi('2021-01-01')).toBe('2021-01-01T08:00:00+00:00') // PST
+    expect(vm.dateStringToApi('2021-07-01')).toBe('2021-07-01T07:00:00+00:00') // PDT
   })
 
   it('returns correct values for daysFromToday()', () => {

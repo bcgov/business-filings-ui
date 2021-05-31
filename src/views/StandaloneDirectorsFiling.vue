@@ -1,23 +1,23 @@
 <template>
   <div id="standalone-directors">
-    <confirm-dialog
+    <ConfirmDialog
       attach="#standalone-directors"
       ref="confirm"
     />
 
-    <fetch-error-dialog
+    <FetchErrorDialog
       attach="#standalone-directors"
       :dialog="fetchErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <resume-error-dialog
+    <ResumeErrorDialog
       attach="#standalone-directors"
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <save-error-dialog
+    <SaveErrorDialog
       attach="#standalone-directors"
       filingName="Change of Directors"
       :dialog="saveErrorDialog"
@@ -29,7 +29,7 @@
       @okay="resetErrors()"
     />
 
-    <payment-error-dialog
+    <PaymentErrorDialog
       attach="#standalone-directors"
       filingName="Change of Directors"
       :dialog="paymentErrorDialog"
@@ -81,7 +81,7 @@
                 </header>
 
                 <section>
-                  <cod-date
+                  <CodDate
                     :initialCODDate="initialCODDate"
                     @codDate="codDate=$event"
                     @valid="codDateValid=$event"
@@ -90,7 +90,7 @@
 
                 <!-- Director Information -->
                 <section>
-                  <directors
+                  <Directors
                     ref="directorsComponent"
                     :directors.sync="updatedDirectors"
                     @directorsPaidChange="directorsPaidChange"
@@ -109,7 +109,7 @@
                     <p>Enter the legal name of the person authorized to complete and submit this
                       Director Change.</p>
                   </header>
-                  <certify
+                  <Certify
                     :isCertified.sync="isCertified"
                     :certifiedBy.sync="certifiedBy"
                     :entityDisplay="displayName()"
@@ -123,7 +123,7 @@
                   <header>
                     <h2 id="AR-step-5-header">Staff Payment</h2>
                   </header>
-                  <staff-payment
+                  <StaffPayment
                     :staffPaymentData.sync="staffPaymentData"
                     @valid="staffPaymentFormValid=$event"
                   />
@@ -138,7 +138,7 @@
                   relative-element-selector="#standalone-directors-article"
                   :offset="{ top: 120, bottom: 40 }"
                 >
-                  <sbc-fee-summary
+                  <SbcFeeSummary
                     :filingData="filingData"
                     :payURL="payApiUrl"
                     @total-fee="totalFee=$event"
@@ -224,7 +224,7 @@
 
                 <!-- Director Information -->
                 <section>
-                  <summary-directors
+                  <SummaryDirectors
                     :directors="updatedDirectors"
                   />
                 </section>
@@ -234,7 +234,7 @@
                   <header>
                     <h2>Certify</h2>
                   </header>
-                  <summary-certify
+                  <SummaryCertify
                     :isCertified.sync="isCertified"
                     :certifiedBy.sync="certifiedBy"
                     :entityDisplay="displayName()"
@@ -248,7 +248,7 @@
                   <header>
                     <h2>Staff Payment</h2>
                   </header>
-                  <summary-staff-payment
+                  <SummaryStaffPayment
                     :staffPaymentData="staffPaymentData"
                   />
                 </section>
@@ -262,7 +262,7 @@
                   relative-element-selector="#standalone-directors-article-review"
                   :offset="{ top: 120, bottom: 40 }"
                 >
-                  <sbc-fee-summary
+                  <SbcFeeSummary
                     :filingData="filingData"
                     :payURL="payApiUrl"
                   />
@@ -600,9 +600,9 @@ export default {
 
         // restore COD Date
         if (filing.header.effectiveDate) {
-          this.initialCODDate = this.apiToSimpleDateTime(filing.header.effectiveDate).slice(0, 10)
+          this.initialCODDate = this.apiToPacificDate(filing.header.effectiveDate)
         } else if (filing.header.date) {
-          this.initialCODDate = this.apiToSimpleDateTime(filing.header.date).slice(0, 10)
+          this.initialCODDate = this.apiToPacificDate(filing.header.date)
         } else {
           throw new Error('Missing effective date')
         }
@@ -720,7 +720,7 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate, // NB: API will reassign this date according to its clock
-          effectiveDate: this.simpleDateToApi(this.codDate)
+          effectiveDate: this.dateStringToApi(this.codDate)
         }
       }
 

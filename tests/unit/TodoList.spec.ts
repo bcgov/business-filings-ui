@@ -614,25 +614,25 @@ describe('TodoList - UI', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'PENDING',
-              'paymentToken': 12345678,
-              'filingId': 1
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'PENDING',
+              paymentToken: 12345678,
+              filingId: 1
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -669,25 +669,25 @@ describe('TodoList - UI', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'ERROR',
-              'paymentToken': 12345678,
-              'filingId': 1
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'ERROR',
+              paymentToken: 12345678,
+              filingId: 1
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -780,19 +780,19 @@ describe('TodoList - UI', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'changeOfDirectors',
-              'status': 'PAID',
-              'paymentToken': 12345678,
-              'filingId': 1
+        task: {
+          filing: {
+            header: {
+              name: 'changeOfDirectors',
+              status: 'PAID',
+              paymentToken: 12345678,
+              filingId: 1
             },
-            'changeOfDirectors': {}
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -1853,25 +1853,25 @@ describe('TodoList - Click Tests', () => {
     // store a task with a filing associated to a payment error
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'DRAFT',
-              'filingId': 123,
-              'paymentStatusCode': 'BCOL_ERROR'
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'DRAFT',
+              filingId: 123,
+              paymentStatusCode: 'BCOL_ERROR'
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2415,24 +2415,24 @@ describe('TodoList - Delete Draft', () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'DRAFT',
-              'filingId': 789
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'DRAFT',
+              filingId: 789
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2455,24 +2455,24 @@ describe('TodoList - Delete Draft', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'DRAFT',
-              'filingId': 789
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'DRAFT',
+              filingId: 789
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2502,24 +2502,24 @@ describe('TodoList - Delete Draft', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'DRAFT',
-              'filingId': 789
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'DRAFT',
+              filingId: 789
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2611,25 +2611,25 @@ describe('TodoList - Cancel Payment', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'PENDING',
-              'filingId': 789,
-              'paymentToken': 123
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'PENDING',
+              filingId: 789,
+              paymentToken: 123
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2643,7 +2643,7 @@ describe('TodoList - Cancel Payment', () => {
     await flushPromises()
 
     // verify confirmation popup is showing
-    expect(wrapper.vm.$refs.confirmCancelPaymentDialog).toBeTruthy()
+    expect(wrapper.vm.$refs.confirm).toBeTruthy()
 
     wrapper.destroy()
   })
@@ -2652,25 +2652,25 @@ describe('TodoList - Cancel Payment', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'PENDING',
-              'filingId': 789,
-              'paymentToken': 123
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'PENDING',
+              filingId: 789,
+              paymentToken: 123
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2685,10 +2685,10 @@ describe('TodoList - Cancel Payment', () => {
     await flushPromises()
 
     // verify confirmation popup is showing
-    expect(vm.$refs.confirmCancelPaymentDialog.dialog).toBeTruthy()
+    expect(vm.$refs.confirm.dialog).toBeTruthy()
 
     // click the OK button (call the 'yes' callback function)
-    await vm.$refs.confirmCancelPaymentDialog.onClickYes()
+    await vm.$refs.confirm.onClickYes()
 
     // confirm that delete API was called
     expect(patchCall.called).toBeTruthy()
@@ -2700,25 +2700,25 @@ describe('TodoList - Cancel Payment', () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
-            'header': {
-              'name': 'annualReport',
-              'ARFilingYear': 2019,
-              'status': 'PENDING',
-              'filingId': 789,
-              'paymentToken': 123
+        task: {
+          filing: {
+            header: {
+              name: 'annualReport',
+              ARFilingYear: 2019,
+              status: 'PENDING',
+              filingId: 789,
+              paymentToken: 123
             },
-            'annualReport': {
-              'annualGeneralMeetingDate': '2019-07-15',
-              'annualReportDate': '2019-07-15'
+            annualReport: {
+              annualGeneralMeetingDate: '2019-07-15',
+              annualReportDate: '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
@@ -2733,10 +2733,10 @@ describe('TodoList - Cancel Payment', () => {
     await flushPromises()
 
     // verify confirmation popup is showing
-    expect(vm.$refs.confirmCancelPaymentDialog.dialog).toBeTruthy()
+    expect(vm.$refs.confirm.dialog).toBeTruthy()
 
     // click the cancel button (call the 'cancel' callback function)
-    await vm.$refs.confirmCancelPaymentDialog.onClickCancel()
+    await vm.$refs.confirm.onClickCancel()
 
     // confirm that delete API was not called
     expect(patchCall.called).toBeFalsy()

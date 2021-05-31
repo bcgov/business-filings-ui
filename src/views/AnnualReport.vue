@@ -1,23 +1,23 @@
 <template>
   <div id="annual-report">
-    <confirm-dialog
+    <ConfirmDialog
       ref="confirm"
       attach="#annual-report"
     />
 
-    <fetch-error-dialog
+    <FetchErrorDialog
       attach="#annual-report"
       :dialog="fetchErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <resume-error-dialog
+    <ResumeErrorDialog
       attach="#annual-report"
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <save-error-dialog
+    <SaveErrorDialog
       attach="#annual-report"
       filingName="Annual Report"
       :dialog="saveErrorDialog"
@@ -29,7 +29,7 @@
       @okay="resetErrors()"
     />
 
-    <payment-error-dialog
+    <PaymentErrorDialog
       attach="#annual-report"
       filingName="Annual Report"
       :dialog="paymentErrorDialog"
@@ -82,7 +82,7 @@
                   <h2 id="AR-step-1-header">1. Annual General Meeting Date</h2>
                   <p>Select your Annual General Meeting (AGM) date</p>
                 </header>
-                <agm-date
+                <AgmDate
                   :newAgmDate="newAgmDate"
                   :newAgmExtension="newAgmExtension"
                   :newNoAgm="newNoAgm"
@@ -104,7 +104,7 @@
                   </h2>
                   <p>Verify or change your Registered Office Addresses</p>
                 </header>
-                <office-addresses
+                <OfficeAddresses
                   ref="officeAddressesComponent"
                   :addresses.sync="updatedAddresses"
                   :componentEnabled="allowChange('coa')"
@@ -123,7 +123,7 @@
                   <p v-else>This is your list of directors active as of {{asOfDate}}, including
                     directors that were ceased at a later date</p>
                 </header>
-                <directors
+                <Directors
                   ref="directorsComponent"
                   :directors.sync="updatedDirectors"
                   :componentEnabled="allowChange('cod')"
@@ -152,11 +152,11 @@
               <!-- these components are needed for fetching original office addresses and directors -->
               <!-- but don't show them -->
               <div class="d-none">
-                <office-addresses
+                <OfficeAddresses
                   ref="officeAddressesComponent"
                   @original="originalAddresses=$event"
                 />
-                <directors
+                <Directors
                   ref="directorsComponent"
                   @original="originalDirectors=$event"
                 />
@@ -167,9 +167,9 @@
                 <header>
                   <h2 id="AR-header-1-BC">1. Business Details</h2>
                 </header>
-                <ar-date />
+                <ArDate />
                 <br>
-                <summary-office-addresses
+                <SummaryOfficeAddresses
                   :registeredAddress="originalAddresses.registeredOffice"
                   :recordsAddress="originalAddresses.recordsOffice"
                 />
@@ -180,7 +180,7 @@
                 <header>
                   <h2 id="AR-header-2-BC">2. Directors</h2>
                 </header>
-                <summary-directors
+                <SummaryDirectors
                   :directors="originalDirectors"
                 />
               </section>
@@ -195,7 +195,7 @@
                 <h2 id="AR-step-4-header" v-else>4. Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
-              <certify
+              <Certify
                 :isCertified.sync="isCertified"
                 :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
@@ -209,7 +209,7 @@
               <header>
                 <h2 id="AR-step-5-header">5. Staff Payment</h2>
               </header>
-              <staff-payment
+              <StaffPayment
                 :staffPaymentData.sync="staffPaymentData"
                 @valid="staffPaymentFormValid=$event"
               />
@@ -219,8 +219,11 @@
 
         <v-col cols="12" lg="3" style="position: relative">
           <aside>
-            <affix relative-element-selector="#annual-report-main-section" :offset="{ top: 120, bottom: 40 }">
-              <sbc-fee-summary
+            <affix
+              relative-element-selector="#annual-report-main-section"
+              :offset="{ top: 120, bottom: 40 }"
+            >
+              <SbcFeeSummary
                 :filingData="filingData"
                 :payURL="payApiUrl"
                 @total-fee="totalFee=$event"
@@ -869,7 +872,7 @@ export default {
           email: 'no_one@never.get',
           date: this.currentDate, // NB: API will reassign this date according to its clock
           ARFilingYear: this.ARFilingYear,
-          effectiveDate: this.simpleDateToApi(this.asOfDate)
+          effectiveDate: this.dateStringToApi(this.asOfDate)
         }
       }
 

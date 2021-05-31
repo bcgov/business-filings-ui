@@ -1,28 +1,28 @@
 <template>
   <v-app class="app-container theme--light" id="app">
     <!-- Dialogs -->
-    <dashboard-unavailable-dialog
+    <DashboardUnavailableDialog
       :dialog="dashboardUnavailableDialog"
       @exit="onClickExit()"
       @retry="onClickRetry()"
       attach="#app"
     />
 
-    <business-auth-error-dialog
+    <BusinessAuthErrorDialog
       :dialog="businessAuthErrorDialog"
       @exit="onClickExit()"
       @retry="onClickRetry(true)"
       attach="#app"
     />
 
-    <name-request-auth-error-dialog
+    <NameRequestAuthErrorDialog
       :dialog="nameRequestAuthErrorDialog"
       @exit="onClickExit()"
       @retry="onClickRetry(true)"
       attach="#app"
     />
 
-    <name-request-invalid-dialog
+    <NameRequestInvalidDialog
       :dialog="nameRequestInvalidDialog"
       :type="nameRequestInvalidType"
       @exit="onClickExit()"
@@ -49,18 +49,18 @@
       </div>
     </v-fade-transition>
 
-    <sbc-header />
-    <pay-system-alert />
+    <SbcHeader />
+    <PaySystemAlert />
 
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
-        <entity-info />
+        <EntityInfo />
         <router-view />
       </main>
     </div>
 
-    <sbc-footer :aboutText=aboutText />
+    <SbcFooter :aboutText=aboutText />
 
   </v-app>
 </template>
@@ -259,7 +259,7 @@ export default {
       // FUTURE: get from API to prevent users spoofing their date
       {
         const now = new Date()
-        const date = this.dateToSimpleDate(now)
+        const date = this.dateToDateString(now)
         this.setCurrentDate(date)
       }
 
