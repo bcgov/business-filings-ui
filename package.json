@@ -33,7 +33,7 @@
     "provinces": "^1.11.0",
     "regenerator-runtime": "^0.13.3",
     "register-service-worker": "^1.6.2",
-    "sbc-common-components": "2.4.18",
+    "sbc-common-components": "^2.4.18",
     "v-mask": "^2.1.0",
     "vue": "^2.6.11",
     "vue-affix": "^0.5.2",
