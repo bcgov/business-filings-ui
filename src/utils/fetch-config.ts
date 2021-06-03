@@ -31,6 +31,18 @@ export async function fetchConfig (): Promise<void> {
     return Promise.reject(new Error('Could not fetch configuration.json'))
   })
 
+  /**
+   * This is a workaround to fix the sbc-common-components that expect their own session keys.
+   * Ref: #6801
+   */
+  const authApiConfig = {
+    VUE_APP_AUTH_ROOT_API: response.data['SBC_CONFIG_AUTH_API_URL'],
+    VUE_APP_STATUS_ROOT_API: response.data['VUE_APP_STATUS_ROOT_API']
+  }
+  const authConfigString = JSON.stringify(authApiConfig)
+  sessionStorage.setItem('AUTH_API_CONFIG', authConfigString)
+  // console.log('AUTH_API_CONFIG: ' + authConfigString) // don't display
+
   const businessesUrl = response.data['BUSINESSES_URL']
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
   console.info('Set Businesses URL to: ' + businessesUrl)
