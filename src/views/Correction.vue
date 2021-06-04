@@ -1,23 +1,23 @@
 <template>
   <div id="correction">
-    <confirm-dialog
+    <ConfirmDialog
       attach="#correction"
       ref="confirm"
     />
 
-    <load-correction-dialog
+    <LoadCorrectionDialog
       attach="#correction"
       :dialog="loadCorrectionDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <resume-error-dialog
+    <ResumeErrorDialog
       attach="#correction"
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <save-error-dialog
+    <SaveErrorDialog
       attach="#correction"
       filingName="Correction"
       :dialog="saveErrorDialog"
@@ -29,7 +29,7 @@
       @okay="resetErrors()"
     />
 
-    <payment-error-dialog
+    <PaymentErrorDialog
       attach="#correction"
       filingName="Correction"
       :dialog="paymentErrorDialog"
@@ -65,7 +65,7 @@
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
                 <p class="black--text mb-0">{{defaultComment}}</p>
               </header>
-              <detail-comment
+              <DetailComment
                 v-model="detailComment"
                 placeholder="Add a Detail that will appear on the ledger for this entity."
                 :maxLength="maxDetailCommentLength"
@@ -79,7 +79,7 @@
                 <h2 id="correction-step-2-header">2. Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
-              <certify
+              <Certify
                 :isCertified.sync="isCertified"
                 :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
@@ -93,7 +93,7 @@
               <header>
                 <h2 id="correction-step-3-header">3. Staff Payment</h2>
               </header>
-              <staff-payment
+              <StaffPayment
                 :staffPaymentData.sync="staffPaymentData"
                 @valid="staffPaymentFormValid=$event"
               />
@@ -107,7 +107,7 @@
               relative-element-selector="#correction-article"
               :offset="{ top: 120, bottom: 40 }"
             >
-              <sbc-fee-summary
+              <SbcFeeSummary
                 :filingData="filingData"
                 :payURL="payApiUrl"
                 @total-fee="totalFee=$event"
@@ -286,13 +286,15 @@ export default {
       return null
     },
 
-    /** Returns date of original filing in format "yyyy-mm-dd". */
-    originalFilingDate (): string | null {
-      if (this.origFiling && this.origFiling.header && this.origFiling.header.date) {
-        const localDateTime: string = this.apiToSimpleDateTime(this.origFiling.header.date)
-        return localDateTime.split(' ')[0]
+    /**
+     * Returns date of original filing.
+     * @returns for example, "Dec 23, 2018"
+     */
+    originalFilingDate (): string {
+      if (this.origFiling?.header?.date) {
+        return this.apiToPacificDate(this.origFiling.header.date)
       }
-      return null
+      return 'Unknown' // should never happen
     },
 
     /** Returns default comment (ie, the first line of the detail comment). */
@@ -618,7 +620,7 @@ export default {
         correction: {
           correctedFilingId: this.correctedFilingId,
           correctedFilingType: this.origFiling.header.name,
-          correctedFilingDate: this.originalFilingDate,
+          correctedFilingDate: this.origFiling.header.date,
           comment: `${this.defaultComment}\n${this.detailComment}`
         }
       }

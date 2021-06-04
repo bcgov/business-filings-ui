@@ -2,9 +2,9 @@
   <v-card flat class="ar-date-container" v-if="isBComp">
     <div class="timeline">
       <label>Annual Report Date</label>
-      <span class="date ar-date">{{simpleDateToDisplayDate(nextARDate)}}</span>
+      <span class="date ar-date">{{formatDateString(nextARDate)}}</span>
       <label>Filing Date</label>
-      <span class="date file-date">Today ({{simpleDateToDisplayDate(currentDate)}})</span>
+      <span class="date file-date">Today ({{formatDateString(currentDate)}})</span>
     </div>
   </v-card>
 </template>

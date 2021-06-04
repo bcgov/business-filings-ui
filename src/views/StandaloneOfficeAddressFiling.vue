@@ -1,23 +1,23 @@
 <template>
   <div id="standalone-office-address">
-    <confirm-dialog
+    <ConfirmDialog
       attach="#standalone-office-address"
       ref="confirm"
     />
 
-    <fetch-error-dialog
+    <FetchErrorDialog
       attach="#standalone-office-address"
       :dialog="fetchErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <resume-error-dialog
+    <ResumeErrorDialog
       attach="#standalone-office-address"
       :dialog="resumeErrorDialog"
       @exit="navigateToDashboard(true)"
     />
 
-    <save-error-dialog
+    <SaveErrorDialog
       attach="#standalone-office-address"
       filingName="Address Change"
       :dialog="saveErrorDialog"
@@ -29,7 +29,7 @@
       @okay="resetErrors()"
     />
 
-    <payment-error-dialog
+    <PaymentErrorDialog
       attach="#standalone-office-address"
       filingName="Address Change"
       :dialog="paymentErrorDialog"
@@ -81,7 +81,7 @@
 
             <!-- Office Addresses -->
             <section>
-              <office-addresses
+              <OfficeAddresses
                 ref="officeAddressesComponent"
                 :addresses.sync="updatedAddresses"
                 @modified="officeModifiedEventHandler($event)"
@@ -96,7 +96,7 @@
                 <p>Enter the legal name of the person authorized to complete and submit this
                   Address Change.</p>
               </header>
-              <certify
+              <Certify
                 :isCertified.sync="isCertified"
                 :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
@@ -110,7 +110,7 @@
               <header>
                 <h2 id="AR-step-5-header">Staff Payment</h2>
               </header>
-              <staff-payment
+              <StaffPayment
                 :staffPaymentData.sync="staffPaymentData"
                 @valid="staffPaymentFormValid=$event"
               />
@@ -124,7 +124,7 @@
               relative-element-selector="#standalone-office-address-article"
               :offset="{ top: 120, bottom: 40 }"
             >
-              <sbc-fee-summary
+              <SbcFeeSummary
                 :filingData="filingData"
                 :payURL="payApiUrl"
                 @total-fee="totalFee=$event"
@@ -582,7 +582,7 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate, // NB: API will reassign this date according to its clock
-          effectiveDate: this.simpleDateToApi(this.coaDate)
+          effectiveDate: this.dateStringToApi(this.coaDate)
         }
       }
 

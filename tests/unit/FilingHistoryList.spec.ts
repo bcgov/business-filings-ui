@@ -199,8 +199,7 @@ describe('Filing History List - regular filings', () => {
     await Vue.nextTick()
 
     expect(vm.historyItems.length).toEqual(7)
-    expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle').text())
-      .toContain('2019-06-02')
+    expect(wrapper.findAll('.filing-history-item').at(0).find('.list-item__subtitle').text()).toContain('Jun 2, 2019')
 
     wrapper.destroy()
   })
@@ -515,11 +514,11 @@ describe('Filing History List - regular filings', () => {
     expect(vm.historyItems.length).toEqual(7)
     const item = wrapper.findAll('.filing-history-item').at(5)
     expect(item.find('.list-item__subtitle').text())
-      .toContain('FILED AND PENDING (filed by Cameron on 2019-12-12')
+      .toContain('FILED AND PENDING (filed by Cameron on Dec 12, 2019')
     expect(item.find('.list-item__subtitle').text())
       .toContain('The updated office addresses will be legally effective')
 
-    expect(item.text()).toContain('The updated office addresses will be legally effective on 2099-12-13')
+    expect(item.text()).toContain('The updated office addresses will be legally effective on Dec 13, 2099')
 
     wrapper.destroy()
   })
@@ -587,7 +586,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('Numbered Benefit Company')
     const spans = wrapper.findAll('.list-item__subtitle span')
     expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Full Name on 2020-05-06) | EFFECTIVE as of 2020-05-06')
+      .toBe('FILED AND PENDING (filed by Full Name on May 6, 2020) | EFFECTIVE as of May 6, 2020')
     expect(spans.at(2).text()).toBe('PAID')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
@@ -636,7 +635,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
     expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Full Name on 2020-05-06) | EFFECTIVE as of 2020-05-06')
+      .toBe('FILED AND PENDING (filed by Full Name on May 6, 2020) | EFFECTIVE as of May 6, 2020')
     expect(spans.at(2).text()).toBe('PAID')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
@@ -695,7 +694,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
     expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Full Name on 2020-05-06) | EFFECTIVE as of 2020-05-06')
+      .toBe('FILED AND PENDING (filed by Full Name on May 6, 2020) | EFFECTIVE as of May 6, 2020')
     expect(spans.at(2).text()).toBe('PAID')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
@@ -794,7 +793,7 @@ describe('Filing History List - incorporation applications', () => {
     const spans = wrapper.findAll('.list-item__subtitle span')
     expect(spans.at(0).text()).toBe('FUTURE EFFECTIVE INCORPORATION')
     expect(spans.at(2).text())
-      .toBe('PAID (filed by Full Name on 2020-04-28) | EFFECTIVE as of 2099-12-31')
+      .toBe('PAID (filed by Full Name on Apr 28, 2020) | EFFECTIVE as of Dec 31, 2099')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -891,7 +890,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
     expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Full Name on 2020-05-06) | EFFECTIVE as of 2020-05-06')
+      .toBe('FILED AND PENDING (filed by Full Name on May 6, 2020) | EFFECTIVE as of May 6, 2020')
     expect(spans.at(2).text()).toBe('PAID')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
@@ -991,7 +990,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Full Name on 2020-04-28) | EFFECTIVE as of 2099-12-31')
+      .toBe('FILED AND PAID (filed by Full Name on Apr 28, 2020) | EFFECTIVE as of Dec 31, 2099')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1088,7 +1087,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.list-item__subtitle span')
     expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Full Name on 2020-05-06) | EFFECTIVE as of 2020-05-06')
+      .toBe('FILED AND PENDING (filed by Full Name on May 6, 2020) | EFFECTIVE as of May 6, 2020')
     expect(spans.at(2).text()).toBe('PAID')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
@@ -1188,7 +1187,7 @@ describe('Filing History List - incorporation applications', () => {
     expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
     expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Full Name on 2020-04-28) | EFFECTIVE as of 2020-05-06')
+      .toBe('FILED AND PAID (filed by Full Name on Apr 28, 2020) | EFFECTIVE as of May 6, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1273,7 +1272,7 @@ describe('Filing History List - alterations', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Alteration - Change of Company Information')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24) | EFFECTIVE as of 2020-03-24')
+      .toBe('FILED AND PAID (filed by Registry Staff on Mar 24, 2020) | EFFECTIVE as of Mar 24, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1340,7 +1339,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.find('h3.list-item__title').text())
       .toBe('Alteration - BC Limited Company to a BC Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24) | EFFECTIVE as of 2020-03-24')
+      .toBe('FILED AND PAID (filed by Registry Staff on Mar 24, 2020) | EFFECTIVE as of Mar 24, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1407,7 +1406,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.find('h3.list-item__title').text())
       .toBe('Alteration - BC Unlimited Liability Company to a BC Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-03-24) | EFFECTIVE as of 2020-03-24')
+      .toBe('FILED AND PAID (filed by Registry Staff on Mar 24, 2020) | EFFECTIVE as of Mar 24, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1476,7 +1475,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.find('h3.list-item__title').text())
       .toBe('Alteration - BC Limited Company to a BC Benefit Company')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PENDING (filed by Registry Staff on 2020-03-24) | EFFECTIVE as of 2020-04-24')
+      .toBe('FILED AND PENDING (filed by Registry Staff on Mar 24, 2020) | EFFECTIVE as of Apr 24, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1547,7 +1546,7 @@ describe('Filing History List - alterations', () => {
     expect(wrapper.findAll('.list-item__subtitle span').at(0).text())
       .toBe('FUTURE EFFECTIVE ALTERATION')
     expect(wrapper.findAll('.list-item__subtitle span').at(2).text())
-      .toBe('PAID (filed by Registry Staff on 2020-03-24) | EFFECTIVE as of 2099-12-31')
+      .toBe('PAID (filed by Registry Staff on Mar 24, 2020) | EFFECTIVE as of Dec 31, 2099')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1611,7 +1610,7 @@ describe('Filing History List - Colin filings', () => {
 
     expect(wrapper.find('.list-item__title').text()).toBe('Annual Report (2018)')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed on 2020-03-24)')
+      .toBe('FILED AND PAID (filed on Mar 24, 2020)')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2134,7 +2133,7 @@ describe('Filing History List - transition filing', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Transition Application')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('FILED AND PAID (filed by Registry Staff on 2020-11-01) | EFFECTIVE as of 2020-11-01')
+      .toBe('FILED AND PAID (filed by Registry Staff on Nov 1, 2020) | EFFECTIVE as of Nov 1, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2209,7 +2208,7 @@ describe('Filing History List - registrars notation', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Registrar\'s Notation')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
+      .toBe('Filed by Cameron on May 5, 2021 at 5:00 pm Pacific time')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2281,7 +2280,7 @@ describe('Filing History List - registrars order', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Registrar\'s Order')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
+      .toBe('Filed by Cameron on May 5, 2021 at 5:00 pm Pacific time')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -2353,7 +2352,7 @@ describe('Filing History List - Court Order', () => {
 
     expect(wrapper.find('h3.list-item__title').text()).toBe('Court Order')
     expect(wrapper.find('.list-item__subtitle span').text())
-      .toBe('Filed by Cameron on 2021-05-05 at 05:00 pm')
+      .toBe('Filed by Cameron on May 5, 2021 at 5:00 pm Pacific time')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 

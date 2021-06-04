@@ -73,8 +73,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   readonly NOT_REQUIRED_STATE = 'Not Required'
   readonly WAIVED_STATE = 'Waived'
 
-  @Prop()
-  private nameRequest: any
+  @Prop() readonly nameRequest: any
 
   private parsedNameRequest: NameRequestIF
 
@@ -102,7 +101,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** Return formatted expiration date */
   private formattedExpirationDate (): string {
-    return this.simpleDateToDisplayDate(this.nameRequestDetails.expirationDate)
+    return this.formatDateString(this.nameRequestDetails.expirationDate)
   }
 
   /** Return condition/consent string */
