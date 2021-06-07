@@ -67,7 +67,7 @@
 
 <script lang="ts">
 // Libraries
-import { mapState, mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import axios from '@/axios-auth'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import * as Sentry from '@sentry/browser'
@@ -80,8 +80,12 @@ import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
-import { DashboardUnavailableDialog, BusinessAuthErrorDialog, NameRequestAuthErrorDialog, NameRequestInvalidDialog }
-  from '@/components/dialogs'
+import {
+  BusinessAuthErrorDialog,
+  DashboardUnavailableDialog,
+  NameRequestAuthErrorDialog,
+  NameRequestInvalidDialog
+} from '@/components/dialogs'
 
 // Mixins
 import { CommonMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
@@ -90,8 +94,9 @@ import { CommonMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
 import { configJson } from '@/resources'
 
 // Enums and Constants
-import { EntityStatus, CorpTypeCd, FilingStatus, FilingTypes, NameRequestStates, Routes } from '@/enums'
+import { EntityStatus, FilingStatus, FilingTypes, NameRequestStates, Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/corp-type-module'
 
 export default {
   name: 'App',
@@ -114,6 +119,14 @@ export default {
 
       /** Whether the token refresh service is initialized. */
       tokenService: false,
+
+      /** Currently supported entity types in Filings UI. */
+      supportedEntityTypes: [
+        CorpTypeCd.BENEFIT_COMPANY,
+        CorpTypeCd.BC_COMPANY,
+        CorpTypeCd.BC_ULC_COMPANY,
+        CorpTypeCd.BC_CCC
+      ],
 
       // enums
       EntityStatus,
@@ -512,7 +525,7 @@ export default {
       }
 
       // verify that this is the correct entity type
-      if (filing.business.legalType !== CorpTypeCd.BENEFIT_COMPANY) {
+      if (!this.supportedEntityTypes.includes(filing.business.legalType)) {
         throw new Error('Invalid business legal type')
       }
 
