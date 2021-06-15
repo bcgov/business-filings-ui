@@ -1,27 +1,25 @@
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Component, Mixins } from 'vue-property-decorator'
 import axios from '@/axios-auth'
+import { CommonMixin } from '@/mixins'
 
 /**
  * Mixin that provides integration with the Legal API.
  */
-@Component({
-  computed: {
-    ...mapState(['entityIncNo'])
-  }
-})
-export default class LegalApiMixin extends Vue {
-  readonly entityIncNo!: string
-
-  /** Fetches entity info for the specified business ID. */
+@Component({})
+export default class LegalApiMixin extends Mixins(CommonMixin) {
+  /**
+   * Fetches entity info for the specified business ID.
+   */
   async fetchEntityInfo (businessId: string): Promise<any> {
     const url = `businesses/${businessId}`
     return axios.get(url)
   }
 
-  /** Fetches tasks list for the specified business ID. */
-  fetchTasks (businessId: string): Promise<any> {
+  /**
+   * Fetches tasks list for the specified business ID.
+   */
+  async fetchTasks (businessId: string): Promise<any> {
     const url = `businesses/${businessId}/tasks`
     return axios.get(url)
   }
@@ -36,13 +34,17 @@ export default class LegalApiMixin extends Vue {
     return axios.get(url, config)
   }
 
-  /** Fetches addresses for the specified business ID. */
+  /**
+   * Fetches addresses for the specified business ID.
+   */
   async fetchAddresses (businessId: string): Promise<any> {
     const url = `businesses/${businessId}/addresses`
     return axios.get(url)
   }
 
-  /** Fetches directors list for the specified business ID. */
+  /**
+   * Fetches directors list for the specified business ID.
+   */
   async fetchDirectors (businessId: string): Promise<any> {
     const url = `businesses/${businessId}/directors`
     return axios.get(url)
@@ -59,7 +61,9 @@ export default class LegalApiMixin extends Vue {
       .then(response => Promise.resolve(response.data))
   }
 
-  /** Fetches Name Request data for the specified NR number. */
+  /**
+   * Fetches Name Request data for the specified NR number.
+   */
   async fetchNameRequest (nrNumber: string): Promise<any> {
     const url = `nameRequests/${nrNumber}`
     return axios.get(url)
@@ -144,7 +148,7 @@ export default class LegalApiMixin extends Vue {
   async fetchComments (url: string): Promise<any> {
     return axios.get(url)
       .then(response => {
-        const comments = response?.data?.comments
+        const comments = response?.data
         if (!comments) {
           // eslint-disable-next-line no-console
           console.log('fetchComments() error - invalid response =', response)
@@ -162,7 +166,7 @@ export default class LegalApiMixin extends Vue {
   async fetchDocuments (url: string): Promise<any> {
     return axios.get(url)
       .then(response => {
-        const documents = response?.data?.documents
+        const documents = response?.data
         if (!documents) {
           // eslint-disable-next-line no-console
           console.log('fetchDocuments() error - invalid response =', response)
@@ -177,11 +181,11 @@ export default class LegalApiMixin extends Vue {
    * See also PayApiMixin::fetchOneReceipt().
    * @param document the document info object
    */
-  async fetchOneDocument (document: any): Promise<void> {
+  async fetchOneDocument (entityIncNo: string, document: any): Promise<any> {
     // safety checks
-    if (!document.filingId || !document.filename) return
+    if (!entityIncNo || !document.filingId || !document.filename) return
 
-    let url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
+    let url = `businesses/${entityIncNo}/filings/${document.filingId}`
 
     // add report type if we have it (ie, for Notice of Articles or Certificate)
     if (document.reportType) {
@@ -195,6 +199,8 @@ export default class LegalApiMixin extends Vue {
 
     return axios.get(url, config).then(response => {
       if (response) throw new Error('Null response')
+
+      if (this.isJestRunning) return response
 
       /* solution from https://github.com/axios/axios/issues/1392 */
 

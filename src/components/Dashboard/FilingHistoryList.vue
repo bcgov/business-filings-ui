@@ -433,6 +433,7 @@ export default class FilingHistoryList extends Mixins(
   @Getter nrNumber!: string
   @State filings!: Array<LedgerIF>
   @State entityName!: string
+  @State entityIncNo!: string
 
   // local properties
   private addCommentDialog = false
@@ -813,7 +814,7 @@ export default class FilingHistoryList extends Mixins(
   private async downloadOneDocument (document: any, index: number): Promise<void> {
     this.loadingDocument = true
     this.downloadingDocIndex = index
-    await this.fetchOneDocument(document).catch(error => {
+    await this.fetchOneDocument(this.entityIncNo, document).catch(error => {
       // eslint-disable-next-line no-console
       console.log('fetchOneDocument() error =', error)
       this.downloadErrorDialog = true
@@ -838,7 +839,7 @@ export default class FilingHistoryList extends Mixins(
       for (let i = 0; i < item.documents.length; i++) {
         const type = item.documents[i].type
         if (type === DocumentTypes.REPORT) {
-          await this.fetchOneDocument(item.documents[i]).catch(error => {
+          await this.fetchOneDocument(this.entityIncNo, item.documents[i]).catch(error => {
             // eslint-disable-next-line no-console
             console.log('fetchOneDocument() error =', error)
             this.downloadErrorDialog = true

@@ -192,8 +192,7 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
-  from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { FilingCodes, FilingNames, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'

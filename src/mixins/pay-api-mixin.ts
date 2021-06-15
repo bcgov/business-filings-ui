@@ -1,11 +1,13 @@
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import axios from '@/axios-auth'
+import { CommonMixin } from '@/mixins'
 
-/** Mixin that provides integration with the Pay API. */
+/**
+ * Mixin that provides integration with the Pay API.
+ */
 @Component({})
-export default class PayApiMixin extends Vue {
-  /** The Pay API string. */
+export default class PayApiMixin extends Mixins(CommonMixin) {
   private get payApiUrl (): string {
     return sessionStorage.getItem('PAY_API_URL')
   }
@@ -15,7 +17,7 @@ export default class PayApiMixin extends Vue {
    * See also LegalApiMixin::fetchOneDocument().
    * @param receipt the receipt info object
    */
-  async fetchOneReceipt (receipt: any): Promise<void> {
+  async fetchOneReceipt (receipt: any): Promise<any> {
     // safety checks
     if (!receipt.paymentToken || !receipt.corpName || !receipt.filingDateTime || !receipt.filename) return
 
@@ -33,6 +35,8 @@ export default class PayApiMixin extends Vue {
 
     return axios.post(url, data, config).then(response => {
       if (!response) throw new Error('Null response')
+
+      if (this.isJestRunning) return response
 
       /* solution from https://github.com/axios/axios/issues/1392 */
 
