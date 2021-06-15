@@ -24,7 +24,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 store.state.currentDate = '2019-07-15'
 
 const sampleDeliveryAddress = {
@@ -261,7 +261,9 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
     vm.addressesFormValid = false
-    store.state.filingData = [] // no data
+
+    // set no filing data
+    store.state.filingData = []
 
     // confirm that button is disabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBe('disabled')

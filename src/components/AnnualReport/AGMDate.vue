@@ -121,8 +121,8 @@ import { FormIF } from '@/interfaces'
 @Component({
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'currentDate', 'lastAnnualReportDate']),
-    ...mapGetters(['currentYear', 'lastFilingDate', 'isCoop'])
+    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'lastAnnualReportDate']),
+    ...mapGetters(['currentYear', 'isCoop'])
   }
 })
 export default class AgmDate extends Mixins(DateMixin) {
@@ -166,10 +166,8 @@ export default class AgmDate extends Mixins(DateMixin) {
   readonly ARFilingYear!: number
   readonly arMinDate!: string
   readonly arMaxDate!: string
-  readonly currentDate!: string
   readonly lastAnnualReportDate!: string
   readonly currentYear!: number
-  readonly lastFilingDate!: string
   readonly isCoop!: boolean
 
   /** The array of validations rule(s) for the AGM Date text field. */

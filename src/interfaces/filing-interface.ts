@@ -1,6 +1,9 @@
 import { AlterationIF, BusinessIF, HeaderIF } from '@/interfaces'
 
-/** A filing item (task or filing) from the API. */
+/**
+ * A filing item from the API (ie, list item from `tasks` call, or individual task or filing item).
+ * See also Ledger Interface.
+ */
 export interface FilingIF {
   annualReport?: any;
   business: BusinessIF;

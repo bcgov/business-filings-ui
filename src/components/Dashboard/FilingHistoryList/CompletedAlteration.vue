@@ -26,7 +26,8 @@ export default class CompletedAlteration extends Vue {
   readonly entityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: HistoryItemIF
+  @Prop({ required: true })
+  readonly filing: HistoryItemIF
 }
 </script>
 

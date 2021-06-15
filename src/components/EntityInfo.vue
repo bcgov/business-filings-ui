@@ -32,7 +32,7 @@
           <menu class="mt-4 ml-n3">
             <!-- Staff Comments -->
             <span v-if="businessId && isRoleStaff">
-              <staff-comments
+              <StaffComments
                 :axios="axios"
                 :businessId="businessId"
                 :maxLength="2000"

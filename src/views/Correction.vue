@@ -271,7 +271,7 @@ export default {
 
     /** Returns title of original filing. */
     title (): string {
-      if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
+      if (this.origFiling?.header?.name) {
         return this.filingTypeToName(this.origFiling.header.name, this.agmYear)
       }
       return ''
@@ -279,7 +279,7 @@ export default {
 
     /** Returns AGM Year of original filing (AR only). */
     agmYear (): number | null {
-      if (this.origFiling && this.origFiling.annualReport && this.origFiling.annualReport.annualReportDate) {
+      if (this.origFiling?.annualReport?.annualReportDate) {
         const date: string = this.origFiling.annualReport.annualReportDate
         return +date.slice(0, 4)
       }
@@ -299,7 +299,7 @@ export default {
 
     /** Returns default comment (ie, the first line of the detail comment). */
     defaultComment (): string {
-      return `Correction for ${this.title}. Filed on ${this.originalFilingDate}.`
+      return `Correction for ${this.title}, filed on ${this.originalFilingDate}.`
     },
 
     /** Returns maximum length of detail comment. */
@@ -706,8 +706,7 @@ export default {
           .then(response => {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

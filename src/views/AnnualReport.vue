@@ -355,7 +355,7 @@ import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog,
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
 import { StaffPaymentIF } from '@/interfaces'
 
 export default {
@@ -437,10 +437,10 @@ export default {
 
   computed: {
     ...mapState(['currentDate', 'ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityType',
-      'entityName', 'entityIncNo', 'entityFoundingDate', 'directors', 'filingData']),
+      'entityName', 'entityIncNo', 'entityFoundingDate', 'directors', 'filingData', 'lastCoaFilingDate',
+      'lastCodFilingDate']),
 
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'reportState',
-      'lastCOAFilingDate', 'lastCODFilingDate', 'currentYear']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'reportState', 'currentYear']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -1039,10 +1039,10 @@ export default {
     allowChange (type) {
       let earliestAllowedDate
       if (type === 'coa') {
-        earliestAllowedDate = this.lastCOAFilingDate
+        earliestAllowedDate = this.dateToDateString(this.lastCoaFilingDate)
       }
       if (type === 'cod') {
-        earliestAllowedDate = this.lastCODFilingDate
+        earliestAllowedDate = this.dateToDateString(this.lastCodFilingDate)
       }
       return Boolean(this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
     },
@@ -1060,8 +1060,7 @@ export default {
           .then(response => {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

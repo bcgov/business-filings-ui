@@ -1,48 +1,47 @@
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
 
-/** A history item in the Filing History List. */
+/** A Filing History List item. */
 export interface HistoryItemIF {
-  comments: Array<any>;
-  documents?: Array<any>;
-  effectiveDateTime?: string;
-  filingAuthor: string;
-  filingDate: string;
-  filingDateTime?: string;
-  filingId: number;
-  filingType: FilingTypes;
-  filingYear?: string;
-  isCorrected?: boolean;
-  isPaid: boolean;
-  isColinFiling?: boolean;
-  isPaperFiling?: boolean;
-  status: string;
-  subtitle?: string;
-  title: string;
+  availableOnPaperOnly?: boolean
+  displayName: string
+  effectiveDate: Date
+  filingId: number
+  isFutureEffective: boolean
+  name: FilingTypes
+  status: string
+  submittedDate: Date
+  submitter: string
 
-  // BCOMP COAs only
-  effectiveDate?: string
-  isBcompCoaFutureEffective?: boolean
+  commentsLink?: string // URL to fetch this filing's comments
+  correctedLink?: string // URL to fetch this corrections's original filing (corrections only)
+  correctionLink?: string // URL to fetch this filing's correction
+  documentsLink?: string // URL to fetch this filing's documents
+  filingLink?: string // URL to fetch this filing
 
-  // corrections only
-  isCorrectionPending?: boolean
-  correctedFilingId?: number // corrections only
-  correctedFilingType?: FilingTypes // corrections only
+  comments?: Array<any> // NB: undefined until loaded
+  documents?: Array<any> // NB: undefined until loaded
+
+  receipt?: any // receipt meta (for adding to documents)
 
   // IAs only
-  isCompletedIa?: boolean;
+  isCompletedIa?: boolean
   isFutureEffectiveIa?: boolean
   isFutureEffectiveIaPending?: boolean
 
+  // BCOMP COAs only
+  isFutureEffectiveBcompCoaPending?: boolean
+
   // alterations only
-  isFutureEffectiveAlteration?: boolean
-  isFutureEffectiveAlterationPending?: boolean
-  oldLegalType?: CorpTypeCd
-  newLegalType?: CorpTypeCd
   courtOrderNumber?: string
   isArrangement?: boolean
+  isFutureEffectiveAlteration?: boolean
+  isFutureEffectiveAlterationPending?: boolean
+  newLegalType?: string
+  oldLegalType?: string
 
-  // Staff only filings
-  notationOrOrder?: string
+  // staff filings only
   fileNumber?: string
+  isTypeStaff?: boolean
+  notationOrOrder?: string
   planOfArrangement?: string
 }

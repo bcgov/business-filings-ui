@@ -857,8 +857,7 @@ export default {
           .then(response => {
             if (response && response.data && response.data.tasks) {
               response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

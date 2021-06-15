@@ -9,84 +9,76 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Details List', () => {
+  // TODO: refactor comments (when API endpoing is ready)
   const mockNoCommentsFiling = {
-    'type': 'annualReport',
-    'title': 'Annual Report (2018)',
-    'filingId': 63958,
-    'filingAuthor': 'John Doe',
-    'filingDate': '2018-12-12',
-    'filingYear': '2018',
-    'paymentToken': null,
-    'isPaperOnly': true,
-    'isCorrected': false,
-    'isCorrectionPending': false,
-    'comments': []
+    type: 'annualReport',
+    title: 'Annual Report (2018)',
+    filingId: 63958,
+    submitter: 'John Doe',
+    submittedDate: '2018-12-12',
+    paymentToken: null,
+    isPaperOnly: true,
+    comments: []
   }
 
   const mockFiling = {
-    'type': 'annualReport',
-    'title': 'Annual Report (2018)',
-    'filingId': 63958,
-    'filingAuthor': 'John Doe',
-    'filingDate': '2018-12-12',
-    'filingYear': '2018',
-    'paymentToken': null,
-    'isPaperOnly': true,
-    'isCorrected': false,
-    'isCorrectionPending': false,
-    'comments': [
+    type: 'annualReport',
+    title: 'Annual Report (2018)',
+    filingId: 63958,
+    submitter: 'John Doe',
+    submittedDate: '2018-12-12',
+    paymentToken: null,
+    isPaperOnly: true,
+    comments: [
       {
-        'comment': {
-          'comment': 'Correction for Annual Report (2018). Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 123,
-          'submitterDisplayName': 'cbIdIr1234',
-          'timestamp': '2020-03-02T20:26:31.697044+00:00'
+        comment: {
+          comment: 'Correction for Annual Report (2018), filed on 2018-01-08.',
+          filingId: 63958,
+          id: 123,
+          submitterDisplayName: 'cbIdIr1234',
+          timestamp: '2020-03-02T20:26:31.697044+00:00'
         }
       }
     ]
   }
 
   const mockManyCommentsFiling = {
-    'type': 'annualReport',
-    'title': 'Annual Report (2018)',
-    'filingId': 63958,
-    'filingAuthor': 'John Doe',
-    'filingDate': '2018-12-12',
-    'filingYear': '2018',
-    'paymentToken': null,
-    'isPaperOnly': true,
-    'isCorrected': false,
-    'isCorrectionPending': false,
-    'comments': [
+    type: 'annualReport',
+    title: 'Annual Report (2018)',
+    filingId: 63958,
+    submitter: 'John Doe',
+    submittedDate: '2018-12-12',
+    paymentToken: null,
+    isPaperOnly: true,
+    comments: [
       {
-        'comment': {
-          'comment': 'Correction for Annual Report (2018). Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 111,
-          'submitterDisplayName': 'cbIdIr1234',
-          'timestamp': '2020-03-02T20:26:31.697044+00:00'
+        comment: {
+          comment: 'Correction for Annual Report (2018), filed on 2018-01-08.',
+          filingId: 63958,
+          id: 111,
+          submitterDisplayName: 'cbIdIr1234',
+          timestamp: '2020-03-02T20:26:31.697044+00:00'
         }
       },
       {
-        'comment': {
-          'comment': 'Correction for director mailing delivery address. Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 222,
-          'submitterDisplayName': 'sevIdiR2020',
-          'timestamp': '2020-03-05T20:26:31.697044+00:00'
+        comment: {
+          comment: 'Correction for director mailing delivery address, filed on 2018-01-08.',
+          filingId: 63958,
+          id: 222,
+          submitterDisplayName: 'sevIdiR2020',
+          timestamp: '2020-03-05T20:26:31.697044+00:00'
         }
       },
       {
-        'comment': {
-          'comment': 'Correction for office delivery address Change. Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 333,
-          'submitterDisplayName': 'cbIdIr1234',
-          'timestamp': '2020-03-06T20:26:33.697044+00:00'
+        comment: {
+          comment: 'Correction for office delivery address Change, filed on 2018-01-08.',
+          filingId: 63958,
+          id: 333,
+          submitterDisplayName: 'cbIdIr1234',
+          timestamp: '2020-03-06T20:26:33.697044+00:00'
         }
       }
     ]
@@ -195,7 +187,7 @@ describe('Details List', () => {
     expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
     expect(wrapper.find('.body-2').text()).toContain('Registry Staff')
     expect(wrapper.find('.body-2 .pre-line').text())
-      .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
+      .toContain('Correction for Annual Report (2018), filed on 2018-01-08.')
 
     wrapper.destroy()
   })
@@ -222,12 +214,12 @@ describe('Details List', () => {
     expect(firstItem.text()).toContain('cbIdIr1234')
     expect(firstItem.text()).toContain('2020-03-02T20:26:31.697044+00:00')
     expect(firstItem.find('.pre-line').text())
-      .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
+      .toContain('Correction for Annual Report (2018), filed on 2018-01-08.')
 
     expect(thirdItem.text()).toContain('sevIdiR2020')
     expect(thirdItem.text()).toContain('2020-03-05T20:26:31.697044+00:00')
     expect(thirdItem.find('.pre-line').text())
-      .toContain('Correction for director mailing delivery address. Filed on 2018-01-08.')
+      .toContain('Correction for director mailing delivery address, filed on 2018-01-08.')
 
     wrapper.destroy()
   })
