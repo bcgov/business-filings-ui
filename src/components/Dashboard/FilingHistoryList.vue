@@ -377,7 +377,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { mapGetters, mapState } from 'vuex'
+import { Getter, State } from 'vuex-class'
 
 // Components and Dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
@@ -416,11 +416,6 @@ import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@
     AddCommentDialog,
     DownloadErrorDialog,
     LoadCorrectionDialog
-  },
-  computed: {
-    // Property definitions for runtime environment.
-    ...mapGetters(['isBComp', 'isRoleStaff', 'nrNumber']),
-    ...mapState(['filings', 'entityName'])
   }
 })
 export default class FilingHistoryList extends Mixins(
@@ -433,11 +428,11 @@ export default class FilingHistoryList extends Mixins(
   readonly DocumentTypes = DocumentTypes
   readonly FilingTypes = FilingTypes
 
-  readonly isBComp!: boolean
-  readonly isRoleStaff!: boolean
-  readonly nrNumber!: string
-  readonly filings!: Array<LedgerIF>
-  readonly entityName!: string
+  @Getter isBComp!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter nrNumber!: string
+  @State filings!: Array<LedgerIF>
+  @State entityName!: string
 
   // local properties
   private addCommentDialog = false
