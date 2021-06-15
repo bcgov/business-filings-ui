@@ -126,7 +126,7 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.TRANSITION)
   }
 
-  /** Returns True is filing is a Staff Only filing. */
+  /** Returns True if filing is a Staff Only filing. */
   isTypeStaff (item: any): boolean {
     return [
       FilingTypes.REGISTRARS_NOTATION,
