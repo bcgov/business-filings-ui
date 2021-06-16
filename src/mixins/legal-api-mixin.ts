@@ -198,7 +198,7 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
     }
 
     return axios.get(url, config).then(response => {
-      if (response) throw new Error('Null response')
+      if (!response) throw new Error('Null response')
 
       if (this.isJestRunning) return response
 

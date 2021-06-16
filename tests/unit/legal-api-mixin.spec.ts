@@ -25,66 +25,175 @@ describe('Legal API Mixin', () => {
     wrapper.destroy()
   })
 
-  xit('fetches entity info correctly', async () => {
-    // TODO: mock endpoint
-    const authorizations = await vm.fetchEntityInfo('CP1234567')
-    // TODO: verify data
+  it('fetches entity info correctly', async () => {
+    const ENTITY_INFO = {
+      business: {
+        identifier: 'CP1234567',
+        legalType: 'CP'
+      }
+    }
+
+    // mock endpoint
+    get.withArgs('businesses/CP1234567')
+      .returns(new Promise((resolve) => resolve({ data: ENTITY_INFO })))
+
+    // call method
+    const entityInfo = await vm.fetchEntityInfo('CP1234567')
+
+    // verify data
+    expect(entityInfo).toEqual({ data: ENTITY_INFO })
   })
 
-  xit('fetches tasks correctly', async () => {
-    // TODO: mock endpoint
-    const tasks = await vm.fetchTasks()
-    // TODO: verify data
+  it('fetches tasks correctly', async () => {
+    const TASKS = [
+      { name: 'task1' },
+      { name: 'task2' },
+      { name: 'task3' }
+    ]
+
+    // mock endpoint
+    get.withArgs('businesses/CP1234567/tasks')
+      .returns(new Promise((resolve) => resolve({ data: TASKS })))
+
+    // call method
+    const tasks = await vm.fetchTasks('CP1234567')
+
+    // verify data
+    expect(tasks).toEqual({ data: TASKS })
   })
 
-  xit('fetches filings correctly', async () => {
-    // TODO: mock endpoint
+  it('fetches filings correctly', async () => {
+    const FILINGS = [
+      { name: 'filing1' },
+      { name: 'filing2' },
+      { name: 'filing3' }
+    ]
+
+    // mock endpoint
+    get.withArgs('businesses/CP1234567/filings')
+      .returns(new Promise((resolve) => resolve({ data: FILINGS })))
+
+    // call method
     const filings = await vm.fetchFilings('CP1234567')
-    // TODO: verify data
+
+    // verify data
+    expect(filings).toEqual({ data: FILINGS })
   })
 
-  xit('fetches addresses correctly', async () => {
-    // TODO: mock endpoint
+  it('fetches addresses correctly', async () => {
+    const ADDRESSES = [
+      { name: 'address1' },
+      { name: 'address2' },
+      { name: 'address3' }
+    ]
+
+    // mock endpoint
+    get.withArgs('businesses/CP1234567/addresses')
+      .returns(new Promise((resolve) => resolve({ data: ADDRESSES })))
+
+    // call method
     const addresses = await vm.fetchAddresses('CP1234567')
-    // TODO: verify data
+
+    // verify data
+    expect(addresses).toEqual({ data: ADDRESSES })
   })
 
-  xit('fetches directors correctly', async () => {
-    // TODO: mock endpoint
+  it('fetches directors correctly', async () => {
+    const DIRECTORS = [
+      { name: 'director1' },
+      { name: 'director2' },
+      { name: 'director3' }
+    ]
+
+    // mock endpoint
+    get.withArgs('businesses/CP1234567/directors')
+      .returns(new Promise((resolve) => resolve({ data: DIRECTORS })))
+
+    // call method
     const directors = await vm.fetchDirectors('CP1234567')
-    // TODO: verify data
+
+    // verify data
+    expect(directors).toEqual({ data: DIRECTORS })
   })
 
-  xit('fetches incorp app correctly', async () => {
-    // TODO: mock endpoint
-    const incorpApp = await vm.fetchIncorpApp('T1234567')
-    // TODO: verify data
+  it('fetches incorp app correctly', async () => {
+    const IA = {
+      foo: 'bar'
+    }
+
+    // mock endpoint
+    get.withArgs('businesses/T1234567/filings')
+      .returns(new Promise((resolve) => resolve({ data: IA })))
+
+    // call method
+    const ia = await vm.fetchIncorpApp('T1234567')
+
+    // verify data
+    expect(ia).toEqual(IA)
   })
 
-  xit('fetches name request correctly', async () => {
-    // TODO: mock endpoint
-    const nameRequest = await vm.fetchNameRequest('NR1234567')
-    // TODO: verify data
+  it('fetches name request correctly', async () => {
+    const NR = {
+      foo: 'bar'
+    }
+
+    // mock endpoint
+    get.withArgs('nameRequests/NR1234567')
+      .returns(new Promise((resolve) => resolve({ data: NR })))
+
+    // call method
+    const nr = await vm.fetchNameRequest('NR1234567')
+
+    // verify data
+    expect(nr).toEqual(NR)
   })
 
-  xit('fetches a filing correctly', async () => {
-    // TODO: mock endpoint
+  it('fetches a filing correctly', async () => {
+    const FILING = {
+      foo: 'bar'
+    }
+
+    // mock endpoint
+    get.withArgs('businesses/CP1234567/filings/1234')
+      .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+
+    // call method
     const filing = await vm.fetchFiling('CP1234567', 1234)
-    // TODO: verify data
+
+    // verify data
+    expect(filing).toEqual(FILING)
   })
 
-  xit('creates a filing correctly', async () => {
-    // TODO: mock endpoint
-    const filing = {}
-    const response = await vm.createFiling('CP1234567', filing, false)
-    // TODO: verify data
+  it('creates a filing correctly', async () => {
+    const FILING = {
+      foo: 'bar'
+    }
+
+    // mock endpoint
+    post.withArgs('businesses/CP1234567/filings?draft=true')
+      .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+
+    // call method
+    const response = await vm.createFiling('CP1234567', FILING, true)
+
+    // verify data
+    expect(response).toEqual(FILING)
   })
 
-  xit('fetches a filing correctly', async () => {
-    // TODO: mock endpoint
-    const filing = {}
-    const response = await vm.updateFiling('CP1234567', filing, 1234, false)
-    // TODO: verify data
+  it('updates a filing correctly', async () => {
+    const FILING = {
+      foo: 'bar'
+    }
+
+    // mock endpoint
+    put.withArgs('businesses/CP1234567/filings/1234?draft=true')
+    .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+
+    // call method
+    const response = await vm.updateFiling('CP1234567', FILING, 1234, true)
+
+    // verify data
+    expect(response).toEqual(FILING)
   })
 
   it('fetches comments correctly', async () => {
@@ -123,15 +232,16 @@ describe('Legal API Mixin', () => {
     expect(comments).toEqual(DOCUMENTS)
   })
 
-  // TODO: fix
-  xit('fetches one document correctly', async () => {
+  it('fetches one document correctly', async () => {
+    const PDF = 'PDF data goes here'
+
     // mock endpoint
-    get.withArgs('businesses/CP1234567/filings/12345?type=REPORT')
-      .returns(new Promise((resolve) => resolve({ data: 'PDF data goes here' })))
+    get.withArgs('businesses/CP1234567/filings/1234?type=REPORT')
+      .returns(new Promise((resolve) => resolve({ data: PDF })))
 
     // build receipt meta object
     const meta = {
-      filingId: 12345,
+      filingId: 1234,
       filename: 'ABC Corp - Jun 15, 2021.pdf',
       reportType: 'REPORT'
     }
@@ -140,6 +250,6 @@ describe('Legal API Mixin', () => {
     const response = await vm.fetchOneDocument('CP1234567', meta)
 
     // verify data
-    expect(response).toEqual({ data: 'PDF data goes here' })
+    expect(response).toEqual({ data: PDF })
   })
 })
