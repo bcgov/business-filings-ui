@@ -10,6 +10,16 @@ import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import App from '@/App.vue'
 
+// mock fetch() as it is not defined in Jest
+// NB: it should be `global.fetch` but that doesn't work and this does
+window.fetch = jest.fn().mockImplementation(() => {
+  return {
+    headers: { get: () => new Date() },
+    ok: true,
+    statusTxt: ''
+  }
+})
+
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 

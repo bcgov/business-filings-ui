@@ -1,7 +1,6 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { isDate } from 'lodash'
-import { CommonMixin } from '@/mixins'
 
 const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
@@ -11,7 +10,7 @@ const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
     ...mapState(['currentDate'])
   }
 })
-export default class DateMixin extends Mixins(CommonMixin) {
+export default class DateMixin extends Vue {
   readonly currentDate!: string
 
   /**
@@ -23,10 +22,6 @@ export default class DateMixin extends Mixins(CommonMixin) {
   async getServerDate (): Promise<Date> {
     const input = `${window.location.origin}/${process.env.VUE_APP_PATH}/`
     const init: RequestInit = { cache: 'no-store', method: 'HEAD' }
-
-    // don't call fetch() during Jest tests
-    // because it's not defined
-    if (this.isJestRunning) return new Date()
 
     try {
       const { headers, ok, statusText } = await fetch(input, init)
