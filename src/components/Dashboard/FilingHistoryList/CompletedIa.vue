@@ -24,7 +24,7 @@ export default class CompletedIa extends Vue {
   readonly entityName!: string
 
   private returnToDashboard (): void {
-    const manageBusinessesUrl = sessionStorage.getItem('AUTH_URL') + 'business'
+    const manageBusinessesUrl = sessionStorage.getItem('AUTH_WEB_URL') + 'business'
     window.location.assign(manageBusinessesUrl) // assume URL is always reachable
   }
 }

@@ -182,7 +182,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** The Business Profile URL string. */
   private get businessProfileUrl (): string {
-    return sessionStorage.getItem('AUTH_URL') + 'businessprofile'
+    return sessionStorage.getItem('AUTH_WEB_URL') + 'businessprofile'
   }
 
   /** The Incorporation Application's Temporary Registration Number string. */
@@ -192,7 +192,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** The Manage Businesses URL string. */
   private get manageBusinessesUrl (): string {
-    return sessionStorage.getItem('AUTH_URL') + 'business'
+    return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
   }
 
   /** The entity description. */

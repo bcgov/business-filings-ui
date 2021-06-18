@@ -748,7 +748,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -819,7 +819,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -1657,7 +1657,7 @@ describe('Standalone Directors Filing - payment required error', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('PAY_API_URL', '')
-    sessionStorage.setItem('AUTH_URL', 'auth/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')
