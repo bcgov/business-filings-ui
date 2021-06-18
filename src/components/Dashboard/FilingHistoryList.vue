@@ -50,7 +50,7 @@
                   <FiledLabel :filing="filing" />
                 </div>
 
-                <!-- is this a FE BCOMP COA pending completion? -->
+                <!-- is this a FE BCOMP COA pending (not yet completed)? -->
                 <div v-else-if="filing.isFutureEffectiveBcompCoaPending" class="item-header__subtitle">
                   <span>FILED AND PENDING <FiledLabel :filing="filing" /></span>
                   <v-tooltip top content-class="pending-tooltip">
@@ -80,7 +80,7 @@
                   </v-btn>
                 </div>
 
-                <!-- is this a FE IA pending completion? -->
+                <!-- is this a FE IA pending (overdue)? -->
                 <div v-else-if="filing.isFutureEffectiveIaPending" class="item-header__subtitle">
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
@@ -114,7 +114,7 @@
                   </v-btn>
                 </div>
 
-                <!-- is this a FE Alteration pending completion? -->
+                <!-- is this a FE Alteration pending (overdue)? -->
                 <div v-else-if="filing.isFutureEffectiveAlterationPending" class="item-header__subtitle">
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
@@ -248,7 +248,7 @@
               <StaffFiling :filing="filing" />
             </template>
 
-            <!-- is this a FE BCOMP COA pending completion? -->
+            <!-- is this a FE BCOMP COA pending (not yet completed)? -->
             <template v-else-if="filing.isFutureEffectiveBcompCoaPending">
               <!-- no details -->
             </template>
@@ -258,7 +258,7 @@
               <CompletedIa />
             </template>
 
-            <!-- is this a FE IA pending completion? -->
+            <!-- is this a FE IA pending (overdue)? -->
             <template v-else-if="filing.isFutureEffectiveIaPending">
               <FutureEffectivePending :filing=filing />
             </template>
@@ -268,7 +268,7 @@
               <FutureEffective :filing=filing />
             </template>
 
-            <!-- is this a FE Alteration pending completion? -->
+            <!-- is this a FE Alteration pending (overdue)? -->
             <template v-else-if="filing.isFutureEffectiveAlterationPending">
               <FutureEffectivePending :filing=filing />
             </template>
@@ -557,11 +557,18 @@ export default class FilingHistoryList extends Mixins(
       // is this a completed IA? (incorp app mode only)
       const isCompletedIa = (this.tempRegNumber && this.isStatusCompleted(filing))
 
-      // is this a Future Effective IA? (incorp app mode only)
-      const isFutureEffectiveIa = (this.tempRegNumber && !!filing.isFutureEffective)
+      // is this a Future Effective IA (not yet completed)? (incorp app mode only)
+      const isFutureEffectiveIa = (
+        this.tempRegNumber &&
+        !!filing.isFutureEffective &&
+        this.isStatusPaid(filing)
+      )
 
-      // is this a Future Effective IA pending completion? (incorp app mode only)
-      const isFutureEffectiveIaPending = (isFutureEffectiveIa && this.isStatusPending(filing))
+      // is this a Future Effective IA pending (overdue)? (incorp app mode only)
+      const isFutureEffectiveIaPending = (
+        isFutureEffectiveIa &&
+        this.isEffectiveDatePast(effectiveDate)
+      )
 
       let displayName = filing.displayName
       if (this.isStatusCorrected(filing)) {
@@ -653,17 +660,29 @@ export default class FilingHistoryList extends Mixins(
 
       // add additional properties for BCOMP COA filings
       if (this.isBComp && this.isTypeChangeOfAddress(filing)) {
-        // is this a Future Effective BCOMP COA pending completion?
-        item.isFutureEffectiveBcompCoaPending = (!!filing.isFutureEffective && this.isStatusPending(filing))
+        const now = new Date()
+        // is this a Future Effective BCOMP COA pending (not yet completed)?
+        // (NB: this is False after the effective date)
+        item.isFutureEffectiveBcompCoaPending = (
+          !!filing.isFutureEffective &&
+          this.isStatusPaid(filing) &&
+          this.isEffectiveDateFuture(effectiveDate)
+        )
       }
 
       // add additional properties for Alteration filings
       if (this.isTypeAlteration(filing)) {
-        // is this a Future Effective alteration?
-        const isFutureEffectiveAlteration = !!filing.isFutureEffective
+        // is this a Future Effective alteration (not yet completed)?
+        const isFutureEffectiveAlteration = (
+          !!filing.isFutureEffective &&
+          this.isStatusPaid(filing)
+        )
 
-        // is this a Future Effective alteration pending completion?
-        const isFutureEffectiveAlterationPending = (isFutureEffectiveAlteration && this.isStatusPending(filing))
+        // is this a Future Effective alteration pending (overdue)?
+        const isFutureEffectiveAlterationPending = (
+          isFutureEffectiveAlteration &&
+          this.isEffectiveDatePast(effectiveDate)
+        )
 
         item.courtOrderNumber = filing.data?.courtOrder?.fileNumber || ''
         item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data?.courtOrder?.effectOfOrder)
@@ -700,6 +719,18 @@ export default class FilingHistoryList extends Mixins(
       // eslint-disable-next-line no-console
       console.log('Error loading other filing =', error)
     }
+  }
+
+  /** Whether the subject effective date/time is in the past. */
+  isEffectiveDatePast (effectiveDate: Date): boolean {
+    // NB: these are both in UTC
+    return (effectiveDate <= new Date())
+  }
+
+  /** Whether the subject effective date/time is in the future. */
+  isEffectiveDateFuture (effectiveDate: Date): boolean {
+    // NB: these are both in UTC
+    return (effectiveDate > new Date())
   }
 
   /** Expands the panel of the specified filing ID. */

@@ -265,7 +265,7 @@ export default {
       const serverDate = await this.getServerDate()
       if (!this.isJestRunning) {
         // eslint-disable-next-line no-console
-        console.info(`The current date-time is ${this.dateToPacificDateTime(serverDate)}.`)
+        console.info(`It is currently ${this.dateToPacificDateTime(serverDate)}.`)
       }
       this.setCurrentDate(this.dateToDateString(serverDate))
 

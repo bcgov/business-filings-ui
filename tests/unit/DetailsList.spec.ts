@@ -12,8 +12,8 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Details List', () => {
-  // TODO: refactor comments (when API endpoing is ready)
-  const mockNoCommentsFiling = {
+  // TODO: refactor comments (when API endpoint is ready)
+  const mockFilingNoComments = {
     type: 'annualReport',
     title: 'Annual Report (2018)',
     filingId: 63958,
@@ -24,7 +24,7 @@ describe('Details List', () => {
     comments: []
   }
 
-  const mockFiling = {
+  const mockFilingOneComment = {
     type: 'annualReport',
     title: 'Annual Report (2018)',
     filingId: 63958,
@@ -45,7 +45,7 @@ describe('Details List', () => {
     ]
   }
 
-  const mockManyCommentsFiling = {
+  const mockFilingManyComments = {
     type: 'annualReport',
     title: 'Annual Report (2018)',
     filingId: 63958,
@@ -85,7 +85,7 @@ describe('Details List', () => {
   }
 
   it('Displays no details if filing contains no comments', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockNoCommentsFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingNoComments } })
 
     expect(wrapper.find('.detail-body').exists()).toBe(false)
 
@@ -93,7 +93,7 @@ describe('Details List', () => {
   })
 
   it('Displays details if filing contains comments', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingOneComment } })
 
     expect(wrapper.find('.detail-body').exists()).toBe(true)
 
@@ -101,7 +101,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct count in the title - single detail', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingOneComment } })
 
     expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
 
@@ -109,7 +109,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct count in the title - multiple details', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingManyComments } })
 
     expect(wrapper.find('.title-bar').text()).toContain('Details (3)')
 
@@ -117,7 +117,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct number of details in the list', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingManyComments } })
 
     expect(wrapper.findAll('.detail-body').length).toEqual(3)
 
@@ -130,7 +130,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: false
       }
     })
@@ -146,7 +146,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: true
       }
     })
@@ -162,7 +162,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: false
       }
     })
@@ -178,7 +178,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: false
       }
     })
@@ -199,7 +199,7 @@ describe('Details List', () => {
       store,
       vuetify,
       propsData: {
-        filing: mockManyCommentsFiling,
+        filing: mockFilingManyComments,
         isTask: false
       }
     })
