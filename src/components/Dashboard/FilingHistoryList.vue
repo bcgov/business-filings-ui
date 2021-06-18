@@ -50,7 +50,7 @@
                   <FiledLabel :filing="filing" />
                 </div>
 
-                <!-- is this a FE BCOMP COA not yet completed? -->
+                <!-- is this a FE BCOMP COA pending completion? -->
                 <div v-else-if="filing.isFutureEffectiveBcompCoaPending" class="item-header__subtitle">
                   <span>FILED AND PENDING <FiledLabel :filing="filing" /></span>
                   <v-tooltip top content-class="pending-tooltip">
@@ -80,7 +80,7 @@
                   </v-btn>
                 </div>
 
-                <!-- is this a FE IA not yet completed? -->
+                <!-- is this a FE IA pending completion? -->
                 <div v-else-if="filing.isFutureEffectiveIaPending" class="item-header__subtitle">
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
@@ -114,7 +114,7 @@
                   </v-btn>
                 </div>
 
-                <!-- is this a FE Alteration not yet completed? -->
+                <!-- is this a FE Alteration pending completion? -->
                 <div v-else-if="filing.isFutureEffectiveAlterationPending" class="item-header__subtitle">
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
@@ -248,7 +248,7 @@
               <StaffFiling :filing="filing" />
             </template>
 
-            <!-- is this a FE BCOMP COA not yet completed? -->
+            <!-- is this a FE BCOMP COA pending completion? -->
             <template v-else-if="filing.isFutureEffectiveBcompCoaPending">
               <!-- no details -->
             </template>
@@ -258,7 +258,7 @@
               <CompletedIa />
             </template>
 
-            <!-- is this a FE IA not yet completed? -->
+            <!-- is this a FE IA pending completion? -->
             <template v-else-if="filing.isFutureEffectiveIaPending">
               <FutureEffectivePending :filing=filing />
             </template>
@@ -268,7 +268,7 @@
               <FutureEffective :filing=filing />
             </template>
 
-            <!-- is this a FE Alteration not yet completed? -->
+            <!-- is this a FE Alteration pending completion? -->
             <template v-else-if="filing.isFutureEffectiveAlterationPending">
               <FutureEffectivePending :filing=filing />
             </template>
@@ -409,9 +409,8 @@ import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@
     PaperFiling,
     PendingFiling,
     StaffFiling,
-
+    // common
     DetailsList,
-
     // dialogs
     AddCommentDialog,
     DownloadErrorDialog,
@@ -472,7 +471,7 @@ export default class FilingHistoryList extends Mixins(
 
       // safety check for required fields
       // TODO: add check for displayName when API handles unknown filings
-      if (!filing.name || !filing.effectiveDate || !filing.submittedDate) {
+      if (!filing.name || !filing.effectiveDate || !filing.submittedDate || !filing.status) {
         // eslint-disable-next-line no-console
         console.log('Invalid filing =', filing)
         continue
@@ -655,9 +654,7 @@ export default class FilingHistoryList extends Mixins(
       // add additional properties for BCOMP COA filings
       if (this.isBComp && this.isTypeChangeOfAddress(filing)) {
         // is this a Future Effective BCOMP COA pending completion?
-        const isFutureEffectiveBcompCoaPending = (!!filing.isFutureEffective && this.isStatusPending(filing))
-
-        item.isFutureEffectiveBcompCoaPending = isFutureEffectiveBcompCoaPending
+        item.isFutureEffectiveBcompCoaPending = (!!filing.isFutureEffective && this.isStatusPending(filing))
       }
 
       // add additional properties for Alteration filings
@@ -891,6 +888,7 @@ export default class FilingHistoryList extends Mixins(
     if (filing?.header) {
       // reload just the comments
       item.comments = this.flattenAndSortComments(filing.header.comments)
+      // TODO: implement and update item.numComments
     }
   }
 

@@ -32,74 +32,80 @@ document.body.append(app)
 const sampleFilings = [
   {
     name: 'annualReport',
-    date: '2019-06-02T19:22:59.003777+00:00',
+    submittedDate: '2019-06-02 19:22:59 GMT',
     paymentToken: 123,
     submitter: 'Joe Submitter 1',
     filingId: 321,
     availableOnPaperOnly: false,
-    effectiveDate: '2019-06-02T19:22:59.003777+00:00'
+    effectiveDate: '2019-06-02 19:22:59 GMT',
+    status: 'COMPLETED'
   },
   {
     name: 'changeOfDirectors',
-    date: '2019-03-09T19:22:59.003777+00:00',
+    submittedDate: '2019-03-09 19:22:59 GMT',
     paymentToken: 456,
     submitter: 'Joe Submitter 2',
     filingId: 654,
     availableOnPaperOnly: false,
-    effectiveDate: '2019-03-09T19:22:59.003777+00:00'
+    effectiveDate: '2019-03-09 19:22:59 GMT',
+    status: 'COMPLETED'
   },
   {
     name: 'changeOfAddress',
-    date: '2019-05-06T19:22:59.003777+00:00',
+    submittedDate: '2019-05-06 19:22:59 GMT',
     paymentToken: 789,
     submitter: 'Joe Submitter 3',
     filingId: 987,
     availableOnPaperOnly: false,
-    effectiveDate: '2019-05-06T19:22:59.003777+00:00'
+    effectiveDate: '2019-05-06 19:22:59 GMT',
+    status: 'COMPLETED'
   },
   {
     name: 'annualReport',
-    date: '2019-03-02T19:22:59.003777+00:00',
+    submittedDate: '2019-03-02 19:22:59 GMT',
     paymentToken: 100,
     submitter: 'Joe Submitter 4',
     filingId: 3212,
     availableOnPaperOnly: true,
-    effectiveDate: '2019-03-02T19:22:59.003777+00:00'
+    effectiveDate: '2019-03-02 19:22:59 GMT',
+    status: 'COMPLETED'
   },
   {
     name: 'changeOfDirectors',
-    date: '2019-02-04T19:22:59.003777+00:00',
+    submittedDate: '2019-02-04 19:22:59 GMT',
     paymentToken: 4561,
     submitter: 'Joe Submitter 5',
     filingId: 6541,
     availableOnPaperOnly: true,
-    effectiveDate: '2019-02-04T19:22:59.003777+00:00'
+    effectiveDate: '2019-02-04 19:22:59 GMT',
+    status: 'COMPLETED'
   },
   {
     name: 'changeOfAddress',
-    date: '2019-12-12T19:22:59.003777+00:00', // Dec 12 at 11:22:59 am Pacific
+    submittedDate: '2019-12-12 19:22:59 GMT', // Dec 12, 2019 at 11:22:59 am Pacific
     paymentToken: 7891,
     submitter: 'Cameron',
     filingId: 9873,
     availableOnPaperOnly: false,
+    isFutureEffective: true,
     // Effective Date is way in the future so it's always > now
-    effectiveDate: '2099-12-13T08:00:00+00:00', // Dec 13 at 00:00:00 am Pacific
+    effectiveDate: '2099-12-13 08:00:00 GMT', // Dec 13, 2099 at 00:00:00 am Pacific
     status: 'PAID'
   },
   {
     displayName: 'Correction - Annual Report (2019)',
     name: 'correction',
-    date: '2019-04-06T19:22:59.003777+00:00',
+    submittedDate: '2019-04-06 19:22:59 GMT',
     paymentToken: 7891,
     submitter: 'Cameron',
     filingId: 9873,
     availableOnPaperOnly: false,
-    effectiveDate: '2019-12-13T00:00:00+00:00',
+    effectiveDate: '2019-12-13 00:00:00 GMT',
     status: 'COMPLETED'
   }
 ]
 
-xdescribe('Filing History List - regular filings', () => {
+describe('Filing History List - basic functionality', () => {
   it('handles empty data', async () => {
     const $route = { query: {} }
 
@@ -107,7 +113,7 @@ xdescribe('Filing History List - regular filings', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -120,14 +126,14 @@ xdescribe('Filing History List - regular filings', () => {
     wrapper.destroy()
   })
 
-  it('shows the filing date in the correct format yyyy-mm-dd', async () => {
+  it('shows the filing date in the correct format Mmm dd, yyyy', async () => {
     const $route = { query: { filing_id: '654' } }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = sampleFilings
 
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -137,7 +143,7 @@ xdescribe('Filing History List - regular filings', () => {
     wrapper.destroy()
   })
 
-  it('displays the filing items pre/post bob date', async () => {
+  it('displays multiple filing items', async () => {
     const $route = { query: {} }
 
     // init store
@@ -145,7 +151,7 @@ xdescribe('Filing History List - regular filings', () => {
     store.state.filings = [
       {
         name: 'annualReport',
-        date: '2019-07-02',
+        submittedDate: '2019-07-02',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 123,
         submitter: 'Joe Submitter 1',
@@ -155,7 +161,7 @@ xdescribe('Filing History List - regular filings', () => {
       },
       {
         name: 'changeOfDirectors',
-        date: '2019-04-04',
+        submittedDate: '2019-04-04',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 456,
         submitter: 'Joe Submitter 2',
@@ -165,7 +171,7 @@ xdescribe('Filing History List - regular filings', () => {
       },
       {
         name: 'changeOfAddress',
-        date: '2019-05-06',
+        submittedDate: '2019-05-06',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 789,
         submitter: 'Joe Submitter 3',
@@ -175,7 +181,7 @@ xdescribe('Filing History List - regular filings', () => {
       },
       {
         name: 'annualReport',
-        date: '2019-03-02',
+        submittedDate: '2019-03-02',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 100,
         submitter: 'Joe Submitter 4',
@@ -185,7 +191,7 @@ xdescribe('Filing History List - regular filings', () => {
       },
       {
         name: 'changeOfDirectors',
-        date: '2019-02-04',
+        submittedDate: '2019-02-04',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 4561,
         submitter: 'Joe Submitter 5',
@@ -195,7 +201,7 @@ xdescribe('Filing History List - regular filings', () => {
       },
       {
         name: 'changeOfAddress',
-        date: '2019-01-06',
+        submittedDate: '2019-01-06',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 7891,
         submitter: 'Joe Submitter 6',
@@ -205,7 +211,7 @@ xdescribe('Filing History List - regular filings', () => {
       }
     ]
 
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -218,25 +224,15 @@ xdescribe('Filing History List - regular filings', () => {
     wrapper.destroy()
   })
 
-  it('expands the specified filing id for a pre-Bob date (paper only) filing', async () => {
+  it('expands a paper-only filing', async () => {
     const $route = { query: {} }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
       {
-        name: 'annualReport',
-        date: '2019-06-02',
-        effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
-        paymentToken: 123,
-        submitter: 'Joe Submitter 1',
-        filingId: 321,
-        status: 'COMPLETED',
-        availableOnPaperOnly: false
-      },
-      {
         name: 'changeOfDirectors',
-        date: '2019-03-09',
+        submittedDate: '2019-03-09',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 456,
         submitter: 'Joe Submitter 2',
@@ -250,27 +246,22 @@ xdescribe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // verify initial state
-    expect(vm.historyItems.length).toEqual(2)
-    expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
-    expect(wrapper.emitted('history-count')).toEqual([[2]])
-    expect(vm.panel).toBeNull() // no row is expanded
-    expect(wrapper.find('.no-results').exists()).toBe(false)
+    // verify no row is expanded
+    expect(vm.panel).toBeNull()
 
     // verify Request a Copy button
-    const buttons = wrapper.findAll('.expand-btn')
-    expect(buttons.length).toBe(2)
-    expect(buttons.at(1).text()).toContain('Request a Copy')
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('Request a Copy')
 
     // expand details
-    buttons.at(1).trigger('click')
+    button.trigger('click')
     await flushPromises()
 
     // verify Close button
-    expect(wrapper.findAll('.expand-btn').at(1).text()).toContain('Close')
+    expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
-    expect(vm.panel).toBe(1) // second row is expanded
+    expect(vm.panel).toBe(0) // first row is expanded
     expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
     expect(wrapper.find(CompletedIa).exists()).toBe(false)
     expect(wrapper.find(FutureEffective).exists()).toBe(false)
@@ -279,32 +270,19 @@ xdescribe('Filing History List - regular filings', () => {
     expect(wrapper.find(PendingFiling).exists()).toBe(false)
     expect(wrapper.find(StaffFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find('.download-document-btn').exists()).toBe(false)
-    expect(wrapper.find('.download-receipt-btn').exists()).toBe(false)
-    expect(wrapper.find('.download-all-btn').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
-  it('expands the specified filing id for a post-Bob date (regular) filing', async () => {
+  it('expands a regular filing', async () => {
     const $route = { query: {} }
 
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
       {
-        name: 'changeOfDirectors',
-        date: '2019-03-09',
-        effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
-        paymentToken: 456,
-        submitter: 'Joe Submitter 1',
-        filingId: 654,
-        status: 'COMPLETED',
-        availableOnPaperOnly: true
-      },
-      {
         name: 'annualReport',
-        date: '2019-06-02',
+        submittedDate: '2019-06-02',
         effectiveDate: 'Wed, 20 Nov 2019 22:17:54 GMT',
         paymentToken: 123,
         submitter: 'Joe Submitter 2',
@@ -318,187 +296,8 @@ xdescribe('Filing History List - regular filings', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // verify initial state
-    expect(vm.historyItems.length).toEqual(2)
-    expect(wrapper.findAll('.filing-history-item').length).toEqual(2)
-    expect(wrapper.emitted('history-count')).toEqual([[2]])
-    expect(vm.panel).toBeNull() // no row is expanded
-    expect(wrapper.find('.no-results').exists()).toBe(false)
-
-    // verify View Documents button
-    const buttons = wrapper.findAll('.expand-btn')
-    expect(buttons.length).toBe(2)
-    expect(buttons.at(1).text()).toContain('View Documents')
-
-    // expand details
-    buttons.at(1).trigger('click')
-    await flushPromises()
-
-    // verify Hide Documents button
-    expect(wrapper.findAll('.expand-btn').at(1).text()).toContain('Hide Documents')
-
-    // verify details
-    expect(vm.panel).toBe(1) // second row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
-    expect(wrapper.find('.download-document-btn').exists()).toBe(true)
-    expect(wrapper.find('.download-receipt-btn').exists()).toBe(true)
-    expect(wrapper.find('.download-all-btn').exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
-    const $route = { query: { filing_id: '9873' } }
-
-    // init store
-    store.state.entityType = 'BEN'
-    store.state.entityIncNo = 'BC0007291'
-    store.state.filings = sampleFilings
-
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    expect(vm.historyItems.length).toEqual(7)
-    const item = wrapper.findAll('.filing-history-item').at(5)
-    expect(item.find('.item-header__subtitle').text())
-      .toContain('FILED AND PENDING (filed by Cameron on Dec 12, 2019')
-    expect(item.find('.item-header__subtitle').text())
-      .toContain('The updated office addresses will be legally effective')
-
-    expect(item.text()).toContain('The updated office addresses will be legally effective on Dec 13, 2099')
-
-    wrapper.destroy()
-  })
-})
-
-xdescribe('Filing History List - corrections', () => {
-  it('displays a correction filing with Details Count', async () => {
-    const $route = { query: {} }
-
-    // init store
-    store.state.entityType = 'CP'
-    store.state.entityIncNo = 'CP0001191'
-    store.state.filings = sampleFilings
-
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    expect(vm.historyItems.length).toEqual(7)
-    expect(wrapper.findAll('.filing-history-item').length).toEqual(7)
-    expect(wrapper.emitted('history-count')).toEqual([[7]])
-
-    const item = wrapper.findAll('.filing-history-item').at(6)
-    expect(item.find('.item-header__title').text()).toContain('Correction')
-    expect(item.find('.item-header__title').text()).toContain('Annual Report')
-    expect(item.find('.item-header__subtitle').text()).toContain('Details (2)')
-
-    wrapper.destroy()
-  })
-
-  it('displays the Details List when comments are present on a correction filing', async () => {
-    const $route = { query: {} }
-
-    // init store
-    store.state.filings = sampleFilings
-
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    await Vue.nextTick()
-
-    // verify that Details List component does not exist until the item is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
-
-    // verify detail comments button and expand
-    // NB: only this filing has a detail comments button
-    const button = wrapper.find('.comments-btn')
-    expect(button.text()).toContain('Details (2)')
-    button.trigger('click')
-    await flushPromises()
-
-    // verify that Details List component is displayed after the item is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('does not display the Details List when no comments are present on a correction filing', async () => {
-    const $route = { query: { filing_id: '9873' } }
-
-    // init store
-    store.state.filings = [
-      {
-        name: 'correction',
-        date: '2019-04-06T19:22:59.003777+00:00',
-        paymentToken: 7891,
-        submitter: 'Cameron',
-        filingId: 9873,
-        availableOnPaperOnly: false,
-        effectiveDate: '2019-12-13T00:00:00+00:00',
-        status: 'COMPLETED'
-      }
-    ]
-
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    await Vue.nextTick()
-
-    // verify that detail comments button does not exist
-    expect(wrapper.find('.comments-btn').exists()).toBe(false)
-
-    // verify that Details List component does not exist
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('display the documents present on a correction filing', async () => {
-    const $route = { query: { filing_id: '9873' } }
-
-    // init store
-    store.state.filings = [
-      {
-        displayName: 'Correction - Annual Report (2019)',
-        name: 'correction',
-        date: '2019-04-06T19:22:59.003777+00:00',
-        paymentToken: 7891,
-        submitter: 'Cameron',
-        filingId: 9873,
-        availableOnPaperOnly: false,
-        effectiveDate: '2019-12-13T00:00:00+00:00',
-        status: 'COMPLETED'
-      }
-    ]
-
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
-    await Vue.nextTick()
+    // verify no row is expanded
+    expect(vm.panel).toBeNull()
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -508,16 +307,50 @@ xdescribe('Filing History List - corrections', () => {
     button.trigger('click')
     await flushPromises()
 
-    // verify Incorporation Application button
-    const documentBtns = wrapper.findAll('.download-document-btn')
-    expect(documentBtns.at(0).text()).toBe('Incorporation Application (Corrected)')
-    expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+
+    // verify details
+    expect(vm.panel).toBe(0) // first row is expanded
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(StaffFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  // FUTURE: show and verify the tooltip
+  xit('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
+    const $route = { query: { filing_id: '9873' } }
+
+    // init store
+    store.state.entityType = 'BEN'
+    store.state.entityIncNo = 'BC0007291'
+    store.state.filings = sampleFilings
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.historyItems.length).toEqual(7)
+    const item = wrapper.findAll('.filing-history-item').at(5)
+    expect(item.text()).toContain('The updated office addresses will be legally effective on Dec 13, 2099')
+
+    const subtitle = item.find('.item-header__subtitle').text()
+    expect(subtitle).toContain('FILED AND PENDING')
+    expect(subtitle).toContain('(filed by Cameron on Dec 12, 2019)')
+    expect(subtitle).toContain('The updated office addresses will be legally effective')
 
     wrapper.destroy()
   })
 })
 
-xdescribe('Filing History List - redirections', () => {
+describe('Filing History List - redirections', () => {
   const business = {
     identifier: 'BC1234567',
     legalName: 'legal name - BC1234567',
@@ -720,8 +553,8 @@ xdescribe('Filing History List - redirections', () => {
             header: {
               availableOnPaperOnly: false,
               submitter: 'Joe Submitter',
-              submittedDate: new Date('2020-04-28 19:14:45 GMT'),
-              effectiveDate: new Date('2020-05-06T19:00:00 GMT'), // past date
+              date: '2020-04-28 19:14:45 GMT',
+              effectiveDate: '2020-05-06 19:00:00 GMT', // past date
               filingId: 85114,
               name: 'incorporationApplication',
               paymentToken: 1971,
@@ -741,7 +574,8 @@ xdescribe('Filing History List - redirections', () => {
               header: {
                 availableOnPaperOnly: false,
                 submitter: 'Joe Submitter',
-                date: '2020-04-28T19:14:45.589328+00:00',
+                date: '2020-04-28 19:14:45 GMT',
+                effectiveDate: '2020-04-28 19:14:45 GMT',
                 filingId: 110514,
                 name: 'correction',
                 paymentToken: 1971,
@@ -769,8 +603,8 @@ xdescribe('Filing History List - redirections', () => {
       {
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-04-28T19:14:45.589328+00:00',
-        effectiveDate: new Date('2020-05-06 19:00:00 GMT'), // past date
+        submittedDate: '2020-04-28 19:14:45 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
@@ -807,18 +641,21 @@ xdescribe('Filing History List - redirections', () => {
 })
 
 xdescribe('Filing History List - annual reports', () => {
-  it('displays a normal AR filing', async () => {
+  // TODO: implement
+  xit('displays a normal AR filing', async () => {
   })
 
-  it('displays a "corrected" AR filing', async () => {
+  // TODO: implement
+  xit('displays a "corrected" AR filing', async () => {
   })
 
-  it('displays a "correction pending" AR filing', async () => {
+  // TODO: implement
+  xit('displays a "correction pending" AR filing', async () => {
   })
 })
 
-xdescribe('Filing History List - incorporation applications', () => {
-  xit('displays an "empty" IA filing', async () => {
+describe('Filing History List - incorporation applications', () => {
+  it('displays an "empty" IA filing', async () => {
     const $route = { query: {} }
 
     // init store
@@ -839,24 +676,24 @@ xdescribe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays actual title for a named company IA', async () => {
+  it('displays actual title for a named company IA', async () => {
     const $route = { query: {} }
 
     // init store
     store.state.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BEN'
-    store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
+        displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-05-06T19:00:00+00:00',
-        effectiveDate: '2020-05-06T19:00:00+00:00', // past date
+        submittedDate: '2020-05-06 19:00:00 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
-        status: 'PAID'
+        status: 'COMPLETED'
       }
     ]
 
@@ -868,13 +705,11 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
-    const spans = wrapper.findAll('.item-header__subtitle span')
-    expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Joe Submitter on May 6, 2020) | EFFECTIVE as of May 6, 2020')
-    expect(spans.at(2).text()).toBe('PAID')
+    expect(wrapper.find('.item-header__title').text()).toContain('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('.item-header__title').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.item-header__subtitle span').text()).toContain('(filed by Joe Submitter on May 6, 2020)')
+    expect(wrapper.find('.item-header__subtitle span').text()).toContain('EFFECTIVE as of May 6, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -882,24 +717,23 @@ xdescribe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays default title for a numbered company IA', async () => {
+  it('displays default title for a numbered company IA', async () => {
     const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BEN'
-    store.state.entityName = null
-    store.state.nameRequest = null
     store.state.filings = [
       {
+        displayName: 'BC Benefit Company Incorporation Application - Numbered Benefit Company',
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-05-06T19:00:00+00:00',
-        effectiveDate: '2020-05-06T19:00:00+00:00', // past date
+        submittedDate: '2020-05-06 19:00:00 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
-        status: 'PAID'
+        status: 'COMPLETED'
       }
     ]
 
@@ -911,13 +745,11 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('Numbered Benefit Company')
-    const spans = wrapper.findAll('.item-header__subtitle span')
-    expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Joe Submitter on May 6, 2020) | EFFECTIVE as of May 6, 2020')
-    expect(spans.at(2).text()).toBe('PAID')
+    expect(wrapper.find('.item-header__title').text()).toContain('Benefit Company Incorporation Application')
+    expect(wrapper.find('.item-header__title').text()).toContain('Numbered Benefit Company')
+    expect(wrapper.find('.item-header__subtitle span').text()).toContain('FILED AND PAID')
+    expect(wrapper.find('.item-header__subtitle span').text()).toContain('(filed by Joe Submitter on May 6, 2020)')
+    expect(wrapper.find('.item-header__subtitle span').text()).toContain('EFFECTIVE as of May 6, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -925,23 +757,23 @@ xdescribe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a "future effective" IA filing', async () => {
+  it('displays a "future effective" IA filing', async () => {
     const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BEN'
-    store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
+        displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
         availableOnPaperOnly: false,
-        effectiveDate: new Date('2099-12-31 23:59:59 GMT'), // way in the future so it's always > now
         submitter: 'Joe Submitter',
+        submittedDate: '2020-04-28 19:14:45 GMT',
+        effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
+        filingId: 85114,
         isFutureEffective: true,
-        filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
-        submittedDate: new Date('2020-04-28T19:14:45 GMT'),
         status: 'PAID'
       }
     ]
@@ -954,13 +786,13 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__title').text()).toContain('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('.item-header__title').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.item-header__subtitle span')
-    expect(spans.at(0).text()).toBe('FUTURE EFFECTIVE INCORPORATION')
-    expect(spans.at(2).text())
-      .toBe('PAID (filed by Joe Submitter on Apr 28, 2020) | EFFECTIVE as of Dec 31, 2099')
+    expect(spans.at(0).text()).toContain('FUTURE EFFECTIVE INCORPORATION')
+    expect(spans.at(2).text()).toContain('PAID')
+    expect(spans.at(2).text()).toContain('(filed by Joe Submitter on Apr 28, 2020)')
+    expect(spans.at(2).text()).toContain('EFFECTIVE as of Dec 31, 2099')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -984,10 +816,10 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.find(StaffFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
-    // verify Incorporation Application button
-    const documentBtns = wrapper.findAll('.download-document-btn')
-    expect(documentBtns.at(0).text()).toBe('Incorporation Application - Future Effective Incorporation')
-    expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
+    // // verify Incorporation Application button
+    // const documentBtns = wrapper.findAll('.download-document-btn')
+    // expect(documentBtns.at(0).text()).toBe('Incorporation Application - Future Effective Incorporation')
+    // expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
 
     // FUTURE: verify Notice Of Articles button
     // NB: may be disabled while PAID instead of COMPLETED
@@ -999,37 +831,37 @@ xdescribe('Filing History List - incorporation applications', () => {
     // expect(documentBtns.at(2).text()).toContain('Incorporation Certificate')
     // expect(documentBtns.at(2).attributes('disabled')).toBeUndefined()
 
-    // verify Receipt button
-    expect(wrapper.find('.download-receipt-btn').text()).toBe('Receipt - Future Effective Incorporation')
-    expect(wrapper.find('.download-receipt-btn').attributes('disabled')).toBeUndefined()
+    // // verify Receipt button
+    // expect(wrapper.find('.download-receipt-btn').text()).toBe('Receipt - Future Effective Incorporation')
+    // expect(wrapper.find('.download-receipt-btn').attributes('disabled')).toBeUndefined()
 
-    // verify Download All button
-    expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
-    expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
+    // // verify Download All button
+    // expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
+    // expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 
-  xit('displays a "future effective pending" IA filing', async () => {
+  it('displays a "future effective pending" IA filing', async () => {
     const $route = { query: {} }
 
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
     store.state.entityType = 'BEN'
-    store.state.entityName = 'ACME Benefit Inc'
     store.state.filings = [
       {
+        displayName: 'BC Benefit Company Incorporation Application - ACME Benefit Inc',
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-05-06T19:00:00+00:00',
-        isFutureEffective: true,
-        effectiveDate: '2020-05-06T19:00:00+00:00', // past date
+        submittedDate: '2020-04-28 19:14:45 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
+        isFutureEffective: true,
         name: 'incorporationApplication',
         paymentToken: 1971,
-        status: 'PAID'
+        status: 'PENDING'
       }
     ]
 
@@ -1042,13 +874,13 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__title').text()).toContain('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('.item-header__title').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.item-header__subtitle span')
-    expect(spans.at(0).text())
-      .toBe('FILED AND PENDING (filed by Joe Submitter on May 6, 2020) | EFFECTIVE as of May 6, 2020')
-    expect(spans.at(2).text()).toBe('PAID')
+    expect(spans.at(0).text()).toContain('FILED AND PENDING')
+    expect(spans.at(2).text()).toContain('PAID')
+    expect(spans.at(2).text()).toContain('(filed by Joe Submitter on Apr 28, 2020)')
+    expect(spans.at(2).text()).toContain('EFFECTIVE as of May 6, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
@@ -1072,10 +904,10 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.find(StaffFiling).exists()).toBe(false)
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
-    // verify Incorporation Application button
-    const documentBtns = wrapper.findAll('.download-document-btn')
-    expect(documentBtns.at(0).text()).toBe('Incorporation Application')
-    expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
+    // // verify Incorporation Application button
+    // const documentBtns = wrapper.findAll('.download-document-btn')
+    // expect(documentBtns.at(0).text()).toBe('Incorporation Application')
+    // expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
 
     // FUTURE: verify Notice Of Articles button
     // NB: may be disabled while PAID instead of COMPLETED
@@ -1087,27 +919,31 @@ xdescribe('Filing History List - incorporation applications', () => {
     // expect(documentBtns.at(2).text()).toContain('Incorporation Certificate')
     // expect(documentBtns.at(2).attributes('disabled')).toBeUndefined()
 
-    // verify Receipt button
-    expect(wrapper.find('.download-receipt-btn').text()).toContain('Receipt')
-    expect(wrapper.find('.download-receipt-btn').attributes('disabled')).toBeUndefined()
+    // // verify Receipt button
+    // expect(wrapper.find('.download-receipt-btn').text()).toContain('Receipt')
+    // expect(wrapper.find('.download-receipt-btn').attributes('disabled')).toBeUndefined()
 
-    // verify Download All button
-    expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
-    expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
+    // // verify Download All button
+    // expect(wrapper.find('.download-all-btn').text()).toContain('Download All')
+    // expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 
+  // TODO: implement
   xit('displays a "completed" IA filing', async () => {
   })
 
+  // TODO: implement
   xit('displays a "corrected" IA filing', async () => {
   })
 
+  // TODO: implement
   xit('displays a "correction pending" IA filing', async () => {
   })
 
+  // TODO: refactor
   xit('displays a Paid IA (incorp app mode) and documents', async () => {
     const $route = { query: {} }
 
@@ -1120,8 +956,8 @@ xdescribe('Filing History List - incorporation applications', () => {
       {
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-05-06T19:00:00+00:00',
-        effectiveDate: '2020-05-06T19:00:00+00:00', // past date
+        submittedDate: '2020-05-06 19:00:00 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
@@ -1137,9 +973,9 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__label').text()).toContain('Benefit Company')
+    expect(wrapper.find('.item-header__label').text()).toContain('Incorporation Application')
+    expect(wrapper.find('.item-header__label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.item-header__subtitle span')
     expect(spans.at(0).text())
       .toBe('FILED AND PENDING (filed by Joe Submitter on May 6, 2020) | EFFECTIVE as of May 6, 2020')
@@ -1194,6 +1030,7 @@ xdescribe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
+  // TODO: refactor
   xit('displays a Completed IA (incorp app mode) and documents', async () => {
     const $route = { query: {} }
 
@@ -1205,11 +1042,11 @@ xdescribe('Filing History List - incorporation applications', () => {
       {
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        effectiveDate: new Date('2099-12-31 23:59:59 GMT'), // way in the future so it's always > now
+        effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
-        submittedDate: new Date('2020-04-28T19:14:45 GMT'),
+        submittedDate: '2020-04-28T19:14:45 GMT',
         status: 'COMPLETED'
       }
     ]
@@ -1222,9 +1059,9 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__label').text()).toContain('Benefit Company')
+    expect(wrapper.find('.item-header__label').text()).toContain('Incorporation Application')
+    expect(wrapper.find('.item-header__label').text()).toContain('ACME Benefit Inc')
     expect(wrapper.find('.item-header__subtitle span').text())
       .toBe('FILED AND PAID (filed by Joe Submitter on Apr 28, 2020) | EFFECTIVE as of Dec 31, 2099')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1277,6 +1114,7 @@ xdescribe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
+  // TODO: refactor
   xit('displays a Paid IA (business mode) and documents', async () => {
     const $route = { query: {} }
 
@@ -1289,8 +1127,8 @@ xdescribe('Filing History List - incorporation applications', () => {
       {
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-05-06T19:00:00+00:00',
-        effectiveDate: '2020-05-06T19:00:00+00:00', // past date
+        submittedDate: '2020-05-06 19:00:00 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
@@ -1306,9 +1144,9 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__label').text()).toContain('Benefit Company')
+    expect(wrapper.find('.item-header__label').text()).toContain('Incorporation Application')
+    expect(wrapper.find('.item-header__label').text()).toContain('ACME Benefit Inc')
     const spans = wrapper.findAll('.item-header__subtitle span')
     expect(spans.at(0).text())
       .toBe('FILED AND PENDING (filed by Joe Submitter on May 6, 2020) | EFFECTIVE as of May 6, 2020')
@@ -1363,6 +1201,7 @@ xdescribe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
+  // TODO: refactor
   xit('displays a Completed IA (business mode) and documents', async () => {
     const $route = { query: {} }
 
@@ -1374,8 +1213,8 @@ xdescribe('Filing History List - incorporation applications', () => {
       {
         availableOnPaperOnly: false,
         submitter: 'Joe Submitter',
-        date: '2020-04-28T19:14:45.589328+00:00',
-        effectiveDate: '2020-05-06T19:00:00+00:00', // past date
+        submittedDate: '2020-04-28 19:14:45 GMT',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         name: 'incorporationApplication',
         paymentToken: 1971,
@@ -1391,9 +1230,9 @@ xdescribe('Filing History List - incorporation applications', () => {
     expect(wrapper.findAll('.filing-history-item').length).toEqual(1)
     expect(wrapper.emitted('history-count')).toEqual([[1]])
 
-    expect(wrapper.find('.filing-label').text()).toContain('Benefit Company')
-    expect(wrapper.find('.filing-label').text()).toContain('Incorporation Application')
-    expect(wrapper.find('.filing-label').text()).toContain('ACME Benefit Inc')
+    expect(wrapper.find('.item-header__label').text()).toContain('Benefit Company')
+    expect(wrapper.find('.item-header__label').text()).toContain('Incorporation Application')
+    expect(wrapper.find('.item-header__label').text()).toContain('ACME Benefit Inc')
     expect(wrapper.find('.item-header__subtitle span').text())
       .toBe('FILED AND PAID (filed by Joe Submitter on Apr 28, 2020) | EFFECTIVE as of May 6, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
@@ -1480,12 +1319,12 @@ describe('Filing History List - paper only and other filings', () => {
       {
         availableOnPaperOnly: true,
         displayName: 'Annual Report (2017)',
-        effectiveDate: new Date('2017-03-24 19:20:05 GMT'),
+        effectiveDate: '2017-03-24 19:20:05 GMT',
         filingId: 85114,
         name: 'annualReport',
         status: 'COMPLETED',
         submitter: null,
-        submittedDate: null
+        submittedDate: '2017-03-24 19:20:05 GMT'
       }
     ]
 
@@ -1535,12 +1374,12 @@ describe('Filing History List - paper only and other filings', () => {
       {
         availableOnPaperOnly: false,
         displayName: 'Alteration',
-        effectiveDate: new Date('2020-03-24 19:20:05 GMT'),
+        effectiveDate: '2020-03-24 19:20:05 GMT',
         filingId: 85114,
         isFutureEffective: false,
         name: 'alteration',
         status: 'COMPLETED',
-        submittedDate: new Date('2020-03-24 19:20:05 GMT'),
+        submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Joe Submitter'
       }
     ]
@@ -1585,14 +1424,14 @@ describe('Filing History List - paper only and other filings', () => {
       {
         availableOnPaperOnly: false,
         displayName: 'Alteration from a BC Limited Company to a BC Benefit Company',
-        effectiveDate: new Date('2099-12-31 23:59:59 GMT'), // way in the future so it's always > now
+        effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
         isFutureEffective: true,
         name: 'alteration',
         newLegalType: 'BEN',
         oldLegalType: 'BC',
         status: 'PAID',
-        submittedDate: new Date('2020-03-24 19:20:05 GMT'),
+        submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Joe Submitter'
       }
     ]
@@ -1640,14 +1479,14 @@ describe('Filing History List - paper only and other filings', () => {
       {
         availableOnPaperOnly: false,
         displayName: 'Alteration from a BC Limited Company to a BC Benefit Company',
-        effectiveDate: new Date('2020-04-24T19:20:05 GMT'), // past date
+        effectiveDate: '2020-04-24T19:20:05 GMT', // past date
         filingId: 85114,
         isFutureEffective: true,
         name: 'alteration',
         newLegalType: 'BEN',
         oldLegalType: 'BC',
         status: 'PAID',
-        submittedDate: new Date('2020-03-24 19:20:05 GMT'),
+        submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Joe Submitter'
       }
     ]
@@ -1694,7 +1533,7 @@ describe('Filing History List - paper only and other filings', () => {
         availableOnPaperOnly: false,
         courtOrderNumber: 'CON-123',
         displayName: 'Alteration from a BC Limited Company to a BC Benefit Company',
-        effectiveDate: new Date('2020-03-24 19:20:05 GMT'),
+        effectiveDate: '2020-03-24 19:20:05 GMT',
         filingId: 85114,
         isArrangement: true,
         isFutureEffective: false,
@@ -1702,7 +1541,7 @@ describe('Filing History List - paper only and other filings', () => {
         newLegalType: 'BEN',
         oldLegalType: 'BC',
         status: 'COMPLETED',
-        submittedDate: new Date('2020-03-24 19:20:05 GMT'),
+        submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Joe Submitter'
       }
     ]
@@ -1747,7 +1586,7 @@ describe('Filing History List - paper only and other filings', () => {
     store.state.filings = [
       {
         displayName: 'Registrar\'s Notation',
-        effectiveDate: new Date('2021-05-05 20:37:44 GMT'),
+        effectiveDate: '2021-05-05 20:37:44 GMT',
         fileNumber: '#1234-5678/90',
         filingId: 112040,
         isFutureEffective: false,
@@ -1755,8 +1594,9 @@ describe('Filing History List - paper only and other filings', () => {
         name: 'registrarsNotation',
         notationOrOrder: 'A note about order',
         planOfArrangement: 'Pursuant to a Plan of Arrangement',
-        submittedDate: new Date('2021-05-05 20:37:44 GMT'),
-        submitter: 'Cameron'
+        submittedDate: '2021-05-05 20:37:44 GMT',
+        submitter: 'Cameron',
+        status: 'COMPLETED'
       }
     ]
 
@@ -1797,7 +1637,7 @@ describe('Filing History List - paper only and other filings', () => {
     store.state.filings = [
       {
         displayName: 'Registrar\'s Order',
-        effectiveDate: new Date('2021-05-05 20:37:44 GMT'),
+        effectiveDate: '2021-05-05 20:37:44 GMT',
         fileNumber: '#1234-5678/90',
         filingId: 112040,
         isFutureEffective: false,
@@ -1805,8 +1645,9 @@ describe('Filing History List - paper only and other filings', () => {
         name: 'registrarsOrder',
         notationOrOrder: 'A note about order',
         planOfArrangement: 'Pursuant to a Plan of Arrangement',
-        submittedDate: new Date('2021-05-05 20:37:44 GMT'),
-        submitter: 'Cameron'
+        submittedDate: '2021-05-05 20:37:44 GMT',
+        submitter: 'Cameron',
+        status: 'COMPLETED'
       }
     ]
 
@@ -1847,7 +1688,7 @@ describe('Filing History List - paper only and other filings', () => {
     store.state.filings = [
       {
         displayName: 'Court Order',
-        effectiveDate: new Date('2021-05-05 20:37:44 GMT'),
+        effectiveDate: '2021-05-05 20:37:44 GMT',
         fileNumber: '#1234-5678/90',
         filingId: 112040,
         isFutureEffective: false,
@@ -1855,8 +1696,9 @@ describe('Filing History List - paper only and other filings', () => {
         name: 'courtOrder',
         notationOrOrder: 'A note about order',
         planOfArrangement: 'Pursuant to a Plan of Arrangement',
-        submittedDate: new Date('2021-05-05 20:37:44 GMT'),
-        submitter: 'Cameron'
+        submittedDate: '2021-05-05 20:37:44 GMT',
+        submitter: 'Cameron',
+        status: 'COMPLETED'
       }
     ]
 
@@ -1894,8 +1736,123 @@ describe('Filing History List - paper only and other filings', () => {
   })
 })
 
-xdescribe('Filing History List - documents', () => {
+describe('Filing History List - documents', () => {
+  // TODO: refactor/implement
+  // - verify list of documents (main document + receipt)
+  // - verify Download One and Download All buttons
+  xit('display the documents present on a filing', async () => {
+    const $route = { query: { filing_id: '9873' } }
+
+    // init store
+    store.state.filings = [
+      {
+        displayName: 'Correction - Annual Report (2019)',
+        name: 'correction',
+        submittedDate: '2019-04-06 19:22:59.00 GMT',
+        paymentToken: 7891,
+        submitter: 'Cameron',
+        filingId: 9873,
+        availableOnPaperOnly: false,
+        effectiveDate: '2019-12-13 00:00:00 GMT',
+        status: 'COMPLETED'
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    await Vue.nextTick()
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand details
+    button.trigger('click')
+    await flushPromises()
+
+    // verify Incorporation Application button
+    const documentBtns = wrapper.findAll('.download-document-btn')
+    expect(documentBtns.at(0).text()).toBe('Incorporation Application (Corrected)')
+    expect(documentBtns.at(0).attributes('disabled')).toBeUndefined()
+
+    wrapper.destroy()
+  })
 })
 
-xdescribe('Filing History List - detail comments', () => {
+describe('Filing History List - detail comments', () => {
+  // TODO: refactor
+  xit('displays the details count and list when comments are present on a filing', async () => {
+    const $route = { query: {} }
+
+    // init store
+    store.state.filings = sampleFilings
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    await Vue.nextTick()
+
+    // verify that Details List component does not exist until the item is expanded
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(StaffFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    // verify detail comments button and expand
+    // NB: only this filing has a detail comments button
+    const button = wrapper.find('.comments-btn')
+    expect(button.text()).toContain('Details (2)')
+    button.trigger('click')
+    await flushPromises()
+
+    // verify that Details List component is displayed after the item is expanded
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(StaffFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  // TODO: refactor
+  xit('does not display the details count or list when no comments are present on a filing', async () => {
+    const $route = { query: { filing_id: '9873' } }
+
+    // init store
+    store.state.filings = [
+      {
+        name: 'correction',
+        submittedDate: '2019-04-06 19:22:59 GMT',
+        paymentToken: 7891,
+        submitter: 'Cameron',
+        filingId: 9873,
+        availableOnPaperOnly: false,
+        effectiveDate: '2019-12-13 00:00:00 GMT',
+        status: 'COMPLETED'
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    await Vue.nextTick()
+
+    // verify that detail comments button does not exist
+    expect(wrapper.find('.comments-btn').exists()).toBe(false)
+
+    // verify that Details List component does not exist
+    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.find(CompletedIa).exists()).toBe(false)
+    expect(wrapper.find(FutureEffective).exists()).toBe(false)
+    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.find(PaperFiling).exists()).toBe(false)
+    expect(wrapper.find(PendingFiling).exists()).toBe(false)
+    expect(wrapper.find(StaffFiling).exists()).toBe(false)
+    expect(wrapper.find(DetailsList).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
 })

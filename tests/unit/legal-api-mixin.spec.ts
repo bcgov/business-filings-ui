@@ -187,7 +187,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     put.withArgs('businesses/CP1234567/filings/1234?draft=true')
-    .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+      .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
 
     // call method
     const response = await vm.updateFiling('CP1234567', FILING, 1234, true)
