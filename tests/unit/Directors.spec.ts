@@ -1052,15 +1052,15 @@ describe('Appoint New Director tests', () => {
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
   })
 
-  // todo
+  // FUTURE
   // it('can appoint a new director', () => {
   // })
 
-  // todo
+  // FUTURE
   // it('can edit a new director', () => {
   // })
 
-  // todo
+  // FUTURE
   // it('can remove a new director', () => {
   // })
 })
