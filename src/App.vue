@@ -50,8 +50,7 @@
     </v-fade-transition>
 
     <SbcHeader />
-    <!-- TODO: revert before final commit -->
-    <PaySystemAlert v-if="false" />
+    <PaySystemAlert />
 
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
