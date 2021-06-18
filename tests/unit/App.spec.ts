@@ -484,11 +484,7 @@ describe('App as a COOP', () => {
   })
 
   it('initializes Current Date properly', () => {
-    const today = new Date()
-    const year = today.getFullYear().toString()
-    const month = (today.getMonth() + 1).toString().padStart(2, '0')
-    const date = today.getDate().toString().padStart(2, '0')
-    const currentDate = `${year}-${month}-${date}`
+    const currentDate = new Date().toISOString().slice(0, 10)
     expect(vm.$store.state.currentDate).toEqual(currentDate)
   })
 
@@ -742,11 +738,7 @@ describe('App as a BCOMP', () => {
   })
 
   it('initializes Current Date properly', () => {
-    const today = new Date()
-    const year = today.getFullYear().toString()
-    const month = (today.getMonth() + 1).toString().padStart(2, '0')
-    const date = today.getDate().toString().padStart(2, '0')
-    const currentDate = `${year}-${month}-${date}`
+    const currentDate = new Date().toISOString().slice(0, 10)
     expect(vm.$store.state.currentDate).toEqual(currentDate)
   })
 
