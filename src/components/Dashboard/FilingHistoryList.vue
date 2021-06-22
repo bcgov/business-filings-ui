@@ -1,25 +1,35 @@
 <template>
   <div id="filing-history-list">
-    <add-comment-dialog
+    <AddCommentDialog
       :dialog="addCommentDialog"
       :filingId="currentFilingId"
       @close="hideCommentDialog($event)"
       attach="#filing-history-list"
     />
 
-    <download-error-dialog
+    <DownloadErrorDialog
       :dialog="downloadErrorDialog"
       @close="downloadErrorDialog=false"
       attach="#filing-history-list"
     />
 
-    <load-correction-dialog
+    <LoadCorrectionDialog
       :dialog="loadCorrectionDialog"
       @exit="loadCorrectionDialog=false"
       attach="#filing-history-list"
     />
 
-    <div class="scrollable-container" style="max-height: 56rem">
+    <!-- Alternate Loading Spinner -->
+    <v-fade-transition>
+      <div class="loading-container grayed-out" v-show="isBusy">
+        <div class="loading__content">
+          <v-progress-circular color="primary" size="50" indeterminate />
+          <div class="loading-msg white--text">Fetching data</div>
+        </div>
+      </div>
+    </v-fade-transition>
+
+    <div class="scrollable-container">
       <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
         <v-expansion-panel
           class="align-items-top filing-history-item"
@@ -28,186 +38,185 @@
         >
           <!-- NB: bottom padding for when panel is collapsed -->
           <v-expansion-panel-header class="no-dropdown-icon">
-            <div class="list-item">
-              <div class="filing-label">
-                <h3 class="list-item__title">{{filing.title}}{{correctionTag(filing)}}</h3>
-                <h4 v-if="filing.subtitle" class="list-item__title mt-1">{{filing.subtitle}}</h4>
+            <div class="item-header d-flex">
+              <!-- the filing label (left side) -->
+              <div class="item-header__label">
+                <h3 class="item-header__title">{{filing.displayName}}</h3>
 
-                <div class="list-item__subtitle d-flex">
-                  <!-- NB: blocks below are mutually exclusive, and order is important -->
+                <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-                  <!-- is this a STAFF ONLY filing -->
-                  <div v-if="isStaffFiling(filing.filingType)" class="filing-subtitle">
-                    <span>{{ filedLabel('', filing) }}</span>
-                  </div>
+                <!-- is this a Staff Only filing? -->
+                <div v-if="filing.isTypeStaff" class="item-header__subtitle">
+                  <FiledLabel :filing="filing" />
+                </div>
 
-                  <!-- is this a BCOMP FE COA? -->
-                  <div v-else-if="filing.isBcompCoaFutureEffective" class="filing-subtitle">
-                    <span>{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                    <v-tooltip top content-class="pending-tooltip">
-                      <template v-slot:activator="{ on }">
-                        <div class="pending-alert" v-on="on">
-                          <v-icon color="orange darken-2">mdi-alert</v-icon>
-                        </div>
-                      </template>
-                      <span>The updated office addresses will be legally effective on {{filing.effectiveDate}},
-                        12:01 am Pacific time. No other filings are allowed until then.</span>
-                    </v-tooltip>
-                  </div>
+                <!-- is this a FE BCOMP COA pending (not yet completed)? -->
+                <div v-else-if="filing.isFutureEffectiveBcompCoaPending" class="item-header__subtitle">
+                  <span>FILED AND PENDING <FiledLabel :filing="filing" /></span>
+                  <v-tooltip top content-class="pending-tooltip">
+                    <template v-slot:activator="{ on }">
+                      <div class="pending-alert" v-on="on">
+                        <v-icon color="orange darken-2">mdi-alert</v-icon>
+                      </div>
+                    </template>
+                    <span>The updated office addresses will be legally effective on
+                      {{dateToPacificDateTime(filing.effectiveDate)}}.
+                      No other filings are allowed until then.</span>
+                  </v-tooltip>
+                </div>
 
-                  <!-- is this a COMPLETED IA? (incorp app mode only) -->
-                  <div v-else-if="tempRegNumber && filing.isCompletedIa" class="filing-subtitle">
-                    <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
-                    <v-btn
-                      class="details-btn"
-                      outlined
-                      color="blue darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
+                <!-- is this a completed IA? -->
+                <div v-else-if="filing.isCompletedIa" class="item-header__subtitle">
+                  <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="blue darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon left>mdi-information-outline</v-icon>
+                    {{(panel === index) ? "Hide Details" : "View Details"}}
+                  </v-btn>
+                </div>
 
-                  <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
-                  <div v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending" class="filing-subtitle">
-                    <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                    <span class="vert-pipe"></span>
-                    <span>PAID</span>
-                    <v-btn
-                      class="details-btn"
-                      outlined
-                      color="orange darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-alert</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
+                <!-- is this a FE IA pending (overdue)? -->
+                <div v-else-if="filing.isFutureEffectiveIaPending" class="item-header__subtitle">
+                  <span class="orange--text text--darken-2">FILED AND PENDING</span>
+                  <span class="vert-pipe" />
+                  <span> PAID <FiledLabel :filing="filing" /></span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="orange darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon left>mdi-alert</v-icon>
+                    {{(panel === index) ? "Hide Details" : "View Details"}}
+                  </v-btn>
+                </div>
 
-                  <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
-                  <div v-else-if="tempRegNumber && filing.isFutureEffectiveIa" class="filing-subtitle">
-                    <span>FUTURE EFFECTIVE INCORPORATION</span>
-                    <span class="vert-pipe"></span>
-                    <span>{{ filedLabel('PAID', filing) }}</span>
-                    <v-btn
-                      class="details-btn"
-                      outlined
-                      color="blue darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
+                <!-- is this a FE IA still waiting for effective date/time? -->
+                <div v-else-if="filing.isFutureEffectiveIa" class="item-header__subtitle">
+                  <span>FUTURE EFFECTIVE INCORPORATION</span>
+                  <span class="vert-pipe" />
+                  <span>PAID <FiledLabel :filing="filing" /></span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="blue darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon left>mdi-information-outline</v-icon>
+                    {{(panel === index) ? "Hide Details" : "View Details"}}
+                  </v-btn>
+                </div>
 
-                  <!-- is this a PENDING (ie, not completed) FE alteration? -->
-                  <div v-else-if="filing.isFutureEffectiveAlterationPending" class="filing-subtitle">
-                    <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                    <span class="vert-pipe"></span>
-                    <span>PAID</span>
-                    <v-btn
-                      class="details-btn"
-                      outlined
-                      color="orange darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-alert</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
+                <!-- is this a FE Alteration pending (overdue)? -->
+                <div v-else-if="filing.isFutureEffectiveAlterationPending" class="item-header__subtitle">
+                  <span class="orange--text text--darken-2">FILED AND PENDING</span>
+                  <span class="vert-pipe" />
+                  <span>PAID <FiledLabel :filing="filing" /></span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="orange darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon left>mdi-alert</v-icon>
+                    {{(panel === index) ? "Hide Details" : "View Details"}}
+                  </v-btn>
+                </div>
 
-                  <!-- is this a FE alteration still waiting for effective date/time? -->
-                  <div v-else-if="filing.isFutureEffectiveAlteration" class="filing-subtitle">
-                    <span>FUTURE EFFECTIVE ALTERATION</span>
-                    <span class="vert-pipe"></span>
-                    <span>{{ filedLabel('PAID', filing) }}</span>
-                    <v-btn
-                      class="details-btn"
-                      outlined
-                      color="blue darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
+                <!-- is this a FE Alteration still waiting for effective date/time? -->
+                <div v-else-if="filing.isFutureEffectiveAlteration" class="item-header__subtitle">
+                  <span>FUTURE EFFECTIVE ALTERATION</span>
+                  <span class="vert-pipe" />
+                  <span>PAID <FiledLabel :filing="filing" /></span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="blue darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon left>mdi-information-outline</v-icon>
+                    {{(panel === index) ? "Hide Details" : "View Details"}}
+                  </v-btn>
+                </div>
 
-                  <!-- is this a PAID (ie, not completed) filing? -->
-                  <div v-else-if="filing.isPaid" class="filing-subtitle">
-                    <span class="orange--text text--darken-2">{{ filedLabel('FILED AND PENDING', filing) }}</span>
-                    <span class="vert-pipe"></span>
-                    <span>PAID</span>
-                    <v-btn
-                      class="details-btn"
-                      outlined
-                      color="orange darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-alert</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
+                <!-- is this a paid filing? -->
+                <div v-else-if="isStatusPaid(filing)" class="item-header__subtitle">
+                  <span class="orange--text text--darken-2">FILED AND PENDING</span>
+                  <span class="vert-pipe" />
+                  <span>PAID <FiledLabel :filing="filing" /></span>
+                  <v-btn
+                    class="details-btn"
+                    outlined
+                    color="orange darken-2"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon left>mdi-alert</v-icon>
+                    {{(panel === index) ? "Hide Details" : "View Details"}}
+                  </v-btn>
+                </div>
 
-                  <!-- else this must be a COMPLETED filing -->
-                  <!-- NB: no details button -->
-                  <div v-else class="filing-subtitle">
-                    <span>{{ filedLabel('FILED AND PAID', filing) }}</span>
-                  </div>
+                <!-- else this must be a completed filing -->
+                <!-- NB: no details button -->
+                <div v-else class="item-header__subtitle">
+                  <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
+                </div>
 
-                  <!-- details (comments) button -->
-                  <div v-if="filing.comments.length > 0" class="filing-subtitle">
-                    <v-btn
-                      class="comments-btn"
-                      outlined
-                      color="primary"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                      Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
-                    </v-btn>
-                  </div>
-                </div> <!-- end of subtitle -->
-              </div> <!-- end of filing-label -->
+                <!-- details (comments) button -->
+                <div v-if="filing.comments && filing.comments.length > 0" class="item-header__subtitle">
+                  <v-btn
+                    class="comments-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                    @click.stop="togglePanel(index, filing)"
+                  >
+                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
+                  </v-btn>
+                </div>
+              </div>
 
-              <!-- the action button/menu -->
-              <div class="filing-item__actions">
+              <!-- the action button/menu (right side) -->
+              <div class="item-header__actions">
                 <v-btn
                   class="expand-btn"
                   outlined
                   :ripple=false
-                  @click.stop="togglePanel(index)"
+                  @click.stop="togglePanel(index, filing)"
                 >
-                  <span v-if="filing.isColinFiling || filing.isPaperFiling" class="app-action">
-                    {{ (panel === index) ? "Close" : "Request a Copy" }}</span>
+                  <span v-if="filing.availableOnPaperOnly" class="app-action">
+                    {{(panel === index) ? "Close" : "Request a Copy"}}</span>
                   <span v-else class="app-action">
-                    {{ (panel === index) ? hideLabel(filing) : viewLabel(filing) }}
+                    {{(panel === index) ? hideLabel(filing) : viewLabel(filing)}}
                   </span>
                 </v-btn>
 
                 <!-- the drop-down menu -->
                 <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff">
                   <template v-slot:activator="{ on }">
-                    <v-btn text v-on="on" class="menu-btn">
+                    <v-btn text v-on="on" class="menu-btn pa-1" click.stop>
                       <v-icon>mdi-menu-down</v-icon>
                     </v-btn>
                   </template>
                   <v-list dense>
                     <v-list-item-group color="primary">
-                      <v-list-item v-if="!isStaffFiling(filing.filingType)" :disabled="disableCorrection(filing)">
+                      <v-list-item v-if="!filing.isTypeStaff" :disabled="disableCorrection(filing)">
                         <v-list-item-icon>
                           <v-icon class="app-action">mdi-file-document-edit-outline</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title
                           class="file-correction-item"
-                          @click="correctThisFiling(filing)"
+                          @click.stop="correctThisFiling(filing)"
                         >
                           <span class="app-action">File a Correction</span>
                         </v-list-item-title>
@@ -219,7 +228,7 @@
                         </v-list-item-icon>
                         <v-list-item-title
                           class="add-detail-comment-item"
-                          @click="showCommentDialog(filing.filingId)"
+                          @click.stop="showCommentDialog(filing.filingId)"
                         >
                           <span class="app-action">Add Detail</span>
                         </v-list-item-title>
@@ -232,86 +241,76 @@
           </v-expansion-panel-header>
 
           <v-expansion-panel-content>
-            <!-- is this a BCOMP FE COA filing? -->
-            <!-- NB: no details -->
-            <template v-if="filing.isBcompCoaFutureEffective" />
+            <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-            <!-- is this a COMPLETED IA? (incorp app mode only) -->
-            <template v-else-if="tempRegNumber && filing.isCompletedIa">
-              <completed-ia />
-              <v-divider class="mt-7 mb-5"></v-divider>
+            <!-- is this a Staff Only filing? -->
+            <template v-if="filing.isTypeStaff">
+              <StaffFiling :filing="filing" />
             </template>
 
-            <!-- is this a PENDING (ie, not completed) FE IA? (incorp app mode only) -->
-            <template v-else-if="tempRegNumber && filing.isFutureEffectiveIaPending">
-              <future-effective-pending :filing=filing />
-              <v-divider class="mt-7 mb-5"></v-divider>
+            <!-- is this a FE BCOMP COA pending (not yet completed)? -->
+            <template v-else-if="filing.isFutureEffectiveBcompCoaPending">
+              <!-- no details -->
             </template>
 
-            <!-- is this a FE IA still waiting for effective date/time? (incorp app mode only) -->
-            <template v-else-if="tempRegNumber && filing.isFutureEffectiveIa">
-              <future-effective :filing=filing />
-              <v-divider class="mt-7 mb-5"></v-divider>
+            <!-- is this a completed IA? -->
+            <template v-else-if="filing.isCompletedIa">
+              <CompletedIa />
             </template>
 
-            <!-- is this a PENDING (ie, not completed) FE Alteration? -->
+            <!-- is this a FE IA pending (overdue)? -->
+            <template v-else-if="filing.isFutureEffectiveIaPending">
+              <FutureEffectivePending :filing=filing />
+            </template>
+
+            <!-- is this a FE IA still waiting for effective date/time? -->
+            <template v-else-if="filing.isFutureEffectiveIa">
+              <FutureEffective :filing=filing />
+            </template>
+
+            <!-- is this a FE Alteration pending (overdue)? -->
             <template v-else-if="filing.isFutureEffectiveAlterationPending">
-              <future-effective-pending :filing=filing />
-              <v-divider class="mt-7 mb-5"></v-divider>
+              <FutureEffectivePending :filing=filing />
             </template>
 
             <!-- is this a FE Alteration still waiting for effective date/time?  -->
             <template v-else-if="filing.isFutureEffectiveAlteration">
-              <future-effective :filing=filing />
-              <v-divider class="mt-7 mb-5"></v-divider>
+              <FutureEffective :filing=filing />
             </template>
 
-            <!-- is this a PAID (ie, not completed) filing? -->
-            <template v-else-if="filing.isPaid">
-              <pending-filing :filing=filing />
-              <v-divider class="mt-7 mb-5"></v-divider>
+            <!-- is this a paid filing? -->
+            <template v-else-if="isStatusPaid(filing)">
+              <PendingFiling :filing=filing />
             </template>
 
-            <!-- is this an Alteration filing? -->
-            <template v-else-if="filing.filingType === FilingTypes.ALTERATION">
-              <completed-alteration :filing=filing />
-              <v-divider class="mt-7 mb-5"></v-divider>
-            </template>
-
-            <!-- is this a Colin filing? -->
-            <template v-else-if="filing.isColinFiling">
-              <colin-filing />
-              <!-- NB: no documents so no divider needed -->
+            <!-- is this a completed alteration? -->
+            <template v-else-if="isTypeAlteration(filing)">
+              <CompletedAlteration :filing=filing />
             </template>
 
             <!-- is this a paper filing? -->
-            <template v-else-if="filing.isPaperFiling">
-              <paper-filing />
-              <!-- NB: no documents so no divider needed -->
+            <template v-else-if="filing.availableOnPaperOnly">
+              <PaperFiling />
             </template>
 
-            <!-- is this a staff only filing? -->
-            <template v-else-if="isStaffFiling(filing.filingType)" id="staff-filings-info">
-              <p class="info-text">{{filing.notationOrOrder}}</p>
-              <p class="info-text my-0" v-if="filing.fileNumber">Court Order Number: {{filing.fileNumber}}</p>
-              <p class="info-text my-0">{{filing.planOfArrangement}}</p>
-              <!-- NB: no documents so no divider needed -->
+            <!-- else this must be a completed filing -->
+            <template v-else>
+              <!-- no details -->
             </template>
-
-            <!-- else must be a COMPLETED filing -->
-            <!-- NB: no details -->
-            <template v-else />
 
             <!-- the list of documents -->
-            <v-list dense class="document-list py-0" v-if="filing.documents">
+            <v-list dense class="document-list py-0" v-if="filing.documents && filing.documents.length > 0">
+              <!-- TODO: test this whitespace - can we just use "mt-6" same as details? -->
+              <v-divider class="mt-7 mb-5" />
+
               <v-list-item
                 v-for="(document, index) in filing.documents"
                 :key="index"
               >
-                <v-btn v-if="document.type === DOCUMENT_TYPE_REPORT"
+                <v-btn v-if="document.type === DocumentTypes.REPORT"
                   text color="primary"
                   class="download-document-btn"
-                  @click="downloadDocument(document, index)"
+                  @click="downloadOneDocument(document, index)"
                   :disabled="loadingDocument || loadingReceipt || loadingAll"
                   :loading="loadingDocument && index===downloadingDocIndex"
                 >
@@ -319,10 +318,10 @@
                   <span>{{document.title}}</span>
                 </v-btn>
 
-                <v-btn v-if="document.type === DOCUMENT_TYPE_RECEIPT && !isStaffFiling(filing.filingType)"
+                <v-btn v-if="document.type === DocumentTypes.RECEIPT"
                   text color="primary"
                   class="download-receipt-btn"
-                  @click="downloadReceipt(document)"
+                  @click="downloadOneReceipt(document)"
                   :disabled="loadingReceipt || loadingDocument || loadingAll"
                   :loading="loadingReceipt"
                 >
@@ -345,9 +344,9 @@
             </v-list>
 
             <!-- the details (comments) section -->
-            <template v-if="filing.comments.length > 0">
-              <v-divider class="mt-6"></v-divider>
-              <details-list
+            <template v-if="filing.comments && filing.comments.length > 0">
+              <v-divider class="mt-6" />
+              <DetailsList
                 :filing=filing
                 :isTask="false"
                 @showCommentDialog="showCommentDialog($event)"
@@ -362,7 +361,10 @@
     <!-- No Results Message -->
     <v-card class="no-results" flat v-if="!historyItems.length">
       <v-card-text>
-        <div class="no-results__subtitle" v-if="tempRegNumber">Complete your filing to display</div>
+        <template v-if="tempRegNumber">
+          <div class="no-results__subtitle">Complete your filing to display</div>
+        </template>
+
         <template v-else>
           <div class="no-results__title">You have no filing history</div>
           <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
@@ -374,1004 +376,622 @@
 
 <script lang="ts">
 // Libraries
-import axios from '@/axios-auth'
-import { mapGetters, mapState } from 'vuex'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Getter, State } from 'vuex-class'
 
-// Components
-import ColinFiling from './FilingHistoryList/ColinFiling.vue'
+// Components and Dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
+import FiledLabel from './FilingHistoryList/FiledLabel.vue'
 import FutureEffective from './FilingHistoryList/FutureEffective.vue'
 import FutureEffectivePending from './FilingHistoryList/FutureEffectivePending.vue'
 import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
+import StaffFiling from './FilingHistoryList/StaffFiling.vue'
 import { DetailsList } from '@/components/common'
-
-// Dialogs
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
-import { FilingStatus, FilingTypes, Routes } from '@/enums'
-import { CourtOrderIF, FilingIF, HistoryItemIF } from '@/interfaces'
+import { DocumentTypes, FilingTypes, Routes } from '@/enums'
+import { HistoryItemIF, LedgerIF } from '@/interfaces'
 
 // Mixins
-import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
+import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
-export default {
-  name: 'FilingHistoryList',
-
-  mixins: [DateMixin, EnumMixin, FilingMixin, LegalApiMixin],
-
+@Component({
   components: {
     // sub-components
-    ColinFiling,
     CompletedAlteration,
     CompletedIa,
+    FiledLabel,
     FutureEffective,
     FutureEffectivePending,
     PaperFiling,
     PendingFiling,
+    StaffFiling,
+    // common
     DetailsList,
     // dialogs
     AddCommentDialog,
     DownloadErrorDialog,
     LoadCorrectionDialog
-  },
+  }
+})
+export default class FilingHistoryList extends Mixins(
+  DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin
+) {
+  @Prop({ default: false })
+  readonly disableChanges: boolean
 
-  data () {
-    return {
-      addCommentDialog: false,
-      downloadErrorDialog: false,
-      loadCorrectionDialog: false,
-      panel: null as number, // currently expanded panel
-      historyItems: [] as Array<HistoryItemIF>,
-      loadingDocument: false,
-      loadingReceipt: false,
-      loadingAll: false,
-      currentFilingId: null as number,
-      downloadingDocIndex: -1,
-      FilingTypes // enum for template
-    }
-  },
+  // enums for template
+  readonly DocumentTypes = DocumentTypes
+  readonly FilingTypes = FilingTypes
 
-  props: {
-    disableChanges: null
-  },
+  @Getter isBComp!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter nrNumber!: string
+  @State filings!: Array<LedgerIF>
+  @State entityName!: string
+  @State entityIncNo!: string
 
-  computed: {
-    ...mapGetters(['isBComp', 'isRoleStaff', 'nrNumber']),
+  // local properties
+  private addCommentDialog = false
+  private downloadErrorDialog = false
+  private loadCorrectionDialog = false
+  private panel: number = null // currently expanded panel
+  private historyItems: Array<HistoryItemIF> = []
+  private loadingDocument = false
+  private loadingReceipt = false
+  private loadingAll = false
+  private currentFilingId: number = null
+  private downloadingDocIndex = -1
+  private isBusy = false
 
-    ...mapState(['filings', 'entityIncNo', 'entityName', 'entityType']),
+  /** The Edit URL string. */
+  private get editUrl (): string {
+    return sessionStorage.getItem('EDIT_URL')
+  }
 
-    /** The Pay API URL string. */
-    payApiUrl (): string {
-      return sessionStorage.getItem('PAY_API_URL')
-    },
+  /** The IA's Temporary Registration Number string. */
+  private get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
 
-    /** The Edit URL string. */
-    editUrl (): string {
-      return sessionStorage.getItem('EDIT_URL')
-    },
-
-    /** The Incorporation Application's Temporary Registration Number string. */
-    tempRegNumber (): string {
-      return sessionStorage.getItem('TEMP_REG_NUMBER')
-    }
-  },
-
-  created (): void {
-    // constants
-    this.DOCUMENT_TYPE_REPORT = 'REPORT'
-    this.DOCUMENT_TYPE_RECEIPT = 'RECEIPT'
-
+  private created (): void {
     // load data into this page
     this.loadData()
-  },
+  }
 
-  methods: {
-    loadData () {
-      this.historyItems = []
+  private loadData (): void {
+    this.historyItems = []
 
-      // create history items from 'filings' array from API
-      for (let i = 0; i < this.filings.length; i++) {
-        const filing = this.filings[i].filing
-        if (filing?.header?.date) {
-          let filingDate = filing.header.date.slice(0, 10)
-          if (filing.header.availableInColinOnly) {
-            // filings from converted companies
-            this.loadColinFiling(filing)
-          } else if (filingDate < '2019-03-08' || filing.header.availableOnPaperOnly) {
-            // filings before Bob Date
-            this.loadPaperFiling(filing)
-          } else {
-            // filings on or after Bob Date
-            switch (filing.header.name) {
-              case FilingTypes.ANNUAL_REPORT:
-                this.loadAnnualReport(filing)
-                break
-              case FilingTypes.CHANGE_OF_DIRECTORS:
-                this.loadOtherFiling(filing, filing.changeOfDirectors)
-                break
-              case FilingTypes.CHANGE_OF_ADDRESS:
-                this.loadOtherFiling(filing, filing.changeOfAddress)
-                break
-              case FilingTypes.CHANGE_OF_NAME:
-                this.loadOtherFiling(filing, filing.changeOfName)
-                break
-              case FilingTypes.CORRECTION:
-                this.loadCorrection(filing)
-                break
-              case FilingTypes.INCORPORATION_APPLICATION:
-                this.loadIncorporationApplication(filing)
-                break
-              case FilingTypes.SPECIAL_RESOLUTION:
-                this.loadOtherFiling(filing, filing.specialResolution)
-                break
-              case FilingTypes.VOLUNTARY_DISSOLUTION:
-                this.loadOtherFiling(filing, filing.voluntaryDissolution)
-                break
-              case FilingTypes.ALTERATION:
-                this.loadAlteration(filing)
-                break
-              case FilingTypes.TRANSITION:
-                this.loadTransitionFiling(filing)
-                break
-              case FilingTypes.REGISTRARS_NOTATION:
-                this.loadOtherFiling(filing, filing.registrarsNotation)
-                break
-              case FilingTypes.REGISTRARS_ORDER:
-                this.loadOtherFiling(filing, filing.registrarsOrder)
-                break
-              case FilingTypes.COURT_ORDER:
-                this.loadOtherFiling(filing, filing.courtOrder)
-                break
-              default:
-                // fallback for unknown filings
-                this.loadPaperFiling(filing)
-                break
-            }
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('ERROR - invalid filing =', filing)
-        }
-      }
+    // create history items from 'filings' array from API
+    for (let i = 0; i < this.filings.length; i++) {
+      const filing = this.filings[i] as LedgerIF
 
-      this.$emit('history-count', this.historyItems.length)
-      this.$emit('history-items', this.historyItems)
-
-      // if needed, highlight a specific filing
-      // NB: use unary plus operator to cast string to number
-      const highlightId = +this.$route.query.filing_id // may be NaN (which is false)
-      if (highlightId) { this.highlightFiling(highlightId) }
-    },
-
-    loadAnnualReport (filing: FilingIF) {
-      const header = filing?.header
-      const annualReport = filing?.annualReport
-
-      if (header && annualReport) {
-        const filingType = FilingTypes.ANNUAL_REPORT
-
-        // get AR Filing Year from header if available
-        // otherwise get year from Annual Report Date
-        const agmYear = header.ARFilingYear || +annualReport.annualReportDate.slice(0, 4)
-
-        const filingDateTime = this.apiToPacificDateTime(header.date)
-        const filingDate = this.apiToPacificDate(header.date)
-
-        // build filing item
-        const item: HistoryItemIF = {
-          filingType,
-          title: this.filingTypeToName(filingType, agmYear),
-          filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
-          filingDate,
-          isPaid: (header.status === FilingStatus.PAID),
-          documents: filing?.documents || [] as Array<any>,
-          status: header.status,
-          isCorrected: (header.isCorrected || false),
-          isCorrectionPending: (header.isCorrectionPending || false),
-          comments: this.flattenAndSortComments(header.comments)
-        }
-
-        // add receipt
-        if (header.paymentToken) {
-          item.documents.push({
-            type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
-            filingDateTime,
-            paymentToken: header.paymentToken,
-            title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
-          })
-        }
-
-        this.historyItems.push(item)
-      } else {
+      // safety check for required fields
+      // TODO: add check for displayName when API handles unknown filings
+      if (!filing.name || !filing.effectiveDate || !filing.submittedDate || !filing.status) {
         // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
+        console.log('Invalid filing =', filing)
+        continue
       }
-    },
 
-    loadIncorporationApplication (filing: FilingIF) {
-      const header = filing?.header
-      const incorporationApplication = filing?.incorporationApplication
+      if (filing.availableOnPaperOnly) {
+        this.loadOtherFiling(filing)
+      } else if (this.isTypeAnnualReport(filing)) {
+        this.loadAnnualReport(filing)
+      } else if (this.isTypeIncorporationApplication(filing)) {
+        this.loadIncorporationApplication(filing)
+      } else {
+        this.loadOtherFiling(filing)
+      }
+    }
 
-      if (header && incorporationApplication) {
-        const filingType = FilingTypes.INCORPORATION_APPLICATION
+    this.$emit('history-count', this.historyItems.length)
+    this.$emit('history-items', this.historyItems)
 
-        const filingDateTime = this.apiToPacificDateTime(header.date)
-        const filingDate = this.apiToPacificDate(header.date)
+    // if needed, highlight a specific filing
+    // NB: use unary plus operator to cast string to number
+    const highlightId = +this.$route.query.filing_id // may be NaN (which is falsy)
+    if (highlightId) { this.highlightFiling(highlightId) }
+  }
 
-        // Effective Date is assigned by the backend when the filing is completed (normally right away).
-        // Effective Date may be in the future (eg, for Incorp App future effective filings).
-        // If Effective Date is empty, use Filing Date instead.
-        const effectiveDate = header.effectiveDate
-          ? this.apiToPacificDate(header.effectiveDate)
-          : filingDate
+  /** Loads an annual report filing into the historyItems list. */
+  private loadAnnualReport (filing: LedgerIF): void {
+    try {
+      const effectiveDate = new Date(filing.effectiveDate)
+      const submittedDate = new Date(filing.submittedDate)
 
-        // is this a Future Effective Incorp App?
-        const isFutureEffectiveIa = !!filing.header.isFutureEffective
+      // TODO: get and append AGM Year if not already part of display name
+      let displayName = filing.displayName
+      if (this.isStatusCorrected(filing)) {
+        displayName += ' - Corrected'
+      } else if (filing.correctionFilingId) {
+        displayName += ' - Correction Pending'
+      }
 
-        // is this a Future Effective Incorp App pending completion?
-        const isFutureEffectiveIaPending = isFutureEffectiveIa && this.isEffectiveDatePast(filing)
+      // build filing item
+      const item: HistoryItemIF = {
+        displayName,
+        effectiveDate,
+        filingId: filing.filingId,
+        isFutureEffective: filing.isFutureEffective,
+        name: FilingTypes.ANNUAL_REPORT,
+        status: filing.status,
+        submittedDate,
+        submitter: filing.submitter,
+        commentsLink: filing.commentsLink,
+        correctionLink: filing.correctionLink,
+        documentsLink: filing.documentsLink,
+        filingLink: filing.filingLink
 
-        const name = this.filingTypeToName(filingType)
+      }
 
+      // TODO: remove this when API provides it!
+      // add receipt meta
+      if (filing.paymentToken) {
+        item.receipt = {
+          type: DocumentTypes.RECEIPT,
+          corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
+          filingDateTime: filing.submittedDate,
+          paymentToken: filing.paymentToken,
+          title: 'Receipt',
+          filename: `${this.entityIncNo} - Receipt - ${this.dateToPacificDate(submittedDate)}.pdf`
+        }
+      }
+
+      this.historyItems.push(item)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error loading AR filing =', error)
+    }
+  }
+
+  /** Loads an incorporation application filing into the historyItems list. */
+  private loadIncorporationApplication (filing: LedgerIF): void {
+    try {
+      const effectiveDate = new Date(filing.effectiveDate)
+      const submittedDate = new Date(filing.submittedDate)
+
+      // is this a completed IA? (incorp app mode only)
+      const isCompletedIa = (this.tempRegNumber && this.isStatusCompleted(filing))
+
+      // is this a Future Effective IA (not yet completed)? (incorp app mode only)
+      const isFutureEffectiveIa = (
+        this.tempRegNumber &&
+        !!filing.isFutureEffective &&
+        this.isStatusPaid(filing)
+      )
+
+      // is this a Future Effective IA pending (overdue)? (incorp app mode only)
+      const isFutureEffectiveIaPending = (
+        isFutureEffectiveIa &&
+        this.isEffectiveDatePast(effectiveDate)
+      )
+
+      let displayName = filing.displayName
+      if (this.isStatusCorrected(filing)) {
+        displayName += ' - Corrected'
+      } else if (filing.correctionFilingId) {
+        displayName += ' - Correction Pending'
+      }
+
+      // build filing item
+      const item: HistoryItemIF = {
+        displayName,
+        effectiveDate,
+        filingId: filing.filingId,
+        isCompletedIa,
+        isFutureEffective: filing.isFutureEffective,
+        isFutureEffectiveIa,
+        isFutureEffectiveIaPending,
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: filing.status,
+        submittedDate,
+        submitter: filing.submitter,
+        commentsLink: filing.commentsLink,
+        correctionLink: filing.correctionLink,
+        documentsLink: filing.documentsLink,
+        filingLink: filing.filingLink
+      }
+
+      // TODO: remove this when API provides it!
+      // add receipt meta
+      if (filing.paymentToken) {
         let receiptFilename: string
         if (isFutureEffectiveIa) {
-          receiptFilename = `${this.entityIncNo} - Receipt (Future Effective) - ${filingDate}.pdf`
+          receiptFilename =
+            `${this.entityIncNo} - Receipt (Future Effective) - ${this.dateToPacificDate(submittedDate)}.pdf`
         } else {
-          receiptFilename = `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
+          receiptFilename =
+            `${this.entityIncNo} - Receipt - ${this.dateToPacificDate(submittedDate)}.pdf`
         }
 
-        const corpName = this.entityName || this.getCorpTypeNumberedDescription(this.entityType)
-
-        // build filing item
-        const item: HistoryItemIF = {
-          filingType,
-          title: `${this.getCorpTypeDescription(this.entityType)} ${name} - ${corpName}`,
-          filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
-          filingDate,
-          effectiveDate, // used in Future Effective component
-          isFutureEffectiveIa,
-          isFutureEffectiveIaPending,
-          isPaid: (header.status === FilingStatus.PAID),
-          isCompletedIa: (header.status === FilingStatus.COMPLETED),
-          documents: filing?.documents || [] as Array<any>,
-          status: header.status,
-          isCorrected: (header.isCorrected || false),
-          isCorrectionPending: (header.isCorrectionPending || false),
-          comments: this.flattenAndSortComments(header.comments)
+        item.receipt = {
+          type: DocumentTypes.RECEIPT,
+          corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
+          filingDateTime: filing.submittedDate,
+          paymentToken: filing.paymentToken,
+          title: `Receipt${isFutureEffectiveIa ? ' - Future Effective Incorporation' : ''}`,
+          filename: receiptFilename
         }
-
-        // add receipt
-        if (header.paymentToken) {
-          item.documents.push({
-            type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName,
-            filingDateTime,
-            paymentToken: header.paymentToken,
-            title: `Receipt${isFutureEffectiveIa ? ' - Future Effective Incorporation' : ''}`,
-            filename: receiptFilename
-          })
-        }
-
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
       }
-    },
 
-    /** Loads an "Alteration" filing into the historyItems list. */
-    loadAlteration (filing: FilingIF) {
-      const header = filing?.header
-      const alteration = filing?.alteration
-      const business = filing?.business
+      this.historyItems.push(item)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error loading IA filing =', error)
+    }
+  }
 
-      if (header && alteration && business) {
-        const newLegalType = this.getCorpTypeDescription(alteration.business?.legalType)
-        const oldLegalType = this.getCorpTypeDescription(business.legalType)
-        const courtOrder = alteration.courtOrder
-        const courtOrderNumber = courtOrder?.fileNumber ? courtOrder.fileNumber : ''
+  /** Loads a general filing into the historyItems list. */
+  private loadOtherFiling (filing: LedgerIF): void {
+    try {
+      const effectiveDate = new Date(filing.effectiveDate)
+      const submittedDate = new Date(filing.submittedDate)
 
-        // isArrangement is true when effect of order value returned by BE is 'planOfArrangement'
-        const isArrangement = this.isPlanOfArrangement(courtOrder)
-
-        let title = 'Alteration'
-        if (newLegalType !== oldLegalType) {
-          title += ` - ${oldLegalType} to a ${newLegalType}`
-        } else {
-          title += ' - Change of Company Information'
-        }
-
-        const filingDateTime = this.apiToPacificDateTime(header.date)
-        const filingDate = this.apiToPacificDate(header.date)
-
-        // Effective Date is assigned by the backend when the filing is completed (normally right away).
-        // Effective Date may be in the future (eg, for BCOMP COA filings).
-        // If Effective Date is empty, use Filing Date instead.
-        const effectiveDate = header.effectiveDate
-          ? this.apiToPacificDate(header.effectiveDate)
-          : filingDate
-
-        // is this a Future Effective alteration?
-        const isFutureEffectiveAlteration = !!filing.header.isFutureEffective
-
-        // is this a Future Effective alteration pending completion?
-        const isFutureEffectiveAlterationPending = isFutureEffectiveAlteration && this.isEffectiveDatePast(filing)
-
-        // build filing item
-        const item: HistoryItemIF = {
-          filingType: FilingTypes.ALTERATION,
-          title,
-          filingId: header.filingId,
-          filingAuthor: header.certifiedBy || 'Registry Staff',
-          filingDate,
-          effectiveDate, // used in Future Effective component
-          isFutureEffectiveAlteration,
-          isFutureEffectiveAlterationPending,
-          newLegalType,
-          oldLegalType,
-          courtOrderNumber,
-          isArrangement,
-          isPaid: (header.status === FilingStatus.PAID),
-          documents: filing?.documents || [] as Array<any>,
-          status: header.status,
-          // isCorrected: (header.isCorrected || false), // FUTURE maybe
-          // isCorrectionPending: (header.isCorrectionPending || false), // FUTURE maybe
-          comments: this.flattenAndSortComments(header.comments)
-        }
-
-        // add receipt
-        if (header.paymentToken) {
-          item.documents.push({
-            type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
-            filingDateTime,
-            paymentToken: header.paymentToken,
-            title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
-          })
-        }
-
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
+      // TODO: remove when API already has this in display name
+      let displayName = filing.displayName ||
+        this.filingTypeToName(filing.name) // TODO: delete when API handles unknown filings
+      if (this.isStatusCorrected(filing)) {
+        displayName += ' - Corrected'
+      } else if (filing.correctionFilingId) {
+        displayName += ' - Correction Pending'
       }
-    },
 
-    /** Loads a general filing into the historyItems list. */
-    loadOtherFiling (filing: FilingIF, section: any) {
-      const header = filing?.header
-
-      if (header && section) {
-        const filingType = header.name
-
-        const filingDateTime = this.apiToPacificDateTime(header.date)
-        const filingDate = this.apiToPacificDate(header.date)
-
-        // Effective Date is assigned by the backend when the filing is completed (normally right away).
-        // Effective Date may be in the future (eg, for BCOMP COA filings).
-        // If Effective Date is empty, use Filing Date instead.
-        const effectiveDate = header.effectiveDate
-          ? this.apiToPacificDate(header.effectiveDate)
-          : filingDate
-
-        // is this a BCOMP Future Effective Change of Address?
-        const isBcompCoaFutureEffective = this.isBComp &&
-          (header.status === FilingStatus.PAID) &&
-          (filingType === FilingTypes.CHANGE_OF_ADDRESS) &&
-          this.isEffectiveDateFuture(filing)
-
-        // build filing item
-        const item: HistoryItemIF = {
-          filingType,
-          title: this.filingTypeToName(filingType),
-          filingId: header.filingId,
-          filingAuthor: header.certifiedBy,
-          filingDate: this.isStaffFiling(filingType) ? filingDateTime : filingDate, // special case
-          effectiveDate, // used for BCOMP COA Future Effective tooltip
-          isBcompCoaFutureEffective,
-          isPaid: (header.status === FilingStatus.PAID),
-          documents: filing?.documents || [] as Array<any>,
-          status: header.status,
-          isCorrected: (header.isCorrected || false),
-          isCorrectionPending: (header.isCorrectionPending || false),
-          comments: this.flattenAndSortComments(header.comments)
-        }
-
-        // Apply additional properties for Staff Only Filings
-        if (this.isStaffFiling(filingType)) {
-          let baseFiling
-          switch (filingType) {
-            case FilingTypes.REGISTRARS_NOTATION: baseFiling = filing.registrarsNotation
-              break
-            case FilingTypes.REGISTRARS_ORDER: baseFiling = filing.registrarsOrder
-              break
-            case FilingTypes.COURT_ORDER: baseFiling = filing.courtOrder
-              break
-          }
-
-          item.notationOrOrder = baseFiling?.orderDetails
-          item.fileNumber = baseFiling?.fileNumber
-          item.planOfArrangement = baseFiling?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
-
-          item.filingAuthor = this.isRoleStaff ? header.submitter : 'Registry Staff'
-        }
-
-        // add receipt
-        if (header.paymentToken) {
-          item.documents.push({
-            type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
-            filingDateTime,
-            paymentToken: header.paymentToken,
-            title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
-          })
-        }
-
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
+      // build filing item
+      const item: HistoryItemIF = {
+        availableOnPaperOnly: filing.availableOnPaperOnly || false,
+        displayName,
+        effectiveDate,
+        filingId: filing.filingId,
+        isFutureEffective: filing.isFutureEffective,
+        name: filing.name || FilingTypes.UNKNOWN,
+        status: filing.status,
+        submittedDate,
+        submitter: filing.submitter,
+        commentsLink: filing.commentsLink,
+        correctionLink: filing.correctionLink,
+        documentsLink: filing.documentsLink,
+        filingLink: filing.filingLink,
+        comments: filing.availableOnPaperOnly ? [] : undefined
       }
-    },
 
-    /** Whether this filing's effective date/time is in the past. */
-    isEffectiveDatePast (filing: FilingIF): boolean {
-      if (filing?.header?.effectiveDate) {
-        // NB: these are both in UTC
-        const effectiveDateTime = new Date(filing.header.effectiveDate)
+      // add additional properties for BCOMP COA filings
+      if (this.isBComp && this.isTypeChangeOfAddress(filing)) {
         const now = new Date()
-        if (effectiveDateTime <= now) {
-          return true
-        }
-      }
-      return false
-    },
-
-    /** Whether this filing's effective date/time is in the future. */
-    isEffectiveDateFuture (filing: FilingIF): boolean {
-      if (filing?.header?.effectiveDate) {
-        // NB: these are both in UTC
-        const effectiveDateTime = new Date(filing.header.effectiveDate)
-        const now = new Date()
-        if (effectiveDateTime > now) {
-          return true
-        }
-      }
-      return false
-    },
-
-    /** Whether this filing(alteration) is pursuant to a plan of arrangement  */
-    isPlanOfArrangement (courtOrder: CourtOrderIF): boolean {
-      if (!courtOrder || !courtOrder.effectOfOrder) {
-        return false
+        // is this a Future Effective BCOMP COA pending (not yet completed)?
+        // (NB: this is False after the effective date)
+        item.isFutureEffectiveBcompCoaPending = (
+          !!filing.isFutureEffective &&
+          this.isStatusPaid(filing) &&
+          this.isEffectiveDateFuture(effectiveDate)
+        )
       }
 
-      return this.isEffectOfOrderPlanOfArrangement(courtOrder)
-    },
+      // add additional properties for Alteration filings
+      if (this.isTypeAlteration(filing)) {
+        // is this a Future Effective alteration (not yet completed)?
+        const isFutureEffectiveAlteration = (
+          !!filing.isFutureEffective &&
+          this.isStatusPaid(filing)
+        )
 
-    loadCorrection (filing: FilingIF) {
-      const header = filing?.header
-      const correction = filing?.correction
+        // is this a Future Effective alteration pending (overdue)?
+        const isFutureEffectiveAlterationPending = (
+          isFutureEffectiveAlteration &&
+          this.isEffectiveDatePast(effectiveDate)
+        )
 
-      const filingDateTime = this.apiToPacificDateTime(header.date)
-      const filingDate = this.apiToPacificDate(header.date)
-
-      if (header && correction) {
-        const item: HistoryItemIF = {
-          filingType: FilingTypes.CORRECTION,
-          title: `Correction - ${this.filingTypeToName(correction.correctedFilingType)}`,
-          filingId: header.filingId,
-          filingAuthor: header.certifiedBy || 'Registry Staff',
-          filingDate,
-          isPaid: (header.status === FilingStatus.PAID),
-          documents: filing?.documents || [] as Array<any>,
-          status: header.status,
-          correctedFilingId: correction.correctedFilingId,
-          correctedFilingType: correction.correctedFilingType,
-          comments: this.flattenAndSortComments(header.comments)
-        }
-
-        // add receipt
-        if (header.paymentToken) {
-          item.documents.push({
-            type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
-            filingDateTime,
-            paymentToken: header.paymentToken,
-            title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
-          })
-        }
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
-      }
-    },
-
-    /** Loads a Colin filing into the historyItems list. */
-    loadColinFiling (filing: FilingIF) {
-      const header = filing?.header
-
-      if (header) {
-        // since name is not guaranteed to exist, provide a fallback
-        const filingType = header.name || FilingTypes.UNKNOWN
-
-        let title: string
-        if (filing.annualReport?.annualReportDate) {
-          const agmYear = +filing.annualReport.annualReportDate.slice(0, 4)
-          title = this.filingTypeToName(filingType, agmYear)
-        } else {
-          title = this.filingTypeToName(filingType)
-        }
-
-        const filingDate = this.apiToPacificDate(header.date)
-        const filingYear = this.apiToDate(header.date)?.getFullYear()
-
-        const item: HistoryItemIF = {
-          filingType,
-          title,
-          filingId: header.filingId,
-          filingAuthor: null,
-          filingDate,
-          filingYear,
-          isColinFiling: true,
-          isPaid: (header.status === FilingStatus.PAID),
-          status: header.status,
-          // isCorrected: (header.isCorrected || false), // FUTURE
-          // isCorrectionPending: (header.isCorrectionPending || false), // FUTURE
-          comments: this.flattenAndSortComments(header.comments)
-        }
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
-      }
-    },
-
-    /** Loads a Transition filing into the historyItems list. */
-    loadTransitionFiling (filing: FilingIF) {
-      const header = filing?.header
-      const business = filing?.business
-
-      if (header && business) {
-        const filingType = FilingTypes.TRANSITION
-
-        let subtitle = '' // FUTURE- add to this
-
-        const filingDateTime = this.apiToPacificDateTime(header.date)
-        const filingDate = this.apiToPacificDate(header.date)
-
-        // Effective Date is assigned by the backend when the filing is completed (normally right away).
-        // Effective Date may be in the future (eg, for BCOMP COA filings).
-        // If Effective Date is empty, use Filing Date instead.
-        const effectiveDate = header.effectiveDate
-          ? this.apiToPacificDate(header.effectiveDate)
-          : filingDate
-
-        // is this a Future Effective Transition Filing?
-        const isFutureEffectiveTransition = !!filing.header.isFutureEffective
-
-        // is this a Future Effective Transition pending completion?
-        const isFutureEffectiveTransitionPending = isFutureEffectiveTransition && this.isEffectiveDatePast(filing)
-
-        // build filing item
-        const item: HistoryItemIF = {
-          filingType,
-          title: this.filingTypeToName(filingType),
-          subtitle,
-          filingId: header.filingId,
-          filingAuthor: 'Registry Staff', // TBD
-          filingDate,
-          effectiveDate, // used in Future Effective IA components
-          isPaid: (header.status === FilingStatus.PAID),
-          documents: filing?.documents || ([] as Array<any>),
-          status: header.status,
-          comments: this.flattenAndSortComments(header.comments)
-        }
-
-        // add receipt
-        if (header.paymentToken) {
-          item.documents.push({
-            type: this.DOCUMENT_TYPE_RECEIPT,
-            corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
-            filingDateTime,
-            paymentToken: header.paymentToken,
-            title: 'Receipt',
-            filename: `${this.entityIncNo} - Receipt - ${filingDate}.pdf`
-          })
-        }
-
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
-      }
-    },
-
-    /** Loads a paper filing into the historyItems list. */
-    loadPaperFiling (filing: FilingIF) {
-      const header = filing?.header
-
-      if (header) {
-        // since name is not guaranteed to exist, provide a fallback
-        const filingType = header.name || FilingTypes.UNKNOWN
-
-        let title: string
-        if (filing.annualReport?.annualReportDate) {
-          const agmYear = +filing.annualReport.annualReportDate.slice(0, 4)
-          title = this.filingTypeToName(filingType, agmYear)
-        } else {
-          title = this.filingTypeToName(filingType)
-        }
-
-        const filingDate = this.apiToPacificDate(header.date)
-        const filingYear = this.apiToDate(header.date)?.getFullYear()
-
-        const item: HistoryItemIF = {
-          filingType,
-          title,
-          filingId: header.filingId,
-          filingAuthor: 'Registry Staff',
-          filingDate,
-          filingYear,
-          isPaperFiling: true,
-          isPaid: (header.status === FilingStatus.PAID),
-          status: header.status,
-          isCorrected: (header.isCorrected || false),
-          isCorrectionPending: (header.isCorrectionPending || false),
-          comments: this.flattenAndSortComments(header.comments)
-        }
-        this.historyItems.push(item)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - missing section in filing =', filing)
-      }
-    },
-
-    /** Expands the panel of the specified Filing ID. */
-    highlightFiling (filingId: number) {
-      for (let i = 0; i < this.historyItems.length; i++) {
-        const documents = this.historyItems[i].documents
-        // NB: this only works if there is a filing document
-        if (documents?.length > 0 && documents[0].filingId === filingId) {
-          this.panel = i
-          break
-        }
-      }
-    },
-
-    async correctThisFiling (item: HistoryItemIF) {
-      switch (item?.filingType) {
-        case FilingTypes.ANNUAL_REPORT:
-          // FUTURE:
-          // this.$router.push({ name: Routes.ANNUAL_REPORT,
-          //   params: { filingId: filing.filingId, isCorrection: true }})
-          // FOR NOW:
-          this.$router.push({
-            name: Routes.CORRECTION,
-            params: { correctedFilingId: item.filingId }
-          })
-          break
-
-        case FilingTypes.CHANGE_OF_DIRECTORS:
-          // FUTURE:
-          // this.$router.push({ name: Routes.STANDALONE_DIRECTORS,
-          //   params: { filingId: filing.filingId, isCorrection: true } })
-          // FOR NOW:
-          this.$router.push({
-            name: Routes.CORRECTION,
-            params: { correctedFilingId: item.filingId }
-          })
-          break
-
-        case FilingTypes.CHANGE_OF_ADDRESS:
-          // FUTURE:
-          // this.$router.push({ name: Routes.STANDALONE_ADDRESSES,
-          //   params: { filingId: filing.filingId, isCorrection: true } })
-          // FOR NOW:
-          this.$router.push({
-            name: Routes.CORRECTION,
-            params: { correctedFilingId: item.filingId }
-          })
-          break
-
-        case FilingTypes.INCORPORATION_APPLICATION:
-          try {
-            // show spinner since the network calls below can take a few seconds
-            this.$root.$emit('showSpinner', true)
-
-            // fetch original IA
-            const iaFiling = await this.fetchFilingById(this.entityIncNo, item.filingId)
-
-            if (!iaFiling) {
-              throw new Error('Invalid API response')
-            }
-
-            // create draft IA Correction filing
-            const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-            const draftCorrection = await this.createFiling(this.entityIncNo, correctionIaFiling, true)
-            const draftCorrectionId = +draftCorrection?.header?.filingId
-
-            if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
-              throw new Error('Invalid API response')
-            }
-
-            // redirect to Edit web app to correct this IA
-            // NB: no need to clear spinner on redirect
-            const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${draftCorrectionId}`
-            window.location.assign(correctionUrl) // assume URL is always reachable
-          } catch (error) {
-            // clear spinner on error
-            this.$root.$emit('showSpinner', false)
-
-            // eslint-disable-next-line no-console
-            console.log(`Correction Creation error = ${error}`)
-            this.loadCorrectionDialog = true
-          }
-          break
-
-        case FilingTypes.CORRECTION:
-          // FUTURE: allow a correction to a correction?
-          // this.$router.push({ name: Routes.CORRECTION,
-          //   params: { correctedFilingId: item.filingId } })
-          alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
-          break
-
-        case FilingTypes.ALTERATION:
-          // FUTURE: allow a correction to an alteration?
-          // this.$router.push({ name: Routes.CORRECTION,
-          //   params: { correctedFilingId: item.filingId } })
-          alert('At this time, you cannot correct an alteration. Please contact Ops if needed.')
-          break
-
-        default:
-          // fallback for all other filings
-          this.$router.push({
-            name: Routes.CORRECTION,
-            params: { correctedFilingId: item.filingId }
-          })
-          break
-      }
-    },
-
-    async downloadDocument (document: any, index: number) {
-      this.loadingDocument = true
-      this.downloadingDocIndex = index
-      await this.downloadOneDocument(document)
-      this.loadingDocument = false
-      this.downloadingDocIndex = -1
-    },
-
-    async downloadOneDocument (document: any) {
-      // safety check
-      if (!document.filingId || !document.filename) return
-
-      let url = `businesses/${this.entityIncNo}/filings/${document.filingId}`
-      const headers = { 'Accept': 'application/pdf' }
-
-      // Notice of articles or certificate will come in as a document report type
-      if (document.reportType) {
-        url += `?type=${document.reportType}`
+        item.courtOrderNumber = filing.data?.courtOrder?.fileNumber || ''
+        item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data?.courtOrder?.effectOfOrder)
+        item.isFutureEffectiveAlteration = isFutureEffectiveAlteration
+        item.isFutureEffectiveAlterationPending = isFutureEffectiveAlterationPending
+        item.newLegalType = filing.data?.newLegalType
+        item.oldLegalType = filing.data?.oldLegalType
       }
 
-      await axios.get(url, { headers: headers, responseType: 'blob' as 'json' }).then(response => {
-        if (response) {
-          /* solution from https://github.com/axios/axios/issues/1392 */
-
-          // it is necessary to create a new blob object with mime-type explicitly set
-          // otherwise only Chrome works like it should
-          const blob = new Blob([response.data], { type: 'application/pdf' })
-
-          // IE doesn't allow using a blob object directly as link href
-          // instead it is necessary to use msSaveOrOpenBlob
-          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(blob, document.filename)
-          } else {
-            // for other browsers, create a link pointing to the ObjectURL containing the blob
-            const url = window.URL.createObjectURL(blob)
-            const a = window.document.createElement('a')
-            window.document.body.appendChild(a)
-            a.setAttribute('style', 'display: none')
-            a.href = url
-            a.download = document.filename
-            a.click()
-            window.URL.revokeObjectURL(url)
-            a.remove()
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('downloadOneDocument() error - null response')
-          this.downloadErrorDialog = true
-        }
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('loadOneDocument() error =', error)
-        this.downloadErrorDialog = true
-      })
-    },
-
-    async downloadReceipt (document: any) {
-      this.loadingReceipt = true
-      await this.downloadOneReceipt(document)
-      this.loadingReceipt = false
-    },
-
-    async downloadOneReceipt (document: any) {
-      // safety check
-      if (!document.paymentToken || !document.filingDateTime || !document.filename) return
-
-      const url = `${document.paymentToken}/receipts`
-      const data = {
-        corpName: document.corpName,
-        filingDateTime: document.filingDateTime,
-        fileName: 'receipt' // not used
-      }
-      const config = {
-        headers: { 'Accept': 'application/pdf' },
-        responseType: 'blob' as 'json',
-        baseURL: this.payApiUrl + 'payment-requests/'
+      // add additional properties for Staff Only filings
+      if (this.isTypeStaff(filing)) {
+        item.documents = [] // no documents
+        item.fileNumber = filing.data?.fileNumber // may be falsy
+        item.isTypeStaff = true
+        item.notationOrOrder = filing.data?.orderDetails // should not be falsy
+        item.planOfArrangement = filing.data?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
       }
 
-      await axios.post(url, data, config).then(response => {
-        if (response) {
-          /* solution from https://github.com/axios/axios/issues/1392 */
-
-          // it is necessary to create a new blob object with mime-type explicitly set
-          // otherwise only Chrome works like it should
-          const blob = new Blob([response.data], { type: 'application/pdf' })
-
-          // IE doesn't allow using a blob object directly as link href
-          // instead it is necessary to use msSaveOrOpenBlob
-          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(blob, document.filename)
-          } else {
-            // for other browsers, create a link pointing to the ObjectURL containing the blob
-            const url = window.URL.createObjectURL(blob)
-            const a = window.document.createElement('a')
-            window.document.body.appendChild(a)
-            a.setAttribute('style', 'display: none')
-            a.href = url
-            a.download = document.filename
-            a.click()
-            window.URL.revokeObjectURL(url)
-            a.remove()
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('downloadOneReceipt() error - null response')
-          this.downloadErrorDialog = true
-        }
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('downloadOneReceipt() error =', error)
-        this.downloadErrorDialog = true
-      })
-    },
-
-    async downloadAll (item: HistoryItemIF) {
-      this.loadingAll = true
-      // first download documents (if any)
-      if (item?.documents) {
-        for (let i = 0; i < item.documents.length; i++) {
-          const type = item.documents[i].type
-          if (type === this.DOCUMENT_TYPE_REPORT) {
-            await this.downloadOneDocument(item.documents[i])
-          }
-          if (type === this.DOCUMENT_TYPE_RECEIPT) {
-            await this.downloadOneReceipt(item.documents[i])
-          }
+      // TODO: remove this when API provides it!
+      // add receipt meta
+      if (filing.paymentToken) {
+        item.receipt = {
+          type: DocumentTypes.RECEIPT,
+          corpName: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
+          filingDateTime: filing.submittedDate,
+          paymentToken: filing.paymentToken,
+          title: 'Receipt',
+          filename: `${this.entityIncNo} - Receipt - ${this.dateToPacificDate(submittedDate)}.pdf`
         }
       }
-      this.loadingAll = false
-    },
 
-    showCommentDialog (filingId: number): void {
-      this.currentFilingId = filingId
-      this.addCommentDialog = true
-    },
+      this.historyItems.push(item)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('Error loading other filing =', error)
+    }
+  }
 
-    async hideCommentDialog (needReload: boolean): Promise<void> {
-      this.addCommentDialog = false
-      // if needed, reload comments for this filing
-      // NB: no spinner or state change, just do it quietly
-      if (needReload) await this.reloadComments(this.currentFilingId)
-    },
+  /** Whether the subject effective date/time is in the past. */
+  isEffectiveDatePast (effectiveDate: Date): boolean {
+    // NB: these are both in UTC
+    return (effectiveDate <= new Date())
+  }
 
-    async reloadComments (filingId: number): Promise<void> {
-      // find the filing in the list
-      const filing = this.historyItems.find(item => (item.filingId === filingId))
+  /** Whether the subject effective date/time is in the future. */
+  isEffectiveDateFuture (effectiveDate: Date): boolean {
+    // NB: these are both in UTC
+    return (effectiveDate > new Date())
+  }
 
-      if (filing) {
-        // fetch latest comments for this filing
-        const url = `businesses/${this.entityIncNo}/filings/${filingId}`
-        await axios.get(url).then(res => {
-          if (res && res.data && res.data.filing && res.data.filing.header) {
-            // reassign just the comments
-            filing.comments = this.flattenAndSortComments(res.data.filing.header.comments)
-          } else {
-            // eslint-disable-next-line no-console
-            console.log('reloadComments() error - invalid response =', res)
-          }
-        }).catch(error => {
-          // eslint-disable-next-line no-console
-          console.log('reloadComments() error =', error)
+  /** Expands the panel of the specified filing ID. */
+  private highlightFiling (filingId: number): void {
+    for (let i = 0; i < this.historyItems.length; i++) {
+      if (this.historyItems[i].filingId === filingId) {
+        this.panel = i
+        break
+      }
+    }
+  }
+
+  private async correctThisFiling (item: HistoryItemIF): Promise<void> {
+    const correctedFilingId = item.filingId?.toString()
+
+    switch (item?.name) {
+      case FilingTypes.ANNUAL_REPORT:
+        // FUTURE:
+        // this.$router.push({ name: Routes.ANNUAL_REPORT,
+        //   params: { filingId: filing.filingId, isCorrection: true } })
+        // FOR NOW:
+        this.$router.push({
+          name: Routes.CORRECTION,
+          params: { correctedFilingId }
         })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('reloadComments() error - could not find filing id =', filingId)
+        break
+
+      case FilingTypes.CHANGE_OF_DIRECTORS:
+        // FUTURE:
+        // this.$router.push({ name: Routes.STANDALONE_DIRECTORS,
+        //   params: { filingId: filing.filingId, isCorrection: true } })
+        // FOR NOW:
+        this.$router.push({
+          name: Routes.CORRECTION,
+          params: { correctedFilingId }
+        })
+        break
+
+      case FilingTypes.CHANGE_OF_ADDRESS:
+        // FUTURE:
+        // this.$router.push({ name: Routes.STANDALONE_ADDRESSES,
+        //   params: { filingId: filing.filingId, isCorrection: true } })
+        // FOR NOW:
+        this.$router.push({
+          name: Routes.CORRECTION,
+          params: { correctedFilingId }
+        })
+        break
+
+      case FilingTypes.INCORPORATION_APPLICATION:
+        try {
+          // show spinner since the network calls below can take a few seconds
+          this.$root.$emit('showSpinner', true)
+
+          // fetch original IA
+          const iaFiling = await this.fetchFiling(this.entityIncNo, item.filingId)
+
+          if (!iaFiling) {
+            throw new Error('Invalid API response')
+          }
+
+          // create draft IA Correction filing
+          const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
+          const draftCorrection = await this.createFiling(this.entityIncNo, correctionIaFiling, true)
+          const draftCorrectionId = +draftCorrection?.header?.filingId
+
+          if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
+            throw new Error('Invalid API response')
+          }
+
+          // redirect to Edit web app to correct this IA
+          // NB: no need to clear spinner on redirect
+          const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${draftCorrectionId}`
+          window.location.assign(correctionUrl) // assume URL is always reachable
+        } catch (error) {
+          // clear spinner on error
+          this.$root.$emit('showSpinner', false)
+
+          // eslint-disable-next-line no-console
+          console.log('Error creating correction =', error)
+          this.loadCorrectionDialog = true
+        }
+        break
+
+      case FilingTypes.CORRECTION:
+        // FUTURE: allow a correction to a correction?
+        // this.$router.push({ name: Routes.CORRECTION,
+        //   params: { correctedFilingId } })
+        alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
+        break
+
+      case FilingTypes.ALTERATION:
+        // FUTURE: allow a correction to an alteration?
+        // this.$router.push({ name: Routes.CORRECTION,
+        //   params: { correctedFilingId } })
+        alert('At this time, you cannot correct an alteration. Please contact Ops if needed.')
+        break
+
+      default:
+        // fallback for all other filings
+        this.$router.push({
+          name: Routes.CORRECTION,
+          params: { correctedFilingId }
+        })
+        break
+    }
+  }
+
+  private async downloadOneDocument (document: any, index: number): Promise<void> {
+    this.loadingDocument = true
+    this.downloadingDocIndex = index
+    await this.fetchOneDocument(this.entityIncNo, document).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchOneDocument() error =', error)
+      this.downloadErrorDialog = true
+    })
+    this.loadingDocument = false
+    this.downloadingDocIndex = -1
+  }
+
+  private async downloadOneReceipt (document: any): Promise<void> {
+    this.loadingReceipt = true
+    await this.fetchOneReceipt(document).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchOneReceipt() error =', error)
+      this.downloadErrorDialog = true
+    })
+    this.loadingReceipt = false
+  }
+
+  private async downloadAll (item: HistoryItemIF): Promise<void> {
+    this.loadingAll = true
+    if (item?.documents) {
+      for (let i = 0; i < item.documents.length; i++) {
+        const type = item.documents[i].type
+        if (type === DocumentTypes.REPORT) {
+          await this.fetchOneDocument(this.entityIncNo, item.documents[i]).catch(error => {
+            // eslint-disable-next-line no-console
+            console.log('fetchOneDocument() error =', error)
+            this.downloadErrorDialog = true
+          })
+        }
+        if (type === DocumentTypes.RECEIPT) {
+          await this.fetchOneReceipt(item.documents[i]).catch(error => {
+            // eslint-disable-next-line no-console
+            console.log('fetchOneReceipt() error =', error)
+            this.downloadErrorDialog = true
+          })
+        }
       }
-    },
-
-    /** Returns correction tag for this history item. */
-    correctionTag (item: HistoryItemIF): string {
-      return item?.isCorrected ? ' - Corrected' : (item?.isCorrectionPending ? ' - Correction Pending' : '')
-    },
-
-    /** Returns "filed" label with conditional author and date. */
-    filedLabel (status: string, item: HistoryItemIF): string {
-      const appendEffectiveDate = `| EFFECTIVE as of ${item.effectiveDate}`
-      const a = item.filingAuthor
-      const d = item.filingDate
-
-      if (this.isStaffFiling(item.filingType)) return `Filed by ${a} on ${d}`
-
-      if (a && d) return `${status} (filed by ${a} on ${d}) ${item.effectiveDate ? appendEffectiveDate : ''}`
-      if (a) return `${status} (filed by ${a}) ${item.effectiveDate ? appendEffectiveDate : ''}`
-      if (d) return `${status} (filed on ${d}) ${item.effectiveDate ? appendEffectiveDate : ''}`
-      return status
-    },
-
-    /** Closes current panel or opens new panel. */
-    togglePanel (index: number): void {
-      this.panel = (this.panel === index) ? null : index
-    },
-
-    /** Identify Staff-Only filings by filing type. */
-    isStaffFiling (filingType: FilingTypes): boolean {
-      return [
-        FilingTypes.REGISTRARS_NOTATION,
-        FilingTypes.REGISTRARS_ORDER,
-        FilingTypes.COURT_ORDER
-      ].includes(filingType)
-    },
-
-    /** Whether to disable correction for this history item. */
-    disableCorrection (item: HistoryItemIF): boolean {
-      const isAlterationFiling = (item.filingType === FilingTypes.ALTERATION)
-      const isCorrectionFiling = (item.filingType === FilingTypes.CORRECTION)
-      const isTransitionFiling = (item.filingType === FilingTypes.TRANSITION)
-
-      return (this.disableChanges || isAlterationFiling || isCorrectionFiling || isTransitionFiling ||
-        this.isStaffFiling(item.filingType) || item.isCorrected || item.isFutureEffectiveIa || item.isColinFiling)
-    },
-
-    /** The action label to display documents and/or detail comments. */
-    viewLabel (item: HistoryItemIF): string {
-      return this.isStaffFiling(item.filingType) ? 'View' : 'View Documents'
-    },
-
-    /** The action label to hide documents and/or detail comments. */
-    hideLabel (item: HistoryItemIF): string {
-      return this.isStaffFiling(item.filingType) ? 'Hide' : 'Hide Documents'
     }
-  },
+    this.loadingAll = false
+  }
 
-  watch: {
-    filings () {
-      // if filings changes, reload them
-      // (does not fire on initial page load)
-      this.loadData()
+  private showCommentDialog (filingId: number): void {
+    this.currentFilingId = filingId
+    this.addCommentDialog = true
+  }
+
+  private async hideCommentDialog (needReload: boolean): Promise<void> {
+    this.addCommentDialog = false
+    // if needed, reload comments for this filing
+    // NB: no spinner or state change, just do it quietly // TODO: remove comment if keeping spinner
+    if (needReload) {
+      // find the filing in the list
+      const item = this.historyItems.find(item => (item.filingId === this.currentFilingId))
+
+      // TODO: test "isBusy" spinner when we have commentsLink
+      if (item && item.commentsLink) {
+        this.isBusy = true // TODO: test this
+        await this.reloadComments(item)
+        this.isBusy = false
+      }
     }
+  }
+
+  /** Reloads the comments for this history item. */
+  private async reloadComments (item: HistoryItemIF): Promise<void> {
+    // fetch comments from API
+    const filing = await this.fetchComments(item.commentsLink).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchComments() error =', error)
+      // FUTURE: enable some error dialog?
+    })
+
+    if (filing?.header) {
+      // reload just the comments
+      item.comments = this.flattenAndSortComments(filing.header.comments)
+      // TODO: implement and update item.numComments
+    }
+  }
+
+  /** Closes current panel or opens new panel. */
+  private async togglePanel (index: number, item: HistoryItemIF): Promise<void> {
+    const isCurrentPanel = (this.panel === index)
+
+    // if we're not closing the current panel,
+    // and we don't already have both comments and documents,
+    // then load them
+    if (!isCurrentPanel && !item.comments && !item.documents && item.commentsLink && item.documentsLink) {
+      this.isBusy = true
+      await this.loadCommentsAndDocuments(item)
+      this.isBusy = false
+    }
+    // toggle the subject panel
+    this.panel = isCurrentPanel ? null : index
+  }
+
+  /** Loads the comments and documents for this history item. */
+  private async loadCommentsAndDocuments (item: HistoryItemIF): Promise<void> {
+    // fetch comments and documents from API
+    const data = await Promise.all([
+      this.fetchComments(item.commentsLink),
+      this.fetchDocuments(item.documentsLink)
+    ]).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchComments() or fetchDocuments() error =', error)
+      // FUTURE: enable some error dialog?
+    })
+
+    if (data && data.length === 2) {
+      // load the comments
+      item.comments = this.flattenAndSortComments(data[0])
+      // load the documents
+      item.documents = data[1] || []
+
+      // TODO: remove this when API provides it!
+      // load receipt
+      if (item.receipt) item.documents.push(item.receipt)
+    }
+  }
+
+  /** Whether to disable correction for this history item. */
+  private disableCorrection (item: HistoryItemIF): boolean {
+    return (
+      this.disableChanges ||
+      item.availableOnPaperOnly ||
+      item.isTypeStaff ||
+      item.isFutureEffectiveIa ||
+      this.isStatusCorrected(item) ||
+      this.isTypeAlteration(item) ||
+      this.isTypeCorrection(item) ||
+      this.isTypeTransition(item)
+    )
+  }
+
+  /** The action label to display documents and/or detail comments. */
+  private viewLabel (item: HistoryItemIF): string {
+    return (item.isTypeStaff ? 'View' : 'View Documents')
+  }
+
+  /** The action label to hide documents and/or detail comments. */
+  private hideLabel (item: HistoryItemIF): string {
+    return (item.isTypeStaff ? 'Hide' : 'Hide Documents')
+  }
+
+  @Watch('filings')
+  private onFilingsChange (): void {
+    // if filings changes, reload them
+    // (does not fire on initial page load)
+    this.loadData()
   }
 }
 </script>
@@ -1379,37 +999,67 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
+.scrollable-container {
+  max-height: 60rem;
+}
+
 .filing-history-item {
   // disable expansion generally
   pointer-events: none;
 }
 
-// specifically enable anchors, buttons and the pending alert icon
+// specifically enable anchors, buttons, the pending alert icon and tooltips
 // for this page and sub-components
 ::v-deep a,
 ::v-deep .v-btn,
-::v-deep .pending-alert .v-icon {
+::v-deep .pending-alert .v-icon,
+::v-deep .v-tooltip + div {
   pointer-events: auto;
 }
 
-.list-item {
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 0;
+.item-header {
+  line-height: 1.25rem;
+
+  &__label {
+    flex: 1 1 auto;
+    padding-top: 0.5rem;
+  }
+
+  &__actions {
+    text-align: right;
+    min-width: 12rem;
+
+    .expand-btn {
+      letter-spacing: -0.01rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    // make menu button slightly smaller
+    .menu-btn {
+      height: unset !important;
+      min-width: unset !important;
+      padding: 0.25rem !important;
+      color: $app-blue
+    }
+  }
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__subtitle {
+    color: $gray6;
+    margin-top: 0.5rem;
+  }
+}
+
+.item-header + .item-header {
+  border-top: 1px solid $gray3;
 }
 
 .v-col-padding {
   padding: 0 12px 0 12px;
-}
-
-.filing-label {
-  flex-basis: 33.3333%;
-  flex: 1 1 auto;
-}
-
-.list-item__subtitle {
-  // make all subtitles the same height
-  height: 2.25rem;
 }
 
 .pending-tooltip {
@@ -1421,27 +1071,14 @@ export default {
   padding-left: 0.875rem;
 }
 
-.filing-subtitle {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-bottom: -0.5rem; // remove extra space when subtitle displays
-}
-
-// vertical pipe for separating subtitle statuses
-.vert-pipe {
-  margin-top: 0.1rem;
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
-  height: 1rem;
-  border-left: 1px solid $gray6;
-}
-
 .details-btn,
 .expand-btn,
 .comments-btn {
-  margin-left: 0.25rem;
   border: none;
+}
+
+.details-btn {
+  margin-bottom: 0.25rem;
 }
 
 .v-expansion-panel-header {
@@ -1453,25 +1090,6 @@ export default {
   padding-right: 1.5rem;
   padding-left: 1.5rem;
   padding-bottom: 1.5rem;
-}
-
-.filing-item__actions {
-  display: inline-block;
-  margin-right: 0.5rem;
-
-  .expand-btn {
-    letter-spacing: -0.01rem;
-    font-size: 0.875rem;
-    font-weight: 700;
-  }
-
-  // make menu button slightly smaller
-  .menu-btn {
-    height: unset !important;
-    min-width: unset !important;
-    padding: 0.25rem !important;
-    color: $app-blue
-  }
 }
 
 .document-list .v-list-item {

@@ -10,7 +10,7 @@ Vue.use(Vuetify)
 Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('EntityInfo - UI', () => {
   it('displays Business entity info properly', async () => {

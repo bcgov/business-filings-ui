@@ -13,7 +13,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 async function click (vm: any, id: string) {
   const button = vm.$el.querySelector(id)
@@ -1052,15 +1052,15 @@ describe('Appoint New Director tests', () => {
     expect(vm.$el.querySelectorAll('.v-messages')[2].textContent).toBe('')
   })
 
-  // todo
+  // FUTURE
   // it('can appoint a new director', () => {
   // })
 
-  // todo
+  // FUTURE
   // it('can edit a new director', () => {
   // })
 
-  // todo
+  // FUTURE
   // it('can remove a new director', () => {
   // })
 })

@@ -24,7 +24,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 store.state.currentDate = '2019-07-15'
 
 const sampleDeliveryAddress = {
@@ -261,7 +261,9 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
     vm.addressesFormValid = false
-    store.state.filingData = [] // no data
+
+    // set no filing data
+    store.state.filingData = []
 
     // confirm that button is disabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -799,7 +801,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -858,7 +860,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that draft filing was fetched
+    // FUTURE: verify that draft filing was fetched
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1089,7 +1091,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1148,7 +1150,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that draft filing was fetched
+    // TFUTUREODO: verify that draft filing was fetched
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1259,7 +1261,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+      // FUTURE: verify that new filing was created
 
       // click the Save button
       // wrapper.find('#coa-save-btn').trigger('click')
@@ -1400,7 +1402,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+      // FUTURE: verify that new filing was created
 
       // click the Save button
       // wrapper.find('#coa-save-btn').trigger('click')
@@ -1812,7 +1814,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // click the File & Pay button
     // wrapper.find('#coa-file-pay-btn').trigger('click')
@@ -1864,7 +1866,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // click the File & Pay button
     // wrapper.find('#coa-file-pay-btn').trigger('click')

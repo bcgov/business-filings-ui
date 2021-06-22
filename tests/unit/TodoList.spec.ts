@@ -28,7 +28,7 @@ Vue.use(Vue2Filters)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -48,9 +48,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(0)
+    expect(vm.todoItems.length).toEqual(0)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
-    expect(wrapper.emitted('task-count')).toEqual([[0]])
+    expect(wrapper.emitted('todo-count')).toEqual([[0]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).not.toBeNull()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
@@ -118,9 +118,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(3)
+    expect(vm.todoItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
-    expect(wrapper.emitted('task-count')).toEqual([[3]])
+    expect(wrapper.emitted('todo-count')).toEqual([[3]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -168,9 +168,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -215,9 +215,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -256,9 +256,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -297,9 +297,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -327,7 +327,7 @@ describe('TodoList - UI', () => {
               'comments': [
                 {
                   'comment': {
-                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'comment': 'Correction for Annual Report (2017), filed on 2018-01-08.',
                     'filingId': 1,
                     'id': 123,
                     'submitterDisplayName': 'cbIdIr1234',
@@ -350,9 +350,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -380,7 +380,7 @@ describe('TodoList - UI', () => {
               'comments': [
                 {
                   'comment': {
-                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'comment': 'Correction for Annual Report (2017), filed on 2018-01-08.',
                     'filingId': 1,
                     'id': 123,
                     'submitterDisplayName': 'cbIdIr1234',
@@ -405,9 +405,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -437,7 +437,7 @@ describe('TodoList - UI', () => {
               'comments': [
                 {
                   'comment': {
-                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'comment': 'Correction for Annual Report (2017), filed on 2018-01-08.',
                     'filingId': 1,
                     'id': 123,
                     'submitterDisplayName': 'cbIdIr1234',
@@ -463,9 +463,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -496,7 +496,7 @@ describe('TodoList - UI', () => {
     wrapper.destroy()
   })
 
-  it('displays a PENDING_CORRECTION \'Correction\' task', async () => {
+  it('displays a PENDING \'Correction\' task', async () => {
     // init store
     store.state.tasks = [
       {
@@ -505,7 +505,7 @@ describe('TodoList - UI', () => {
             'header': {
               'name': 'correction',
               'ARFilingYear': 2019,
-              'status': 'PENDING_CORRECTION',
+              'status': 'PENDING',
               'paymentToken': 12345678,
               'filingId': 1
             },
@@ -527,9 +527,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -549,12 +549,12 @@ describe('TodoList - UI', () => {
           'filing': {
             'header': {
               'name': 'correction',
-              'status': 'PENDING_CORRECTION',
+              'status': 'PENDING',
               'filingId': 1,
               'comments': [
                 {
                   'comment': {
-                    'comment': 'Correction for Annual Report (2017). Filed on 2018-01-08.',
+                    'comment': 'Correction for Annual Report (2017), filed on 2018-01-08.',
                     'filingId': 1,
                     'id': 123,
                     'submitterDisplayName': 'cbIdIr1234',
@@ -577,9 +577,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -640,9 +640,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -695,9 +695,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -751,9 +751,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -800,9 +800,9 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -847,14 +847,14 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.taskItems[0].id).toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].id).toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PROCESSING...')
@@ -889,14 +889,14 @@ describe('TodoList - UI', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.taskItems[0].id).not.toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].id).not.toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
@@ -924,9 +924,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(0)
+    expect(vm.todoItems.length).toEqual(0)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
-    expect(wrapper.emitted('task-count')).toEqual([[0]])
+    expect(wrapper.emitted('todo-count')).toEqual([[0]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).not.toBeNull()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
@@ -991,9 +991,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(3)
+    expect(vm.todoItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
-    expect(wrapper.emitted('task-count')).toEqual([[3]])
+    expect(wrapper.emitted('todo-count')).toEqual([[3]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1048,9 +1048,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1094,9 +1094,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1144,9 +1144,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[false]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1191,9 +1191,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1238,9 +1238,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1279,9 +1279,9 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1319,14 +1319,14 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.taskItems[0].id).toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].id).toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PROCESSING...')
@@ -1361,14 +1361,14 @@ describe('TodoList - UI - BCOMP', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.taskItems[0].id).not.toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].id).not.toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
@@ -1413,9 +1413,9 @@ describe('TodoList - UI - Incorp Apps', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1461,9 +1461,9 @@ describe('TodoList - UI - Incorp Apps', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1508,9 +1508,9 @@ describe('TodoList - UI - Incorp Apps', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1557,9 +1557,9 @@ describe('TodoList - UI - Incorp Apps', () => {
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('task-count')).toEqual([[1]])
+    expect(wrapper.emitted('todo-count')).toEqual([[1]])
     expect(wrapper.emitted('has-blocker-task')).toEqual([[true]])
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
@@ -1631,7 +1631,7 @@ describe('TodoList - Click Tests', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const item = vm.$el.querySelector('.list-item')
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -1683,7 +1683,7 @@ describe('TodoList - Click Tests', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const item = vm.$el.querySelector('.list-item')
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -1735,7 +1735,7 @@ describe('TodoList - Click Tests', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const item = vm.$el.querySelector('.list-item')
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -1963,7 +1963,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     // verify model state
     expect(vm.enableCheckbox[0]).toBeUndefined()
@@ -2036,7 +2036,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const item = vm.$el.querySelector('.list-item')
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -2088,7 +2088,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const item = vm.$el.querySelector('.list-item')
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -2208,7 +2208,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const button = wrapper.find('.list-item__actions .v-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -2254,7 +2254,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
 
     const button = wrapper.find('.list-item__actions .v-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -2316,7 +2316,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
     wrapper.find('.btn-corr-draft-resume').trigger('click')
     await Vue.nextTick()
@@ -2373,7 +2373,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    expect(vm.taskItems.length).toEqual(1)
+    expect(vm.todoItems.length).toEqual(1)
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
 
     wrapper.find('.btn-corr-draft-resume').trigger('click')

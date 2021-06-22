@@ -26,7 +26,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 const sampleDirectors = [
   {
@@ -790,7 +790,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(vm.validated).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // verify that button is enabled
     const button = wrapper.find('#cod-file-pay-btn')
@@ -858,7 +858,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(vm.validated).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // verify that button is enabled
     const button = wrapper.find('#cod-file-pay-btn')
@@ -930,7 +930,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(vm.validated).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
-    // TODO: verify that draft filing was fetched
+    // FUTURE: verify that draft filing was fetched
 
     // verify that button is enabled
     const button = wrapper.find('#cod-file-pay-btn')
@@ -1145,7 +1145,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+      // FUTURE: verify that new filing was created
 
       // verify that button is enabled
       const button = wrapper.find('#cod-save-btn')
@@ -1188,7 +1188,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // verify that button is enabled
     const button = wrapper.find('#cod-save-resume-btn')
@@ -1537,7 +1537,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that draft filing was fetched
+      // FUTURE: verify that draft filing was fetched
 
       // NB: can't find button because Vuetify hasn't rendered it
       // const button = wrapper.find('#cod-file-pay-btn')
@@ -1573,7 +1573,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that draft filing was fetched
+      // FUTURE: verify that draft filing was fetched
 
       // NB: can't find button because Vuetify hasn't rendered it
       // const button = wrapper.find('#cod-file-pay-btn')

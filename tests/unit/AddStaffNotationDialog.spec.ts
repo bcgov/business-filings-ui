@@ -11,7 +11,8 @@ import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
+
 describe('AddStaffNotationDialog', () => {
   // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
   document.body.setAttribute('data-app', 'true')
@@ -21,7 +22,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           attach: '#parent-page'
         },
         store
@@ -43,7 +44,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         sync: false
@@ -64,7 +65,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           courtOrderNumberRequired: true
         },
         store,
@@ -88,7 +89,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           courtOrderNumberRequired: true
         },
         store,
@@ -115,7 +116,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         vuetify,
@@ -140,7 +141,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           courtOrderNumberRequired: true
         },
         store,
@@ -164,7 +165,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         vuetify,
@@ -190,7 +191,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         vuetify,

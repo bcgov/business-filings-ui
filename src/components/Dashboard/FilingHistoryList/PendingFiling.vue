@@ -22,22 +22,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
-import { FilingTypes } from '@/enums'
+import { FilingNames } from '@/enums'
+import { EnumMixin } from '@/mixins'
 
 @Component({
   components: { ContactInfo }
 })
-export default class PendingFiling extends Vue {
+export default class PendingFiling extends Mixins(EnumMixin) {
   /** The subject filing. */
-  @Prop({ required: true }) private filing: HistoryItemIF
+  @Prop({ required: true })
+  readonly filing: HistoryItemIF
 
   /** The title of the subject filing. */
   private get title (): string {
-    if (this.filing.filingType === FilingTypes.ALTERATION) return 'Alteration'
-    if (this.filing.title) return this.filing.title
+    if (this.isTypeAlteration(this.filing)) return FilingNames.ALTERATION
+    if (this.filing.displayName) return this.filing.displayName
     return 'Filing'
   }
 

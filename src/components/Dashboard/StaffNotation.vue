@@ -1,25 +1,25 @@
 <template>
     <div id="staff-notation" class="pr-6" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
-        <add-staff-notation-dialog
+        <AddStaffNotationDialog
             :dialog="isAddingRegistrarsNotation"
             @close="hideRegistrarsNotationDialog($event)"
             attach="#staff-notation"
-            itemName="Registrar's Notation"
-            filingType="registrarsNotation"
+            displayName="Registrar's Notation"
+            name="registrarsNotation"
         />
-        <add-staff-notation-dialog
+        <AddStaffNotationDialog
             :dialog="isAddingRegistrarsOrder"
             @close="hideRegistrarsOrderDialog($event)"
             attach="#staff-notation"
-            itemName="Registrar's Order"
-            filingType="registrarsOrder"
+            displayName="Registrar's Order"
+            name="registrarsOrder"
         />
-        <add-staff-notation-dialog
+        <AddStaffNotationDialog
             :dialog="isAddingCourtOrder"
             @close="hideCourtOrderDialog($event)"
             attach="#staff-notation"
-            itemName="Court Order"
-            filingType="courtOrder"
+            displayName="Court Order"
+            name="courtOrder"
             courtOrderNumberRequired="true"
         />
         <div class="filing-item__actions">

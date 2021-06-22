@@ -20,7 +20,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 xdescribe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {
@@ -220,7 +220,7 @@ xdescribe('TodoList - tests specific to Incorporation Applications', () => {
     store.state.entityType = 'BEN'
   })
   //
-  // TODO: numbered vs named
+  // FUTURE: verify numbered vs named IAs (see also Filing History List unit tests)
   //
 })
 

@@ -3,7 +3,7 @@
     <h4>{{_.subtitle}}</h4>
 
     <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      has been recorded as {{effectiveDateTime}} Pacific Time.</p>
+      has been recorded as {{effectiveDateTime}}.</p>
 
     <p>It may take up to one hour to process this filing.</p>
 
@@ -18,8 +18,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
+import { DateMixin } from '@/mixins'
 import { ContactInfo } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 
@@ -27,14 +28,15 @@ import { HistoryItemIF } from '@/interfaces'
   computed: { ...mapState(['entityName']) },
   components: { ContactInfo }
 })
-export default class FutureEffectivePending extends Vue {
+export default class FutureEffectivePending extends Mixins(DateMixin) {
   readonly entityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: HistoryItemIF
+  @Prop({ required: true })
+  readonly filing: HistoryItemIF
 
   /** Data for the subject filing. */
-  private get _ (): any {
+  get _ (): any {
     if (this.filing.isFutureEffectiveIaPending) {
       return {
         subtitle: 'Incorporation Pending',
@@ -57,8 +59,8 @@ export default class FutureEffectivePending extends Vue {
   }
 
   /** The future effective datetime of the subject filing. */
-  private get effectiveDateTime (): string {
-    return this.filing.effectiveDateTime || 'unknown'
+  get effectiveDateTime (): string {
+    return (this.dateToPacificDateTime(this.filing.effectiveDate) || 'Unknown')
   }
 }
 </script>

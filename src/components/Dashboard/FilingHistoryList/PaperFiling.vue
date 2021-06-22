@@ -1,9 +1,6 @@
 <template>
   <div class="paper-filing-details body-2">
-    <p>Filings completed <strong>before March 10, 2019</strong> are only available from the BC Registry
-      as paper documents.</p>
-    <p>To request copies of paper documents, contact BC Registry Staff with the document you require and
-      the name and incorporation number of your association:</p>
+    <p>This filing is available on paper only. To request copies of paper documents, contact BC Registry Staff:</p>
 
     <contact-info class="pt-3" />
   </div>

@@ -23,7 +23,7 @@ Vue.config.silent = true
 
 Vue.use(Vuetify)
 
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Correction - UI', () => {
   let sinonAxiosGet: any
@@ -222,7 +222,7 @@ describe('Correction - UI', () => {
     expect(vm.title).toBe('Annual Report (2018)')
     expect(vm.agmYear).toBe(2018)
     expect(vm.originalFilingDate).toBe('Dec 23, 2018')
-    expect(vm.defaultComment).toBe('Correction for Annual Report (2018). Filed on Dec 23, 2018.')
+    expect(vm.defaultComment).toBe('Correction for Annual Report (2018), filed on Dec 23, 2018.')
 
     wrapper.destroy()
   })

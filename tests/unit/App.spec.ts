@@ -10,11 +10,21 @@ import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import App from '@/App.vue'
 
+// mock fetch() as it is not defined in Jest
+// NB: it should be `global.fetch` but that doesn't work and this does
+window.fetch = jest.fn().mockImplementation(() => {
+  return {
+    headers: { get: () => new Date() },
+    ok: true,
+    statusTxt: ''
+  }
+})
+
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 const BCOMP_ADDRESSES = {
   registeredOffice: {
@@ -474,11 +484,7 @@ describe('App as a COOP', () => {
   })
 
   it('initializes Current Date properly', () => {
-    const today = new Date()
-    const year = today.getFullYear().toString()
-    const month = (today.getMonth() + 1).toString().padStart(2, '0')
-    const date = today.getDate().toString().padStart(2, '0')
-    const currentDate = `${year}-${month}-${date}`
+    const currentDate = new Date().toISOString().slice(0, 10)
     expect(vm.$store.state.currentDate).toEqual(currentDate)
   })
 
@@ -732,11 +738,7 @@ describe('App as a BCOMP', () => {
   })
 
   it('initializes Current Date properly', () => {
-    const today = new Date()
-    const year = today.getFullYear().toString()
-    const month = (today.getMonth() + 1).toString().padStart(2, '0')
-    const date = today.getDate().toString().padStart(2, '0')
-    const currentDate = `${year}-${month}-${date}`
+    const currentDate = new Date().toISOString().slice(0, 10)
     expect(vm.$store.state.currentDate).toEqual(currentDate)
   })
 
@@ -1430,12 +1432,15 @@ describe('App as a Paid Incorporation Application', () => {
               legalType: 'BEN'
             },
             header: {
-              accountId: '123',
+              availableOnPaperOnly: false,
               date: '2020-05-21T00:11:55.887740+00:00',
-              name: 'incorporationApplication',
-              status: 'PAID',
+              effectiveDate: '2020-05-21T00:11:55.887740+00:00',
               filingId: 789,
-              paymentToken: 987
+              isFutureEffective: false,
+              name: 'incorporationApplication',
+              paymentToken: '987',
+              status: 'PAID',
+              submitter: 'Joe Submitter'
             },
             incorporationApplication: {
               nameRequest: {
@@ -1478,7 +1483,6 @@ describe('App as a Paid Incorporation Application', () => {
 
   it('fetches IA filings properly', () => {
     expect(vm.$store.state.entityIncNo).toBe('T123456789')
-    expect(vm.$store.state.entityType).toBe('BEN')
     expect(vm.$store.state.entityStatus).toBe('FILED_INCORP_APP')
 
     // spot check addresses and directors
@@ -1490,9 +1494,19 @@ describe('App as a Paid Incorporation Application', () => {
 
     // verify loaded filing
     expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].filing.business.legalType).toBe('BEN')
-    expect(vm.$store.state.filings[0].filing.header.name).toBe('incorporationApplication')
-    expect(vm.$store.state.filings[0].filing.header.status).toBe('PAID')
-    expect(vm.$store.state.filings[0].filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
+    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
+    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
+    expect(vm.$store.state.filings[0].correctionFilingId).toBeNull()
+    expect(vm.$store.state.filings[0].correctionFilingStatus).toBeNull()
+    expect(vm.$store.state.filings[0].displayName)
+      .toBe('BC Benefit Company Incorporation Application - Numbered Benefit Company')
+    expect(vm.$store.state.filings[0].effectiveDate).toBe('Thu, 21 May 2020 00:11:55 GMT')
+    expect(vm.$store.state.filings[0].filingId).toBe(789)
+    expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
+    expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
+    expect(vm.$store.state.filings[0].paymentToken).toBe('987')
+    expect(vm.$store.state.filings[0].status).toBe('PAID')
+    expect(vm.$store.state.filings[0].submittedDate).toBe('Thu, 21 May 2020 00:11:55 GMT')
+    expect(vm.$store.state.filings[0].submitter).toBe('Joe Submitter')
   })
 })

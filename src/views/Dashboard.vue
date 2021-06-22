@@ -18,7 +18,7 @@
             <section>
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-todo-subtitle">
-                  <span>To Do</span>&nbsp;<span class="gray6">({{taskCount}})</span>
+                  <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
                 </h2>
               </header>
               <legal-obligation/>
@@ -26,8 +26,8 @@
                 :inProcessFiling="inProcessFiling"
                 :coaPending="coaPending"
                 :disableChanges="disableChanges"
-                @task-count="taskCount = $event"
-                @task-items="taskItems = $event"
+                @todo-count="todoCount = $event"
+                @todo-items="todoItems = $event"
                 @has-blocker-task="updateBlockerTasks($event)"
               />
             </section>
@@ -123,39 +123,42 @@ import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { getFeatureFlag } from '@/utils'
 
-// Components
+// Components and Dialogs
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
-
-// Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
 import { EntityStatus, FilingStatus, Routes } from '@/enums'
-import { HistoryItemIF, TaskItemIF } from '@/interfaces'
+import { HistoryItemIF, TodoItemIF } from '@/interfaces'
+
+// Mixins
+import { EnumMixin } from '@/mixins'
 
 export default {
   name: 'Dashboard',
+
+  mixins: [EnumMixin],
 
   components: {
     TodoList,
     FilingHistoryList,
     AddressListSm,
     DirectorListSm,
-    CoaWarningDialog,
     LegalObligation,
-    StaffNotation
+    StaffNotation,
+    CoaWarningDialog
   },
 
   data () {
     return {
       hasPendingFiling: false,
-      taskCount: 0,
-      taskItems: [] as Array<TaskItemIF>,
+      todoCount: 0,
+      todoItems: [] as Array<TodoItemIF>,
       historyCount: 0,
       historyItems: [] as Array<HistoryItemIF>,
       refreshTimer: null as number,
@@ -236,7 +239,7 @@ export default {
       if (!filingId) return
 
       const isInFilingHistory = Boolean(this.historyItems.find(el => el.filingId === filingId))
-      const isInTodoList = Boolean(this.taskItems.find(el => el.id === filingId))
+      const isInTodoList = Boolean(this.todoItems.find(el => el.id === filingId))
 
       // if this filing is NOT in the to-do list and IS in the filing history list, do nothing - there is no problem
       if (!isInTodoList && isInFilingHistory) return
@@ -266,8 +269,7 @@ export default {
       let url = `businesses/${this.entityIncNo}/filings/${filingId}`
       axios.get(url).then(res => {
         // if the filing status is now COMPLETE, reload the dashboard
-        if (res && res.data && res.data.filing && res.data.filing.header &&
-        res.data.filing.header.status === FilingStatus.COMPLETED) {
+        if (res?.data?.filing?.header?.status === FilingStatus.COMPLETED) {
           // emit dashboard reload trigger event
           this.$root.$emit('triggerDashboardReload')
         } else {
@@ -294,8 +296,8 @@ export default {
       if (!this.historyItems?.length) return // safety check
 
       const foundPaid = this.historyItems.some(filing => {
-        if (filing.isPaid) {
-          if (filing.isBcompCoaFutureEffective) {
+        if (this.isStatusPaid(filing)) {
+          if (filing.isFutureEffectiveBcompCoaPending) {
             this.coaPending = true
             this.coaEffectiveDate = filing.effectiveDate
           }
@@ -326,7 +328,7 @@ export default {
       this.checkToReloadDashboard()
     },
 
-    taskItems () {
+    todoItems () {
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
     }
