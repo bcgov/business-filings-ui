@@ -8,12 +8,11 @@ import axios from '@/axios-auth'
  */
 export async function fetchConfig (): Promise<void> {
   // get config from environment
-  const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, business
   const processEnvBaseUrl: string = process.env.BASE_URL // eg, /business/
   const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
-  if (!processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
+  if (!processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
     return Promise.reject(new Error('Missing environment variables'))
   }
 
