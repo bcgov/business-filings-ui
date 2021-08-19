@@ -250,18 +250,11 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.entityIncNo = 'BC1234567'
     store.state.entityStatus = 'GOODSTANDING'
+    store.state.entityType = 'BEN'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
     const router = mockRouter.mock()
-    const wrapper = mount(EntityInfo, {
-      vuetify,
-      store,
-      router,
-      computed: {
-        // mock this getter to override FF check
-        viewChangeInfoEnabled () { return true }
-      }
-    })
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
     wrapper.find('#company-information-button').trigger('click')

@@ -15,7 +15,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-describe('CodDate for COOPS', () => {
+describe('COD Date - COOPs', () => {
   let wrapper: Wrapper<CodDate>
   let vm: any
 
@@ -55,17 +55,11 @@ describe('CodDate for COOPS', () => {
   })
 
   it('sets Min Date properly based on global properties', () => {
-    // verify initial state
-    expect(vm.$store.state.filings).toEqual([])
-
     // verify default Min Date
     expect(vm.minDate).toBe('2018-03-01')
 
-    // set Last Filing Date and verify new Min Date
-    store.state.filings = [
-      { filing: { header: { date: '2019-02-01' }, changeOfDirectors: {} } },
-      { filing: { header: { effectiveDate: '2019-03-01' }, changeOfDirectors: {} } }
-    ]
+    // set Last COD Filing Date and verify new Min Date
+    store.state.lastCodFilingDate = new Date('2019-03-01 12:00:00 GMT')
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
@@ -73,9 +67,7 @@ describe('CodDate for COOPS', () => {
   })
 
   it('sets Min Date to entity founding date if no filings are present', () => {
-    // verify initial state
-    expect(vm.$store.state.filings).toEqual([])
-
+    store.state.lastCodFilingDate = null
     expect(vm.minDate).toBe('2018-03-01')
   })
 
@@ -156,7 +148,7 @@ describe('CodDate for COOPS', () => {
   })
 })
 
-describe('CodDate for BCOMP', () => {
+describe('COD Date - BCOMPs', () => {
   let wrapper: Wrapper<CodDate>
   let vm: any
 
@@ -178,11 +170,8 @@ describe('CodDate for BCOMP', () => {
   })
 
   it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {
-    // Set some COD filings for the entity in the store
-    store.state.filings = [
-      { filing: { header: { date: '2019-02-01' }, changeOfDirectors: {} } },
-      { filing: { header: { effectiveDate: '2019-03-01' }, changeOfDirectors: {} } }
-    ]
+    // set Last COD Filing Date and verify new Min Date
+    store.state.lastCodFilingDate = new Date('2019-03-01 12:00:00 GMT')
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
@@ -190,8 +179,7 @@ describe('CodDate for BCOMP', () => {
   })
 
   it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
-    // verify initial state
-    expect(vm.$store.state.filings).toEqual([])
+    store.state.lastCodFilingDate = null
     expect(vm.minDate).toBe('2018-03-01')
   })
 })

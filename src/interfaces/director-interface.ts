@@ -14,6 +14,7 @@ export interface DirectorIF {
   actions: Array<Actions>
 }
 
+/** An empty director object. Note: don't assign this - make a deep copy instead. */
 export const EmptyDirector: DirectorIF = {
   id: null,
   officer: { ...EmptyOfficer },

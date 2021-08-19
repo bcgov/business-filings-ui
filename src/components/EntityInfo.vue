@@ -18,10 +18,10 @@
           <header>
             <!-- Entity Name / IA Title -->
             <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
-              <span>{{ entityName || 'Unknown Name' }}</span>
+              <span>{{ getEntityName || 'Unknown Name' }}</span>
             </div>
             <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ entityName || getCorpTypeNumberedDescription(entityType)}}</span>
+              <span>{{ getEntityName || getCorpTypeNumberedDescription(entityType)}}</span>
             </div>
 
             <!-- Entity Type -->
@@ -32,7 +32,7 @@
           <menu class="mt-4 ml-n3">
             <!-- Staff Comments -->
             <span v-if="businessId && isRoleStaff">
-              <staff-comments
+              <StaffComments
                 :axios="axios"
                 :businessId="businessId"
                 :maxLength="2000"
@@ -40,7 +40,7 @@
             </span>
 
             <!-- View and Change Company Information -->
-            <span v-if="viewChangeInfoEnabled">
+            <span v-if="showViewChangeInfoBtn">
               <v-btn
                 small text color="primary"
                 id="company-information-button"
@@ -64,7 +64,7 @@
             </span>
 
             <!-- Download Summary -->
-            <span v-if="downloadSummaryEnabled">
+            <span v-if="showDownloadSummaryBtn">
               <v-btn
                 small text color="primary"
                 id="download-summary-button"
@@ -129,7 +129,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, CorpTypeCd, Routes } from '@/enums'
@@ -140,17 +141,14 @@ import axios from '@/axios-auth'
 @Component({
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
-      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension', 'entityStatus']),
-    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBComp', 'isBcCompany', 'isUlc', 'hasBlocker',
-      'isInGoodStanding'])
+    ...mapState(['ARFilingYear', 'entityType', 'entityStatus', 'entityBusinessNo', 'entityIncNo',
+      'businessEmail', 'businessPhone', 'businessPhoneExtension', 'entityStatus'])
   },
   components: { StaffComments }
 })
 export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
-  readonly entityName!: string
   readonly ARFilingYear!: string
   readonly entityType!: CorpTypeCd
   readonly entityStatus!: EntityStatus
@@ -159,11 +157,15 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   readonly businessEmail!: string
   readonly businessPhone!: string
   readonly businessPhoneExtension!: string
-  readonly isRoleStaff!: boolean
-  readonly isBComp!: boolean
-  readonly isBcCompany!: boolean
-  readonly isUlc!: boolean
-  readonly nrNumber!: string
+
+  @Getter getEntityName!: string
+  @Getter isRoleStaff!: boolean
+  @Getter isBComp!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isUlc!: boolean
+  @Getter nrNumber!: string
+  @Getter hasBlocker!: boolean
+  @Getter isInGoodStanding!: boolean
 
   readonly axios = axios // for template
 
@@ -171,12 +173,12 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   private showHoverStyle = false
 
   /** True if View and Change Company Info button should be rendered. */
-  private get viewChangeInfoEnabled (): boolean {
+  private get showViewChangeInfoBtn (): boolean {
     return (this.isBComp || this.isBcCompany || this.isUlc)
   }
 
   /** True if Download Summary button should be rendered. */
-  private get downloadSummaryEnabled (): boolean {
+  private get showDownloadSummaryBtn (): boolean {
     return getFeatureFlag('download-summary-enabled')
   }
 
@@ -254,7 +256,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
         href: this.manageBusinessesUrl
       },
       {
-        text: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
+        text: this.getEntityName || this.getCorpTypeNumberedDescription(this.entityType),
         disabled: false,
         exact: true,
         to: { name: Routes.DASHBOARD }

@@ -1,6 +1,6 @@
 <template>
   <div class="details-list">
-    <div class="title-bar pt-6">
+    <div class="title-bar">
       <h4>
         <v-icon small>mdi-message-reply</v-icon>
         Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})
@@ -9,6 +9,7 @@
         class="add-detail-btn"
         color="primary"
         v-if="isRoleStaff && !isTask"
+        :disabled ="!!filing.filingId"
         @click.stop="showCommentDialog(filing.filingId)"
       >
         <span>Add Detail</span>
@@ -34,36 +35,36 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop, Emit } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
-
-// Mixins
+import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
+import { HistoryItemIF, TodoItemIF } from '@/interfaces'
 
-@Component({
-  computed: {
-    ...mapGetters(['isRoleStaff'])
-  }
-})
+@Component({})
 export default class DetailsList extends Mixins(DateMixin) {
-  /** Filing containing correction information. */
-  @Prop({ default: () => { return { comments: [] } } })
-  private filing: object
+  /** The filing containing comments. */
+  @Prop({ default: () =>
+    ({
+      comments: [],
+      filingId: null
+    })
+  })
+  readonly filing: HistoryItemIF | TodoItemIF
 
   /** Whether this filing is a task (and therefore whether to disallow new detail comments). */
   @Prop({ default: false })
-  private isTask: boolean
+  readonly isTask: boolean
 
-  /** Emits an event to trigger the comment dialog */
+  /** Whether current user has staff role. */
+  @Getter isRoleStaff!: boolean
+
+  /** Emits an event to trigger the comment dialog. */
   @Emit('showCommentDialog')
   private showCommentDialog (val: string): void { }
 }
 </script>
 
 <style lang="scss" scoped>
-// @import "@/assets/styles/theme.scss";
-
 .title-bar h4 {
   letter-spacing: 0;
   font-size: 0.9375rem;

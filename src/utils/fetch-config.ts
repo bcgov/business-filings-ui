@@ -8,12 +8,11 @@ import axios from '@/axios-auth'
  */
 export async function fetchConfig (): Promise<void> {
   // get config from environment
-  const processEnvVueAppPath: string = process.env.VUE_APP_PATH // eg, business
   const processEnvBaseUrl: string = process.env.BASE_URL // eg, /business/
   const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
-  if (!processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
+  if (!processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
     return Promise.reject(new Error('Missing environment variables'))
   }
 
@@ -30,6 +29,10 @@ export async function fetchConfig (): Promise<void> {
   const response = await axios.get(url, { headers }).catch(() => {
     return Promise.reject(new Error('Could not fetch configuration.json'))
   })
+
+  if (!response?.data) {
+    return Promise.reject(new Error('Invalid configuration.json'))
+  }
 
   const authWebUrl: string = response.data['AUTH_WEB_URL']
   sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)

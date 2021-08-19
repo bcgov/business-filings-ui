@@ -206,7 +206,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
 
   // Directors array passed into this component.
   @Prop({ default: [] })
-  private directors: Array<DirectorIF>
+  readonly directors: Array<DirectorIF>
 
   // Local properties
   private directorSummary: Array<DirectorIF> = []

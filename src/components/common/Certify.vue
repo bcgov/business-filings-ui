@@ -27,7 +27,7 @@
           </div>
         </template>
       </v-checkbox>
-      <p class="certify-clause">Date: {{currentDate}}</p>
+      <p class="certify-clause">Date: {{getCurrentDate}}</p>
       <p class="certify-clause">{{message}}</p>
     </div>
   </v-card>
@@ -35,36 +35,32 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 
-@Component({
-  computed: {
-    ...mapState(['currentDate'])
-  }
-})
+@Component({})
 export default class Certify extends Vue {
-  readonly currentDate!: string
+  @Getter getCurrentDate!: string
 
   /** Certified By prop. */
   @Prop({ default: '' })
-  private certifiedBy: string
+  readonly certifiedBy: string
 
   /** Is Certified prop. */
   @Prop({ default: false })
-  private isCertified: boolean
+  readonly isCertified: boolean
 
   /** Message prop. */
   @Prop({ default: '' })
-  private message: string
+  readonly message: string
 
   /** Entity Display prop. */
   @Prop({ default: '' })
-  private entityDisplay: string
+  readonly entityDisplay: string
 
   /** Called when component is created. */
-  private created (): void {
+  created (): void {
     // inform parent of initial validity
-    this.emitValid(Boolean(this.trimmedCertifiedBy && this.isCertified))
+    this.emitValid(!!this.trimmedCertifiedBy && this.isCertified)
   }
 
   /** The trimmed "Certified By" string (may be ''). */
@@ -78,14 +74,14 @@ export default class Certify extends Vue {
   private emitCertifiedBy (certifiedBy: string): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     certifiedBy = certifiedBy && certifiedBy.replace(/\s+/g, ' ').trim()
-    this.emitValid(Boolean(certifiedBy && this.isCertified))
+    this.emitValid(!!certifiedBy && this.isCertified)
     return certifiedBy
   }
 
   /** Emits an event to update the Is Certified prop. */
   @Emit('update:isCertified')
   private emitIsCertified (isCertified: boolean): boolean {
-    this.emitValid(Boolean(this.trimmedCertifiedBy && isCertified))
+    this.emitValid(!!this.trimmedCertifiedBy && isCertified)
     return isCertified
   }
 

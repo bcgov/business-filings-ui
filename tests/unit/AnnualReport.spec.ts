@@ -164,21 +164,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables address component when agm date < last COA', () => {
-    store.state.filings = [
-      {
-        filing: {
-          header: {
-            name: 'changeOfAddress',
-            date: '2019-05-06',
-            paymentToken: 789,
-            certifiedBy: 'Full Name 3',
-            filingId: 987
-          },
-          changeOfAddress: {}
-        }
-      }
-    ]
+  it('disables address component when AGM Date < Last COA Date', () => {
+    store.state.lastCoaFilingDate = new Date('2019-05-06 12:00:00 GMT')
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -198,8 +185,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('has no effect on address component when last COA is null', () => {
-    store.state.filings = []
+  it('has no effect on address component when Last COA Date is null', () => {
+    store.state.lastCoaFilingDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -219,21 +206,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component agm date < lastCOD', () => {
-    store.state.filings = [
-      {
-        filing: {
-          header: {
-            name: 'changeOfDirectors',
-            date: '2019-05-06',
-            paymentToken: 789,
-            certifiedBy: 'Full Name 3',
-            filingId: 987
-          },
-          changeOfDirectors: {}
-        }
-      }
-    ]
+  it('disables directors component when AGM Date < Last COD Date', () => {
+    store.state.lastCodFilingDate = new Date('2019-05-06 12:00:00 GMT')
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -253,8 +227,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component when last COD is null', () => {
-    store.state.filings = []
+  it('disables directors component when Last COD Date is null', () => {
+    store.state.lastCodFilingDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -2279,7 +2253,6 @@ describe('Annual Report - payment required error', () => {
   it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('PAY_API_URL', '')
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
     const get = sinon.stub(axios, 'get')
 

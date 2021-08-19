@@ -3,7 +3,7 @@
     <h4>{{_.subtitle}}</h4>
 
     <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      has been recorded as {{effectiveDateTime}} Pacific Time.</p>
+      has been recorded as {{effectiveDateTime}}.</p>
 
     <p>It may take up to one hour to process this filing.</p>
 
@@ -18,47 +18,48 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { DateMixin } from '@/mixins'
 import { ContactInfo } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 
 @Component({
-  computed: { ...mapState(['entityName']) },
   components: { ContactInfo }
 })
-export default class FutureEffectivePending extends Vue {
-  readonly entityName!: string
+export default class FutureEffectivePending extends Mixins(DateMixin) {
+  @Getter getEntityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: HistoryItemIF
+  @Prop({ required: true })
+  readonly filing: HistoryItemIF
 
   /** Data for the subject filing. */
-  private get _ (): any {
+  get _ (): any {
     if (this.filing.isFutureEffectiveIaPending) {
       return {
         subtitle: 'Incorporation Pending',
         filingLabel: 'incorporation',
-        companyLabel: (this.entityName || 'this Numbered Benefit Company')
+        companyLabel: (this.getEntityName || 'this Numbered Benefit Company')
       }
     }
     if (this.filing.isFutureEffectiveAlterationPending) {
       return {
         subtitle: 'Alteration Pending',
         filingLabel: 'alteration',
-        companyLabel: (this.entityName || 'this company')
+        companyLabel: (this.getEntityName || 'this company')
       }
     }
     return {
       subtitle: 'Filing Pending',
       filingLabel: 'filing',
-      companyLabel: (this.entityName || 'this company')
+      companyLabel: (this.getEntityName || 'this company')
     }
   }
 
   /** The future effective datetime of the subject filing. */
-  private get effectiveDateTime (): string {
-    return this.filing.effectiveDateTime || 'unknown'
+  get effectiveDateTime (): string {
+    return (this.dateToPacificDateTime(this.filing.effectiveDate) || 'Unknown')
   }
 }
 </script>

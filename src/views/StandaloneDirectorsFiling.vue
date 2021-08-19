@@ -407,9 +407,9 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
+    ...mapState(['entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isBComp', 'isRoleStaff']),
+    ...mapGetters(['isBComp', 'isRoleStaff', 'getCurrentDate']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -495,7 +495,7 @@ export default {
     this.$nextTick(async () => {
       // initial value
       // may be overwritten by resumed draft
-      this.initialCODDate = this.currentDate
+      this.initialCODDate = this.getCurrentDate
 
       if (this.filingId > 0) {
         // resume draft filing
@@ -719,7 +719,7 @@ export default {
           name: FilingTypes.CHANGE_OF_DIRECTORS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
-          date: this.currentDate, // NB: API will reassign this date according to its clock
+          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
           effectiveDate: this.dateStringToApi(this.codDate)
         }
       }
@@ -849,16 +849,16 @@ export default {
     },
 
     /** Returns True if the specified business has any pending tasks, else False. */
+    // FUTURE move this to Legal API mixin
     async hasTasks (businessId): Promise<boolean> {
       let hasPendingItems = false
       if (this.filingId === 0) {
         const url = `businesses/${businessId}/tasks`
         await axios.get(url)
           .then(response => {
-            if (response && response.data && response.data.tasks) {
+            if (response?.data?.tasks) {
               response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

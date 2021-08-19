@@ -536,7 +536,7 @@
 // Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
 
@@ -560,11 +560,12 @@ import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessage
   },
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['entityIncNo', 'currentDate', 'lastAnnualReportDate', 'entityFoundingDate']),
-    ...mapGetters(['isBComp', 'lastCODFilingDate'])
+    ...mapState(['entityIncNo', 'lastAnnualReportDate', 'entityFoundingDate', 'lastCodFilingDate'])
   }
 })
-export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin) {
+export default class Directors extends Mixins(
+  CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin
+) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   // ref: https://github.com/vuejs/vue-class-component/issues/94
@@ -582,12 +583,10 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
 
   // Local definitions of computed properties for static type checking.
   // NB: use non-null assertion operator to allow use before assignment
-  readonly isBComp!: boolean
   readonly entityIncNo!: string
-  readonly currentDate!: string
-  readonly lastCODFilingDate!: string
   readonly lastAnnualReportDate!: string
   readonly entityFoundingDate!: string
+  readonly lastCodFilingDate!: Date
 
   /** Indicates whether this component should be enabled or not. */
   @Prop({ default: true })
@@ -621,7 +620,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   private messageIndex = -1
 
   /** V-model for new director form. */
-  private newDirector: DirectorIF = { ...EmptyDirector }
+  private newDirector = cloneDeep(EmptyDirector)
 
   private inProgressDelivAddress: AddressIF = null
   private inProgressMailAddress: AddressIF = null
@@ -677,7 +676,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /**
    * The array of validations rules for a director's first name.
    * NB: Do not validate inter word spacing because the Legal db needs to support
-   *     such records in order to correctly update Colin.
+   *     such records in order to correctly update COLIN.
    */
   private readonly directorFirstNameRules: Function[] = [
     v => !!v || 'A first name is required',
@@ -688,7 +687,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /**
    * The array of validations rules for a director's middle initial.
    * NB: Do not validate inter word spacing because the Legal db needs to support
-   *     such records in order to correctly update Colin.
+   *     such records in order to correctly update COLIN.
    */
   private readonly directorMiddleInitialRules: Function[] = [
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
@@ -698,7 +697,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /**
    * The array of validations rules for a director's last name.
    * NB: Do not validate inter word spacing because the Legal db needs to support
-   *     such records in order to correctly update Colin.
+   *     such records in order to correctly update COLIN.
    */
   private readonly directorLastNameRules: Function[] = [
     v => !!v || 'A last name is required',
@@ -771,10 +770,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * If the entity has no filing history then the founding date will be used.
    */
   private get earliestDateToSet (): string {
+    const lastCodFilingDate = this.dateToDateString(this.lastCodFilingDate)
     let date = null
 
-    if (this.lastCODFilingDate || this.lastAnnualReportDate) {
-      date = this.latestDate(this.lastCODFilingDate, this.lastAnnualReportDate)
+    if (lastCodFilingDate || this.lastAnnualReportDate) {
+      date = this.latestDate(lastCodFilingDate, this.lastAnnualReportDate)
     } else {
       date = this.entityFoundingDate.split('T')[0]
     }
@@ -814,7 +814,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
           this.original.forEach((director, i) => {
             director.id = i + 1
             director.isFeeApplied = (director.isFeeApplied !== undefined) ? director.isFeeApplied : false
-            director.isDirectorActionable = (director.cessationDate === null)
+            director.isDirectorActionable = !director.cessationDate
             director.actions = []
 
             // if there is no officer middle initial field, add it with blank data
@@ -894,7 +894,8 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     }
 
     // set form to initial director data again
-    this.newDirector = { ...EmptyDirector, appointmentDate: this.asOfDate }
+    this.newDirector = cloneDeep(EmptyDirector)
+    this.newDirector.appointmentDate = this.asOfDate
     this.directorEditInProgress = false
   }
 
@@ -991,7 +992,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
     this.toggleAction(director, Actions.CEASED)
 
     // either set or undo cessation date
-    if (director.cessationDate === null) {
+    if (!director.cessationDate) {
       director.cessationDate = this.cessationDateTemp || this.asOfDate
     } else {
       director.cessationDate = null

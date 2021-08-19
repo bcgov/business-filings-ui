@@ -10,10 +10,12 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 export function getVueRouter () {
   Vue.use(VueRouter)
 
+  const base = sessionStorage.getItem('VUE_ROUTER_BASE')
+
   const router = new VueRouter({
     mode: 'history',
     // set base URL for Vue Router
-    base: sessionStorage.getItem('VUE_ROUTER_BASE'),
+    base,
     routes,
     scrollBehavior (to, from, savedPosition) {
       // see https://router.vuejs.org/guide/advanced/scroll-behavior.html
@@ -38,7 +40,7 @@ export function getVueRouter () {
   /** Returns True if user is authenticated, else False. */
   function isAuthenticated (): boolean {
     // FUTURE: also check that token isn't expired!
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+    return !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
   }
 
   return router

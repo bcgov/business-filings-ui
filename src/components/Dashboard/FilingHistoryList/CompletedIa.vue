@@ -2,7 +2,7 @@
   <div class="completed-ia-details body-2">
     <h4>Incorporation Complete</h4>
 
-    <p>{{entityName || 'A Numbered Benefit Company'}} has been successfully incorporated.</p>
+    <p>{{getEntityName || 'A Numbered Benefit Company'}} has been successfully incorporated.</p>
     <p>Return to your Manage Businesses dashboard to access your business and file changes.</p>
 
     <div class="to-dashboard-container">
@@ -15,13 +15,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 
-@Component({
-  computed: { ...mapState(['entityName']) }
-})
+@Component({})
 export default class CompletedIa extends Vue {
-  readonly entityName!: string
+  @Getter getEntityName!: string
 
   private returnToDashboard (): void {
     const manageBusinessesUrl = sessionStorage.getItem('AUTH_WEB_URL') + 'business'
@@ -49,5 +47,4 @@ p:first-of-type {
 p {
   margin-bottom: 0.5rem !important;
 }
-
 </style>

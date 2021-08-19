@@ -43,7 +43,7 @@
 
         <div class="legal-obligation-btn-panel">
           <v-btn id="dismiss-btn" color="primary" @click="showLegalObligation = false" height="25" width="90">
-            Dismiss
+            <span>Dismiss</span>
           </v-btn>
         </div>
       </div>

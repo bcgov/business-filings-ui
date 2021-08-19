@@ -784,7 +784,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(vm.validated).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // verify that button is enabled
     const button = wrapper.find('#cod-file-pay-btn')
@@ -794,7 +794,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     button.trigger('click')
     await flushPromises()
 
-    // verify v-tooltip text - Todo - Tool tip is outside the wrapper. Yet to find out how to get hold of that.
+    // verify v-tooltip text
+    // FUTURE: Tool tip is outside the wrapper. Have yet to find out how to get hold of that.
     // const tooltipText = wrapper.find('#cod-file-pay-btn + span').text()
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
@@ -852,7 +853,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(vm.validated).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // verify that button is enabled
     const button = wrapper.find('#cod-file-pay-btn')
@@ -862,7 +863,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     button.trigger('click')
     await flushPromises()
 
-    // verify v-tooltip text - Todo - Tool tip is outside the wrapper. Yet to find out how to get hold of that.
+    // verify v-tooltip text
+    // FUTURE: Tool tip is outside the wrapper. Have yet to find out how to get hold of that.
     // const tooltipText = wrapper.find('#cod-file-pay-btn + span').text()
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
@@ -924,7 +926,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(vm.validated).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
-    // TODO: verify that draft filing was fetched
+    // FUTURE: verify that draft filing was fetched
 
     // verify that button is enabled
     const button = wrapper.find('#cod-file-pay-btn')
@@ -1137,7 +1139,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+      // FUTURE: verify that new filing was created
 
       // verify that button is enabled
       const button = wrapper.find('#cod-save-btn')
@@ -1180,7 +1182,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // verify that button is enabled
     const button = wrapper.find('#cod-save-resume-btn')
@@ -1526,7 +1528,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that draft filing was fetched
+      // FUTURE: verify that draft filing was fetched
 
       // NB: can't find button because Vuetify hasn't rendered it
       // const button = wrapper.find('#cod-file-pay-btn')
@@ -1562,7 +1564,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that draft filing was fetched
+      // FUTURE: verify that draft filing was fetched
 
       // NB: can't find button because Vuetify hasn't rendered it
       // const button = wrapper.find('#cod-file-pay-btn')
@@ -1644,7 +1646,6 @@ describe('Standalone Directors Filing - payment required error', () => {
   it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('PAY_API_URL', '')
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
     const get = sinon.stub(axios, 'get')
 

@@ -192,8 +192,7 @@ import { ConfirmDialog, PaymentErrorDialog, LoadCorrectionDialog, ResumeErrorDia
   from '@/components/dialogs'
 
 // Mixins
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin }
-  from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { FilingCodes, FilingNames, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
@@ -260,9 +259,9 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
+    ...mapState(['entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isRoleStaff']),
+    ...mapGetters(['isRoleStaff', 'getCurrentDate']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -271,7 +270,7 @@ export default {
 
     /** Returns title of original filing. */
     title (): string {
-      if (this.origFiling && this.origFiling.header && this.origFiling.header.name) {
+      if (this.origFiling?.header?.name) {
         return this.filingTypeToName(this.origFiling.header.name, this.agmYear)
       }
       return ''
@@ -279,7 +278,7 @@ export default {
 
     /** Returns AGM Year of original filing (AR only). */
     agmYear (): number | null {
-      if (this.origFiling && this.origFiling.annualReport && this.origFiling.annualReport.annualReportDate) {
+      if (this.origFiling?.annualReport?.annualReportDate) {
         const date: string = this.origFiling.annualReport.annualReportDate
         return +date.slice(0, 4)
       }
@@ -299,7 +298,7 @@ export default {
 
     /** Returns default comment (ie, the first line of the detail comment). */
     defaultComment (): string {
-      return `Correction for ${this.title}. Filed on ${this.originalFilingDate}.`
+      return `Correction for ${this.title}, filed on ${this.originalFilingDate}.`
     },
 
     /** Returns maximum length of detail comment. */
@@ -582,7 +581,7 @@ export default {
           name: 'correction',
           certifiedBy: this.certifiedBy,
           email: 'no_one@never.get',
-          date: this.currentDate
+          date: this.getCurrentDate
         }
       }
 
@@ -698,16 +697,16 @@ export default {
     },
 
     /** Returns True if the specified business has any pending tasks, else False. */
+    // FUTURE move this to Legal API mixin
     async hasTasks (businessId): Promise<boolean> {
-      let hasPendingItems: boolean = false
+      let hasPendingItems = false
       if (this.filingId === 0) {
         const url = `businesses/${businessId}/tasks`
         await axios.get(url)
           .then(response => {
-            if (response && response.data && response.data.tasks) {
+            if (response?.data?.tasks) {
               response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

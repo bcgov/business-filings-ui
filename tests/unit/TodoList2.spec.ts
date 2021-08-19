@@ -218,7 +218,7 @@ xdescribe('TodoList - tests specific to Incorporation Applications', () => {
     store.state.entityType = 'BEN'
   })
   //
-  // TODO: numbered vs named
+  // FUTURE: verify numbered vs named IAs (see also Filing History List unit tests)
   //
 })
 

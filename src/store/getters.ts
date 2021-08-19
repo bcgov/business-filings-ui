@@ -1,10 +1,25 @@
-import { CorpTypeCd, FilingStatus, FilingTypes, EntityStatus } from '@/enums'
-import { StateIF } from '@/interfaces'
+import { CorpTypeCd, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { ApiFilingIF, StateIF, ApiTaskIF } from '@/interfaces'
 
 export default {
+  /** The list of filings from the API. */
+  getFilings (state: StateIF): ApiFilingIF[] {
+    return state.filings
+  },
+
+  /** The list of tasks from the API. */
+  getTasks (state: StateIF): ApiTaskIF[] {
+    return state.tasks
+  },
+
+  /** The current Date (YYYY-MM-DD). */
+  getCurrentDate (state: StateIF): string {
+    return state.currentDate
+  },
+
   /** The current year. */
-  currentYear (state: StateIF): number {
-    return state.currentDate ? +state.currentDate.substring(0, 4) : 0
+  getCurrentYear (state: StateIF): number {
+    return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
   },
 
   /** Is True if there are any pending tasks or filings. */
@@ -17,8 +32,8 @@ export default {
     return state.isCoaPending
   },
 
-  /** The COA effective date (if a COA is pending). */
-  coaEffectiveDate (state: StateIF): string {
+  /** The COA effective date (valid if a COA is pending). */
+  coaEffectiveDate (state: StateIF): Date {
     return state.coaEffectiveDate
   },
 
@@ -64,12 +79,12 @@ export default {
 
   /** Returns whether business is in good standing. */
   isInGoodStanding (state: StateIF): boolean {
-    return state.entityStatus === EntityStatus.GOOD_STANDING
+    return (state.entityStatus === EntityStatus.GOOD_STANDING)
   },
 
   nrNumber (state: StateIF): string {
     // workaround for old or new property name
-    return state.nameRequest?.nrNum || state.nameRequest?.nrNumber
+    return (state.nameRequest?.nrNum || state.nameRequest?.nrNumber)
   },
 
   isCurrentFilingEditable (state: StateIF): boolean {
@@ -84,78 +99,37 @@ export default {
     return state.currentFilingStatus
   },
 
-  /** Returns date of last Change of Directors filing from list of past filings. */
-  // FUTURE: this will break if we only retrieve a page of filings
-  // FUTURE: the API should be giving us this date
-  lastCODFilingDate (state: StateIF): string {
-    let lastCOD: string = null
-
-    for (let i = 0; i < state.filings.length; i++) {
-      let filing = state.filings[i].filing
-      // NB: these dates are UTC
-      let filingDate = filing.header.effectiveDate || filing.header.date
-      filingDate = filingDate.slice(0, 10)
-      if (filing.hasOwnProperty(FilingTypes.CHANGE_OF_DIRECTORS)) {
-        if (lastCOD === null || filingDate.split('-').join('') > lastCOD.split('-').join('')) {
-          lastCOD = filingDate
-        }
-      }
-    }
-    return lastCOD
-  },
-
-  /** Returns date of last Change of Address filing from list of past filings. */
-  // FUTURE: this will break if we only retrieve a page of filings
-  // FUTURE: the API should be giving us this date
-  lastCOAFilingDate (state: StateIF): string {
-    let lastCOA: string = null
-
-    for (let i = 0; i < state.filings.length; i++) {
-      let filing = state.filings[i].filing
-      // NB: these dates are UTC
-      let filingDate = filing.header.effectiveDate || filing.header.date
-      filingDate = filingDate.slice(0, 10)
-      if (filing.hasOwnProperty(FilingTypes.CHANGE_OF_ADDRESS)) {
-        if (lastCOA === null || filingDate.split('-').join('') > lastCOA.split('-').join('')) {
-          lastCOA = filingDate
-        }
-      }
-    }
-    return lastCOA
-  },
-
-  /** Returns date of last filing (of any type) from list of past filings. */
-  // FUTURE: this will break if we only retrieve a page of filings
-  // FUTURE: the API should be giving us this date
-  lastFilingDate (state: StateIF): string {
-    let lastFilingDate: string = null
-
-    for (let i = 0; i < state.filings.length; i++) {
-      let filing = state.filings[i].filing
-      // NB: these dates are UTC
-      let filingDate = filing.header.effectiveDate || filing.header.date
-      filingDate = filingDate.slice(0, 10)
-      if (lastFilingDate === null || filingDate.split('-').join('') > lastFilingDate.split('-').join('')) {
-        lastFilingDate = filingDate
-      }
-    }
-    return lastFilingDate
-  },
-
   /**
    * This is used to show Legal Obligations only for a new business
-   * that hasn't filed anything yet (except IA) and has no tasks.
+   * that has no tasks and hasn't filed anything yet (except their IA).
    **/
   isBusinessWithNoMaintenanceFilings (state: StateIF): boolean {
     return (
+      // no todo items
+      state.tasks.length === 0 &&
+      // only the IA filing history item
       state.filings.length === 1 &&
-      state.filings[0].filing.header.name === 'incorporationApplication' &&
-      state.tasks.length === 0
+      state.filings[0].name === FilingTypes.INCORPORATION_APPLICATION
     )
   },
 
-  /** The Entity Number */
+  /** The Entity Number. */
   entityIncNo (state: StateIF): string {
     return state.entityIncNo
+  },
+
+  /** The Entity Name. */
+  getEntityName (state: StateIF): string {
+    return state.entityName
+  },
+
+  /** The Entity Type. */
+  getEntityType (state: StateIF): CorpTypeCd {
+    return state.entityType
+  },
+
+  /** The Entity Status. */
+  getEntityStatus (state: StateIF): EntityStatus {
+    return state.entityStatus
   }
 }

@@ -4,28 +4,29 @@
 import type { CorpInfoIF } from '@bcrs-shared-components/corp-type-module'
 import type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
   NameRequestApplicantIF, ShareStructureIF, CourtOrderIF, IncorporationApplicationIF, IncorporationAddressIf,
-  ShareClassIF } from '@bcrs-shared-components/interfaces'
+  ShareClassIF, CommentIF, ConfirmDialogType } from '@bcrs-shared-components/interfaces'
 export type { CorpInfoIF }
 
 export type { AlterationIF, BusinessIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
   NameRequestApplicantIF, ShareStructureIF, CourtOrderIF, IncorporationApplicationIF, IncorporationAddressIf,
-  ShareClassIF }
+  ShareClassIF, CommentIF, ConfirmDialogType }
 
+export * from './action-interface'
 export * from './address-interfaces'
-export * from './alertMessage-interface'
+export * from './alert-message-interface'
+export * from './api-filing-interface'
+export * from './api-task-interface'
 export * from './breadcrumb-interface'
-export * from './comment-interface'
 export * from './component-interface'
-export * from './correctionFiling-interface'
+export * from './correction-filing-interface'
 export * from './director-interface'
-export * from './filing-interface'
-export * from './filingData-interface'
+export * from './document-interface'
+export * from './filing-data-interface'
 export * from './form-interface'
-export * from './filing-header-interface'
-export * from './historyItem-interface'
+export * from './api-header-interface'
+export * from './history-item-interface'
 export * from './officer-interface'
-export * from './paymentError-interface'
-export * from './staffPayment-interface'
+export * from './payment-error-interface'
+export * from './staff-payment-interface'
 export * from './state-interface'
-export * from './taskItem-interface'
-export * from './todo-header-interface'
+export * from './todo-item-interface'

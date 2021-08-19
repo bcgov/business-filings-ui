@@ -17,8 +17,8 @@ export default class CommonMixin extends Vue {
    * @param keys    the nested object keys which to omit properties from
    * @param prop    the properties to be removed
    */
-  omitProps (baseObj: object, keys: Array<string>, prop: Array<string>): object {
-    const parsedObj: object = {}
+  omitProps (baseObj: any, keys: Array<string>, prop: Array<string>): any {
+    const parsedObj: any = {}
     Object.keys(baseObj).forEach(key => {
       parsedObj[key] = omit(baseObj[key], prop)
     })

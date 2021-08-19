@@ -27,7 +27,7 @@ import { AlertMessageIF } from '@/interfaces'
 @Component({})
 export default class WarningPopover extends Vue {
   @Prop({ default: null })
-  private dialogObj: AlertMessageIF
+  readonly dialogObj: AlertMessageIF
 }
 </script>
 

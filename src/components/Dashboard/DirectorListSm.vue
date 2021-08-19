@@ -86,11 +86,11 @@ export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvinc
 
   /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false })
-  private showCompleteYourFilingMessage: boolean
+  readonly showCompleteYourFilingMessage: boolean
 
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false })
-  private showGrayedOut: boolean
+  readonly showGrayedOut: boolean
 
   /** Whether to appear disabled. */
   private get disabled (): boolean {
