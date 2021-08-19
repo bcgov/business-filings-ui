@@ -3,7 +3,7 @@
     <h4>{{_.subtitle}}</h4>
 
     <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      will be <strong>{{effectiveDateTime}} Pacific Time</strong>.</p>
+      will be <strong>{{effectiveDateTime}}</strong>.</p>
 
     <p>If you wish to change the information in this {{_.filingLabel}}, you must
       contact Registry Staff to file a withdrawal.</p>
@@ -22,28 +22,29 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { DateMixin } from '@/mixins'
 import { ContactInfo } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 
 @Component({
-  computed: { ...mapState(['entityName']) },
   components: { ContactInfo }
 })
-export default class FutureEffective extends Vue {
-  readonly entityName!: string
+export default class FutureEffective extends Mixins(DateMixin) {
+  @Getter getEntityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: HistoryItemIF
+  @Prop({ required: true })
+  readonly filing: HistoryItemIF
 
   /** Data for the subject filing. */
-  private get _ (): any {
+  get _ (): any {
     if (this.filing.isFutureEffectiveIa) {
       return {
         subtitle: 'Future Effective Incorporation Date',
         filingLabel: 'incorporation',
-        companyLabel: (this.entityName || 'this Numbered Benefit Company'),
+        companyLabel: (this.getEntityName || 'this Numbered Benefit Company'),
         filingTitle: 'Incorporation Application'
       }
     }
@@ -51,21 +52,21 @@ export default class FutureEffective extends Vue {
       return {
         subtitle: 'Future Effective Alteration Date',
         filingLabel: 'alteration',
-        companyLabel: (this.entityName || 'this company'),
+        companyLabel: (this.getEntityName || 'this company'),
         filingTitle: 'Alteration Notice'
       }
     }
     return {
       subtitle: 'Future Effective Filing Date',
       filingLabel: 'filing',
-      companyLabel: (this.entityName || 'this company'),
+      companyLabel: (this.getEntityName || 'this company'),
       filingTitle: 'Filing'
     }
   }
 
   /** The future effective datetime of the subject filing. */
-  private get effectiveDateTime (): string {
-    return this.filing.effectiveDateTime || 'unknown'
+  get effectiveDateTime (): string {
+    return (this.dateToPacificDateTime(this.filing.effectiveDate) || 'Unknown')
   }
 }
 </script>

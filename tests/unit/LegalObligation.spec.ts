@@ -16,80 +16,63 @@ const store = getVuexStore() as any // remove typings for unit tests
 
 const newBusinessFiling = [
   {
-    'filing': {
-      'header': {
-        'name': 'incorporationApplication',
-        'date': '2019-06-02T19:22:59.003777+00:00',
-        'paymentToken': 123,
-        'certifiedBy': 'Full Name 1',
-        'filingId': 321,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-06-02T19:22:59.003777+00:00'
-      },
-      'incorporationApplication': {
-        'annualGeneralMeetingDate': '2019-12-31',
-        'annualReportDate': '2019-12-31'
-      }
-    }
+    availableOnPaperOnly: false,
+    displayName: 'Incorporation Application',
+    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    filingId: 123,
+    isFutureEffective: false,
+    name: 'incorporationApplication',
+    status: 'PAID',
+    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submitter: 'Full Name 1'
   }
 ]
 
 const businessWithMaintenanceFiling = [
   {
-    'filing': {
-      'header': {
-        'name': 'incorporationApplication',
-        'date': '2019-06-02T19:22:59.003777+00:00',
-        'paymentToken': 123,
-        'certifiedBy': 'Full Name 1',
-        'filingId': 321,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-06-02T19:22:59.003777+00:00'
-      },
-      'incorporationApplication': {
-      }
-    }
+    availableOnPaperOnly: false,
+    displayName: 'Incorporation Application',
+    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    filingId: 123,
+    isFutureEffective: false,
+    name: 'incorporationApplication',
+    status: 'PAID',
+    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submitter: 'Full Name 1'
   },
   {
-    'filing': {
-      'header': {
-        'name': 'annualReport',
-        'date': '2019-06-02T19:22:59.003777+00:00',
-        'paymentToken': 123,
-        'certifiedBy': 'Full Name 1',
-        'filingId': 321,
-        'availableOnPaperOnly': false,
-        'effectiveDate': '2019-06-02T19:22:59.003777+00:00'
-      },
-      'annualReport': {
-        'annualGeneralMeetingDate': '2019-12-31',
-        'annualReportDate': '2019-12-31'
-      }
-    }
+    availableOnPaperOnly: false,
+    displayName: 'Annual Report (2019)',
+    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    filingId: 456,
+    isFutureEffective: false,
+    name: 'annualReport',
+    status: 'PAID',
+    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submitter: 'Full Name 1'
   }
 ]
 
 const taskList = [
   {
-    'task': {
-      'filing': {
-        'header': {
-          'name': 'annualReport',
-          'ARFilingYear': 2019,
-          'status': 'ERROR',
-          'filingId': 789,
-          'paymentToken': 987
+    task: {
+      filing: {
+        header: {
+          name: 'annualReport',
+          ARFilingYear: 2019,
+          status: 'ERROR',
+          filingId: 789
         },
-        'annualReport': {
-          'annualGeneralMeetingDate': '2019-07-15',
-          'annualReportDate': '2019-07-15'
+        annualReport: {
+          annualGeneralMeetingDate: '2019-07-15',
+          annualReportDate: '2019-07-15'
         },
-        'changeOfAddress': {},
-        'changeOfDirectors': {}
+        changeOfAddress: {},
+        changeOfDirectors: {}
       }
     },
-    'enabled': true,
-    'order': 1
+    enabled: true,
+    order: 1
   }
 ]
 

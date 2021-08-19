@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mapActions, mapState } from 'vuex'
-import { CorrectionFilingIF, FilingDataIF } from '@/interfaces'
+import { CommentIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces'
 import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 
 /**
@@ -28,7 +28,7 @@ export default class FilingMixin extends Vue {
    * @param comments the array of comments to sort and deconstruct
    * @returns the sorted and flattened array of comments
    */
-  flattenAndSortComments (comments: Array<any>): Array<any> {
+  flattenAndSortComments (comments: Array<CommentIF>): Array<CommentIF> {
     if (comments && comments.length > 0) {
       // first use map to change comment.comment to comment
       const temp: Array<any> = comments.map(c => c.comment)

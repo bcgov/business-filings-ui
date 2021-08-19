@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { AlertMessageIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
 
@@ -8,10 +8,10 @@ import { FilingCodes } from '@/enums'
  */
 @Component({
   computed: {
-    ...mapState(['configObject', 'isBComp'])
+    ...mapGetters(['isBComp']),
+    ...mapState(['configObject'])
   }
 })
-
 export default class ResourceLookupMixin extends Vue {
     readonly configObject!: any
     readonly isBComp!: boolean

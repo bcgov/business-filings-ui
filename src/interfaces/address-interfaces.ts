@@ -23,6 +23,7 @@ export interface RegRecAddressesIF {
   recordsOffice: OfficeAddressIF
 }
 
+/** An empty address object. Note: don't assign this - make a copy instead. */
 export const EmptyAddress: AddressIF = {
   streetAddress: '',
   streetAddressAdditional: '',

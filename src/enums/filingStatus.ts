@@ -2,14 +2,14 @@ export enum FilingStatus {
   CANCELLED = 'CANCELLED',
   COMPLETED = 'COMPLETED',
   CORRECTED = 'CORRECTED',
-  DRAFT = 'DRAFT',
   DELETED = 'DELETED',
-  EPOCH = 'EPOCH', // soon to be obsolete
-  ERROR = 'ERROR', // soon to be obsolete
-  NEW = 'NEW', // for todo tasks only
+  DRAFT = 'DRAFT',
+  EPOCH = 'EPOCH', // *** TODO: remove if obsolete
+  ERROR = 'ERROR', // *** TODO: remove if obsolete
+  NEW = 'NEW', // used for Todo List items only (ie, not yet a filing)
   PAID = 'PAID',
   PENDING = 'PENDING',
-  PENDING_ALTERATION = 'PENDING_ALTERATION', // soon to be obsolete
-  PENDING_CORRECTION = 'PENDING_CORRECTION', // soon to be obsolete
-  WITHDRAWN = 'WITHDRAWN'
+  PENDING_ALTERATION = 'PENDING_ALTERATION', // *** TODO: remove if obsolete
+  PENDING_CORRECTION = 'PENDING_CORRECTION', // *** TODO: remove if obsolete
+  WITHDRAWN = 'WITHDRAWN',
 }

@@ -57,8 +57,8 @@ import { DateMixin } from '@/mixins'
 @Component({
   computed: {
     // Property definitions for runtime environment.
-    ...mapState(['currentDate', 'lastAnnualReportDate', 'entityFoundingDate']),
-    ...mapGetters(['lastCODFilingDate', 'isBComp'])
+    ...mapState(['lastAnnualReportDate', 'entityFoundingDate', 'lastCodFilingDate']),
+    ...mapGetters(['isBComp'])
   },
   validations: {
     dateFormatted: { isNotNull, isValidFormat, isValidCODDate }
@@ -67,7 +67,7 @@ import { DateMixin } from '@/mixins'
 export default class CodDate extends Mixins(DateMixin) {
   // Prop passed into this component.
   @Prop({ default: '' })
-  private initialCODDate: string
+  readonly initialCODDate: string
 
   // Local properties.
   private date: string = '' // bound to date picker
@@ -76,10 +76,9 @@ export default class CodDate extends Mixins(DateMixin) {
 
   // Local definitions of computed properties for static type checking.
   // Use non-null assertion operator to allow use before assignment.
-  readonly currentDate!: string
   readonly lastAnnualReportDate!: string
-  readonly lastCODFilingDate!: string
   readonly entityFoundingDate!: string
+  readonly lastCodFilingDate!: Date
   readonly isBComp!: boolean
 
   /**
@@ -107,6 +106,7 @@ export default class CodDate extends Mixins(DateMixin) {
    * @returns The minimum date that can be entered.
    */
   private get minDate (): string {
+    const lastCodFilingDate = this.dateToDateString(this.lastCodFilingDate)
     /**
      * For BComps, use the last COD filing in filing history.
      * For Coops, use the latest of the following dates:
@@ -115,9 +115,9 @@ export default class CodDate extends Mixins(DateMixin) {
      * If the entity has no filing history then the founding date will be used.
      */
     if (this.isBComp) {
-      return this.lastCODFilingDate || this.entityFoundingDate.split('T')[0]
-    } else if (this.lastCODFilingDate || this.lastAnnualReportDate) {
-      return this.latestDate(this.lastCODFilingDate, this.lastAnnualReportDate)
+      return lastCodFilingDate || this.entityFoundingDate.split('T')[0]
+    } else if (lastCodFilingDate || this.lastAnnualReportDate) {
+      return this.latestDate(lastCodFilingDate, this.lastAnnualReportDate)
     } else {
       return this.entityFoundingDate.split('T')[0]
     }

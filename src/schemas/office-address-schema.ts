@@ -17,12 +17,12 @@ export const officeAddressSchema = {
   addressCountry: {
     required,
     // FUTURE: create new validation function isCountry('CA')
-    isCanada: (val) => Boolean(val === 'CA')
+    isCanada: (val) => (val === 'CA')
   },
   addressRegion: {
     maxLength: maxLength(2),
     // FUTURE: create new validation function isRegion('BC')
-    isBC: (val) => Boolean(val === 'BC')
+    isBC: (val) => (val === 'BC')
   },
   postalCode: {
     required,

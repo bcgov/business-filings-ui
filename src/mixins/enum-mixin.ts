@@ -23,78 +23,112 @@ export default class EnumMixin extends Vue {
   // Filing Status helpers
   //
 
+  /** Returns True if item status is Cancelled. */
+  isStatusCancelled (item: any): boolean {
+    return (item.status === FilingStatus.CANCELLED)
+  }
+
   /** Returns True if item status is Completed. */
   isStatusCompleted (item: any): boolean {
-    return item.status === FilingStatus.COMPLETED
+    return (item.status === FilingStatus.COMPLETED)
+  }
+
+  /** Returns True if item status is Corrected. */
+  isStatusCorrected (item: any): boolean {
+    return (item.status === FilingStatus.CORRECTED)
+  }
+
+  /** Returns True if item status is Deleted. */
+  isStatusDeleted (item: any): boolean {
+    return (item.status === FilingStatus.DELETED)
   }
 
   /** Returns True if item status is Draft. */
   isStatusDraft (item: any): boolean {
-    return item.status === FilingStatus.DRAFT
-  }
-
-  /** Returns True if item status is Epoch. */
-  isStatusEpoch (item: any): boolean {
-    return item.status === FilingStatus.EPOCH
+    return (item.status === FilingStatus.DRAFT)
   }
 
   /** Returns True if item status is Error. */
   isStatusError (item: any): boolean {
-    return item.status === FilingStatus.ERROR
+    return (item.status === FilingStatus.ERROR)
   }
 
   /** Returns True if item status is New. */
   isStatusNew (item: any): boolean {
-    return item.status === FilingStatus.NEW
+    return (item.status === FilingStatus.NEW)
   }
 
   /** Returns True if item status is Paid. */
   isStatusPaid (item: any): boolean {
-    return item.status === FilingStatus.PAID
+    return (item.status === FilingStatus.PAID)
   }
 
   /** Returns True if item status is Pending. */
   isStatusPending (item: any): boolean {
-    return item.status === FilingStatus.PENDING
+    return (item.status === FilingStatus.PENDING)
   }
 
-  /** Returns True if item status is Correction Pending. */
-  isStatusCorrectionPending (item: any): boolean {
-    return item.status === FilingStatus.PENDING_CORRECTION
-  }
-
-  /** Returns True if item status is Alteration Pending. */
-  isStatusAlterationPending (item: any): boolean {
-    return item.status === FilingStatus.PENDING_ALTERATION
+  /** Returns True if item status is Withdrawn. */
+  isStatusWithdrawn (item: any): boolean {
+    return (item.status === FilingStatus.WITHDRAWN)
   }
 
   //
   // Filing Type helpers
   //
 
-  /** Returns True if task type is Alteration. */
+  /** Returns True if filing is an Alteration. */
   isTypeAlteration (item: any): boolean {
-    return (item.filingType === FilingTypes.ALTERATION)
+    return (item.name === FilingTypes.ALTERATION)
   }
 
-  /** Returns True if task type is Annual Report. */
+  /** Returns True if filing is an Annual Report. */
   isTypeAnnualReport (item: any): boolean {
-    return (item.filingType === FilingTypes.ANNUAL_REPORT)
+    return (item.name === FilingTypes.ANNUAL_REPORT)
   }
 
-  /** Returns True if task type is Correction. */
+  /** Returns True if filing is a Change of Address. */
+  isTypeChangeOfAddress (item: any): boolean {
+    return (item.name === FilingTypes.CHANGE_OF_ADDRESS)
+  }
+
+  /** Returns True if filing is a Change of Directors. */
+  isTypeChangeOfDirectors (item: any): boolean {
+    return (item.name === FilingTypes.CHANGE_OF_DIRECTORS)
+  }
+
+  /** Returns True if filing is a Change of Name. */
+  isTypeChangeOfName (item: any): boolean {
+    return (item.name === FilingTypes.CHANGE_OF_NAME)
+  }
+
+  /** Returns True if filing is a Correction. */
   isTypeCorrection (item: any): boolean {
-    return (item.filingType === FilingTypes.CORRECTION)
+    return (item.name === FilingTypes.CORRECTION)
   }
 
-  /** Returns True if task type is Name Incorporation Application. */
+  /** Returns True if filing is an Incorporation Application. */
   isTypeIncorporationApplication (item: any): boolean {
-    return (item.filingType === FilingTypes.INCORPORATION_APPLICATION)
+    return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
-  /** Returns True if task type is Name Request. */
+  /** Returns True if filing is a Name Request. */
   isTypeNameRequest (item: any): boolean {
-    return (item.filingType === FilingTypes.NAME_REQUEST)
+    return (item.name === FilingTypes.NAME_REQUEST)
+  }
+
+  /** Returns True if filing is a Transition. */
+  isTypeTransition (item: any): boolean {
+    return (item.name === FilingTypes.TRANSITION)
+  }
+
+  /** Returns True if filing is a Staff Only filing. */
+  isTypeStaff (item: any): boolean {
+    return [
+      FilingTypes.REGISTRARS_NOTATION,
+      FilingTypes.REGISTRARS_ORDER,
+      FilingTypes.COURT_ORDER
+    ].includes(item.name)
   }
 
   //
@@ -126,8 +160,8 @@ export default class EnumMixin extends Vue {
   //
 
   /** Returns True if effect of order is Plan of Arrangement. */
-  isEffectOfOrderPlanOfArrangement (item: any): boolean {
-    return (item.effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
+  isEffectOfOrderPlanOfArrangement (effectOfOrder: EffectOfOrderTypes): boolean {
+    return (effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
   }
 
   //
@@ -148,10 +182,10 @@ export default class EnumMixin extends Vue {
   entityStatusToDescription (status: EntityStatus, type: CorpTypeCd): string {
     switch (status) {
       case EntityStatus.NAME_REQUEST:
-        return `${this.getCorpTypeDescription(type)} Name Request`
+        return `${this.getCorpTypeDescription(type)} ${FilingNames.NAME_REQUEST}`
       case EntityStatus.DRAFT_INCORP_APP:
       case EntityStatus.FILED_INCORP_APP:
-        return `${this.getCorpTypeDescription(type)} Incorporation Application`
+        return `${this.getCorpTypeDescription(type)} ${FilingNames.INCORPORATION_APPLICATION}`
     }
     return '' // should never happen
   }
@@ -163,7 +197,7 @@ export default class EnumMixin extends Vue {
    * @param alterationRequired A boolean indicating a required business type change
    */
   filingTypeToName (type: FilingTypes | string, agmYear: string = null, alterationRequired: boolean = false): string {
-    if (!type) return '' // safety check
+    if (!type) return 'Unknown Type' // safety check
     switch (type) {
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS

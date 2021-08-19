@@ -22,7 +22,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           attach: '#parent-page'
         },
         store
@@ -44,7 +44,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         sync: false
@@ -65,7 +65,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           courtOrderNumberRequired: true
         },
         store,
@@ -89,7 +89,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           courtOrderNumberRequired: true
         },
         store,
@@ -116,7 +116,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         vuetify,
@@ -141,7 +141,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test',
+          displayName: 'Test',
           courtOrderNumberRequired: true
         },
         store,
@@ -165,7 +165,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         vuetify,
@@ -191,7 +191,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          itemName: 'Test'
+          displayName: 'Test'
         },
         store,
         vuetify,

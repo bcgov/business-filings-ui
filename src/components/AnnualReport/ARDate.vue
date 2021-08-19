@@ -4,7 +4,7 @@
       <label>Annual Report Date</label>
       <span class="date ar-date">{{formatDateString(nextARDate)}}</span>
       <label>Filing Date</label>
-      <span class="date file-date">Today ({{formatDateString(currentDate)}})</span>
+      <span class="date file-date">Today ({{formatDateString(getCurrentDate)}})</span>
     </div>
   </v-card>
 </template>
@@ -19,14 +19,14 @@ import { DateMixin } from '@/mixins'
 
 @Component({
   computed: {
-    ...mapState(['nextARDate', 'currentDate']),
-    ...mapGetters(['isBComp'])
+    ...mapState(['nextARDate']),
+    ...mapGetters(['isBComp', 'getCurrentDate'])
   }
 })
 export default class ArDate extends Mixins(DateMixin) {
   readonly nextARDate!: string
-  readonly currentDate!: string
   readonly isBComp!: boolean
+  readonly getCurrentDate!: string
 }
 </script>
 

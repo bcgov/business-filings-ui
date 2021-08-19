@@ -42,10 +42,10 @@ export default class FetchErrorDialog extends Vue {
   readonly isRoleStaff!: boolean
 
   // Prop to display the dialog.
-  @Prop({ default: false }) private dialog: boolean
+  @Prop({ default: false }) readonly dialog: boolean
 
   // Prop to provide attachment selector.
-  @Prop({ default: null }) private attach: string
+  @Prop({ default: null }) readonly attach: string
 
   // Pass click event to parent.
   @Emit() private exit () { }

@@ -222,7 +222,7 @@ describe('Correction - UI', () => {
     expect(vm.title).toBe('Annual Report (2018)')
     expect(vm.agmYear).toBe(2018)
     expect(vm.originalFilingDate).toBe('Dec 23, 2018')
-    expect(vm.defaultComment).toBe('Correction for Annual Report (2018). Filed on Dec 23, 2018.')
+    expect(vm.defaultComment).toBe('Correction for Annual Report (2018), filed on Dec 23, 2018.')
 
     wrapper.destroy()
   })

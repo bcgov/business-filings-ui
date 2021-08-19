@@ -1,5 +1,6 @@
 import Certify from './Certify.vue'
 import ContactInfo from './ContactInfo.vue'
+import DateTooltip from './DateTooltip.vue'
 import DetailComment from './DetailComment.vue'
 import DetailsList from './DetailsList.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
@@ -16,6 +17,7 @@ import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
 export {
   Certify,
   ContactInfo,
+  DateTooltip,
   DetailComment,
   DetailsList,
   NameRequestInfo,

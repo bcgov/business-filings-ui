@@ -1,4 +1,5 @@
 export * from './actions'
+export * from './documentTypes'
 export * from './entityStatus'
 export * from './filingCodes'
 export * from './filingNames'

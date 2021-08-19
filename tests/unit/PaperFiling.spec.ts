@@ -12,10 +12,10 @@ describe('Paper Filing', () => {
     const wrapper = mount(PaperFiling, { vuetify })
 
     // verify content
-    const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('Filings completed')
-    expect(paragraphs.at(1).text()).toContain('To request copies')
+    const paraText = wrapper.find('p').text()
+    expect(paraText).toContain('This filing is available on paper only.')
+    expect(paraText).toContain('To request copies of paper documents,')
+    expect(paraText).toContain('contact BC Registry Staff:')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()

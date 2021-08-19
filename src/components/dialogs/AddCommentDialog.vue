@@ -52,13 +52,13 @@ export default class AddCommentDialog extends Vue {
   readonly entityIncNo!: number
 
   /** Prop to display the dialog. */
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
 
   /** Prop to provide the Filing ID. */
-  @Prop() private filingId: number
+  @Prop() readonly filingId: number
 
   /** Prop to provide attachment selector. */
-  @Prop() private attach: string
+  @Prop() readonly attach: string
 
   /** The comment text. */
   private comment: string = ''

@@ -276,8 +276,8 @@
               </v-btn>
             </div>
           </template>
-          <span>Ensure all of your information is entered correctly before you File.<br>
-            There is no opportunity to change information beyond this point.</span>
+          Ensure all of your information is entered correctly before you File.<br>
+          There is no opportunity to change information beyond this point.
         </v-tooltip>
 
         <v-btn
@@ -315,8 +315,8 @@
               </v-btn>
             </div>
           </template>
-          <span>Ensure all of your information is entered correctly before you File.<br>
-            There is no opportunity to change information beyond this point.</span>
+          Ensure all of your information is entered correctly before you File.<br>
+          There is no opportunity to change information beyond this point.
         </v-tooltip>
 
         <v-btn
@@ -355,7 +355,7 @@ import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog,
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { Actions, FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
+import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
 import { StaffPaymentIF } from '@/interfaces'
 
 export default {
@@ -436,11 +436,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityType',
-      'entityName', 'entityIncNo', 'entityFoundingDate', 'directors', 'filingData']),
+    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityType', 'entityName', 'entityIncNo',
+      'entityFoundingDate', 'directors', 'filingData', 'lastCoaFilingDate', 'lastCodFilingDate']),
 
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'reportState',
-      'lastCOAFilingDate', 'lastCODFilingDate', 'currentYear']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'reportState', 'getCurrentYear',
+      'getCurrentDate']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -457,13 +457,13 @@ export default {
         // if AGM Date is set then use it
         if (this.agmDate) return this.agmDate
         // if filing is in past year then use last day in that year
-        if (this.ARFilingYear < this.currentYear) return `${this.ARFilingYear}-12-31`
+        if (this.ARFilingYear < this.getCurrentYear) return `${this.ARFilingYear}-12-31`
       }
       if (this.isBComp) {
         return this.nextARDate
       }
       // should never get here
-      return this.currentDate
+      return this.getCurrentDate
     },
 
     certifyMessage (): string {
@@ -872,7 +872,7 @@ export default {
           name: FilingTypes.ANNUAL_REPORT,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
-          date: this.currentDate, // NB: API will reassign this date according to its clock
+          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
           ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
           effectiveDate: this.dateStringToApi(this.asOfDate)
         }
@@ -1042,12 +1042,12 @@ export default {
     allowChange (type) {
       let earliestAllowedDate
       if (type === 'coa') {
-        earliestAllowedDate = this.lastCOAFilingDate
+        earliestAllowedDate = this.dateToDateString(this.lastCoaFilingDate)
       }
       if (type === 'cod') {
-        earliestAllowedDate = this.lastCODFilingDate
+        earliestAllowedDate = this.dateToDateString(this.lastCodFilingDate)
       }
-      return Boolean(this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
+      return (!!this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
     },
 
     hasAction (director, action) {
@@ -1055,16 +1055,16 @@ export default {
     },
 
     /** Returns True if the specified business has any pending tasks, else False. */
-    async hasTasks (businessId) {
+    // FUTURE move this to Legal API mixin
+    async hasTasks (businessId): Promise<boolean> {
       let hasPendingItems = false
       if (this.filingId === 0) {
         const url = `businesses/${businessId}/tasks`
         await axios.get(url)
           .then(response => {
-            if (response && response.data && response.data.tasks) {
+            if (response?.data?.tasks) {
               response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

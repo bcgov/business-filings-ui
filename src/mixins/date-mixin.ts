@@ -4,9 +4,7 @@ import { isDate } from 'lodash'
 
 const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
-/**
- * Mixin that provides some useful date utilities.
- */
+/** Mixin that provides some useful date utilities. */
 @Component({
   computed: {
     ...mapState(['currentDate'])
@@ -14,6 +12,29 @@ const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 })
 export default class DateMixin extends Vue {
   readonly currentDate!: string
+
+  /**
+   * Fetches and returns the web server's current date (in UTC).
+   * Used to bypass the user's local clock/timezone.
+   * Ref: https://www.npmjs.com/package/serverdate
+   * @returns a promise to return a Date object
+   */
+  async getServerDate (): Promise<Date> {
+    const input = `${window.location.origin}/${process.env.VUE_APP_PATH}/`
+    const init: RequestInit = { cache: 'no-store', method: 'HEAD' }
+
+    try {
+      const { headers, ok, statusText } = await fetch(input, init)
+      if (!ok) throw new Error(statusText)
+      return new Date(headers.get('Date'))
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('Unable to get server date - using browser date instead')
+      // fall back to local date
+      // NB: filing may contain invalid dates/times
+      return new Date()
+    }
+  }
 
   /**
    * Converts a Date object to a date string (YYYY-MM-DD) in Pacific timezone.
@@ -93,6 +114,21 @@ export default class DateMixin extends Vue {
     timeStr = timeStr.replace('a.m.', 'am').replace('p.m.', 'pm')
 
     return timeStr
+  }
+
+  /**
+   * Converts a Date object to a date and time string (Month Day, Year at HH:MM am/pm
+   * Pacific time).
+   * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020 at 11:00 pm Pacific time"
+   * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021 at 12:00 pm Pacific time"
+   */
+  dateToPacificDateTime (date: Date): string {
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
+    const dateStr = this.dateToPacificDate(date)
+    const timeStr = this.dateToPacificTime(date)
+
+    return `${dateStr} at ${timeStr} Pacific time`
   }
 
   /**
@@ -179,7 +215,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Returns the earliest of two simple date strings.
+   * Returns the earliest of two simple date strings (YYYY-MM-DD).
    * @param date1 first date
    * @param date2 second date
    */
@@ -195,7 +231,7 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Returns the latest of two simple date strings.
+   * Returns the latest of two simple date strings (YYYY-MM-DD).
    * @param date1 first date
    * @param date2 second date
    */
