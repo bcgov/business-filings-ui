@@ -125,7 +125,8 @@ export default {
         CorpTypeCd.BENEFIT_COMPANY,
         CorpTypeCd.BC_COMPANY,
         CorpTypeCd.BC_ULC_COMPANY,
-        CorpTypeCd.BC_CCC
+        CorpTypeCd.BC_CCC,
+        CorpTypeCd.COOP
       ],
 
       // enums
