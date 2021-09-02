@@ -8,19 +8,19 @@ export interface TaskItemIF {
   title: string;
   draftTitle?: string;
   subtitle?: string;
-  ARFilingYear: number; // for ARs only
-  arMinDate?: string; // for COOP ARs only
-  arMaxDate?: string; // for COOP ARs only
+  ARFilingYear?: number; // YYYY // ARs only
+  arMaxDate?: string; // YYYY-MM-DD // COOP ARs only
+  arMinDate?: string; // YYYY-MM-DD // COOP ARs only
   status: string;
   enabled: boolean;
   order: number;
   paymentMethod?: PaymentMethod;
   paymentToken?: number;
-  nextArDate?: string; // for BCOMP ARs only
-  arDueDate?: string; // for BCOMP ARs only
+  nextArDate?: string; // YYYY-MM-DD // BCOMP ARs only
+  arDueDate?: string; // eg, "Apr 9, 2021" // BCOMP ARs only
   payErrorObj?: PaymentErrorIF;
-  correctedFilingId?: number; // for Corrections only
-  correctedFilingType?: string; // for Corrections only
-  isEmptyFiling?: boolean; // for IAs only
-  nameRequest?: any; // for IAs only
+  correctedFilingId?: number; // Corrections only
+  correctedFilingType?: string; // Corrections only
+  isEmptyFiling?: boolean; // IAs only
+  nameRequest?: any; // IAs only
 }

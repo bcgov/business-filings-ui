@@ -19,12 +19,12 @@ export default {
   businessPhone: null as string,
   lastAnnualReportDate: null as string,
   businessPhoneExtension: null as string,
-  nextARDate: null as string,
+  nextARDate: null as string, // YYYY-MM-DD // BCOMPs only
   nameRequest: null as object,
 
   ARFilingYear: null as number, // YYYY
-  arMinDate: null as string, // YYYY-MM-DD
-  arMaxDate: null as string, // YYYY-MM-DD
+  arMinDate: null as string, // YYYY-MM-DD // COOPs only
+  arMaxDate: null as string, // YYYY-MM-DD // COOPs only
 
   tasks: [] as Array<object>,
   filings: [] as Array<object>,

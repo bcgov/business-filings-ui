@@ -345,7 +345,6 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
               directors: sampleDirectors
             },
             business: {
-              cacheId: 1,
               foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
               lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
@@ -434,7 +433,6 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
               directors: sampleDirectors
             },
             business: {
-              cacheId: 1,
               foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
               lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
@@ -527,7 +525,6 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
               directors: sampleDirectors
             },
             business: {
-              cacheId: 1,
               foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
               lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
@@ -629,7 +626,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -682,7 +678,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -714,7 +709,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -970,7 +964,6 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -1082,7 +1075,6 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -1393,7 +1385,6 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -1451,7 +1442,6 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -1491,7 +1481,6 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
               'directors': sampleDirectors
             },
             'business': {
-              'cacheId': 1,
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
               'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
@@ -1629,7 +1618,6 @@ describe('Standalone Directors Filing - payment required error', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              cacheId: 1,
               foundingDate: '2007-04-08',
               identifier: 'CP0001191',
               lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',

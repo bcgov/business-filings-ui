@@ -674,6 +674,8 @@ export default {
           }
         }
 
+        // NB: ARFilingYear, arMaxDate and arMinDate were set in the store by the TodoList component
+
         // restore AGM Date
         if (this.isCoop) {
           // set the new AGM date in the AGM Date component (may be null or empty)
@@ -871,13 +873,14 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.currentDate, // NB: API will reassign this date according to its clock
-          ARFilingYear: this.ARFilingYear,
+          ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
           effectiveDate: this.dateStringToApi(this.asOfDate)
         }
       }
 
       // save AR min and max dates (COOP only)
       // NB: save in local tz
+      // NB: used by TodoList when loading draft AR
       if (this.isCoop) {
         header.header['arMinDate'] = this.arMinDate
         header.header['arMaxDate'] = this.arMaxDate

@@ -392,7 +392,7 @@ import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/c
 
 // Enums and Interfaces
 import { FilingStatus, FilingTypes, Routes } from '@/enums'
-import { CourtOrderIF, FilingIF, HistoryItemIF } from '@/interfaces'
+import { CourtOrderIF, FilingHeaderIF, FilingIF, HistoryItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
@@ -477,7 +477,7 @@ export default {
         const filing = this.filings[i].filing
         if (filing?.header?.date) {
           let filingDate = filing.header.date.slice(0, 10)
-          if (filing.header.availableInColinOnly) {
+          if (filing.header.availableInColinOnly || filing.header.inColinOnly) {
             // filings from converted companies
             this.loadColinFiling(filing)
           } else if (filingDate < '2019-03-08' || filing.header.availableOnPaperOnly) {
@@ -547,7 +547,7 @@ export default {
     },
 
     loadAnnualReport (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
       const annualReport = filing?.annualReport
 
       if (header && annualReport) {
@@ -595,7 +595,7 @@ export default {
     },
 
     loadIncorporationApplication (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
       const incorporationApplication = filing?.incorporationApplication
 
       if (header && incorporationApplication) {
@@ -612,7 +612,7 @@ export default {
           : filingDate
 
         // is this a Future Effective Incorp App?
-        const isFutureEffectiveIa = !!filing.header.isFutureEffective
+        const isFutureEffectiveIa = !!header.isFutureEffective
 
         // is this a Future Effective Incorp App pending completion?
         const isFutureEffectiveIaPending = isFutureEffectiveIa && this.isEffectiveDatePast(filing)
@@ -668,7 +668,7 @@ export default {
 
     /** Loads an "Alteration" filing into the historyItems list. */
     loadAlteration (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
       const alteration = filing?.alteration
       const business = filing?.business
 
@@ -699,7 +699,7 @@ export default {
           : filingDate
 
         // is this a Future Effective alteration?
-        const isFutureEffectiveAlteration = !!filing.header.isFutureEffective
+        const isFutureEffectiveAlteration = !!header.isFutureEffective
 
         // is this a Future Effective alteration pending completion?
         const isFutureEffectiveAlterationPending = isFutureEffectiveAlteration && this.isEffectiveDatePast(filing)
@@ -747,7 +747,7 @@ export default {
 
     /** Loads a general filing into the historyItems list. */
     loadOtherFiling (filing: FilingIF, section: any) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
 
       if (header && section) {
         const filingType = header.name
@@ -825,9 +825,10 @@ export default {
 
     /** Whether this filing's effective date/time is in the past. */
     isEffectiveDatePast (filing: FilingIF): boolean {
-      if (filing?.header?.effectiveDate) {
+      const header = filing?.header as FilingHeaderIF
+      if (header?.effectiveDate) {
         // NB: these are both in UTC
-        const effectiveDateTime = new Date(filing.header.effectiveDate)
+        const effectiveDateTime = new Date(header.effectiveDate)
         const now = new Date()
         if (effectiveDateTime <= now) {
           return true
@@ -838,9 +839,10 @@ export default {
 
     /** Whether this filing's effective date/time is in the future. */
     isEffectiveDateFuture (filing: FilingIF): boolean {
-      if (filing?.header?.effectiveDate) {
+      const header = filing?.header as FilingHeaderIF
+      if (header?.effectiveDate) {
         // NB: these are both in UTC
-        const effectiveDateTime = new Date(filing.header.effectiveDate)
+        const effectiveDateTime = new Date(header.effectiveDate)
         const now = new Date()
         if (effectiveDateTime > now) {
           return true
@@ -859,7 +861,7 @@ export default {
     },
 
     loadCorrection (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
       const correction = filing?.correction
 
       const filingDateTime = this.apiToPacificDateTime(header.date)
@@ -900,7 +902,7 @@ export default {
 
     /** Loads a Colin filing into the historyItems list. */
     loadColinFiling (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
 
       if (header) {
         // since name is not guaranteed to exist, provide a fallback
@@ -940,7 +942,7 @@ export default {
 
     /** Loads a Transition filing into the historyItems list. */
     loadTransitionFiling (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
       const business = filing?.business
 
       if (header && business) {
@@ -959,7 +961,7 @@ export default {
           : filingDate
 
         // is this a Future Effective Transition Filing?
-        const isFutureEffectiveTransition = !!filing.header.isFutureEffective
+        const isFutureEffectiveTransition = !!header.isFutureEffective
 
         // is this a Future Effective Transition pending completion?
         const isFutureEffectiveTransitionPending = isFutureEffectiveTransition && this.isEffectiveDatePast(filing)
@@ -1000,7 +1002,7 @@ export default {
 
     /** Loads a paper filing into the historyItems list. */
     loadPaperFiling (filing: FilingIF) {
-      const header = filing?.header
+      const header = filing?.header as FilingHeaderIF
 
       if (header) {
         // since name is not guaranteed to exist, provide a fallback

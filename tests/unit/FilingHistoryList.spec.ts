@@ -1589,7 +1589,7 @@ describe('Filing History List - Colin filings', () => {
           header: {
             name: 'annualReport',
             date: '2020-03-24T19:20:05.670859+00:00',
-            availableInColinOnly: true,
+            inColinOnly: true,
             status: 'COMPLETED',
             filingId: 85114
           },
