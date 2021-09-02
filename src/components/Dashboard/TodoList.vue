@@ -469,7 +469,7 @@
           </template>
 
           <template v-else-if="isStatusPending(task)">
-            <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(task)" :filing=task />
+            <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(task)" :filing=task class="mb-6" />
             <PaymentPending v-else />
           </template>
 
@@ -519,7 +519,7 @@ import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { FilingIF, PaymentErrorIF, TaskItemIF } from '@/interfaces'
+import { FilingHeaderIF, FilingIF, PaymentErrorIF, TaskItemIF, TodoHeaderIF } from '@/interfaces'
 
 export default {
   name: 'TodoList',
@@ -669,20 +669,22 @@ export default {
     },
 
     loadTodoItem (task) {
-      const todo: FilingIF = task.task.todo
-      if (todo?.header) {
-        switch (todo.header.name) {
+      const todo = task.task.todo as FilingIF
+      const header = todo.header as TodoHeaderIF
+
+      if (header) {
+        switch (header.name) {
           case FilingTypes.ANNUAL_REPORT:
             this.loadAnnualReportTodo(task)
             break
           default:
             // eslint-disable-next-line no-console
-            console.log('ERROR - got unknown todo item =', todo)
+            console.log('ERROR - invalid name in todo header =', header)
             break
         }
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid todo or header in task =', task)
+        console.log('ERROR - invalid header in todo =', todo)
       }
     },
 
@@ -703,8 +705,10 @@ export default {
     /** Loads a NEW Annual Report todo. */
     loadAnnualReportTodo (task) {
       const todo: FilingIF = task.task.todo
-      if (todo?.header && todo?.business) {
-        const ARFilingYear: number = todo.header.ARFilingYear
+      const header = todo.header as TodoHeaderIF
+
+      if (header && todo.business) {
+        const ARFilingYear = header.ARFilingYear
         const subtitle: string = task.enabled && !this.isBComp ? '(including Address and/or Director Change)' : null
 
         this.taskItems.push({
@@ -713,24 +717,28 @@ export default {
           title: `File ${ARFilingYear} Annual Report`,
           subtitle,
           ARFilingYear,
-          arMinDate: todo.header.arMinDate, // COOP only
-          arMaxDate: todo.header.arMaxDate, // COOP only
-          status: todo.header.status || FilingStatus.NEW,
+          // NB: get min/max AR dates from header object (not business object)
+          // same as loading a draft AR
+          arMinDate: header.arMinDate, // COOP only
+          arMaxDate: header.arMaxDate, // COOP only
+          status: header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
           nextArDate: this.nextArDate(todo.business.nextAnnualReport), // BCOMP only
-          arDueDate: this.arDueDate(todo.business.nextAnnualReport) // BCOMP only
+          arDueDate: this.formatDateString(header.arMaxDate) // BCOMP only
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid todo or header or business in task =', task)
+        console.log('ERROR - invalid header or business in todo =', todo)
       }
     },
 
     async loadFilingItem (task) {
-      const filing: FilingIF = task.task.filing
-      if (filing?.header) {
-        switch (filing.header.name) {
+      const filing = task.task.filing as FilingIF
+      const header = filing.header as FilingHeaderIF
+
+      if (header) {
+        switch (header.name) {
           case FilingTypes.ANNUAL_REPORT:
             await this.loadAnnualReport(task)
             break
@@ -751,169 +759,176 @@ export default {
             break
           default:
             // eslint-disable-next-line no-console
-            console.log('ERROR - got unknown filing item =', filing)
+            console.log('ERROR - invalid name in filing header =', header)
             break
         }
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header in task =', task)
+        console.log('ERROR - invalid header in filing =', filing)
       }
     },
 
     loadAlteration (task) {
       const filing: FilingIF = task.task.filing
-      if (!this.isInGoodStanding() && this.isStatusDraft(filing.header)) {
-        task.enabled = false
-      }
+      const header = filing.header as FilingHeaderIF
 
-      // verify both "header" and "alteration"
-      if (filing?.header && filing?.alteration) {
+      if (header && filing.alteration && filing.business) {
+        if (!this.isInGoodStanding() && this.isStatusDraft(header)) {
+          task.enabled = false
+        }
+
         this.taskItems.push({
           filingType: FilingTypes.ALTERATION,
-          id: filing.header.filingId,
+          id: header.filingId,
           legalType: this.getCorpTypeDescription(filing.business?.legalType),
-          filingDate: filing.header.date,
-          title: this.alterationTitle(filing.header.priority, this.getCorpTypeDescription(filing.business?.legalType)),
+          filingDate: header.date,
+          title: this.alterationTitle(header.priority, this.getCorpTypeDescription(filing.business.legalType)),
           draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
-          status: filing.header.status,
+          status: header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
           goodStanding: this.isInGoodStanding(),
-          paymentMethod: filing.header.paymentMethod || null,
-          paymentToken: filing.header.paymentToken || null,
-          comments: this.flattenAndSortComments(filing.header.comments)
+          paymentMethod: header.paymentMethod || null,
+          paymentToken: header.paymentToken || null,
+          comments: this.flattenAndSortComments(header.comments)
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header or alteration in task =', task)
+        console.log('ERROR - invalid header or alteration or business in filing =', task)
       }
     },
 
     /**
      * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
-     * (Currently used for Coop ARs only, as BComps can't save draft ARs atm.)
+     * (Currently used for Coop ARs only, as BComps can't save draft ARs.)
      */
     async loadAnnualReport (task) {
       const filing: FilingIF = task.task.filing
-      // verify both "header" and "annualReport"
-      if (filing?.header && filing?.annualReport) {
-        // FUTURE: delete fallback when all draft ARs contain ARFilingYear
-        const ARFilingYear: number =
-          filing.header.ARFilingYear || filing.annualReport.annualReportDate?.substring(0, 4)
-        const paymentStatusCode = filing.header.paymentStatusCode
+      const header = filing.header as FilingHeaderIF
+
+      if (header && filing.annualReport && filing.business) {
+        // *** TODO: delete fallback when all draft ARs contain ARFilingYear
+        const ARFilingYear: number = header.ARFilingYear || this.getArFilingYear(filing)
+        const paymentStatusCode = header.paymentStatusCode
         const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
 
         this.taskItems.push({
           filingType: FilingTypes.ANNUAL_REPORT,
-          id: filing.header.filingId,
+          id: header.filingId,
           title: `File ${ARFilingYear} Annual Report`,
           draftTitle: `${ARFilingYear} Annual Report`,
           ARFilingYear,
-          // FUTURE: delete fallbacks when all draft ARs contain arMinDate and arMaxDate
-          arMinDate: filing.header.arMinDate || this.getArMinDate(ARFilingYear), // COOP only
-          arMaxDate: filing.header.arMaxDate || this.getArMaxDate(ARFilingYear), // COOP only
-          status: filing.header.status || FilingStatus.NEW,
+          // *** TODO: delete fallbacks when all draft ARs contain arMinDate and arMaxDate
+          arMinDate: header.arMinDate || this.getArMinDate(ARFilingYear), // COOP only
+          arMaxDate: header.arMaxDate || this.getArMaxDate(ARFilingYear), // COOP only
+          status: header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentMethod: filing.header.paymentMethod || null,
-          paymentToken: filing.header.paymentToken || null,
+          paymentMethod: header.paymentMethod || null,
+          paymentToken: header.paymentToken || null,
           payErrorObj
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header or annualReport in task =', task)
+        console.log('ERROR - invalid header or annualReport or business in filing =', filing)
       }
     },
 
     async loadChangeOfDirectors (task) {
       const filing: FilingIF = task.task.filing
-      // only verify "header" as "changeOfDirectors" may be empty
-      if (filing?.header) {
-        const paymentStatusCode = filing.header.paymentStatusCode || null
+      const header = filing.header as FilingHeaderIF
+
+      // NB: "filing.changeOfDirectors" may be empty
+      if (header && filing.business) {
+        const paymentStatusCode = header.paymentStatusCode || null
         const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
         this.taskItems.push({
           filingType: FilingTypes.CHANGE_OF_DIRECTORS,
-          id: filing.header.filingId,
+          id: header.filingId,
           title: `File Director Change`,
           draftTitle: `Director Change`,
-          status: filing.header.status || FilingStatus.NEW,
+          status: header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentMethod: filing.header.paymentMethod || null,
-          paymentToken: filing.header.paymentToken || null,
+          paymentMethod: header.paymentMethod || null,
+          paymentToken: header.paymentToken || null,
           payErrorObj
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header in task =', task)
+        console.log('ERROR - invalid header or business in filing =', filing)
       }
     },
 
     async loadChangeOfAddress (task) {
       const filing: FilingIF = task.task.filing
-      // verify both "header" and "changeOfAddress"
-      if (filing?.header && filing?.changeOfAddress) {
-        const paymentStatusCode = filing.header.paymentStatusCode || null
+      const header = filing.header as FilingHeaderIF
+
+      if (header && filing.changeOfAddress && filing.business) {
+        const paymentStatusCode = header.paymentStatusCode || null
         const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
         this.taskItems.push({
           filingType: FilingTypes.CHANGE_OF_ADDRESS,
-          id: filing.header.filingId,
+          id: header.filingId,
           title: `File Address Change`,
           draftTitle: `Address Change`,
-          status: filing.header.status || FilingStatus.NEW,
+          status: header.status || FilingStatus.NEW,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentMethod: filing.header.paymentMethod || null,
-          paymentToken: filing.header.paymentToken || null,
+          paymentMethod: header.paymentMethod || null,
+          paymentToken: header.paymentToken || null,
           payErrorObj
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header or changeOfAddress in task =', task)
+        console.log('ERROR - invalid header or changeOfAddress or business in filing =', filing)
       }
     },
 
     loadCorrection (task) {
       const filing: FilingIF = task.task.filing
-      // verify both "header" and "correction"
-      if (filing?.header && filing?.correction) {
+      const header = filing.header as FilingHeaderIF
+
+      if (header && filing.correction && filing.business) {
         this.taskItems.push({
           filingType: FilingTypes.CORRECTION,
-          id: filing.header.filingId,
+          id: header.filingId,
           filingDate: filing.correction.correctedFilingDate,
           // this is only used for internal corrections (not IA):
           correctedFilingId: filing.correction.correctedFilingId,
           // this is only used for external corrections (IA):
           correctedFilingType: this.filingTypeToName(filing.correction.correctedFilingType),
-          title: (this.priorityCorrectionTitle(filing.header.priority) + ' - ' +
+          title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
             this.filingTypeToName(filing.correction.correctedFilingType)),
           draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
-          status: filing.header.status,
+          status: header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentMethod: filing.header.paymentMethod || null,
-          paymentToken: filing.header.paymentToken || null,
-          comments: this.flattenAndSortComments(filing.header.comments)
+          paymentMethod: header.paymentMethod || null,
+          paymentToken: header.paymentToken || null,
+          comments: this.flattenAndSortComments(header.comments)
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header or correction in task =', task)
+        console.log('ERROR - invalid header or correction or business in filing =', filing)
       }
     },
 
     async loadIncorporationApplication (task) {
       const filing: FilingIF = task.task.filing
-      // only verify "header" as "incorporationApplication" may be empty
-      if (filing?.header) {
+      const header = filing.header as FilingHeaderIF
+
+      // NB: "filing.incorporationApplication" may be empty
+      if (header && filing.business) {
         const title = this.nameRequest
           ? `${this.getCorpTypeDescription(this.entityType)} Incorporation Application - ${this.entityName}`
           : `${this.getCorpTypeDescription(this.entityType)} Incorporation Application`
 
         // set subtitle only if DRAFT
         let subtitle
-        if (this.isStatusDraft(filing.header)) {
+        if (this.isStatusDraft(header)) {
           if (this.nameRequest) {
             subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
           } else {
@@ -921,7 +936,7 @@ export default {
           }
         }
 
-        const paymentStatusCode = filing.header.paymentStatusCode || null
+        const paymentStatusCode = header.paymentStatusCode || null
         const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
         const ia = filing.incorporationApplication // may be undefined
@@ -929,22 +944,22 @@ export default {
 
         this.taskItems.push({
           filingType: FilingTypes.INCORPORATION_APPLICATION,
-          id: filing.header.filingId,
+          id: header.filingId,
           title,
           subtitle,
           draftTitle: 'Incorporation Application',
-          status: filing.header.status,
+          status: header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
-          paymentMethod: filing.header.paymentMethod || null,
-          paymentToken: filing.header.paymentToken || null,
+          paymentMethod: header.paymentMethod || null,
+          paymentToken: header.paymentToken || null,
           payErrorObj,
           isEmptyFiling: !haveData,
           nameRequest: this.nameRequest
         })
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid filing or header in task =', task)
+        console.log('ERROR - invalid header or business in filing =', filing)
       }
     },
 
@@ -954,9 +969,9 @@ export default {
         case FilingTypes.ANNUAL_REPORT:
           // file the subject Annual Report
           this.setARFilingYear(task.ARFilingYear)
-          this.setArMinDate(task.arMinDate)
-          this.setArMaxDate(task.arMaxDate)
-          this.setNextARDate(task.nextArDate)
+          this.setArMinDate(task.arMinDate) // COOP only
+          this.setArMaxDate(task.arMaxDate) // COOP only
+          this.setNextARDate(task.nextArDate) // BCOMP only
           this.setCurrentFilingStatus(FilingStatus.NEW)
           this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
           break
@@ -968,7 +983,7 @@ export default {
         //   break
         default:
           // eslint-disable-next-line no-console
-          console.log('doFileNow(), invalid type for item =', task)
+          console.log('doFileNow(), invalid type for task =', task)
           break
       }
     },
@@ -979,22 +994,21 @@ export default {
         case FilingTypes.ANNUAL_REPORT:
           // resume this Annual Report
           this.setARFilingYear(task.ARFilingYear)
-          this.setArMinDate(task.arMinDate)
-          this.setArMaxDate(task.arMaxDate)
+          this.setArMinDate(task.arMinDate) // COOP only
+          this.setArMaxDate(task.arMaxDate) // COOP only
+          this.setNextARDate(task.nextArDate) // BCOMP only
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: task.id } })
           break
 
         case FilingTypes.CHANGE_OF_DIRECTORS:
           // resume this Change Of Directors
-          this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: task.id } })
           break
 
         case FilingTypes.CHANGE_OF_ADDRESS:
           // resume this Change Of Address
-          this.setARFilingYear(task.ARFilingYear)
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: task.id } })
           break
@@ -1027,7 +1041,7 @@ export default {
 
         default:
           // eslint-disable-next-line no-console
-          console.log('doResumeFiling(), invalid type for item =', task)
+          console.log('doResumeFiling(), invalid type for task =', task)
           break
       }
     },
@@ -1241,8 +1255,16 @@ export default {
     },
 
     /**
+     * Returns AR Filing Year in case a draft filing doesn't contain it.
+     * *** TODO: Delete this when all AR drafts contain new ARFilingYear.
+     */
+    getArFilingYear (filing: FilingIF): number {
+      return +filing.annualReport.annualReportDate?.substring(0, 4)
+    },
+
+    /**
      * Returns AR Min Date in case a draft filing doesn't contain it.
-     * NB: Delete this when all AR drafts contain new arMinDate.
+     * *** TODO: Delete this when all AR drafts contain new arMinDate.
      */
     getArMinDate (ARFilingYear: number): string {
       // min date is the AR year on Jan 1
@@ -1253,7 +1275,7 @@ export default {
 
     /**
      * Returns AR Max Date in case a draft filing doesn't contain it.
-     * NB: Delete this when all AR drafts contain new arMaxDate.
+     * *** TODO: Delete this when all AR drafts contain new arMaxDate.
      */
     getArMaxDate (ARFilingYear: number): string {
       if (ARFilingYear === 2020) {
@@ -1276,18 +1298,6 @@ export default {
     nextArDate (nextAnnualReport: string): string {
       const date: Date = this.apiToDate(nextAnnualReport)
       return this.dateToDateString(date)
-    },
-
-    /**
-     * Returns the BCOMP AR Due Date. Used for Todo List display.
-     * @returns for example, "May 28, 2021"
-     */
-    arDueDate (nextAnnualReport: string): string {
-      // due date is 60 days after the next AR date
-      const date: Date = this.apiToDate(nextAnnualReport)
-      date.setDate(date.getDate() + 60)
-      const pacificDate: string = this.dateToPacificDate(date)
-      return pacificDate
     }
   },
 

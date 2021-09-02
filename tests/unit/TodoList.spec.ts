@@ -64,13 +64,13 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2017,
               'status': 'NEW',
               'filingId': 1
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2017-09-17T00:00:00+00:00'
             }
           }
@@ -81,13 +81,13 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2018,
               'status': 'NEW',
               'filingId': 2
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2018-09-17T00:00:00+00:00'
             }
           }
@@ -98,13 +98,13 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW',
               'filingId': 3
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2019-09-17T00:00:00+00:00'
             }
           }
@@ -148,13 +148,13 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW',
               'filingId': 1
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2019-09-17T00:00:00+00:00'
             }
           }
@@ -192,18 +192,17 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'DRAFT',
               'filingId': 1
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
-            },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            }
           }
         },
         'enabled': true,
@@ -238,13 +237,14 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfAddress',
               'ARFilingYear': 2019,
               'status': 'DRAFT',
               'filingId': 1
             },
-            'changeOfAddress': {}
+            business: {},
+            changeOfAddress: {}
           }
         },
         'enabled': true,
@@ -279,13 +279,14 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfDirectors',
               'ARFilingYear': 2019,
               'status': 'DRAFT',
               'filingId': 1
             },
-            'changeOfDirectors': {}
+            business: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -320,7 +321,7 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'correction',
               'status': 'DRAFT',
               'filingId': 1,
@@ -336,7 +337,8 @@ describe('TodoList - UI', () => {
                 }
               ]
             },
-            'correction': {
+            business: {},
+            correction: {
               'correctedFilingType': 'annualReport'
             }
           }
@@ -373,7 +375,7 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'correction',
               'status': 'DRAFT',
               'filingId': 1,
@@ -389,7 +391,8 @@ describe('TodoList - UI', () => {
                 }
               ]
             },
-            'correction': {
+            business: {},
+            correction: {
               'correctedFilingType': 'annualReport'
             }
           }
@@ -430,7 +433,7 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'correction',
               'status': 'DRAFT',
               'filingId': 1,
@@ -446,7 +449,8 @@ describe('TodoList - UI', () => {
                 }
               ]
             },
-            'correction': {
+            business: {},
+            correction: {
               'correctedFilingType': 'annualReport'
             }
           }
@@ -502,18 +506,19 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'correction',
               'ARFilingYear': 2019,
               'status': 'PENDING_CORRECTION',
               'paymentToken': 12345678,
               'filingId': 1
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'correction': {
+            correction: {
               'correctedFilingType': 'annualReport'
             }
           }
@@ -547,7 +552,7 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'correction',
               'status': 'PENDING_CORRECTION',
               'filingId': 1,
@@ -563,7 +568,8 @@ describe('TodoList - UI', () => {
                 }
               ]
             },
-            'correction': {
+            business: {},
+            correction: {
               'correctedFilingType': 'annualReport'
             }
           }
@@ -623,6 +629,7 @@ describe('TodoList - UI', () => {
               paymentToken: 12345678,
               filingId: 1
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -678,6 +685,7 @@ describe('TodoList - UI', () => {
               paymentToken: 12345678,
               filingId: 1
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -734,6 +742,7 @@ describe('TodoList - UI', () => {
               paymentToken: 12345678,
               paymentMethod: 'ONLINE_BANKING'
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -788,6 +797,7 @@ describe('TodoList - UI', () => {
               paymentToken: 12345678,
               filingId: 1
             },
+            business: {},
             changeOfDirectors: {}
           }
         },
@@ -829,13 +839,14 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfDirectors',
               'status': 'PENDING',
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': {}
+            business: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -871,13 +882,14 @@ describe('TodoList - UI', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfDirectors',
               'status': 'PENDING',
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': {}
+            business: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -940,12 +952,12 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2017,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2017-09-17T00:00:00+00:00'
             }
           }
@@ -956,12 +968,12 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2018,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2018-09-17T00:00:00+00:00'
             }
           }
@@ -972,12 +984,12 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2019-09-17T00:00:00+00:00'
             }
           }
@@ -1029,12 +1041,12 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2019-09-17T00:00:00+00:00'
             }
           }
@@ -1075,12 +1087,12 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2019-09-17T00:00:00+00:00'
             }
           }
@@ -1125,12 +1137,12 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2019-09-17T00:00:00+00:00'
             }
           }
@@ -1168,18 +1180,19 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'PENDING',
               'paymentToken': 12345678
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1215,18 +1228,19 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'ERROR',
               'paymentToken': 12345678
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1262,12 +1276,13 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfDirectors',
               'status': 'PAID',
               'paymentToken': 12345678
             },
-            'changeOfDirectors': {}
+            business: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1301,13 +1316,14 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfDirectors',
               'status': 'PENDING',
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': {}
+            business: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1343,13 +1359,14 @@ describe('TodoList - UI - BCOMP', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'changeOfDirectors',
               'status': 'PENDING',
               'paymentToken': 12345678,
               'filingId': 123
             },
-            'changeOfDirectors': {}
+            business: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1399,6 +1416,7 @@ describe('TodoList - UI - Incorp Apps', () => {
               name: 'incorporationApplication',
               status: 'DRAFT'
             },
+            business: {},
             incorporationApplication: {},
             changeOfAddress: {},
             changeOfDirectors: {}
@@ -1447,6 +1465,7 @@ describe('TodoList - UI - Incorp Apps', () => {
               name: 'incorporationApplication',
               status: 'DRAFT'
             },
+            business: {},
             incorporationApplication: {},
             changeOfAddress: {},
             changeOfDirectors: {}
@@ -1494,6 +1513,7 @@ describe('TodoList - UI - Incorp Apps', () => {
               name: 'incorporationApplication',
               status: 'PENDING'
             },
+            business: {},
             incorporationApplication: {},
             changeOfAddress: {},
             changeOfDirectors: {}
@@ -1542,6 +1562,7 @@ describe('TodoList - UI - Incorp Apps', () => {
               name: 'incorporationApplication',
               status: 'PENDING'
             },
+            business: {},
             nameRequest: {},
             incorporationApplication: {},
             changeOfAddress: {},
@@ -1606,13 +1627,13 @@ describe('TodoList - Click Tests', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW',
               'filingId': 1
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2017-09-17T00:00:00+00:00'
             }
           }
@@ -1655,18 +1676,19 @@ describe('TodoList - Click Tests', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'DRAFT',
               'filingId': 123
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1711,19 +1733,20 @@ describe('TodoList - Click Tests', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'PENDING',
               'filingId': 456,
               'paymentToken': 654
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1761,19 +1784,20 @@ describe('TodoList - Click Tests', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'ERROR',
               'filingId': 789,
               'paymentToken': 987
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -1817,6 +1841,7 @@ describe('TodoList - Click Tests', () => {
               paymentToken: 987,
               paymentMethod: 'ONLINE_BANKING'
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -1862,6 +1887,7 @@ describe('TodoList - Click Tests', () => {
               filingId: 123,
               paymentStatusCode: 'BCOL_ERROR'
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -1939,12 +1965,12 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       {
         'task': {
           'todo': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'NEW'
             },
-            'business': {
+            business: {
               'nextAnnualReport': '2017-09-17T00:00:00+00:00'
             }
           }
@@ -2008,18 +2034,19 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'DRAFT',
               'filingId': 123
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualReportDate': '2019-07-15',
               'nextARDate': '2020-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -2064,19 +2091,20 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'PENDING',
               'filingId': 456,
               'paymentToken': 654
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -2114,19 +2142,20 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'annualReport',
               'ARFilingYear': 2019,
               'status': 'ERROR',
               'filingId': 789,
               'paymentToken': 987
             },
-            'annualReport': {
+            business: {},
+            annualReport: {
               'annualGeneralMeetingDate': '2019-07-15',
               'annualReportDate': '2019-07-15'
             },
-            'changeOfAddress': {},
-            'changeOfDirectors': {}
+            changeOfAddress: {},
+            changeOfDirectors: {}
           }
         },
         'enabled': true,
@@ -2301,6 +2330,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
               filingId: 123,
               comments: []
             },
+            business: {},
             correction: {
               correctedFilingType: 'incorporationApplication'
             }
@@ -2360,6 +2390,7 @@ describe('TodoList - Click Tests - Alterations', () => {
               filingId: 123,
               comments: []
             },
+            business: {},
             alteration: {}
           }
         },
@@ -2423,6 +2454,7 @@ describe('TodoList - Delete Draft', () => {
               status: 'DRAFT',
               filingId: 789
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -2463,6 +2495,7 @@ describe('TodoList - Delete Draft', () => {
               status: 'DRAFT',
               filingId: 789
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -2510,6 +2543,7 @@ describe('TodoList - Delete Draft', () => {
               status: 'DRAFT',
               filingId: 789
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -2556,12 +2590,13 @@ describe('TodoList - Delete Draft', () => {
       {
         'task': {
           'filing': {
-            'header': {
+            header: {
               'name': 'incorporationApplication',
               'status': 'DRAFT',
               'filingId': 789
             },
-            'incorporationApplication': {}
+            business: {},
+            incorporationApplication: {}
           }
         },
         'enabled': true,
@@ -2620,6 +2655,7 @@ describe('TodoList - Cancel Payment', () => {
               filingId: 789,
               paymentToken: 123
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -2661,6 +2697,7 @@ describe('TodoList - Cancel Payment', () => {
               filingId: 789,
               paymentToken: 123
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'
@@ -2709,6 +2746,7 @@ describe('TodoList - Cancel Payment', () => {
               filingId: 789,
               paymentToken: 123
             },
+            business: {},
             annualReport: {
               annualGeneralMeetingDate: '2019-07-15',
               annualReportDate: '2019-07-15'

@@ -52,7 +52,7 @@ import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
 
 // Enums
-import { NameRequestStates } from '@/enums'
+import { CorpTypeCd, NameRequestStates } from '@/enums'
 
 // Interfaces
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
@@ -91,7 +91,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** The entity title  */
   private entityTypeDescription (): string {
-    return this.getCorpTypeDescription(this.parsedNameRequest.entityType)
+    return this.getCorpTypeDescription(this.parsedNameRequest.entityType as CorpTypeCd)
   }
 
   /** The request type */
