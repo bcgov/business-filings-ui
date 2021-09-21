@@ -594,21 +594,21 @@ export default {
     },
 
     storeNrData (nr: any, ia: any): void {
-      if (ia.filing.header.status in [FilingStatus.DRAFT, FilingStatus.PENDING]) {
-        // check if NR is valid
-        if (!this.isNrValid(nr)) {
-          this.nameRequestInvalidDialog = true
-          throw new Error('Invalid NR data')
-        }
+      // check if NR is valid
+      if (!this.isNrValid(nr)) {
+        this.nameRequestInvalidDialog = true
+        throw new Error('Invalid NR data')
+      }
 
-        // FUTURE: uncomment this when Request Type Code is fixed (ie, not 'CR')
-        // // verify that NR type matches entity type
-        // if (nr.requestTypeCd !== this.entityType) {
-        //   this.nameRequestInvalidDialog = true
-        //   throw new Error('Invalid NR request type')
-        // }
+      // FUTURE: uncomment this when Request Type Code is fixed (ie, not 'CR')
+      // // verify that NR type matches entity type
+      // if (nr.requestTypeCd !== this.entityType) {
+      //   this.nameRequestInvalidDialog = true
+      //   throw new Error('Invalid NR request type')
+      // }
 
-        // check if NR is consumable
+      // Check NR is consumable if filing is not COMPLETED. Once filing is completed the NR state will be CONSUMED
+      if (ia.filing.header.status !== FilingStatus.COMPLETED) {
         const nrState: NameRequestStates = this.getNrState(nr)
         if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
           this.nameRequestInvalidDialog = true
