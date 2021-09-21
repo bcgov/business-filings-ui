@@ -364,7 +364,7 @@ export default {
 
       if (this.localNrNumber) {
         const nrData = await this.getNameRequest()
-        this.storeNrData(nrData)
+        this.storeNrData(nrData, iaData)
       }
     },
 
@@ -593,26 +593,28 @@ export default {
         .then(response => Promise.resolve(response.data))
     },
 
-    storeNrData (nr: any): void {
-      // check if NR is valid
-      if (!this.isNrValid(nr)) {
-        this.nameRequestInvalidDialog = true
-        throw new Error('Invalid NR data')
-      }
+    storeNrData (nr: any, ia: any): void {
+      if (ia.filing.header.status in [FilingStatus.DRAFT, FilingStatus.PENDING]) {
+        // check if NR is valid
+        if (!this.isNrValid(nr)) {
+          this.nameRequestInvalidDialog = true
+          throw new Error('Invalid NR data')
+        }
 
-      // FUTURE: uncomment this when Request Type Code is fixed (ie, not 'CR')
-      // // verify that NR type matches entity type
-      // if (nr.requestTypeCd !== this.entityType) {
-      //   this.nameRequestInvalidDialog = true
-      //   throw new Error('Invalid NR request type')
-      // }
+        // FUTURE: uncomment this when Request Type Code is fixed (ie, not 'CR')
+        // // verify that NR type matches entity type
+        // if (nr.requestTypeCd !== this.entityType) {
+        //   this.nameRequestInvalidDialog = true
+        //   throw new Error('Invalid NR request type')
+        // }
 
-      // check if NR is consumable
-      const nrState: NameRequestStates = this.getNrState(nr)
-      if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
-        this.nameRequestInvalidDialog = true
-        this.nameRequestInvalidType = nrState
-        throw new Error('NR not consumable')
+        // check if NR is consumable
+        const nrState: NameRequestStates = this.getNrState(nr)
+        if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
+          this.nameRequestInvalidDialog = true
+          this.nameRequestInvalidType = nrState
+          throw new Error('NR not consumable')
+        }
       }
 
       // save the NR
