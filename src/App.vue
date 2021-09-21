@@ -364,7 +364,7 @@ export default {
 
       if (this.localNrNumber) {
         const nrData = await this.getNameRequest()
-        this.storeNrData(nrData)
+        this.storeNrData(nrData, iaData)
       }
     },
 
@@ -593,7 +593,7 @@ export default {
         .then(response => Promise.resolve(response.data))
     },
 
-    storeNrData (nr: any): void {
+    storeNrData (nr: any, ia: any): void {
       // check if NR is valid
       if (!this.isNrValid(nr)) {
         this.nameRequestInvalidDialog = true
@@ -607,12 +607,14 @@ export default {
       //   throw new Error('Invalid NR request type')
       // }
 
-      // check if NR is consumable
-      const nrState: NameRequestStates = this.getNrState(nr)
-      if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
-        this.nameRequestInvalidDialog = true
-        this.nameRequestInvalidType = nrState
-        throw new Error('NR not consumable')
+      // Check NR is consumable if filing is not COMPLETED. Once filing is completed the NR state will be CONSUMED
+      if (ia.filing.header.status !== FilingStatus.COMPLETED) {
+        const nrState: NameRequestStates = this.getNrState(nr)
+        if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
+          this.nameRequestInvalidDialog = true
+          this.nameRequestInvalidType = nrState
+          throw new Error('NR not consumable')
+        }
       }
 
       // save the NR

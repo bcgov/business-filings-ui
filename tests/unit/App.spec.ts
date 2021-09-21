@@ -1496,3 +1496,132 @@ describe('App as a Paid Incorporation Application', () => {
     expect(vm.$store.state.filings[0].filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
   })
 })
+
+describe('App as a Completed Incorporation Application', () => {
+  // Intermediate scenario - While returning from payment completion page
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from auth API
+    get.withArgs('T123456789/authorizations')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from auth API
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
+
+    // GET NR data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED',
+              consumptionDate: '2099-10-30T00:11:55.887740+00:00'
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          requestTypeCd: 'BC',
+          state: 'CONSUMED'
+        }
+      })))
+
+    // GET IA filings
+    get.withArgs('businesses/T123456789/filings')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BEN'
+            },
+            header: {
+              accountId: '123',
+              date: '2020-05-21T00:11:55.887740+00:00',
+              name: 'incorporationApplication',
+              status: 'COMPLETED',
+              filingId: 789,
+              paymentToken: 987
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567'
+              },
+              offices: BCOMP_ADDRESSES,
+              parties: BCOMP_PARTIES
+            }
+          }
+        }
+      })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      sync: false,
+      localVue,
+      router,
+      store,
+      vuetify
+    })
+    vm = wrapper.vm
+
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches NR data properly', () => {
+    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
+    expect(vm.$store.state.entityName).toBe('My Name Request')
+  })
+
+  it('fetches IA filings properly', () => {
+    expect(vm.$store.state.entityIncNo).toBe('T123456789')
+    expect(vm.$store.state.entityType).toBe('BEN')
+    expect(vm.$store.state.entityStatus).toBe('FILED_INCORP_APP')
+
+    // spot check addresses and directors
+    expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
+    expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
+    expect(vm.$store.state.directors[0].officer.firstName).toBe('Griffin')
+    expect(vm.$store.state.directors[0].officer.lastName).toBe('Swanson')
+    expect(vm.$store.state.directors.length).toEqual(1)
+
+    // verify loaded filing
+    expect(vm.$store.state.filings.length).toBe(1)
+    expect(vm.$store.state.filings[0].filing.business.legalType).toBe('BEN')
+    expect(vm.$store.state.filings[0].filing.header.name).toBe('incorporationApplication')
+    expect(vm.$store.state.filings[0].filing.header.status).toBe('COMPLETED')
+    expect(vm.$store.state.filings[0].filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
+  })
+})
