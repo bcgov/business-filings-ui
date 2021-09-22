@@ -80,7 +80,16 @@ export default {
   setFilingData ({ commit }, filingData: Array<FilingDataIF>) {
     commit('filingData', filingData)
   },
-  setHasBlockertask ({ commit }, hasBlockerTask: boolean) {
+  setHasBlockerTask ({ commit }, hasBlockerTask: boolean) {
     commit('hasBlockerTask', hasBlockerTask)
+  },
+  setHasBlockerFiling ({ commit }, hasBlockerFiling: boolean) {
+    commit('hasBlockerFiling', hasBlockerFiling)
+  },
+  setIsCoaPending ({ commit }, isCoaPending: boolean) {
+    commit('isCoaPending', isCoaPending)
+  },
+  setCoaEffectiveDate ({ commit }, coaEffectiveDate: string) {
+    commit('coaEffectiveDate', coaEffectiveDate)
   }
 }

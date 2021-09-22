@@ -12,7 +12,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
 
 const newBusinessFiling = [
   {

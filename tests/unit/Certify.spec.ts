@@ -15,12 +15,11 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { mount, Wrapper } from '@vue/test-utils'
-
 import { Certify } from '@/components/common'
 
 Vue.use(Vuetify)
 
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
 
 // Input field selectors to test changes to the DOM elements.
 const certifiedBySelector: string = 'input[type=text]'

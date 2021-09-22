@@ -64,7 +64,7 @@
                   id="enable-checkbox"
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
-                  :disabled="!task.enabled || coaPending"
+                  :disabled="!task.enabled || isCoaPending"
                   v-model="enableCheckbox[index]"
                   @click.native.stop
                 />
@@ -422,7 +422,7 @@
                 <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
                   <v-btn class="btn-file-now"
                     color="primary"
-                    :disabled="!task.enabled || coaPending || ( isBComp && !enableCheckbox[index] ) || disableChanges"
+                    :disabled="!task.enabled || isCoaPending || (isBComp && !enableCheckbox[index]) || disableChanges"
                     @click.native.stop="doFileNow(task)"
                   >
                     <span>File Annual Report</span>
@@ -561,15 +561,15 @@ export default {
 
   props: {
     inProcessFiling: null,
-    coaPending: null,
     disableChanges: null
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isBcCompany', 'isCoop', 'isRoleStaff', 'currentYear']),
+    ...mapGetters(['isBComp', 'isBcCompany', 'isCoop', 'isRoleStaff', 'currentYear', 'isInGoodStanding',
+      'isCoaPending']),
 
-    ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate',
-      'lastAnnualReportDate', 'entityStatus']),
+    ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate', 'lastAnnualReportDate',
+      'entityStatus']),
 
     /** The Pay API URL string. */
     payApiUrl (): string {
@@ -635,8 +635,8 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setNextARDate', 'setCurrentFilingStatus']),
-    ...mapGetters(['isInGoodStanding']),
+    ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setNextARDate', 'setCurrentFilingStatus',
+      'setHasBlockerTask']),
 
     async loadData () {
       this.taskItems = []
@@ -658,14 +658,13 @@ export default {
       this.$emit('task-count', this.taskItems.length)
       this.$emit('task-items', this.taskItems)
 
-      // If there are any draft/pending/error/paid/correction tasks, emit this event to the parent component.
-      // This indicates that a new filing cannot be started because this item has to be completed first.
-      this.$emit('has-blocker-task',
-        this.taskItems.find(item => {
-          return (this.isStatusDraft(item) || this.isStatusPending(item) || this.isStatusError(item) ||
-            this.isStatusPaid(item) || this.isTypeCorrection(item) || this.isTypeAlteration(item))
-        }) !== undefined
-      )
+      // Check if there are any draft/pending/error/paid/correction/alteration tasks.
+      // These are blockers because they need to be completed first.
+      const hasBlockerTask = this.taskItems.find(task => {
+        return (this.isStatusDraft(task) || this.isStatusPending(task) || this.isStatusError(task) ||
+          this.isStatusPaid(task) || this.isTypeCorrection(task) || this.isTypeAlteration(task))
+      })
+      this.setHasBlockerTask(!!hasBlockerTask)
     },
 
     loadTodoItem (task) {
@@ -773,7 +772,7 @@ export default {
       const header = filing.header as FilingHeaderIF
 
       if (header && filing.alteration && filing.business) {
-        if (!this.isInGoodStanding() && this.isStatusDraft(header)) {
+        if (!this.isInGoodStanding && this.isStatusDraft(header)) {
           task.enabled = false
         }
 
@@ -787,7 +786,7 @@ export default {
           status: header.status,
           enabled: Boolean(task.enabled),
           order: task.order,
-          goodStanding: this.isInGoodStanding(),
+          goodStanding: this.isInGoodStanding,
           paymentMethod: header.paymentMethod || null,
           paymentToken: header.paymentToken || null,
           comments: this.flattenAndSortComments(header.comments)

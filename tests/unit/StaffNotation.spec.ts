@@ -1,17 +1,15 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import sinon from 'sinon'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import axios from '@/axios-auth'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
-import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
+
 describe('StaffNotation', () => {
   // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
   document.body.setAttribute('data-app', 'true')

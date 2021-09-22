@@ -44,7 +44,7 @@
               <v-btn
                 small text color="primary"
                 id="company-information-button"
-                :disabled="hasBlockerTask || !isInGoodStanding"
+                :disabled="hasBlocker || !isInGoodStanding"
                 @click="viewChangeCompanyInfo()"
                 @mouseenter="showHoverStyle = true"
                 @mouseleave="showHoverStyle = false"
@@ -52,6 +52,15 @@
                 <v-icon medium>mdi-file-document-edit-outline</v-icon>
                 <span>View and Change Company Information</span>
               </v-btn>
+
+              <v-tooltip top content-class="pending-tooltip" v-if="!isInGoodStanding">
+                <template v-slot:activator="{ on }">
+                  <span class="pending-alert" v-on="on">
+                    <v-icon color="orange darken-2">mdi-alert</v-icon>
+                  </span>
+                </template>
+                You cannot view or change company information while the company is not in good standing.
+              </v-tooltip>
             </span>
 
             <!-- Download Summary -->
@@ -133,7 +142,8 @@ import axios from '@/axios-auth'
     // Property definitions for runtime environment.
     ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
       'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension', 'entityStatus']),
-    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBComp', 'isBcCompany', 'isUlc', 'hasBlockerTask', 'isInGoodStanding'])
+    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBComp', 'isBcCompany', 'isUlc', 'hasBlocker',
+      'isInGoodStanding'])
   },
   components: { StaffComments }
 })
@@ -162,7 +172,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** True if View and Change Company Info button should be rendered. */
   private get viewChangeInfoEnabled (): boolean {
-    return (this.isBComp || this.isBcCompany || this.isUlc) && getFeatureFlag('alteration-ui-enabled')
+    return (this.isBComp || this.isBcCompany || this.isUlc)
   }
 
   /** True if Download Summary button should be rendered. */
@@ -343,5 +353,14 @@ dd:not(:hover) > button {
   padding: 0.25rem 0.5rem;
   margin-top: -0.125rem;
   margin-left: 0.125rem;
+}
+
+.pending-tooltip {
+  max-width: 16rem;
+}
+
+.pending-alert .v-icon {
+  font-size: 18px; // same as other v-icons
+  padding-left: 0.875rem;
 }
 </style>

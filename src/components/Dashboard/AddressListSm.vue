@@ -6,7 +6,7 @@
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
         :class="{
-          'address-overlay': coaPending,
+          'address-overlay': isCoaPending,
           'disabled': disabled
         }"
       >
@@ -46,7 +46,7 @@
           <v-list class="pt-0 pb-0" v-if="registeredAddress">
             <v-list-item class="delivery-address-list-item"
               v-if="registeredAddress.deliveryAddress"
-              :class="{ 'address-overlay': coaPending }"
+              :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-truck</v-icon>
@@ -70,7 +70,7 @@
 
             <v-list-item class="mailing-address-list-item"
               v-if="registeredAddress.mailingAddress"
-              :class="{ 'address-overlay': coaPending }"
+              :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-email-outline</v-icon>
@@ -105,7 +105,7 @@
         v-if="isBComp || isCorp"
         class="align-items-top"
         :class="{
-          'address-overlay': coaPending,
+          'address-overlay': isCoaPending,
           'disabled': disabled
         }"
       >
@@ -145,7 +145,7 @@
           <v-list class="pt-0 pb-0" v-if="recordsAddress">
             <v-list-item class="delivery-address-list-item"
               v-if="recordsAddress.deliveryAddress"
-              :class="{ 'address-overlay': coaPending }"
+              :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-truck</v-icon>
@@ -169,7 +169,7 @@
 
             <v-list-item class="mailing-address-list-item"
               v-if="recordsAddress.mailingAddress"
-              :class="{ 'address-overlay': coaPending }"
+              :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-email-outline</v-icon>
@@ -215,7 +215,7 @@ import { OfficeAddressIF } from '@/interfaces'
 
 @Component({
   computed: {
-    ...mapGetters(['isBComp', 'isCorp']),
+    ...mapGetters(['isBComp', 'isCorp', 'isCoaPending']),
     ...mapState(['registeredAddress', 'recordsAddress'])
   }
 })
@@ -226,17 +226,13 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   readonly registeredAddress!: OfficeAddressIF
   readonly recordsAddress!: OfficeAddressIF
 
-  /** Whether a COA filing is pending. */
-  @Prop({ default: false })
-  private coaPending: boolean
-
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false })
-  private showCompleteYourFilingMessage: boolean
+  readonly showCompleteYourFilingMessage: boolean
 
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false })
-  private showGrayedOut: boolean
+  readonly showGrayedOut: boolean
 
   /** Whether to appear disabled. */
   private get disabled (): boolean {

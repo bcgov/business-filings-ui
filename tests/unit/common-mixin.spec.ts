@@ -4,12 +4,12 @@ import VueRouter from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
-import mockRouter from './mockRouter'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
+
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
 
 describe('Common Mixin', () => {
   let vm: any

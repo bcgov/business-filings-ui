@@ -6,8 +6,9 @@ import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/Fut
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
 
 describe('Future Effective Pending', () => {
   it('Displays expected content with a null filing', () => {

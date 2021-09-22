@@ -24,7 +24,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
 store.state.currentDate = '2019-07-15'
 
 const sampleDeliveryAddress = {

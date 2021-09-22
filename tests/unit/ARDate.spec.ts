@@ -6,7 +6,7 @@ import ArDate from '@/components/AnnualReport/ARDate.vue'
 
 Vue.use(Vuetify)
 
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
 
 describe('AnnualReport - UI', () => {
   beforeAll(() => {

@@ -11,7 +11,8 @@ import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // make type-less for unit tests
+
 describe('AddStaffNotationDialog', () => {
   // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
   document.body.setAttribute('data-app', 'true')

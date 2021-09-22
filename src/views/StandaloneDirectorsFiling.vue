@@ -187,7 +187,7 @@
                   </v-btn>
                 </div>
               </template>
-              <span>Proceed to Filing Summary</span>
+              Proceed to Filing Summary
             </v-tooltip>
 
             <v-btn
@@ -301,8 +301,8 @@
                   </v-btn>
                 </div>
               </template>
-              <span>Ensure all of your information is entered correctly before you File.<br>
-                There is no opportunity to change information beyond this point.</span>
+              Ensure all of your information is entered correctly before you File.<br>
+              There is no opportunity to change information beyond this point.
             </v-tooltip>
           </div>
 

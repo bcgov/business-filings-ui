@@ -50,8 +50,8 @@
                           <v-icon color="orange darken-2">mdi-alert</v-icon>
                         </div>
                       </template>
-                      <span>The updated office addresses will be legally effective on {{filing.effectiveDate}},
-                        12:01 am Pacific time. No other filings are allowed until then.</span>
+                      The updated office addresses will be legally effective on {{filing.effectiveDate}}
+                      at 12:01 am Pacific time. No other filings are allowed until then.
                     </v-tooltip>
                   </div>
 
@@ -375,7 +375,7 @@
 <script lang="ts">
 // Libraries
 import axios from '@/axios-auth'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 // Components
 import ColinFiling from './FilingHistoryList/ColinFiling.vue'
@@ -469,6 +469,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['setIsCoaPending', 'setCoaEffectiveDate', 'setHasBlockerFiling']),
+
     loadData () {
       this.historyItems = []
 
@@ -539,6 +541,25 @@ export default {
 
       this.$emit('history-count', this.historyItems.length)
       this.$emit('history-items', this.historyItems)
+
+      // Check if there are any pending (ie, paid / not yet completed) filings.
+      // These are blockers because they need to be completed first.
+      // Also update pending COA data.
+      let isCoaPending = false
+      let coaEffectiveDate: string = null
+      const hasBlockerFiling = this.historyItems.find(filing => {
+        if (filing.isPaid) {
+          if (filing.isBcompCoaFutureEffective) {
+            isCoaPending = true
+            coaEffectiveDate = filing.effectiveDate
+          }
+          return true
+        }
+        return false
+      })
+      this.setIsCoaPending(isCoaPending)
+      this.setCoaEffectiveDate(coaEffectiveDate)
+      this.setHasBlockerFiling(!!hasBlockerFiling)
 
       // if needed, highlight a specific filing
       // NB: use unary plus operator to cast string to number
@@ -1415,7 +1436,7 @@ export default {
 }
 
 .pending-tooltip {
-  max-width: 16rem;
+  max-width: 16.5rem;
 }
 
 .pending-alert .v-icon {
