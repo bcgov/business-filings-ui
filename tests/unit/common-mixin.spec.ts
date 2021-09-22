@@ -9,7 +9,7 @@ Vue.use(Vuetify)
 Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Common Mixin', () => {
   let vm: any

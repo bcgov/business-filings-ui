@@ -8,7 +8,7 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('StaffNotation', () => {
   // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"

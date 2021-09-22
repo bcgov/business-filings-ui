@@ -28,7 +28,7 @@ Vue.use(Vue2Filters)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -1101,7 +1101,7 @@ describe('TodoList - UI - BCOMP', () => {
         'order': 1
       }
     ]
-    store.state.isCoaPending = true
+    store.state.isCoaPending = true // normally set by FilingHistoryList
 
     const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
     const vm = wrapper.vm as any
@@ -1129,6 +1129,7 @@ describe('TodoList - UI - BCOMP', () => {
     expect(wrapper.find('.list-item__actions .v-btn').attributes('disabled')).toBe('disabled')
     expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
+    store.state.isCoaPending = false // reset for future tests
     wrapper.destroy()
   })
 

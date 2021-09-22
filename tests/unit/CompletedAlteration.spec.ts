@@ -7,7 +7,7 @@ import CompletedAlteration from '@/components/Dashboard/FilingHistoryList/Comple
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Alteration Filing', () => {
   it('Displays expected content with a null filing', () => {

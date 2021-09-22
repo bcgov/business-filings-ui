@@ -7,7 +7,7 @@ import ARDate from '@/components/AnnualReport/ARDate.vue'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Date Mixin', () => {
   let vm: any

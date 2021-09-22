@@ -18,7 +18,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 xdescribe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {

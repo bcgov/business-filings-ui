@@ -19,7 +19,7 @@ import { Certify } from '@/components/common'
 
 Vue.use(Vuetify)
 
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 // Input field selectors to test changes to the DOM elements.
 const certifiedBySelector: string = 'input[type=text]'

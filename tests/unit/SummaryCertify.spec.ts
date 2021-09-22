@@ -9,7 +9,7 @@ import { SummaryCertify } from '@/components/common'
 
 Vue.use(Vuetify)
 
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 const statementSelector: string = '.certify-content'
 const someCertifier = 'Some Certifier'

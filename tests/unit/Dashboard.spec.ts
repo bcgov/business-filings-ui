@@ -22,7 +22,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Dashboard - UI', () => {
   let wrapper: Wrapper<Vue>
@@ -68,6 +68,7 @@ describe('Dashboard - UI', () => {
   it('disables standalone filing buttons when there is a blocker task in the todo list', () => {
     store.state.hasBlockerTask = true
 
+    expect(vm.hasBlocker).toEqual(true)
     expect(vm.disableChanges).toEqual(true)
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
@@ -88,6 +89,7 @@ describe('Dashboard - UI', () => {
   it('disables filing buttons when there is a BCOMP Future Effective COA', () => {
     store.state.isCoaPending = true
 
+    expect(vm.hasBlocker).toEqual(true)
     expect(vm.disableChanges).toEqual(true)
     expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')

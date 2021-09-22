@@ -8,7 +8,7 @@ import { sleep } from '@/utils/sleep'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('DetailComment', () => {
   it('initializes correctly', () => {

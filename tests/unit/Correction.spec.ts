@@ -23,7 +23,7 @@ Vue.config.silent = true
 
 Vue.use(Vuetify)
 
-const store = getVuexStore() as any // make type-less for unit tests
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Correction - UI', () => {
   let sinonAxiosGet: any
