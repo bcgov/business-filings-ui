@@ -1,86 +1,95 @@
 import { EntityStatus, CorpTypeCd, FilingStatus } from '@/enums'
-import { FilingDataIF } from '@/interfaces'
+import { FilingDataIF, StateIF } from '@/interfaces'
 
 export default {
-  keycloakRoles (state, keycloakRoles: Array<string>) {
+  keycloakRoles (state: StateIF, keycloakRoles: Array<string>) {
     state.keycloakRoles = keycloakRoles
   },
-  authRoles (state, authRoles: Array<string>) {
+  authRoles (state: StateIF, authRoles: Array<string>) {
     state.authRoles = authRoles
   },
-  currentDate (state, currentDate: string) {
+  currentDate (state: StateIF, currentDate: string) {
     state.currentDate = currentDate
   },
-  nextARDate (state, nextARDate: string) {
+  nextARDate (state: StateIF, nextARDate: string) {
     state.nextARDate = nextARDate
   },
-  nameRequest (state, nameRequest: object) {
+  nameRequest (state: StateIF, nameRequest: object) {
     state.nameRequest = nameRequest
   },
-  ARFilingYear (state, year: number) {
+  ARFilingYear (state: StateIF, year: number) {
     state.ARFilingYear = year
   },
-  arMinDate (state, date: string) {
+  arMinDate (state: StateIF, date: string) {
     state.arMinDate = date
   },
-  arMaxDate (state, date: string) {
+  arMaxDate (state: StateIF, date: string) {
     state.arMaxDate = date
   },
-  entityBusinessNo (state, entityBusinessNo: string) {
+  entityBusinessNo (state: StateIF, entityBusinessNo: string) {
     state.entityBusinessNo = entityBusinessNo
   },
-  entityName (state, entityName: string) {
+  entityName (state: StateIF, entityName: string) {
     state.entityName = entityName
   },
-  entityType (state, entityType: CorpTypeCd) {
+  entityType (state: StateIF, entityType: CorpTypeCd) {
     state.entityType = entityType
   },
-  entityStatus (state, entityStatus: EntityStatus) {
+  entityStatus (state: StateIF, entityStatus: EntityStatus) {
     state.entityStatus = entityStatus
   },
-  entityIncNo (state, entityIncNo: string) {
+  entityIncNo (state: StateIF, entityIncNo: string) {
     state.entityIncNo = entityIncNo
   },
-  entityFoundingDate (state, entityFoundingDate: string) {
+  entityFoundingDate (state: StateIF, entityFoundingDate: string) {
     state.entityFoundingDate = entityFoundingDate
   },
-  businessEmail (state, businessEmail: string) {
+  businessEmail (state: StateIF, businessEmail: string) {
     state.businessEmail = businessEmail
   },
-  businessPhone (state, businessPhone: string) {
+  businessPhone (state: StateIF, businessPhone: string) {
     state.businessPhone = businessPhone
   },
-  businessPhoneExtension (state, businessPhoneExtension: string) {
+  businessPhoneExtension (state: StateIF, businessPhoneExtension: string) {
     state.businessPhoneExtension = businessPhoneExtension
   },
-  currentFilingStatus (state, currentFilingStatus: FilingStatus) {
+  currentFilingStatus (state: StateIF, currentFilingStatus: FilingStatus) {
     state.currentFilingStatus = currentFilingStatus
   },
-  tasks (state, tasks: Array<object>) {
+  tasks (state: StateIF, tasks: Array<any>) {
     state.tasks = tasks
   },
-  filings (state, filings: Array<object>) {
+  filings (state: StateIF, filings: Array<any>) {
     state.filings = filings
   },
-  registeredAddress (state, registeredAddress: object) {
+  registeredAddress (state: StateIF, registeredAddress: any) {
     state.registeredAddress = registeredAddress
   },
-  recordsAddress (state, recordsAddress: object) {
+  recordsAddress (state: StateIF, recordsAddress: any) {
     state.recordsAddress = recordsAddress
   },
-  directors (state, directors: Array<object>) {
+  directors (state: StateIF, directors: Array<any>) {
     state.directors = directors
   },
-  lastAnnualReportDate (state, lastAnnualReportDate: string) {
+  lastAnnualReportDate (state: StateIF, lastAnnualReportDate: string) {
     state.lastAnnualReportDate = lastAnnualReportDate
   },
-  configObject (state, configObject: object) {
+  configObject (state: StateIF, configObject: any) {
     state.configObject = configObject
   },
-  filingData (state, filingData: Array<FilingDataIF>) {
+  filingData (state: StateIF, filingData: Array<FilingDataIF>) {
     state.filingData = filingData
   },
-  hasBlockerTask (state, hasBlockerTask: boolean) {
+  hasBlockerTask (state: StateIF, hasBlockerTask: boolean) {
     state.hasBlockerTask = hasBlockerTask
+  },
+  hasBlockerFiling (state: StateIF, hasBlockerFiling: boolean) {
+    state.hasBlockerFiling = hasBlockerFiling
+  },
+  isCoaPending (state: StateIF, isCoaPending: boolean) {
+    state.isCoaPending = isCoaPending
+  },
+  coaEffectiveDate (state: StateIF, coaEffectiveDate: string) {
+    state.coaEffectiveDate = coaEffectiveDate
   }
 }

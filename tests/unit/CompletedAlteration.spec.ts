@@ -5,8 +5,9 @@ import { getVuexStore } from '@/store'
 import CompletedAlteration from '@/components/Dashboard/FilingHistoryList/CompletedAlteration.vue'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Alteration Filing', () => {
   it('Displays expected content with a null filing', () => {

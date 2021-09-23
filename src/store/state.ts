@@ -1,39 +1,40 @@
-import { EntityStatus, CorpTypeCd, FilingStatus } from '@/enums'
-import { FilingDataIF } from '@/interfaces'
+import { StateIF } from '@/interfaces'
 
-export default {
-  // tombstone data
-  keycloakRoles: [] as Array<string>,
-  authRoles: [] as Array<string>,
-  username: null as string,
-  currentDate: null as string, // 'today' as YYYY-MM-DD
+export const state: StateIF = {
+  keycloakRoles: [],
+  authRoles: [],
+  username: null,
+  currentDate: null,
 
-  // entity info
-  entityName: null as string,
-  entityType: null as CorpTypeCd,
-  entityStatus: null as EntityStatus,
-  entityBusinessNo: null as string,
-  entityIncNo: null as string,
-  entityFoundingDate: null as string,
-  businessEmail: null as string,
-  businessPhone: null as string,
-  lastAnnualReportDate: null as string,
-  businessPhoneExtension: null as string,
-  nextARDate: null as string, // YYYY-MM-DD // BCOMPs only
-  nameRequest: null as object,
+  entityName: null,
+  entityType: null,
+  entityStatus: null,
+  entityBusinessNo: null,
+  entityIncNo: null,
+  entityFoundingDate: null,
+  businessEmail: null,
+  businessPhone: null,
+  lastAnnualReportDate: null,
+  businessPhoneExtension: null,
+  nextARDate: null,
+  nameRequest: null,
 
-  ARFilingYear: null as number, // YYYY
-  arMinDate: null as string, // YYYY-MM-DD // COOPs only
-  arMaxDate: null as string, // YYYY-MM-DD // COOPs only
+  ARFilingYear: null,
+  arMinDate: null,
+  arMaxDate: null,
 
-  tasks: [] as Array<object>,
-  filings: [] as Array<object>,
-  registeredAddress: null as object,
-  recordsAddress: null as object,
-  directors: [] as Array<object>,
+  tasks: [],
+  filings: [],
+  registeredAddress: null,
+  recordsAddress: null,
+  directors: [],
 
-  currentFilingStatus: null as FilingStatus,
-  configObject: null as object,
-  filingData: [] as Array<FilingDataIF>,
-  hasBlockerTask: null as boolean
+  currentFilingStatus: null,
+  configObject: null,
+  filingData: [],
+
+  hasBlockerTask: false,
+  hasBlockerFiling: false,
+  isCoaPending: false,
+  coaEffectiveDate: null
 }

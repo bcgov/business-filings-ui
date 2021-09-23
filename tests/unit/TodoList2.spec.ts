@@ -5,7 +5,6 @@
 
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-// import Vue2Filters from 'vue2-filters'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
@@ -16,11 +15,10 @@ import TodoList from '@/components/Dashboard/TodoList.vue'
 Vue.config.silent = true
 
 Vue.use(Vuetify)
-// Vue.use(Vue2Filters) // not sure if this is needed?
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 xdescribe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {

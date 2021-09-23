@@ -5,8 +5,9 @@ import { getVuexStore } from '@/store'
 import { FetchErrorDialog } from '@/components/dialogs'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('FetchErrorDialog', () => {
   it('displays everything for normal users', () => {

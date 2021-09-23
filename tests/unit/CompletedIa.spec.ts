@@ -5,8 +5,9 @@ import { shallowMount } from '@vue/test-utils'
 import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
 
 Vue.use(Vuetify)
-const store = getVuexStore()
+
 const vuetify = new Vuetify({})
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Complete Filing', () => {
   it('Displays expected content with entityName', () => {

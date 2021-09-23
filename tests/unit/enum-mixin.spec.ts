@@ -5,8 +5,9 @@ import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Enum Mixin', () => {
   let vm: any

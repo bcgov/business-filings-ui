@@ -272,7 +272,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>{{isPayRequired ? "File and Pay" : "File"}}</span>
+                {{isPayRequired ? "File and Pay" : "File"}}
               </v-btn>
             </div>
           </template>
@@ -311,7 +311,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>File and Pay</span>
+                File and Pay
               </v-btn>
             </div>
           </template>

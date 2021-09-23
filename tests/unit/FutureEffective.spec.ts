@@ -6,8 +6,9 @@ import FutureEffective from '@/components/Dashboard/FilingHistoryList/FutureEffe
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Future Effective IA', () => {
   it('Displays expected content with a null filing', () => {

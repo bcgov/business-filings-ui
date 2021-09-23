@@ -24,11 +24,9 @@
               <legal-obligation/>
               <todo-list
                 :inProcessFiling="inProcessFiling"
-                :coaPending="coaPending"
                 :disableChanges="disableChanges"
                 @task-count="taskCount = $event"
                 @task-items="taskItems = $event"
-                @has-blocker-task="updateBlockerTasks($event)"
               />
             </section>
 
@@ -38,7 +36,7 @@
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
                 <staff-notation
-                  v-if="visibleForStaff"
+                  v-if="isRoleStaff"
                   addScrollbarOffset="true"
                   @close="reloadDashboardIfNeeded($event)"
                 />
@@ -61,14 +59,14 @@
                     <template v-slot:activator="{ on }">
                       <v-chip small label color="yellow" text-color="black"
                         class="pending-chip"
-                        v-show="coaPending"
+                        v-show="isCoaPending"
                         v-on="on"
                       >
                         <span>Pending</span>
                       </v-chip>
                     </template>
-                    <span>The updated office addresses will be legally effective on {{ coaEffectiveDate }},
-                      12:01 am Pacific time. No other filings are allowed until then.</span>
+                    The updated office addresses will be legally effective on {{ coaEffectiveDate }}
+                    at 12:01 am Pacific time. No other filings are allowed until then.
                   </v-tooltip>
                 </v-scale-transition>
                 <v-btn text small color="primary"
@@ -82,7 +80,6 @@
               </header>
               <v-card flat>
                 <address-list-sm
-                  :coaPending="coaPending"
                   :showCompleteYourFilingMessage="isIncorpAppTask"
                   :showGrayedOut="isIncorpAppFiling"
                 />
@@ -121,7 +118,6 @@
 // Libraries
 import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
-import { getFeatureFlag } from '@/utils'
 
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -153,7 +149,6 @@ export default {
 
   data () {
     return {
-      hasPendingFiling: false,
       taskCount: 0,
       taskItems: [] as Array<TaskItemIF>,
       historyCount: 0,
@@ -161,8 +156,6 @@ export default {
       refreshTimer: null as number,
       checkFilingStatusCount: 0,
       inProcessFiling: null as any,
-      coaPending: false,
-      coaEffectiveDate: null as string,
       coaWarningDialog: false
     }
   },
@@ -170,7 +163,7 @@ export default {
   computed: {
     ...mapState(['entityIncNo', 'entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlockerTask', 'isRoleStaff']),
+    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'coaEffectiveDate']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -182,29 +175,23 @@ export default {
       return (this.entityStatus === EntityStatus.FILED_INCORP_APP)
     },
 
-    /** Whether to block a new filing because another item has to be finished first.
-     * No changes are allowed if
-     * 1) this is a temporary reg number until it switches to a real business number
-     * 2) has a filing pending (is PAID) and waiting for completion
-     * 3) has a blocker task in the todo list (ie. draft, paid, error, correction )
+    /**
+     * Whether to block a new filing, ie:
+     * 1) there is a blocker task in the todo list or blocker filing in the filing history list
+     * 2) this is a temporary reg number until it switches to a real business number
      */
     disableChanges (): boolean {
-      return (this.hasBlockerTask || this.hasPendingFiling || !!this.tempRegNumber)
+      return (this.hasBlocker || !!this.tempRegNumber)
     },
 
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    /** True if StaffNotation menu should be rendered. */
-    visibleForStaff (): boolean {
-      return getFeatureFlag('staff-notation-enabled') && this.isRoleStaff
     }
   },
 
   methods: {
-    ...mapActions(['setCurrentFilingStatus', 'setHasBlockertask']),
+    ...mapActions(['setCurrentFilingStatus']),
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
@@ -214,10 +201,6 @@ export default {
     goToStandaloneAddresses () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
       this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
-    },
-
-    updateBlockerTasks (hasBlockerTask: boolean) {
-      this.setHasBlockertask(hasBlockerTask)
     },
 
     reloadDashboardIfNeeded (needReload: boolean) {
@@ -286,26 +269,6 @@ export default {
       })
     },
 
-    /**
-     * Searches the history items for a "pending" state, (ie, paid / not yet completed).
-     * Used to block new filings while there's a pending one.
-     */
-    checkForPendingFilings (): void {
-      if (!this.historyItems?.length) return // safety check
-
-      const foundPaid = this.historyItems.some(filing => {
-        if (filing.isPaid) {
-          if (filing.isBcompCoaFutureEffective) {
-            this.coaPending = true
-            this.coaEffectiveDate = filing.effectiveDate
-          }
-          this.hasPendingFiling = true
-          return true
-        }
-        return false
-      })
-    },
-
     /** Toggle the Change of address warning dialog. */
     toggleCoaWarning () {
       this.coaWarningDialog = !this.coaWarningDialog
@@ -319,9 +282,6 @@ export default {
 
   watch: {
     historyItems () {
-      // check if any history item has a pending state
-      this.checkForPendingFilings()
-
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
     },
@@ -358,6 +318,6 @@ section header {
 }
 
 .pending-tooltip {
-  max-width: 16rem;
+  max-width: 16.5rem;
 }
 </style>
