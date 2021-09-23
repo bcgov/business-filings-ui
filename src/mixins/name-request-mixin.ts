@@ -64,8 +64,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     return {
       // workaround for old or new property name
       nrNumber: nr.nrNum || nr.nrNumber,
-      // FUTURE: Update entityType to use nr.requestTypeCd when namex supports our entity types
-      entityType: CorpTypeCd.BENEFIT_COMPANY,
+      entityType: nr.legalType,
       filingId: filingId,
       applicant: {
         // Address Information
