@@ -195,26 +195,39 @@ export default class EnumMixin extends Vue {
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
    * @param alterationRequired A boolean indicating a required business type change
+   * @returns the filing name
    */
-  filingTypeToName (type: FilingTypes | string, agmYear: string = null, alterationRequired: boolean = false): string {
+  filingTypeToName (type: FilingTypes, agmYear: string = null, alterationRequired: boolean = false): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
+      case FilingTypes.ALTERATION:
+        return alterationRequired ? FilingNames.ALTERATION : FilingNames.CHANGE_OF_COMPANY_INFO
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
       case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
       case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
+      case FilingTypes.CONVERSION: return FilingNames.CONVERSION
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
+      case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER
+      case FilingTypes.DISSOLUTION: return FilingNames.DISSOLUTION
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
-      case FilingTypes.ALTERATION:
-        return alterationRequired ? FilingNames.ALTERATION : FilingNames.CHANGE_OF_COMPANY_INFO
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-      case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
     }
     // fallback for unknown filings
-    return type.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase())
+    return this.camelCaseToWords(type)
+  }
+
+  /**
+   * Converts a string in "camelCase" (or "PascalCase") to separate, title-case words,
+   * suitable for a title or proper name.
+   * @param s the string to convert
+   * @returns the converted string
+   */
+  camelCaseToWords (s: string): string {
+    return s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
   }
 }

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import ARDate from '@/components/AnnualReport/ARDate.vue'
+import ArDate from '@/components/AnnualReport/ARDate.vue'
 
 Vue.use(Vuetify)
 
@@ -15,30 +15,30 @@ describe('Date Mixin', () => {
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(ARDate, { store, vuetify })
+    const wrapper = shallowMount(ArDate, { store, vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
 
   // FUTURE: fix so this works in GH CI action
-  xit('returns correct values for dateToDateString()', () => {
-    expect(vm.dateToDateString(null)).toBeNull()
-    expect(vm.dateToDateString(new Date('not a date'))).toBeNull()
+  xit('returns correct values for dateToYyyyMmDd()', () => {
+    expect(vm.dateToYyyyMmDd(null)).toBeNull()
+    expect(vm.dateToYyyyMmDd(new Date('not a date'))).toBeNull()
     // verify that GMT/UTC is correctly converted to Pacific
-    expect(vm.dateToDateString(new Date('2021-01-01 07:00:00 GMT'))).toBe('2020-12-31') // Standard Time
-    expect(vm.dateToDateString(new Date('2021-01-01 08:00:00 GMT'))).toBe('2021-01-01') // Standard Time
-    expect(vm.dateToDateString(new Date('2021-07-01 06:00:00 GMT'))).toBe('2021-06-30') // Daylight Time
-    expect(vm.dateToDateString(new Date('2021-07-01 07:00:00 GMT'))).toBe('2021-07-01') // Daylight Time
+    expect(vm.dateToYyyyMmDd(new Date('2021-01-01 07:00:00 GMT'))).toBe('2020-12-31') // Standard Time
+    expect(vm.dateToYyyyMmDd(new Date('2021-01-01 08:00:00 GMT'))).toBe('2021-01-01') // Standard Time
+    expect(vm.dateToYyyyMmDd(new Date('2021-07-01 06:00:00 GMT'))).toBe('2021-06-30') // Daylight Time
+    expect(vm.dateToYyyyMmDd(new Date('2021-07-01 07:00:00 GMT'))).toBe('2021-07-01') // Daylight Time
     // verify that Pacific is correctly converted to Pacific
-    expect(vm.dateToDateString(new Date('2021-01-01 00:00:00 PST'))).toBe('2021-01-01')
-    expect(vm.dateToDateString(new Date('2021-01-01 23:59:59 PST'))).toBe('2021-01-01')
-    expect(vm.dateToDateString(new Date('2021-07-01 00:00:00 PDT'))).toBe('2021-07-01')
-    expect(vm.dateToDateString(new Date('2021-07-01 23:59:59 PDT'))).toBe('2021-07-01')
+    expect(vm.dateToYyyyMmDd(new Date('2021-01-01 00:00:00 PST'))).toBe('2021-01-01')
+    expect(vm.dateToYyyyMmDd(new Date('2021-01-01 23:59:59 PST'))).toBe('2021-01-01')
+    expect(vm.dateToYyyyMmDd(new Date('2021-07-01 00:00:00 PDT'))).toBe('2021-07-01')
+    expect(vm.dateToYyyyMmDd(new Date('2021-07-01 23:59:59 PDT'))).toBe('2021-07-01')
     // verify that Eastern is correctly converted to Pacific
-    expect(vm.dateToDateString(new Date('2021-01-01 02:00:00 EST'))).toBe('2020-12-31')
-    expect(vm.dateToDateString(new Date('2021-01-01 03:00:00 EST'))).toBe('2021-01-01')
-    expect(vm.dateToDateString(new Date('2021-07-01 02:00:00 EDT'))).toBe('2021-06-30')
-    expect(vm.dateToDateString(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01')
+    expect(vm.dateToYyyyMmDd(new Date('2021-01-01 02:00:00 EST'))).toBe('2020-12-31')
+    expect(vm.dateToYyyyMmDd(new Date('2021-01-01 03:00:00 EST'))).toBe('2021-01-01')
+    expect(vm.dateToYyyyMmDd(new Date('2021-07-01 02:00:00 EDT'))).toBe('2021-06-30')
+    expect(vm.dateToYyyyMmDd(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01')
   })
 
   it('returns correct values for compareDates()', () => {

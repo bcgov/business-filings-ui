@@ -1,17 +1,13 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 import { isDate } from 'lodash'
 
 const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
 /** Mixin that provides some useful date utilities. */
-@Component({
-  computed: {
-    ...mapState(['currentDate'])
-  }
-})
+@Component({})
 export default class DateMixin extends Vue {
-  readonly currentDate!: string
+  @Getter getCurrentDate!: string
 
   /**
    * Fetches and returns the web server's current date (in UTC).
@@ -27,11 +23,11 @@ export default class DateMixin extends Vue {
       const { headers, ok, statusText } = await fetch(input, init)
       if (!ok) throw new Error(statusText)
       return new Date(headers.get('Date'))
-    } catch (err) {
+    } catch (e) {
       // eslint-disable-next-line no-console
       console.warn('Unable to get server date - using browser date instead')
       // fall back to local date
-      // NB: filing may contain invalid dates/times
+      // NB: new filings may contain invalid date/time
       return new Date()
     }
   }
@@ -40,15 +36,16 @@ export default class DateMixin extends Vue {
    * Converts a Date object to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
    * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
-   * @example "2021-01-01 00:00:00 PST" -> "2021-01-01"
-   * @example "2021-01-01 23:59:59 PST" -> "2021-01-01"
    */
-  dateToDateString (date: Date): string {
+  dateToYyyyMmDd (date: Date): string {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    const dateStr = date.toLocaleDateString('en-CA', {
-      timeZone: 'America/Vancouver'
+    let dateStr = date.toLocaleDateString('en-CA', {
+      timeZone: 'America/Vancouver',
+      month: 'numeric', // 12
+      day: 'numeric', // 31
+      year: 'numeric' // 2020
     })
 
     return dateStr
@@ -133,10 +130,11 @@ export default class DateMixin extends Vue {
 
   /**
    * Converts an API datetime string (in UTC) to a Date object.
+   * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
   apiToDate (dateTimeString: string): Date {
-    // chop off the milliseconds and append "Zulu" timezone abbreviation
-    // eg, 2020-08-28T21:53:58Z
+    if (!dateTimeString) return null
+    // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
     dateTimeString = dateTimeString.slice(0, 19) + 'Z'
     return new Date(dateTimeString)
   }
@@ -168,6 +166,17 @@ export default class DateMixin extends Vue {
     const timeStr = this.dateToPacificTime(date)
 
     return `${dateStr} at ${timeStr} Pacific time`
+  }
+
+  /**
+   * Converts an API datetime string (in UTC) to a UTC string.
+   * @example "2021-10-01T19:26:24.530803+00:00" -> "Fri, 01 Oct 2021 19:26:24 GMT"
+   */
+  apiToUtcString (dateTimeString: string): string {
+    if (!dateTimeString) return null // safety check
+
+    const date = this.apiToDate(dateTimeString)
+    return date.toUTCString()
   }
 
   /**
@@ -258,7 +267,7 @@ export default class DateMixin extends Vue {
     if (!date) return NaN
 
     // calculate difference between start of "today" and start of "date" (in local time)
-    const todayLocalMs = new Date(this.currentDate).setHours(0, 0, 0, 0)
+    const todayLocalMs = new Date(this.getCurrentDate).setHours(0, 0, 0, 0)
     const dateLocalMs = new Date(date).setHours(0, 0, 0, 0)
     return Math.round((dateLocalMs - todayLocalMs) / MS_IN_A_DAY)
   }

@@ -8,11 +8,11 @@ import axios from '@/axios-auth'
 import sinon from 'sinon'
 import mockRouter from './mockRouter'
 import { getVuexStore } from '@/store'
-import TodoList from '@/components/Dashboard/TodoList.vue'
 import flushPromises from 'flush-promises'
 
 // Components
 import { DetailsList } from '@/components/common'
+import TodoList from '@/components/Dashboard/TodoList.vue'
 import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentIncomplete from '@/components/Dashboard/TodoList/PaymentIncomplete.vue'
@@ -2215,7 +2215,6 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
               legalType: 'BEN'
             },
             header: {
-              accountId: '123',
               date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
               status: 'DRAFT',
@@ -2266,7 +2265,6 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
               legalType: 'BEN'
             },
             header: {
-              accountId: '123',
               date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
               status: 'DRAFT',

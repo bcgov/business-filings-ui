@@ -38,12 +38,12 @@
         }"
       >
         <v-expansion-panel-header
-          class="no-dropdown-icon"
+          class="no-dropdown-icon pt-6"
           :class="{'invalid-section': isTypeAlteration(item) && requiresAlteration && !item.goodStanding}"
         >
           <div class="list-item">
             <div class="todo-label">
-              <h3 class="list-item__title pt-2">{{item.title}}
+              <h3 class="list-item__title">{{item.title}}
                 <v-btn v-if="isStatusDraft(item) && isTypeCorrection(item)"
                   class="expand-btn ml-0"
                   outlined
@@ -169,6 +169,7 @@
                   <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
                     <div>FILING PENDING</div>
                     <v-btn
+                      v-if="item.comments.length > 0"
                       class="expand-btn"
                       outlined
                       color="primary"
@@ -572,8 +573,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   @Getter isInGoodStanding!: boolean
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
+  @Getter getEntityIncNo!: string
 
-  @State entityIncNo!: string
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
   @State entityStatus!: EntityStatus
@@ -625,7 +626,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  /** The condition if filing an Alteration is required. */
+  /** Whether filing an Alteration is required (ie, there is a Todo filing). */
   private get requiresAlteration (): boolean {
     if (this.isBcCompany || this.isUlc) {
       return this.getTasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
@@ -639,9 +640,9 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   }
 
   /** Called when this component is created. */
-  created (): void {
+  async created (): Promise<void> {
     // load data into this page
-    this.loadData()
+    await this.loadData()
   }
 
   private async loadData (): Promise<void> {
@@ -707,9 +708,10 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   /** Loads a NEW Annual Report todo. */
   private loadAnnualReportTodo (task: ApiTaskIF): void {
     const todo = task.task.todo
+    const business = todo.business
     const header = todo.header
 
-    if (header && todo.business) {
+    if (business && header) {
       const ARFilingYear = header.ARFilingYear
       const subtitle: string = (task.enabled && !this.isBComp) ? '(including Address and/or Director Change)' : null
 
@@ -727,7 +729,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.nextArDate(todo.business.nextAnnualReport), // BCOMP only
+        nextArDate: this.nextArDate(business.nextAnnualReport), // BCOMP only
         arDueDate: this.formatDateString(header.arMaxDate) // BCOMP only
       }
       this.todoItems.push(item)
@@ -774,14 +776,16 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   private async loadAlteration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
+    const alteration = filing.alteration
+    const business = filing.business
     const header = filing.header
 
-    if (header && filing.alteration && filing.business) {
+    if (alteration && business && header) {
       if (!this.isInGoodStanding && this.isStatusDraft(header)) {
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(filing.business.legalType as CorpTypeCd)
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType as CorpTypeCd)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
@@ -790,7 +794,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         name: FilingTypes.ALTERATION,
         id: header.filingId,
         legalType: corpTypeDescription,
-        // filingDate: header.date, // *** TODO: test and delete if not needed
         title: this.alterationTitle(header.priority, corpTypeDescription),
         draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
         status: header.status,
@@ -805,7 +808,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or alteration or business in filing =', task)
+      console.log('ERROR - invalid header or alteration or business in task =', task)
     }
   }
 
@@ -815,11 +818,13 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
    */
   private async loadAnnualReport (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
+    const annualReport = filing.annualReport
+    const business = filing.business
     const header = filing.header
 
-    if (header && filing.annualReport && filing.business) {
+    if (annualReport && business && header) {
       // FUTURE: delete fallback when all draft ARs contain ARFilingYear
-      const ARFilingYear = header.ARFilingYear || this.getArFilingYear(filing)
+      const ARFilingYear = header.ARFilingYear || this.getArFilingYear(annualReport)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
@@ -849,10 +854,12 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   private async loadChangeOfDirectors (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
+    const business = filing.business
+    const changeOfDirectors = filing.changeOfDirectors
     const header = filing.header
 
-    // NB: don't check "filing.changeOfDirectors" as it may be empty
-    if (header && filing.business) {
+    // NB: don't check "changeOfDirectors" as it may be empty
+    if (business && header) {
       const paymentStatusCode = header.paymentStatusCode || null
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
@@ -877,9 +884,11 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   private async loadChangeOfAddress (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
+    const business = filing.business
+    const changeOfAddress = filing.changeOfAddress
     const header = filing.header
 
-    if (header && filing.changeOfAddress && filing.business) {
+    if (business && changeOfAddress && header) {
       const paymentStatusCode = header.paymentStatusCode || null
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
@@ -904,9 +913,11 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   private async loadCorrection (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
+    const business = filing.business
+    const correction = filing.correction
     const header = filing.header
 
-    if (header && filing.correction && filing.business) {
+    if (business && correction && header) {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
 
@@ -914,11 +925,11 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         name: FilingTypes.CORRECTION,
         id: header.filingId,
         // this is only used for internal corrections (not IA):
-        correctedFilingId: filing.correction.correctedFilingId,
+        correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
-        correctedFilingType: this.filingTypeToName(filing.correction.correctedFilingType),
+        correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes),
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
-          this.filingTypeToName(filing.correction.correctedFilingType)),
+          this.filingTypeToName(correction.correctedFilingType as FilingTypes)),
         draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
         status: header.status,
         enabled: task.enabled,
@@ -937,13 +948,15 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   private async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
+    const business = filing.business
     const header = filing.header
+    const incorporationApplication = filing.incorporationApplication
 
-    // NB: don't check "filing.incorporationApplication" as it may be empty
-    if (header && filing.business) {
+    // NB: don't check "incorporationApplication" as it may be empty
+    if (business && header) {
       const title = this.nameRequest
-        ? `${this.getCorpTypeDescription(this.entityType)} Incorporation Application - ${this.getEntityName}`
-        : `${this.getCorpTypeDescription(this.entityType)} Incorporation Application`
+        ? `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application - ${this.getEntityName}`
+        : `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
 
       // set subtitle only if DRAFT
       let subtitle: string
@@ -958,7 +971,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       const paymentStatusCode = header.paymentStatusCode || null
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
-      const ia = filing.incorporationApplication // may be undefined
+      const ia = incorporationApplication // may be undefined
       const haveData = Boolean(ia?.offices || ia?.contactPoint || ia?.parties || ia?.shareClasses)
 
       const item: TodoItemIF = {
@@ -1036,7 +1049,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       case FilingTypes.CORRECTION:
         if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
           // redirect to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${item.id}`
+          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${item.id}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } else {
           // resume this Correction Filing
@@ -1055,13 +1068,13 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       case FilingTypes.ALTERATION:
         // redirect to Edit web app to alter this company
-        const alterationUrl = `${this.editUrl}${this.entityIncNo}/alteration?alteration-id=${item.id}`
+        const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.id}`
         window.location.assign(alterationUrl) // assume URL is always reachable
         break
 
       default:
         // eslint-disable-next-line no-console
-        console.log('doResumeFiling(), invalid type for task =', item)
+        console.log('doResumeFiling(), invalid type for item =', item)
         break
     }
   }
@@ -1145,7 +1158,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   }
 
   private async doDeleteDraft (item: TodoItemIF, refreshDashboard: boolean = true): Promise<void> {
-    const id = this.entityIncNo || this.tempRegNumber
+    const id = this.getEntityIncNo || this.tempRegNumber
     const url = `businesses/${id}/filings/${item.id}`
 
     await axios.delete(url).then(res => {
@@ -1206,7 +1219,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   }
 
   private async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
-    const url = `businesses/${this.entityIncNo}/filings/${item.id}`
+    const url = `businesses/${this.getEntityIncNo}/filings/${item.id}`
 
     await axios.patch(url, {}).then(res => {
       if (!res) { throw new Error('Invalid API response') }
@@ -1268,8 +1281,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
    * Returns AR Filing Year in case a draft filing doesn't contain it.
    * FUTURE: Delete this when all draft ARs contain new ARFilingYear.
    */
-  getArFilingYear (filing: TaskTodoIF): number {
-    return +filing.annualReport.annualReportDate?.substring(0, 4)
+  getArFilingYear (annualReport: any): number {
+    return +annualReport.annualReportDate?.substring(0, 4)
   }
 
   /**
@@ -1291,30 +1304,31 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     if (ARFilingYear === 2020) {
       // special case for 2020 ARs!
       // max date is _today_ or Oct 31, 2021, whichever is earliest
-      return this.earliestDate(this.currentDate, '2021-10-31')
+      return this.earliestDate(this.getCurrentDate, '2021-10-31')
     } else if (ARFilingYear < this.getCurrentYear) {
       // for past ARs, max date is the following year on Apr 30
       return `${ARFilingYear + 1}-04-30`
     } else {
       // for current ARs, max date is today
-      return this.currentDate
+      return this.getCurrentDate
     }
   }
 
   /**
    * Returns the BCOMP Next AR Date. Used for Annual Report filing.
-   * @returns for example, "2021-05-28"
+   * @param nextAnnualReport for example, "2021-11-17T08:00:00+00:00"
+   * @returns for example, "2021-11-17"
    */
   private nextArDate (nextAnnualReport: string): string {
     const date = this.apiToDate(nextAnnualReport)
-    return this.dateToDateString(date)
+    return this.dateToYyyyMmDd(date)
   }
 
   @Watch('getTasks')
-  private onTasksChanged (): void {
+  private async onTasksChanged (): Promise<void> {
     // when tasks list has changed, reload it
     // (does not fire on initial page load)
-    this.loadData()
+    await this.loadData()
   }
 }
 </script>

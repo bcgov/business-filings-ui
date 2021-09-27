@@ -11,13 +11,13 @@ export interface ApiFilingIF {
   commentsLink: string // URL to fetch this filing's comments
   displayName: string
   documentsLink: string // URL to fetch this filing's documents
-  effectiveDate: string // full date-time in UTC format
+  effectiveDate: string // formatted date-time in UTC format
   filingId: number
   filingLink: string // URL to fetch this filing
   isFutureEffective: boolean
   name: FilingTypes
   status: FilingStatus
-  submittedDate: string // full date-time in UTC format
+  submittedDate: string // formatted date-time in UTC format
   submitter: string
 
   // correction filings only

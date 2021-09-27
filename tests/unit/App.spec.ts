@@ -211,22 +211,21 @@ const KEYCLOAK_TOKEN_STAFF = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6IC
 // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
 // must NOT include staff role
 const KEYCLOAK_TOKEN_USER = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
-'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
-'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
-'0aC9yZWFsbXMvZmNmMGtwcXIiLCJhdWQiOlsic2JjLWF1dGgtd2ViIiwiYWNjb3VudCJdLCJzdWIiOiI4ZTVkZDYzNS01OGRkLTQ5YzUtYmViM' +
-'S00NmE1ZDVhMTYzNWMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzYmMtYXV0aC13ZWIiLCJhdXRoX3RpbWUiOjAsInNlc3Npb25fc3RhdGUiOiI' +
-'5OGQ3Y2Y2Zi0xYTQ1LTQzMzUtYWU0OC02YzBiNTdlMGYwNTAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly8xOTIuMTY4L' +
-'jAuMTM6ODA4MC8iLCIxOTIuMTY4LjAuMTMiLCIqIiwiaHR0cDovLzE5Mi4xNjguMC4xMzo4MDgwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI' +
-'6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3Vud' +
-'CI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiIiLCJ' +
-'yb2xlcyI6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl0sInByZWZlcnJlZF91c2VybmFtZSI6I' +
-'mJjMDAwNzI5MSIsImxvZ2luU291cmNlIjoiUEFTU0NPREUiLCJ1c2VybmFtZSI6ImJjMDAwNzI5MSJ9.GYKmp5SQxZYTEkltSgaM3LMNcmuo_n' +
-'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
-'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
-'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg'
+  'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
+  'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
+  '0aC9yZWFsbXMvZmNmMGtwcXIiLCJhdWQiOlsic2JjLWF1dGgtd2ViIiwiYWNjb3VudCJdLCJzdWIiOiI4ZTVkZDYzNS01OGRkLTQ5YzUtYmViM' +
+  'S00NmE1ZDVhMTYzNWMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzYmMtYXV0aC13ZWIiLCJhdXRoX3RpbWUiOjAsInNlc3Npb25fc3RhdGUiOiI' +
+  '5OGQ3Y2Y2Zi0xYTQ1LTQzMzUtYWU0OC02YzBiNTdlMGYwNTAiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly8xOTIuMTY4L' +
+  'jAuMTM6ODA4MC8iLCIxOTIuMTY4LjAuMTMiLCIqIiwiaHR0cDovLzE5Mi4xNjguMC4xMzo4MDgwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI' +
+  '6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3Vud' +
+  'CI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiIiLCJ' +
+  'yb2xlcyI6WyJlZGl0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl0sInByZWZlcnJlZF91c2VybmFtZSI6I' +
+  'mJjMDAwNzI5MSIsImxvZ2luU291cmNlIjoiUEFTU0NPREUiLCJ1c2VybmFtZSI6ImJjMDAwNzI5MSJ9.GYKmp5SQxZYTEkltSgaM3LMNcmuo_n' +
+  'b88wrYb6LbRk1BtCC0wU6Uu5zij_6mwXKyJ3dQ0L2EWR0eEqDuKzjWKVkIvQujXKzc8H9PPYPhgRqwdDr2qOglJrT2lJTkGZvPPqI217J2iiVW' +
+  'OutPePeAmozIQhmf5jlZBW_J8qSzx9GmkQvT41hxpNLkaMPjPYVM2Iy6vL4Pnu0Xma-wCN1GCPwvJGQXCuh3IsR_iTMoig8qcFS0a0lUTx_cCj' +
+  'G-zf_goG4vDTeKn6Mk50FToRtYGXkzWdfQn1T_yeS_2zrL8Ifg1QhJe74U_w40v4ikAFl-BofYnIRjopP57H-5g9_SGg'
 
-// *** TODO: enable before final commit
-xdescribe('App as a COOP', () => {
+describe('App as a COOP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -283,7 +282,7 @@ xdescribe('App as a COOP', () => {
             identifier: 'CP0001191',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
             foundingDate: '2000-07-13T00:00:00+00:00',
-            legalType: null
+            legalType: 'CP'
           }
         }
       })))
@@ -343,25 +342,43 @@ xdescribe('App as a COOP', () => {
         data: {
           filings: [
             {
-              name: 'annualReport',
+              availableOnPaperOnly: false,
+              businessIdentifier: 'CP0001191',
+              commentsCount: 0,
               displayName: 'Annual Report (2019)',
               effectiveDate: 'Wed, 2 Jan 2019 12:00:00 GMT',
+              filingId: 111,
+              isFutureEffective: false,
+              name: 'annualReport',
+              status: 'COMPLETED',
               submittedDate: 'Wed, 2 Jan 2019 12:00:00 GMT',
-              status: 'COMPLETED'
+              submitter: 'Sub  Mitter'
             },
             {
-              name: 'changeOfDirectors',
+              availableOnPaperOnly: false,
+              businessIdentifier: 'CP0001191',
+              commentsCount: 0,
               displayName: 'Director Change',
               effectiveDate: 'Mon, 4 Mar 2019 12:00:00 GMT',
+              filingId: 222,
+              isFutureEffective: false,
+              name: 'changeOfDirectors',
+              status: 'COMPLETED',
               submittedDate: 'Mon, 4 Mar 2019 12:00:00 GMT',
-              status: 'COMPLETED'
+              submitter: 'Sub  Mitter'
             },
             {
-              name: 'changeOfAddress',
+              availableOnPaperOnly: false,
+              businessIdentifier: 'CP0001191',
+              commentsCount: 0,
               displayName: 'Address Change',
               effectiveDate: 'Mon, 6 May 2019 12:00:00 GMT',
+              filingId: 333,
+              isFutureEffective: false,
+              name: 'changeOfAddress',
+              status: 'COMPLETED',
               submittedDate: 'Mon, 6 May 2019 12:00:00 GMT',
-              status: 'COMPLETED'
+              submitter: 'Sub  Mitter'
             }
           ]
         }
@@ -372,23 +389,23 @@ xdescribe('App as a COOP', () => {
       .returns(new Promise((resolve) => resolve({
         data:
         {
-          'registeredOffice':
+          registeredOffice:
           {
-            'mailingAddress': {
-              'streetAddress': '1012 Douglas St',
-              'addressCity': 'Victoria',
-              'addressRegion': 'BC',
-              'addressType': 'mailing',
-              'postalCode': 'V8W 2C3',
-              'addressCountry': 'CA'
+            mailingAddress: {
+              streetAddress: '1012 Douglas St',
+              addressCity: 'Victoria',
+              addressRegion: 'BC',
+              addressType: 'mailing',
+              postalCode: 'V8W 2C3',
+              addressCountry: 'CA'
             },
-            'deliveryAddress': {
-              'streetAddress': '220 Buchanan St',
-              'addressCity': 'Glasgow',
-              'addressRegion': 'Scotland',
-              'addressType': 'delivery',
-              'postalCode': 'G1 2FFF',
-              'addressCountry': 'UK'
+            deliveryAddress: {
+              streetAddress: '220 Buchanan St',
+              addressCity: 'Glasgow',
+              addressRegion: 'Scotland',
+              addressType: 'delivery',
+              postalCode: 'G1 2FFF',
+              addressCountry: 'UK'
             }
           }
         }
@@ -465,15 +482,15 @@ xdescribe('App as a COOP', () => {
   })
 
   it('initializes Current Date properly', () => {
-    const currentDate = new Date().toISOString().slice(0, 10)
-    expect(vm.$store.state.currentDate).toEqual(currentDate)
+    const dateString = vm.dateToYyyyMmDd(new Date())
+    expect(vm.$store.getters.getCurrentDate).toEqual(dateString)
   })
 
   it('fetches Entity Info properly', () => {
-    expect(vm.$store.state.entityName).toBe('TEST NAME')
-    expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
+    expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
+    expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.state.entityIncNo).toBe('CP0001191')
+    expect(vm.$store.getters.getEntityIncNo).toBe('CP0001191')
     expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
   })
 
@@ -486,12 +503,13 @@ xdescribe('App as a COOP', () => {
 
   it('fetches Filings properly', () => {
     expect(vm.$store.state.filings.length).toBe(3)
-    expect(vm.$store.state.filings[0].filing.header.name).toBe('annualReport')
-    expect(vm.$store.state.filings[1].filing.header.name).toBe('changeOfDirectors')
-    expect(vm.$store.state.filings[2].filing.header.name).toBe('changeOfAddress')
+    expect(vm.$store.state.filings[0].name).toBe('annualReport')
+    expect(vm.$store.state.filings[1].name).toBe('changeOfDirectors')
+    expect(vm.$store.state.filings[2].name).toBe('changeOfAddress')
   })
 
-  it('fetches Addresses properly', () => {
+  // *** TODO: enable before final commit
+  xit('fetches Addresses properly', () => {
     expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
     expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
@@ -506,8 +524,7 @@ xdescribe('App as a COOP', () => {
   })
 })
 
-// *** TODO: enable before final commit
-xdescribe('App as a BCOMP', () => {
+describe('App as a BCOMP', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -563,7 +580,7 @@ xdescribe('App as a BCOMP', () => {
             identifier: 'BC0007291',
             lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
             foundingDate: '2000-07-13T00:00:00+00:00',
-            legalType: null
+            legalType: 'BEN'
           }
         }
       })))
@@ -623,25 +640,43 @@ xdescribe('App as a BCOMP', () => {
         data: {
           filings: [
             {
-              name: 'annualReport',
+              availableOnPaperOnly: false,
+              businessIdentifier: 'BC0007291',
+              commentsCount: 0,
               displayName: 'Annual Report (2019)',
               effectiveDate: 'Wed, 2 Jan 2019 12:00:00 GMT',
+              filindId: 111,
+              isFutureEffective: false,
+              name: 'annualReport',
+              status: 'COMPLETED',
               submittedDate: 'Wed, 2 Jan 2019 12:00:00 GMT',
-              status: 'COMPLETED'
+              submitter: 'Sub Mitter'
             },
             {
-              name: 'changeOfDirectors',
+              availableOnPaperOnly: false,
+              businessIdentifier: 'BC0007291',
+              commentsCount: 0,
               displayName: 'Director Change',
               effectiveDate: 'Mon, 4 Mar 2019 12:00:00 GMT',
+              filindId: 222,
+              isFutureEffective: false,
+              name: 'changeOfDirectors',
+              status: 'COMPLETED',
               submittedDate: 'Mon, 4 Mar 2019 12:00:00 GMT',
-              status: 'COMPLETED'
+              submitter: 'Sub Mitter'
             },
             {
-              name: 'changeOfAddress',
+              availableOnPaperOnly: false,
+              businessIdentifier: 'BC0007291',
+              commentsCount: 0,
               displayName: 'Address Change',
               effectiveDate: 'Mon, 6 May 2019 12:00:00 GMT',
+              filindId: 333,
+              isFutureEffective: false,
+              name: 'changeOfAddress',
+              status: 'COMPLETED',
               submittedDate: 'Mon, 6 May 2019 12:00:00 GMT',
-              status: 'COMPLETED'
+              submitter: 'Sub Mitter'
             }
           ]
         }
@@ -691,9 +726,6 @@ xdescribe('App as a BCOMP', () => {
     expect(vm.$store.getters.isRoleStaff).toBe(false)
     expect(vm.$store.getters.isRoleEdit).toBe(true)
     expect(vm.$store.getters.isRoleView).toBe(true)
-
-    sinon.restore()
-    wrapper.destroy()
   })
 
   it('fetches Business Info properly', () => {
@@ -703,15 +735,15 @@ xdescribe('App as a BCOMP', () => {
   })
 
   it('initializes Current Date properly', () => {
-    const currentDate = new Date().toISOString().slice(0, 10)
-    expect(vm.$store.state.currentDate).toEqual(currentDate)
+    const dateString = vm.dateToYyyyMmDd(new Date())
+    expect(vm.$store.getters.getCurrentDate).toEqual(dateString)
   })
 
   it('fetches Entity Info properly', () => {
-    expect(vm.$store.state.entityName).toBe('TEST NAME')
-    expect(vm.$store.state.entityStatus).toBe('GOODSTANDING')
+    expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
+    expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.state.entityIncNo).toBe('BC0007291')
+    expect(vm.$store.getters.getEntityIncNo).toBe('BC0007291')
     expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
   })
 
@@ -724,12 +756,13 @@ xdescribe('App as a BCOMP', () => {
 
   it('fetches Filings properly', () => {
     expect(vm.$store.state.filings.length).toBe(3)
-    expect(vm.$store.state.filings[0].filing.header.name).toBe('annualReport')
-    expect(vm.$store.state.filings[1].filing.header.name).toBe('changeOfDirectors')
-    expect(vm.$store.state.filings[2].filing.header.name).toBe('changeOfAddress')
+    expect(vm.$store.state.filings[0].name).toBe('annualReport')
+    expect(vm.$store.state.filings[1].name).toBe('changeOfDirectors')
+    expect(vm.$store.state.filings[2].name).toBe('changeOfAddress')
   })
 
-  it('fetches Addresses properly', () => {
+  // *** TODO: enable before final commit
+  xit('fetches Addresses properly', () => {
     expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
     expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
@@ -748,158 +781,7 @@ xdescribe('App as a BCOMP', () => {
   })
 })
 
-// *** TODO: enable before final commit
-xdescribe('App as a Name Request', () => {
-  let wrapper: Wrapper<Vue>
-  let vm: any
-
-  beforeAll(() => {
-    sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
-    sessionStorage.setItem('NR_NUMBER', 'NR 1234567')
-  })
-
-  beforeEach(async () => {
-    const get = sinon.stub(axios, 'get')
-
-    // GET authorizations (role) from auth API
-    get.withArgs('entities/NR 1234567/authorizations')
-      .returns(new Promise((resolve) => resolve({
-        data:
-        {
-          roles: ['edit', 'view']
-        }
-      })))
-
-    // GET user info from auth API
-    get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
-        data: USER_INFO
-      })))
-
-    // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
-        data:
-        {
-          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-          names: [
-            {
-              name: 'My Name Request',
-              state: 'APPROVED',
-              consumptionDate: null
-            }
-          ],
-          nrNumber: 'NR 1234567',
-          requestTypeCd: 'XX',
-          state: 'APPROVED'
-        }
-      })))
-
-    // GET tasks
-    get.withArgs('businesses/NR 1234567/tasks')
-      .returns(new Promise((resolve) => resolve({
-        data:
-        {
-          tasks: [
-            {
-              enabled: true,
-              order: 1,
-              task: {
-                todo: {
-                  header: {
-                    name: 'nameRequest',
-                    status: 'NEW'
-                  },
-                  nameRequest: {
-                    applicants: {
-                      ddrLine1: '1234 Fake Street',
-                      addrLine2: 'Block 3',
-                      addrLine3: 'Suite 11',
-                      city: 'Victoria',
-                      clientFirstName: 'Connor',
-                      clientLastName: 'Horton',
-                      contact: 'James Bond',
-                      countryTypeCd: 'CA',
-                      declineNotificationInd: 'N',
-                      emailAddress: 'abc@test.com',
-                      faxNumber: null,
-                      firstName: 'Adam',
-                      lastName: 'Smith',
-                      middleName: 'Jane',
-                      partyId: 1657726,
-                      phoneNumber: '7777777777',
-                      postalCd: 'V9E 3S2',
-                      stateProvinceCd: 'BC'
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        }
-      })))
-
-    // GET filings
-    get.withArgs('businesses/NR 1234567/filings')
-      .returns(new Promise((resolve) => resolve({
-        data:
-        {
-          filings: []
-        }
-      })))
-
-    // create a Local Vue and install router on it
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
-
-    wrapper = shallowMount(App, {
-      localVue,
-      router,
-      store,
-      vuetify
-    })
-    vm = wrapper.vm
-
-    await flushPromises()
-  })
-
-  afterEach(() => {
-    sinon.restore()
-    wrapper.destroy()
-  })
-
-  it('fetches NR data properly', () => {
-    expect(vm.nameRequest.expirationDate).toBe('Thu, 31 Dec 2099 23:59:59 GMT')
-    expect(vm.nameRequest.names[0].name).toBe('My Name Request')
-    expect(vm.nameRequest.names[0].consumptionDate).toBeNull()
-    expect(vm.nameRequest.nrNumber).toBe('NR 1234567')
-    expect(vm.nameRequest.requestTypeCd).toBe('XX')
-    expect(vm.nameRequest.state).toBe('APPROVED')
-
-    expect(vm.$store.state.entityName).toBe('My Name Request')
-    expect(vm.$store.state.entityType).toBe('XX')
-    expect(vm.$store.state.entityIncNo).toBe('NR 1234567')
-  })
-
-  it('fetches Tasks properly', () => {
-    expect(vm.$store.state.tasks.length).toBe(1)
-    expect(vm.$store.state.tasks[0].enabled).toBe(true)
-    expect(vm.$store.state.tasks[0].order).toBe(1)
-    expect(vm.$store.state.tasks[0].task.todo.nameRequest).not.toBeUndefined()
-    expect(vm.$store.state.tasks[0].task.todo.header.name).toBe('nameRequest')
-    expect(vm.$store.state.tasks[0].task.todo.header.status).toBe('NEW')
-  })
-
-  it('fetches Filings properly', () => {
-    expect(vm.$store.state.filings.length).toBe(0)
-  })
-})
-
-// *** TODO: enable before final commit
-xdescribe('App as a Draft IA with approved NR', () => {
+describe('App as a Draft IA with approved NR', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -945,31 +827,33 @@ xdescribe('App as a Draft IA with approved NR', () => {
             }
           ],
           nrNumber: 'NR 1234567',
-          requestTypeCd: 'BC',
+          legalType: 'BEN',
           state: 'APPROVED'
         }
       })))
 
-    // GET IA filings
+    // GET IA filing
     get.withArgs('businesses/T123456789/filings')
       .returns(new Promise((resolve) => resolve({
         data: {
-          filings: [
-            {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BEN'
+            },
+            header: {
+              date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
-              displayName: 'Incorporation Application',
-              effectiveDate: 'Thu, 21 May 2020 12:00:00 GMT',
-              submittedDate: 'Thu, 21 May 2020 12:00:00 GMT',
               status: 'DRAFT',
-              data: {
-                incorporationApplication: {
-                  nameRequest: {
-                    nrNumber: 'NR 1234567'
-                  }
-                }
+              filingId: 789
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'BEN'
               }
             }
-          ]
+          }
         }
       })))
 
@@ -997,28 +881,32 @@ xdescribe('App as a Draft IA with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.entityName).toBe('My Name Request')
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
-  it('fetches IA filings properly', () => {
-    expect(vm.$store.state.entityIncNo).toBe('T123456789')
-    expect(vm.$store.state.entityType).toBe('BEN')
-    expect(vm.$store.state.entityStatus).toBe('DRAFT_INCORP_APP')
+  it('fetches IA filing properly', () => {
+    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getEntityType).toBe('BEN')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getEntityStatus).toBe('DRAFT_INCORP_APP')
 
     // verify loaded task
     expect(vm.$store.state.tasks.length).toBe(1)
     expect(vm.$store.state.tasks[0].enabled).toBe(true)
     expect(vm.$store.state.tasks[0].order).toBe(1)
+    expect(vm.$store.state.tasks[0].task.filing.business.identifier).toBe('T123456789')
     expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('BEN')
+    expect(vm.$store.state.tasks[0].task.filing.header.date).toBe('2020-05-21T00:11:55.887740+00:00')
     expect(vm.$store.state.tasks[0].task.filing.header.name).toBe('incorporationApplication')
     expect(vm.$store.state.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(vm.$store.state.tasks[0].task.filing.header.filingId).toBe(789)
     expect(vm.$store.state.tasks[0].task.filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
+    expect(vm.$store.state.tasks[0].task.filing.incorporationApplication.nameRequest.legalType).toBe('BEN')
   })
 })
 
-// *** TODO: enable before final commit
-xdescribe('App as a Draft IA with conditional-not required', () => {
+describe('App as a Draft IA with conditional-not required NR', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1065,31 +953,33 @@ xdescribe('App as a Draft IA with conditional-not required', () => {
             }
           ],
           nrNumber: 'NR 1234567',
-          requestTypeCd: 'BC',
+          legalType: 'BEN',
           state: 'CONDITIONAL'
         }
       })))
 
-    // GET IA filings
+    // GET IA filing
     get.withArgs('businesses/T123456789/filings')
       .returns(new Promise((resolve) => resolve({
         data: {
-          filings: [
-            {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BEN'
+            },
+            header: {
+              date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
-              displayName: 'Incorporation Application',
-              effectiveDate: 'Thu, 21 May 2020 12:00:00 GMT',
-              submittedDate: 'Thu, 21 May 2020 12:00:00 GMT',
               status: 'DRAFT',
-              data: {
-                incorporationApplication: {
-                  nameRequest: {
-                    nrNumber: 'NR 1234567'
-                  }
-                }
+              filingId: 789
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'BEN'
               }
             }
-          ]
+          }
         }
       })))
 
@@ -1117,13 +1007,12 @@ xdescribe('App as a Draft IA with conditional-not required', () => {
   })
 
   it('fetches conditional-not required NR data properly', () => {
-    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.entityName).toBe('My Conditional NR With Consent Not Required')
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Not Required')
   })
 })
 
-// *** TODO: enable before final commit
-xdescribe('App as a Draft IA with conditional-received NR', () => {
+describe('App as a Draft IA with conditional-received NR', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1170,31 +1059,33 @@ xdescribe('App as a Draft IA with conditional-received NR', () => {
             }
           ],
           nrNumber: 'NR 1234567',
-          requestTypeCd: 'BC',
+          legalType: 'BEN',
           state: 'CONDITIONAL'
         }
       })))
 
-    // GET IA filings
+    // GET IA filing
     get.withArgs('businesses/T123456789/filings')
       .returns(new Promise((resolve) => resolve({
         data: {
-          filings: [
-            {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BEN'
+            },
+            header: {
+              date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
-              displayName: 'Incorporation Application',
-              effectiveDate: 'Thu, 21 May 2020 12:00:00 GMT',
-              submittedDate: 'Thu, 21 May 2020 12:00:00 GMT',
               status: 'DRAFT',
-              data: {
-                incorporationApplication: {
-                  nameRequest: {
-                    nrNumber: 'NR 1234567'
-                  }
-                }
+              filingId: 789
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'BEN'
               }
             }
-          ]
+          }
         }
       })))
 
@@ -1222,13 +1113,12 @@ xdescribe('App as a Draft IA with conditional-received NR', () => {
   })
 
   it('fetches conditional-received NR data properly', () => {
-    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.entityName).toBe('My Conditional NR With Consent Received')
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Received')
   })
 })
 
-// *** TODO: enable before final commit
-xdescribe('App as a Draft IA with conditional-waived NR', () => {
+describe('App as a Draft IA with conditional-waived NR', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1275,31 +1165,33 @@ xdescribe('App as a Draft IA with conditional-waived NR', () => {
             }
           ],
           nrNumber: 'NR 1234567',
-          requestTypeCd: 'BC',
+          legalType: 'BEN',
           state: 'CONDITIONAL'
         }
       })))
 
-    // GET IA filings
+    // GET IA filing
     get.withArgs('businesses/T123456789/filings')
       .returns(new Promise((resolve) => resolve({
         data: {
-          filings: [
-            {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BEN'
+            },
+            header: {
+              date: '2020-05-21T00:11:55.887740+00:00',
               name: 'incorporationApplication',
-              displayName: 'Incorporation Application',
-              effectiveDate: 'Thu, 21 May 2020 12:00:00 GMT',
-              submittedDate: 'Thu, 21 May 2020 12:00:00 GMT',
               status: 'DRAFT',
-              data: {
-                incorporationApplication: {
-                  nameRequest: {
-                    nrNumber: 'NR 1234567'
-                  }
-                }
+              filingId: 789
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'BEN'
               }
             }
-          ]
+          }
         }
       })))
 
@@ -1327,13 +1219,12 @@ xdescribe('App as a Draft IA with conditional-waived NR', () => {
   })
 
   it('fetches conditional-waived NR data properly', () => {
-    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.entityName).toBe('My Conditional NR With Consent Waived')
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Waived')
   })
 })
 
-// *** TODO: enable before final commit
-xdescribe('App as a Paid Incorporation Application', () => {
+describe('App as a PAID (pending) Incorporation Application', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -1379,148 +1270,12 @@ xdescribe('App as a Paid Incorporation Application', () => {
             }
           ],
           nrNumber: 'NR 1234567',
-          requestTypeCd: 'BC',
+          legalType: 'BEN',
           state: 'APPROVED'
         }
       })))
 
-    // GET IA filings
-    get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
-        data: {
-          filings: [
-            {
-              availableOnPaperOnly: false,
-              name: 'incorporationApplication',
-              displayName: 'Incorporation Application',
-              effectiveDate: 'Thu, 21 May 2020 12:00:00 GMT',
-              submittedDate: 'Thu, 21 May 2020 12:00:00 GMT',
-              submitter: 'Joe Submitter',
-              status: 'PAID',
-              data: {
-                incorporationApplication: {
-                  nameRequest: {
-                    nrNumber: 'NR 1234567'
-                  },
-                  offices: BCOMP_ADDRESSES,
-                  parties: BCOMP_PARTIES
-                }
-              }
-            }
-          ]
-        }
-      })))
-
-    // create a Local Vue and install router on it
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
-
-    wrapper = shallowMount(App, {
-      sync: false,
-      localVue,
-      router,
-      store,
-      vuetify
-    })
-    vm = wrapper.vm
-
-    await flushPromises()
-  })
-
-  afterEach(() => {
-    sinon.restore()
-    wrapper.destroy()
-  })
-
-  it('fetches NR data properly', () => {
-    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.entityName).toBe('My Name Request')
-  })
-
-  it('fetches IA filings properly', () => {
-    expect(vm.$store.state.entityIncNo).toBe('T123456789')
-    expect(vm.$store.state.entityStatus).toBe('FILED_INCORP_APP')
-
-    // spot check addresses and directors
-    expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
-    expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
-    expect(vm.$store.state.directors[0].officer.firstName).toBe('Griffin')
-    expect(vm.$store.state.directors[0].officer.lastName).toBe('Swanson')
-    expect(vm.$store.state.directors.length).toEqual(1)
-
-    // verify loaded filing
-    expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
-    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
-    expect(vm.$store.state.filings[0].correctionFilingId).toBeNull()
-    expect(vm.$store.state.filings[0].displayName)
-      .toBe('BC Benefit Company Incorporation Application - Numbered Benefit Company')
-    expect(vm.$store.state.filings[0].effectiveDate).toBe('Thu, 21 May 2020 00:11:55 GMT')
-    expect(vm.$store.state.filings[0].filingId).toBe(789)
-    expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
-    expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
-    expect(vm.$store.state.filings[0].paymentToken).toBe('987')
-    expect(vm.$store.state.filings[0].status).toBe('PAID')
-    expect(vm.$store.state.filings[0].submittedDate).toBe('Thu, 21 May 2020 00:11:55 GMT')
-    expect(vm.$store.state.filings[0].submitter).toBe('Joe Submitter')
-  })
-})
-
-describe('App as a Completed Incorporation Application', () => {
-  // Intermediate scenario - While returning from payment completion page
-  let wrapper: Wrapper<Vue>
-  let vm: any
-
-  beforeAll(() => {
-    // clear store
-    store.state.tasks = []
-    store.state.filings = []
-
-    sessionStorage.clear()
-    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
-    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-  })
-
-  beforeEach(async () => {
-    const get = sinon.stub(axios, 'get')
-
-    // GET authorizations (role) from auth API
-    get.withArgs('T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
-        data:
-        {
-          roles: ['edit', 'view']
-        }
-      })))
-
-    // GET user info from auth API
-    get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
-        data: USER_INFO
-      })))
-
-    // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
-        data:
-        {
-          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-          names: [
-            {
-              name: 'My Name Request',
-              state: 'APPROVED',
-              consumptionDate: '2099-10-30T00:11:55.887740+00:00'
-            }
-          ],
-          nrNumber: 'NR 1234567',
-          requestTypeCd: 'BC',
-          state: 'CONSUMED'
-        }
-      })))
-
-    // GET IA filings
+    // GET IA filing
     get.withArgs('businesses/T123456789/filings')
       .returns(new Promise((resolve) => resolve({
         data: {
@@ -1530,16 +1285,20 @@ describe('App as a Completed Incorporation Application', () => {
               legalType: 'BEN'
             },
             header: {
-              accountId: '123',
-              date: '2020-05-21T00:11:55.887740+00:00',
-              name: 'incorporationApplication',
-              status: 'COMPLETED',
+              availableOnPaperOnly: false,
+              date: '2020-05-10T11:22:33.444444+00:00',
+              effectiveDate: '2020-05-22T00:00:00.000000+00:00',
               filingId: 789,
-              paymentToken: 987
+              isFutureEffective: true,
+              name: 'incorporationApplication',
+              paymentToken: 987,
+              status: 'PAID',
+              submitter: 'Submitter'
             },
             incorporationApplication: {
               nameRequest: {
-                nrNumber: 'NR 1234567'
+                nrNumber: 'NR 1234567',
+                legalType: 'BEN'
               },
               offices: BCOMP_ADDRESSES,
               parties: BCOMP_PARTIES
@@ -1572,14 +1331,15 @@ describe('App as a Completed Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.entityName).toBe('My Name Request')
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
-  it('fetches IA filings properly', () => {
-    expect(vm.$store.state.entityIncNo).toBe('T123456789')
-    expect(vm.$store.state.entityType).toBe('BEN')
-    expect(vm.$store.state.entityStatus).toBe('FILED_INCORP_APP')
+  it('fetches IA filing properly', () => {
+    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getEntityType).toBe('BEN')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getEntityStatus).toBe('FILED_INCORP_APP')
 
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
@@ -1589,10 +1349,170 @@ describe('App as a Completed Incorporation Application', () => {
     expect(vm.$store.state.directors.length).toEqual(1)
 
     // verify loaded filing
+    // *** TODO: update according to API before final commit
     expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].filing.business.legalType).toBe('BEN')
-    expect(vm.$store.state.filings[0].filing.header.name).toBe('incorporationApplication')
-    expect(vm.$store.state.filings[0].filing.header.status).toBe('COMPLETED')
-    expect(vm.$store.state.filings[0].filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
+    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
+    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
+    expect(vm.$store.state.filings[0].commentsCount).toBe(0)
+    expect(vm.$store.state.filings[0].commentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].displayName).toBe('Incorporation Application')
+    expect(vm.$store.state.filings[0].documentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
+    expect(vm.$store.state.filings[0].filingId).toBe(789)
+    expect(vm.$store.state.filings[0].filingLink).toBeNull()
+    expect(vm.$store.state.filings[0].isFutureEffective).toBe(true)
+    expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
+    expect(vm.$store.state.filings[0].status).toBe('PAID')
+    expect(vm.$store.state.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
+    expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
+    expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
+    expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
+  })
+})
+
+describe('App as a COMPLETED Incorporation Application', () => {
+  // Intermediate scenario - While returning from payment completion page
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from auth API
+    get.withArgs('entities/T123456789/authorizations')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from auth API
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
+
+    // GET NR data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED',
+              consumptionDate: '2099-10-30T00:11:55.887740+00:00'
+            }
+          ],
+          nrNumber: 'NR 1234567',
+          legalType: 'BEN',
+          state: 'CONSUMED'
+        }
+      })))
+
+    // GET IA filing
+    get.withArgs('businesses/T123456789/filings')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'BEN'
+            },
+            header: {
+              availableOnPaperOnly: false,
+              date: '2020-05-10T11:22:33.444444+00:00',
+              effectiveDate: '2020-05-22T00:00:00.000000+00:00',
+              filingId: 789,
+              isFutureEffective: false,
+              name: 'incorporationApplication',
+              paymentToken: 987,
+              status: 'COMPLETED',
+              submitter: 'Submitter'
+            },
+            incorporationApplication: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'BEN'
+              },
+              offices: BCOMP_ADDRESSES,
+              parties: BCOMP_PARTIES
+            }
+          }
+        }
+      })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      sync: false,
+      localVue,
+      router,
+      store,
+      vuetify
+    })
+    vm = wrapper.vm
+
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches NR data properly', () => {
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+  })
+
+  it('fetches IA filing properly', () => {
+    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getEntityType).toBe('BEN')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getEntityStatus).toBe('FILED_INCORP_APP')
+
+    // spot check addresses and directors
+    expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
+    expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
+    expect(vm.$store.state.directors[0].officer.firstName).toBe('Griffin')
+    expect(vm.$store.state.directors[0].officer.lastName).toBe('Swanson')
+    expect(vm.$store.state.directors.length).toEqual(1)
+
+    // verify loaded filing
+    // *** TODO: update according to API before final commit
+    expect(vm.$store.state.filings.length).toBe(1)
+    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
+    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
+    expect(vm.$store.state.filings[0].commentsCount).toBe(0)
+    expect(vm.$store.state.filings[0].commentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].displayName).toBe('Incorporation Application')
+    expect(vm.$store.state.filings[0].documentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
+    expect(vm.$store.state.filings[0].filingId).toBe(789)
+    expect(vm.$store.state.filings[0].filingLink).toBeNull()
+    expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
+    expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
+    expect(vm.$store.state.filings[0].status).toBe('COMPLETED')
+    expect(vm.$store.state.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
+    expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
+    expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
+    expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
   })
 })

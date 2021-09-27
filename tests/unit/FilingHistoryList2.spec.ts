@@ -17,6 +17,9 @@ import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vu
 import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/StaffFiling.vue'
 
+// must match entity in filings.json:
+const ENTITY_INC_NO = 'CP0000840'
+
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
@@ -36,27 +39,24 @@ const isStaff = (filing) => (
   filing.name === 'courtOrder'
 )
 
-// Sinon "get" instance
-const get = sinon.stub(axios, 'get')
-
 // Iterate over sample filings
 filings.forEach((filing: any, index: number) => {
   describe(`Filing History List - item #${index} (${filing.name})`, () => {
     let wrapper, vm
 
     beforeAll(() => {
-      store.state.entityIncNo = 'CP0000841'
+      store.state.entityIncNo = ENTITY_INC_NO
       store.state.filings = [filing]
 
+      const get = sinon.stub(axios, 'get')
+
       // mock "get comments"
-      // get.withArgs(filing.commentsLink) // *** TODO: revert before final commit
-      get.withArgs('https://legal-api-dev-pr.apps.silver.devops.gov.bc.ca/api/v1/businesses/CP0000841/filings/' +
-       `${filing.filingId}/comments`).returns(new Promise((resolve) => resolve({ data: { comments: [] } })))
+      get.withArgs(filing.commentsLink)
+        .returns(new Promise((resolve) => resolve({ data: { comments: [] } })))
 
       // mock "get documents"
-      // get.withArgs(filing.documentsLink) // *** TODO: revert before final commit
-      get.withArgs('https://legal-api-dev-pr.apps.silver.devops.gov.bc.ca/api/v1/businesses/CP0000841/filings/' +
-        `${filing.filingId}/documents`).returns(new Promise((resolve) => resolve({ data: { documents: [] } })))
+      get.withArgs(filing.documentsLink)
+        .returns(new Promise((resolve) => resolve({ data: { documents: {} } })))
 
       // mount the component
       const $route = { query: {} }
@@ -65,6 +65,7 @@ filings.forEach((filing: any, index: number) => {
     })
 
     afterAll(() => {
+      sinon.restore()
       wrapper.destroy()
     })
 
@@ -72,15 +73,14 @@ filings.forEach((filing: any, index: number) => {
     // the following tests verify the item fields that get set
     //
     itIf(isPaperOnly(filing))('available on paper only', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       expect(item.availableOnPaperOnly).toBe(true)
-      expect(item.documentsLink).toBeNull()
     })
 
     itIf(isCorrection(filing))('correction filing', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       expect(item.correctedFilingId).toBe(filing.correctedFilingId)
@@ -88,7 +88,7 @@ filings.forEach((filing: any, index: number) => {
     })
 
     itIf(isCorrected(filing))('corrected filing', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       expect(item.correctionFilingId).toBe(filing.correctionFilingId)
@@ -96,56 +96,55 @@ filings.forEach((filing: any, index: number) => {
     })
 
     itIf(isIncorporationApplication(filing))('incorporation application filing', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
-      expect(item.isCompletedIa).toBeDefined() // *** TODO: test this more specifically
-      expect(item.isFutureEffectiveIa).toBeDefined() // *** TODO: test this more specifically
-      expect(item.isFutureEffectiveIaPending).toBeDefined() // *** TODO: test this more specifically
+      expect(item.isCompletedIa).toBeDefined() // FUTURE: test this more specifically
+      expect(item.isFutureEffectiveIa).toBeDefined() // FUTURE: test this more specifically
+      expect(item.isFutureEffectiveIaPending).toBeDefined() // FUTURE: test this more specifically
     })
 
     itIf(isBcompCoa(filing))('BCOMP change of address filing', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       expect(item.isFutureEffectiveBcompCoaPending).toBeDefined()
     })
 
     itIf(isAlteration(filing))('alteration filing', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
-      expect(item.courtOrderNumber).toBeDefined() // *** TODO: test this more specifically
-      expect(item.isArrangement).toBeDefined() // *** TODO: test this more specifically
-      expect(item.isFutureEffectiveAlteration).toBeDefined() // *** TODO: test this more specifically
-      expect(item.isFutureEffectiveAlterationPending).toBeDefined() // *** TODO: test this more specifically
-      expect(item.toLegalType).toBeDefined() // *** TODO: test this more specifically
-      expect(item.fromLegalType).toBeDefined() // *** TODO: test this more specifically
+      expect(item.courtOrderNumber).toBeDefined() // FUTURE: test this more specifically
+      expect(item.isArrangement).toBeDefined() // FUTURE: test this more specifically
+      expect(item.isFutureEffectiveAlteration).toBeDefined() // FUTURE: test this more specifically
+      expect(item.isFutureEffectiveAlterationPending).toBeDefined() // FUTURE: test this more specifically
+      expect(item.toLegalType).toBeDefined() // FUTURE: test this more specifically
+      expect(item.fromLegalType).toBeDefined() // FUTURE: test this more specifically
     })
 
     itIf(isStaff(filing))('staff filing', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
-      expect(item.documents).toEqual([])
-      expect(item.fileNumber).toBeDefined() // *** TODO: test this more specifically
+      expect(item.fileNumber).toBeDefined() // FUTURE: test this more specifically
       expect(item.isTypeStaff).toBe(true)
-      // expect(item.notationOrOrder).toBeDefined() // *** TODO: test this more specifically
-      expect(item.planOfArrangement).toBeDefined() // *** TODO: test this more specifically
+      // expect(item.notationOrOrder).toBeDefined() // FUTURE: test this more specifically
+      expect(item.planOfArrangement).toBeDefined() // FUTURE: test this more specifically
     })
 
     //
     // the following tests verify the displayed item
     //
     it('title', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       expect(wrapper.find('.item-header__title').text()).toBe(filing.displayName)
     })
 
     it('subtitle', () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       if (item.isTypeStaff) {
@@ -193,7 +192,7 @@ filings.forEach((filing: any, index: number) => {
     })
 
     it('expand button', async () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       // verify initial button label
@@ -219,7 +218,7 @@ filings.forEach((filing: any, index: number) => {
     })
 
     it('expansion panel', async () => {
-      expect(vm.historyItems.length).toEqual(1) // sanity check
+      expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       if (item.isTypeStaff) {

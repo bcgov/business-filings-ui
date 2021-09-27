@@ -39,7 +39,7 @@
           <span v-if="!$v.dateFormatted.isValidFormat">
             Date must be in format YYYY/MM/DD.
           </span>
-          <span v-else-if="!$v.dateFormatted.isValidCODDate">
+          <span v-else-if="!$v.dateFormatted.isValidCodDate">
             Please enter a month between {{formatDate(minDate)}} and {{formatDate(maxDate)}}.
           </span>
         </div>
@@ -50,36 +50,29 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
-import { isNotNull, isValidFormat, isValidCODDate } from '@/validators'
-import { mapState, mapGetters } from 'vuex'
+import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
+import { State, Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 
 @Component({
-  computed: {
-    // Property definitions for runtime environment.
-    ...mapState(['lastAnnualReportDate', 'entityFoundingDate', 'lastCodFilingDate']),
-    ...mapGetters(['isBComp'])
-  },
   validations: {
-    dateFormatted: { isNotNull, isValidFormat, isValidCODDate }
+    dateFormatted: { isNotNull, isValidFormat, isValidCodDate }
   }
 })
 export default class CodDate extends Mixins(DateMixin) {
   // Prop passed into this component.
   @Prop({ default: '' })
-  readonly initialCODDate: string
+  readonly initialCodDate: string
+
+  @State lastAnnualReportDate!: string
+  @State entityFoundingDate!: string
+  @State lastCodFilingDate!: Date
+  @Getter isBComp!: boolean
 
   // Local properties.
   private date: string = '' // bound to date picker
   private dateFormatted: string = '' // bound to text field
   private menu: boolean = false // bound to calendar menu
-
-  // Local definitions of computed properties for static type checking.
-  // Use non-null assertion operator to allow use before assignment.
-  readonly lastAnnualReportDate!: string
-  readonly entityFoundingDate!: string
-  readonly lastCodFilingDate!: Date
-  readonly isBComp!: boolean
 
   /**
    * Computed value.
@@ -97,7 +90,7 @@ export default class CodDate extends Mixins(DateMixin) {
    * @returns The maximum date that can be entered.
    */
   private get maxDate (): string {
-    return this.currentDate
+    return this.getCurrentDate
   }
 
   /**
@@ -106,7 +99,7 @@ export default class CodDate extends Mixins(DateMixin) {
    * @returns The minimum date that can be entered.
    */
   private get minDate (): string {
-    const lastCodFilingDate = this.dateToDateString(this.lastCodFilingDate)
+    const lastCodFilingDate = this.dateToYyyyMmDd(this.lastCodFilingDate)
     /**
      * For BComps, use the last COD filing in filing history.
      * For Coops, use the latest of the following dates:
@@ -128,7 +121,7 @@ export default class CodDate extends Mixins(DateMixin) {
    */
   private mounted (): void {
     // load initial data
-    this.dateFormatted = this.formatDate(this.initialCODDate)
+    this.dateFormatted = this.formatDate(this.initialCodDate)
   }
 
   /**
@@ -159,14 +152,14 @@ export default class CodDate extends Mixins(DateMixin) {
   private isValidDate (date, separator): boolean {
     return (isNotNull.call(this, date) &&
       isValidFormat.call(this, date, separator) &&
-      isValidCODDate.call(this, date, separator))
+      isValidCodDate.call(this, date, separator))
   }
 
   /**
    * When prop changes, load (initial) data.
    */
-  @Watch('initialCODDate')
-  private onInitialCODChanged (val: string): void {
+  @Watch('initialCodDate')
+  private onInitialCodChanged (val: string): void {
     if (val) {
       this.dateFormatted = this.formatDate(val)
     }
@@ -191,7 +184,7 @@ export default class CodDate extends Mixins(DateMixin) {
     if (codDate) {
       this.dateFormatted = this.formatDate(val)
     }
-    this.emitCODDate(codDate)
+    this.emitCodDate(codDate)
     this.emitValid(Boolean(codDate))
   }
 
@@ -199,7 +192,7 @@ export default class CodDate extends Mixins(DateMixin) {
    * Emits an event with the new value of COD Date.
    */
   @Emit('codDate')
-  private emitCODDate (val: string): void { }
+  private emitCodDate (val: string): void { }
 
   /**
    * Emits an event indicating whether or not this component is valid.

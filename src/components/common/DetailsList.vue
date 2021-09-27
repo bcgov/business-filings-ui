@@ -9,7 +9,7 @@
         class="add-detail-btn"
         color="primary"
         v-if="isRoleStaff && !isTask"
-        :disabled ="!!filing.filingId"
+        :disabled ="!filing.filingId"
         @click.stop="showCommentDialog(filing.filingId)"
       >
         <span>Add Detail</span>

@@ -10,7 +10,7 @@
   "DASHBOARD_URL": "https://dev.bcregistry.ca/business/",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",
   "LEGAL_API_URL": "https://legal-api-dev.apps.silver.devops.gov.bc.ca",
-  "LEGAL_API_VERSION": "/api/v1",
+  "LEGAL_API_VERSION_2": "/api/v2",
   "PAY_API_URL": "https://pay-api-dev.apps.silver.devops.gov.bc.ca",
   "PAY_API_VERSION": "/api/v1",
   "SENTRY_ENABLE": "false",

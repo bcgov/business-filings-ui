@@ -66,7 +66,7 @@
                       </v-chip>
                     </template>
                     The updated office addresses will be legally effective on
-                    {{dateToPacificDateTime(coaEffectiveDate)}}.
+                    {{dateToPacificDateTime(getCoaEffectiveDate)}}.
                     No other filings are allowed until then.
                   </v-tooltip>
                 </v-scale-transition>
@@ -159,15 +159,15 @@ export default {
       historyItems: [] as Array<HistoryItemIF>,
       refreshTimer: null as number,
       checkFilingStatusCount: 0,
-      inProcessFiling: null as any,
+      inProcessFiling: null as number,
       coaWarningDialog: false
     }
   },
 
   computed: {
-    ...mapState(['entityIncNo', 'entityStatus']),
+    ...mapState(['entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'coaEffectiveDate']),
+    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate', 'getEntityIncNo']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -212,12 +212,15 @@ export default {
     },
 
     checkToReloadDashboard () {
+      // ensure we're not already running
+      if (this.checkFilingStatusCount > 0) return
+
       // cancel any existing timer so we can start fresh here
       clearTimeout(this.refreshTimer)
 
       let filingId = null
       // NB: use unary plus operator to cast string to number
-      if (this.$route !== undefined) filingId = +this.$route.query.filing_id // if missing, this is NaN (false)
+      if (this.$route !== undefined) filingId = +this.$route.query.filing_id // if missing, this is NaN (falsy)
 
       // only consider refreshing the dashboard if we came from a filing
       if (!filingId) return
@@ -234,7 +237,7 @@ export default {
       }
 
       // reset iteration counter
-      this.checkFilingStatusCount = 0
+      this.checkFilingStatusCount = 10
 
       // check for updated status to reload dashboard
       this.checkFilingStatus(filingId)
@@ -244,30 +247,24 @@ export default {
     // respawns itself approx. every 1 second for up to 10 iterations
     checkFilingStatus (filingId) {
       // stop this cycle after 10 iterations
-      if (++this.checkFilingStatusCount >= 10) {
+      if (--this.checkFilingStatusCount < 0) {
         this.inProcessFiling = null
         return
       }
 
       // get current filing status
-      let url = `businesses/${this.entityIncNo}/filings/${filingId}`
+      let url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
       axios.get(url).then(res => {
         // if the filing status is now COMPLETE, reload the dashboard
         if (res?.data?.filing?.header?.status === FilingStatus.COMPLETED) {
           // emit dashboard reload trigger event
           this.$root.$emit('triggerDashboardReload')
-        } else {
-          // call this function again in 1 second
-          let vue = this
-          this.refreshTimer = setTimeout(() => {
-            vue.checkFilingStatus(filingId)
-          }, 1000)
         }
+        throw new Error('filing not yet completed')
       }).catch(() => {
         // call this function again in 1 second
-        let vue = this
         this.refreshTimer = setTimeout(() => {
-          vue.checkFilingStatus(filingId)
+          this.checkFilingStatus(filingId)
         }, 1000)
       })
     },

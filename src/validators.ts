@@ -40,7 +40,7 @@ export function isValidFormat (date: string, separator: string): boolean {
  * @param date the date to check
  * @param separator the date component separator (eg, / or -)
  */
-export function isValidCODDate (date: string, separator: string): boolean {
+export function isValidCodDate (date: string, separator: string): boolean {
   if (!date) return false
   // special handling because Vuelidate doesn't pass in separator
   separator = (typeof separator === 'string') ? separator : '/'

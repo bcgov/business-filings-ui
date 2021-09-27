@@ -178,7 +178,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
+import { Getter } from 'vuex-class'
 
 // Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -195,18 +195,14 @@ import { DirectorIF } from '@/interfaces'
 @Component({
   components: {
     BaseAddress
-  },
-  computed: {
-    ...mapGetters(['isBComp'])
   }
 })
 export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
-  // Local definition of computed property for static type checking.
-  readonly isBComp!: boolean
-
   // Directors array passed into this component.
   @Prop({ default: [] })
   readonly directors: Array<DirectorIF>
+
+  @Getter isBComp!: boolean
 
   // Local properties
   private directorSummary: Array<DirectorIF> = []

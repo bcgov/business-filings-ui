@@ -130,7 +130,7 @@
                         id="new-director__appointment-date__datepicker"
                         v-model="newDirector.appointmentDate"
                         :min="earliestDateToSet"
-                        :max="currentDate"
+                        :max="getCurrentDate"
                         no-title
                       />
                     </v-menu>
@@ -157,7 +157,7 @@
                         id="new-director__cessation-date__datepicker"
                         v-model="newDirector.cessationDate"
                         :min="earliestDateToSet"
-                        :max="currentDate"
+                        :max="getCurrentDate"
                         no-title
                       />
                     </v-menu>
@@ -331,7 +331,7 @@
                     v-show="activeIndexCustomCease === index"
                     no-title
                     :min="earliestStandaloneCeaseDateToSet(dir)"
-                    :max="currentDate"
+                    :max="getCurrentDate"
                   >
                     <v-btn text color="primary" @click="activeIndexCustomCease = null">Cancel</v-btn>
                     <v-btn text color="primary" @click="ceaseDirector(dir, index)">OK</v-btn>
@@ -426,7 +426,7 @@
                         class="edit-director__appointment-date__datepicker"
                         v-model="dir.appointmentDate"
                         :min="earliestDateToSet"
-                        :max="currentDate"
+                        :max="getCurrentDate"
                         no-title
                       />
                     </v-menu>
@@ -453,7 +453,7 @@
                         class="edit-director__cessation-date__datepicker"
                         v-model="dir.cessationDate"
                         :min="earliestDateToSet"
-                        :max="currentDate"
+                        :max="getCurrentDate"
                         no-title
                       />
                     </v-menu>
@@ -536,7 +536,7 @@
 // Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
-import { mapState } from 'vuex'
+import { Getter, State } from 'vuex-class'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
 
@@ -557,10 +557,6 @@ import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessage
   components: {
     BaseAddress,
     WarningPopover
-  },
-  computed: {
-    // Property definitions for runtime environment.
-    ...mapState(['entityIncNo', 'lastAnnualReportDate', 'entityFoundingDate', 'lastCodFilingDate'])
   }
 })
 export default class Directors extends Mixins(
@@ -581,13 +577,6 @@ export default class Directors extends Mixins(
     mailAddressEdit: ComponentIF[]
   }
 
-  // Local definitions of computed properties for static type checking.
-  // NB: use non-null assertion operator to allow use before assignment
-  readonly entityIncNo!: string
-  readonly lastAnnualReportDate!: string
-  readonly entityFoundingDate!: string
-  readonly lastCodFilingDate!: Date
-
   /** Indicates whether this component should be enabled or not. */
   @Prop({ default: true })
   readonly componentEnabled: boolean
@@ -598,6 +587,11 @@ export default class Directors extends Mixins(
    */
   @Prop({ default: () => [] })
   readonly directors: DirectorIF[]
+
+  @Getter getEntityIncNo!: string
+  @State lastAnnualReportDate!: string
+  @State entityFoundingDate!: string
+  @State lastCodFilingDate!: Date
 
   /** Effective date for fetching and appointing/ceasing directors. */
   private asOfDate: string
@@ -770,7 +764,7 @@ export default class Directors extends Mixins(
    * If the entity has no filing history then the founding date will be used.
    */
   private get earliestDateToSet (): string {
-    const lastCodFilingDate = this.dateToDateString(this.lastCodFilingDate)
+    const lastCodFilingDate = this.dateToYyyyMmDd(this.lastCodFilingDate)
     let date = null
 
     if (lastCodFilingDate || this.lastAnnualReportDate) {
@@ -803,8 +797,8 @@ export default class Directors extends Mixins(
   /** Fetches the list of directors on As Of Date from the Legal API. */
   // FUTURE: this API call should be in the parent component or some mixin/service
   private async fetchDirectors (): Promise<void> {
-    if (this.entityIncNo && this.asOfDate) {
-      const url = `businesses/${this.entityIncNo}/directors?date=${this.asOfDate}`
+    if (this.getEntityIncNo && this.asOfDate) {
+      const url = `businesses/${this.getEntityIncNo}/directors?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         if (response?.data?.directors) {
           const directors = response.data.directors as DirectorIF[]
@@ -1196,7 +1190,7 @@ export default class Directors extends Mixins(
    * @returns Whether the date is not in the future.
    */
   private dateIsNotFuture (thedate: string): boolean {
-    return this.compareDates(thedate, this.currentDate, '<=')
+    return this.compareDates(thedate, this.getCurrentDate, '<=')
   }
 
   /**

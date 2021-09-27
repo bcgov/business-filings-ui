@@ -74,9 +74,6 @@ export default {
   setLastAnnualReportDate ({ commit }, date: string) {
     commit('lastAnnualReportDate', date)
   },
-  setLastFilingDate ({ commit }, date: Date) {
-    commit('lastFilingDate', date)
-  },
   setLastCoaFilingDate ({ commit }, date: Date) {
     commit('lastCoaFilingDate', date)
   },

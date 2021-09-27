@@ -306,12 +306,10 @@
               <v-divider class="my-6" />
               <DocumentsList
                 :filing=filing
-                :loadingDocument=loadingDocument
-                :loadingReceipt=loadingReceipt
+                :loadingOne=loadingOne
                 :loadingAll=loadingAll
-                :downloadingDocIndex=downloadingDocIndex
-                @downloadDocument="downloadDocument($event)"
-                @downloadReceipt="downloadReceipt($event)"
+                :loadingOneIndex=loadingOneIndex
+                @downloadOne="downloadOne(...arguments)"
                 @downloadAll="downloadAll($event)"
               />
             </template>
@@ -350,7 +348,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Components and Dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
@@ -366,9 +364,9 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums, Interfaces and Mixins
-import { DocumentTypes, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF, HistoryItemIF } from '@/interfaces'
-import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { FilingTypes, Routes } from '@/enums'
+import { ActionBindingIF, ApiFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF } from '@/interfaces'
+import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -391,22 +389,15 @@ import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@
   }
 })
 export default class FilingHistoryList extends Mixins(
-  DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin
+  DateMixin, EnumMixin, FilingMixin, LegalApiMixin
 ) {
   @Prop({ default: false })
   readonly disableChanges: boolean
 
-  // enums for template
-  readonly DocumentTypes = DocumentTypes
-  readonly FilingTypes = FilingTypes
-
   @Getter isBComp!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter nrNumber!: string
   @Getter getFilings!: Array<ApiFilingIF>
-  @Getter getEntityName!: string
-
-  @State entityIncNo!: string
+  @Getter getEntityIncNo!: string
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
@@ -418,11 +409,10 @@ export default class FilingHistoryList extends Mixins(
   private loadCorrectionDialog = false
   private panel: number = null // currently expanded panel
   private historyItems: Array<HistoryItemIF> = []
-  private loadingDocument = false
-  private loadingReceipt = false
+  private loadingOne = false
   private loadingAll = false
   private currentFilingId: number = null
-  private downloadingDocIndex = -1
+  private loadingOneIndex = -1
   private isBusy = false
 
   /** The Edit URL string. */
@@ -463,11 +453,11 @@ export default class FilingHistoryList extends Mixins(
     // Also update pending COA data.
     let isCoaPending = false
     let coaEffectiveDate: Date = null
-    const blockerFiling = this.historyItems.find(filing => {
-      if (this.isStatusPaid(filing)) {
-        if (filing.isFutureEffectiveBcompCoaPending) {
+    const blockerFiling = this.historyItems.find(item => {
+      if (this.isStatusPaid(item)) {
+        if (item.isFutureEffectiveBcompCoaPending) {
           isCoaPending = true
-          coaEffectiveDate = filing.effectiveDate
+          coaEffectiveDate = item.effectiveDate
         }
         return true
       }
@@ -501,27 +491,24 @@ export default class FilingHistoryList extends Mixins(
         status: filing.status,
         submittedDate,
         submitter: filing.submitter,
-        // *** TODO: delete before final commit
-        commentsLink: filing.commentsLink.replace('/api/v1/', '/api/v1/businesses/'),
-        documentsLink: filing.documentsLink.replace('/api/v1/', '/api/v1/businesses/'),
-        filingLink: filing.filingLink.replace('/api/v1/', '/api/v1/businesses/'),
+
+        commentsLink: filing.commentsLink,
+        documentsLink: filing.documentsLink,
+        filingLink: filing.filingLink,
+
         comments: null, // null until loaded
         documents: null // null until loaded
       }
 
-      // special handling for paper-only filings
-      if (filing.availableOnPaperOnly) {
-        // clear URL so we don't try to load documents
-        item.documentsLink = null
-      }
-
       // add properties for correction filings
+      // (a correction filing has the id of the filing that it corrects)
       if (filing.correctedFilingId) {
         item.correctedFilingId = filing.correctedFilingId
         item.correctedLink = filing.correctedLink
       }
 
       // add properties for corrected filings
+      // (a corrected filing has the id of the filing that corrects it)
       if (filing.correctionFilingId) {
         item.correctionFilingId = filing.correctionFilingId
         item.correctionLink = filing.correctionLink
@@ -653,7 +640,6 @@ export default class FilingHistoryList extends Mixins(
         })
         break
 
-      // *** TODO: test this
       case FilingTypes.INCORPORATION_APPLICATION:
         try {
           // show spinner since the network calls below can take a few seconds
@@ -668,7 +654,7 @@ export default class FilingHistoryList extends Mixins(
 
           // create draft IA Correction filing
           const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-          const draftCorrection = await this.createFiling(this.entityIncNo, correctionIaFiling, true)
+          const draftCorrection = await this.createFiling(this.getEntityIncNo, correctionIaFiling, true)
           const draftCorrectionId = +draftCorrection?.header?.filingId
 
           if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
@@ -677,7 +663,7 @@ export default class FilingHistoryList extends Mixins(
 
           // redirect to Edit web app to correct this IA
           // NB: no need to clear spinner on redirect
-          const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${draftCorrectionId}`
+          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } catch (error) {
           // clear spinner on error
@@ -713,52 +699,36 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
-  private async downloadDocument (document: any, index: number): Promise<void> {
-    this.loadingDocument = true
-    this.downloadingDocIndex = index
-    // *** TODO: use url from document list?
-    await this.fetchDocument(this.entityIncNo, document).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchDocument() error =', error)
-      this.downloadErrorDialog = true
-    })
-    this.loadingDocument = false
-    this.downloadingDocIndex = -1
-  }
+  private async downloadOne (document: DocumentIF, index: number): Promise<void> {
+    if (document && index >= 0) { // safety check
+      this.loadingOne = true
+      this.loadingOneIndex = index
 
-  private async downloadReceipt (document: any): Promise<void> {
-    this.loadingReceipt = true
-    // *** TODO: use url from document list?
-    await this.fetchReceipt(document).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchReceipt() error =', error)
-      this.downloadErrorDialog = true
-    })
-    this.loadingReceipt = false
+      await this.fetchDocument(document).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('fetchDocument() error =', error)
+        this.downloadErrorDialog = true
+      })
+
+      this.loadingOne = false
+      this.loadingOneIndex = -1
+    }
   }
 
   private async downloadAll (item: HistoryItemIF): Promise<void> {
-    this.loadingAll = true
-    if (item?.documents) {
-      for (let i = 0; i < item.documents.length; i++) {
-        const type = item.documents[i].type
-        if (type === DocumentTypes.REPORT) {
-          await this.fetchDocument(this.entityIncNo, item.documents[i]).catch(error => {
-            // eslint-disable-next-line no-console
-            console.log('fetchDocument() error =', error)
-            this.downloadErrorDialog = true
-          })
-        }
-        if (type === DocumentTypes.RECEIPT) {
-          await this.fetchReceipt(item.documents[i]).catch(error => {
-            // eslint-disable-next-line no-console
-            console.log('fetchReceipt() error =', error)
-            this.downloadErrorDialog = true
-          })
-        }
+    if (item?.documents) { // safety check
+      this.loadingAll = true
+
+      for (const document of item.documents) {
+        await this.fetchDocument(document).catch(error => {
+          // eslint-disable-next-line no-console
+          console.log('fetchDocument() error =', error)
+          this.downloadErrorDialog = true
+        })
       }
+
+      this.loadingAll = false
     }
-    this.loadingAll = false
   }
 
   private showCommentDialog (filingId: number): void {
@@ -769,14 +739,11 @@ export default class FilingHistoryList extends Mixins(
   private async hideCommentDialog (needReload: boolean): Promise<void> {
     this.addCommentDialog = false
     // if needed, reload comments for this filing
-    // NB: no spinner or state change, just do it quietly // *** TODO: remove comment if keeping spinner
     if (needReload) {
       // find the filing in the list
       const item = this.historyItems.find(item => (item.filingId === this.currentFilingId))
 
-      // *** TODO: test "isBusy" spinner when we have commentsLink
-      // *** TODO: alternately, set comments=null so they get reloaded on next panel toggle?
-      if (item && item.commentsLink) {
+      if (item?.commentsLink) { // safety check
         this.isBusy = true
         await this.loadComments(item)
         this.isBusy = false
@@ -786,27 +753,72 @@ export default class FilingHistoryList extends Mixins(
 
   /** Loads the comments for this history item. */
   private async loadComments (item: HistoryItemIF): Promise<void> {
-    // fetch comments from API
-    const comments = await this.fetchComments(item.commentsLink).catch(error => {
+    try {
+      // fetch comments array from API
+      const comments = await this.fetchComments(item.commentsLink)
+      // flatten and sort the comments
+      item.comments = this.flattenAndSortComments(comments)
+    } catch (error) {
+      // set property to null to retry next time
+      item.comments = null
       // eslint-disable-next-line no-console
-      console.log('fetchComments() error =', error)
+      console.log('loadComments() error =', error)
       // FUTURE: enable some error dialog?
-    })
-    // if we failed to fetch comments, set property to null to retry next time
-    item.comments = comments ? this.flattenAndSortComments(comments) : null
+    }
+    // update comments count
     item.commentsCount = item.comments?.length || 0
   }
 
   /** Loads the documents for this history item. */
   private async loadDocuments (item: HistoryItemIF): Promise<void> {
-    // fetch documents from API
-    const documents = await this.fetchDocuments(item.documentsLink).catch(error => {
+    try {
+      // fetch documents object from API
+      const documents = await this.fetchDocuments(item.documentsLink)
+      // load each type of document
+      item.documents = []
+      // iterate over documents properties
+      for (const prop in documents) {
+        if (prop === 'legalFilings' && Array.isArray(documents.legalFilings)) {
+          // iterate over legalFilings array
+          for (const legalFiling of documents.legalFilings as LegalFilingIF[]) {
+            // iterate over legalFiling properties
+            for (const prop in legalFiling) {
+              // this is a legal filing output
+              let title
+              // use display name for primary document's title
+              if (prop === item.name) title = item.displayName
+              else title = this.filingTypeToName(prop as FilingTypes, null, true)
+              const date = this.dateToYyyyMmDd(item.submittedDate)
+              const filename = `${this.getEntityIncNo} ${title} - ${date}.pdf`
+              const link = legalFiling[prop] as string
+              pushDocument(title, filename, link)
+            }
+          }
+        } else {
+          // this is a submission level output
+          const title = this.camelCaseToWords(prop)
+          const date = this.dateToYyyyMmDd(item.submittedDate)
+          const filename = `${this.getEntityIncNo} ${title} - ${date}.pdf`
+          const link = documents[prop] as string
+          pushDocument(title, filename, link)
+        }
+      }
+    } catch (error) {
+      // set property to null to retry next time
+      item.documents = null
       // eslint-disable-next-line no-console
-      console.log('fetchDocuments() error =', error)
+      console.log('loadDocuments() error =', error)
       // FUTURE: enable some error dialog?
-    })
-    // if we failed to fetch documents, set property to null to retry next time
-    item.documents = documents || null
+    }
+
+    function pushDocument (title: string, filename: string, link: string) {
+      if (title && filename && link) {
+        item.documents.push({ title, filename, link } as DocumentIF)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(`invalid document = ${title} | ${filename} | ${link}`)
+      }
+    }
   }
 
   /** Closes current panel or opens new panel. */
@@ -815,16 +827,18 @@ export default class FilingHistoryList extends Mixins(
 
     // check if we're opening a new panel
     if (!isCurrentPanel) {
-      const promises: Array<any> = []
+      const promises: Array<Promise<void>> = []
       // check if we're missing comments or documents
       if (item.commentsLink && !item.comments) promises.push(this.loadComments(item))
       if (item.documentsLink && !item.documents) promises.push(this.loadDocuments(item))
 
       if (promises.length > 0) {
-        // NB: errors are handled in loadComments() and loadDocuments()
         this.isBusy = true
+        // NB: errors are handled in loadComments() and loadDocuments()
         await Promise.all(promises)
-        this.isBusy = false
+        // leave busy spinner displayed another 250ms
+        // to mitigate flashing when the promises are resolved quickly
+        setTimeout(() => { this.isBusy = false }, 250)
       }
     }
 

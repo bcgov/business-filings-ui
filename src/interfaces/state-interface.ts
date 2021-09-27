@@ -10,32 +10,34 @@ export interface StateIF {
   currentDate: string // 'today' as YYYY-MM-DD
 
   // entity info
+  businessEmail: string
+  businessPhone: string
+  businessPhoneExtension: string
+
+  // business info
   entityName: string
   entityType: CorpTypeCd
   entityStatus: EntityStatus
   entityBusinessNo: string
   entityIncNo: string
-  entityFoundingDate: string
-  businessEmail: string
-  businessPhone: string
-  lastAnnualReportDate: string
-  lastFilingDate: Date
+  entityFoundingDate: string // eg, "1970-10-14T00:00:00+00:00"
+  lastAnnualReportDate: string // YYYY-MM-DD
   lastCoaFilingDate: Date
   lastCodFilingDate: Date
-  businessPhoneExtension: string
+
+  // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only
-  nameRequest: any
+  ARFilingYear: number // YYYY
+  arMaxDate: string // YYYY-MM-DD // COOPs only
+  arMinDate: string // YYYY-MM-DD // COOPs only
 
   // other global data
-  ARFilingYear: number // YYYY
-  arMinDate: string // YYYY-MM-DD // COOPs only
-  arMaxDate: string // YYYY-MM-DD // COOPs only
-
   tasks: Array<ApiTaskIF> // "tasks" data from API
   filings: Array<ApiFilingIF> // "filings" data from API
   registeredAddress: OfficeAddressIF
   recordsAddress: OfficeAddressIF
   directors: Array<DirectorIF>
+  nameRequest: any
 
   currentFilingStatus: FilingStatus
   configObject: any

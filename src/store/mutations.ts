@@ -74,9 +74,6 @@ export default {
   lastAnnualReportDate (state: StateIF, date: string) {
     state.lastAnnualReportDate = date
   },
-  lastFilingDate (state: StateIF, date: Date) {
-    state.lastFilingDate = date
-  },
   lastCoaFilingDate (state: StateIF, date: Date) {
     state.lastCoaFilingDate = date
   },

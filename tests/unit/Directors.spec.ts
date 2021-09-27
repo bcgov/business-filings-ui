@@ -994,7 +994,7 @@ describe('Appoint New Director tests', () => {
 
   it('displays error for invalid Middle Initial - trailing spaces', async () => {
     wrapper.find('#new-director__middle-initial').setValue('M  ')
-    await Vue.nextTick()
+    await flushPromises() // needed due to sync:false
 
     expect(vm.newDirector.officer.middleInitial).toBe('M  ')
 

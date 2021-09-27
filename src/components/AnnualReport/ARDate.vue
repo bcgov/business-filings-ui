@@ -12,21 +12,15 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { mapState, mapGetters } from 'vuex'
+import { State, Getter } from 'vuex-class'
 
 // Mixins
 import { DateMixin } from '@/mixins'
 
-@Component({
-  computed: {
-    ...mapState(['nextARDate']),
-    ...mapGetters(['isBComp', 'getCurrentDate'])
-  }
-})
+@Component({})
 export default class ArDate extends Mixins(DateMixin) {
-  readonly nextARDate!: string
-  readonly isBComp!: boolean
-  readonly getCurrentDate!: string
+  @State nextARDate!: string
+  @Getter isBComp!: boolean
 }
 </script>
 

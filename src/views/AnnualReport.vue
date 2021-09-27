@@ -70,7 +70,7 @@
               <!-- Page Title -->
               <header>
                 <h1 id="AR-header">File {{ARFilingYear}} Annual Report
-                  <span class="font-italic" v-if="reportState"> &mdash; {{reportState}}</span>
+                  <span class="font-italic" v-if="getReportState"> &mdash; {{getReportState}}</span>
                 </h1>
                 <p>Select your Annual General Meeting date, then verify or change your Office Addresses
                   and Directors</p>
@@ -86,8 +86,8 @@
                   :newAgmDate="newAgmDate"
                   :newAgmExtension="newAgmExtension"
                   :newNoAgm="newNoAgm"
-                  :allowCOA="allowChange('coa')"
-                  :allowCOD="allowChange('cod')"
+                  :allowCoa="allowChange('coa')"
+                  :allowCod="allowChange('cod')"
                   @agmDate="onAgmDateChange($event)"
                   @agmExtension="onAgmExtensionChange($event)"
                   @noAgm="onNoAgmChange($event)"
@@ -144,7 +144,7 @@
               <!-- Page Title -->
               <header>
                 <h1 id="AR-header-BC">File {{ARFilingYear}} Annual Report
-                  <span style="font-style: italic" v-if="reportState"> &mdash; {{reportState}}</span>
+                  <span style="font-style: italic" v-if="getReportState"> &mdash; {{getReportState}}</span>
                 </h1>
                 <p>Please review all the information before you file and pay</p>
               </header>
@@ -436,11 +436,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityType', 'entityName', 'entityIncNo',
-      'entityFoundingDate', 'directors', 'filingData', 'lastCoaFilingDate', 'lastCodFilingDate']),
+    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityFoundingDate',
+      'directors', 'filingData', 'lastCoaFilingDate', 'lastCodFilingDate']),
 
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'reportState', 'getCurrentYear',
-      'getCurrentDate']),
+    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'getReportState',
+      'getCurrentYear', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getEntityIncNo']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -531,7 +531,7 @@ export default {
 
   mounted (): void {
     // if tombstone data isn't set, go back to dashboard
-    if (!this.entityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
+    if (!this.getEntityIncNo || !this.ARFilingYear || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Entity Inc No, AR Filing Year, or Filing ID!')
       this.$router.push({ name: Routes.DASHBOARD })
@@ -626,7 +626,7 @@ export default {
     ...mapActions(['setFilingData']),
 
     async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+      const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
       await axios.get(url).then(async response => {
         // verify data
         const filing: any = response?.data?.filing
@@ -643,8 +643,8 @@ export default {
 
         if (header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('Invalid filing type')
         if (header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-        if (business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-        if (business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+        if (business.identifier !== this.getEntityIncNo) throw new Error('Invalid business identifier')
+        if (business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // restore Certified By (but not Date)
         this.certifiedBy = header.certifiedBy
@@ -854,7 +854,7 @@ export default {
     async saveFiling (isDraft) {
       this.resetErrors()
 
-      const hasPendingFilings = await this.hasTasks(this.entityIncNo)
+      const hasPendingFilings = await this.hasTasks(this.getEntityIncNo)
       if (hasPendingFilings) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
@@ -910,8 +910,8 @@ export default {
       const business = {
         business: {
           foundingDate: this.entityFoundingDate,
-          identifier: this.entityIncNo,
-          legalName: this.entityName
+          identifier: this.getEntityIncNo,
+          legalName: this.getEntityName
         }
       }
 
@@ -963,7 +963,7 @@ export default {
       if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
         changeOfAddress = {
           changeOfAddress: {
-            legalType: this.entityType,
+            legalType: this.getEntityType,
             offices: {
               registeredOffice: this.updatedAddresses.registeredOffice
             }
@@ -987,12 +987,12 @@ export default {
 
         if (this.filingId > 0) {
           // we have a filing id, so update (put) an existing filing
-          let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+          let url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
           if (isDraft) { url += '?draft=true' }
           response = await axios.put(url, data)
         } else {
           // filing id is 0, so create (post) a new filing
-          let url = `businesses/${this.entityIncNo}/filings`
+          let url = `businesses/${this.getEntityIncNo}/filings`
           if (isDraft) { url += '?draft=true' }
           response = await axios.post(url, data)
         }
@@ -1042,10 +1042,10 @@ export default {
     allowChange (type) {
       let earliestAllowedDate
       if (type === 'coa') {
-        earliestAllowedDate = this.dateToDateString(this.lastCoaFilingDate)
+        earliestAllowedDate = this.dateToYyyyMmDd(this.lastCoaFilingDate)
       }
       if (type === 'cod') {
-        earliestAllowedDate = this.dateToDateString(this.lastCodFilingDate)
+        earliestAllowedDate = this.dateToYyyyMmDd(this.lastCodFilingDate)
       }
       return (!!this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
     },
@@ -1063,7 +1063,8 @@ export default {
         await axios.get(url)
           .then(response => {
             if (response?.data?.tasks) {
-              response.data.tasks.forEach((task) => {
+              // FUTURE: use find() or some() so this doesn't iterate over all tasks
+              response.data.tasks.forEach(task => {
                 if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }

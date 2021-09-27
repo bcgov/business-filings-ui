@@ -37,7 +37,7 @@ describe('COD Date - COOPs', () => {
   })
 
   it('loads variables properly when initial COD Date is set', () => {
-    wrapper.setProps({ initialCODDate: '2019-05-10' })
+    wrapper.setProps({ initialCodDate: '2019-05-10' })
 
     // verify local variables
     expect(vm.$data.date).toBe('2019-05-10')
@@ -125,7 +125,7 @@ describe('COD Date - COOPs', () => {
 
     wrapper.setData({ dateFormatted: '2019/11/11' })
     wrapper.vm.$v.$touch()
-    expect(wrapper.vm.$v.dateFormatted.isValidCODDate).toBe(false)
+    expect(wrapper.vm.$v.dateFormatted.isValidCodDate).toBe(false)
   })
 
   it('invalidates the component when entered month is before Min Date', () => {
@@ -144,7 +144,7 @@ describe('COD Date - COOPs', () => {
 
     wrapper.setData({ dateFormatted: '2018/11/11' })
     wrapper.vm.$v.$touch()
-    expect(wrapper.vm.$v.dateFormatted.isValidCODDate).toBe(false)
+    expect(wrapper.vm.$v.dateFormatted.isValidCodDate).toBe(false)
   })
 })
 

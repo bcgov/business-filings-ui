@@ -24,7 +24,7 @@ xdescribe('Fetch Config', () => {
         BUSINESS_CREATE_URL: 'business create url',
         BUSINESS_EDIT_URL: 'business edit url',
         LEGAL_API_URL: 'legal api url',
-        LEGAL_API_VERSION: 'legal api version',
+        LEGAL_API_VERSION_2: 'legal api version 2',
         AUTH_API_URL: 'auth api url',
         AUTH_API_VERSION: 'auth api version',
         PAY_API_URL: 'pay api url',
@@ -46,7 +46,7 @@ xdescribe('Fetch Config', () => {
     expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
     expect(sessionStorage.getItem('BUSINESS_CREATE_URL')).toBe('business create url')
     expect(sessionStorage.getItem('BUSINESS_EDIT_URL')).toBe('business edit url')
-    expect(axios.defaults.baseURL).toBe('legal api url/legal api version/')
+    expect(axios.defaults.baseURL).toBe('legal api url/legal api version 2/')
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
     expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
     expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version/')

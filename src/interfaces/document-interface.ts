@@ -1,17 +1,6 @@
-import { DocumentTypes } from '@/enums'
-
-/** A document from the API. */
+/** A document in the UI. */
 export interface DocumentIF {
-  filename: string // eg, "CP1234567 - Address Change - 2021-06-04.pdf"
-  filingId?: number // non-receipt only
-  reportType?: string // may be null, "certificate", "noa", etc
-  title: string // eg, "Address Change"
-  type: DocumentTypes // REPORT or RECEIPT
-
-  link: string // *** TODO: get from API
-
-  // receipt only
-  corpName?: string // eg, "CP1234567"
-  filingDateTime?: string // eg, "Jun 9, 2021"
-  paymentToken?: string // eg, "10031"
+  title: string // eg, "Certificate"
+  filename: string // eg, "BC1230082 - Certificate - 2021-02-08.pdf"
+  link: string // eg, "{LEGAL_API_URL}/{API_VERSION}/businesses/BC1230082/filings/111428/documents/Certificate"
 }

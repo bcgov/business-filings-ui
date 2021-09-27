@@ -5,12 +5,12 @@ import axios from '@/axios-auth'
 import MixinTester from './mixin-tester.vue'
 
 describe('Pay API Mixin', () => {
-  let post: any
+  let get: any
   let wrapper: Wrapper<Vue>
   let vm: any
 
   beforeEach(async () => {
-    post = sinon.stub(axios, 'post')
+    get = sinon.stub(axios, 'get')
     wrapper = shallowMount(MixinTester)
     vm = wrapper.vm
     await Vue.nextTick()
@@ -21,23 +21,23 @@ describe('Pay API Mixin', () => {
     wrapper.destroy()
   })
 
-  it('fetches one receipt correctly', async () => {
-    // mock endpoint
-    post.withArgs('payment-requests/12345/receipts')
-      .returns(new Promise((resolve) => resolve({ data: 'PDF data goes here' })))
-
-    // build receipt object
-    const receipt = {
-      paymentToken: '12345',
-      corpName: 'ABC Corp',
-      filingDateTime: '2021-06-15 20:27:00 GMT',
-      filename: 'ABC Corp - Receipt - Jun 15, 2021.pdf'
+  it('fetches pay error object correctly', async () => {
+    const paymentErrorObj = {
+      detail: 'Detail',
+      title: 'Title',
+      type: 'Type'
     }
 
+    // mock endpoint
+    get.withArgs('codes/errors/123')
+      .returns(new Promise((resolve) => resolve({
+        data: { ...paymentErrorObj }
+      })))
+
     // call method
-    const response = await vm.fetchReceipt(receipt)
+    const response = await vm.getPayErrorObj('123')
 
     // verify data
-    expect(response).toEqual({ data: 'PDF data goes here' })
+    expect(response).toEqual({ ...paymentErrorObj })
   })
 })

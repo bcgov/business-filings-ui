@@ -25,8 +25,7 @@ describe('Legal API Mixin', () => {
     wrapper.destroy()
   })
 
-  // *** TODO: revert before final commit
-  xit('fetches entity info correctly', async () => {
+  it('fetches entity info correctly', async () => {
     const ENTITY_INFO = {
       business: {
         identifier: 'CP1234567',
@@ -63,8 +62,7 @@ describe('Legal API Mixin', () => {
     expect(tasks).toEqual({ data: TASKS })
   })
 
-  // *** TODO: revert before final commit
-  xit('fetches filings correctly', async () => {
+  it('fetches filings correctly', async () => {
     const FILINGS = [
       { name: 'filing1' },
       { name: 'filing2' },
@@ -82,13 +80,40 @@ describe('Legal API Mixin', () => {
     expect(filings).toEqual({ data: FILINGS })
   })
 
-  // *** TODO: revert before final commit
-  xit('fetches addresses correctly', async () => {
-    const ADDRESSES = [
-      { name: 'address1' },
-      { name: 'address2' },
-      { name: 'address3' }
-    ]
+  it('fetches addresses correctly', async () => {
+    const ADDRESSES = {
+      // *** TODO: revert before final commit
+      // registeredOffice: {
+      //   deliveryAddress: 'Registered Delivery Address',
+      //   mailingAddress: 'Registered Mailing Address'
+      // },
+      // recordsOffice: {
+      //   deliveryAddress: 'Records Delivery Address',
+      //   mailingAddress: 'Records Mailing Address'
+      // }
+      registeredOffice: {
+        deliveryAddress: {
+          addressCity: 'Victoria',
+          addressCountry: 'CA',
+          addressRegion: 'BC',
+          addressType: 'delivery',
+          deliveryInstructions: 'go to 1000X',
+          postalCode: '1000',
+          streetAddress: '1000 Douglas St',
+          streetAddressAdditional: 'Suite 1000X'
+        },
+        mailingAddress: {
+          addressCity: 'Victoria',
+          addressCountry: 'CA',
+          addressRegion: 'BC',
+          addressType: 'mailing',
+          deliveryInstructions: 'go to 2000X',
+          postalCode: '2000',
+          streetAddress: '2000 Douglas St',
+          streetAddressAdditional: 'Suite 2000X'
+        }
+      }
+    }
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/addresses')
@@ -101,8 +126,7 @@ describe('Legal API Mixin', () => {
     expect(addresses).toEqual({ data: ADDRESSES })
   })
 
-  // *** TODO: revert before final commit
-  xit('fetches directors correctly', async () => {
+  it('fetches directors correctly', async () => {
     const DIRECTORS = [
       { name: 'director1' },
       { name: 'director2' },
@@ -120,8 +144,7 @@ describe('Legal API Mixin', () => {
     expect(directors).toEqual({ data: DIRECTORS })
   })
 
-  // *** TODO: revert before final commit
-  xit('fetches incorp app correctly', async () => {
+  it('fetches incorp app correctly', async () => {
     const IA = {
       foo: 'bar'
     }
@@ -220,41 +243,45 @@ describe('Legal API Mixin', () => {
     expect(comments).toEqual(COMMENTS)
   })
 
-  // *** TODO: revert before final commit
-  xit('fetches documents correctly', async () => {
-    const DOCUMENTS = [
-      { type: 'REPORT', title: 'document1', filename: 'document1.pdf', link: null },
-      { type: 'REPORT', title: 'document2', filename: 'document2.pdf', link: null },
-      { type: 'RECEIPT', title: 'receipt', filename: 'receipt.pdf', link: null }
-    ]
+  it('fetches documents correctly', async () => {
+    const URL = 'businesses/CP0000840/filings/112758/documents'
+
+    const DOCUMENTS = {
+      legalFilings: [
+        { specialResolution: 'link_to_special_resolution' }
+      ],
+      primary: 'link_to_special_resolution',
+      receipt: 'link_to_receipt'
+    }
 
     // mock endpoint
-    get.withArgs('DOCUMENTS_URL')
-      .returns(new Promise((resolve) => resolve({ data: DOCUMENTS })))
+    get.withArgs(URL)
+      .returns(new Promise((resolve) => resolve({ data: { documents: DOCUMENTS } })))
 
     // call method
-    const comments = await vm.fetchDocuments('DOCUMENTS_URL')
+    const comments = await vm.fetchDocuments(URL)
 
     // verify data
     expect(comments).toEqual(DOCUMENTS)
   })
 
   it('fetches one document correctly', async () => {
+    const URL = 'businesses/CP1234567/filings/1234/documents/sample'
     const PDF = 'PDF data goes here'
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/filings/1234?type=REPORT')
+    get.withArgs(URL)
       .returns(new Promise((resolve) => resolve({ data: PDF })))
 
-    // build receipt meta object
-    const meta = {
-      filingId: 1234,
-      filename: 'ABC Corp - Jun 15, 2021.pdf',
-      reportType: 'REPORT'
+    // build document object
+    const document = {
+      title: 'Sample PDF',
+      filename: 'Sample PDF - Jun 15, 2021.pdf',
+      link: URL
     }
 
     // call method
-    const response = await vm.fetchDocument('CP1234567', meta)
+    const response = await vm.fetchDocument(document)
 
     // verify data
     expect(response).toEqual({ data: PDF })

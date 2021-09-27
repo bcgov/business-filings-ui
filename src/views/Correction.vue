@@ -259,9 +259,9 @@ export default {
   },
 
   computed: {
-    ...mapState(['entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
+    ...mapState(['entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isRoleStaff', 'getCurrentDate']),
+    ...mapGetters(['isRoleStaff', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getEntityIncNo']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -271,7 +271,7 @@ export default {
     /** Returns title of original filing. */
     title (): string {
       if (this.origFiling?.header?.name) {
-        return this.filingTypeToName(this.origFiling.header.name, this.agmYear)
+        return this.filingTypeToName(this.origFiling.header.name as FilingTypes, this.agmYear)
       }
       return ''
     },
@@ -362,7 +362,7 @@ export default {
     this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
 
     // if required data isn't set, go back to dashboard
-    if (!this.entityIncNo || isNaN(this.correctedFilingId)) {
+    if (!this.getEntityIncNo || isNaN(this.correctedFilingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   },
@@ -430,7 +430,7 @@ export default {
 
     /** Fetches the draft correction filing. */
     async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+      const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
       await axios.get(url).then(res => {
         const filing: any = res?.data?.filing
 
@@ -441,8 +441,8 @@ export default {
         if (!filing.correction) throw new Error('Missing correction')
         if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
         if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-        if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-        if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+        if (filing.business.identifier !== this.getEntityIncNo) throw new Error('Invalid business identifier')
+        if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // load Certified By (but not Date)
         this.certifiedBy = filing.header.certifiedBy
@@ -484,7 +484,7 @@ export default {
 
     /** Fetches the original filing to correct. */
     async fetchOrigFiling (): Promise<void> {
-      const url = `businesses/${this.entityIncNo}/filings/${this.correctedFilingId}`
+      const url = `businesses/${this.getEntityIncNo}/filings/${this.correctedFilingId}`
       await axios.get(url).then(res => {
         this.origFiling = res?.data?.filing
 
@@ -493,8 +493,8 @@ export default {
         if (!this.origFiling.header) throw new Error('Missing header')
         if (!this.origFiling.business) throw new Error('Missing business')
         if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
-        if (this.origFiling.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-        if (this.origFiling.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+        if (this.origFiling.business.identifier !== this.getEntityIncNo) throw new Error('Invalid business identifier')
+        if (this.origFiling.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // FUTURE:
         // use original Certified By name
@@ -567,7 +567,7 @@ export default {
     async saveFiling (isDraft): Promise<any> {
       this.resetErrors()
 
-      const hasPendingFilings: boolean = await this.hasTasks(this.entityIncNo)
+      const hasPendingFilings: boolean = await this.hasTasks(this.getEntityIncNo)
       if (hasPendingFilings) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
@@ -609,9 +609,9 @@ export default {
       const business: any = {
         business: {
           foundingDate: this.entityFoundingDate,
-          identifier: this.entityIncNo,
-          legalName: this.entityName,
-          legalType: this.entityType
+          identifier: this.getEntityIncNo,
+          legalName: this.getEntityName,
+          legalType: this.getEntityType
         }
       }
 
@@ -644,12 +644,12 @@ export default {
 
         if (this.filingId > 0) {
           // we have a filing id, so update (put) an existing filing
-          let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+          let url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
           if (isDraft) { url += '?draft=true' }
           response = await axios.put(url, data)
         } else {
           // filing id is 0, so create (post) a new filing
-          let url = `businesses/${this.entityIncNo}/filings`
+          let url = `businesses/${this.getEntityIncNo}/filings`
           if (isDraft) { url += '?draft=true' }
           response = await axios.post(url, data)
         }
@@ -705,7 +705,8 @@ export default {
         await axios.get(url)
           .then(response => {
             if (response?.data?.tasks) {
-              response.data.tasks.forEach((task) => {
+              // FUTURE: use find() or some() so this doesn't iterate over all tasks
+              response.data.tasks.forEach(task => {
                 if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }

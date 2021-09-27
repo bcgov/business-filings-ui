@@ -97,8 +97,8 @@ describe('Annual Report - Part 1 - UI', () => {
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.state.entityIncNo).toEqual('CP0001191')
-    expect(vm.$store.state.entityType).toEqual('CP')
+    expect(vm.$store.getters.getEntityIncNo).toEqual('CP0001191')
+    expect(vm.$store.getters.getEntityType).toEqual('CP')
     expect(vm.$store.state.ARFilingYear).toEqual(2017)
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
 
@@ -459,8 +459,8 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.state.entityIncNo).toEqual('BC0007291')
-    expect(vm.$store.state.entityType).toEqual('BEN')
+    expect(vm.$store.getters.getEntityIncNo).toEqual('BC0007291')
+    expect(vm.$store.getters.getEntityType).toEqual('BEN')
     expect(vm.$store.state.ARFilingYear).toEqual(2018)
     expect(vm.$store.state.nextARDate).toEqual('2018-09-26')
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')

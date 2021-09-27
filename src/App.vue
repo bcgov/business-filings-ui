@@ -93,7 +93,7 @@ import { configJson } from '@/resources'
 import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, LegalApiMixin, NameRequestMixin }
   from '@/mixins'
 import { ApiFilingIF, ApiTaskIF, TaskTodoIF } from '@/interfaces'
-import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
@@ -221,7 +221,7 @@ export default {
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
       'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
       'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate', 'setNameRequest',
-      'setLastFilingDate', 'setLastCoaFilingDate', 'setLastCodFilingDate', 'setConfigObject']),
+      'setLastCoaFilingDate', 'setLastCodFilingDate', 'setConfigObject']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -263,7 +263,7 @@ export default {
         // eslint-disable-next-line no-console
         console.info(`It is currently ${this.dateToPacificDateTime(serverDate)}.`)
       }
-      this.setCurrentDate(this.dateToDateString(serverDate))
+      this.setCurrentDate(this.dateToYyyyMmDd(serverDate))
 
       try {
         // get Keycloak roles
@@ -347,7 +347,6 @@ export default {
     async fetchIncorpAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      // *** TODO: verify IA data coming from API
       const iaData = await this.fetchIncorpApp(this.tempRegNumber)
       this.storeIncorpApp(iaData)
 
@@ -453,83 +452,86 @@ export default {
 
       this.setEntityName(business.legalName)
       this.setEntityType(business.legalType)
-      if (business.goodStanding === true) {
-        this.setEntityStatus(EntityStatus.GOOD_STANDING)
-      } else {
-        this.setEntityStatus(EntityStatus.NOT_IN_COMPLIANCE)
-      }
+      this.setEntityStatus(business.goodStanding ? EntityStatus.GOOD_STANDING : EntityStatus.NOT_IN_COMPLIANCE)
       this.setEntityBusinessNo(business.taxId)
       this.setEntityIncNo(business.identifier)
-      this.setEntityFoundingDate(business.foundingDate) // datetime
+      this.setEntityFoundingDate(business.foundingDate) // date + time
       this.setLastAnnualReportDate(business.lastAnnualReport)
       // *** TODO: uncomment when API provides this data
-      // *** TODO: verify date format
-      // this.setLastFilingDate(this.apiToDate(business.lastFilingDate))
-      // this.setLastCoaFilingDate(this.apiToDate(business.lastCoaFilingDate))
-      // this.setLastCodFilingDate(this.apiToDate(business.lastCodFilingDate))
+      // *** TODO: convert date to Date (or receive as YYYY-MM-DD)
+      // this.setLastCoaFilingDate(business.lastCoaFilingDate ? this.apiToDate(business.lastCoaFilingDate) : null)
+      // this.setLastCodFilingDate(business.lastCodFilingDate ? this.apiToDate(business.lastCodFilingDate) : null)
 
       // store config object based on current entity type
       this.storeConfigObject(business.legalType)
     },
 
-    /** Verifies and stores an IA as a Todo List item or Filing History List item. */
+    /** Verifies and stores an IA's data. */
     storeIncorpApp (data: any): void {
       const filing = data?.filing
-
-      if (!filing?.business || !filing?.header) {
-        throw new Error('Invalid incorporation application filing')
+      if (!filing || !filing.business || !filing.header || !filing.incorporationApplication) {
+        throw new Error('Invalid IA filing')
       }
 
-      // verify that this is the correct entity type
-      if (!this.supportedEntityTypes.includes(filing.business.legalType)) {
-        throw new Error('Invalid business legal type')
+      const identifier = filing.business.identifier as string
+      if (!identifier) {
+        throw new Error('Invalid IA filing - business identifier')
       }
 
-      // verify that this is the correct filing type
-      if (filing.header.name !== FilingTypes.INCORPORATION_APPLICATION) {
-        throw new Error('Invalid incorporation application name')
+      const name = filing.header.name as FilingTypes
+      if (name !== FilingTypes.INCORPORATION_APPLICATION) {
+        throw new Error('Invalid IA filing - filing name')
+      }
+
+      const status = filing.header.status as FilingStatus
+      if (!status) {
+        throw new Error('Invalid IA filing - filing status')
+      }
+
+      const nameRequest = filing.incorporationApplication.nameRequest
+      if (!nameRequest) {
+        throw new Error('Invalid IA filing - Name Request object')
+      }
+
+      // verify that this is a supported entity type
+      const legalType = nameRequest.legalType as CorpTypeCd
+      if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
+        throw new Error('Invalid IA filing - legal type')
       }
 
       // store business info
-      this.setEntityIncNo(filing.business.identifier)
-      this.setEntityType(filing.business.legalType)
+      this.setEntityIncNo(identifier)
+      this.setEntityType(legalType)
 
       // store NR Number if present
-      const nr = filing.incorporationApplication?.nameRequest
-      // workaround for old or new property name
-      this.localNrNumber = nr?.nrNum || nr?.nrNumber || null
+      // (look for old or new property name)
+      this.localNrNumber = nameRequest?.nrNum || nameRequest?.nrNumber || null
 
       // store Legal Name if present
-      this.setEntityName(nr?.legalName || null)
+      this.setEntityName(nameRequest?.legalName || null)
 
-      switch (filing.header.status) {
-        case 'DRAFT':
-        case 'PENDING':
+      switch (status as FilingStatus) {
+        case FilingStatus.DRAFT:
+        case FilingStatus.PENDING:
           // this is a draft IA
           this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
           this.storeDraftIa(filing)
           break
 
-        case 'COMPLETED':
-        case 'PAID':
-          // safety check
-          if (!filing.incorporationApplication) {
-            throw new Error('Invalid incorporation application object')
-          }
-
+        case FilingStatus.COMPLETED:
+        case FilingStatus.PAID:
           // this is a filed IA
           this.setEntityStatus(EntityStatus.FILED_INCORP_APP)
           this.storeFiledIa(filing)
           break
 
         default:
-          throw new Error('Invalid incorporation application status')
+          throw new Error('Invalid IA filing - filing status')
       }
     },
 
-    /** Stores filing as a task in the Todo List. */
+    /** Stores draft IA as a task in the Todo List. */
     storeDraftIa (filing: TaskTodoIF): void {
-      // *** TODO: verify object type for "filing"
       const taskItem: ApiTaskIF = {
         enabled: true,
         order: 1,
@@ -538,46 +540,45 @@ export default {
       this.setTasks([taskItem])
     },
 
-    storeFiledIa (filing: any): void {
+    /** Stores filed IA as a filing in the Filing History List. */
+    storeFiledIa (filing: TaskTodoIF): void {
+      // NB: these were already validated in storeIncorpApp()
+      const business = filing.business
+      const header = filing.header
       const incorporationApplication = filing.incorporationApplication
 
-      // set temporary addresses
-      this.storeAddresses({ data: incorporationApplication.offices })
+      // set addresses
+      this.storeAddresses({ data: incorporationApplication.offices || [] })
 
-      // set temporary directors
-      const directors = incorporationApplication.parties.filter(party => party.roles.filter(role =>
-        role.roleType === 'Director').length !== 0)
-      this.storeDirectors({ data: { directors: [...directors] } })
-
-      // build display name
-      const type: string = this.getCorpTypeDescription(this.getEntityType)
-      const name: string = this.filingTypeToName(FilingTypes.INCORPORATION_APPLICATION)
-      const desc: string = this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType)
-      const displayName = `${type} ${name} - ${desc}`
-
-      const effectiveDate: string = this.apiToDate(filing.header.effectiveDate).toUTCString()
-      const submittedDate: string = this.apiToDate(filing.header.date).toUTCString()
+      // set directors
+      // (ie, parties that have a role of Director)
+      const directors = incorporationApplication.parties?.filter(party =>
+        party.roles.filter(role =>
+          role.roleType === Roles.DIRECTOR
+        ).length !== 0
+      )
+      this.storeDirectors({ data: { directors: directors || [] } })
 
       // add this as a filing (for Filing History List)
       const filingItem: ApiFilingIF = {
-        availableOnPaperOnly: filing.header.availableOnPaperOnly,
-        businessIdentifier: filing.business.identifier,
-        commentsCount: 0, // *** TODO: get from API
-        commentsLink: null, // *** TODO: get from API
-        data: {
-          applicationDate: this.dateToPacificDate(effectiveDate),
-          legalFilings: [FilingTypes.INCORPORATION_APPLICATION]
-        },
-        displayName,
-        documentsLink: null, // *** TODO: get from API
-        effectiveDate,
-        filingId: filing.header.filingId,
-        filingLink: null, // *** TODO: get from API
-        isFutureEffective: filing.header.isFutureEffective,
+        availableOnPaperOnly: header.availableOnPaperOnly,
+        businessIdentifier: business.identifier,
+        commentsCount: 0, // header.commentsCount, // *** TODO: get from API
+        commentsLink: null, // header.commentsLink, // *** TODO: get from API
+        displayName: this.filingTypeToName(FilingTypes.INCORPORATION_APPLICATION),
+        documentsLink: null, // header.documentsLink, // *** TODO: get from API
+        effectiveDate: this.apiToUtcString(header.effectiveDate),
+        filingId: header.filingId,
+        filingLink: null, // header.filingLink, // *** TODO: get from API
+        isFutureEffective: header.isFutureEffective,
         name: FilingTypes.INCORPORATION_APPLICATION,
-        status: filing.header.status,
-        submittedDate,
-        submitter: filing.header.submitter
+        status: header.status,
+        submittedDate: this.apiToUtcString(header.date),
+        submitter: header.submitter,
+        data: {
+          applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
+          legalFilings: [FilingTypes.INCORPORATION_APPLICATION]
+        }
       }
       this.setFilings([filingItem])
     },
@@ -589,12 +590,11 @@ export default {
         throw new Error('Invalid NR data')
       }
 
-      // FUTURE: uncomment this when Request Type Code is fixed (ie, not 'CR')
-      // // verify that NR type matches entity type
-      // if (nr.requestTypeCd !== this.getEntityType) {
-      //   this.nameRequestInvalidDialog = true
-      //   throw new Error('Invalid NR request type')
-      // }
+      // verify that NR type matches entity type from IA
+      if (nr.legalType !== this.getEntityType) {
+        this.nameRequestInvalidDialog = true
+        throw new Error('Invalid NR request type')
+      }
 
       // if IA is not yet completed, check if NR is consumable
       // (once IA is completed, NR state will be CONSUMED)
@@ -629,31 +629,11 @@ export default {
       if (filings) {
         this.setFilings(filings)
         // TODO: *** remove when API provides this data
-        this.setLastFilingDate(this.getLastFilingDate(filings))
         this.setLastCoaFilingDate(this.getLastCoaFilingDate(filings))
         this.setLastCodFilingDate(this.getLastCodFilingDate(filings))
       } else {
         throw new Error('Invalid filings')
       }
-    },
-
-    // *** TODO: remove when obsolete (see storeBusinessInfo())
-    /**
-     * Returns date of last filing (of any type) from list of past filings,
-     * or null if none found.
-     */
-    getLastFilingDate (filings: any): Date {
-      let lastFilingDate: Date = null
-
-      for (let i = 0; i < filings.length; i++) {
-        let filing = filings[i]
-        const filingDate = new Date(filing.effectiveDate)
-        if (lastFilingDate === null || filingDate > lastFilingDate) {
-          lastFilingDate = filingDate
-        }
-      }
-
-      return lastFilingDate
     },
 
     // *** TODO: remove when obsolete (see storeBusinessInfo())

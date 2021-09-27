@@ -33,7 +33,7 @@ export default {
   },
 
   /** The COA effective date (valid if a COA is pending). */
-  coaEffectiveDate (state: StateIF): Date {
+  getCoaEffectiveDate (state: StateIF): Date {
     return state.coaEffectiveDate
   },
 
@@ -77,12 +77,22 @@ export default {
     return state.authRoles.includes('view')
   },
 
-  /** Returns whether business is in good standing. */
+  /** Is True if business is in good standing. */
   isInGoodStanding (state: StateIF): boolean {
     return (state.entityStatus === EntityStatus.GOOD_STANDING)
   },
 
-  nrNumber (state: StateIF): string {
+  /** Is True if business is pending dissolution. */
+  isPendingDissolution (state: StateIF): boolean {
+    return (state.entityStatus === EntityStatus.PENDING_DISSOLUTION)
+  },
+
+  /** Is True if business is not in compliance. */
+  isNotInCompliance (state: StateIF): boolean {
+    return (state.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
+  },
+
+  getNrNumber (state: StateIF): string {
     // workaround for old or new property name
     return (state.nameRequest?.nrNum || state.nameRequest?.nrNumber)
   },
@@ -91,7 +101,7 @@ export default {
     return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
   },
 
-  reportState (state: StateIF): string {
+  getReportState (state: StateIF): string {
     switch (state.currentFilingStatus) {
       case FilingStatus.NEW: return ''
       case FilingStatus.DRAFT: return 'Draft'
@@ -113,8 +123,8 @@ export default {
     )
   },
 
-  /** The Entity Number. */
-  entityIncNo (state: StateIF): string {
+  /** The Entity Incorporation Number (aka business identifier). */
+  getEntityIncNo (state: StateIF): string {
     return state.entityIncNo
   },
 

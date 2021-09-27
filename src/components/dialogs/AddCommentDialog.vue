@@ -36,20 +36,17 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
 
 @Component({
-  computed: {
-    ...mapState(['entityIncNo'])
-  },
   components: {
     DetailComment
   }
 })
 export default class AddCommentDialog extends Vue {
-  readonly entityIncNo!: number
+  @Getter getEntityIncNo!: number
 
   /** Prop to display the dialog. */
   @Prop() readonly dialog: boolean
@@ -110,7 +107,7 @@ export default class AddCommentDialog extends Vue {
       }
     }
 
-    const url = `businesses/${this.entityIncNo}/filings/${this.filingId}/comments`
+    const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}/comments`
     let success = false
     await axios.post(url, data).then(res => {
       success = true
