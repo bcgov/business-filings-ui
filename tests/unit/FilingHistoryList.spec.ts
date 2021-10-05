@@ -1860,7 +1860,7 @@ describe('Filing History List - redirections', () => {
           'lastName': 'Swanson',
           'middleName': 'P',
           'email': 'joe@email.com',
-          'orgName': '',
+          'organizationName': '',
           'partyType': 'person'
         },
         'mailingAddress': {
@@ -1898,8 +1898,8 @@ describe('Filing History List - redirections', () => {
           'firstName': '',
           'lastName': '',
           'middleName': '',
-          'orgName': 'Xyz Inc.',
-          'partyType': 'org'
+          'organizationName': 'Xyz Inc.',
+          'partyType': 'organization'
         },
         'mailingAddress': {
           'streetAddress': 'mailing_address - address line one',
