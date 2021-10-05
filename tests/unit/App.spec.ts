@@ -122,8 +122,8 @@ const BCOMP_PARTIES = [
       id: 0,
       lastName: 'Swanson',
       middleName: '',
-      orgName: '',
-      partyType: 'Person'
+      organizationName: '',
+      partyType: 'person'
     },
     roles: [
       {
@@ -151,8 +151,8 @@ const BCOMP_PARTIES = [
       id: 1,
       lastName: '',
       middleName: '',
-      orgName: 'Test Inc',
-      partyType: 'Org'
+      organizationName: 'Test Inc',
+      partyType: 'organization'
     },
     roles: [
       {
