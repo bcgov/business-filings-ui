@@ -9,9 +9,13 @@ import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 @Component({})
 export default class FilingMixin extends Vue {
   @Action setFilingData!: (x: any) => void
+
   @State filingData!: Array<FilingDataIF>
+  @State entityName!: string
+
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
+  @Getter getEntityIdentifier!: string
 
   /**
    * Flattens and sorts an array of comments.
@@ -107,5 +111,27 @@ export default class FilingMixin extends Vue {
     }
 
     return correctionFiling
+  }
+
+  /**
+   * Builds an Dissolution filing body to intialize a draft.
+   * Used when creating a draft Dissolution filing.
+   * @returns the Dissolution filing body
+   */
+  buildDissolutionFiling (): any {
+    const dissolutionFiling: any = {
+      header: {
+        name: FilingTypes.DISSOLUTION,
+        date: this.getCurrentDate
+      },
+      business: {
+        legalType: this.getEntityType,
+        identifier: this.getEntityIdentifier,
+        legalName: this.entityName
+      },
+      dissolution: {}
+    }
+
+    return dissolutionFiling
   }
 }

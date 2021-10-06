@@ -30,6 +30,19 @@
       attach="#app"
     />
 
+    <ConfirmDissolution
+      :dialog="confirmDissolutionDialog"
+      @close="onCloseWarning()"
+      @proceed="dissolveCompany()"
+      attach="#app"
+    />
+
+    <NotInGoodStandingDialog
+      :dialog="notInGoodStandingDialog"
+      @close="onCloseNotInGoodStanding()"
+      attach="#app"
+    />
+
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
       <div class="loading-container" v-show="showLoadingContainer">
@@ -55,7 +68,10 @@
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
-        <EntityInfo />
+        <EntityInfo
+          @confirmDissolution="confirmDissolutionDialog = true"
+          @notInGoodStanding="notInGoodStandingDialog = true"
+        />
         <router-view />
       </main>
     </div>
@@ -81,35 +97,40 @@ import EntityInfo from '@/components/EntityInfo.vue'
 // Dialogs
 import {
   BusinessAuthErrorDialog,
+  ConfirmDissolution,
   DashboardUnavailableDialog,
   NameRequestAuthErrorDialog,
-  NameRequestInvalidDialog
+  NameRequestInvalidDialog,
+  NotInGoodStandingDialog
 } from '@/components/dialogs'
 
 // Configuration objects
 import { configJson } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
-import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, LegalApiMixin, NameRequestMixin }
+import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin }
   from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, TaskTodoIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, BusinessIF, TaskTodoIF } from '@/interfaces'
 import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BusinessIF } from './interfaces/business-interface'
 
 export default {
   name: 'App',
 
-  mixins: [AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, LegalApiMixin, NameRequestMixin],
+  mixins: [
+    AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin
+  ],
 
   data () {
     return {
+      confirmDissolutionDialog: false,
       dataLoaded: false,
       dashboardUnavailableDialog: false,
       businessAuthErrorDialog: false,
       nameRequestAuthErrorDialog: false,
       nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
+      notInGoodStandingDialog: false,
       localNrNumber: null as string,
       corpTypeCd: null as CorpTypeCd,
 
@@ -131,10 +152,12 @@ export default {
   },
 
   components: {
+    ConfirmDissolution,
     DashboardUnavailableDialog,
     BusinessAuthErrorDialog,
     NameRequestAuthErrorDialog,
     NameRequestInvalidDialog,
+    NotInGoodStandingDialog,
     PaySystemAlert,
     SbcHeader,
     SbcFooter,
@@ -152,6 +175,11 @@ export default {
     /** The Business ID string. */
     businessId (): string {
       return sessionStorage.getItem('BUSINESS_ID')
+    },
+
+    /** The Business Create URL string. */
+    createUiUrl (): string {
+      return sessionStorage.getItem('CREATE_URL')
     },
 
     /** The Incorporation Application's Temporary Registration Number string. */
@@ -668,9 +696,33 @@ export default {
       this.setConfigObject(configObject)
     },
 
+    /** Redirects the user to the Create UI to start a company dissolution filing. */
+    async dissolveCompany (): Promise<void> {
+      const dissolutionFiling = this.buildDissolutionFiling()
+      const draftDissolution = await this.createFiling(this.entityIncNo, dissolutionFiling, true)
+      const draftDissolutionId = +draftDissolution?.header?.filingId
+
+      if (!draftDissolution || isNaN(draftDissolutionId) || !draftDissolutionId) {
+        throw new Error('Invalid API response')
+      }
+
+      const url = `${this.createUiUrl}define-dissolution?id=${this.entityIncNo}`
+      window.location.assign(url) // assume URL is always reachable
+    },
+
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
       window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
+    },
+
+    /** Handles close event from confirm dissolution dialog. */
+    onCloseWarning (): void {
+      this.confirmDissolutionDialog = false
+    },
+
+    /** Handles close event from confirm dissolution dialog. */
+    onCloseNotInGoodStanding (): void {
+      this.notInGoodStandingDialog = false
     },
 
     /** Handles Retry click event from dialogs. */

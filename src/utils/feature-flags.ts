@@ -8,7 +8,8 @@ declare const window: any
  * NB: Uses "business-edit" project (per LD client id in config).
  */
 const defaultFlagSet: LDFlagSet = {
-  'download-summary-enabled': false
+  'download-summary-enabled': false,
+  'supported-dissolution-entities': []
 }
 
 /**

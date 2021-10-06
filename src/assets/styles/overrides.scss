@@ -81,3 +81,35 @@
   color: $app-red !important;
   caret-color: $app-red !important;
 }
+
+// Tooltips
+.v-tooltip__content {
+  width: 270px !important;
+  background-color: RGB(73,80,87) !important;
+  color: white !important;
+  border-radius: 4px;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  padding: 20px !important;
+  letter-spacing: 0;
+}
+
+.v-tooltip__content:after {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  right: 100% !important;
+  margin-top: -10px !important;
+  border-top: 10px solid transparent !important;
+  border-bottom: 10px solid transparent !important;
+  border-right: 8px solid RGBA(73,80,87,0.95) !important;
+}
+
+.top-tooltip:after {
+  top: 100% !important;
+  left: 45% !important;
+  margin-top: 0 !important;
+  border-right: 10px solid transparent !important;
+  border-left: 10px solid transparent !important;
+  border-top: 8px solid RGBA(73,80,87,0.95) !important;
+}

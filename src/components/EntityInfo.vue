@@ -55,7 +55,7 @@
 
               <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
                 <template v-slot:activator="{ on }">
-                  <span class="pending-alert" v-on="on">
+                  <span class="pending-alert pr-2" v-on="on">
                     <v-icon color="orange darken-2">mdi-alert</v-icon>
                   </span>
                 </template>
@@ -66,6 +66,30 @@
                   You cannot view or change company information while the company is not in compliance.
                 </template>
               </v-tooltip>
+            </span>
+
+            <!-- Dissolve Company -->
+            <span v-if="isDissolutionEnabled">
+              <v-btn
+                small text color="primary"
+                id="dissolution-button"
+                :disabled="hasBlocker"
+                @click="prompDissolve()"
+                @mouseenter="showHoverStyle = true"
+                @mouseleave="showHoverStyle = false"
+              >
+                <v-icon medium>mdi-file-document-edit-outline</v-icon>
+                <span>Dissolve this {{ entityDescription }}</span>
+                <v-tooltip top content-class="top-tooltip" nudge-right="7">
+                  <template v-slot:activator="{ on }">
+                    <span class="pl-1" v-on="on">
+                      <v-icon size="1rem">mdi-information-outline</v-icon>
+                    </span>
+                  </template>
+                  Dissolving the Company will make this Company historical and it will be struck from the corporate
+                  registry.
+                </v-tooltip>
+              </v-btn>
             </span>
 
             <!-- Download Summary -->
@@ -133,7 +157,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
@@ -179,6 +203,11 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   /** True if Download Summary button should be rendered. */
   private get showDownloadSummaryBtn (): boolean {
     return getFeatureFlag('download-summary-enabled')
+  }
+
+  /** True if the current entity type is enabled for Dissolutions. */
+  private get isDissolutionEnabled (): boolean {
+    return getFeatureFlag('supported-dissolution-entities').includes(this.getEntityType)
   }
 
   /** The Business ID string. */
@@ -230,6 +259,15 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     window.location.assign(url) // assume URL is always reachable
   }
 
+  /** Prompts the user to confirm a company dissolution filing. */
+  private async prompDissolve (): Promise<void> {
+    if (!this.isInGoodStanding) {
+      this.emitNotInGoodStanding()
+      return
+    }
+    this.emitConfirmDissolution()
+  }
+
   /** Redirects the user to the Auth UI to update their business profile. */
   private editBusinessProfile (): void {
     window.location.assign(this.businessProfileUrl) // assume URL is always reachable
@@ -263,6 +301,14 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       ...(breadcrumbs || [])
     ]
   }
+
+  // Pass confirm dissolution event to parent.
+  @Emit('confirmDissolution')
+  private emitConfirmDissolution (): void {}
+
+  // Pass not in good standing event to parent.
+  @Emit('notInGoodStanding')
+  private emitNotInGoodStanding (): void { }
 }
 </script>
 
@@ -363,5 +409,11 @@ dd:not(:hover) > button {
 .pending-alert .v-icon {
   font-size: 18px; // same as other v-icons
   padding-left: 0.875rem;
+}
+
+// Disable btn and tooltip overrides
+::v-deep .v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon {
+  opacity: .4 !important;
+  color: $app-blue !important;
 }
 </style>

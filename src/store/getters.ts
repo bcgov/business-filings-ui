@@ -37,6 +37,16 @@ export default {
     return state.coaEffectiveDate
   },
 
+  /** The entity identifier. */
+  getEntityIdentifier (state: StateIF): string {
+    return state.entityBusinessNo
+  },
+
+  /** The entity name. */
+  getEntityName (state: StateIF): string {
+    return state.entityName
+  },
+
   /** Is True if entity is a Benefit Company. */
   isBComp (state: StateIF): boolean {
     return (state.entityType === CorpTypeCd.BENEFIT_COMPANY)
@@ -126,11 +136,6 @@ export default {
   /** The Entity Incorporation Number (aka business identifier). */
   getEntityIncNo (state: StateIF): string {
     return state.entityIncNo
-  },
-
-  /** The Entity Name. */
-  getEntityName (state: StateIF): string {
-    return state.entityName
   },
 
   /** The Entity Type. */

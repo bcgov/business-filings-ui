@@ -763,6 +763,9 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         case FilingTypes.ALTERATION:
           await this.loadAlteration(task)
           break
+        case FilingTypes.DISSOLUTION:
+          await this.loadDissolution(task)
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in filing header =', header)
@@ -771,6 +774,41 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     } else {
       // eslint-disable-next-line no-console
       console.log('ERROR - invalid header in filing =', filing)
+    }
+  }
+
+  private async loadDissolution (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const dissolution = filing.dissolution
+    const business = filing.business
+    const header = filing.header
+
+    if (dissolution && business && header) {
+      if (!this.isInGoodStanding && this.isStatusDraft(header)) {
+        task.enabled = false
+      }
+
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType as CorpTypeCd)
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+
+      const item: TodoItemIF = {
+        name: FilingTypes.DISSOLUTION,
+        id: header.filingId,
+        legalType: corpTypeDescription,
+        title: 'Voluntary Dissolution',
+        draftTitle: this.filingTypeToName(FilingTypes.DISSOLUTION),
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        goodStanding: this.isInGoodStanding,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        comments: this.flattenAndSortComments(header.comments)
+      }
+      this.todoItems.push(item)
     }
   }
 
@@ -1070,6 +1108,12 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         // redirect to Edit web app to alter this company
         const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.id}`
         window.location.assign(alterationUrl) // assume URL is always reachable
+        break
+
+      case FilingTypes.DISSOLUTION:
+        // redirect to Create web app to dissolve this company
+        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getEntityIncNo}`
+        window.location.assign(dissolutionUrl) // assume URL is always reachable
         break
 
       default:
