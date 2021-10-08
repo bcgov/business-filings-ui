@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Action, State, Getter } from 'vuex-class'
-import { CommentIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces'
+import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
 import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 
 /**
@@ -16,6 +16,7 @@ export default class FilingMixin extends Vue {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
   @Getter getEntityIdentifier!: string
+  @Getter getRegisteredOfficeAddress!: OfficeAddressIF
 
   /**
    * Flattens and sorts an array of comments.
@@ -118,8 +119,8 @@ export default class FilingMixin extends Vue {
    * Used when creating a draft Dissolution filing.
    * @returns the Dissolution filing body
    */
-  buildDissolutionFiling (): any {
-    const dissolutionFiling: any = {
+  buildDissolutionFiling (): DissolutionFilingIF {
+    const dissolutionFiling: DissolutionFilingIF = {
       header: {
         name: FilingTypes.DISSOLUTION,
         date: this.getCurrentDate
@@ -129,7 +130,9 @@ export default class FilingMixin extends Vue {
         identifier: this.getEntityIdentifier,
         legalName: this.entityName
       },
-      dissolution: {}
+      dissolution: {
+        custodialOffice: this.getRegisteredOfficeAddress
+      }
     }
 
     return dissolutionFiling

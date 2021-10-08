@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, StateIF, ApiTaskIF } from '@/interfaces'
+import { ApiFilingIF, StateIF, ApiTaskIF, OfficeAddressIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -146,5 +146,10 @@ export default {
   /** The Entity Status. */
   getEntityStatus (state: StateIF): EntityStatus {
     return state.entityStatus
+  },
+
+  /** The entity registered office address. */
+  getRegisteredOfficeAddress (state: StateIF): OfficeAddressIF {
+    return state.registeredAddress
   }
 }
