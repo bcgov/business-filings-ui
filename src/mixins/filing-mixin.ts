@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Action, State, Getter } from 'vuex-class'
 import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
+import { CorpTypeCd, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -131,7 +131,8 @@ export default class FilingMixin extends Vue {
         legalName: this.entityName
       },
       dissolution: {
-        custodialOffice: this.getRegisteredOfficeAddress
+        custodialOffice: this.getRegisteredOfficeAddress,
+        dissolutionType: DissolutionTypes.VOLUNTARY // To be applied dynamically when we have dissolution variations.
       }
     }
 
