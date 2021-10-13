@@ -38,7 +38,7 @@ export default {
   },
 
   /** The entity identifier. */
-  getEntityIdentifier (state: StateIF): string {
+  getEntityBusinessNo (state: StateIF): string {
     return state.entityBusinessNo
   },
 
