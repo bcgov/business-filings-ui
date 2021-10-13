@@ -41,7 +41,7 @@ export default {
   entityIncNo (state: StateIF, entityIncNo: string) {
     state.entityIncNo = entityIncNo
   },
-  entityFoundingDate (state: StateIF, entityFoundingDate: string) {
+  entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
     state.entityFoundingDate = entityFoundingDate
   },
   businessEmail (state: StateIF, businessEmail: string) {
@@ -74,11 +74,11 @@ export default {
   lastAnnualReportDate (state: StateIF, date: string) {
     state.lastAnnualReportDate = date
   },
-  lastCoaFilingDate (state: StateIF, date: Date) {
-    state.lastCoaFilingDate = date
+  lastAddressChangeDate (state: StateIF, date: string) {
+    state.lastAddressChangeDate = date
   },
-  lastCodFilingDate (state: StateIF, date: Date) {
-    state.lastCodFilingDate = date
+  lastDirectorChangeDate (state: StateIF, date: string) {
+    state.lastDirectorChangeDate = date
   },
   configObject (state: StateIF, configObject: any) {
     state.configObject = configObject

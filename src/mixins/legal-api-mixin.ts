@@ -46,34 +46,7 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
    */
   async fetchAddresses (businessId: string): Promise<any> {
     const url = `businesses/${businessId}/addresses`
-    // *** TODO: revert before final commit
-    // return axios.get(url)
-    return axios.get(url).catch(() => ({
-      data: {
-        registeredOffice: {
-          deliveryAddress: {
-            addressCity: 'Victoria',
-            addressCountry: 'CA',
-            addressRegion: 'BC',
-            addressType: 'delivery',
-            deliveryInstructions: 'go to 1000X',
-            postalCode: '1000',
-            streetAddress: '1000 Douglas St',
-            streetAddressAdditional: 'Suite 1000X'
-          },
-          mailingAddress: {
-            addressCity: 'Victoria',
-            addressCountry: 'CA',
-            addressRegion: 'BC',
-            addressType: 'mailing',
-            deliveryInstructions: 'go to 2000X',
-            postalCode: '2000',
-            streetAddress: '2000 Douglas St',
-            streetAddressAdditional: 'Suite 2000X'
-          }
-        }
-      }
-    }))
+    return axios.get(url)
   }
 
   /**

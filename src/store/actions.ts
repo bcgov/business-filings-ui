@@ -41,7 +41,7 @@ export default {
   setEntityIncNo ({ commit }, entityIncNo: string) {
     commit('entityIncNo', entityIncNo)
   },
-  setEntityFoundingDate ({ commit }, entityFoundingDate: string) {
+  setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {
     commit('entityFoundingDate', entityFoundingDate)
   },
   setBusinessEmail ({ commit }, businessEmail: string) {
@@ -74,11 +74,11 @@ export default {
   setLastAnnualReportDate ({ commit }, date: string) {
     commit('lastAnnualReportDate', date)
   },
-  setLastCoaFilingDate ({ commit }, date: Date) {
-    commit('lastCoaFilingDate', date)
+  setLastAddressChangeDate ({ commit }, date: string) {
+    commit('lastAddressChangeDate', date)
   },
-  setLastCodFilingDate ({ commit }, date: Date) {
-    commit('lastCodFilingDate', date)
+  setLastDirectorChangeDate ({ commit }, date: string) {
+    commit('lastDirectorChangeDate', date)
   },
   setConfigObject ({ commit }, configObject: any) {
     commit('configObject', configObject)

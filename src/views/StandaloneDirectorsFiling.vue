@@ -409,7 +409,7 @@ export default {
   computed: {
     ...mapState(['entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isBComp', 'isRoleStaff', 'getCurrentDate', 'getEntityName', 'getEntityIncNo']),
+    ...mapGetters(['isBComp', 'isRoleStaff', 'getCurrentDate', 'getEntityName', 'getEntityIncNo', 'getEntityType']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -747,9 +747,10 @@ export default {
 
       const business = {
         business: {
-          foundingDate: this.entityFoundingDate,
+          foundingDate: this.dateToApi(this.entityFoundingDate),
           identifier: this.getEntityIncNo,
-          legalName: this.getEntityName
+          legalName: this.getEntityName,
+          legalType: this.getEntityType
         }
       }
 

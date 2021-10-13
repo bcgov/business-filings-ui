@@ -24,7 +24,7 @@ describe('COD Date - COOPs', () => {
     store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T12:00:00')
     store.state.entityType = 'CP'
 
     wrapper = mount(CodDate, { store, vuetify })
@@ -59,7 +59,7 @@ describe('COD Date - COOPs', () => {
     expect(vm.minDate).toBe('2018-03-01')
 
     // set Last COD Filing Date and verify new Min Date
-    store.state.lastCodFilingDate = new Date('2019-03-01 12:00:00 GMT')
+    store.state.lastDirectorChangeDate = '2019-03-01'
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
@@ -67,7 +67,7 @@ describe('COD Date - COOPs', () => {
   })
 
   it('sets Min Date to entity founding date if no filings are present', () => {
-    store.state.lastCodFilingDate = null
+    store.state.lastDirectorChangeDate = null
     expect(vm.minDate).toBe('2018-03-01')
   })
 
@@ -157,7 +157,7 @@ describe('COD Date - BCOMPs', () => {
     store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T12:00:00')
     store.state.entityType = 'BEN'
 
     wrapper = mount(CodDate, { store, vuetify })
@@ -171,7 +171,7 @@ describe('COD Date - BCOMPs', () => {
 
   it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {
     // set Last COD Filing Date and verify new Min Date
-    store.state.lastCodFilingDate = new Date('2019-03-01 12:00:00 GMT')
+    store.state.lastDirectorChangeDate = '2019-03-01'
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
@@ -179,7 +179,7 @@ describe('COD Date - BCOMPs', () => {
   })
 
   it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
-    store.state.lastCodFilingDate = null
+    store.state.lastDirectorChangeDate = null
     expect(vm.minDate).toBe('2018-03-01')
   })
 })

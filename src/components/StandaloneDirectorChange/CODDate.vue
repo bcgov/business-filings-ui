@@ -65,8 +65,8 @@ export default class CodDate extends Mixins(DateMixin) {
   readonly initialCodDate: string
 
   @State lastAnnualReportDate!: string
-  @State entityFoundingDate!: string
-  @State lastCodFilingDate!: Date
+  @State entityFoundingDate!: Date
+  @State lastDirectorChangeDate!: string
   @Getter isBComp!: boolean
 
   // Local properties.
@@ -99,7 +99,7 @@ export default class CodDate extends Mixins(DateMixin) {
    * @returns The minimum date that can be entered.
    */
   private get minDate (): string {
-    const lastCodFilingDate = this.dateToYyyyMmDd(this.lastCodFilingDate)
+    const entityFoundingDate = this.dateToYyyyMmDd(this.entityFoundingDate)
     /**
      * For BComps, use the last COD filing in filing history.
      * For Coops, use the latest of the following dates:
@@ -108,11 +108,11 @@ export default class CodDate extends Mixins(DateMixin) {
      * If the entity has no filing history then the founding date will be used.
      */
     if (this.isBComp) {
-      return lastCodFilingDate || this.entityFoundingDate.split('T')[0]
-    } else if (lastCodFilingDate || this.lastAnnualReportDate) {
-      return this.latestDate(lastCodFilingDate, this.lastAnnualReportDate)
+      return this.lastDirectorChangeDate || entityFoundingDate
+    } else if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
+      return this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
     } else {
-      return this.entityFoundingDate.split('T')[0]
+      return entityFoundingDate
     }
   }
 

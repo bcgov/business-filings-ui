@@ -437,7 +437,7 @@ export default {
 
   computed: {
     ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityFoundingDate',
-      'directors', 'filingData', 'lastCoaFilingDate', 'lastCodFilingDate']),
+      'directors', 'filingData', 'lastAddressChangeDate', 'lastDirectorChangeDate']),
 
     ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'getReportState',
       'getCurrentYear', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getEntityIncNo']),
@@ -909,9 +909,10 @@ export default {
 
       const business = {
         business: {
-          foundingDate: this.entityFoundingDate,
+          foundingDate: this.dateToApi(this.entityFoundingDate),
           identifier: this.getEntityIncNo,
-          legalName: this.getEntityName
+          legalName: this.getEntityName,
+          legalType: this.getEntityType
         }
       }
 
@@ -1039,18 +1040,18 @@ export default {
       this.saveWarnings = []
     },
 
-    allowChange (type) {
+    allowChange (type): boolean {
       let earliestAllowedDate
       if (type === 'coa') {
-        earliestAllowedDate = this.dateToYyyyMmDd(this.lastCoaFilingDate)
+        earliestAllowedDate = this.lastAddressChangeDate
       }
       if (type === 'cod') {
-        earliestAllowedDate = this.dateToYyyyMmDd(this.lastCodFilingDate)
+        earliestAllowedDate = this.lastDirectorChangeDate
       }
       return (!!this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
     },
 
-    hasAction (director, action) {
+    hasAction (director, action): boolean {
       return (director.actions.indexOf(action) >= 0)
     },
 

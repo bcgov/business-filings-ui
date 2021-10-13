@@ -330,9 +330,8 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -403,9 +402,8 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -480,9 +478,8 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -555,9 +552,8 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'BC0007291',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - BC0001191'
             },
             header: {
@@ -636,9 +632,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -691,9 +686,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             header: {
@@ -726,9 +720,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             header: {
@@ -916,9 +909,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             'header': {
@@ -975,9 +967,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             header: {
@@ -1014,9 +1005,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             header: {
@@ -1194,9 +1184,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
               'mailingAddress': sampleMailingAddress
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1334,9 +1323,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             'header': {
@@ -1668,9 +1656,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1704,9 +1691,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
               'mailingAddress': sampleMailingAddress
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1742,9 +1728,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
               'mailingAddress': sampleMailingAddress
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1909,9 +1894,8 @@ describe('Standalone Office Address Filing - payment required error', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {

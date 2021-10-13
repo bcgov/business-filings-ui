@@ -17,8 +17,8 @@ export const state: StateIF = {
   entityIncNo: null,
   entityFoundingDate: null,
   lastAnnualReportDate: null,
-  lastCoaFilingDate: null,
-  lastCodFilingDate: null,
+  lastAddressChangeDate: null,
+  lastDirectorChangeDate: null,
 
   nextARDate: null,
   ARFilingYear: null,

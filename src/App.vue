@@ -95,6 +95,7 @@ import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, LegalAp
 import { ApiFilingIF, ApiTaskIF, TaskTodoIF } from '@/interfaces'
 import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { BusinessIF } from './interfaces/business-interface'
 
 export default {
   name: 'App',
@@ -221,7 +222,7 @@ export default {
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
       'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
       'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate', 'setNameRequest',
-      'setLastCoaFilingDate', 'setLastCodFilingDate', 'setConfigObject']),
+      'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -433,7 +434,7 @@ export default {
 
     /** Stores business info from Legal API. */
     storeBusinessInfo (response: any): void {
-      const business = response?.data?.business
+      const business = response?.data?.business as BusinessIF
 
       if (!business) {
         throw new Error('Invalid business info')
@@ -455,12 +456,10 @@ export default {
       this.setEntityStatus(business.goodStanding ? EntityStatus.GOOD_STANDING : EntityStatus.NOT_IN_COMPLIANCE)
       this.setEntityBusinessNo(business.taxId)
       this.setEntityIncNo(business.identifier)
-      this.setEntityFoundingDate(business.foundingDate) // date + time
-      this.setLastAnnualReportDate(business.lastAnnualReport)
-      // *** TODO: uncomment when API provides this data
-      // *** TODO: convert date to Date (or receive as YYYY-MM-DD)
-      // this.setLastCoaFilingDate(business.lastCoaFilingDate ? this.apiToDate(business.lastCoaFilingDate) : null)
-      // this.setLastCodFilingDate(business.lastCodFilingDate ? this.apiToDate(business.lastCodFilingDate) : null)
+      this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
+      this.setLastAnnualReportDate(business.lastAnnualReportDate)
+      this.setLastAddressChangeDate(business.lastAddressChangeDate)
+      this.setLastDirectorChangeDate(business.lastDirectorChangeDate)
 
       // store config object based on current entity type
       this.storeConfigObject(business.legalType)
@@ -563,13 +562,13 @@ export default {
       const filingItem: ApiFilingIF = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: business.identifier,
-        commentsCount: 0, // header.commentsCount, // *** TODO: get from API
-        commentsLink: null, // header.commentsLink, // *** TODO: get from API
+        commentsCount: header.commentsCount,
+        commentsLink: header.commentsLink,
         displayName: this.filingTypeToName(FilingTypes.INCORPORATION_APPLICATION),
-        documentsLink: null, // header.documentsLink, // *** TODO: get from API
+        documentsLink: header.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
-        filingLink: null, // header.filingLink, // *** TODO: get from API
+        filingLink: header.filingLink,
         isFutureEffective: header.isFutureEffective,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: header.status,
@@ -628,54 +627,9 @@ export default {
       const filings = response?.data?.filings as ApiFilingIF[]
       if (filings) {
         this.setFilings(filings)
-        // TODO: *** remove when API provides this data
-        this.setLastCoaFilingDate(this.getLastCoaFilingDate(filings))
-        this.setLastCodFilingDate(this.getLastCodFilingDate(filings))
       } else {
         throw new Error('Invalid filings')
       }
-    },
-
-    // *** TODO: remove when obsolete (see storeBusinessInfo())
-    /**
-     * Returns date of last Change of Address filing from list of past filings,
-     * or null if none found.
-     */
-    getLastCoaFilingDate (filings: any[]): Date {
-      let lastCoaDate: Date = null
-
-      for (let i = 0; i < filings.length; i++) {
-        let filing = filings[i]
-        const filingDate = new Date(filing.effectiveDate)
-        if (this.isTypeChangeOfAddress(filing)) {
-          if (lastCoaDate === null || filingDate > lastCoaDate) {
-            lastCoaDate = filingDate
-          }
-        }
-      }
-
-      return lastCoaDate
-    },
-
-    // *** TODO: remove when obsolete (see storeBusinessInfo())
-    /**
-     * Returns date of last Change of Directors filing from list of past filings,
-     * or null if none found.
-     */
-    getLastCodFilingDate (filings: any[]): Date {
-      let lastCodDate: Date = null
-
-      for (let i = 0; i < filings.length; i++) {
-        let filing = filings[i]
-        const filingDate = new Date(filing.effectiveDate)
-        if (this.isTypeChangeOfDirectors(filing)) {
-          if (lastCodDate === null || filingDate > lastCodDate) {
-            lastCodDate = filingDate
-          }
-        }
-      }
-
-      return lastCodDate
     },
 
     storeAddresses (response: any): void {

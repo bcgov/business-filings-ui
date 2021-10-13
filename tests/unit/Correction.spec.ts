@@ -60,7 +60,7 @@ describe('Correction - UI', () => {
     store.state.entityType = 'CP'
     store.state.entityName = 'My Test Entity'
     store.state.entityIncNo = 'CP1234567'
-    store.state.entityFoundingDate = '1971-05-12T00:00:00-00:00'
+    store.state.entityFoundingDate = new Date('1971-05-12T00:00:00-00:00')
     store.state.filingData = []
     store.state.keycloakRoles = ['staff'] // corrections currently apply to staff only
   })

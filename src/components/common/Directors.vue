@@ -590,8 +590,8 @@ export default class Directors extends Mixins(
 
   @Getter getEntityIncNo!: string
   @State lastAnnualReportDate!: string
-  @State entityFoundingDate!: string
-  @State lastCodFilingDate!: Date
+  @State entityFoundingDate!: Date
+  @State lastDirectorChangeDate!: string
 
   /** Effective date for fetching and appointing/ceasing directors. */
   private asOfDate: string
@@ -764,13 +764,12 @@ export default class Directors extends Mixins(
    * If the entity has no filing history then the founding date will be used.
    */
   private get earliestDateToSet (): string {
-    const lastCodFilingDate = this.dateToYyyyMmDd(this.lastCodFilingDate)
-    let date = null
+    let date: string = null
 
-    if (lastCodFilingDate || this.lastAnnualReportDate) {
-      date = this.latestDate(lastCodFilingDate, this.lastAnnualReportDate)
+    if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
+      date = this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
     } else {
-      date = this.entityFoundingDate.split('T')[0]
+      date = this.dateToYyyyMmDd(this.entityFoundingDate)
     }
 
     // when earliest date is calculated, inform parent component

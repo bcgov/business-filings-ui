@@ -77,7 +77,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     store.state.entityIncNo = 'CP0001191'
     store.state.currentDate = '2019-07-15'
     // set Last Filing Date and verify new Min Date
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
   })
 
   it('renders the filing sub-components properly', () => {
@@ -347,7 +347,6 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
             business: {
               foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -435,7 +434,6 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
             business: {
               foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -527,7 +525,6 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
             business: {
               foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -612,7 +609,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
-    store.state.entityFoundingDate = '2000-01-01'
+    store.state.entityFoundingDate = new Date('2000-01-01')
 
     const get = sinon.stub(axios, 'get')
 
@@ -628,7 +625,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -680,7 +676,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             header: {
@@ -711,7 +706,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             header: {
@@ -968,7 +962,6 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1079,7 +1072,6 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1389,7 +1381,6 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1446,7 +1437,6 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1485,7 +1475,6 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
             'business': {
               'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1622,7 +1611,6 @@ describe('Standalone Directors Filing - payment required error', () => {
             business: {
               foundingDate: '2007-04-08',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {

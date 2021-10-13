@@ -82,36 +82,13 @@ describe('Legal API Mixin', () => {
 
   it('fetches addresses correctly', async () => {
     const ADDRESSES = {
-      // *** TODO: revert before final commit
-      // registeredOffice: {
-      //   deliveryAddress: 'Registered Delivery Address',
-      //   mailingAddress: 'Registered Mailing Address'
-      // },
-      // recordsOffice: {
-      //   deliveryAddress: 'Records Delivery Address',
-      //   mailingAddress: 'Records Mailing Address'
-      // }
       registeredOffice: {
-        deliveryAddress: {
-          addressCity: 'Victoria',
-          addressCountry: 'CA',
-          addressRegion: 'BC',
-          addressType: 'delivery',
-          deliveryInstructions: 'go to 1000X',
-          postalCode: '1000',
-          streetAddress: '1000 Douglas St',
-          streetAddressAdditional: 'Suite 1000X'
-        },
-        mailingAddress: {
-          addressCity: 'Victoria',
-          addressCountry: 'CA',
-          addressRegion: 'BC',
-          addressType: 'mailing',
-          deliveryInstructions: 'go to 2000X',
-          postalCode: '2000',
-          streetAddress: '2000 Douglas St',
-          streetAddressAdditional: 'Suite 2000X'
-        }
+        deliveryAddress: 'Registered Delivery Address',
+        mailingAddress: 'Registered Mailing Address'
+      },
+      recordsOffice: {
+        deliveryAddress: 'Records Delivery Address',
+        mailingAddress: 'Records Mailing Address'
       }
     }
 

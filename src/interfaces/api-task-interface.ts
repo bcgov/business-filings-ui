@@ -43,10 +43,14 @@ export interface ApiHeaderIF {
   availableOnPaperOnly?: boolean // non-tasks only
   certifiedBy: string // FUTURE: is this obsolete?
   comments: any[]
+  commentsCount: number
+  commentsLink: string
   date: string // submitted date
+  documentsLink: string
   effectiveDate: string // FUTURE: is this obsolete?
   email?: string // FUTURE: is this obsolete?
   filingId: number
+  filingLink: string
   inColinOnly?: boolean // FUTURE: is this obsolete?
   isCorrected: boolean
   isCorrectionPending: boolean

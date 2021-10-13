@@ -610,9 +610,10 @@ export default {
 
       const business = {
         business: {
-          foundingDate: this.entityFoundingDate,
+          foundingDate: this.dateToApi(this.entityFoundingDate),
           identifier: this.getEntityIncNo,
-          legalName: this.getEntityName
+          legalName: this.getEntityName,
+          legalType: this.getEntityType
         }
       }
 

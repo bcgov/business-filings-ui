@@ -20,10 +20,10 @@ export interface StateIF {
   entityStatus: EntityStatus
   entityBusinessNo: string
   entityIncNo: string
-  entityFoundingDate: string // eg, "1970-10-14T00:00:00+00:00"
+  entityFoundingDate: Date
   lastAnnualReportDate: string // YYYY-MM-DD
-  lastCoaFilingDate: Date
-  lastCodFilingDate: Date
+  lastAddressChangeDate: string // YYYY-MM-DD
+  lastDirectorChangeDate: string // YYYY-MM-DD
 
   // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only

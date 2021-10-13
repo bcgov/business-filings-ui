@@ -165,7 +165,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables address component when AGM Date < Last COA Date', () => {
-    store.state.lastCoaFilingDate = new Date('2019-05-06 12:00:00 GMT')
+    store.state.lastAddressChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -186,7 +186,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('has no effect on address component when Last COA Date is null', () => {
-    store.state.lastCoaFilingDate = null
+    store.state.lastAddressChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -207,7 +207,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables directors component when AGM Date < Last COD Date', () => {
-    store.state.lastCodFilingDate = new Date('2019-05-06 12:00:00 GMT')
+    store.state.lastDirectorChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -228,7 +228,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables directors component when Last COD Date is null', () => {
-    store.state.lastCodFilingDate = null
+    store.state.lastDirectorChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -639,9 +639,8 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -718,9 +717,8 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -801,9 +799,8 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -898,9 +895,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -931,9 +927,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -966,9 +961,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -1182,9 +1176,8 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
                   nextARDate: '2018-09-20'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'BC0007291',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - BC0007291'
                 },
                 header: {
@@ -1306,9 +1299,8 @@ describe('Annual Report - Part 4 - Saving', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -1891,9 +1883,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -1928,9 +1919,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -2195,9 +2185,8 @@ describe('Annual Report - payment required error', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {

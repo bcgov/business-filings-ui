@@ -4,8 +4,8 @@ export enum FilingStatus {
   CORRECTED = 'CORRECTED',
   DELETED = 'DELETED',
   DRAFT = 'DRAFT',
-  EPOCH = 'EPOCH', // *** TODO: remove if obsolete
-  ERROR = 'ERROR', // *** TODO: remove if obsolete
+  EPOCH = 'EPOCH', // legacy, not used by UI
+  ERROR = 'ERROR',
   NEW = 'NEW', // used for Todo List items only (ie, not yet a filing)
   PAID = 'PAID',
   PENDING = 'PENDING',

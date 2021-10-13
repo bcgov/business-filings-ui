@@ -518,7 +518,7 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 // Mixins, Enums and Interfaces
 import { DateMixin, EnumMixin, FilingMixin, PayApiMixin } from '@/mixins'
 import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiTaskIF, ConfirmDialogType, TaskTodoIF, TodoItemIF } from '@/interfaces'
+import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -708,7 +708,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   /** Loads a NEW Annual Report todo. */
   private loadAnnualReportTodo (task: ApiTaskIF): void {
     const todo = task.task.todo
-    const business = todo.business
+    const business = todo.business as BusinessIF
     const header = todo.header
 
     if (business && header) {
@@ -729,7 +729,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.nextArDate(business.nextAnnualReport), // BCOMP only
+        nextArDate: this.nextArDate(business.nextAnnualReportDate), // BCOMP only
         arDueDate: this.formatDateString(header.arMaxDate) // BCOMP only
       }
       this.todoItems.push(item)

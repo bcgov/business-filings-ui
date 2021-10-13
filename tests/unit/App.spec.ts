@@ -280,7 +280,6 @@ describe('App as a COOP', () => {
             goodStanding: true,
             taxId: '123456789',
             identifier: 'CP0001191',
-            lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
             foundingDate: '2000-07-13T00:00:00+00:00',
             legalType: 'CP'
           }
@@ -491,7 +490,8 @@ describe('App as a COOP', () => {
     expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
     expect(vm.$store.getters.getEntityIncNo).toBe('CP0001191')
-    expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
+    const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
+    expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
@@ -508,8 +508,7 @@ describe('App as a COOP', () => {
     expect(vm.$store.state.filings[2].name).toBe('changeOfAddress')
   })
 
-  // *** TODO: enable before final commit
-  xit('fetches Addresses properly', () => {
+  it('fetches Addresses properly', () => {
     expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
     expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
@@ -578,7 +577,6 @@ describe('App as a BCOMP', () => {
             goodStanding: true,
             taxId: '123456789',
             identifier: 'BC0007291',
-            lastLedgerTimestamp: '2019-08-14T22:27:12+00:00',
             foundingDate: '2000-07-13T00:00:00+00:00',
             legalType: 'BEN'
           }
@@ -744,7 +742,8 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
     expect(vm.$store.state.entityBusinessNo).toBe('123456789')
     expect(vm.$store.getters.getEntityIncNo).toBe('BC0007291')
-    expect(vm.$store.state.entityFoundingDate).toBe('2000-07-13T00:00:00+00:00')
+    const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
+    expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
@@ -761,8 +760,7 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.state.filings[2].name).toBe('changeOfAddress')
   })
 
-  // *** TODO: enable before final commit
-  xit('fetches Addresses properly', () => {
+  it('fetches Addresses properly', () => {
     expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
     expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
@@ -1293,7 +1291,11 @@ describe('App as a PAID (pending) Incorporation Application', () => {
               name: 'incorporationApplication',
               paymentToken: 987,
               status: 'PAID',
-              submitter: 'Submitter'
+              submitter: 'Submitter',
+              commentsCount: 0,
+              commentsLink: 'http://comments',
+              documentsLink: 'http://documents',
+              filingLink: 'http://filing'
             },
             incorporationApplication: {
               nameRequest: {
@@ -1349,17 +1351,16 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     expect(vm.$store.state.directors.length).toEqual(1)
 
     // verify loaded filing
-    // *** TODO: update according to API before final commit
     expect(vm.$store.state.filings.length).toBe(1)
     expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
     expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
     expect(vm.$store.state.filings[0].commentsCount).toBe(0)
-    expect(vm.$store.state.filings[0].commentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].commentsLink).toBe('http://comments')
     expect(vm.$store.state.filings[0].displayName).toBe('Incorporation Application')
-    expect(vm.$store.state.filings[0].documentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].documentsLink).toBe('http://documents')
     expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
     expect(vm.$store.state.filings[0].filingId).toBe(789)
-    expect(vm.$store.state.filings[0].filingLink).toBeNull()
+    expect(vm.$store.state.filings[0].filingLink).toBe('http://filing')
     expect(vm.$store.state.filings[0].isFutureEffective).toBe(true)
     expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
     expect(vm.$store.state.filings[0].status).toBe('PAID')
@@ -1440,7 +1441,11 @@ describe('App as a COMPLETED Incorporation Application', () => {
               name: 'incorporationApplication',
               paymentToken: 987,
               status: 'COMPLETED',
-              submitter: 'Submitter'
+              submitter: 'Submitter',
+              commentsCount: 0,
+              commentsLink: 'http://comments',
+              documentsLink: 'http://documents',
+              filingLink: 'http://filing'
             },
             incorporationApplication: {
               nameRequest: {
@@ -1496,17 +1501,16 @@ describe('App as a COMPLETED Incorporation Application', () => {
     expect(vm.$store.state.directors.length).toEqual(1)
 
     // verify loaded filing
-    // *** TODO: update according to API before final commit
     expect(vm.$store.state.filings.length).toBe(1)
     expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
     expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
     expect(vm.$store.state.filings[0].commentsCount).toBe(0)
-    expect(vm.$store.state.filings[0].commentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].commentsLink).toBe('http://comments')
     expect(vm.$store.state.filings[0].displayName).toBe('Incorporation Application')
-    expect(vm.$store.state.filings[0].documentsLink).toBeNull()
+    expect(vm.$store.state.filings[0].documentsLink).toBe('http://documents')
     expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
     expect(vm.$store.state.filings[0].filingId).toBe(789)
-    expect(vm.$store.state.filings[0].filingLink).toBeNull()
+    expect(vm.$store.state.filings[0].filingLink).toBe('http://filing')
     expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
     expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
     expect(vm.$store.state.filings[0].status).toBe('COMPLETED')

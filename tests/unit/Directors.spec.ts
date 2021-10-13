@@ -40,7 +40,7 @@ describe('Directors as a COOP', () => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
     store.state.configObject = configJson.find(x => x.entityType === 'CP')
   })
 
@@ -344,7 +344,7 @@ describe('Directors as a COOP (no sync)', () => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
     store.state.configObject = configJson.find(x => x.entityType === 'CP')
   })
 
@@ -581,7 +581,7 @@ describe('Directors as a BCOMP', () => {
     // init store
     store.state.entityIncNo = 'BC0007291'
     store.state.entityType = 'BEN'
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
     store.state.configObject = configJson.find(x => x.entityType === 'BEN')
   })
 
@@ -901,7 +901,7 @@ describe('Appoint New Director tests', () => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
-    store.state.entityFoundingDate = '2018-03-01T00:00:00'
+    store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
     store.state.configObject = configJson.find(x => x.entityType === 'CP')
   })
 
