@@ -35,7 +35,7 @@ describe('AddCommentDialog', () => {
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
-    expect(vm.entityIncNo).toBe(123)
+    expect(vm.getEntityIncNo).toBe(123)
     expect(vm.dialog).toBe(true)
     expect(vm.filingId).toBe(456)
     expect(vm.attach).toBe('#parent-page')

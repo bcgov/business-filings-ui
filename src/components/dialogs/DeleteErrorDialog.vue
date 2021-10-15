@@ -57,16 +57,16 @@ export default class DeleteErrorDialog extends Vue {
   readonly isRoleStaff!: boolean
 
   // Prop to display the dialog.
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
 
   // Prop to provide attachment selector.
-  @Prop() private attach: string
+  @Prop() readonly attach: string
 
   // Prop containing error messages.
-  @Prop() private errors: object[]
+  @Prop() readonly errors: any[]
 
   // Prop containing warning messages.
-  @Prop() private warnings: object[]
+  @Prop() readonly warnings: any[]
 
   // Pass click event to parent.
   @Emit() private okay () { }

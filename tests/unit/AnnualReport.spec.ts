@@ -97,8 +97,8 @@ describe('Annual Report - Part 1 - UI', () => {
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.state.entityIncNo).toEqual('CP0001191')
-    expect(vm.$store.state.entityType).toEqual('CP')
+    expect(vm.$store.getters.getEntityIncNo).toEqual('CP0001191')
+    expect(vm.$store.getters.getEntityType).toEqual('CP')
     expect(vm.$store.state.ARFilingYear).toEqual(2017)
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
 
@@ -164,21 +164,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables address component when agm date < last COA', () => {
-    store.state.filings = [
-      {
-        filing: {
-          header: {
-            name: 'changeOfAddress',
-            date: '2019-05-06',
-            paymentToken: 789,
-            certifiedBy: 'Full Name 3',
-            filingId: 987
-          },
-          changeOfAddress: {}
-        }
-      }
-    ]
+  it('disables address component when AGM Date < Last COA Date', () => {
+    store.state.lastAddressChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -198,8 +185,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('has no effect on address component when last COA is null', () => {
-    store.state.filings = []
+  it('has no effect on address component when Last COA Date is null', () => {
+    store.state.lastAddressChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -219,21 +206,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component agm date < lastCOD', () => {
-    store.state.filings = [
-      {
-        filing: {
-          header: {
-            name: 'changeOfDirectors',
-            date: '2019-05-06',
-            paymentToken: 789,
-            certifiedBy: 'Full Name 3',
-            filingId: 987
-          },
-          changeOfDirectors: {}
-        }
-      }
-    ]
+  it('disables directors component when AGM Date < Last COD Date', () => {
+    store.state.lastDirectorChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -253,8 +227,8 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component when last COD is null', () => {
-    store.state.filings = []
+  it('disables directors component when Last COD Date is null', () => {
+    store.state.lastDirectorChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -485,8 +459,8 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.state.entityIncNo).toEqual('BC0007291')
-    expect(vm.$store.state.entityType).toEqual('BEN')
+    expect(vm.$store.getters.getEntityIncNo).toEqual('BC0007291')
+    expect(vm.$store.getters.getEntityType).toEqual('BEN')
     expect(vm.$store.state.ARFilingYear).toEqual(2018)
     expect(vm.$store.state.nextARDate).toEqual('2018-09-26')
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
@@ -665,9 +639,8 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -744,9 +717,8 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -827,9 +799,8 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -924,9 +895,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -957,9 +927,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -992,9 +961,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -1208,9 +1176,8 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
                   nextARDate: '2018-09-20'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'BC0007291',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - BC0007291'
                 },
                 header: {
@@ -1332,9 +1299,8 @@ describe('Annual Report - Part 4 - Saving', () => {
                   annualGeneralMeetingDate: '2018-07-15'
                 },
                 business: {
-                  foundingDate: '2007-04-08',
+                  foundingDate: '2007-04-08T00:00:00+00:00',
                   identifier: 'CP0001191',
-                  lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
                   legalName: 'Legal Name - CP0001191'
                 },
                 header: {
@@ -1917,9 +1883,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -1954,9 +1919,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -2221,9 +2185,8 @@ describe('Annual Report - payment required error', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -2279,7 +2242,6 @@ describe('Annual Report - payment required error', () => {
   it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('PAY_API_URL', '')
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
     const get = sinon.stub(axios, 'get')
 

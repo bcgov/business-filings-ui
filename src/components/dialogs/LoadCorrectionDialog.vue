@@ -40,10 +40,10 @@ export default class LoadCorrectionDialog extends Vue {
   readonly isRoleStaff!: boolean
 
   // Prop to display the dialog.
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
 
   // Prop to provide attachment selector.
-  @Prop() private attach: string
+  @Prop() readonly attach: string
 
   // Pass click event to parent.
   @Emit() private exit () { }

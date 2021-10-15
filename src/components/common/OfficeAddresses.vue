@@ -204,7 +204,7 @@
 import { Component, Emit, Prop, Watch, Mixins } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { isEmpty } from 'lodash'
-import { mapState, mapGetters } from 'vuex'
+import { Getter } from 'vuex-class'
 
 // Schemas
 import { officeAddressSchema } from '@/schemas'
@@ -216,7 +216,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { CommonMixin } from '@/mixins'
 
 // Interfaces
-import { OfficeAddressIF, RegRecAddressesIF, AddressIF } from '@/interfaces'
+import { RegRecAddressesIF, AddressIF } from '@/interfaces'
 
 // Enums
 import { Actions } from '@/enums'
@@ -225,18 +225,9 @@ import { Actions } from '@/enums'
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
-  },
-  computed: {
-    ...mapState(['entityIncNo']),
-    ...mapGetters(['isBComp'])
   }
 })
 export default class OfficeAddresses extends Mixins(CommonMixin) {
-  // Local definitions of computed properties for static type checking.
-  // NB: use non-null assertion operator to allow use before assignment
-  readonly isBComp!: boolean
-  readonly entityIncNo!: string
-
   /** Indicates whether this component should be enabled or not. */
   @Prop({ default: true })
   readonly componentEnabled: boolean
@@ -247,6 +238,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   @Prop({ default: () => {} })
   readonly addresses: RegRecAddressesIF
+
+  @Getter isBComp!: boolean
+  @Getter getEntityIncNo!: string
 
   /** Effective date for fetching office addresses. */
   private asOfDate: string
@@ -300,8 +294,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Fetches the office addresses on As Of Date from the Legal API. */
   // FUTURE: this API call should be in the parent component or some mixin/service
   private async fetchAddresses (): Promise<void> {
-    if (this.entityIncNo && this.asOfDate) {
-      const url = `businesses/${this.entityIncNo}/addresses?date=${this.asOfDate}`
+    if (this.getEntityIncNo && this.asOfDate) {
+      const url = `businesses/${this.getEntityIncNo}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         // registered office is required
         const registeredOffice = response?.data?.registeredOffice

@@ -18,15 +18,15 @@
             <section>
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-todo-subtitle">
-                  <span>To Do</span>&nbsp;<span class="gray6">({{taskCount}})</span>
+                  <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
                 </h2>
               </header>
               <legal-obligation/>
               <todo-list
                 :inProcessFiling="inProcessFiling"
                 :disableChanges="disableChanges"
-                @task-count="taskCount = $event"
-                @task-items="taskItems = $event"
+                @todo-count="todoCount = $event"
+                @todo-items="todoItems = $event"
               />
             </section>
 
@@ -65,8 +65,9 @@
                         <span>Pending</span>
                       </v-chip>
                     </template>
-                    The updated office addresses will be legally effective on {{ coaEffectiveDate }}
-                    at 12:01 am Pacific time. No other filings are allowed until then.
+                    The updated office addresses will be legally effective on
+                    {{dateToPacificDateTime(getCoaEffectiveDate)}}.
+                    No other filings are allowed until then.
                   </v-tooltip>
                 </v-scale-transition>
                 <v-btn text small color="primary"
@@ -119,51 +120,54 @@
 import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
-// Components
+// Components and Dialogs
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
-
-// Dialogs
 import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
 import { EntityStatus, FilingStatus, Routes } from '@/enums'
-import { HistoryItemIF, TaskItemIF } from '@/interfaces'
+import { HistoryItemIF, TodoItemIF } from '@/interfaces'
+
+// Mixins
+import { DateMixin, EnumMixin } from '@/mixins'
 
 export default {
   name: 'Dashboard',
+
+  mixins: [DateMixin, EnumMixin],
 
   components: {
     TodoList,
     FilingHistoryList,
     AddressListSm,
     DirectorListSm,
-    CoaWarningDialog,
     LegalObligation,
-    StaffNotation
+    StaffNotation,
+    CoaWarningDialog
   },
 
   data () {
     return {
-      taskCount: 0,
-      taskItems: [] as Array<TaskItemIF>,
+      todoCount: 0,
+      todoItems: [] as Array<TodoItemIF>,
       historyCount: 0,
       historyItems: [] as Array<HistoryItemIF>,
       refreshTimer: null as number,
       checkFilingStatusCount: 0,
-      inProcessFiling: null as any,
+      inProcessFiling: null as number,
       coaWarningDialog: false
     }
   },
 
   computed: {
-    ...mapState(['entityIncNo', 'entityStatus']),
+    ...mapState(['entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'coaEffectiveDate']),
+    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate', 'getEntityIncNo']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -208,18 +212,21 @@ export default {
     },
 
     checkToReloadDashboard () {
+      // ensure we're not already running
+      if (this.checkFilingStatusCount > 0) return
+
       // cancel any existing timer so we can start fresh here
       clearTimeout(this.refreshTimer)
 
       let filingId = null
       // NB: use unary plus operator to cast string to number
-      if (this.$route !== undefined) filingId = +this.$route.query.filing_id // if missing, this is NaN (false)
+      if (this.$route !== undefined) filingId = +this.$route.query.filing_id // if missing, this is NaN (falsy)
 
       // only consider refreshing the dashboard if we came from a filing
       if (!filingId) return
 
-      const isInFilingHistory = Boolean(this.historyItems.find(el => el.filingId === filingId))
-      const isInTodoList = Boolean(this.taskItems.find(el => el.id === filingId))
+      const isInFilingHistory = !!this.historyItems.find(el => el.filingId === filingId)
+      const isInTodoList = !!this.todoItems.find(el => el.id === filingId)
 
       // if this filing is NOT in the to-do list and IS in the filing history list, do nothing - there is no problem
       if (!isInTodoList && isInFilingHistory) return
@@ -230,7 +237,7 @@ export default {
       }
 
       // reset iteration counter
-      this.checkFilingStatusCount = 0
+      this.checkFilingStatusCount = 10
 
       // check for updated status to reload dashboard
       this.checkFilingStatus(filingId)
@@ -240,31 +247,24 @@ export default {
     // respawns itself approx. every 1 second for up to 10 iterations
     checkFilingStatus (filingId) {
       // stop this cycle after 10 iterations
-      if (++this.checkFilingStatusCount >= 10) {
+      if (--this.checkFilingStatusCount < 0) {
         this.inProcessFiling = null
         return
       }
 
       // get current filing status
-      let url = `businesses/${this.entityIncNo}/filings/${filingId}`
+      let url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
       axios.get(url).then(res => {
         // if the filing status is now COMPLETE, reload the dashboard
-        if (res && res.data && res.data.filing && res.data.filing.header &&
-        res.data.filing.header.status === FilingStatus.COMPLETED) {
+        if (res?.data?.filing?.header?.status === FilingStatus.COMPLETED) {
           // emit dashboard reload trigger event
           this.$root.$emit('triggerDashboardReload')
-        } else {
-          // call this function again in 1 second
-          let vue = this
-          this.refreshTimer = setTimeout(() => {
-            vue.checkFilingStatus(filingId)
-          }, 1000)
         }
+        throw new Error('filing not yet completed')
       }).catch(() => {
         // call this function again in 1 second
-        let vue = this
         this.refreshTimer = setTimeout(() => {
-          vue.checkFilingStatus(filingId)
+          this.checkFilingStatus(filingId)
         }, 1000)
       })
     },
@@ -286,7 +286,7 @@ export default {
       this.checkToReloadDashboard()
     },
 
-    taskItems () {
+    todoItems () {
       // check whether to reload the dashboard with updated data
       this.checkToReloadDashboard()
     }

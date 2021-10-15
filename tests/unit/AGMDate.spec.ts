@@ -21,9 +21,6 @@ describe('AgmDate', () => {
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
-    store.state.currentDate = '2019-07-15'
-    store.state.currentYear = '2019'
     store.state.ARFilingYear = 2019
     store.state.arMinDate = '2019-01-01'
     store.state.arMaxDate = '2019-12-31'
@@ -36,25 +33,24 @@ describe('AgmDate', () => {
 
   afterEach(() => {
     wrapper.destroy()
-    wrapper = null
   })
 
-  xit('initializes the local variables properly', () => {
+  it('initializes the local variables properly', () => {
     // verify local variables
     expect(vm.$data.dateText).toBe('')
-    expect(vm.$data.datePicker).toBe('2019-07-15')
+    expect(vm.$data.datePicker).toBe('2019-12-31')
     expect(vm.$data.agmExtension).toBe(false)
     expect(vm.$data.noAgm).toBe(false)
-
-    // verify that checkbox is _not_ rendered (in current year)
-    expect(vm.$el.querySelector('#no-agm-checkbox')).toBeNull()
   })
 
-  it('renders checkbox in past year', () => {
-    store.state.ARFilingYear = 2018
+  it('does not render the checkbox if today is before max AGM date', () => {
+    store.state.currentDate = '2019-03-15'
+    expect(wrapper.find('#no-agm-checkbox').exists()).toBe(false)
+  })
 
-    // verify that checkbox is rendered
-    expect(vm.$el.querySelector('#no-agm-checkbox')).not.toBeNull()
+  it('renders the checkbox if today is after max AGM date', () => {
+    store.state.currentDate = '2019-07-15'
+    expect(wrapper.find('#no-agm-checkbox').exists()).toBe(true)
   })
 
   it('sets AGM Date when date picker is set', () => {
@@ -159,9 +155,9 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('displays disabled address change message when allowCOA is false', () => {
+  xit('displays disabled address change message when allowCoa is false', () => {
     wrapper.setData({ dateText: '2019-07-15' })
-    wrapper.setProps({ allowCOA: false })
+    wrapper.setProps({ allowCa: false })
 
     // verify validation error
     expect(vm.$el.querySelector('.restriction-messages').textContent.trim()).toContain(
@@ -169,9 +165,9 @@ describe('AgmDate', () => {
     )
   })
 
-  xit('displays disabled director change message when allowCOD is false', () => {
+  xit('displays disabled director change message when allowCod is false', () => {
     wrapper.setData({ dateText: '2019-07-15' })
-    wrapper.setProps({ allowCOD: false })
+    wrapper.setProps({ allowCod: false })
 
     // verify validation error
     expect(vm.$el.querySelector('.restriction-messages').textContent.trim()).toContain(
@@ -179,9 +175,9 @@ describe('AgmDate', () => {
     )
   })
 
-  xit('displays disabled address + director change message when allowCOA and allowCOD are both false', () => {
+  xit('displays disabled address + director change message when allowCoa and allowCod are both false', () => {
     wrapper.setData({ dateText: '2019-07-15' })
-    wrapper.setProps({ allowCOA: false, allowCOD: false })
+    wrapper.setProps({ allowCoa: false, allowCod: false })
 
     // verify validation error
     expect(vm.$el.querySelector('.restriction-messages').textContent.trim()).toContain(

@@ -20,27 +20,46 @@ describe('Enum Mixin', () => {
     await Vue.nextTick()
   })
 
-  it('returns correct values for filing status helpers', () => {
+  it('returns correct values for filing state helpers', () => {
+    expect(vm.isStatusCancelled({ status: 'CANCELLED' })).toBe(true)
     expect(vm.isStatusCompleted({ status: 'COMPLETED' })).toBe(true)
+    expect(vm.isStatusCorrected({ status: 'CORRECTED' })).toBe(true)
+    expect(vm.isStatusDeleted({ status: 'DELETED' })).toBe(true)
     expect(vm.isStatusDraft({ status: 'DRAFT' })).toBe(true)
-    expect(vm.isStatusEpoch({ status: 'EPOCH' })).toBe(true)
     expect(vm.isStatusError({ status: 'ERROR' })).toBe(true)
     expect(vm.isStatusNew({ status: 'NEW' })).toBe(true)
     expect(vm.isStatusPaid({ status: 'PAID' })).toBe(true)
     expect(vm.isStatusPending({ status: 'PENDING' })).toBe(true)
-    expect(vm.isStatusCorrectionPending({ status: 'PENDING_CORRECTION' })).toBe(true)
-    expect(vm.isStatusAlterationPending({ status: 'PENDING_ALTERATION' })).toBe(true)
+    expect(vm.isStatusWithdrawn({ status: 'WITHDRAWN' })).toBe(true)
   })
 
   it('returns correct values for filing type helpers', () => {
-    expect(vm.isTypeAlteration({ filingType: 'alteration' })).toBe(true)
-    expect(vm.isTypeAnnualReport({ filingType: 'annualReport' })).toBe(true)
-    expect(vm.isTypeCorrection({ filingType: 'correction' })).toBe(true)
-    expect(vm.isTypeIncorporationApplication({ filingType: 'incorporationApplication' })).toBe(true)
-    expect(vm.isTypeNameRequest({ filingType: 'nameRequest' })).toBe(true)
+    expect(vm.isTypeAlteration({ name: 'alteration' })).toBe(true)
+    expect(vm.isTypeAnnualReport({ name: 'annualReport' })).toBe(true)
+    expect(vm.isTypeCorrection({ name: 'correction' })).toBe(true)
+    expect(vm.isTypeIncorporationApplication({ name: 'incorporationApplication' })).toBe(true)
+    expect(vm.isTypeNameRequest({ name: 'nameRequest' })).toBe(true)
+    expect(vm.isTypeTransition({ name: 'transition' })).toBe(true)
+
+    expect(vm.isTypeStaff({ name: 'registrarsNotation' })).toBe(true)
+    expect(vm.isTypeStaff({ name: 'registrarsOrder' })).toBe(true)
+    expect(vm.isTypeStaff({ name: 'courtOrder' })).toBe(true)
   })
 
-  it('returns correct values Filing Type To Name helper', () => {
+  it('returns correct values for payment method helpers', () => {
+    expect(vm.isPayMethodCreditCard({ paymentMethod: 'CC' })).toBe(true)
+    expect(vm.isPayMethodDirectPay({ paymentMethod: 'DIRECT_PAY' })).toBe(true)
+    expect(vm.isPayMethodDrawdown({ paymentMethod: 'DRAWDOWN' })).toBe(true)
+    expect(vm.isPayMethodOnlineBanking({ paymentMethod: 'ONLINE_BANKING' })).toBe(true)
+  })
+
+  it('returns correct values for entityStatusToDescription()', () => {
+    expect(vm.entityStatusToDescription('NAME_REQUEST', 'BC')).toBe('BC Limited Company Name Request')
+    expect(vm.entityStatusToDescription('DRAFT_INCORP_APP', 'BEN')).toBe('BC Benefit Company Incorporation Application')
+    expect(vm.entityStatusToDescription('FILED_INCORP_APP', 'C')).toBe('BC Limited Company Incorporation Application')
+  })
+
+  it('returns correct values for filingTypeToName()', () => {
     expect(vm.filingTypeToName('annualReport', '2020')).toBe('Annual Report (2020)')
     expect(vm.filingTypeToName('changeOfAddress')).toBe('Address Change')
     expect(vm.filingTypeToName('changeOfDirectors')).toBe('Director Change')

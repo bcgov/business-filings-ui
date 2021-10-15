@@ -101,13 +101,13 @@ export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
    * Registered Office address object passed in from the parent which is pulled from store.
    */
   @Prop({ default: null })
-  private registeredAddress: OfficeAddressIF
+  readonly registeredAddress: OfficeAddressIF
 
   /**
    * Records Office address object passed in from the parent which is pulled from store.
    */
   @Prop({ default: null })
-  private recordsAddress: OfficeAddressIF
+  readonly recordsAddress: OfficeAddressIF
 
   /** The Registered Delivery Address. */
   private get registeredDeliveryAddress (): AddressIF {

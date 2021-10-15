@@ -31,6 +31,7 @@ describe('Dashboard - UI', () => {
   beforeEach(() => {
     // init store
     store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
 
     // create wrapper for Dashboard
@@ -52,10 +53,10 @@ describe('Dashboard - UI', () => {
   })
 
   it('updates its counts from sub-component events', () => {
-    wrapper.find(TodoList).vm.$emit('task-count', 2)
+    wrapper.find(TodoList).vm.$emit('todo-count', 2)
     wrapper.find(FilingHistoryList).vm.$emit('history-count', 3)
 
-    expect(vm.taskCount).toEqual(2)
+    expect(vm.todoCount).toEqual(2)
     expect(vm.historyCount).toEqual(3)
   })
 
@@ -100,6 +101,13 @@ describe('Dashboard - In Process Tests', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
+  beforeAll(() => {
+    // init store
+    store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = false
+    store.state.isCoaPending = false
+  })
+
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
@@ -137,7 +145,7 @@ describe('Dashboard - In Process Tests', () => {
     expect(vm.$route.query.filing_id).toBe('123')
 
     // emit Todo List _with_ the pending filing
-    wrapper.find(TodoList).vm.$emit('task-items', [
+    wrapper.find(TodoList).vm.$emit('todo-items', [
       { id: 123 }
     ])
 
@@ -145,7 +153,7 @@ describe('Dashboard - In Process Tests', () => {
     wrapper.find(FilingHistoryList).vm.$emit('history-items', [])
 
     // clear Todo List so test can end
-    wrapper.find(TodoList).vm.$emit('task-items', [])
+    wrapper.find(TodoList).vm.$emit('todo-items', [])
 
     // verify that filing is "in process"
     expect(vm.inProcessFiling).toEqual(123)
@@ -158,7 +166,7 @@ describe('Dashboard - In Process Tests', () => {
     expect(vm.$route.query.filing_id).toBe('123')
 
     // emit Todo List _without_ the pending filing
-    wrapper.find(TodoList).vm.$emit('task-items', [])
+    wrapper.find(TodoList).vm.$emit('todo-items', [])
 
     // emit Filings List _with_ the completed filing
     wrapper.find(FilingHistoryList).vm.$emit('history-items', [
@@ -176,6 +184,7 @@ describe('Dashboard - Click Tests', () => {
   beforeAll(() => {
     // init store
     store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
   })
 

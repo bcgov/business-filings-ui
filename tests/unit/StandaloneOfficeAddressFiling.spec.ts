@@ -261,7 +261,9 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
     vm.addressesFormValid = false
-    store.state.filingData = [] // no data
+
+    // set no filing data
+    store.state.filingData = []
 
     // confirm that button is disabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -328,9 +330,8 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -401,9 +402,8 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -478,9 +478,8 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -553,9 +552,8 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
               }
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'BC0007291',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - BC0001191'
             },
             header: {
@@ -634,9 +632,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -689,9 +686,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             header: {
@@ -724,9 +720,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             header: {
@@ -792,7 +787,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -851,7 +846,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that draft filing was fetched
+    // FUTURE: verify that draft filing was fetched
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -860,7 +855,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     button.trigger('click')
     await flushPromises()
 
-    // verify v-tooltip text - Todo: How to get the tool tip rendered outside the wrapper
+    // verify v-tooltip text
+    // FUTURE: How to get the tool tip rendered outside the wrapper?
     // const tooltipText = wrapper.find('#coa-file-pay-btn + span').text()
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
@@ -913,9 +909,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             'header': {
@@ -972,9 +967,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             header: {
@@ -1011,9 +1005,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             header: {
@@ -1079,7 +1072,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1138,7 +1131,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that draft filing was fetched
+    // FUTURE: verify that draft filing was fetched
 
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1147,7 +1140,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     button.trigger('click')
     await flushPromises()
 
-    // verify v-tooltip text - Todo: How to get the tool tip rendered outside the wrapper
+    // verify v-tooltip text
+    // FUTURE: How to get the tool tip rendered outside the wrapper?
     // const tooltipText = wrapper.find('#coa-file-pay-btn + span').text()
     // expect(tooltipText).toContain('Ensure all of your information is entered correctly before you File & Pay.')
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
@@ -1190,9 +1184,8 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
               'mailingAddress': sampleMailingAddress
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1248,7 +1241,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+      // FUTURE: verify that new filing was created
 
       // click the Save button
       // wrapper.find('#coa-save-btn').trigger('click')
@@ -1330,9 +1323,8 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'BC0007291',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - BC0001191'
             },
             'header': {
@@ -1388,7 +1380,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-      // TODO: verify that new filing was created
+      // FUTURE: verify that new filing was created
 
       // click the Save button
       // wrapper.find('#coa-save-btn').trigger('click')
@@ -1664,9 +1656,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
               }
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1700,9 +1691,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
               'mailingAddress': sampleMailingAddress
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1738,9 +1728,8 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
               'mailingAddress': sampleMailingAddress
             },
             'business': {
-              'foundingDate': '2007-04-08',
+              'foundingDate': '2007-04-08T00:00:00+00:00',
               'identifier': 'CP0001191',
-              'lastLedgerTimestamp': '2019-04-15T20:05:49.068272+00:00',
               'legalName': 'Legal Name - CP0001191'
             },
             'header': {
@@ -1797,7 +1786,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // click the File & Pay button
     // wrapper.find('#coa-file-pay-btn').trigger('click')
@@ -1849,7 +1838,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
-    // TODO: verify that new filing was created
+    // FUTURE: verify that new filing was created
 
     // click the File & Pay button
     // wrapper.find('#coa-file-pay-btn').trigger('click')
@@ -1905,9 +1894,8 @@ describe('Standalone Office Address Filing - payment required error', () => {
               annualGeneralMeetingDate: '2018-07-15'
             },
             business: {
-              foundingDate: '2007-04-08',
+              foundingDate: '2007-04-08T00:00:00+00:00',
               identifier: 'CP0001191',
-              lastLedgerTimestamp: '2019-04-15T20:05:49.068272+00:00',
               legalName: 'Legal Name - CP0001191'
             },
             header: {
@@ -1931,7 +1919,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
   it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('PAY_API_URL', '')
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
     const get = sinon.stub(axios, 'get')
 

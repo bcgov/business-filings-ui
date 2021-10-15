@@ -12,7 +12,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class PaymentIncomplete extends Vue {
   /** The subject filing. */
-  @Prop() private filing: any
+  @Prop() readonly filing: any
 
   /** The title of the subject filing. */
   private get title (): string {

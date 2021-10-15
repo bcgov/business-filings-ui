@@ -89,17 +89,17 @@ export default class StaffPayment extends Vue {
   readonly StaffPaymentOptions = StaffPaymentOptions
 
   /** Staff Payment Data prop. */
-  @Prop({ default: () => {
-    return {
+  @Prop({ default: () =>
+    ({
       option: StaffPaymentOptions.NONE,
       routingSlipNumber: null,
       bcolAccountNumber: null,
       datNumber: null,
       folioNumber: null,
       isPriority: false
-    }
-  } })
-  private staffPaymentData: StaffPaymentIF
+    })
+  })
+  readonly staffPaymentData: StaffPaymentIF
 
   /** Radio group model property. */
   private paymentOption = StaffPaymentOptions.NONE

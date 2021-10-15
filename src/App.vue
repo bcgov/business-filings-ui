@@ -67,8 +67,7 @@
 
 <script lang="ts">
 // Libraries
-import { mapActions, mapState } from 'vuex'
-import axios from '@/axios-auth'
+import { mapActions, mapGetters } from 'vuex'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import * as Sentry from '@sentry/browser'
 import { updateLdUser } from '@/utils'
@@ -87,21 +86,21 @@ import {
   NameRequestInvalidDialog
 } from '@/components/dialogs'
 
-// Mixins
-import { CommonMixin, DirectorMixin, NameRequestMixin } from '@/mixins'
-
-// Folder containing the array of configuration objects
+// Configuration objects
 import { configJson } from '@/resources'
 
-// Enums and Constants
-import { EntityStatus, FilingStatus, FilingTypes, NameRequestStates, Routes } from '@/enums'
+// Mixins, Interfaces, Enums and Constants
+import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, LegalApiMixin, NameRequestMixin }
+  from '@/mixins'
+import { ApiFilingIF, ApiTaskIF, TaskTodoIF } from '@/interfaces'
+import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/corp-type-module'
+import { BusinessIF } from './interfaces/business-interface'
 
 export default {
   name: 'App',
 
-  mixins: [CommonMixin, DirectorMixin, NameRequestMixin],
+  mixins: [AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, LegalApiMixin, NameRequestMixin],
 
   data () {
     return {
@@ -127,12 +126,7 @@ export default {
         CorpTypeCd.BC_ULC_COMPANY,
         CorpTypeCd.BC_CCC,
         CorpTypeCd.COOP
-      ],
-
-      // enums
-      EntityStatus,
-      FilingStatus,
-      FilingTypes
+      ]
     }
   },
 
@@ -148,12 +142,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['tasks', 'filings', 'entityType', 'entityStatus']),
-
-    /** The Auth API string. */
-    authApiUrl (): string {
-      return sessionStorage.getItem('AUTH_API_URL')
-    },
+    ...mapGetters(['getEntityName', 'getEntityType']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
@@ -181,19 +170,19 @@ export default {
 
     /** True if route is Signin. */
     isSigninRoute (): boolean {
-      return Boolean(this.$route.name === Routes.SIGNIN)
+      return (this.$route.name === Routes.SIGNIN)
     },
 
     /** True if route is Signout. */
     isSignoutRoute (): boolean {
-      return Boolean(this.$route.name === Routes.SIGNOUT)
+      return (this.$route.name === Routes.SIGNOUT)
     },
 
     /** True if user is authenticated. */
     isAuthenticated (): boolean {
       const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
       // FUTURE: also check that token isn't expired!
-      return Boolean(keycloakToken)
+      return !!keycloakToken
     },
 
     /** The About text. */
@@ -232,8 +221,8 @@ export default {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
       'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
-      'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
-      'setConfigObject', 'setNameRequest']),
+      'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate', 'setNameRequest',
+      'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -245,11 +234,11 @@ export default {
         console.info('Starting token refresh service...') // eslint-disable-line no-console
         await KeycloakService.initializeToken()
         this.tokenService = true
-      } catch (err) {
+      } catch (error) {
         // happens when the refresh token has expired in session storage
 
         // eslint-disable-next-line no-console
-        console.log('Could not initialize token refresher, err =', err)
+        console.log('Error initializing token refresher =', error)
 
         // clear old session variables and reload page to get new tokens
         this.clearKeycloakSession()
@@ -270,12 +259,12 @@ export default {
       this.dataLoaded = false
 
       // store today's date every time the dashboard is loaded
-      // FUTURE: get from API to prevent users spoofing their date
-      {
-        const now = new Date()
-        const date = this.dateToDateString(now)
-        this.setCurrentDate(date)
+      const serverDate = await this.getServerDate()
+      if (!this.isJestRunning) {
+        // eslint-disable-next-line no-console
+        console.info(`It is currently ${this.dateToPacificDateTime(serverDate)}.`)
       }
+      this.setCurrentDate(this.dateToYyyyMmDd(serverDate))
 
       try {
         // get Keycloak roles
@@ -289,10 +278,10 @@ export default {
         }
 
         // check if current user is authorized
-        const authData = await this.getAuthorizations()
+        const authData = await this.fetchAuthorizations(this.businessId || this.tempRegNumber)
         this.storeAuthorizations(authData) // throws if no role
-      } catch (err) {
-        console.log(err) // eslint-disable-line no-console
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
         if (this.businessId) this.businessAuthErrorDialog = true
         if (this.tempRegNumber) this.nameRequestAuthErrorDialog = true
         return // do not execute remaining code
@@ -300,11 +289,11 @@ export default {
 
       // fetch user info and update Launch Darkly
       try {
-        const userInfo = await this.getUserInfo()
+        const userInfo = await this.fetchUserInfo()
         await this.updateLaunchDarkly(userInfo)
-      } catch (err) {
+      } catch (error) {
         // just log the error -- no need to halt app
-        console.log('Launch Darkly update error =', err) // eslint-disable-line no-console
+        console.log('Error updating Launch Darkly =', error) // eslint-disable-line no-console
       }
 
       // is this a business entity?
@@ -312,13 +301,13 @@ export default {
         try {
           await this.fetchBusinessData() // throws on error
           this.dataLoaded = true
-        } catch (err) {
-          console.log(err) // eslint-disable-line no-console
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
           this.dashboardUnavailableDialog = true
-          // logging exception to sentry due to incomplete business data.
-          // at this point system doesn't know why its incomplete.
-          // since its not an expected behaviour it could be better to track.
-          Sentry.captureException(err)
+          // Log exception to Sentry due to incomplete business data.
+          // At this point the system doesn't know why it's incomplete.
+          // Since this is not an expected behaviour, report this.
+          Sentry.captureException(error)
         }
       }
 
@@ -327,8 +316,8 @@ export default {
         try {
           await this.fetchIncorpAppData() // throws on error
           this.dataLoaded = true
-        } catch (err) {
-          console.log(err) // eslint-disable-line no-console
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
           this.nameRequestInvalidDialog = true
         }
       }
@@ -337,18 +326,18 @@ export default {
     /** Fetches and stores the business data. */
     async fetchBusinessData (): Promise<void> {
       const data = await Promise.all([
-        this.getBusinessInfo(),
-        this.getEntityInfo(),
-        this.getTasks(),
-        this.getFilings(),
-        this.getAddresses(),
-        this.getDirectors()
+        this.fetchEntityInfo(this.businessId),
+        this.fetchBusinessInfo(this.businessId),
+        this.fetchTasks(this.businessId),
+        this.fetchFilings(this.businessId || this.tempRegNumber),
+        this.fetchAddresses(this.businessId),
+        this.fetchDirectors(this.businessId)
       ])
 
       if (!data || data.length !== 6) throw new Error('Incomplete business data')
 
-      this.storeBusinessInfo(data[0])
-      this.storeEntityInfo(data[1])
+      this.storeEntityInfo(data[0])
+      this.storeBusinessInfo(data[1])
       this.storeTasks(data[2])
       this.storeFilings(data[3])
       this.storeAddresses(data[4])
@@ -359,11 +348,12 @@ export default {
     async fetchIncorpAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      const iaData = await this.getIncorpApp()
+      const iaData = await this.fetchIncorpApp(this.tempRegNumber)
       this.storeIncorpApp(iaData)
 
+      // if the IA has a NR, load it
       if (this.localNrNumber) {
-        const nrData = await this.getNameRequest()
+        const nrData = await this.fetchNameRequest(this.localNrNumber)
         this.storeNrData(nrData, iaData)
       }
     },
@@ -372,21 +362,21 @@ export default {
     getJWT (): any {
       const keycloakToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
       if (keycloakToken) {
-        return this.parseToken(keycloakToken)
+        return this.parseKcToken(keycloakToken)
       }
       throw new Error('Error getting Keycloak token')
     },
 
     /** Decodes and parses Keycloak token. */
-    parseToken (token: string): any {
+    parseKcToken (token: string): any {
       try {
         const base64Url = token.split('.')[1]
         const base64 = decodeURIComponent(window.atob(base64Url).split('').map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
         }).join(''))
         return JSON.parse(base64)
-      } catch (err) {
-        throw new Error('Error parsing token - ' + err)
+      } catch (error) {
+        throw new Error('Error parsing token - ' + error)
       }
     },
 
@@ -399,16 +389,6 @@ export default {
       throw new Error('Error getting Keycloak roles')
     },
 
-    /** Gets authorizations from Auth API. */
-    getAuthorizations (): Promise<any> {
-      const id = this.businessId || this.tempRegNumber
-      const url = id + '/authorizations'
-      const config = {
-        baseURL: this.authApiUrl + 'entities/'
-      }
-      return axios.get(url, config)
-    },
-
     storeAuthorizations (response: any): void {
       // NB: roles array may contain 'view', 'edit' or nothing
       const authRoles = response?.data?.roles
@@ -417,18 +397,6 @@ export default {
       } else {
         throw new Error('Invalid auth roles')
       }
-    },
-
-    /** Fetches current user info. */
-    async getUserInfo (): Promise<any> {
-      const config = {
-        baseURL: this.authApiUrl
-      }
-      return axios.get('users/@me', config)
-        .then(response => {
-          if (response?.data) return response.data
-          else throw new Error('Invalid user info')
-        })
     },
 
     /** Updates Launch Darkly with current user info. */
@@ -444,16 +412,8 @@ export default {
       await updateLdUser(key, email, firstName, lastName, custom)
     },
 
-    /** Gets business info from Auth API. */
-    getBusinessInfo (): Promise<any> {
-      const url = this.businessId
-      const config = {
-        baseURL: this.authApiUrl + 'entities/'
-      }
-      return axios.get(url, config)
-    },
-
-    storeBusinessInfo (response: any): void {
+    /** Stores entity info from Auth API. */
+    storeEntityInfo (response: any): void {
       const contacts = response?.data?.contacts
       // ensure we received the right looking object
       // but allow empty contacts array
@@ -468,21 +428,16 @@ export default {
         // save Corp Type Code locally to compare with Legal Type below
         this.corpTypeCd = response?.data?.corpType?.code
       } else {
-        throw new Error('Invalid business contact info')
+        throw new Error('Invalid entity contact info')
       }
     },
 
-    /** Gets entity info from Legal API. */
-    getEntityInfo (): Promise<any> {
-      const url = `businesses/${this.businessId}`
-      return axios.get(url)
-    },
-
-    storeEntityInfo (response: any): void {
-      const business = response?.data?.business
+    /** Stores business info from Legal API. */
+    storeBusinessInfo (response: any): void {
+      const business = response?.data?.business as BusinessIF
 
       if (!business) {
-        throw new Error('Invalid entity info')
+        throw new Error('Invalid business info')
       }
 
       if (this.businessId !== business.identifier) {
@@ -498,99 +453,133 @@ export default {
 
       this.setEntityName(business.legalName)
       this.setEntityType(business.legalType)
-      if (business.goodStanding === true) {
-        this.setEntityStatus(EntityStatus.GOOD_STANDING)
-      } else {
-        this.setEntityStatus(EntityStatus.NOT_IN_COMPLIANCE)
-      }
+      this.setEntityStatus(business.goodStanding ? EntityStatus.GOOD_STANDING : EntityStatus.NOT_IN_COMPLIANCE)
       this.setEntityBusinessNo(business.taxId)
       this.setEntityIncNo(business.identifier)
-      this.setEntityFoundingDate(business.foundingDate) // datetime
-      this.setLastAnnualReportDate(business.lastAnnualReport)
+      this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
+      this.setLastAnnualReportDate(business.lastAnnualReportDate)
+      this.setLastAddressChangeDate(business.lastAddressChangeDate)
+      this.setLastDirectorChangeDate(business.lastDirectorChangeDate)
+
+      // store config object based on current entity type
       this.storeConfigObject(business.legalType)
     },
 
-    /** Gets the Incorp App filing from Legal API. */
-    getIncorpApp (): Promise<any> {
-      const url = `businesses/${this.tempRegNumber}/filings`
-      return axios.get(url)
-        // workaround because data is at "response.data.data"
-        .then(response => Promise.resolve(response.data))
-    },
-
+    /** Verifies and stores an IA's data. */
     storeIncorpApp (data: any): void {
       const filing = data?.filing
-
-      if (!filing?.business || !filing?.header) {
-        throw new Error('Invalid incorporation application filing')
+      if (!filing || !filing.business || !filing.header || !filing.incorporationApplication) {
+        throw new Error('Invalid IA filing')
       }
 
-      // verify that this is the correct entity type
-      if (!this.supportedEntityTypes.includes(filing.business.legalType)) {
-        throw new Error('Invalid business legal type')
+      const identifier = filing.business.identifier as string
+      if (!identifier) {
+        throw new Error('Invalid IA filing - business identifier')
       }
 
-      // verify that this is the correct filing type
-      if (filing.header.name !== FilingTypes.INCORPORATION_APPLICATION) {
-        throw new Error('Invalid incorporation application name')
+      const name = filing.header.name as FilingTypes
+      if (name !== FilingTypes.INCORPORATION_APPLICATION) {
+        throw new Error('Invalid IA filing - filing name')
+      }
+
+      const status = filing.header.status as FilingStatus
+      if (!status) {
+        throw new Error('Invalid IA filing - filing status')
+      }
+
+      const nameRequest = filing.incorporationApplication.nameRequest
+      if (!nameRequest) {
+        throw new Error('Invalid IA filing - Name Request object')
+      }
+
+      // verify that this is a supported entity type
+      const legalType = nameRequest.legalType as CorpTypeCd
+      if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
+        throw new Error('Invalid IA filing - legal type')
       }
 
       // store business info
-      this.setEntityIncNo(filing.business.identifier)
-      this.setEntityType(filing.business.legalType)
+      this.setEntityIncNo(identifier)
+      this.setEntityType(legalType)
 
       // store NR Number if present
-      const nr = filing.incorporationApplication?.nameRequest
-      // workaround for old or new property name
-      this.localNrNumber = nr?.nrNum || nr?.nrNumber
+      // (look for old or new property name)
+      this.localNrNumber = nameRequest?.nrNum || nameRequest?.nrNumber || null
 
-      switch (filing.header.status) {
-        case 'DRAFT':
-        case 'PENDING':
-          // this is a Draft Incorporation Application
+      // store Legal Name if present
+      this.setEntityName(nameRequest?.legalName || null)
+
+      switch (status as FilingStatus) {
+        case FilingStatus.DRAFT:
+        case FilingStatus.PENDING:
+          // this is a draft IA
           this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
-
-          this.setTasks([
-            {
-              enabled: true,
-              order: 1,
-              task: {
-                filing
-              }
-            }
-          ])
+          this.storeDraftIa(filing)
           break
 
-        case 'COMPLETED':
-        case 'PAID':
-          const incorporationApplication = filing.incorporationApplication
-          if (!incorporationApplication) {
-            throw new Error('Invalid incorporation application object')
-          }
-
-          // this is a paid or completed Incorporation Application
+        case FilingStatus.COMPLETED:
+        case FilingStatus.PAID:
+          // this is a filed IA
           this.setEntityStatus(EntityStatus.FILED_INCORP_APP)
-
-          // set temporary addresses and directors
-          this.storeAddresses({ data: incorporationApplication.offices })
-          const directors = incorporationApplication.parties.filter((party) => party.roles.filter((role) =>
-            role.roleType === 'Director').length !== 0)
-          this.storeDirectors({ data: { directors: [...directors] } })
-
-          this.setFilings([{ filing }])
+          this.storeFiledIa(filing)
           break
 
         default:
-          throw new Error('Invalid incorporation application status')
+          throw new Error('Invalid IA filing - filing status')
       }
     },
 
-    /** Gets NR data from Legal API. */
-    getNameRequest (): Promise<any> {
-      const url = `nameRequests/${this.localNrNumber}`
-      return axios.get(url)
-        // workaround because data is at "response.data.data"
-        .then(response => Promise.resolve(response.data))
+    /** Stores draft IA as a task in the Todo List. */
+    storeDraftIa (filing: TaskTodoIF): void {
+      const taskItem: ApiTaskIF = {
+        enabled: true,
+        order: 1,
+        task: { filing }
+      }
+      this.setTasks([taskItem])
+    },
+
+    /** Stores filed IA as a filing in the Filing History List. */
+    storeFiledIa (filing: TaskTodoIF): void {
+      // NB: these were already validated in storeIncorpApp()
+      const business = filing.business
+      const header = filing.header
+      const incorporationApplication = filing.incorporationApplication
+
+      // set addresses
+      this.storeAddresses({ data: incorporationApplication.offices || [] })
+
+      // set directors
+      // (ie, parties that have a role of Director)
+      const directors = incorporationApplication.parties?.filter(party =>
+        party.roles.filter(role =>
+          role.roleType === Roles.DIRECTOR
+        ).length !== 0
+      )
+      this.storeDirectors({ data: { directors: directors || [] } })
+
+      // add this as a filing (for Filing History List)
+      const filingItem: ApiFilingIF = {
+        availableOnPaperOnly: header.availableOnPaperOnly,
+        businessIdentifier: business.identifier,
+        commentsCount: header.commentsCount,
+        commentsLink: header.commentsLink,
+        displayName: this.filingTypeToName(FilingTypes.INCORPORATION_APPLICATION),
+        documentsLink: header.documentsLink,
+        effectiveDate: this.apiToUtcString(header.effectiveDate),
+        filingId: header.filingId,
+        filingLink: header.filingLink,
+        isFutureEffective: header.isFutureEffective,
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: header.status,
+        submittedDate: this.apiToUtcString(header.date),
+        submitter: header.submitter,
+        data: {
+          applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
+          legalFilings: [FilingTypes.INCORPORATION_APPLICATION]
+        }
+      }
+      this.setFilings([filingItem])
     },
 
     storeNrData (nr: any, ia: any): void {
@@ -600,14 +589,14 @@ export default {
         throw new Error('Invalid NR data')
       }
 
-      // FUTURE: uncomment this when Request Type Code is fixed (ie, not 'CR')
-      // // verify that NR type matches entity type
-      // if (nr.requestTypeCd !== this.entityType) {
-      //   this.nameRequestInvalidDialog = true
-      //   throw new Error('Invalid NR request type')
-      // }
+      // verify that NR type matches entity type from IA
+      if (nr.legalType !== this.getEntityType) {
+        this.nameRequestInvalidDialog = true
+        throw new Error('Invalid NR request type')
+      }
 
-      // Check NR is consumable if filing is not COMPLETED. Once filing is completed the NR state will be CONSUMED
+      // if IA is not yet completed, check if NR is consumable
+      // (once IA is completed, NR state will be CONSUMED)
       if (ia.filing.header.status !== FilingStatus.COMPLETED) {
         const nrState: NameRequestStates = this.getNrState(nr)
         if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
@@ -621,19 +610,12 @@ export default {
       this.setNameRequest(nr)
 
       // save the approved name
-      const entityName = this.getApprovedName(nr)
+      const entityName = this.getApprovedName(nr) || ''
       this.setEntityName(entityName || 'Unknown Name')
     },
 
-    /** Gets tasks list from Legal API. */
-    getTasks (): Promise<any> {
-      const id = this.businessId
-      const url = `businesses/${id}/tasks`
-      return axios.get(url)
-    },
-
     storeTasks (response: any): void {
-      const tasks = response?.data?.tasks
+      const tasks = response?.data?.tasks as ApiTaskIF[]
       if (tasks) {
         this.setTasks(tasks)
       } else {
@@ -641,26 +623,13 @@ export default {
       }
     },
 
-    /** Gets filings list from Legal API. */
-    getFilings (): Promise<any> {
-      const id = this.businessId || this.tempRegNumber
-      const url = `businesses/${id}/filings`
-      return axios.get(url)
-    },
-
     storeFilings (response: any): void {
-      const filings = response?.data?.filings
+      const filings = response?.data?.filings as ApiFilingIF[]
       if (filings) {
         this.setFilings(filings)
       } else {
         throw new Error('Invalid filings')
       }
-    },
-
-    /** Gets addresses from Legal API. */
-    getAddresses (): Promise<any> {
-      const url = `businesses/${this.businessId}/addresses`
-      return axios.get(url)
     },
 
     storeAddresses (response: any): void {
@@ -678,12 +647,6 @@ export default {
       }
     },
 
-    /** Gets directors list from Legal API. */
-    getDirectors (): Promise<any> {
-      const url = `businesses/${this.businessId}/directors`
-      return axios.get(url)
-    },
-
     storeDirectors (response: any): void {
       const directors = response?.data?.directors
       if (directors) {
@@ -699,7 +662,7 @@ export default {
       }
     },
 
-    /** Stores config object matching this business' legal type. */
+    /** Stores config object matching the specified entity type. */
     storeConfigObject (entityType: string): void {
       const configObject = configJson.find(x => x.entityType === entityType)
       this.setConfigObject(configObject)

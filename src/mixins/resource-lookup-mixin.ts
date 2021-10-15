@@ -1,20 +1,15 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { State, Getter } from 'vuex-class'
 import { AlertMessageIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
 
 /**
  * Mixin for components to retrieve text/settings from JSON resource.
  */
-@Component({
-  computed: {
-    ...mapState(['configObject', 'isBComp'])
-  }
-})
-
+@Component({})
 export default class ResourceLookupMixin extends Vue {
-    readonly configObject!: any
-    readonly isBComp!: boolean
+    @State configObject!: any
+    @Getter isBComp!: boolean
 
     /**
      * Returns certify message using the configuration lookup object.

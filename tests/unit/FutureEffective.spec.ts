@@ -36,7 +36,7 @@ describe('Future Effective IA', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(4)
     expect(paragraphs.at(0).text()).toContain('The filing date and time for this company')
-    expect(paragraphs.at(0).text()).toContain('will be unknown Pacific Time.')
+    expect(paragraphs.at(0).text()).toContain('will be Unknown.')
     expect(paragraphs.at(1).text()).toContain('If you wish to change the information')
     expect(paragraphs.at(1).text()).toContain('in this filing, you must')
     expect(paragraphs.at(1).text()).toContain('contact Registry Staff')
@@ -57,7 +57,7 @@ describe('Future Effective IA', () => {
       propsData: {
         filing: {
           isFutureEffectiveIa: true,
-          effectiveDateTime: '2020-05-15 12:00:00 PM'
+          effectiveDate: new Date('2020-05-15 19:00:00 GMT')
         }
       }
     })
@@ -67,7 +67,7 @@ describe('Future Effective IA', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(4)
     expect(paragraphs.at(0).text()).toContain('The incorporation date and time for My Incorporation')
-    expect(paragraphs.at(0).text()).toContain('will be 2020-05-15 12:00:00 PM Pacific Time.')
+    expect(paragraphs.at(0).text()).toContain('will be May 15, 2020 at 12:00 pm Pacific time.')
     expect(paragraphs.at(1).text()).toContain('the information in this incorporation')
     expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application')
     expect(paragraphs.at(2).text()).toContain('will remove this incorporation')
@@ -85,7 +85,7 @@ describe('Future Effective IA', () => {
       propsData: {
         filing: {
           isFutureEffectiveIa: true,
-          effectiveDateTime: '2020-05-15 12:00:00 PM'
+          effectiveDate: new Date('2020-05-15 19:00:00 GMT')
         }
       }
     })
@@ -95,7 +95,7 @@ describe('Future Effective IA', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(4)
     expect(paragraphs.at(0).text()).toContain('The incorporation date and time for this Numbered Benefit Company')
-    expect(paragraphs.at(0).text()).toContain('will be 2020-05-15 12:00:00 PM Pacific Time.')
+    expect(paragraphs.at(0).text()).toContain('will be May 15, 2020 at 12:00 pm Pacific time.')
     expect(paragraphs.at(1).text()).toContain('the information in this incorporation')
     expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application')
     expect(paragraphs.at(2).text()).toContain('will remove this incorporation')
@@ -113,7 +113,7 @@ describe('Future Effective IA', () => {
       propsData: {
         filing: {
           isFutureEffectiveAlteration: true,
-          effectiveDateTime: '2020-05-15 12:00:00 PM',
+          effectiveDate: new Date('2020-05-15 19:00:00 GMT'),
           courtOrderNumber: 'NUMBER',
           isArrangement: true
         }
@@ -125,7 +125,7 @@ describe('Future Effective IA', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(6)
     expect(paragraphs.at(0).text()).toContain('The alteration date and time for My Alteration')
-    expect(paragraphs.at(0).text()).toContain('will be 2020-05-15 12:00:00 PM Pacific Time.')
+    expect(paragraphs.at(0).text()).toContain('will be May 15, 2020 at 12:00 pm Pacific time.')
     expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this')
     expect(paragraphs.at(2).text()).toContain('Withdrawing this Alteration Notice will')
     expect(paragraphs.at(2).text()).toContain('will remove this alteration')

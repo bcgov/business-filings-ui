@@ -1,6 +1,6 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { CorpTypeCd, NameRequestStates } from '@/enums'
+import { NameRequestStates, NrNameStates } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 
 // Mixins
@@ -22,7 +22,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       nr.names?.length > 0 &&
       // workaround for old or new property name
       (nr.nrNum || nr.nrNumber) &&
-      nr.requestTypeCd)
+      nr.legalType)
   }
 
   /**
@@ -44,15 +44,14 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       return NameRequestStates.NEED_CONSENT
     }
 
-    // If the NR's root state is not APPROVED or CONDITIONAL, it is not consumable.
-    // EXPIRED or CONSUMED should not return NOT_APPROVED.
+    // If the NR's root state is not APPROVED / CONDITIONAL / EXPIRED / CONSUMED, it is not consumable.
     if (![NameRequestStates.APPROVED, NameRequestStates.CONDITIONAL,
       NameRequestStates.EXPIRED, NameRequestStates.CONSUMED].includes(nr.state)) {
       return NameRequestStates.NOT_APPROVED
     }
 
     // Otherwise, the NR is consumable.
-    return nr.state // APPROVED or CONDITIONAL or CONSUMED or EXPIRED
+    return nr.state // APPROVED or CONDITIONAL or EXPIRED or CONSUMED
   }
 
   /**
@@ -86,7 +85,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
         lastName: nr.applicants.lastName
       },
       details: {
-        approvedName: this.getApprovedName(nr),
+        approvedName: this.getApprovedName(nr) || '',
         consentFlag: nr.consentFlag,
         expirationDate: nr.expirationDate,
         status: nr.state
@@ -95,13 +94,13 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Returns the Name Request's approved name.
+   * Returns the Name Request's approved name (or undefined or null if not found).
    * @param nr the name request response payload
    */
   getApprovedName (nr: any): string {
-    if (nr.names?.length > 0) {
-      return nr.names.find(name => [NameRequestStates.APPROVED, NameRequestStates.CONDITION].includes(name.state)).name
+    if (nr?.names?.length > 0) {
+      return nr.names.find(name => [NrNameStates.APPROVED, NrNameStates.CONDITION].includes(name.state)).name
     }
-    return '' // should never happen
+    return null // should never happen
   }
 }

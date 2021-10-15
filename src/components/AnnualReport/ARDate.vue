@@ -4,7 +4,7 @@
       <label>Annual Report Date</label>
       <span class="date ar-date">{{formatDateString(nextARDate)}}</span>
       <label>Filing Date</label>
-      <span class="date file-date">Today ({{formatDateString(currentDate)}})</span>
+      <span class="date file-date">Today ({{formatDateString(getCurrentDate)}})</span>
     </div>
   </v-card>
 </template>
@@ -12,21 +12,15 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { mapState, mapGetters } from 'vuex'
+import { State, Getter } from 'vuex-class'
 
 // Mixins
 import { DateMixin } from '@/mixins'
 
-@Component({
-  computed: {
-    ...mapState(['nextARDate', 'currentDate']),
-    ...mapGetters(['isBComp'])
-  }
-})
+@Component({})
 export default class ArDate extends Mixins(DateMixin) {
-  readonly nextARDate!: string
-  readonly currentDate!: string
-  readonly isBComp!: boolean
+  @State nextARDate!: string
+  @Getter isBComp!: boolean
 }
 </script>
 

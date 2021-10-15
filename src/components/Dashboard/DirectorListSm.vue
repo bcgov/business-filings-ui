@@ -70,27 +70,22 @@
 <script lang="ts">
 // Vue Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { State } from 'vuex-class'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 
-@Component({
-  computed: {
-    ...mapState(['directors'])
-  }
-})
+@Component({})
 export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
-  // Local definition of computed property for static type checking.
-  readonly directors!: Array<object>
-
   /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false })
-  private showCompleteYourFilingMessage: boolean
+  readonly showCompleteYourFilingMessage: boolean
 
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false })
-  private showGrayedOut: boolean
+  readonly showGrayedOut: boolean
+
+  @State directors!: Array<object>
 
   /** Whether to appear disabled. */
   private get disabled (): boolean {

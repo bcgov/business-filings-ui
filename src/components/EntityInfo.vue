@@ -18,10 +18,10 @@
           <header>
             <!-- Entity Name / IA Title -->
             <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
-              <span>{{ entityName || 'Unknown Name' }}</span>
+              <span>{{ getEntityName || 'Unknown Name' }}</span>
             </div>
             <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ entityName || getCorpTypeNumberedDescription(entityType)}}</span>
+              <span>{{ getEntityName || getCorpTypeNumberedDescription(getEntityType)}}</span>
             </div>
 
             <!-- Entity Type -->
@@ -32,7 +32,7 @@
           <menu class="mt-4 ml-n3">
             <!-- Staff Comments -->
             <span v-if="businessId && isRoleStaff">
-              <staff-comments
+              <StaffComments
                 :axios="axios"
                 :businessId="businessId"
                 :maxLength="2000"
@@ -40,7 +40,7 @@
             </span>
 
             <!-- View and Change Company Information -->
-            <span v-if="viewChangeInfoEnabled">
+            <span v-if="showViewChangeInfoBtn">
               <v-btn
                 small text color="primary"
                 id="company-information-button"
@@ -53,18 +53,23 @@
                 <span>View and Change Company Information</span>
               </v-btn>
 
-              <v-tooltip top content-class="pending-tooltip" v-if="!isInGoodStanding">
+              <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
                 <template v-slot:activator="{ on }">
                   <span class="pending-alert" v-on="on">
                     <v-icon color="orange darken-2">mdi-alert</v-icon>
                   </span>
                 </template>
-                You cannot view or change company information while the company is not in good standing.
+                <template v-if="isPendingDissolution">
+                  You cannot view or change company information while the company is pending dissolution.
+                </template>
+                <template v-if="isNotInCompliance">
+                  You cannot view or change company information while the company is not in compliance.
+                </template>
               </v-tooltip>
             </span>
 
             <!-- Download Summary -->
-            <span v-if="downloadSummaryEnabled">
+            <span v-if="showDownloadSummaryBtn">
               <v-btn
                 small text color="primary"
                 id="download-summary-button"
@@ -88,13 +93,13 @@
             <!-- Incorporation Number -->
             <template v-if="businessId">
               <dt class="mr-2">Incorporation Number:</dt>
-              <dd id="entity-incorporation-number">{{ entityIncNo || 'Not Available' }}</dd>
+              <dd id="entity-incorporation-number">{{ getEntityIncNo || 'Not Available' }}</dd>
             </template>
 
             <!-- NR Number -->
-            <template v-if="nrNumber">
+            <template v-if="getNrNumber">
               <dt class="mr-2">Name Request Number:</dt>
-              <dd id="nr-number">{{ nrNumber }}</dd>
+              <dd id="nr-number">{{ getNrNumber }}</dd>
             </template>
 
             <!-- Email -->
@@ -129,7 +134,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { mapGetters, mapState } from 'vuex'
+import { State, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { CommonMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, CorpTypeCd, Routes } from '@/enums'
@@ -138,32 +143,28 @@ import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 
 @Component({
-  computed: {
-    // Property definitions for runtime environment.
-    ...mapState(['ARFilingYear', 'entityName', 'entityType', 'entityStatus', 'entityBusinessNo',
-      'entityIncNo', 'businessEmail', 'businessPhone', 'businessPhoneExtension', 'entityStatus']),
-    ...mapGetters(['isRoleStaff', 'nrNumber', 'isBComp', 'isBcCompany', 'isUlc', 'hasBlocker',
-      'isInGoodStanding'])
-  },
   components: { StaffComments }
 })
 export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
-  // Local definitions of computed properties for static type checking.
-  // Use non-null assertion operator to allow use before assignment.
-  readonly entityName!: string
-  readonly ARFilingYear!: string
-  readonly entityType!: CorpTypeCd
-  readonly entityStatus!: EntityStatus
-  readonly entityBusinessNo!: string
-  readonly entityIncNo!: number
-  readonly businessEmail!: string
-  readonly businessPhone!: string
-  readonly businessPhoneExtension!: string
-  readonly isRoleStaff!: boolean
-  readonly isBComp!: boolean
-  readonly isBcCompany!: boolean
-  readonly isUlc!: boolean
-  readonly nrNumber!: string
+  @State ARFilingYear!: string
+  @State entityStatus!: EntityStatus
+  @State entityBusinessNo!: string
+  @State businessEmail!: string
+  @State businessPhone!: string
+  @State businessPhoneExtension!: string
+
+  @Getter getEntityType!: CorpTypeCd
+  @Getter getEntityIncNo!: number
+  @Getter getEntityName!: string
+  @Getter isRoleStaff!: boolean
+  @Getter isBComp!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isUlc!: boolean
+  @Getter getNrNumber!: string
+  @Getter hasBlocker!: boolean
+  @Getter isInGoodStanding!: boolean
+  @Getter isPendingDissolution!: boolean
+  @Getter isNotInCompliance!: boolean
 
   readonly axios = axios // for template
 
@@ -171,12 +172,12 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   private showHoverStyle = false
 
   /** True if View and Change Company Info button should be rendered. */
-  private get viewChangeInfoEnabled (): boolean {
+  private get showViewChangeInfoBtn (): boolean {
     return (this.isBComp || this.isBcCompany || this.isUlc)
   }
 
   /** True if Download Summary button should be rendered. */
-  private get downloadSummaryEnabled (): boolean {
+  private get showDownloadSummaryBtn (): boolean {
     return getFeatureFlag('download-summary-enabled')
   }
 
@@ -207,12 +208,12 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** The entity description. */
   private get entityDescription (): string {
-    return this.getCorpTypeDescription(this.entityType)
+    return this.getCorpTypeDescription(this.getEntityType)
   }
 
   /** The NR description. */
   private get nrDescription (): string {
-    return this.entityStatusToDescription(this.entityStatus, this.entityType)
+    return this.entityStatusToDescription(this.entityStatus, this.getEntityType)
   }
 
   /** The business phone number and optional extension. */
@@ -225,7 +226,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** Redirects the user to the Edit UI to view or change their company information. */
   private viewChangeCompanyInfo (): void {
-    const url = `${this.editUrl}${this.entityIncNo}/alteration`
+    const url = `${this.editUrl}${this.getEntityIncNo}/alteration`
     window.location.assign(url) // assume URL is always reachable
   }
 
@@ -254,7 +255,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
         href: this.manageBusinessesUrl
       },
       {
-        text: this.entityName || this.getCorpTypeNumberedDescription(this.entityType),
+        text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
         disabled: false,
         exact: true,
         to: { name: Routes.DASHBOARD }

@@ -39,7 +39,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StaffPaymentOptions } from '@/enums'
-import { StaffPaymentIF } from '@/interfaces'
+import { EmptyStaffPayment, StaffPaymentIF } from '@/interfaces'
 
 @Component({})
 export default class SummaryStaffPayment extends Vue {
@@ -47,17 +47,8 @@ export default class SummaryStaffPayment extends Vue {
   readonly StaffPaymentOptions = StaffPaymentOptions
 
   /** Staff Payment Data prop. */
-  @Prop({ default: () => {
-    return {
-      option: StaffPaymentOptions.NONE,
-      routingSlipNumber: null,
-      bcolAccountNumber: null,
-      datNumber: null,
-      folioNumber: null,
-      isPriority: false
-    }
-  } })
-  private staffPaymentData: StaffPaymentIF
+  @Prop({ default: () => ({ ...EmptyStaffPayment }) })
+  readonly staffPaymentData: StaffPaymentIF
 }
 </script>
 

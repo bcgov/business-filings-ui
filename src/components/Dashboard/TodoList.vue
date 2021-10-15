@@ -27,36 +27,36 @@
       attach="#todo-list"
     />
 
-    <v-expansion-panels v-if="taskItems && taskItems.length > 0" accordion  v-model="panel">
+    <v-expansion-panels v-if="todoItems && todoItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item"
-        v-for="(task, index) in orderBy(taskItems, 'order')"
+        v-for="(item, index) in orderBy(todoItems, 'order')"
         :key="index"
         :class="{
-          'disabled': !task.enabled,
-          'pay-error': isStatusDraft(task) && isPayError(task)
+          'disabled': !item.enabled,
+          'pay-error': isStatusDraft(item) && isPayError(item)
         }"
       >
         <v-expansion-panel-header
-          class="no-dropdown-icon"
-          :class="{'invalid-section': isTypeAlteration(task) && requiresAlteration && !task.goodStanding}"
+          class="no-dropdown-icon pt-6"
+          :class="{'invalid-section': isTypeAlteration(item) && requiresAlteration && !item.goodStanding}"
         >
           <div class="list-item">
             <div class="todo-label">
-              <h3 class="list-item__title pt-2">{{task.title}}
-                <v-btn v-if="isStatusDraft(task) && isTypeCorrection(task)"
+              <h3 class="list-item__title">{{item.title}}
+                <v-btn v-if="isStatusDraft(item) && isTypeCorrection(item)"
                   class="expand-btn ml-0"
                   outlined
                   color="red"
                   :ripple=false
                 >
                   <v-icon left>mdi-information-outline</v-icon>
-                  {{ (panel === index) ? "Hide Details" : "View Details" }}
+                  <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                 </v-btn>
               </h3> <!-- end of title -->
 
               <!-- BCOMP AR special case -->
-              <div v-if="businessId && isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)"
+              <div v-if="businessId && isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)"
                 class="bcorps-ar-subtitle"
               >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
@@ -64,7 +64,7 @@
                   id="enable-checkbox"
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
-                  :disabled="!task.enabled || isCoaPending"
+                  :disabled="!item.enabled || isCoaPending"
                   v-model="enableCheckbox[index]"
                   @click.native.stop
                 />
@@ -73,11 +73,11 @@
               <div v-else class="list-item__subtitle">
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-                <div v-if="isStatusNew(task) && task.subtitle" class="todo-subtitle">
-                  <span>{{ task.subtitle }}</span>
+                <div v-if="isStatusNew(item) && item.subtitle" class="todo-subtitle">
+                  <span>{{ item.subtitle }}</span>
                 </div>
 
-                <div v-else-if="isStatusDraft(task) && isTypeAlteration(task) && !task.goodStanding"
+                <div v-else-if="isStatusDraft(item) && isTypeAlteration(item) && !item.goodStanding"
                   class="todo-list-detail body-2"
                 >
                   <p class="error-text font-weight-bold">
@@ -93,45 +93,43 @@
                   <ContactInfo class="pt-3" />
                 </div>
 
-                <div
-                  v-else-if="isTypeAlteration(task) && task.goodStanding && !isBComp && !isCoop"
+                <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBComp && !isCoop"
                   class="todo-subtitle my-4"
                 >
                   <span>
-                    Your business is ready to alter from a {{ task.legalType }} to a BC
-                    Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make any other
-                    changes to your business until the alteration is complete.
+                    Your business is ready to alter from a {{ item.legalType }} to a BC
+                    Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
+                    any other changes to your business until the alteration is complete.
                   </span>
                   <v-btn
-                    v-if="task.comments.length > 0"
+                    v-if="item.comments.length > 0"
                     class="expand-btn"
                     outlined
                     color="primary"
                     :ripple=false
                   >
                     <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
+                    <span>{{item.comments.length > 1 ? "Details" : "Detail"}} ({{item.comments.length}})</span>
                   </v-btn>
                 </div>
 
-                <div
-                  v-else-if="isStatusDraft(task) && (isTypeCorrection(task) || isTypeAlteration(task))"
+                <div v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeAlteration(item))"
                   class="todo-subtitle"
                 >
                   <div>DRAFT</div>
                   <v-btn
-                    v-if="task.comments.length > 0"
+                    v-if="item.comments.length > 0"
                     class="expand-btn"
                     outlined
                     color="primary"
                     :ripple=false
                   >
                     <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                    {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
+                    <span>{{item.comments.length > 1 ? "Details" : "Detail"}} ({{item.comments.length}})</span>
                   </v-btn>
                 </div>
 
-                <div v-else-if="isStatusDraft(task) && isPayError(task)" class="todo-subtitle">
+                <div v-else-if="isStatusDraft(item) && isPayError(item)" class="todo-subtitle">
                   <div>PAYMENT INCOMPLETE</div>
                   <v-btn
                     class="expand-btn"
@@ -141,13 +139,15 @@
                     @click.stop="togglePanel(index)"
                   >
                     <v-icon left>mdi-information-outline</v-icon>
-                    {{ (panel === index) ? "Hide Details" : "View Details" }}
+                    <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                   </v-btn>
                 </div>
 
-                <div v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)" class="todo-subtitle">
-                  <div>{{ task.subtitle }}</div>
-                  <div v-if="task.nameRequest" class="payment-status">
+                <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)"
+                  class="todo-subtitle"
+                >
+                  <div>{{ item.subtitle }}</div>
+                  <div v-if="item.nameRequest" class="payment-status">
                     <v-btn
                       class="expand-btn"
                       outlined
@@ -156,56 +156,57 @@
                       @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
                   </div>
                 </div>
 
-                <div v-else-if="isStatusDraft(task)" class="todo-subtitle">
+                <div v-else-if="isStatusDraft(item)" class="todo-subtitle">
                   <div>DRAFT</div>
                 </div>
 
-                <div v-else-if="isStatusCorrectionPending(task)" class="todo-subtitle">
-                  <template v-if="isTypeCorrection(task) || isTypeAlteration(task)">
+                <div v-else-if="isStatusPending(item)" class="todo-subtitle">
+                  <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
                     <div>FILING PENDING</div>
                     <v-btn
+                      v-if="item.comments.length > 0"
                       class="expand-btn"
                       outlined
                       color="primary"
                       :ripple=false
                     >
                       <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                      {{task.comments.length > 1 ? "Details" : "Detail"}} ({{task.comments.length}})
+                      <span>{{item.comments.length > 1 ? "Details" : "Detail"}} ({{item.comments.length}})</span>
                     </v-btn>
+                  </template>
+
+                  <template v-else>
+                    <div>FILING PENDING</div>
+                    <div class="vert-pipe"></div>
+                    <div class="payment-status" v-if="inProcessFiling === item.id">
+                      PROCESSING...
+                    </div>
+                    <div class="payment-status" v-else>
+                      <span v-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
+                      <span v-else>PAYMENT INCOMPLETE</span>
+                      <v-btn
+                        class="expand-btn"
+                        outlined
+                        color="blue darken-2"
+                        :ripple=false
+                        @click.stop="togglePanel(index)"
+                      >
+                        <v-icon left>mdi-information-outline</v-icon>
+                        <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                      </v-btn>
+                    </div>
                   </template>
                 </div>
 
-                <div v-else-if="isStatusPending(task)" class="todo-subtitle">
+                <div v-else-if="isStatusError(item)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === task.id">
-                    PROCESSING...
-                  </div>
-                  <div class="payment-status" v-else>
-                    <span v-if="isPayMethodOnlineBanking(task)">ONLINE BANKING PAYMENT PENDING</span>
-                    <span v-else>PAYMENT INCOMPLETE</span>
-                    <v-btn
-                      class="expand-btn"
-                      outlined
-                      color="blue darken-2"
-                      :ripple=false
-                      @click.stop="togglePanel(index)"
-                    >
-                      <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
-                    </v-btn>
-                  </div>
-                </div>
-
-                <div v-else-if="isStatusError(task)" class="todo-subtitle">
-                  <div>FILING PENDING</div>
-                  <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === task.id">
+                  <div class="payment-status" v-if="inProcessFiling === item.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -218,15 +219,15 @@
                       @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
                   </div>
                 </div>
 
-                <div v-else-if="isStatusPaid(task)" class="todo-subtitle">
+                <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === task.id">
+                  <div class="payment-status" v-if="inProcessFiling === item.id">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -239,7 +240,7 @@
                       @click.stop="togglePanel(index)"
                     >
                       <v-icon left>mdi-information-outline</v-icon>
-                      {{ (panel === index) ? "Hide Details" : "View Details" }}
+                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
                   </div>
                 </div>
@@ -249,31 +250,31 @@
             <div class="list-item__actions">
               <div style="width:100%">
                 <!-- BCOMP AR special case -->
-                <template v-if="isBComp && task.enabled && isTypeAnnualReport(task) && isStatusNew(task)">
-                  <p class="date-subtitle">Due: {{task.arDueDate}}</p>
+                <template v-if="isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
+                  <p class="date-subtitle">Due: {{item.arDueDate}}</p>
                 </template>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- this loading button pre-empts all buttons below -->
-                <template v-if="inProcessFiling === task.id">
+                <template v-if="inProcessFiling === item.id">
                   <v-btn text loading disabled />
                 </template>
 
-                <template v-else-if="isRoleStaff && (isTypeCorrection(task) || isTypeAlteration(task))
-                  && isStatusDraft(task)"
+                <template v-else-if="isRoleStaff && (isTypeCorrection(item) || isTypeAlteration(item)) &&
+                  isStatusDraft(item)"
                 >
                   <v-btn class="btn-corr-draft-resume"
                      color="primary"
-                     :disabled="!task.enabled"
-                     @click.native.stop="doResumeFiling(task)"
+                     :disabled="!item.enabled"
+                     @click.native.stop="doResumeFiling(item)"
                   >
                     <span>Resume</span>
                   </v-btn>
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" class="actions__more-actions__btn px-0"
-                        v-on="on" id="menu-activator-staff" :disabled="!task.enabled"
+                        v-on="on" id="menu-activator-staff" :disabled="!item.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -282,7 +283,7 @@
                       <v-list-item
                         v-if="businessId"
                         id="btn-delete-draft-staff"
-                        @click="confirmDeleteDraft(task)"
+                        @click="confirmDeleteDraft(item)"
                       >
                         <v-list-item-title>Delete Draft</v-list-item-title>
                       </v-list-item>
@@ -290,23 +291,23 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="isTypeCorrection(task)">
+                <template v-else-if="isTypeCorrection(item)">
                   <!-- no action button in this case -->
                 </template>
 
                 <!-- Alteration Actions -->
-                <template v-else-if="isTypeAlteration(task) && isStatusDraft(task)">
+                <template v-else-if="isTypeAlteration(item) && isStatusDraft(item)">
                   <v-btn class="btn-alt-draft-resume"
                          color="primary"
-                         :disabled="!task.enabled"
-                         @click.native.stop="doResumeFiling(task)"
+                         :disabled="!item.enabled"
+                         @click.native.stop="doResumeFiling(item)"
                   >
                     <span>{{alterationBtnLabel}}</span>
                   </v-btn>
                   <v-menu v-if="!requiresAlteration" offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" class="actions__more-actions__btn px-0"
-                             v-on="on" id="menu-activator-alt" :disabled="!task.enabled"
+                             v-on="on" id="menu-activator-alt" :disabled="!item.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -315,7 +316,7 @@
                       <v-list-item
                               v-if="businessId"
                               id="btn-delete-draft-alt"
-                              @click="confirmDeleteDraft(task)"
+                              @click="confirmDeleteDraft(item)"
                       >
                         <v-list-item-title>Delete changes to company information</v-list-item-title>
                       </v-list-item>
@@ -323,13 +324,13 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="isStatusDraft(task)">
+                <template v-else-if="isStatusDraft(item)">
                   <v-btn class="btn-draft-resume"
                     color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doResumeFiling(task)"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumeFiling(item)"
                   >
-                    <template v-if="isTypeIncorporationApplication(task) && task.isEmptyFiling">
+                    <template v-if="isTypeIncorporationApplication(item) && item.isEmptyFiling">
                       <span v-if="nameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
@@ -339,7 +340,7 @@
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" class="actions__more-actions__btn px-0"
-                        v-on="on" id="menu-activator" :disabled="!task.enabled"
+                        v-on="on" id="menu-activator" :disabled="!item.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -348,7 +349,7 @@
                       <v-list-item
                         v-if="businessId"
                         id="btn-delete-draft"
-                        @click="confirmDeleteDraft(task)"
+                        @click="confirmDeleteDraft(item)"
                       >
                         <v-list-item-title>Delete Draft</v-list-item-title>
                       </v-list-item>
@@ -356,7 +357,7 @@
                       <v-list-item
                         v-if="tempRegNumber"
                         id="btn-delete-incorporation"
-                        @click="confirmDeleteIncorporation(task)"
+                        @click="confirmDeleteIncorporation(item)"
                       >
                         <v-list-item-title>Delete Incorporation Application</v-list-item-title>
                       </v-list-item>
@@ -364,20 +365,20 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="isStatusPending(task)">
-                  <v-btn v-if="isPayMethodOnlineBanking(task)"
+                <template v-else-if="isStatusPending(item)">
+                  <v-btn v-if="isPayMethodOnlineBanking(item)"
                     class="btn-change-payment-type"
                     color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doResumePayment(task)"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumePayment(item)"
                   >
                     <span>Change Payment Type</span>
                   </v-btn>
                   <v-btn v-else
                     class="btn-resume-payment"
                     color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doResumePayment(task)"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumePayment(item)"
                   >
                     <span>Resume Payment</span>
                   </v-btn>
@@ -386,7 +387,7 @@
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary"
                         v-on="on" id="pending-item-menu-activator"
-                        :disabled="!task.enabled"
+                        :disabled="!item.enabled"
                         class="actions__more-actions__btn px-0"
                         data-test-id="btn-pending-filing-menu"
                         @click.native.stop
@@ -397,7 +398,7 @@
                     <v-list class="actions__more-actions">
                       <v-list-item id="btn-cancel-payment"
                         data-test-id="btn-cancel-payment"
-                        @click="confirmCancelPayment(task)"
+                        @click="confirmCancelPayment(item)"
                       >
                         <v-list-item-title>Cancel Payment</v-list-item-title>
                       </v-list-item>
@@ -405,25 +406,25 @@
                   </v-menu>
                 </template>
 
-                <template v-else-if="isStatusError(task)">
+                <template v-else-if="isStatusError(item)">
                   <v-btn class="btn-retry-payment"
                     color="primary"
-                    :disabled="!task.enabled"
-                    @click.native.stop="doResumePayment(task)"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumePayment(item)"
                   >
                     <span>Retry Payment</span>
                   </v-btn>
                 </template>
 
-                <template v-else-if="isStatusPaid(task)">
+                <template v-else-if="isStatusPaid(item)">
                   <!-- no action button in this case -->
                 </template>
 
-                <template v-else-if="isStatusNew(task) && isTypeAnnualReport(task)">
+                <template v-else-if="isStatusNew(item) && isTypeAnnualReport(item)">
                   <v-btn class="btn-file-now"
                     color="primary"
-                    :disabled="!task.enabled || isCoaPending || (isBComp && !enableCheckbox[index]) || disableChanges"
-                    @click.native.stop="doFileNow(task)"
+                    :disabled="!item.enabled || isCoaPending || (isBComp && !enableCheckbox[index]) || disableChanges"
+                    @click.native.stop="doFileNow(item)"
                   >
                     <span>File Annual Report</span>
                   </v-btn>
@@ -436,19 +437,19 @@
         <v-expansion-panel-content>
           <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-          <template v-if="isStatusDraft(task) && isPayError(task)">
-            <PaymentIncomplete :filing=task />
+          <template v-if="isStatusDraft(item) && isPayError(item)">
+            <PaymentIncomplete :filing=item />
           </template>
 
-          <template v-else-if="isTypeCorrection(task)">
-            <div v-if="isStatusDraft(task)" data-test-class="correction-draft" class="todo-list-detail body-2">
+          <template v-else-if="isTypeCorrection(item)">
+            <div v-if="isStatusDraft(item)" data-test-class="correction-draft" class="todo-list-detail body-2">
               <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
               <v-divider class="mt-6"></v-divider>
               <!-- the detail comments section -->
               <DetailsList
-                :filing=task
+                :filing=item
                 :isTask="true"
                 @showCommentDialog="showCommentDialog($event)"
               />
@@ -461,28 +462,28 @@
               <v-divider class="mt-6"></v-divider>
               <!-- the detail comments section -->
               <DetailsList
-                :filing=task
+                :filing=item
                 :isTask="true"
                 @showCommentDialog="showCommentDialog($event)"
               />
             </div>
           </template>
 
-          <template v-else-if="isStatusPending(task)">
-            <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(task)" :filing=task class="mb-6" />
+          <template v-else-if="isStatusPending(item)">
+            <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(item)" :filing=item class="mb-6" />
             <PaymentPending v-else />
           </template>
 
-          <template v-else-if="isStatusError(task)">
+          <template v-else-if="isStatusError(item)">
             <PaymentUnsuccessful />
           </template>
 
-          <template v-else-if="isStatusPaid(task)">
+          <template v-else-if="isStatusPaid(item)">
             <PaymentPaid />
           </template>
 
-          <template v-else-if="isStatusDraft(task) && isTypeIncorporationApplication(task)">
-            <NameRequestInfo :nameRequest="task.nameRequest" />
+          <template v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)">
+            <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -499,14 +500,14 @@
 </template>
 
 <script lang="ts">
+// Libraries
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Action, Getter, State } from 'vuex-class'
 import axios from '@/axios-auth'
-import { mapState, mapActions, mapGetters } from 'vuex'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 
-// Dialogs
+// Dialogs and Components
 import { AddCommentDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
-
-// Components
 import { DetailsList, NameRequestInfo, ContactInfo } from '@/components/common'
 import PaymentIncomplete from './TodoList/PaymentIncomplete.vue'
 import PaymentPaid from './TodoList/PaymentPaid.vue'
@@ -514,16 +515,12 @@ import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 
-// Mixins
-import { DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+// Mixins, Enums and Interfaces
+import { DateMixin, EnumMixin, FilingMixin, PayApiMixin } from '@/mixins'
+import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF } from '@/interfaces'
 
-// Enums and Interfaces
-import { FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { FilingHeaderIF, FilingIF, PaymentErrorIF, TaskItemIF, TodoHeaderIF } from '@/interfaces'
-
-export default {
-  name: 'TodoList',
-
+@Component({
   components: {
     // dialogs
     AddCommentDialog,
@@ -540,772 +537,798 @@ export default {
     PaymentPendingOnlineBanking,
     PaymentUnsuccessful
   },
+  mixins: [
+    Vue2Filters.mixin
+  ]
+})
+export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, PayApiMixin) {
+  // Refs
+  $refs!: {
+    confirm: ConfirmDialogType
+  }
 
-  mixins: [DateMixin, EnumMixin, FilingMixin, Vue2Filters.mixin],
+  // local properties
+  private addCommentDialog = false
+  private todoItems: Array<TodoItemIF> = []
+  private deleteErrors: Array<any> = []
+  private deleteWarnings: Array<any> = []
+  private deleteErrorDialog = false
+  private cancelPaymentErrors: Array<any> = []
+  private cancelPaymentErrorDialog = false
+  private enableCheckbox: Array<any> = []
+  private confirmEnabled = false
+  private currentFilingId: number = null
+  private panel: number = null // currently expanded panel
 
-  data () {
-    return {
-      addCommentDialog: false,
-      taskItems: [] as Array<TaskItemIF>,
-      deleteErrors: [] as Array<any>,
-      deleteWarnings: [] as Array<any>,
-      deleteErrorDialog: false,
-      cancelPaymentErrors: [] as Array<any>,
-      cancelPaymentErrorDialog: false,
-      enableCheckbox: [] as Array<any>,
-      confirmEnabled: false,
-      currentFilingId: null as number,
-      panel: null as number // currently expanded panel
+  @Prop({ default: null }) readonly inProcessFiling: number
+  @Prop({ default: false }) readonly disableChanges: boolean
+
+  @Getter isBComp!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isCoop!: boolean
+  @Getter isUlc!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter getCurrentYear!: number
+  @Getter getTasks!: Array<ApiTaskIF>
+  @Getter isInGoodStanding!: boolean
+  @Getter getEntityName!: string
+  @Getter isCoaPending!: boolean
+  @Getter getEntityIncNo!: string
+
+  @State nameRequest!: any
+  @State lastAnnualReportDate!: string
+  @State entityStatus!: EntityStatus
+
+  @Action setARFilingYear!: ActionBindingIF
+  @Action setArMinDate!: ActionBindingIF
+  @Action setArMaxDate!: ActionBindingIF
+  @Action setNextARDate!: ActionBindingIF
+  @Action setCurrentFilingStatus!: ActionBindingIF
+  @Action setHasBlockerTask!: ActionBindingIF
+
+  /** The Auth Web URL string. */
+  private get authWebUrl (): string {
+    return sessionStorage.getItem('AUTH_WEB_URL')
+  }
+
+  /** The Edit URL string. */
+  private get editUrl (): string {
+    return sessionStorage.getItem('EDIT_URL')
+  }
+
+  /** The Create URL string. */
+  private get createUrl (): string {
+    return sessionStorage.getItem('CREATE_URL')
+  }
+
+  /** The Manage Businesses URL string. */
+  private get manageBusinessesUrl (): string {
+    return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
+  }
+
+  /** The BCROS Home URL string. */
+  private get bcrosHomeUrl (): string {
+    return sessionStorage.getItem('BUSINESSES_URL')
+  }
+
+  /** The Base URL string. */
+  private get baseUrl (): string {
+    return sessionStorage.getItem('BASE_URL')
+  }
+
+  /** The Business ID string. */
+  private get businessId (): string {
+    return sessionStorage.getItem('BUSINESS_ID')
+  }
+
+  /** The Incorporation Application's Temporary Registration Number string. */
+  private get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
+
+  /** Whether filing an Alteration is required (ie, there is a Todo filing). */
+  private get requiresAlteration (): boolean {
+    if (this.isBcCompany || this.isUlc) {
+      return this.getTasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
     }
-  },
+    return false
+  }
 
-  props: {
-    inProcessFiling: null,
-    disableChanges: null
-  },
+  /** Alteration action button label. */
+  private get alterationBtnLabel (): string {
+    return this.requiresAlteration ? 'Alter Now' : 'Resume'
+  }
 
-  computed: {
-    ...mapGetters(['isBComp', 'isBcCompany', 'isCoop', 'isRoleStaff', 'currentYear', 'isInGoodStanding',
-      'isCoaPending']),
-
-    ...mapState(['tasks', 'entityIncNo', 'entityName', 'nameRequest', 'currentDate', 'lastAnnualReportDate',
-      'entityStatus']),
-
-    /** The Pay API URL string. */
-    payApiUrl (): string {
-      return sessionStorage.getItem('PAY_API_URL')
-    },
-
-    /** The Auth URL string. */
-    authUrl (): string {
-      return sessionStorage.getItem('AUTH_WEB_URL')
-    },
-
-    /** The Edit URL string. */
-    editUrl (): string {
-      return sessionStorage.getItem('EDIT_URL')
-    },
-
-    /** The Create URL string. */
-    createUrl (): string {
-      return sessionStorage.getItem('CREATE_URL')
-    },
-
-    /** The Manage Businesses URL string. */
-    manageBusinessesUrl (): string {
-      return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-    },
-
-    /** The BCROS Home URL string. */
-    bcrosHomeUrl (): string {
-      return sessionStorage.getItem('BUSINESSES_URL')
-    },
-
-    /** The Base URL string. */
-    baseUrl (): string {
-      return sessionStorage.getItem('BASE_URL')
-    },
-
-    /** The Business ID string. */
-    businessId (): string {
-      return sessionStorage.getItem('BUSINESS_ID')
-    },
-
-    /** The Incorporation Application's Temporary Registration Number string. */
-    tempRegNumber (): string {
-      return sessionStorage.getItem('TEMP_REG_NUMBER')
-    },
-
-    /** The condition if filing an Alteration is required. */
-    requiresAlteration (): boolean {
-      return (this.isBcCompany || this.isUlc)
-        ? this.tasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
-        : false
-    },
-
-    /** Alteration action button label. */
-    alterationBtnLabel (): string {
-      return this.requiresAlteration ? 'Alter Now' : 'Resume'
-    }
-  },
-
-  created (): void {
+  /** Called when this component is created. */
+  async created (): Promise<void> {
     // load data into this page
-    this.loadData()
-  },
+    await this.loadData()
+  }
 
-  methods: {
-    ...mapActions(['setARFilingYear', 'setArMinDate', 'setArMaxDate', 'setNextARDate', 'setCurrentFilingStatus',
-      'setHasBlockerTask']),
+  private async loadData (): Promise<void> {
+    this.todoItems = []
 
-    async loadData () {
-      this.taskItems = []
-
-      // If the Entity is a COOP, Enable the 'FileNow' Button without any user validation
-      if (this.isCoop) this.confirmCheckbox = true
-
-      for (const task of this.tasks) {
-        if (task?.task?.todo) {
-          this.loadTodoItem(task)
-        } else if (task?.task?.filing) {
-          await this.loadFilingItem(task)
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('ERROR - got unknown task =', task)
-        }
-      }
-
-      this.$emit('task-count', this.taskItems.length)
-      this.$emit('task-items', this.taskItems)
-
-      // Check if there are any draft/pending/error/paid/correction/alteration tasks.
-      // These are blockers because they need to be completed first.
-      const hasBlockerTask = this.taskItems.find(task => {
-        return (this.isStatusDraft(task) || this.isStatusPending(task) || this.isStatusError(task) ||
-          this.isStatusPaid(task) || this.isTypeCorrection(task) || this.isTypeAlteration(task))
-      })
-      this.setHasBlockerTask(!!hasBlockerTask)
-    },
-
-    loadTodoItem (task) {
-      const todo = task.task.todo as FilingIF
-      const header = todo.header as TodoHeaderIF
-
-      if (header) {
-        switch (header.name) {
-          case FilingTypes.ANNUAL_REPORT:
-            this.loadAnnualReportTodo(task)
-            break
-          default:
-            // eslint-disable-next-line no-console
-            console.log('ERROR - invalid name in todo header =', header)
-            break
-        }
+    for (const task of this.getTasks) {
+      if (task.task?.todo) {
+        this.loadTodoItem(task)
+      } else if (task.task?.filing) {
+        await this.loadFilingItem(task)
       } else {
         // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header in todo =', todo)
+        console.log('ERROR - got unknown task =', task)
       }
-    },
+    }
 
-    expiresText (nameRequest): string {
-      // NB: if expiration date is today (0) then NR is expired
-      const expireDays = this.daysFromToday(nameRequest?.expirationDate)
-      if (isNaN(expireDays) || expireDays < 1) {
-        return 'Expired'
-      } else if (expireDays < 2) {
-        return 'Expires today'
-      } else if (expireDays < 3) {
-        return 'Expires tomorrow'
-      } else {
-        return `Expires in ${expireDays} days`
-      }
-    },
+    this.$emit('todo-count', this.todoItems.length)
+    this.$emit('todo-items', this.todoItems)
 
-    /** Loads a NEW Annual Report todo. */
-    loadAnnualReportTodo (task) {
-      const todo: FilingIF = task.task.todo
-      const header = todo.header as TodoHeaderIF
+    // Check if there is a draft/pending/error/paid/correction/alteration task.
+    // This is a blocker because it needs to be completed first.
+    const blockerTask = this.todoItems.find(task => {
+      return (this.isStatusDraft(task) || this.isStatusPending(task) || this.isStatusError(task) ||
+        this.isStatusPaid(task) || this.isTypeCorrection(task) || this.isTypeAlteration(task))
+    })
+    this.setHasBlockerTask(!!blockerTask)
+  }
 
-      if (header && todo.business) {
-        const ARFilingYear = header.ARFilingYear
-        const subtitle: string = task.enabled && !this.isBComp ? '(including Address and/or Director Change)' : null
+  private loadTodoItem (task: ApiTaskIF): void {
+    const todo = task.task.todo
+    const header = todo.header
 
-        this.taskItems.push({
-          id: -1, // not falsy
-          filingType: FilingTypes.ANNUAL_REPORT,
-          title: `File ${ARFilingYear} Annual Report`,
-          subtitle,
-          ARFilingYear,
-          // NB: get min/max AR dates from header object (not business object)
-          // same as loading a draft AR
-          arMinDate: header.arMinDate, // COOP only
-          arMaxDate: header.arMaxDate, // COOP only
-          status: header.status || FilingStatus.NEW,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          nextArDate: this.nextArDate(todo.business.nextAnnualReport), // BCOMP only
-          arDueDate: this.formatDateString(header.arMaxDate) // BCOMP only
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or business in todo =', todo)
-      }
-    },
-
-    async loadFilingItem (task) {
-      const filing = task.task.filing as FilingIF
-      const header = filing.header as FilingHeaderIF
-
-      if (header) {
-        switch (header.name) {
-          case FilingTypes.ANNUAL_REPORT:
-            await this.loadAnnualReport(task)
-            break
-          case FilingTypes.CHANGE_OF_DIRECTORS:
-            await this.loadChangeOfDirectors(task)
-            break
-          case FilingTypes.CHANGE_OF_ADDRESS:
-            await this.loadChangeOfAddress(task)
-            break
-          case FilingTypes.CORRECTION:
-            this.loadCorrection(task)
-            break
-          case FilingTypes.INCORPORATION_APPLICATION:
-            await this.loadIncorporationApplication(task)
-            break
-          case FilingTypes.ALTERATION:
-            this.loadAlteration(task)
-            break
-          default:
-            // eslint-disable-next-line no-console
-            console.log('ERROR - invalid name in filing header =', header)
-            break
-        }
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header in filing =', filing)
-      }
-    },
-
-    loadAlteration (task) {
-      const filing: FilingIF = task.task.filing
-      const header = filing.header as FilingHeaderIF
-
-      if (header && filing.alteration && filing.business) {
-        if (!this.isInGoodStanding && this.isStatusDraft(header)) {
-          task.enabled = false
-        }
-
-        this.taskItems.push({
-          filingType: FilingTypes.ALTERATION,
-          id: header.filingId,
-          legalType: this.getCorpTypeDescription(filing.business?.legalType),
-          filingDate: header.date,
-          title: this.alterationTitle(header.priority, this.getCorpTypeDescription(filing.business.legalType)),
-          draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
-          status: header.status,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          goodStanding: this.isInGoodStanding,
-          paymentMethod: header.paymentMethod || null,
-          paymentToken: header.paymentToken || null,
-          comments: this.flattenAndSortComments(header.comments)
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or alteration or business in filing =', task)
-      }
-    },
-
-    /**
-     * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
-     * (Currently used for Coop ARs only, as BComps can't save draft ARs.)
-     */
-    async loadAnnualReport (task) {
-      const filing: FilingIF = task.task.filing
-      const header = filing.header as FilingHeaderIF
-
-      if (header && filing.annualReport && filing.business) {
-        // *** TODO: delete fallback when all draft ARs contain ARFilingYear
-        const ARFilingYear: number = header.ARFilingYear || this.getArFilingYear(filing)
-        const paymentStatusCode = header.paymentStatusCode
-        const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
-
-        this.taskItems.push({
-          filingType: FilingTypes.ANNUAL_REPORT,
-          id: header.filingId,
-          title: `File ${ARFilingYear} Annual Report`,
-          draftTitle: `${ARFilingYear} Annual Report`,
-          ARFilingYear,
-          // *** TODO: delete fallbacks when all draft ARs contain arMinDate and arMaxDate
-          arMinDate: header.arMinDate || this.getArMinDate(ARFilingYear), // COOP only
-          arMaxDate: header.arMaxDate || this.getArMaxDate(ARFilingYear), // COOP only
-          status: header.status || FilingStatus.NEW,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          paymentMethod: header.paymentMethod || null,
-          paymentToken: header.paymentToken || null,
-          payErrorObj
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or annualReport or business in filing =', filing)
-      }
-    },
-
-    async loadChangeOfDirectors (task) {
-      const filing: FilingIF = task.task.filing
-      const header = filing.header as FilingHeaderIF
-
-      // NB: "filing.changeOfDirectors" may be empty
-      if (header && filing.business) {
-        const paymentStatusCode = header.paymentStatusCode || null
-        const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
-
-        this.taskItems.push({
-          filingType: FilingTypes.CHANGE_OF_DIRECTORS,
-          id: header.filingId,
-          title: `File Director Change`,
-          draftTitle: `Director Change`,
-          status: header.status || FilingStatus.NEW,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          paymentMethod: header.paymentMethod || null,
-          paymentToken: header.paymentToken || null,
-          payErrorObj
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or business in filing =', filing)
-      }
-    },
-
-    async loadChangeOfAddress (task) {
-      const filing: FilingIF = task.task.filing
-      const header = filing.header as FilingHeaderIF
-
-      if (header && filing.changeOfAddress && filing.business) {
-        const paymentStatusCode = header.paymentStatusCode || null
-        const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
-
-        this.taskItems.push({
-          filingType: FilingTypes.CHANGE_OF_ADDRESS,
-          id: header.filingId,
-          title: `File Address Change`,
-          draftTitle: `Address Change`,
-          status: header.status || FilingStatus.NEW,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          paymentMethod: header.paymentMethod || null,
-          paymentToken: header.paymentToken || null,
-          payErrorObj
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or changeOfAddress or business in filing =', filing)
-      }
-    },
-
-    loadCorrection (task) {
-      const filing: FilingIF = task.task.filing
-      const header = filing.header as FilingHeaderIF
-
-      if (header && filing.correction && filing.business) {
-        this.taskItems.push({
-          filingType: FilingTypes.CORRECTION,
-          id: header.filingId,
-          filingDate: filing.correction.correctedFilingDate,
-          // this is only used for internal corrections (not IA):
-          correctedFilingId: filing.correction.correctedFilingId,
-          // this is only used for external corrections (IA):
-          correctedFilingType: this.filingTypeToName(filing.correction.correctedFilingType),
-          title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
-            this.filingTypeToName(filing.correction.correctedFilingType)),
-          draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
-          status: header.status,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          paymentMethod: header.paymentMethod || null,
-          paymentToken: header.paymentToken || null,
-          comments: this.flattenAndSortComments(header.comments)
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or correction or business in filing =', filing)
-      }
-    },
-
-    async loadIncorporationApplication (task) {
-      const filing: FilingIF = task.task.filing
-      const header = filing.header as FilingHeaderIF
-
-      // NB: "filing.incorporationApplication" may be empty
-      if (header && filing.business) {
-        const title = this.nameRequest
-          ? `${this.getCorpTypeDescription(this.entityType)} Incorporation Application - ${this.entityName}`
-          : `${this.getCorpTypeDescription(this.entityType)} Incorporation Application`
-
-        // set subtitle only if DRAFT
-        let subtitle
-        if (this.isStatusDraft(header)) {
-          if (this.nameRequest) {
-            subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
-          } else {
-            subtitle = 'DRAFT'
-          }
-        }
-
-        const paymentStatusCode = header.paymentStatusCode || null
-        const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
-
-        const ia = filing.incorporationApplication // may be undefined
-        const haveData = Boolean(ia?.offices || ia?.contactPoint || ia?.parties || ia?.shareClasses)
-
-        this.taskItems.push({
-          filingType: FilingTypes.INCORPORATION_APPLICATION,
-          id: header.filingId,
-          title,
-          subtitle,
-          draftTitle: 'Incorporation Application',
-          status: header.status,
-          enabled: Boolean(task.enabled),
-          order: task.order,
-          paymentMethod: header.paymentMethod || null,
-          paymentToken: header.paymentToken || null,
-          payErrorObj,
-          isEmptyFiling: !haveData,
-          nameRequest: this.nameRequest
-        })
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('ERROR - invalid header or business in filing =', filing)
-      }
-    },
-
-    /** Files a new filing (todo). */
-    doFileNow (task: TaskItemIF) {
-      switch (task.filingType) {
+    if (header) {
+      switch (header.name) {
         case FilingTypes.ANNUAL_REPORT:
-          // file the subject Annual Report
-          this.setARFilingYear(task.ARFilingYear)
-          this.setArMinDate(task.arMinDate) // COOP only
-          this.setArMaxDate(task.arMaxDate) // COOP only
-          this.setNextARDate(task.nextArDate) // BCOMP only
-          this.setCurrentFilingStatus(FilingStatus.NEW)
-          this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: 0 } }) // 0 means "new AR"
+          this.loadAnnualReportTodo(task)
           break
-        // FUTURE: uncomment when/if we have NRs without a draft
-        // case FilingTypes.NAME_REQUEST:
-        //   // redirect to Create web app to create this Incorporation Application
-        //   const url = `${this.createUrl}?id=${this.tempRegNumber}`
-        //   window.location.assign(url) // assume URL is always reachable
-        //   break
         default:
           // eslint-disable-next-line no-console
-          console.log('doFileNow(), invalid type for task =', task)
+          console.log('ERROR - invalid name in todo header =', header)
           break
       }
-    },
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header in todo =', todo)
+    }
+  }
 
-    /** Resumes a draft filing. */
-    doResumeFiling (task: TaskItemIF) {
-      switch (task.filingType) {
+  private expiresText (nameRequest: any): string {
+    // NB: if expiration date is today (0) then NR is expired
+    const expireDays = this.daysFromToday(nameRequest?.expirationDate)
+    if (isNaN(expireDays) || expireDays < 1) {
+      return 'Expired'
+    } else if (expireDays < 2) {
+      return 'Expires today'
+    } else if (expireDays < 3) {
+      return 'Expires tomorrow'
+    } else {
+      return `Expires in ${expireDays} days`
+    }
+  }
+
+  /** Loads a NEW Annual Report todo. */
+  private loadAnnualReportTodo (task: ApiTaskIF): void {
+    const todo = task.task.todo
+    const business = todo.business as BusinessIF
+    const header = todo.header
+
+    if (business && header) {
+      const ARFilingYear = header.ARFilingYear
+      const subtitle: string = (task.enabled && !this.isBComp) ? '(including Address and/or Director Change)' : null
+
+      const item: TodoItemIF = {
+        id: -1, // not falsy
+        name: FilingTypes.ANNUAL_REPORT,
+        title: `File ${ARFilingYear} Annual Report`,
+        draftTitle: null,
+        subtitle,
+        ARFilingYear,
+        // NB: get min/max AR dates from header object (not business object)
+        // same as loading a draft AR
+        arMinDate: header.arMinDate, // COOP only
+        arMaxDate: header.arMaxDate, // COOP only
+        status: header.status || FilingStatus.NEW,
+        enabled: task.enabled,
+        order: task.order,
+        nextArDate: this.nextArDate(business.nextAnnualReportDate), // BCOMP only
+        arDueDate: this.formatDateString(header.arMaxDate) // BCOMP only
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in todo =', todo)
+    }
+  }
+
+  private async loadFilingItem (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+
+    if (header) {
+      switch (header.name) {
         case FilingTypes.ANNUAL_REPORT:
-          // resume this Annual Report
-          this.setARFilingYear(task.ARFilingYear)
-          this.setArMinDate(task.arMinDate) // COOP only
-          this.setArMaxDate(task.arMaxDate) // COOP only
-          this.setNextARDate(task.nextArDate) // BCOMP only
-          this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: task.id } })
+          await this.loadAnnualReport(task)
           break
-
         case FilingTypes.CHANGE_OF_DIRECTORS:
-          // resume this Change Of Directors
-          this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: task.id } })
+          await this.loadChangeOfDirectors(task)
           break
-
         case FilingTypes.CHANGE_OF_ADDRESS:
-          // resume this Change Of Address
-          this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: task.id } })
+          await this.loadChangeOfAddress(task)
           break
-
         case FilingTypes.CORRECTION:
-          if (task.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
-            // redirect to Edit web app to correct this Incorporation Application
-            const correctionUrl = `${this.editUrl}${this.entityIncNo}/correction?correction-id=${task.id}`
-            window.location.assign(correctionUrl) // assume URL is always reachable
-          } else {
-            // resume this Correction Filing
-            this.setCurrentFilingStatus(FilingStatus.DRAFT)
-            this.$router.push({ name: Routes.CORRECTION,
-              params: { filingId: task.id, correctedFilingId: task.correctedFilingId }
-            })
-          }
+          await this.loadCorrection(task)
           break
-
         case FilingTypes.INCORPORATION_APPLICATION:
-          // redirect to Create web app to resume this Incorporation Application
-          const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
-          window.location.assign(incorpAppUrl) // assume URL is always reachable
+          await this.loadIncorporationApplication(task)
           break
-
         case FilingTypes.ALTERATION:
-          // redirect to Edit web app to alter this company
-          const alterationUrl = `${this.editUrl}${this.entityIncNo}/alteration?alteration-id=${task.id}`
-          window.location.assign(alterationUrl) // assume URL is always reachable
+          await this.loadAlteration(task)
           break
-
         default:
           // eslint-disable-next-line no-console
-          console.log('doResumeFiling(), invalid type for task =', task)
+          console.log('ERROR - invalid name in filing header =', header)
           break
       }
-    },
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header in filing =', filing)
+    }
+  }
 
-    // this is called for both Resume Payment and Retry Payment
-    doResumePayment (task: TaskItemIF) {
-      const filingId = task.id
-      const paymentToken = task.paymentToken
+  private async loadAlteration (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const alteration = filing.alteration
+    const business = filing.business
+    const header = filing.header
 
-      const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
-      const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+    if (alteration && business && header) {
+      if (!this.isInGoodStanding && this.isStatusDraft(header)) {
+        task.enabled = false
+      }
 
-      window.location.assign(payUrl) // assume URL is always reachable
-      return true
-    },
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType as CorpTypeCd)
 
-    confirmDeleteDraft (task: TaskItemIF) {
-      // open confirmation dialog and wait for response
-      this.$refs.confirm.open(
-        'Delete Draft?',
-        'Delete your ' + task.draftTitle + '? Any changes you\'ve made will be lost.',
-        {
-          width: '40rem',
-          persistent: true,
-          yes: 'Delete',
-          no: null,
-          cancel: 'Cancel'
-        }
-      ).then(async (confirm) => {
-        // if we get here, Delete was clicked
-        if (confirm) {
-          await this.doDeleteDraft(task)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+
+      const item: TodoItemIF = {
+        name: FilingTypes.ALTERATION,
+        id: header.filingId,
+        legalType: corpTypeDescription,
+        title: this.alterationTitle(header.priority, corpTypeDescription),
+        draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        goodStanding: this.isInGoodStanding,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        comments: this.flattenAndSortComments(header.comments)
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or alteration or business in task =', task)
+    }
+  }
+
+  /**
+   * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
+   * (Currently used for Coop ARs only, as BComps can't save draft ARs.)
+   */
+  private async loadAnnualReport (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const annualReport = filing.annualReport
+    const business = filing.business
+    const header = filing.header
+
+    if (annualReport && business && header) {
+      // FUTURE: delete fallback when all draft ARs contain ARFilingYear
+      const ARFilingYear = header.ARFilingYear || this.getArFilingYear(annualReport)
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+
+      const item: TodoItemIF = {
+        name: FilingTypes.ANNUAL_REPORT,
+        id: header.filingId,
+        title: `File ${ARFilingYear} Annual Report`,
+        draftTitle: `${ARFilingYear} Annual Report`,
+        ARFilingYear,
+        // FUTURE: delete fallbacks when all draft ARs contain arMinDate and arMaxDate
+        arMinDate: header.arMinDate || this.getArMinDate(ARFilingYear), // COOP only
+        arMaxDate: header.arMaxDate || this.getArMaxDate(ARFilingYear), // COOP only
+        status: header.status || FilingStatus.NEW,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or annualReport or business in filing =', filing)
+    }
+  }
+
+  private async loadChangeOfDirectors (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const business = filing.business
+    const changeOfDirectors = filing.changeOfDirectors
+    const header = filing.header
+
+    // NB: don't check "changeOfDirectors" as it may be empty
+    if (business && header) {
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CHANGE_OF_DIRECTORS,
+        id: header.filingId,
+        title: `File Director Change`,
+        draftTitle: `Director Change`,
+        status: header.status || FilingStatus.NEW,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  private async loadChangeOfAddress (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const business = filing.business
+    const changeOfAddress = filing.changeOfAddress
+    const header = filing.header
+
+    if (business && changeOfAddress && header) {
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CHANGE_OF_ADDRESS,
+        id: header.filingId,
+        title: `File Address Change`,
+        draftTitle: `Address Change`,
+        status: header.status || FilingStatus.NEW,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or changeOfAddress or business in filing =', filing)
+    }
+  }
+
+  private async loadCorrection (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const business = filing.business
+    const correction = filing.correction
+    const header = filing.header
+
+    if (business && correction && header) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CORRECTION,
+        id: header.filingId,
+        // this is only used for internal corrections (not IA):
+        correctedFilingId: correction.correctedFilingId,
+        // this is only used for external corrections (IA):
+        correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes),
+        title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
+          this.filingTypeToName(correction.correctedFilingType as FilingTypes)),
+        draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        comments: this.flattenAndSortComments(header.comments)
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or correction or business in filing =', filing)
+    }
+  }
+
+  private async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const business = filing.business
+    const header = filing.header
+    const incorporationApplication = filing.incorporationApplication
+
+    // NB: don't check "incorporationApplication" as it may be empty
+    if (business && header) {
+      const title = this.nameRequest
+        ? `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application - ${this.getEntityName}`
+        : `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
+
+      // set subtitle only if DRAFT
+      let subtitle: string
+      if (this.isStatusDraft(header)) {
+        if (this.nameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
         } else {
-          // do nothing
+          subtitle = 'DRAFT'
         }
-      }).catch(() => {
-        // if we get here, Don't Delete was clicked - do nothing
-      })
-    },
+      }
 
-    confirmDeleteIncorporation (task: TaskItemIF) {
-      const line1 = `Deleting this ${task.draftTitle} will remove this application and all information ` +
-        'associated with this application.'
-      const line2 = this.nameRequest
-        ? 'You will be returned to your Manage Businesses dashboard where you can use the Name Request ' +
-          'associated with this application for a future application.'
-        : 'You will be returned to the Business Registry home page.'
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
-      // open confirmation dialog and wait for response
-      this.$refs.confirm.open(
-        'Delete Incorporation Application?',
-        `${line1}\n\n${line2}`,
-        {
-          width: '40rem',
-          persistent: true,
-          yes: 'Delete',
-          no: null,
-          cancel: 'Don\'t delete',
-          stayOpenAfterConfirm: true
-        }
-      ).then(async (confirm) => {
-        // if we get here, "Delete" was clicked
-        if (confirm) {
-          // delete without refreshing the dashboard as it triggers an error loading an IA
-          // a redirect will happen taking the user off this page
-          await this.doDeleteDraft(task, false)
+      const ia = incorporationApplication // may be undefined
+      const haveData = Boolean(ia?.offices || ia?.contactPoint || ia?.parties || ia?.shareClasses)
 
-          if (this.nameRequest) {
-            // redirect to Manage Businesses page
-            window.location.assign(this.manageBusinessesUrl) // assume URL is always reachable
-          } else {
-            // redirect to BCROS home page
-            window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
-          }
+      const item: TodoItemIF = {
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        id: header.filingId,
+        title,
+        subtitle,
+        draftTitle: FilingNames.INCORPORATION_APPLICATION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.nameRequest
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  /** Files a new filing (todo). */
+  private doFileNow (item: TodoItemIF): void {
+    switch (item.name) {
+      case FilingTypes.ANNUAL_REPORT:
+        // file the subject Annual Report
+        this.setARFilingYear(item.ARFilingYear)
+        this.setArMinDate(item.arMinDate) // COOP only
+        this.setArMaxDate(item.arMaxDate) // COOP only
+        this.setNextARDate(item.nextArDate) // BCOMP only
+        this.setCurrentFilingStatus(FilingStatus.NEW)
+        this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
+        break
+      // FUTURE: uncomment when/if we have NRs without a draft
+      // case FilingTypes.NAME_REQUEST:
+      //   // redirect to Create web app to create this Incorporation Application
+      //   const url = `${this.createUrl}?id=${this.tempRegNumber}`
+      //   window.location.assign(url) // assume URL is always reachable
+      //   break
+      default:
+        // eslint-disable-next-line no-console
+        console.log('doFileNow(), invalid type for task =', item)
+        break
+    }
+  }
+
+  /** Resumes a draft filing. */
+  private doResumeFiling (item: TodoItemIF): void {
+    switch (item.name) {
+      case FilingTypes.ANNUAL_REPORT:
+        // resume this Annual Report
+        this.setARFilingYear(item.ARFilingYear)
+        this.setArMinDate(item.arMinDate) // COOP only
+        this.setArMaxDate(item.arMaxDate) // COOP only
+        this.setNextARDate(item.nextArDate) // BCOMP only
+        this.setCurrentFilingStatus(FilingStatus.DRAFT)
+        this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.id.toString() } })
+        break
+
+      case FilingTypes.CHANGE_OF_DIRECTORS:
+        // resume this Change Of Directors
+        this.setCurrentFilingStatus(FilingStatus.DRAFT)
+        this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.id.toString() } })
+        break
+
+      case FilingTypes.CHANGE_OF_ADDRESS:
+        // resume this Change Of Address
+        this.setCurrentFilingStatus(FilingStatus.DRAFT)
+        this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.id.toString() } })
+        break
+
+      case FilingTypes.CORRECTION:
+        if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
+          // redirect to Edit web app to correct this Incorporation Application
+          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${item.id}`
+          window.location.assign(correctionUrl) // assume URL is always reachable
         } else {
-          // do nothing
+          // resume this Correction Filing
+          this.setCurrentFilingStatus(FilingStatus.DRAFT)
+          this.$router.push({ name: Routes.CORRECTION,
+            params: { filingId: item.id.toString(), correctedFilingId: item.correctedFilingId.toString() }
+          })
         }
-      }).catch(() => {
-        // if we get here, "Don't Delete" was clicked - do nothing
-      })
-    },
+        break
 
-    async doDeleteDraft (task: TaskItemIF, refreshDashboard: boolean = true) {
-      const id = this.entityIncNo || this.tempRegNumber
-      let url = `businesses/${id}/filings/${task.id}`
-      await axios.delete(url).then(res => {
-        if (!res) { throw new Error('Invalid API response') }
+      case FilingTypes.INCORPORATION_APPLICATION:
+        // redirect to Create web app to resume this Incorporation Application
+        const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
+        window.location.assign(incorpAppUrl) // assume URL is always reachable
+        break
 
-        if (refreshDashboard) {
-          // emit dashboard reload trigger event
-          this.$root.$emit('triggerDashboardReload')
-        }
-      }).catch(error => {
-        if (error?.response) {
-          if (error.response.data.errors) {
-            this.deleteErrors = error.response.data.errors
-          }
-          if (error.response.data.warnings) {
-            this.deleteWarnings = error.response.data.warnings
-          }
-          this.deleteErrorDialog = true
+      case FilingTypes.ALTERATION:
+        // redirect to Edit web app to alter this company
+        const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.id}`
+        window.location.assign(alterationUrl) // assume URL is always reachable
+        break
+
+      default:
+        // eslint-disable-next-line no-console
+        console.log('doResumeFiling(), invalid type for item =', item)
+        break
+    }
+  }
+
+  // this is called for both Resume Payment and Retry Payment
+  private doResumePayment (item: TodoItemIF): boolean {
+    const filingId = item.id
+    const paymentToken = item.paymentToken
+
+    const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
+    const payUrl = this.authWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+
+    window.location.assign(payUrl) // assume URL is always reachable
+    return true
+  }
+
+  private confirmDeleteDraft (item: TodoItemIF): void {
+    // open confirmation dialog and wait for response
+    this.$refs.confirm.open(
+      'Delete Draft?',
+      'Delete your ' + item.draftTitle + '? Any changes you\'ve made will be lost.',
+      {
+        width: '40rem',
+        persistent: true,
+        yes: 'Delete',
+        no: null,
+        cancel: 'Cancel'
+      }
+    ).then(async (confirm) => {
+      // if we get here, Delete was clicked
+      if (confirm) {
+        await this.doDeleteDraft(item)
+      } else {
+        // do nothing
+      }
+    }).catch(() => {
+      // if we get here, Don't Delete was clicked - do nothing
+    })
+  }
+
+  private confirmDeleteIncorporation (item: TodoItemIF): void {
+    const line1 = `Deleting this ${item.draftTitle} will remove this application and all information ` +
+      'associated with this application.'
+    const line2 = this.nameRequest
+      ? 'You will be returned to your Manage Businesses dashboard where you can use the Name Request ' +
+        'associated with this application for a future application.'
+      : 'You will be returned to the Business Registry home page.'
+
+    // open confirmation dialog and wait for response
+    this.$refs.confirm.open(
+      'Delete Incorporation Application?',
+      `${line1}\n\n${line2}`,
+      {
+        width: '40rem',
+        persistent: true,
+        yes: 'Delete',
+        no: null,
+        cancel: 'Don\'t delete',
+        stayOpenAfterConfirm: true
+      }
+    ).then(async (confirm) => {
+      // if we get here, "Delete" was clicked
+      if (confirm) {
+        // delete without refreshing the dashboard as it triggers an error loading an IA
+        // a redirect will happen taking the user off this page
+        await this.doDeleteDraft(item, false)
+
+        if (this.nameRequest) {
+          // redirect to Manage Businesses page
+          window.location.assign(this.manageBusinessesUrl) // assume URL is always reachable
         } else {
-          this.deleteErrorDialog = true
+          // redirect to BCROS home page
+          window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
         }
-      })
-    },
+      } else {
+        // do nothing
+      }
+    }).catch(() => {
+      // if we get here, "Don't Delete" was clicked - do nothing
+    })
+  }
 
-    resetErrors () {
-      this.deleteErrorDialog = false
-      this.deleteErrors = []
-      this.deleteWarnings = []
-    },
+  private async doDeleteDraft (item: TodoItemIF, refreshDashboard: boolean = true): Promise<void> {
+    const id = this.getEntityIncNo || this.tempRegNumber
+    const url = `businesses/${id}/filings/${item.id}`
 
-    resetCancelPaymentErrors () {
-      this.cancelPaymentErrorDialog = false
-      this.cancelPaymentErrors = []
-    },
+    await axios.delete(url).then(res => {
+      if (!res) { throw new Error('Invalid API response') }
 
-    confirmCancelPayment (task: TaskItemIF) {
-      // open confirmation dialog and wait for response
-      this.$refs.confirm.open(
-        'Cancel Payment?',
-        'Cancel payment for your ' + task.draftTitle + '?',
-        {
-          width: '40rem',
-          persistent: true,
-          yes: 'Cancel Payment',
-          no: null,
-          cancel: 'Don\'t Cancel'
-        }
-      ).then(async (confirm) => {
-        // if we get here, Yes or No was clicked
-        if (confirm) {
-          await this.cancelPaymentAndSetToDraft(task)
-        } else {
-          // do nothing
-        }
-      }).catch(() => {
-        // if we get here, Cancel was clicked - do nothing
-      })
-    },
-
-    async cancelPaymentAndSetToDraft (task: TaskItemIF) {
-      let url = `businesses/${this.entityIncNo}/filings/${task.id}`
-      await axios.patch(url, {}).then(res => {
-        if (!res) { throw new Error('Invalid API response') }
-
+      if (refreshDashboard) {
         // emit dashboard reload trigger event
         this.$root.$emit('triggerDashboardReload')
-      }).catch(error => {
-        if (error?.response) {
-          if (error.response.data.errors) {
-            this.cancelPaymentErrors = error.response.data.errors
-          }
-          this.cancelPaymentErrorDialog = true
-        } else {
-          this.cancelPaymentErrorDialog = true
+      }
+    }).catch(error => {
+      if (error?.response) {
+        if (error.response.data?.errors) {
+          this.deleteErrors = error.response.data.errors
         }
-      })
-    },
-
-    showCommentDialog (filingId: number): void {
-      this.currentFilingId = filingId
-      this.addCommentDialog = true
-    },
-
-    hideCommentDialog (needReload: boolean): void {
-      this.addCommentDialog = false
-      if (needReload) {
-        // emit dashboard reload trigger event
-        this.$root.$emit('triggerDashboardReload')
-      }
-    },
-
-    /**
-     * Fetches a payment error object (description) by its code.
-     * @param code the error code to look up
-     * @returns a promise to return the payment error object
-     */
-    async getPayErrorObj (code: string): Promise<PaymentErrorIF> {
-      const url = this.payApiUrl + 'codes/errors/' + code
-      return axios.get(url)
-        .then(response => response?.data)
-        .catch() // ignore errors
-    },
-
-    isPayError (task: TaskItemIF): boolean {
-      return !!task.payErrorObj
-    },
-
-    alterationTitle (priority: boolean, oldLegalType: string): string {
-      let title = priority ? 'Priority ' : ''
-      if (this.requiresAlteration) {
-        title += this.filingTypeToName(FilingTypes.ALTERATION, null, true)
-        title += ` - ${oldLegalType} to a BC Benefit Company`
+        if (error.response.data?.warnings) {
+          this.deleteWarnings = error.response.data.warnings
+        }
+        this.deleteErrorDialog = true
       } else {
-        title += this.filingTypeToName(FilingTypes.ALTERATION)
+        this.deleteErrorDialog = true
       }
-      return title
-    },
+    })
+  }
 
-    priorityCorrectionTitle (priority: boolean): string {
-      let title = priority ? 'Priority ' : ''
-      title += this.filingTypeToName(FilingTypes.CORRECTION)
-      return title
-    },
+  private resetErrors (): void {
+    this.deleteErrorDialog = false
+    this.deleteErrors = []
+    this.deleteWarnings = []
+  }
 
-    /** Closes current panel or opens new panel. */
-    togglePanel (index: number) {
-      this.panel = (this.panel === index) ? null : index
-    },
+  private resetCancelPaymentErrors (): void {
+    this.cancelPaymentErrorDialog = false
+    this.cancelPaymentErrors = []
+  }
 
-    /**
-     * Returns AR Filing Year in case a draft filing doesn't contain it.
-     * *** TODO: Delete this when all AR drafts contain new ARFilingYear.
-     */
-    getArFilingYear (filing: FilingIF): number {
-      return +filing.annualReport.annualReportDate?.substring(0, 4)
-    },
-
-    /**
-     * Returns AR Min Date in case a draft filing doesn't contain it.
-     * *** TODO: Delete this when all AR drafts contain new arMinDate.
-     */
-    getArMinDate (ARFilingYear: number): string {
-      // min date is the AR year on Jan 1
-      // or the date of the previous AR (in case of 2 ARs held in the same year)
-      // whichever is latest
-      return this.latestDate(`${ARFilingYear}-01-01`, this.lastAnnualReportDate)
-    },
-
-    /**
-     * Returns AR Max Date in case a draft filing doesn't contain it.
-     * *** TODO: Delete this when all AR drafts contain new arMaxDate.
-     */
-    getArMaxDate (ARFilingYear: number): string {
-      if (ARFilingYear === 2020) {
-        // special case for 2020 ARs!
-        // max date is _today_ or Oct 31, 2021, whichever is earliest
-        return this.earliestDate(this.currentDate, '2021-10-31')
-      } else if (ARFilingYear < this.currentYear) {
-        // for past ARs, max date is the following year on Apr 30
-        return `${ARFilingYear + 1}-04-30`
+  private confirmCancelPayment (item: TodoItemIF): void {
+    // open confirmation dialog and wait for response
+    this.$refs.confirm.open(
+      'Cancel Payment?',
+      'Cancel payment for your ' + item.draftTitle + '?',
+      {
+        width: '40rem',
+        persistent: true,
+        yes: 'Cancel Payment',
+        no: null,
+        cancel: 'Don\'t Cancel'
+      }
+    ).then(async (confirm) => {
+      // if we get here, Yes or No was clicked
+      if (confirm) {
+        await this.cancelPaymentAndSetToDraft(item)
       } else {
-        // for current ARs, max date is today
-        return this.currentDate
+        // do nothing
       }
-    },
+    }).catch(() => {
+      // if we get here, Cancel was clicked - do nothing
+    })
+  }
 
-    /**
-     * Returns the BCOMP Next AR Date. Used for Annual Report filing.
-     * @returns for example, "2021-05-28"
-     */
-    nextArDate (nextAnnualReport: string): string {
-      const date: Date = this.apiToDate(nextAnnualReport)
-      return this.dateToDateString(date)
-    }
-  },
+  private async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
+    const url = `businesses/${this.getEntityIncNo}/filings/${item.id}`
 
-  watch: {
-    tasks () {
-      // if tasks changes, reload them
-      // (does not fire on initial page load)
-      this.loadData()
+    await axios.patch(url, {}).then(res => {
+      if (!res) { throw new Error('Invalid API response') }
+
+      // emit dashboard reload trigger event
+      this.$root.$emit('triggerDashboardReload')
+    }).catch(error => {
+      if (error?.response) {
+        if (error.response.data?.errors) {
+          this.cancelPaymentErrors = error.response.data.errors
+        }
+        this.cancelPaymentErrorDialog = true
+      } else {
+        this.cancelPaymentErrorDialog = true
+      }
+    })
+  }
+
+  private showCommentDialog (filingId: number): void {
+    this.currentFilingId = filingId
+    this.addCommentDialog = true
+  }
+
+  private hideCommentDialog (needReload: boolean): void {
+    this.addCommentDialog = false
+    if (needReload) {
+      // emit dashboard reload trigger event
+      this.$root.$emit('triggerDashboardReload')
     }
+  }
+
+  private isPayError (item: TodoItemIF): boolean {
+    return !!item.payErrorObj
+  }
+
+  private alterationTitle (priority: boolean, fromLegalType: string): string {
+    let title = priority ? 'Priority ' : ''
+    if (this.requiresAlteration) {
+      title += this.filingTypeToName(FilingTypes.ALTERATION, null, true)
+      title += ` - ${fromLegalType} to a BC Benefit Company`
+    } else {
+      title += this.filingTypeToName(FilingTypes.ALTERATION)
+    }
+    return title
+  }
+
+  private priorityCorrectionTitle (priority: boolean): string {
+    let title = priority ? 'Priority ' : ''
+    title += this.filingTypeToName(FilingTypes.CORRECTION)
+    return title
+  }
+
+  /** Closes current panel or opens new panel. */
+  private togglePanel (index: number): void {
+    this.panel = (this.panel === index) ? null : index
+  }
+
+  /**
+   * Returns AR Filing Year in case a draft filing doesn't contain it.
+   * FUTURE: Delete this when all draft ARs contain new ARFilingYear.
+   */
+  getArFilingYear (annualReport: any): number {
+    return +annualReport.annualReportDate?.substring(0, 4)
+  }
+
+  /**
+   * Returns AR Min Date in case a draft filing doesn't contain it.
+   * FUTURE: Delete this when all draft ARs contain new arMinDate.
+   */
+  private getArMinDate (ARFilingYear: number): string {
+    // min date is the AR year on Jan 1
+    // or the date of the previous AR (in case of 2 ARs held in the same year)
+    // whichever is latest
+    return this.latestDate(`${ARFilingYear}-01-01`, this.lastAnnualReportDate)
+  }
+
+  /**
+   * Returns AR Max Date in case a draft filing doesn't contain it.
+   * FUTURE: Delete this when all draft ARs contain new arMaxDate.
+   */
+  private getArMaxDate (ARFilingYear: number): string {
+    if (ARFilingYear === 2020) {
+      // special case for 2020 ARs!
+      // max date is _today_ or Oct 31, 2021, whichever is earliest
+      return this.earliestDate(this.getCurrentDate, '2021-10-31')
+    } else if (ARFilingYear < this.getCurrentYear) {
+      // for past ARs, max date is the following year on Apr 30
+      return `${ARFilingYear + 1}-04-30`
+    } else {
+      // for current ARs, max date is today
+      return this.getCurrentDate
+    }
+  }
+
+  /**
+   * Returns the BCOMP Next AR Date. Used for Annual Report filing.
+   * @param nextAnnualReport for example, "2021-11-17T08:00:00+00:00"
+   * @returns for example, "2021-11-17"
+   */
+  private nextArDate (nextAnnualReport: string): string {
+    const date = this.apiToDate(nextAnnualReport)
+    return this.dateToYyyyMmDd(date)
+  }
+
+  @Watch('getTasks')
+  private async onTasksChanged (): Promise<void> {
+    // when tasks list has changed, reload it
+    // (does not fire on initial page load)
+    await this.loadData()
   }
 }
 </script>
@@ -1380,7 +1403,7 @@ export default {
   .v-btn {
     // adjust button position so it fits within the title height
     margin-top: -8px;
-    margin-bottom: -4px
+    margin-bottom: -4px;
   }
 }
 

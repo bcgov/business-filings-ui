@@ -60,7 +60,7 @@ describe('Correction - UI', () => {
     store.state.entityType = 'CP'
     store.state.entityName = 'My Test Entity'
     store.state.entityIncNo = 'CP1234567'
-    store.state.entityFoundingDate = '1971-05-12T00:00:00-00:00'
+    store.state.entityFoundingDate = new Date('1971-05-12T00:00:00-00:00')
     store.state.filingData = []
     store.state.keycloakRoles = ['staff'] // corrections currently apply to staff only
   })
@@ -222,7 +222,7 @@ describe('Correction - UI', () => {
     expect(vm.title).toBe('Annual Report (2018)')
     expect(vm.agmYear).toBe(2018)
     expect(vm.originalFilingDate).toBe('Dec 23, 2018')
-    expect(vm.defaultComment).toBe('Correction for Annual Report (2018). Filed on Dec 23, 2018.')
+    expect(vm.defaultComment).toBe('Correction for Annual Report (2018), filed on Dec 23, 2018.')
 
     wrapper.destroy()
   })

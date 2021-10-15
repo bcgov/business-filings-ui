@@ -4,32 +4,28 @@
         I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
         of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
     </p>
-    <p class="certify-content">Date: {{currentDate}}</p>
+    <p class="certify-content">Date: {{getCurrentDate}}</p>
     <p class="certify-content">{{message}}</p>
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 
-@Component({
-  computed: {
-    ...mapState(['currentDate'])
-  }
-})
+@Component({})
 export default class SummaryCertify extends Vue {
-  readonly currentDate!: string
+  @Getter getCurrentDate!: string
 
   // Props passed into this component.
   @Prop({ default: '' })
-  private certifiedBy: string
-
-   @Prop({ default: '' })
-  private message: string
+  readonly certifiedBy: string
 
   @Prop({ default: '' })
-  private entityDisplay: string
+  readonly message: string
+
+  @Prop({ default: '' })
+  readonly entityDisplay: string
 
   /**
    * Computed value.

@@ -1,34 +1,24 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapActions, mapState } from 'vuex'
-import { CorrectionFilingIF, FilingDataIF } from '@/interfaces'
+import { Action, State, Getter } from 'vuex-class'
+import { CommentIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces'
 import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
  */
-@Component({
-  computed: {
-    ...mapState(['currentDate', 'filingData', 'entityType'])
-  },
-  methods: {
-    ...mapActions(['setFilingData'])
-  }
-})
+@Component({})
 export default class FilingMixin extends Vue {
-  // store actions
-  readonly setFilingData!: (x: any) => void
-
-  // store states
-  readonly currentDate!: string
-  readonly filingData!: Array<FilingDataIF>
-  readonly entityType!: CorpTypeCd
+  @Action setFilingData!: (x: any) => void
+  @State filingData!: Array<FilingDataIF>
+  @Getter getCurrentDate!: string
+  @Getter getEntityType!: CorpTypeCd
 
   /**
    * Flattens and sorts an array of comments.
    * @param comments the array of comments to sort and deconstruct
    * @returns the sorted and flattened array of comments
    */
-  flattenAndSortComments (comments: Array<any>): Array<any> {
+  flattenAndSortComments (comments: Array<CommentIF>): Array<CommentIF> {
     if (comments && comments.length > 0) {
       // first use map to change comment.comment to comment
       const temp: Array<any> = comments.map(c => c.comment)
@@ -66,7 +56,7 @@ export default class FilingMixin extends Vue {
       if (action === 'add') {
         myFilingData.push({
           filingTypeCode: filingCode,
-          entityType: this.entityType,
+          entityType: this.getEntityType,
           priority: priority,
           waiveFees: waiveFees
         })
@@ -100,7 +90,7 @@ export default class FilingMixin extends Vue {
       header: {
         name: FilingTypes.CORRECTION,
         certifiedBy: iaFiling.header.certifiedBy,
-        date: this.currentDate
+        date: this.getCurrentDate
       },
       business: {
         legalType: iaFiling.business.legalType,

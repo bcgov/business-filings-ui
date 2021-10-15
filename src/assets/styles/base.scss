@@ -271,6 +271,14 @@ ul.list {
   background-color: white !important;
 }
 
+.dotted-underline {
+  border-bottom: 1px dotted;
+}
+
+.cursor-default {
+  cursor: default; /* arrow */
+}
+
 // Hides an element to all devices except screen readers
 .sr-only {
   position: absolute;
@@ -295,7 +303,6 @@ ul.list {
 
 .filing-item__actions {
   display: inline-block;
-  margin-right: 0.5rem;
 
   .expand-btn {
     letter-spacing: -0.01rem;
@@ -310,4 +317,13 @@ ul.list {
     padding: 0.25rem !important;
     color: $app-blue
   }
+}
+
+// vertical pipe for separating strings
+.vert-pipe {
+  margin-top: 0.1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  height: 1rem;
+  border-left: 1px solid $gray6;
 }

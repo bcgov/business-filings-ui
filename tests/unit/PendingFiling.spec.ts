@@ -43,7 +43,7 @@ describe('Pending Filing', () => {
       vuetify,
       propsData: {
         filing: {
-          filingType: 'alteration',
+          name: 'alteration',
           courtOrderNumber: 'NUMBER',
           isArrangement: true
         }
@@ -68,7 +68,9 @@ describe('Pending Filing', () => {
     const wrapper = mount(PendingFiling, {
       vuetify,
       propsData: {
-        filing: { title: 'Incorporation Application' }
+        filing: {
+          displayName: 'Incorporation Application'
+        }
       }
     })
 

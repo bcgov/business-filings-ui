@@ -2,10 +2,10 @@
   <div v-if="filing" class="completed-alteration-details body-2">
     <h4>Alteration Complete</h4>
 
-    <p v-if="filing.newLegalType !== filing.oldLegalType">
-      {{entityName || 'This company'}} was successfully altered
-      from a {{filing.oldLegalType}} to a {{filing.newLegalType}}
-      on {{filing.effectiveDateTime}} Pacific Time.
+    <p v-if="filing.toLegalType !== filing.fromLegalType">
+      {{getEntityName || 'This company'}} was successfully altered
+      from a {{fromLegalType}} to a {{toLegalType}}
+      on <DateTooltip :date="filing.effectiveDate" />.
     </p>
 
     <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
@@ -15,18 +15,29 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { DateTooltip } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
+import { EnumMixin } from '@/mixins'
 
 @Component({
-  computed: { ...mapState(['entityName']) }
+  components: { DateTooltip }
 })
-export default class CompletedAlteration extends Vue {
-  readonly entityName!: string
+export default class CompletedAlteration extends Mixins(EnumMixin) {
+  @Getter getEntityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) private filing: HistoryItemIF
+  @Prop({ required: true })
+  readonly filing: HistoryItemIF
+
+  get fromLegalType (): string {
+    return this.getCorpTypeDescription(this.filing?.fromLegalType)
+  }
+
+  get toLegalType (): string {
+    return this.getCorpTypeDescription(this.filing?.toLegalType)
+  }
 }
 </script>
 

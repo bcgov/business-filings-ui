@@ -1,17 +1,17 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
     <v-card>
-      <v-card-title id="dialog-title">Add a {{itemName}}</v-card-title>
+      <v-card-title id="dialog-title">Add a {{displayName}}</v-card-title>
       <v-card-text>
         <div id="notation-text" class="mb-4 mt-2">
-          Enter a {{itemName}} that will appear on the ledger for this entity
+          Enter a {{displayName}} that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
           <v-textarea
             v-model="notation"
             class="text-input-field mb-2"
             filled
-            :label="itemName"
+            :label="displayName"
             id="notation"
             rows="5"
             :no-resize="true"
@@ -62,6 +62,7 @@ import { DateMixin } from '@/mixins'
 import axios from '@/axios-auth'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { FormIF } from '@/interfaces'
+import { EffectOfOrderTypes, FilingTypes } from '@/enums'
 
 @Component({
   components: {
@@ -74,11 +75,11 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     notationFormRef: FormIF
   }
 
-  /** Prop for the item's name of the dialog. */
-  @Prop() readonly itemName: string
+  /** Prop for the item's display name. */
+  @Prop() readonly displayName: string
 
-  /** Prop for the item's filing type. */
-  @Prop() readonly filingType: string
+  /** Prop for the item's name (filing type). */
+  @Prop() readonly name: FilingTypes
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog: boolean
@@ -89,8 +90,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   /** Prop to require court order number regardless the plan of arrangement. */
   @Prop({ default: false }) readonly courtOrderNumberRequired: boolean
 
-  /** Entity number */
-  @Getter entityIncNo!: string
+  @Getter getEntityIncNo!: string
 
   /** The notation text. */
   private notation: string = ''
@@ -98,7 +98,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   /** Court Order Number */
   private courtOrderNumber:string = null
 
-  /** Whether has plan of arrangement */
+  /** Whether filing has plan of arrangement. */
   private planOfArrangement = false
 
   /** Whether this component is currently saving. */
@@ -119,7 +119,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
       return [
-        (v: string) => !!v || `Enter a ${this.itemName}`,
+        (v: string) => !!v || `Enter a ${this.displayName}`,
         (v: string) => v.length <= this.notationMaxLength || 'Maximum characters exceeded.'
       ]
     } else return []
@@ -174,22 +174,22 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     const data = {
       filing: {
         header: {
-          name: this.filingType,
-          date: this.currentDate,
+          name: this.name,
+          date: this.getCurrentDate,
           certifiedBy: ''
         },
         business: {
-          identifier: this.entityIncNo
+          identifier: this.getEntityIncNo
         },
-        [this.filingType]: {
+        [this.name]: {
           fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
-          effectOfOrder: (this.planOfArrangement ? 'planOfArrangement' : ''),
+          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
           orderDetails: this.notation
         }
       }
     }
 
-    const url = `businesses/${this.entityIncNo}/filings`
+    const url = `businesses/${this.getEntityIncNo}/filings`
     let success = false
     await axios.post(url, data).then(res => {
       success = true

@@ -1,5 +1,5 @@
 import { EntityStatus, CorpTypeCd, FilingStatus } from '@/enums'
-import { FilingDataIF } from '@/interfaces'
+import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF } from '@/interfaces'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -14,7 +14,7 @@ export default {
   setNextARDate ({ commit }, nextARDate: string) {
     commit('nextARDate', nextARDate)
   },
-  setNameRequest ({ commit }, nameRequest: object) {
+  setNameRequest ({ commit }, nameRequest: any) {
     commit('nameRequest', nameRequest)
   },
   setARFilingYear ({ commit }, year: number) {
@@ -41,7 +41,7 @@ export default {
   setEntityIncNo ({ commit }, entityIncNo: string) {
     commit('entityIncNo', entityIncNo)
   },
-  setEntityFoundingDate ({ commit }, entityFoundingDate: string) {
+  setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {
     commit('entityFoundingDate', entityFoundingDate)
   },
   setBusinessEmail ({ commit }, businessEmail: string) {
@@ -56,25 +56,31 @@ export default {
   setCurrentFilingStatus ({ commit }, currentFilingStatus: FilingStatus) {
     commit('currentFilingStatus', currentFilingStatus)
   },
-  setTasks ({ commit }, tasks: Array<object>) {
+  setTasks ({ commit }, tasks: Array<ApiTaskIF>) {
     commit('tasks', tasks)
   },
-  setFilings ({ commit }, filings: Array<object>) {
+  setFilings ({ commit }, filings: Array<ApiFilingIF>) {
     commit('filings', filings)
   },
-  setRegisteredAddress ({ commit }, registeredAddress: object) {
+  setRegisteredAddress ({ commit }, registeredAddress: OfficeAddressIF) {
     commit('registeredAddress', registeredAddress)
   },
-  setRecordsAddress ({ commit }, recordsAddress: object) {
+  setRecordsAddress ({ commit }, recordsAddress: OfficeAddressIF) {
     commit('recordsAddress', recordsAddress)
   },
-  setDirectors ({ commit }, directors: Array<object>) {
+  setDirectors ({ commit }, directors: Array<DirectorIF>) {
     commit('directors', directors)
   },
-  setLastAnnualReportDate ({ commit }, lastAnnualReportDate: string) {
-    commit('lastAnnualReportDate', lastAnnualReportDate)
+  setLastAnnualReportDate ({ commit }, date: string) {
+    commit('lastAnnualReportDate', date)
   },
-  setConfigObject ({ commit }, configObject: object) {
+  setLastAddressChangeDate ({ commit }, date: string) {
+    commit('lastAddressChangeDate', date)
+  },
+  setLastDirectorChangeDate ({ commit }, date: string) {
+    commit('lastDirectorChangeDate', date)
+  },
+  setConfigObject ({ commit }, configObject: any) {
     commit('configObject', configObject)
   },
   setFilingData ({ commit }, filingData: Array<FilingDataIF>) {
@@ -89,7 +95,7 @@ export default {
   setIsCoaPending ({ commit }, isCoaPending: boolean) {
     commit('isCoaPending', isCoaPending)
   },
-  setCoaEffectiveDate ({ commit }, coaEffectiveDate: string) {
+  setCoaEffectiveDate ({ commit }, coaEffectiveDate: Date) {
     commit('coaEffectiveDate', coaEffectiveDate)
   }
 }

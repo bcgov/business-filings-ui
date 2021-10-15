@@ -24,7 +24,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
-  @Prop() private filing: any
+  @Prop() readonly filing: any
 
   /** The draft title of the subject filing. */
   private get draftTitle (): string {

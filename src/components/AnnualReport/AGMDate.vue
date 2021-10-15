@@ -44,15 +44,15 @@
           <!-- restriction messages -->
           <!-- date must have been selected first -->
           <div v-if="dateText" class="restriction-messages mt-4">
-            <span v-if="!allowCOA && !allowCOD">
+            <span v-if="!allowCoa && !allowCod">
               You cannot change your Registered Office Addresses or Directors in this Annual Report
               because your AGM predates another filing that may have conflicting changes.
             </span>
-            <span v-else-if="!allowCOA">
+            <span v-else-if="!allowCoa">
               You cannot change your Registered Office Addresses in this Annual Report because your AGM
               predates another filing that may have conflicting changes.
             </span>
-            <span v-else-if="!allowCOD">
+            <span v-else-if="!allowCod">
               You cannot change your Directors in this Annual Report because your AGM predates another
               filing that may have conflicting changes.
             </span>
@@ -114,17 +114,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
-import { mapState, mapGetters } from 'vuex'
+import { State, Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
 
-@Component({
-  computed: {
-    // Property definitions for runtime environment.
-    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'currentDate', 'lastAnnualReportDate']),
-    ...mapGetters(['currentYear', 'lastFilingDate', 'isCoop'])
-  }
-})
+@Component({})
 export default class AgmDate extends Mixins(DateMixin) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
@@ -135,23 +129,28 @@ export default class AgmDate extends Mixins(DateMixin) {
 
   /** New AGM Date (from a resumed draft). */
   @Prop({ default: null })
-  private newAgmDate: string
+  readonly newAgmDate: string
 
   /** New AGM Extension flag (from a resumed draft). */
   @Prop({ default: null })
-  private newAgmExtension: boolean
+  readonly newAgmExtension: boolean
 
   /** New No AGM flag (from a resumed draft). */
   @Prop({ default: null })
-  private newNoAgm: boolean
+  readonly newNoAgm: boolean
 
   /** Whether to allow changing the addresses. */
   @Prop({ default: true })
-  private allowCOA: boolean
+  readonly allowCoa: boolean
 
   /** Whether to allow changing the directors. */
   @Prop({ default: true })
-  private allowCOD: boolean
+  readonly allowCod: boolean
+
+  @State ARFilingYear!: number
+  @State arMinDate!: string
+  @State arMaxDate!: string
+  @Getter isCoop!: boolean
 
   // Local properties.
   private dateText = '' // value in text field
@@ -160,17 +159,6 @@ export default class AgmDate extends Mixins(DateMixin) {
   private agmExtension = false // whether checkbox is checked
   private noAgm = false // whether checkbox is checked
   private backupDate = '' // for toggling No AGM
-
-  // Local definitions of computed properties for static type checking.
-  // Use non-null assertion operator to allow use before assignment.
-  readonly ARFilingYear!: number
-  readonly arMinDate!: string
-  readonly arMaxDate!: string
-  readonly currentDate!: string
-  readonly lastAnnualReportDate!: string
-  readonly currentYear!: number
-  readonly lastFilingDate!: string
-  readonly isCoop!: boolean
 
   /** The array of validations rule(s) for the AGM Date text field. */
   private get agmDateRules (): Array<Function> {
@@ -203,7 +191,7 @@ export default class AgmDate extends Mixins(DateMixin) {
     if (!this.ARFilingYear) return false // safety check
     // only show checkbox if 'today' is past max AGM date
     const max = `${this.ARFilingYear}-04-30`
-    return (this.compareDates(this.currentDate, max, '>'))
+    return (this.compareDates(this.getCurrentDate, max, '>'))
   }
 
   /** Called when component is mounted. */

@@ -82,7 +82,7 @@
 
                 <section>
                   <CodDate
-                    :initialCODDate="initialCODDate"
+                    :initialCodDate="initialCodDate"
                     @codDate="codDate=$event"
                     @valid="codDateValid=$event"
                   />
@@ -390,7 +390,7 @@ export default {
       haveChanges: false,
       saveErrors: [],
       saveWarnings: [],
-      initialCODDate: '',
+      initialCodDate: '',
       codDate: null,
       codDateValid: false,
       complianceDialogMsg: null,
@@ -407,9 +407,9 @@ export default {
   },
 
   computed: {
-    ...mapState(['currentDate', 'entityType', 'entityName', 'entityIncNo', 'entityFoundingDate', 'filingData']),
+    ...mapState(['entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isBComp', 'isRoleStaff']),
+    ...mapGetters(['isBComp', 'isRoleStaff', 'getCurrentDate', 'getEntityName', 'getEntityIncNo', 'getEntityType']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -483,7 +483,7 @@ export default {
 
   async mounted (): Promise<void> {
     // if tombstone data isn't set, go back to dashboard
-    if (!this.entityIncNo || isNaN(this.filingId)) {
+    if (!this.getEntityIncNo || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
       console.log('Standalone Directors Filing error - missing Entity Inc No or Filing ID!')
       this.$router.push({ name: Routes.DASHBOARD })
@@ -495,7 +495,7 @@ export default {
     this.$nextTick(async () => {
       // initial value
       // may be overwritten by resumed draft
-      this.initialCODDate = this.currentDate
+      this.initialCodDate = this.getCurrentDate
 
       if (this.filingId > 0) {
         // resume draft filing
@@ -504,14 +504,14 @@ export default {
         // fetch original directors
         // update working data only if it wasn't in the draft
         if (!this.isJestRunning) {
-          await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, isEmpty(this.updatedDirectors))
+          await this.$refs.directorsComponent.getOrigDirectors(this.initialCodDate, isEmpty(this.updatedDirectors))
         }
       } else {
         // this is a new filing
         this.loadingMessage = 'Preparing Your Director Change'
         // fetch original directors + update working data
         if (!this.isJestRunning) {
-          await this.$refs.directorsComponent.getOrigDirectors(this.initialCODDate, true)
+          await this.$refs.directorsComponent.getOrigDirectors(this.initialCodDate, true)
         }
       }
 
@@ -558,7 +558,7 @@ export default {
     ...mapActions(['setFilingData']),
 
     async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+      const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
       await axios.get(url).then(async response => {
         const filing: any = response?.data?.filing
 
@@ -567,8 +567,8 @@ export default {
         if (!filing.header) throw new Error('Missing header')
         if (!filing.business) throw new Error('Missing business')
         if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('Invalid filing type')
-        if (filing.business.identifier !== this.entityIncNo) throw new Error('Invalid business identifier')
-        if (filing.business.legalName !== this.entityName) throw new Error('Invalid business legal name')
+        if (filing.business.identifier !== this.getEntityIncNo) throw new Error('Invalid business identifier')
+        if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // restore Certified By (but not Date)
         this.certifiedBy = filing.header.certifiedBy
@@ -600,9 +600,9 @@ export default {
 
         // restore COD Date
         if (filing.header.effectiveDate) {
-          this.initialCODDate = this.apiToPacificDate(filing.header.effectiveDate)
+          this.initialCodDate = this.apiToPacificDate(filing.header.effectiveDate)
         } else if (filing.header.date) {
-          this.initialCODDate = this.apiToPacificDate(filing.header.date)
+          this.initialCodDate = this.apiToPacificDate(filing.header.date)
         } else {
           throw new Error('Missing effective date')
         }
@@ -703,7 +703,7 @@ export default {
     async saveFiling (isDraft) {
       this.resetErrors()
 
-      const hasPendingFilings = await this.hasTasks(this.entityIncNo)
+      const hasPendingFilings = await this.hasTasks(this.getEntityIncNo)
       if (hasPendingFilings) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
@@ -719,7 +719,7 @@ export default {
           name: FilingTypes.CHANGE_OF_DIRECTORS,
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
-          date: this.currentDate, // NB: API will reassign this date according to its clock
+          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
           effectiveDate: this.dateStringToApi(this.codDate)
         }
       }
@@ -747,9 +747,10 @@ export default {
 
       const business = {
         business: {
-          foundingDate: this.entityFoundingDate,
-          identifier: this.entityIncNo,
-          legalName: this.entityName
+          foundingDate: this.dateToApi(this.entityFoundingDate),
+          identifier: this.getEntityIncNo,
+          legalName: this.getEntityName,
+          legalType: this.getEntityType
         }
       }
 
@@ -775,12 +776,12 @@ export default {
 
         if (this.filingId > 0) {
           // we have a filing id, so update (put) an existing filing
-          let url = `businesses/${this.entityIncNo}/filings/${this.filingId}`
+          let url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
           if (isDraft) { url += '?draft=true' }
           response = await axios.put(url, data)
         } else {
           // filing id is 0, so create (post) a new filing
-          let url = `businesses/${this.entityIncNo}/filings`
+          let url = `businesses/${this.getEntityIncNo}/filings`
           if (isDraft) { url += '?draft=true' }
           response = await axios.post(url, data)
         }
@@ -849,16 +850,17 @@ export default {
     },
 
     /** Returns True if the specified business has any pending tasks, else False. */
+    // FUTURE move this to Legal API mixin
     async hasTasks (businessId): Promise<boolean> {
       let hasPendingItems = false
       if (this.filingId === 0) {
         const url = `businesses/${businessId}/tasks`
         await axios.get(url)
           .then(response => {
-            if (response && response.data && response.data.tasks) {
-              response.data.tasks.forEach((task) => {
-                if (task.task && task.task.filing &&
-                  task.task.filing.header && task.task.filing.header.status !== FilingStatus.NEW) {
+            if (response?.data?.tasks) {
+              // FUTURE: use find() or some() so this doesn't iterate over all tasks
+              response.data.tasks.forEach(task => {
+                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
                   hasPendingItems = true
                 }
               })

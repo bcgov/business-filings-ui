@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { FilingDataIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, DirectorIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
 
 /** The state model interface. */
 export interface StateIF {
@@ -10,29 +10,34 @@ export interface StateIF {
   currentDate: string // 'today' as YYYY-MM-DD
 
   // entity info
+  businessEmail: string
+  businessPhone: string
+  businessPhoneExtension: string
+
+  // business info
   entityName: string
   entityType: CorpTypeCd
   entityStatus: EntityStatus
   entityBusinessNo: string
   entityIncNo: string
-  entityFoundingDate: string
-  businessEmail: string
-  businessPhone: string
-  lastAnnualReportDate: string
-  businessPhoneExtension: string
+  entityFoundingDate: Date
+  lastAnnualReportDate: string // YYYY-MM-DD
+  lastAddressChangeDate: string // YYYY-MM-DD
+  lastDirectorChangeDate: string // YYYY-MM-DD
+
+  // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only
-  nameRequest: any
+  ARFilingYear: number // YYYY
+  arMaxDate: string // YYYY-MM-DD // COOPs only
+  arMinDate: string // YYYY-MM-DD // COOPs only
 
   // other global data
-  ARFilingYear: number // YYYY
-  arMinDate: string // YYYY-MM-DD // COOPs only
-  arMaxDate: string // YYYY-MM-DD // COOPs only
-
-  tasks: Array<any>
-  filings: Array<any>,
-  registeredAddress: any
-  recordsAddress: any
-  directors: Array<any>
+  tasks: Array<ApiTaskIF> // "tasks" data from API
+  filings: Array<ApiFilingIF> // "filings" data from API
+  registeredAddress: OfficeAddressIF
+  recordsAddress: OfficeAddressIF
+  directors: Array<DirectorIF>
+  nameRequest: any
 
   currentFilingStatus: FilingStatus
   configObject: any
@@ -41,5 +46,5 @@ export interface StateIF {
   hasBlockerTask: boolean
   hasBlockerFiling: boolean
   isCoaPending: boolean
-  coaEffectiveDate: string
+  coaEffectiveDate: Date
 }

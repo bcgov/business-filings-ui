@@ -39,19 +39,19 @@ export default class DetailComment extends Vue {
 
   /** Comment (v-model) passed into this component (required). */
   @Prop({ default: '' })
-  private value: string
+  readonly value: string
 
   /** Placeholder passed into this component (optional). */
   @Prop({ default: '' })
-  private placeholder: string
+  readonly placeholder: string
 
   /** Max Length passed into this component (optional). */
   @Prop({ default: 4096 })
-  private maxLength: number
+  readonly maxLength: number
 
   /** Autofocus passed into this component (optional). */
   @Prop({ default: false })
-  private autofocus: boolean
+  readonly autofocus: boolean
 
   /** Called when component is created. */
   created (): void {

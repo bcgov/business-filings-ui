@@ -205,7 +205,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { mapGetters, mapState } from 'vuex'
+import { Getter, State } from 'vuex-class'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
@@ -213,19 +213,8 @@ import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 // Interfaces
 import { OfficeAddressIF } from '@/interfaces'
 
-@Component({
-  computed: {
-    ...mapGetters(['isBComp', 'isCorp', 'isCoaPending']),
-    ...mapState(['registeredAddress', 'recordsAddress'])
-  }
-})
+@Component({})
 export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
-  // Local definitions of computed properties for static type checking.
-  readonly isBComp!: boolean
-  readonly isCorp!: boolean
-  readonly registeredAddress!: OfficeAddressIF
-  readonly recordsAddress!: OfficeAddressIF
-
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false })
   readonly showCompleteYourFilingMessage: boolean
@@ -233,6 +222,12 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false })
   readonly showGrayedOut: boolean
+
+  @Getter isBComp!: boolean
+  @Getter isCorp!: boolean
+  @Getter isCoaPending!: boolean
+  @State registeredAddress!: OfficeAddressIF
+  @State recordsAddress!: OfficeAddressIF
 
   /** Whether to appear disabled. */
   private get disabled (): boolean {

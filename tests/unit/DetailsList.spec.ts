@@ -12,88 +12,79 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Details List', () => {
-  const mockNoCommentsFiling = {
-    'type': 'annualReport',
-    'title': 'Annual Report (2018)',
-    'filingId': 63958,
-    'filingAuthor': 'John Doe',
-    'filingDate': '2018-12-12',
-    'filingYear': '2018',
-    'paymentToken': null,
-    'isPaperOnly': true,
-    'isCorrected': false,
-    'isCorrectionPending': false,
-    'comments': []
+  const mockFilingNoComments = {
+    type: 'annualReport',
+    title: 'Annual Report (2018)',
+    filingId: 63958,
+    submitter: 'John Doe',
+    submittedDate: '2018-12-12',
+    paymentToken: null,
+    isPaperOnly: true,
+    comments: []
   }
 
-  const mockFiling = {
-    'type': 'annualReport',
-    'title': 'Annual Report (2018)',
-    'filingId': 63958,
-    'filingAuthor': 'John Doe',
-    'filingDate': '2018-12-12',
-    'filingYear': '2018',
-    'paymentToken': null,
-    'isPaperOnly': true,
-    'isCorrected': false,
-    'isCorrectionPending': false,
-    'comments': [
+  const mockFilingOneComment = {
+    type: 'annualReport',
+    title: 'Annual Report (2018)',
+    filingId: 63958,
+    submitter: 'John Doe',
+    submittedDate: '2018-12-12',
+    paymentToken: null,
+    isPaperOnly: true,
+    comments: [
       {
-        'comment': {
-          'comment': 'Correction for Annual Report (2018). Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 123,
-          'submitterDisplayName': 'cbIdIr1234',
-          'timestamp': '2020-03-02T20:26:31.697044+00:00'
+        comment: {
+          comment: 'Correction for Annual Report (2018), filed on 2018-01-08.',
+          filingId: 63958,
+          id: 123,
+          submitterDisplayName: 'cbIdIr1234',
+          timestamp: '2020-03-02T20:26:31.697044+00:00'
         }
       }
     ]
   }
 
-  const mockManyCommentsFiling = {
-    'type': 'annualReport',
-    'title': 'Annual Report (2018)',
-    'filingId': 63958,
-    'filingAuthor': 'John Doe',
-    'filingDate': '2018-12-12',
-    'filingYear': '2018',
-    'paymentToken': null,
-    'isPaperOnly': true,
-    'isCorrected': false,
-    'isCorrectionPending': false,
-    'comments': [
+  const mockFilingManyComments = {
+    type: 'annualReport',
+    title: 'Annual Report (2018)',
+    filingId: 63958,
+    submitter: 'John Doe',
+    submittedDate: '2018-12-12',
+    paymentToken: null,
+    isPaperOnly: true,
+    comments: [
       {
-        'comment': {
-          'comment': 'Correction for Annual Report (2018). Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 111,
-          'submitterDisplayName': 'cbIdIr1234',
-          'timestamp': '2020-03-02T20:26:31.697044+00:00'
+        comment: {
+          comment: 'Correction for Annual Report (2018), filed on 2018-01-08.',
+          filingId: 63958,
+          id: 111,
+          submitterDisplayName: 'cbIdIr1234',
+          timestamp: '2020-03-02T20:26:31.697044+00:00'
         }
       },
       {
-        'comment': {
-          'comment': 'Correction for director mailing delivery address. Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 222,
-          'submitterDisplayName': 'sevIdiR2020',
-          'timestamp': '2020-03-05T20:26:31.697044+00:00'
+        comment: {
+          comment: 'Correction for director mailing delivery address, filed on 2018-01-08.',
+          filingId: 63958,
+          id: 222,
+          submitterDisplayName: 'sevIdiR2020',
+          timestamp: '2020-03-05T20:26:31.697044+00:00'
         }
       },
       {
-        'comment': {
-          'comment': 'Correction for office delivery address Change. Filed on 2018-01-08.',
-          'filingId': 63958,
-          'id': 333,
-          'submitterDisplayName': 'cbIdIr1234',
-          'timestamp': '2020-03-06T20:26:33.697044+00:00'
+        comment: {
+          comment: 'Correction for office delivery address Change, filed on 2018-01-08.',
+          filingId: 63958,
+          id: 333,
+          submitterDisplayName: 'cbIdIr1234',
+          timestamp: '2020-03-06T20:26:33.697044+00:00'
         }
       }
     ]
   }
 
   it('Displays no details if filing contains no comments', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockNoCommentsFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingNoComments } })
 
     expect(wrapper.find('.detail-body').exists()).toBe(false)
 
@@ -101,7 +92,7 @@ describe('Details List', () => {
   })
 
   it('Displays details if filing contains comments', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingOneComment } })
 
     expect(wrapper.find('.detail-body').exists()).toBe(true)
 
@@ -109,7 +100,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct count in the title - single detail', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingOneComment } })
 
     expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
 
@@ -117,7 +108,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct count in the title - multiple details', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingManyComments } })
 
     expect(wrapper.find('.title-bar').text()).toContain('Details (3)')
 
@@ -125,7 +116,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct number of details in the list', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockManyCommentsFiling } })
+    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingManyComments } })
 
     expect(wrapper.findAll('.detail-body').length).toEqual(3)
 
@@ -138,7 +129,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: false
       }
     })
@@ -154,7 +145,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: true
       }
     })
@@ -170,7 +161,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: false
       }
     })
@@ -186,7 +177,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       propsData: {
-        filing: mockFiling,
+        filing: mockFilingOneComment,
         isTask: false
       }
     })
@@ -195,7 +186,7 @@ describe('Details List', () => {
     expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
     expect(wrapper.find('.body-2').text()).toContain('Registry Staff')
     expect(wrapper.find('.body-2 .pre-line').text())
-      .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
+      .toContain('Correction for Annual Report (2018), filed on 2018-01-08.')
 
     wrapper.destroy()
   })
@@ -207,7 +198,7 @@ describe('Details List', () => {
       store,
       vuetify,
       propsData: {
-        filing: mockManyCommentsFiling,
+        filing: mockFilingManyComments,
         isTask: false
       }
     })
@@ -222,12 +213,12 @@ describe('Details List', () => {
     expect(firstItem.text()).toContain('cbIdIr1234')
     expect(firstItem.text()).toContain('2020-03-02T20:26:31.697044+00:00')
     expect(firstItem.find('.pre-line').text())
-      .toContain('Correction for Annual Report (2018). Filed on 2018-01-08.')
+      .toContain('Correction for Annual Report (2018), filed on 2018-01-08.')
 
     expect(thirdItem.text()).toContain('sevIdiR2020')
     expect(thirdItem.text()).toContain('2020-03-05T20:26:31.697044+00:00')
     expect(thirdItem.find('.pre-line').text())
-      .toContain('Correction for director mailing delivery address. Filed on 2018-01-08.')
+      .toContain('Correction for director mailing delivery address, filed on 2018-01-08.')
 
     wrapper.destroy()
   })

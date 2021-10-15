@@ -62,13 +62,13 @@ export default class NameRequestInvalidDialog extends Vue {
   NameRequestStates = NameRequestStates
 
   // Prop to display the dialog.
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
 
   // Prop to provide message type.
-  @Prop({ default: null }) private type: NameRequestStates
+  @Prop({ default: null }) readonly type: NameRequestStates
 
   // Prop to provide attachment selector.
-  @Prop() private attach: string
+  @Prop() readonly attach: string
 
   // Pass click events to parent.
   @Emit() private exit () { }

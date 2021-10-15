@@ -1,5 +1,5 @@
 import { EntityStatus, CorpTypeCd, FilingStatus } from '@/enums'
-import { FilingDataIF, StateIF } from '@/interfaces'
+import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF } from '@/interfaces'
 
 export default {
   keycloakRoles (state: StateIF, keycloakRoles: Array<string>) {
@@ -14,7 +14,7 @@ export default {
   nextARDate (state: StateIF, nextARDate: string) {
     state.nextARDate = nextARDate
   },
-  nameRequest (state: StateIF, nameRequest: object) {
+  nameRequest (state: StateIF, nameRequest: any) {
     state.nameRequest = nameRequest
   },
   ARFilingYear (state: StateIF, year: number) {
@@ -41,7 +41,7 @@ export default {
   entityIncNo (state: StateIF, entityIncNo: string) {
     state.entityIncNo = entityIncNo
   },
-  entityFoundingDate (state: StateIF, entityFoundingDate: string) {
+  entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
     state.entityFoundingDate = entityFoundingDate
   },
   businessEmail (state: StateIF, businessEmail: string) {
@@ -56,23 +56,29 @@ export default {
   currentFilingStatus (state: StateIF, currentFilingStatus: FilingStatus) {
     state.currentFilingStatus = currentFilingStatus
   },
-  tasks (state: StateIF, tasks: Array<any>) {
+  tasks (state: StateIF, tasks: Array<ApiTaskIF>) {
     state.tasks = tasks
   },
-  filings (state: StateIF, filings: Array<any>) {
+  filings (state: StateIF, filings: Array<ApiFilingIF>) {
     state.filings = filings
   },
-  registeredAddress (state: StateIF, registeredAddress: any) {
+  registeredAddress (state: StateIF, registeredAddress: OfficeAddressIF) {
     state.registeredAddress = registeredAddress
   },
-  recordsAddress (state: StateIF, recordsAddress: any) {
+  recordsAddress (state: StateIF, recordsAddress: OfficeAddressIF) {
     state.recordsAddress = recordsAddress
   },
-  directors (state: StateIF, directors: Array<any>) {
+  directors (state: StateIF, directors: Array<DirectorIF>) {
     state.directors = directors
   },
-  lastAnnualReportDate (state: StateIF, lastAnnualReportDate: string) {
-    state.lastAnnualReportDate = lastAnnualReportDate
+  lastAnnualReportDate (state: StateIF, date: string) {
+    state.lastAnnualReportDate = date
+  },
+  lastAddressChangeDate (state: StateIF, date: string) {
+    state.lastAddressChangeDate = date
+  },
+  lastDirectorChangeDate (state: StateIF, date: string) {
+    state.lastDirectorChangeDate = date
   },
   configObject (state: StateIF, configObject: any) {
     state.configObject = configObject
@@ -89,7 +95,7 @@ export default {
   isCoaPending (state: StateIF, isCoaPending: boolean) {
     state.isCoaPending = isCoaPending
   },
-  coaEffectiveDate (state: StateIF, coaEffectiveDate: string) {
+  coaEffectiveDate (state: StateIF, coaEffectiveDate: Date) {
     state.coaEffectiveDate = coaEffectiveDate
   }
 }

@@ -36,29 +36,26 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
 
 @Component({
-  computed: {
-    ...mapState(['entityIncNo'])
-  },
   components: {
     DetailComment
   }
 })
 export default class AddCommentDialog extends Vue {
-  readonly entityIncNo!: number
+  @Getter getEntityIncNo!: number
 
   /** Prop to display the dialog. */
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
 
   /** Prop to provide the Filing ID. */
-  @Prop() private filingId: number
+  @Prop() readonly filingId: number
 
   /** Prop to provide attachment selector. */
-  @Prop() private attach: string
+  @Prop() readonly attach: string
 
   /** The comment text. */
   private comment: string = ''
@@ -110,7 +107,7 @@ export default class AddCommentDialog extends Vue {
       }
     }
 
-    const url = `businesses/${this.entityIncNo}/filings/${this.filingId}/comments`
+    const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}/comments`
     let success = false
     await axios.post(url, data).then(res => {
       success = true
