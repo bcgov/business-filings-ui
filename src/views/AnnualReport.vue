@@ -1066,8 +1066,10 @@ export default {
             if (response?.data?.tasks) {
               // FUTURE: use find() or some() so this doesn't iterate over all tasks
               response.data.tasks.forEach(task => {
-                if (task?.task?.filing?.header?.status !== FilingStatus.NEW) {
-                  hasPendingItems = true
+                if (task?.task?.filing?.header) {
+                  if (task.task.filing.header.status !== FilingStatus.NEW) {
+                    hasPendingItems = true
+                  }
                 }
               })
             }
