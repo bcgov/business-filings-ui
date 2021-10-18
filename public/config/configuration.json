@@ -6,7 +6,7 @@
   "BUSINESSES_URL": "https://dev.bcregistry.ca/business/auth/",
   "BUSINESS_CREATE_URL": "https://business-create-dev.apps.silver.devops.gov.bc.ca/businesses/create/",
   "BUSINESS_EDIT_URL": "https://business-create-dev.apps.silver.devops.gov.bc.ca/businesses/edit/",
-  "BUSINESS_FILING_LD_CLIENT_ID": "5e6142dd29b3030a850285b3",
+  "BUSINESS_FILING_LD_CLIENT_ID": "5f4d47179db2f40a33e88d32",
   "DASHBOARD_URL": "https://dev.bcregistry.ca/business/",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",
   "LEGAL_API_URL": "https://legal-api-dev.apps.silver.devops.gov.bc.ca",
