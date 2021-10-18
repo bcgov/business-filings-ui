@@ -25,6 +25,7 @@ export interface TaskTodoIF {
   changeOfAddress?: any
   changeOfDirectors?: any
   correction?: any
+  dissolution?: any
   documents?: Array<any>
   header: ApiHeaderIF
   incorporationApplication?: any

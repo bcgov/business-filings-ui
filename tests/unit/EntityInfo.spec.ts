@@ -373,3 +373,76 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     wrapper.destroy()
   })
 })
+
+describe('EntityInfo - Click Tests - Dissolution', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('displays the Dissolve this Company button', async () => {
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityInfo, {
+      store,
+      vuetify,
+      computed: {
+        // mock this getter to override FF check
+        isDissolutionEnabled () { return true }
+      }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#dissolution-button').exists()).toBe(true)
+  })
+
+  it('prompts the confirm dissolution dialog if in good standing', async () => {
+    store.state.entityStatus = 'GOODSTANDING'
+    const router = mockRouter.mock()
+
+    // mount the component and wait for everything to stabilize
+    const wrapper: any = mount(EntityInfo, {
+      store,
+      vuetify,
+      router,
+      computed: {
+        // mock this getter to override FF check
+        isDissolutionEnabled () { return true }
+      }
+    })
+    await Vue.nextTick()
+    wrapper.find('#dissolution-button').trigger('click')
+    await Vue.nextTick()
+
+    // verify emit event
+    expect(wrapper.emitted().confirmDissolution).toBeTruthy()
+  })
+
+  it('prompts the Not In Good Standing dialog', async () => {
+    store.state.entityStatus = ''
+    const router = mockRouter.mock()
+
+    // mount the component and wait for everything to stabilize
+    const wrapper: any = mount(EntityInfo, {
+      store,
+      vuetify,
+      router,
+      computed: {
+        // mock this getter to override FF check
+        isDissolutionEnabled () { return true }
+      }
+    })
+    await Vue.nextTick()
+    wrapper.find('#dissolution-button').trigger('click')
+    await Vue.nextTick()
+
+    // verify emit event
+    expect(wrapper.emitted().notInGoodStanding).toBeTruthy()
+  })
+})

@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Action, State, Getter } from 'vuex-class'
-import { CommentIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
+import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
+import { CorpTypeCd, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -9,9 +9,14 @@ import { CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 @Component({})
 export default class FilingMixin extends Vue {
   @Action setFilingData!: (x: any) => void
+
   @State filingData!: Array<FilingDataIF>
+  @State entityName!: string
+
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
+  @Getter getEntityIncNo!: string
+  @Getter getRegisteredOfficeAddress!: OfficeAddressIF
 
   /**
    * Flattens and sorts an array of comments.
@@ -107,5 +112,30 @@ export default class FilingMixin extends Vue {
     }
 
     return correctionFiling
+  }
+
+  /**
+   * Builds an Dissolution filing body to intialize a draft.
+   * Used when creating a draft Dissolution filing.
+   * @returns the Dissolution filing body
+   */
+  buildDissolutionFiling (): DissolutionFilingIF {
+    const dissolutionFiling: DissolutionFilingIF = {
+      header: {
+        name: FilingTypes.DISSOLUTION,
+        date: this.getCurrentDate
+      },
+      business: {
+        legalType: this.getEntityType,
+        identifier: this.getEntityIncNo,
+        legalName: this.entityName
+      },
+      dissolution: {
+        custodialOffice: this.getRegisteredOfficeAddress,
+        dissolutionType: DissolutionTypes.VOLUNTARY // To be applied dynamically when we have dissolution variations.
+      }
+    }
+
+    return dissolutionFiling
   }
 }

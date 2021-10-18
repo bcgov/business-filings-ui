@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, StateIF, ApiTaskIF } from '@/interfaces'
+import { ApiFilingIF, StateIF, ApiTaskIF, OfficeAddressIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -35,6 +35,16 @@ export default {
   /** The COA effective date (valid if a COA is pending). */
   getCoaEffectiveDate (state: StateIF): Date {
     return state.coaEffectiveDate
+  },
+
+  /** The entity identifier. */
+  getEntityBusinessNo (state: StateIF): string {
+    return state.entityBusinessNo
+  },
+
+  /** The entity name. */
+  getEntityName (state: StateIF): string {
+    return state.entityName
   },
 
   /** Is True if entity is a Benefit Company. */
@@ -128,11 +138,6 @@ export default {
     return state.entityIncNo
   },
 
-  /** The Entity Name. */
-  getEntityName (state: StateIF): string {
-    return state.entityName
-  },
-
   /** The Entity Type. */
   getEntityType (state: StateIF): CorpTypeCd {
     return state.entityType
@@ -141,5 +146,10 @@ export default {
   /** The Entity Status. */
   getEntityStatus (state: StateIF): EntityStatus {
     return state.entityStatus
+  },
+
+  /** The entity registered office address. */
+  getRegisteredOfficeAddress (state: StateIF): OfficeAddressIF {
+    return state.registeredAddress
   }
 }

@@ -1,0 +1,91 @@
+<template>
+  <v-dialog v-model="dialog" width="45rem" persistent>
+    <v-card class="pa-5">
+      <v-card-subtitle class="pt-5" align="center">
+        <v-icon color="error" large>mdi-information-outline</v-icon>
+        <v-btn small text color="primary" class="close-btn" @click="close()">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-subtitle>
+
+      <v-card-text>
+        <p class="warning-title">
+          Business is not in good standing
+        </p>
+        <p class="warning-text">
+          This business cannot be dissolved yet. Before you can dissolve your business it must be in good standing with
+          the Business Registry. There may be several reasons a business is not in good standing, but the most common
+          reason is an overdue annual report.
+        </p>
+        <p class="warning-text">
+          Please file any overdue annual reports and try your voluntary dissolution again or contact BC Registries
+          staff:
+        </p>
+        <contact-info class="pt-3" />
+      </v-card-text>
+
+      <v-card-actions>
+        <v-row no-gutters justify="center">
+          <v-btn
+            id="dialog-close-button"
+            class="mr-2 action-btn"
+            color="primary"
+            @click="close()"
+          >
+            OK
+          </v-btn>
+        </v-row>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { ContactInfo } from '@/components/common'
+
+@Component({
+  components: { ContactInfo }
+})
+export default class NotInGoodStandingDialog extends Vue {
+  // Prop to display the dialog.
+  @Prop() private dialog: boolean
+
+  // Pass click event to parent.
+  @Emit() private close () { }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+.close-btn {
+  position: absolute;
+  right: 2rem;
+}
+
+.action-btn {
+  min-width: 100px !important;
+  min-height: 44px;
+}
+
+.warning-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: $gray9;
+  text-align: center;
+  line-height: 2.125rem;
+}
+
+.warning-text {
+  font-weight: normal;
+  font-size: 1rem;
+  color: $gray7;
+  line-height: 1.5rem;
+}
+
+// Vuetify overrides
+::v-deep .v-dialog .v-card .v-card__text {
+  padding-top: 0 !important;
+}
+</style>
