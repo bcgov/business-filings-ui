@@ -32,14 +32,14 @@
 
     <ConfirmDissolution
       :dialog="confirmDissolutionDialog"
-      @close="onCloseWarning()"
+      @close="confirmDissolutionDialog = false"
       @proceed="dissolveCompany()"
       attach="#app"
     />
 
     <NotInGoodStandingDialog
       :dialog="notInGoodStandingDialog"
-      @close="this.notInGoodStandingDialog = false"
+      @close="notInGoodStandingDialog = false"
       attach="#app"
     />
 
@@ -702,7 +702,7 @@ export default {
       const draftDissolution = await this.createFiling(this.getEntityIncNo, dissolutionFiling, true)
       const draftDissolutionId = +draftDissolution?.header?.filingId
 
-      if (!draftDissolution || isNaN(draftDissolutionId) || !draftDissolutionId) {
+      if (isNaN(draftDissolutionId) || !draftDissolutionId) {
         throw new Error('Invalid API response')
       }
 
@@ -713,11 +713,6 @@ export default {
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
       window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
-    },
-
-    /** Handles close event from confirm dissolution dialog. */
-    onCloseWarning (): void {
-      this.confirmDissolutionDialog = false
     },
 
     /** Handles Retry click event from dialogs. */
