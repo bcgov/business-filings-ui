@@ -207,7 +207,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** True if the current entity type is enabled for Dissolutions. */
   private get isDissolutionEnabled (): boolean {
-    return getFeatureFlag('supported-dissolution-entities').includes(this.getEntityType)
+    return getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType)
   }
 
   /** The Business ID string. */
