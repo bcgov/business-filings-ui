@@ -702,7 +702,7 @@ export default {
       const draftDissolution = await this.createFiling(this.getEntityIncNo, dissolutionFiling, true)
       const draftDissolutionId = +draftDissolution?.header?.filingId
 
-      if (isNaN(draftDissolutionId) || !draftDissolutionId) {
+      if (!draftDissolution || !draftDissolutionId) {
         throw new Error('Invalid API response')
       }
 
