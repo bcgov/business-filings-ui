@@ -39,6 +39,7 @@ import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
+import { HistoryItemIF, TodoItemIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -51,8 +52,9 @@ export default class AddCommentDialog extends Vue {
   /** Prop to display the dialog. */
   @Prop() readonly dialog: boolean
 
-  /** Prop to provide the Filing ID. */
-  @Prop() readonly filingId: number
+  /** The filing to add a comment to. */
+  @Prop({ default: null })
+  readonly filing: HistoryItemIF | TodoItemIF
 
   /** Prop to provide attachment selector. */
   @Prop() readonly attach: string
@@ -91,10 +93,10 @@ export default class AddCommentDialog extends Vue {
     // prevent double saving
     if (this.saving) return
 
-    // ensure we have a Filing ID
-    if (!this.filingId) {
+    // ensure we have a valid filing
+    if (!this.filing?.filingId || !this.filing?.commentsLink) {
       // eslint-disable-next-line no-console
-      console.log('save() error - missing filing ID')
+      console.log('save() error - invalid filing =', this.filing)
       return
     }
 
@@ -102,12 +104,12 @@ export default class AddCommentDialog extends Vue {
 
     const data = {
       comment: {
-        filingId: this.filingId,
+        filingId: this.filing.filingId,
         comment: this.comment
       }
     }
 
-    const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}/comments`
+    const url = this.filing.commentsLink
     let success = false
     await axios.post(url, data).then(res => {
       success = true
@@ -122,7 +124,3 @@ export default class AddCommentDialog extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-</style>

@@ -1291,11 +1291,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
               name: 'incorporationApplication',
               paymentToken: 987,
               status: 'PAID',
-              submitter: 'Submitter',
-              commentsCount: 0,
-              commentsLink: 'http://comments',
-              documentsLink: 'http://documents',
-              filingLink: 'http://filing'
+              submitter: 'Submitter'
             },
             incorporationApplication: {
               nameRequest: {
@@ -1305,7 +1301,11 @@ describe('App as a PAID (pending) Incorporation Application', () => {
               offices: BCOMP_ADDRESSES,
               parties: BCOMP_PARTIES
             }
-          }
+          },
+          commentsCount: 0,
+          commentsLink: 'http://comments',
+          documentsLink: 'http://documents',
+          filingLink: 'http://filing'
         }
       })))
 
@@ -1441,11 +1441,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
               name: 'incorporationApplication',
               paymentToken: 987,
               status: 'COMPLETED',
-              submitter: 'Submitter',
-              commentsCount: 0,
-              commentsLink: 'http://comments',
-              documentsLink: 'http://documents',
-              filingLink: 'http://filing'
+              submitter: 'Submitter'
             },
             incorporationApplication: {
               nameRequest: {
@@ -1455,7 +1451,11 @@ describe('App as a COMPLETED Incorporation Application', () => {
               offices: BCOMP_ADDRESSES,
               parties: BCOMP_PARTIES
             }
-          }
+          },
+          commentsCount: 0,
+          commentsLink: 'http://comments',
+          documentsLink: 'http://documents',
+          filingLink: 'http://filing'
         }
       })))
 

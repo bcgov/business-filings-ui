@@ -62,7 +62,7 @@
       <v-row>
         <v-col cols="12" lg="9">
           <section id="annual-report-main-section">
-            <!-- COOP only: -->
+            <!-- COOPs only: -->
             <article
               v-if="isCoop"
               class="annual-report-article"
@@ -136,7 +136,7 @@
               </section>
             </article>
 
-            <!-- BCOMP only: -->
+            <!-- BCOMPs only: -->
             <article
               v-if="isBComp"
               class="annual-report-article"
@@ -436,8 +436,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityFoundingDate',
-      'directors', 'filingData', 'lastAddressChangeDate', 'lastDirectorChangeDate']),
+    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityFoundingDate', 'directors',
+      'filingData', 'lastAddressChangeDate', 'lastDirectorChangeDate', 'lastAnnualReportDate']),
 
     ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'getReportState',
       'getCurrentYear', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getEntityIncNo']),
@@ -1040,14 +1040,28 @@ export default {
       this.saveWarnings = []
     },
 
+    /**
+     * Returns True if the selected AGM Date is >= the earliest allowed date.
+     * Used for Coops only.
+     */
     allowChange (type): boolean {
-      let earliestAllowedDate
+      let earliestAllowedDate: string = null
+
       if (type === 'coa') {
-        earliestAllowedDate = this.lastAddressChangeDate
+        if (this.lastAddressChangeDate || this.lastAnnualReportDate) {
+          earliestAllowedDate = this.latestDate(this.lastAddressChangeDate, this.lastAnnualReportDate)
+        } else {
+          earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
+        }
       }
       if (type === 'cod') {
-        earliestAllowedDate = this.lastDirectorChangeDate
+        if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
+          earliestAllowedDate = this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+        } else {
+          earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
+        }
       }
+
       return (!!this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
     },
 

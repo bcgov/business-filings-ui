@@ -74,46 +74,36 @@ export default class CodDate extends Mixins(DateMixin) {
   private dateFormatted: string = '' // bound to text field
   private menu: boolean = false // bound to calendar menu
 
-  /**
-   * Computed value.
-   * @returns The array of validations rules for the COD Date text field.
-   */
+  /** The array of validations rules for the COD Date text field. */
   private get codDateRules (): Array<Function> {
     return [
       v => isNotNull(v) || 'A Director change date is required.'
     ]
   }
 
-  /**
-   * Computed value.
-   * FUTURE: the API should be giving us this date
-   * @returns The maximum date that can be entered.
-   */
+  /** The maximum date that can be entered. */
   private get maxDate (): string {
     return this.getCurrentDate
   }
 
-  /**
-   * Computed value.
-   * FUTURE: the API should be giving us this date
-   * @returns The minimum date that can be entered.
-   */
+  /** The minimum date that can be entered. */
   private get minDate (): string {
-    const entityFoundingDate = this.dateToYyyyMmDd(this.entityFoundingDate)
-    /**
-     * For BComps, use the last COD filing in filing history.
-     * For Coops, use the latest of the following dates:
-     * - the last COD filing in filing history
-     * - the last AR filing in filing history
-     * If the entity has no filing history then the founding date will be used.
-     */
+    let date: string = null
+
     if (this.isBComp) {
-      return this.lastDirectorChangeDate || entityFoundingDate
+      // For BComps, use the last COD filing in filing history.
+      date = (this.lastDirectorChangeDate || this.dateToYyyyMmDd(this.entityFoundingDate))
     } else if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
-      return this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+      // For Coops, use the latest of the following dates:
+      // - the last COD filing in filing history
+      // - the last AR filing in filing history
+      date = this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
     } else {
-      return entityFoundingDate
+      // If the entity has no filing history then use the founding date.
+      date = this.dateToYyyyMmDd(this.entityFoundingDate)
     }
+
+    return date
   }
 
   /**

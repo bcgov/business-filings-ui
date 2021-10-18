@@ -2,7 +2,7 @@
   <div id="filing-history-list">
     <AddCommentDialog
       :dialog="addCommentDialog"
-      :filingId="currentFilingId"
+      :filing="currentFiling"
       @close="hideCommentDialog($event)"
       attach="#filing-history-list"
     />
@@ -231,7 +231,7 @@
                         </v-list-item-icon>
                         <v-list-item-title
                           class="add-detail-comment-item"
-                          @click.stop="showCommentDialog(filing.filingId)"
+                          @click.stop="showCommentDialog(filing)"
                         >
                           <span class="app-action">Add Detail</span>
                         </v-list-item-title>
@@ -411,7 +411,7 @@ export default class FilingHistoryList extends Mixins(
   private historyItems: Array<HistoryItemIF> = []
   private loadingOne = false
   private loadingAll = false
-  private currentFilingId: number = null
+  private currentFiling: HistoryItemIF = null
   private loadingOneIndex = -1
   private isBusy = false
 
@@ -731,8 +731,8 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
-  private showCommentDialog (filingId: number): void {
-    this.currentFilingId = filingId
+  private showCommentDialog (filing: HistoryItemIF): void {
+    this.currentFiling = filing
     this.addCommentDialog = true
   }
 
@@ -740,12 +740,9 @@ export default class FilingHistoryList extends Mixins(
     this.addCommentDialog = false
     // if needed, reload comments for this filing
     if (needReload) {
-      // find the filing in the list
-      const item = this.historyItems.find(item => (item.filingId === this.currentFilingId))
-
-      if (item?.commentsLink) { // safety check
+      if (this.currentFiling?.commentsLink) { // safety check
         this.isBusy = true
-        await this.loadComments(item)
+        await this.loadComments(this.currentFiling)
         this.isBusy = false
       }
     }

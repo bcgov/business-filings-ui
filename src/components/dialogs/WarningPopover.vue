@@ -7,7 +7,9 @@
   >
     <template v-slot:activator="{ on }">
       <span class="warning-text" v-on="on">
-        <v-icon class="warning-icon">mdi-information-outline</v-icon>{{ dialogObj.title }}
+        <v-icon class="warning-icon">mdi-information-outline</v-icon>
+        &nbsp;
+        {{ dialogObj.title }}
       </span>
     </template>
     <v-card>
