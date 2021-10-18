@@ -866,7 +866,7 @@ describe('TodoList - UI', () => {
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].id).toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].filingId).toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PROCESSING...')
@@ -909,7 +909,7 @@ describe('TodoList - UI', () => {
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].id).not.toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].filingId).not.toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
@@ -1345,7 +1345,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].id).toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].filingId).toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PROCESSING...')
@@ -1388,7 +1388,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].id).not.toEqual(wrapper.props('inProcessFiling'))
+    expect(vm.todoItems[0].filingId).not.toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')

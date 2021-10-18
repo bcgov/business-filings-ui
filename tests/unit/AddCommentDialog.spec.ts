@@ -13,6 +13,15 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
+const propsData = {
+  dialog: true,
+  filing: {
+    filingId: 456,
+    commentsLink: 'businesses/123/filings/456/comments'
+  },
+  attach: '#parent-page'
+}
+
 describe('AddCommentDialog', () => {
   it('renders the page contents correctly', () => {
     // init store
@@ -20,11 +29,7 @@ describe('AddCommentDialog', () => {
 
     const wrapper = shallowMount(AddCommentDialog,
       {
-        propsData: {
-          dialog: true,
-          filingId: 456,
-          attach: '#parent-page'
-        },
+        propsData,
         store,
         vuetify
       })
@@ -37,7 +42,7 @@ describe('AddCommentDialog', () => {
 
     expect(vm.getEntityIncNo).toBe(123)
     expect(vm.dialog).toBe(true)
-    expect(vm.filingId).toBe(456)
+    expect(vm.filing.filingId).toBe(456)
     expect(vm.attach).toBe('#parent-page')
     expect(vm.comment).toBe('')
     expect(vm.detailCommentValid).toBe(false) // because we have no comment
@@ -48,9 +53,7 @@ describe('AddCommentDialog', () => {
   it('emits Close=false event when user clicks Cancel button', async () => {
     const wrapper = shallowMount(AddCommentDialog,
       {
-        propsData: {
-          dialog: true
-        },
+        propsData,
         store,
         vuetify
       })
@@ -83,10 +86,7 @@ describe('AddCommentDialog', () => {
 
     const wrapper = shallowMount(AddCommentDialog,
       {
-        propsData: {
-          dialog: true,
-          filingId: 456
-        },
+        propsData,
         store,
         vuetify
       })
