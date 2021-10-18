@@ -39,7 +39,7 @@
 
     <NotInGoodStandingDialog
       :dialog="notInGoodStandingDialog"
-      @close="onCloseNotInGoodStanding()"
+      @close="this.notInGoodStandingDialog = false"
       attach="#app"
     />
 
@@ -165,7 +165,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getEntityName', 'getEntityType']),
+    ...mapGetters(['getEntityIncNo', 'getEntityName', 'getEntityType']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
@@ -699,14 +699,14 @@ export default {
     /** Redirects the user to the Create UI to start a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
-      const draftDissolution = await this.createFiling(this.entityIncNo, dissolutionFiling, true)
+      const draftDissolution = await this.createFiling(this.getEntityIncNo, dissolutionFiling, true)
       const draftDissolutionId = +draftDissolution?.header?.filingId
 
       if (!draftDissolution || isNaN(draftDissolutionId) || !draftDissolutionId) {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUiUrl}define-dissolution?id=${this.entityIncNo}`
+      const url = `${this.createUiUrl}define-dissolution?id=${this.getEntityIncNo}`
       window.location.assign(url) // assume URL is always reachable
     },
 
@@ -718,11 +718,6 @@ export default {
     /** Handles close event from confirm dissolution dialog. */
     onCloseWarning (): void {
       this.confirmDissolutionDialog = false
-    },
-
-    /** Handles close event from confirm dissolution dialog. */
-    onCloseNotInGoodStanding (): void {
-      this.notInGoodStandingDialog = false
     },
 
     /** Handles Retry click event from dialogs. */

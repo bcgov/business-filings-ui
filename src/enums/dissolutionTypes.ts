@@ -1,7 +1,7 @@
 export enum DissolutionTypes {
-  VOLUNTARY = 'voluntary',
-  INVOLUNTARY = 'involuntary',
   ADMINISTRATIVE = 'administrative',
-  LIQUIDATION = 'voluntaryLiquidation',
-  COURT_ORDER_LIQUIDATION = 'courtOrderedLiquidation'
+  COURT_ORDER_LIQUIDATION = 'courtOrderedLiquidation',
+  INVOLUNTARY = 'involuntary',
+  VOLUNTARY = 'voluntary',
+  VOLUNTARY_LIQUIDATION = 'voluntaryLiquidation'
 }

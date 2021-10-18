@@ -809,6 +809,9 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         comments: this.flattenAndSortComments(header.comments)
       }
       this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or dissolution or business in task =', task)
     }
   }
 
