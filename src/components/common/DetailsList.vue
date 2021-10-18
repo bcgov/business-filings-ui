@@ -10,7 +10,7 @@
         color="primary"
         v-if="isRoleStaff && !isTask"
         :disabled ="!filing.filingId"
-        @click.stop="showCommentDialog(filing.filingId)"
+        @click.stop="showCommentDialog(filing)"
       >
         <span>Add Detail</span>
       </v-btn>
@@ -60,7 +60,7 @@ export default class DetailsList extends Mixins(DateMixin) {
 
   /** Emits an event to trigger the comment dialog. */
   @Emit('showCommentDialog')
-  private showCommentDialog (val: string): void { }
+  private showCommentDialog (filing: HistoryItemIF | TodoItemIF): void { }
 }
 </script>
 

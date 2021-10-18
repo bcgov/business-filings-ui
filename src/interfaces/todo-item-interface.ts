@@ -8,11 +8,12 @@ import { PaymentErrorIF } from '@/interfaces'
 export interface TodoItemIF {
   draftTitle: string
   enabled: boolean
-  id: number
+  filingId: number
   name: FilingTypes
   order: number
   status: string
   title: string
+  commentsLink: string
 
   // Todo ARs and Draft IAs only
   subtitle?: string

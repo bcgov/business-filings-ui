@@ -12,7 +12,7 @@ export default {
     return state.tasks
   },
 
-  /** The current Date (YYYY-MM-DD). */
+  /** The current date (YYYY-MM-DD). */
   getCurrentDate (state: StateIF): string {
     return state.currentDate
   },

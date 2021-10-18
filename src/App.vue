@@ -376,13 +376,13 @@ export default {
     async fetchIncorpAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      const iaData = await this.fetchIncorpApp(this.tempRegNumber)
-      this.storeIncorpApp(iaData)
+      const ia = await this.fetchIncorpApp(this.tempRegNumber)
+      this.storeIncorpApp(ia)
 
       // if the IA has a NR, load it
       if (this.localNrNumber) {
-        const nrData = await this.fetchNameRequest(this.localNrNumber)
-        this.storeNrData(nrData, iaData)
+        const nr = await this.fetchNameRequest(this.localNrNumber)
+        this.storeNrData(nr, ia)
       }
     },
 
@@ -482,20 +482,20 @@ export default {
       this.setEntityName(business.legalName)
       this.setEntityType(business.legalType)
       this.setEntityStatus(business.goodStanding ? EntityStatus.GOOD_STANDING : EntityStatus.NOT_IN_COMPLIANCE)
-      this.setEntityBusinessNo(business.taxId)
+      this.setEntityBusinessNo(business.taxId) // may be empty
       this.setEntityIncNo(business.identifier)
       this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
-      this.setLastAnnualReportDate(business.lastAnnualReportDate)
-      this.setLastAddressChangeDate(business.lastAddressChangeDate)
-      this.setLastDirectorChangeDate(business.lastDirectorChangeDate)
+      this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
+      this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
+      this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
 
       // store config object based on current entity type
       this.storeConfigObject(business.legalType)
     },
 
     /** Verifies and stores an IA's data. */
-    storeIncorpApp (data: any): void {
-      const filing = data?.filing
+    storeIncorpApp (ia: any): void {
+      const filing = ia?.filing
       if (!filing || !filing.business || !filing.header || !filing.incorporationApplication) {
         throw new Error('Invalid IA filing')
       }
@@ -537,19 +537,19 @@ export default {
       // store Legal Name if present
       this.setEntityName(nameRequest?.legalName || null)
 
-      switch (status as FilingStatus) {
+      switch (status) {
         case FilingStatus.DRAFT:
         case FilingStatus.PENDING:
           // this is a draft IA
           this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
-          this.storeDraftIa(filing)
+          this.storeDraftIa(ia)
           break
 
         case FilingStatus.COMPLETED:
         case FilingStatus.PAID:
           // this is a filed IA
           this.setEntityStatus(EntityStatus.FILED_INCORP_APP)
-          this.storeFiledIa(filing)
+          this.storeFiledIa(ia)
           break
 
         default:
@@ -558,7 +558,8 @@ export default {
     },
 
     /** Stores draft IA as a task in the Todo List. */
-    storeDraftIa (filing: TaskTodoIF): void {
+    storeDraftIa (ia: any): void {
+      const filing = ia.filing as TaskTodoIF
       const taskItem: ApiTaskIF = {
         enabled: true,
         order: 1,
@@ -568,7 +569,8 @@ export default {
     },
 
     /** Stores filed IA as a filing in the Filing History List. */
-    storeFiledIa (filing: TaskTodoIF): void {
+    storeFiledIa (ia: any): void {
+      const filing = ia.filing as TaskTodoIF
       // NB: these were already validated in storeIncorpApp()
       const business = filing.business
       const header = filing.header
@@ -590,13 +592,13 @@ export default {
       const filingItem: ApiFilingIF = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: business.identifier,
-        commentsCount: header.commentsCount,
-        commentsLink: header.commentsLink,
+        commentsCount: ia.commentsCount,
+        commentsLink: ia.commentsLink,
         displayName: this.filingTypeToName(FilingTypes.INCORPORATION_APPLICATION),
-        documentsLink: header.documentsLink,
+        documentsLink: ia.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
-        filingLink: header.filingLink,
+        filingLink: ia.filingLink,
         isFutureEffective: header.isFutureEffective,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: header.status,

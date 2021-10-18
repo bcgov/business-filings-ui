@@ -2,7 +2,7 @@
   <div id="todo-list">
     <AddCommentDialog
       :dialog="addCommentDialog"
-      :filingId="currentFilingId"
+      :filing="currentFiling"
       @close="hideCommentDialog($event)"
       attach="#todo-list"
     />
@@ -183,7 +183,7 @@
                   <template v-else>
                     <div>FILING PENDING</div>
                     <div class="vert-pipe"></div>
-                    <div class="payment-status" v-if="inProcessFiling === item.id">
+                    <div class="payment-status" v-if="inProcessFiling === item.filingId">
                       PROCESSING...
                     </div>
                     <div class="payment-status" v-else>
@@ -206,7 +206,7 @@
                 <div v-else-if="isStatusError(item)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === item.id">
+                  <div class="payment-status" v-if="inProcessFiling === item.filingId">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -227,7 +227,7 @@
                 <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === item.id">
+                  <div class="payment-status" v-if="inProcessFiling === item.filingId">
                     PROCESSING...
                   </div>
                   <div class="payment-status" v-else>
@@ -257,7 +257,7 @@
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- this loading button pre-empts all buttons below -->
-                <template v-if="inProcessFiling === item.id">
+                <template v-if="inProcessFiling === item.filingId">
                   <v-btn text loading disabled />
                 </template>
 
@@ -557,7 +557,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   private cancelPaymentErrorDialog = false
   private enableCheckbox: Array<any> = []
   private confirmEnabled = false
-  private currentFilingId: number = null
+  private currentFiling: TodoItemIF = null
   private panel: number = null // currently expanded panel
 
   @Prop({ default: null }) readonly inProcessFiling: number
@@ -573,7 +573,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   @Getter isInGoodStanding!: boolean
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
-  @Getter getEntityIncNo!: string
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -716,7 +715,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       const subtitle: string = (task.enabled && !this.isBComp) ? '(including Address and/or Director Change)' : null
 
       const item: TodoItemIF = {
-        id: -1, // not falsy
+        filingId: -1, // not falsy
         name: FilingTypes.ANNUAL_REPORT,
         title: `File ${ARFilingYear} Annual Report`,
         draftTitle: null,
@@ -730,7 +729,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         enabled: task.enabled,
         order: task.order,
         nextArDate: this.nextArDate(business.nextAnnualReportDate), // BCOMP only
-        arDueDate: this.formatDateString(header.arMaxDate) // BCOMP only
+        arDueDate: this.formatDateString(header.arMaxDate),
+        commentsLink: null // cannot add comments to Todo item
       }
       this.todoItems.push(item)
     } else {
@@ -795,7 +795,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.DISSOLUTION,
-        id: header.filingId,
+        filingId: header.filingId,
         legalType: corpTypeDescription,
         title: 'Voluntary Dissolution',
         draftTitle: this.filingTypeToName(FilingTypes.DISSOLUTION),
@@ -806,7 +806,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        comments: this.flattenAndSortComments(header.comments)
+        comments: this.flattenAndSortComments(header.comments),
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -833,7 +834,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.ALTERATION,
-        id: header.filingId,
+        filingId: header.filingId,
         legalType: corpTypeDescription,
         title: this.alterationTitle(header.priority, corpTypeDescription),
         draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
@@ -844,7 +845,9 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        comments: this.flattenAndSortComments(header.comments)
+        comments: this.flattenAndSortComments(header.comments),
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+
       }
       this.todoItems.push(item)
     } else {
@@ -872,7 +875,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.ANNUAL_REPORT,
-        id: header.filingId,
+        filingId: header.filingId,
         title: `File ${ARFilingYear} Annual Report`,
         draftTitle: `${ARFilingYear} Annual Report`,
         ARFilingYear,
@@ -884,7 +887,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -906,7 +910,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_DIRECTORS,
-        id: header.filingId,
+        filingId: header.filingId,
         title: `File Director Change`,
         draftTitle: `Director Change`,
         status: header.status || FilingStatus.NEW,
@@ -914,7 +918,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -935,7 +940,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_ADDRESS,
-        id: header.filingId,
+        filingId: header.filingId,
         title: `File Address Change`,
         draftTitle: `Address Change`,
         status: header.status || FilingStatus.NEW,
@@ -943,7 +948,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj
+        payErrorObj,
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -964,7 +970,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.CORRECTION,
-        id: header.filingId,
+        filingId: header.filingId,
         // this is only used for internal corrections (not IA):
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
@@ -978,7 +984,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        comments: this.flattenAndSortComments(header.comments)
+        comments: this.flattenAndSortComments(header.comments),
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1017,7 +1024,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       const item: TodoItemIF = {
         name: FilingTypes.INCORPORATION_APPLICATION,
-        id: header.filingId,
+        filingId: header.filingId,
         title,
         subtitle,
         draftTitle: FilingNames.INCORPORATION_APPLICATION,
@@ -1028,7 +1035,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest
+        nameRequest: this.nameRequest,
+        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1072,31 +1080,31 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         this.setArMaxDate(item.arMaxDate) // COOP only
         this.setNextARDate(item.nextArDate) // BCOMP only
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
-        this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.id.toString() } })
+        this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
         // resume this Change Of Directors
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
-        this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.id.toString() } })
+        this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CHANGE_OF_ADDRESS:
         // resume this Change Of Address
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
-        this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.id.toString() } })
+        this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CORRECTION:
         if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
           // redirect to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${item.id}`
+          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${item.filingId}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } else {
           // resume this Correction Filing
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.CORRECTION,
-            params: { filingId: item.id.toString(), correctedFilingId: item.correctedFilingId.toString() }
+            params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
           })
         }
         break
@@ -1109,7 +1117,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
       case FilingTypes.ALTERATION:
         // redirect to Edit web app to alter this company
-        const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.id}`
+        const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.filingId}`
         window.location.assign(alterationUrl) // assume URL is always reachable
         break
 
@@ -1128,10 +1136,9 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   // this is called for both Resume Payment and Retry Payment
   private doResumePayment (item: TodoItemIF): boolean {
-    const filingId = item.id
     const paymentToken = item.paymentToken
 
-    const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
+    const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + item.filingId)
     const payUrl = this.authWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
     window.location.assign(payUrl) // assume URL is always reachable
@@ -1206,7 +1213,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   private async doDeleteDraft (item: TodoItemIF, refreshDashboard: boolean = true): Promise<void> {
     const id = this.getEntityIncNo || this.tempRegNumber
-    const url = `businesses/${id}/filings/${item.id}`
+    const url = `businesses/${id}/filings/${item.filingId}`
 
     await axios.delete(url).then(res => {
       if (!res) { throw new Error('Invalid API response') }
@@ -1266,7 +1273,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   }
 
   private async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
-    const url = `businesses/${this.getEntityIncNo}/filings/${item.id}`
+    const url = `businesses/${this.getEntityIncNo}/filings/${item.filingId}`
 
     await axios.patch(url, {}).then(res => {
       if (!res) { throw new Error('Invalid API response') }
@@ -1285,8 +1292,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     })
   }
 
-  private showCommentDialog (filingId: number): void {
-    this.currentFilingId = filingId
+  private showCommentDialog (filing: TodoItemIF): void {
+    this.currentFiling = filing
     this.addCommentDialog = true
   }
 
