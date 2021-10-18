@@ -15,7 +15,7 @@ export default class FilingMixin extends Vue {
 
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter getEntityIdentifier!: string
+  @Getter getEntityIncNo!: string
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
 
   /**
@@ -127,7 +127,7 @@ export default class FilingMixin extends Vue {
       },
       business: {
         legalType: this.getEntityType,
-        identifier: this.getEntityIdentifier,
+        identifier: this.getEntityIncNo,
         legalName: this.entityName
       },
       dissolution: {
