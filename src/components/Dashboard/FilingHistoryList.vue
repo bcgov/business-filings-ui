@@ -205,7 +205,7 @@
                 </v-btn>
 
                 <!-- the drop-down menu -->
-                <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff">
+                <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff && !tempRegNumber">
                   <template v-slot:activator="{ on }">
                     <v-btn text v-on="on" class="menu-btn pa-1" click.stop>
                       <v-icon>mdi-menu-down</v-icon>
@@ -517,14 +517,14 @@ export default class FilingHistoryList extends Mixins(
       if (this.isTypeIncorporationApplication(filing)) {
         // is this a completed IA? (incorp app mode only)
         item.isCompletedIa = (
-          this.tempRegNumber &&
+          !!this.tempRegNumber &&
           this.isStatusCompleted(filing)
         )
 
         // is this a Future Effective IA (not yet completed)? (incorp app mode only)
         item.isFutureEffectiveIa = (
-          this.tempRegNumber &&
-          !!filing.isFutureEffective &&
+          !!this.tempRegNumber &&
+          filing.isFutureEffective &&
           this.isStatusPaid(filing)
         )
 

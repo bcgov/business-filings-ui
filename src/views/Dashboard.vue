@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard">
-    <coa-warning-dialog
+    <CoaWarningDialog
       :dialog="coaWarningDialog"
       @toggle="toggleCoaWarning"
       @proceed="goToStandaloneAddresses"
@@ -21,8 +21,8 @@
                   <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
                 </h2>
               </header>
-              <legal-obligation/>
-              <todo-list
+              <LegalObligation/>
+              <TodoList
                 :inProcessFiling="inProcessFiling"
                 :disableChanges="disableChanges"
                 @todo-count="todoCount = $event"
@@ -35,13 +35,13 @@
                 <h2 data-test-id="dashboard-filing-history-subtitle">
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
-                <staff-notation
-                  v-if="isRoleStaff"
+                <StaffNotation
+                  v-if="isRoleStaff && !tempRegNumber"
                   addScrollbarOffset="true"
                   @close="reloadDashboardIfNeeded($event)"
                 />
               </header>
-              <filing-history-list
+              <FilingHistoryList
                  class="mt-3"
                 :disableChanges="disableChanges"
                 @history-count="historyCount = $event"
@@ -80,7 +80,7 @@
                 </v-btn>
               </header>
               <v-card flat>
-                <address-list-sm
+                <AddressListSm
                   :showCompleteYourFilingMessage="isIncorpAppTask"
                   :showGrayedOut="isIncorpAppFiling"
                 />
@@ -101,7 +101,7 @@
               </header>
               <div class="scrollable-container" style="max-height: 49rem">
                 <v-card flat>
-                  <director-list-sm
+                  <DirectorListSm
                     :showCompleteYourFilingMessage="isIncorpAppTask"
                     :showGrayedOut="isIncorpAppFiling"
                   />
