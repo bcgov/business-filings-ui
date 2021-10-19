@@ -619,7 +619,7 @@ export default {
         correction: {
           correctedFilingId: this.correctedFilingId,
           correctedFilingType: this.origFiling.header.name,
-          correctedFilingDate: this.origFiling.header.date,
+          correctedFilingDate: this.dateToYyyyMmDd(this.apiToDate(this.origFiling.header.date)),
           comment: `${this.defaultComment}\n${this.detailComment}`
         }
       }
