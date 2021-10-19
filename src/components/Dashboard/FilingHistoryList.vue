@@ -397,7 +397,6 @@ export default class FilingHistoryList extends Mixins(
   @Getter isBComp!: boolean
   @Getter isRoleStaff!: boolean
   @Getter getFilings!: Array<ApiFilingIF>
-  @Getter getEntityIncNo!: string
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
@@ -600,7 +599,7 @@ export default class FilingHistoryList extends Mixins(
   /** Expands the panel of the specified filing ID. */
   private highlightFiling (filingId: number): void {
     const index = this.historyItems.findIndex(h => h.filingId === filingId)
-    if (index >= 0) this.panel = index
+    if (index >= 0) this.togglePanel(index, this.historyItems[index])
   }
 
   private async correctThisFiling (item: HistoryItemIF): Promise<void> {
