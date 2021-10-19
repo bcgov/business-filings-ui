@@ -1,8 +1,8 @@
 <template>
-  <div class="payment-incomplete body-2 pa-4 mb-2">
+  <div class="payment-incomplete body-2 pa-4">
     <h4>Payment Incomplete - {{title}}</h4>
 
-    <p class="pt-3 mb-0" v-html="detail" />
+    <p v-html="detail" />
   </div>
 </template>
 
@@ -37,5 +37,13 @@ h4 {
   letter-spacing: 0;
   font-size: 0.9375rem;
   font-weight: 700;
+}
+
+p:first-of-type {
+  padding-top: 0.75rem;
+}
+
+p {
+  margin-bottom: 0.5rem !important;
 }
 </style>
