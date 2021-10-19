@@ -728,7 +728,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.nextArDate(business.nextAnnualReportDate), // BCOMP only
+        nextArDate: this.nextArDate(business.nextAnnualReport), // BCOMP only
         arDueDate: this.formatDateString(header.arMaxDate),
         commentsLink: null // cannot add comments to Todo item
       }

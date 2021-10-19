@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-paid body-2">
+  <div class="payment-paid body-2 pa-4">
     <h4>Paid</h4>
 
     <p>This filing is paid but the filing is not yet complete. Please check again later.</p>

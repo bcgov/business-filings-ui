@@ -1,5 +1,5 @@
 <template>
-  <div class="online-banking-payment-pending body-2">
+  <div class="online-banking-payment-pending body-2 pa-4">
     <h4>Online Banking Payment Pending</h4>
 
     <p>This {{draftTitle}} is pending payment and/or processing at your bank.</p>

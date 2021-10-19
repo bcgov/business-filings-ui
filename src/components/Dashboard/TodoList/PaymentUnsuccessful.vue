@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-unsuccessful body-2">
+  <div class="payment-unsuccessful body-2 pa-4">
     <h4>Payment Unsuccessful</h4>
 
     <p>This filing is pending payment. The payment appears to have been unsuccessful for some

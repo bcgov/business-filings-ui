@@ -23,6 +23,6 @@ export interface BusinessIF {
   lastModified: apiDateTimeUtc // not used
   legalName: string
   legalType: CorpTypeCd
-  nextAnnualReportDate: apiDateTimeUtc // used for BCOMP only
+  nextAnnualReport: apiDateTimeUtc // used for BCOMP only
   taxId: string
 }
