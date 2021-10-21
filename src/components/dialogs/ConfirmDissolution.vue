@@ -13,7 +13,7 @@
          Voluntary Dissolution
         </p>
         <p class="warning-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
-          once this process is completed and the required documents are filed, the Cooperative Association will be
+          once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be an incorporated cooperative under the Cooperative
           Association Act.
         </p>
@@ -23,7 +23,7 @@
         <v-row no-gutters justify="center">
           <v-btn
             id="dialog-close-button"
-            class="mr-2 action-btn"
+            class="mr-4 action-btn"
             color="primary"
             outlined
             @click="close()"
@@ -54,8 +54,14 @@ export default class ConfirmDissolution extends Vue {
   // Prop to display the dialog.
   @Prop() private dialog: boolean
 
-  // Global getter
+  // Global getters
   @Getter getEntityName!: string
+  @Getter isCoop!: boolean
+
+  /** The entity title to display. */
+  private get entityTitle (): string {
+    return this.isCoop ? 'Cooperative Association' : 'Company'
+  }
 
   // Pass click event to parent.
   @Emit() private close () { }

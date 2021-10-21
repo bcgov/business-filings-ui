@@ -29,7 +29,7 @@
             <div v-if="nrDescription" id="nr-subtitle">{{ nrDescription }}</div>
           </header>
 
-          <menu class="mt-4 ml-n3">
+          <menu class="mt-4 ml-n4">
             <!-- Staff Comments -->
             <span v-if="businessId && isRoleStaff">
               <StaffComments
@@ -46,11 +46,9 @@
                 id="company-information-button"
                 :disabled="hasBlocker || !isInGoodStanding"
                 @click="viewChangeCompanyInfo()"
-                @mouseenter="showHoverStyle = true"
-                @mouseleave="showHoverStyle = false"
               >
                 <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                <span>View and Change Company Information</span>
+                <span class="header-action-text">View and Change Company Information</span>
               </v-btn>
 
               <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
@@ -75,19 +73,17 @@
                 id="dissolution-button"
                 :disabled="hasBlocker"
                 @click="prompDissolve()"
-                @mouseenter="showHoverStyle = true"
-                @mouseleave="showHoverStyle = false"
               >
-                <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                <span>Dissolve this {{ entityDescription }}</span>
+                <img src="@/assets/images/Dissolution_Header_Icon.svg" class="pr-2">
+                <span class="header-action-text">Dissolve this {{ entityDescription }}</span>
                 <v-tooltip top content-class="top-tooltip" nudge-right="7">
                   <template v-slot:activator="{ on }">
                     <span class="pl-1" v-on="on">
                       <v-icon size="1rem">mdi-information-outline</v-icon>
                     </span>
                   </template>
-                  Dissolving the Company will make this Company historical and it will be struck from the corporate
-                  registry.
+                  Dissolving the {{ entityTitle }} will make this {{ entityTitle }} historical
+                  and it will be struck from the corporate registry.
                 </v-tooltip>
               </v-btn>
             </span>
@@ -131,7 +127,7 @@
               <dt class="mr-2">Email:</dt>
               <dd id="entity-business-email" @click="editBusinessProfile()">
                 <span>{{businessEmail || 'Not Available'}}</span>
-                <v-btn small text color="primary" id="change-email-button">
+                <v-btn small text color="primary" id="change-email-button" :disabled="hasBlocker">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -143,7 +139,7 @@
               <dt class="mr-2">Phone:</dt>
               <dd id="entity-business-phone" @click="editBusinessProfile()">
                 <span>{{fullPhoneNumber || 'Not Available'}}</span>
-                <v-btn small text color="primary" id="change-phone-button">
+                <v-btn small text color="primary" id="change-phone-button" :disabled="hasBlocker">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -183,6 +179,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter isRoleStaff!: boolean
   @Getter isBComp!: boolean
   @Getter isBcCompany!: boolean
+  @Getter isCoop!: boolean
   @Getter isUlc!: boolean
   @Getter getNrNumber!: string
   @Getter hasBlocker!: boolean
@@ -218,6 +215,11 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   /** The Edit URL string. */
   private get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
+  }
+
+  /** The entity title to display. */
+  private get entityTitle (): string {
+    return this.isCoop ? 'Cooperative Association' : 'Company'
   }
 
   /** The Business Profile URL string. */
@@ -270,7 +272,9 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** Redirects the user to the Auth UI to update their business profile. */
   private editBusinessProfile (): void {
-    window.location.assign(this.businessProfileUrl) // assume URL is always reachable
+    if (!this.hasBlocker) {
+      window.location.assign(this.businessProfileUrl) // assume URL is always reachable
+    }
   }
 
   /** Downloads business summary PDF. */
@@ -321,6 +325,10 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   &.hover {
     background: $app-bg-lt-blue;
+  }
+
+  .header-action-text {
+    font-size: 0.8125rem;
   }
 
   // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
