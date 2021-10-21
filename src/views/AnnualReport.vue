@@ -451,6 +451,7 @@ export default {
     /**
      * The As Of date, used to query data, as Effective Date, and as Annual Report Date.
      * (Depends on whether entity is a Coop or BComp.)
+     * @returns date as "YYYY-MM-DD"
      */
     asOfDate (): string {
       if (this.isCoop) {

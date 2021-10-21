@@ -728,7 +728,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.nextArDate(business.nextAnnualReport), // BCOMP only
+        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BCOMP only
         arDueDate: this.formatDateString(header.arMaxDate),
         commentsLink: null // cannot add comments to Todo item
       }
@@ -1342,6 +1342,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   /**
    * Returns AR Min Date in case a draft filing doesn't contain it.
    * FUTURE: Delete this when all draft ARs contain new arMinDate.
+   * @returns date as "YYYY-MM-DD"
    */
   private getArMinDate (ARFilingYear: number): string {
     // min date is the AR year on Jan 1
@@ -1353,6 +1354,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   /**
    * Returns AR Max Date in case a draft filing doesn't contain it.
    * FUTURE: Delete this when all draft ARs contain new arMaxDate.
+   * @returns date as "YYYY-MM-DD"
    */
   private getArMaxDate (ARFilingYear: number): string {
     if (ARFilingYear === 2020) {
@@ -1366,16 +1368,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       // for current ARs, max date is today
       return this.getCurrentDate
     }
-  }
-
-  /**
-   * Returns the BCOMP Next AR Date. Used for Annual Report filing.
-   * @param nextAnnualReport for example, "2021-11-17T08:00:00+00:00"
-   * @returns for example, "2021-11-17"
-   */
-  private nextArDate (nextAnnualReport: string): string {
-    const date = this.apiToDate(nextAnnualReport)
-    return this.dateToYyyyMmDd(date)
   }
 
   @Watch('getTasks')

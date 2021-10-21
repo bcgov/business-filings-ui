@@ -190,6 +190,15 @@ export default class DateMixin extends Vue {
   }
 
   /**
+   * Converts an API datetime string (in UTC) to a date string (YYYY-MM-DD) in Pacific timezone.
+   * @example "2021-11-17T08:00:00+00:00" -> "2021-11-17"
+   */
+  apiToYyyyMmDd (dateTimeString: string): string {
+    const date = this.apiToDate(dateTimeString)
+    return this.dateToYyyyMmDd(date)
+  }
+
+  /**
    * Converts a date string (YYYY-MM-DD) to an API datetime string (in UTC).
    * @example "2021-01-01" -> 2021-01-01T08:00:00+00:00" // PST
    * @example "2021-07-01" -> 2021-07-01T07:00:00+00:00" // PDT
