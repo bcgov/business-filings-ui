@@ -193,7 +193,6 @@
 
 <script lang="ts">
 // Libraries
-import Vue from 'vue'
 import axios from '@/axios-auth'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { isEmpty } from 'lodash'
