@@ -74,7 +74,7 @@
                 :disabled="hasBlocker"
                 @click="prompDissolve()"
               >
-                <img src="@/assets/images/Dissolution_Header_Icon.svg" class="pr-2">
+                <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pr-2">
                 <span class="header-action-text">Dissolve this {{ entityDescription }}</span>
                 <v-tooltip top content-class="top-tooltip" nudge-right="7">
                   <template v-slot:activator="{ on }">
