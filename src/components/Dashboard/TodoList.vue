@@ -285,6 +285,7 @@
                         id="btn-delete-draft-staff"
                         @click="confirmDeleteDraft(item)"
                       >
+                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <v-list-item-title>Delete Draft</v-list-item-title>
                       </v-list-item>
                     </v-list>
@@ -318,6 +319,7 @@
                               id="btn-delete-draft-alt"
                               @click="confirmDeleteDraft(item)"
                       >
+                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <v-list-item-title>Delete changes to company information</v-list-item-title>
                       </v-list-item>
                     </v-list>
@@ -351,7 +353,11 @@
                         id="btn-delete-draft"
                         @click="confirmDeleteDraft(item)"
                       >
-                        <v-list-item-title>Delete Draft</v-list-item-title>
+                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
+                        <template v-if="isTypeDissolution(item)">
+                          <v-list-item-title>Delete Voluntary Dissolution</v-list-item-title>
+                        </template>
+                        <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
 
                       <v-list-item
@@ -359,6 +365,7 @@
                         id="btn-delete-incorporation"
                         @click="confirmDeleteIncorporation(item)"
                       >
+                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <v-list-item-title>Delete Incorporation Application</v-list-item-title>
                       </v-list-item>
                     </v-list>
@@ -1477,6 +1484,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   .v-list-item__title {
     font-size: 0.875rem;
+    color: $app-blue
   }
 }
 

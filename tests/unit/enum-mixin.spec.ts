@@ -37,6 +37,7 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeAlteration({ name: 'alteration' })).toBe(true)
     expect(vm.isTypeAnnualReport({ name: 'annualReport' })).toBe(true)
     expect(vm.isTypeCorrection({ name: 'correction' })).toBe(true)
+    expect(vm.isTypeDissolution({ name: 'dissolution' })).toBe(true)
     expect(vm.isTypeIncorporationApplication({ name: 'incorporationApplication' })).toBe(true)
     expect(vm.isTypeNameRequest({ name: 'nameRequest' })).toBe(true)
     expect(vm.isTypeTransition({ name: 'transition' })).toBe(true)

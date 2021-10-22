@@ -107,6 +107,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.CORRECTION)
   }
 
+  /** Returns True if filing is a Dissolution. */
+  isTypeDissolution (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLUTION)
+  }
+
   /** Returns True if filing is an Incorporation Application. */
   isTypeIncorporationApplication (item: any): boolean {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
