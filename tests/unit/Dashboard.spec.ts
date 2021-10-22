@@ -145,12 +145,12 @@ describe('Dashboard - In Process Tests', () => {
     expect(vm.$route.query.filing_id).toBe('123')
 
     // emit Todo List _with_ the pending filing
-    wrapper.find(TodoList).vm.$emit('todo-items', [
-      { id: 123 }
-    ])
+    wrapper.find(TodoList).vm.$emit('todo-count', 1)
+    wrapper.find(TodoList).vm.$emit('todo-items', [ { filingId: 123 } ])
 
     // emit Filings List _without_ the completed filing
-    wrapper.find(FilingHistoryList).vm.$emit('history-items', [])
+    wrapper.find(FilingHistoryList).vm.$emit('history-count', 1)
+    wrapper.find(FilingHistoryList).vm.$emit('history-items', [ { filingId: 456 } ])
 
     // clear Todo List so test can end
     wrapper.find(TodoList).vm.$emit('todo-items', [])
@@ -166,12 +166,12 @@ describe('Dashboard - In Process Tests', () => {
     expect(vm.$route.query.filing_id).toBe('123')
 
     // emit Todo List _without_ the pending filing
-    wrapper.find(TodoList).vm.$emit('todo-items', [])
+    wrapper.find(TodoList).vm.$emit('todo-count', 1)
+    wrapper.find(TodoList).vm.$emit('todo-items', [ { filingId: 456 } ])
 
     // emit Filings List _with_ the completed filing
-    wrapper.find(FilingHistoryList).vm.$emit('history-items', [
-      { id: 123 }
-    ])
+    wrapper.find(FilingHistoryList).vm.$emit('history-count', 1)
+    wrapper.find(FilingHistoryList).vm.$emit('history-items', [ { filingId: 123 } ])
 
     // verify that there is no "in process" filing
     expect(vm.inProcessFiling).toBeNull()

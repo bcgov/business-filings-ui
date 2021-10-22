@@ -424,11 +424,6 @@ export default class FilingHistoryList extends Mixins(
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  created (): void {
-    // load data into this page
-    this.loadData()
-  }
-
   private loadData (): void {
     this.historyItems = []
 
@@ -856,10 +851,9 @@ export default class FilingHistoryList extends Mixins(
     )
   }
 
-  @Watch('getFilings')
+  @Watch('getFilings', { immediate: true })
   private onFilingsChange (): void {
-    // when filings list has changed, reload it
-    // (does not fire on initial page load)
+    // load data initially and when filings list changes
     this.loadData()
   }
 }

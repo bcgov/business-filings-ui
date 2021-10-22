@@ -645,12 +645,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
-  /** Called when this component is created. */
-  async created (): Promise<void> {
-    // load data into this page
-    await this.loadData()
-  }
-
   private async loadData (): Promise<void> {
     this.todoItems = []
 
@@ -1377,10 +1371,9 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     }
   }
 
-  @Watch('getTasks')
+  @Watch('getTasks', { immediate: true })
   private async onTasksChanged (): Promise<void> {
-    // when tasks list has changed, reload it
-    // (does not fire on initial page load)
+    // load data initially and when tasks list changes
     await this.loadData()
   }
 }
