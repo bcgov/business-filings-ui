@@ -1032,6 +1032,7 @@ export default {
     navigateToDashboard (ignoreChanges: boolean = false) {
       if (ignoreChanges) this.haveChanges = false
       this.$router.push({ name: Routes.DASHBOARD })
+        .catch(() => {}) // ignore error in case navigation was aborted
     },
 
     resetErrors () {

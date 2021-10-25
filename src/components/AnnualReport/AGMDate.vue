@@ -186,12 +186,18 @@ export default class AgmDate extends Mixins(DateMixin) {
     )
   }
 
-  /** Whether to show the No AGM checkbox. */
+  /**
+   * Whether to show the No AGM checkbox.
+   * @returns False in the AR Filing Year
+   * @returns False in the next year up to Apr 30
+   * @returns True in the next year after Apr 30
+   */
   private get showNoAgmCheckbox (): boolean {
     if (!this.ARFilingYear) return false // safety check
-    // only show checkbox if 'today' is past max AGM date
-    const max = `${this.ARFilingYear}-04-30`
-    return (this.compareDates(this.getCurrentDate, max, '>'))
+    // only show checkbox if 'today' is past Max AGM Date
+    // where Max AGM Date is 'today' in the AR Filing Year
+    // up to Apr 30 in the next year
+    return (this.compareDates(this.getCurrentDate, this.arMaxDate, '>'))
   }
 
   /** Called when component is mounted. */
