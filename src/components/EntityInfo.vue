@@ -67,7 +67,7 @@
             </span>
 
             <!-- Dissolve Company -->
-            <span v-if="isDissolutionEnabled">
+            <span v-if="isDissolutionEnabled" class="pl-1">
               <v-btn
                 small text color="primary"
                 id="dissolution-button"
@@ -76,7 +76,7 @@
               >
                 <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pr-2">
                 <span class="header-action-text">Dissolve this {{ entityDescription }}</span>
-                <v-tooltip top content-class="top-tooltip" nudge-right="7">
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
                   <template v-slot:activator="{ on }">
                     <span class="pl-1" v-on="on">
                       <v-icon size="1rem">mdi-information-outline</v-icon>

@@ -14,8 +14,8 @@
         </p>
         <p class="warning-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
-          struck from the register and dissolved, ceasing to be an incorporated cooperative under the Cooperative
-          Association Act.
+          struck from the register and dissolved, ceasing to be an incorporated {{ subEntityTitle }} under the
+          {{ entityAct }} Act.
         </p>
       </v-card-text>
 
@@ -61,6 +61,16 @@ export default class ConfirmDissolution extends Vue {
   /** The entity title to display. */
   private get entityTitle (): string {
     return this.isCoop ? 'Cooperative Association' : 'Company'
+  }
+
+  /** The entity title to display. */
+  private get subEntityTitle (): string {
+    return this.isCoop ? 'cooperative' : 'company'
+  }
+
+  /** The entity title to display. */
+  private get entityAct (): string {
+    return this.isCoop ? 'Cooperative Association' : 'Business Corporations'
   }
 
   // Pass click event to parent.
