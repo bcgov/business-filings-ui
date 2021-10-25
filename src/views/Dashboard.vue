@@ -211,11 +211,12 @@ export default {
       if (needReload) this.$root.$emit('triggerDashboardReload')
     },
 
+    /** Checks whether to reload the dashboard with updated data. */
     checkToReloadDashboard () {
       // ensure we're not already running
       if (this.checkFilingStatusCount > 0) return
 
-      // cancel any existing timer so we can start fresh here
+      // safety check
       clearTimeout(this.refreshTimer)
 
       let filingId = null
@@ -225,8 +226,8 @@ export default {
       // only consider refreshing the dashboard if we came from a filing
       if (!filingId) return
 
-      const isInFilingHistory = !!this.historyItems.find(el => el.filingId === filingId)
-      const isInTodoList = !!this.todoItems.find(el => el.id === filingId)
+      const isInFilingHistory = !!this.historyItems.find(item => (item.filingId === filingId))
+      const isInTodoList = !!this.todoItems.find(item => (item.filingId === filingId))
 
       // if this filing is NOT in the to-do list and IS in the filing history list, do nothing - there is no problem
       if (!isInTodoList && isInFilingHistory) return
@@ -243,8 +244,10 @@ export default {
       this.checkFilingStatus(filingId)
     },
 
-    // checks whether this filing's status has changed
-    // respawns itself approx. every 1 second for up to 10 iterations
+    /**
+     * Checks whether the subject filing is now Completed.
+     * Retries every 1 second for up to 10 iterations.
+     */
     checkFilingStatus (filingId) {
       // stop this cycle after 10 iterations
       if (--this.checkFilingStatusCount < 0) {
@@ -255,7 +258,7 @@ export default {
       // get current filing status
       let url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
       axios.get(url).then(res => {
-        // if the filing status is now COMPLETE, reload the dashboard
+        // if the filing status is now COMPLETED, reload the dashboard
         if (res?.data?.filing?.header?.status === FilingStatus.COMPLETED) {
           // emit dashboard reload trigger event
           this.$root.$emit('triggerDashboardReload')
@@ -282,26 +285,32 @@ export default {
 
   watch: {
     historyItems () {
-      // check whether to reload the dashboard with updated data
-      this.checkToReloadDashboard()
+      // We do not receive historyItems and todoItems at the same time
+      // so wait for BOTH to have data before checking whether to reload
+      // the dashboard with updated data.
+      if (this.historyCount > 0 && this.todoCount > 0) {
+        this.checkToReloadDashboard()
+      }
     },
 
     todoItems () {
-      // check whether to reload the dashboard with updated data
-      this.checkToReloadDashboard()
+      // We do not receive historyItems and todoItems at the same time
+      // so wait for BOTH to have data before checking whether to reload
+      // the dashboard with updated data.
+      if (this.historyCount > 0 && this.todoCount > 0) {
+        this.checkToReloadDashboard()
+      }
     }
   },
 
   destroyed () {
-    // kill the refresh timer if it is running
+    // cancel the refresh timer if it is running
     clearTimeout(this.refreshTimer)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-
 section header {
   display: flex;
   flex-direction: row;
