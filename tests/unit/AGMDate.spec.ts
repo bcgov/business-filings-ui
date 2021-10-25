@@ -49,7 +49,7 @@ describe('AgmDate', () => {
   })
 
   it('renders the checkbox if today is after max AGM date', () => {
-    store.state.currentDate = '2019-07-15'
+    store.state.currentDate = '2020-01-01'
     expect(wrapper.find('#no-agm-checkbox').exists()).toBe(true)
   })
 
