@@ -52,7 +52,7 @@ describe('Filing History List - misc functionality', () => {
       displayName: 'Change of Address',
       // Effective Date is way in the future so it's always > now
       effectiveDate: '2099-12-13 08:00:00 GMT', // Dec 13, 2099 at 00:00:00 am Pacific
-      filingId: 666,
+      filingId: 222,
       isFutureEffective: true,
       name: 'changeOfAddress',
       status: 'PAID',
@@ -62,13 +62,11 @@ describe('Filing History List - misc functionality', () => {
   ]
 
   it('handles empty data', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -82,13 +80,11 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
-    const $route = { query: { filing_id: '222' } }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = SAMPLE_FILINGS
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 222 }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -99,8 +95,6 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('displays multiple filing items', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
@@ -175,7 +169,7 @@ describe('Filing History List - misc functionality', () => {
         commentsCount: 0,
         displayName: 'Change of Address',
         effectiveDate: '2019-11-20 22:17:54 GMT',
-        filingId: 9871,
+        filingId: 666,
         isFutureEffective: false,
         name: 'changeOfAddress',
         status: 'COMPLETED',
@@ -184,7 +178,7 @@ describe('Filing History List - misc functionality', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -198,8 +192,6 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('expands a paper-only filing', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
@@ -218,7 +210,7 @@ describe('Filing History List - misc functionality', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -251,8 +243,6 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('expands a regular filing', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = [
@@ -271,7 +261,7 @@ describe('Filing History List - misc functionality', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -305,14 +295,12 @@ describe('Filing History List - misc functionality', () => {
 
   // FUTURE: show and verify the tooltip
   xit('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
-    const $route = { query: { filing_id: '666' } }
-
     // init store
     store.state.entityType = 'BEN'
     store.state.entityIncNo = 'BC0007291'
     store.state.filings = SAMPLE_FILINGS
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 666 }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -329,13 +317,11 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('returns correct values for the date comparison methods', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route } })
+    const wrapper = mount(FilingHistoryList, { store })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -351,17 +337,11 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('disables corrections when "disable changes" prop is set', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, {
-      store,
-      mocks: { $route },
-      propsData: { disableChanges: true }
-    })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: true } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -369,17 +349,11 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('returns correct values for misc helper methods', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, {
-      store,
-      mocks: { $route },
-      propsData: { disableChanges: false }
-    })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: false } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -670,8 +644,7 @@ describe('Filing History List - redirections', () => {
       }
     ]
 
-    const $route = { query: {} }
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -699,14 +672,12 @@ describe('Filing History List - redirections', () => {
 })
 
 describe('Filing History List - incorporation applications', () => {
-  const $route = { query: {} }
-
   it('displays an "empty" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.filings = []
 
-    const wrapper = shallowMount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = shallowMount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -741,7 +712,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -783,7 +754,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -825,7 +796,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -889,7 +860,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -953,7 +924,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1016,7 +987,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1079,7 +1050,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1142,7 +1113,7 @@ describe('Filing History List - incorporation applications', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1188,7 +1159,6 @@ describe('Filing History List - incorporation applications', () => {
 })
 
 describe('Filing History List - paper only and other filings', () => {
-  const $route = { query: {} }
   let wrapper
   let vm
 
@@ -1220,7 +1190,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1276,7 +1246,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    wrapper = mount(FilingHistoryList, { store, vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1337,7 +1307,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    wrapper = mount(FilingHistoryList, { store, vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1400,7 +1370,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    wrapper = mount(FilingHistoryList, { store, vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1463,7 +1433,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    wrapper = mount(FilingHistoryList, { store, vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1526,7 +1496,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1583,7 +1553,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1640,7 +1610,7 @@ describe('Filing History List - paper only and other filings', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1691,8 +1661,6 @@ describe('Filing History List - documents', () => {
   }
 
   it('does not display the documents list when no documents are present on a filing', async () => {
-    const $route = { query: { } }
-
     // init store
     store.state.filings = [ FILING_WITH_DOCUMENTS_LINK ]
 
@@ -1704,7 +1672,7 @@ describe('Filing History List - documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
@@ -1726,8 +1694,6 @@ describe('Filing History List - documents', () => {
   })
 
   it('display the documents list when documents are present on a filing', async () => {
-    const $route = { query: { } }
-
     // init store
     store.state.filings = [ FILING_WITH_DOCUMENTS_LINK ]
 
@@ -1744,7 +1710,7 @@ describe('Filing History List - documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
@@ -1769,8 +1735,6 @@ describe('Filing History List - documents', () => {
   })
 
   it('computes proper document titles from the documents data', async () => {
-    const $route = { query: { filing_id: '666' } }
-
     // init store
     store.state.filings = [ FILING_WITH_DOCUMENTS_LINK ]
 
@@ -1789,7 +1753,7 @@ describe('Filing History List - documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 666 }, vuetify })
     await Vue.nextTick()
 
     // expand details
@@ -1829,8 +1793,6 @@ describe('Filing History List - detail comments', () => {
   }
 
   it('does not display the details count when count is zero', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.filings = [
       {
@@ -1848,7 +1810,7 @@ describe('Filing History List - detail comments', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
 
     // verify that detail comments button does not exist
@@ -1858,8 +1820,6 @@ describe('Filing History List - detail comments', () => {
   })
 
   it('displays the comments count when count is greater than zero', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.filings = [
       {
@@ -1878,7 +1838,7 @@ describe('Filing History List - detail comments', () => {
       }
     ]
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
 
     // verify detail comments button
@@ -1888,8 +1848,6 @@ describe('Filing History List - detail comments', () => {
   })
 
   it('does not display the details list when no comments are present on a filing', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.filings = [ FILING_WITH_COMMENTS_LINK ]
 
@@ -1901,7 +1859,7 @@ describe('Filing History List - detail comments', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
 
     // verify that Details List component does not exist before the item is expanded
@@ -1919,8 +1877,6 @@ describe('Filing History List - detail comments', () => {
   })
 
   it('displays the details list when comments are present on a filing', async () => {
-    const $route = { query: {} }
-
     // init store
     store.state.filings = [ FILING_WITH_COMMENTS_LINK ]
 
@@ -1949,7 +1905,7 @@ describe('Filing History List - detail comments', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
 
     // verify that Details List component does not exist until the item is expanded

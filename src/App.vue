@@ -220,8 +220,8 @@ export default {
   },
 
   created (): void {
-    // listen for dashboard reload trigger events
-    this.$root.$on('triggerDashboardReload', () => this.fetchData())
+    // listen for reload data events
+    this.$root.$on('reloadData', () => this.fetchData())
 
     // listen for spinner show/hide events
     this.$root.$on('showSpinner', (flag = false) => { this.showSpinner = flag })
@@ -238,8 +238,8 @@ export default {
   },
 
   destroyed (): void {
-    // stop listening for dashboard reload trigger events
-    this.$root.$off('triggerDashboardReload')
+    // stop listening for reload data events
+    this.$root.$off('reloadData')
 
     // stop listening for spinner show/hide events
     this.$root.$off('showSpinner')
@@ -294,6 +294,7 @@ export default {
       }
       this.setCurrentDate(this.dateToYyyyMmDd(serverDate))
 
+      // check authorizations
       try {
         // get Keycloak roles
         const jwt = this.getJWT()
@@ -737,7 +738,7 @@ export default {
 
   watch: {
     async '$route' (): Promise<void> {
-      // if we (re)route to the dashboard then re-fetch all data
+      // re-fetch all data when we (re)route to the dashboard
       // - does not fire on initial dashboard load
       // - fires after successful signin
       if (this.$route.name === Routes.DASHBOARD) {

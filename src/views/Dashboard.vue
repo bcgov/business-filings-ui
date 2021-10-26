@@ -23,10 +23,9 @@
               </header>
               <LegalObligation/>
               <TodoList
-                :inProcessFiling="inProcessFiling"
+                :highlightId="filingId"
                 :disableChanges="disableChanges"
                 @todo-count="todoCount = $event"
-                @todo-items="todoItems = $event"
               />
             </section>
 
@@ -38,14 +37,14 @@
                 <StaffNotation
                   v-if="isRoleStaff && !tempRegNumber"
                   addScrollbarOffset="true"
-                  @close="reloadDashboardIfNeeded($event)"
+                  @close="reloadDataIfNeeded($event)"
                 />
               </header>
               <FilingHistoryList
-                 class="mt-3"
+                class="mt-3"
+                :highlightId="filingId"
                 :disableChanges="disableChanges"
                 @history-count="historyCount = $event"
-                @history-items="historyItems = $event"
               />
             </section>
           </v-col>
@@ -131,7 +130,6 @@ import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
 import { EntityStatus, FilingStatus, Routes } from '@/enums'
-import { HistoryItemIF, TodoItemIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, EnumMixin } from '@/mixins'
@@ -154,12 +152,7 @@ export default {
   data () {
     return {
       todoCount: 0,
-      todoItems: [] as Array<TodoItemIF>,
       historyCount: 0,
-      historyItems: [] as Array<HistoryItemIF>,
-      refreshTimer: null as number,
-      checkFilingStatusCount: 0,
-      inProcessFiling: null as number,
       coaWarningDialog: false
     }
   },
@@ -167,7 +160,7 @@ export default {
   computed: {
     ...mapState(['entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate', 'getEntityIncNo']),
+    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -191,6 +184,12 @@ export default {
     /** The Incorporation Application's Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
+    },
+
+    /** The Filing ID route query parameter. May be NaN (which is falsy). */
+    filingId (): number {
+      // NB: use unary plus operator to cast string to number
+      return +this.$route.query.filing_id
     }
   },
 
@@ -207,69 +206,8 @@ export default {
       this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
     },
 
-    reloadDashboardIfNeeded (needReload: boolean) {
-      if (needReload) this.$root.$emit('triggerDashboardReload')
-    },
-
-    /** Checks whether to reload the dashboard with updated data. */
-    checkToReloadDashboard () {
-      // ensure we're not already running
-      if (this.checkFilingStatusCount > 0) return
-
-      // safety check
-      clearTimeout(this.refreshTimer)
-
-      let filingId = null
-      // NB: use unary plus operator to cast string to number
-      if (this.$route !== undefined) filingId = +this.$route.query.filing_id // if missing, this is NaN (falsy)
-
-      // only consider refreshing the dashboard if we came from a filing
-      if (!filingId) return
-
-      const isInFilingHistory = !!this.historyItems.find(item => (item.filingId === filingId))
-      const isInTodoList = !!this.todoItems.find(item => (item.filingId === filingId))
-
-      // if this filing is NOT in the to-do list and IS in the filing history list, do nothing - there is no problem
-      if (!isInTodoList && isInFilingHistory) return
-
-      // if this filing is in the to-do list, mark it as in-progress for to-do list to format differently
-      if (isInTodoList) {
-        this.inProcessFiling = filingId
-      }
-
-      // reset iteration counter
-      this.checkFilingStatusCount = 10
-
-      // check for updated status to reload dashboard
-      this.checkFilingStatus(filingId)
-    },
-
-    /**
-     * Checks whether the subject filing is now Completed.
-     * Retries every 1 second for up to 10 iterations.
-     */
-    checkFilingStatus (filingId) {
-      // stop this cycle after 10 iterations
-      if (--this.checkFilingStatusCount < 0) {
-        this.inProcessFiling = null
-        return
-      }
-
-      // get current filing status
-      let url = `businesses/${this.getEntityIncNo}/filings/${filingId}`
-      axios.get(url).then(res => {
-        // if the filing status is now COMPLETED, reload the dashboard
-        if (res?.data?.filing?.header?.status === FilingStatus.COMPLETED) {
-          // emit dashboard reload trigger event
-          this.$root.$emit('triggerDashboardReload')
-        }
-        throw new Error('filing not yet completed')
-      }).catch(() => {
-        // call this function again in 1 second
-        this.refreshTimer = setTimeout(() => {
-          this.checkFilingStatus(filingId)
-        }, 1000)
-      })
+    reloadDataIfNeeded (needed: boolean) {
+      if (needed) this.$root.$emit('reloadData')
     },
 
     /** Toggle the Change of address warning dialog. */
@@ -281,31 +219,6 @@ export default {
     proceedCoa () {
       this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
     }
-  },
-
-  watch: {
-    historyItems () {
-      // We do not receive historyItems and todoItems at the same time
-      // so wait for BOTH to have data before checking whether to reload
-      // the dashboard with updated data.
-      if (this.historyCount > 0 && this.todoCount > 0) {
-        this.checkToReloadDashboard()
-      }
-    },
-
-    todoItems () {
-      // We do not receive historyItems and todoItems at the same time
-      // so wait for BOTH to have data before checking whether to reload
-      // the dashboard with updated data.
-      if (this.historyCount > 0 && this.todoCount > 0) {
-        this.checkToReloadDashboard()
-      }
-    }
-  },
-
-  destroyed () {
-    // cancel the refresh timer if it is running
-    clearTimeout(this.refreshTimer)
   }
 }
 </script>

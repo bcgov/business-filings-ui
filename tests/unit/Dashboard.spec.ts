@@ -25,6 +25,7 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Dashboard - UI', () => {
+  const $route = { query: {} }
   let wrapper: Wrapper<Vue>
   let vm: any
 
@@ -36,7 +37,7 @@ describe('Dashboard - UI', () => {
 
     // create wrapper for Dashboard
     // this stubs out the 5 sub-components
-    wrapper = shallowMount(Dashboard, { store, vuetify })
+    wrapper = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     vm = wrapper.vm
   })
 
@@ -78,7 +79,7 @@ describe('Dashboard - UI', () => {
   it('disables standalone filing buttons when there is a Temporary Reg Number', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
 
-    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify })
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
     expect(localVm.disableChanges).toEqual(true)
@@ -97,10 +98,7 @@ describe('Dashboard - UI', () => {
   })
 })
 
-describe('Dashboard - In Process Tests', () => {
-  let wrapper: Wrapper<Vue>
-  let vm: any
-
+describe('Dashboard - Route Parameter Tests', () => {
   beforeAll(() => {
     // init store
     store.state.hasBlockerTask = false
@@ -108,73 +106,22 @@ describe('Dashboard - In Process Tests', () => {
     store.state.isCoaPending = false
   })
 
-  beforeEach(() => {
-    // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+  it('sets Filing Id to a falsy value when the route query parameter doesn\'t exist', () => {
+    const $route = { query: {} }
+    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
 
-    // mock "get filing" endpoint
-    sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
-        data: {
-          filing: {
-            header: {
-              status: 'PENDING'
-            }
-          }
-        }
-      })))
-
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    // set Filing ID in URL to indicate that we've returned from the dashboard from a filing (file pay, not save draft)
-    router.push({ name: 'dashboard', query: { filing_id: '123' } })
-
-    wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
-    vm = wrapper.vm as any
-  })
-
-  afterEach(() => {
-    sinon.restore()
-    wrapper.destroy()
-  })
-
-  it('marks filing as PROCESSING when expecting completed filing and dashboard does not reflect this', () => {
-    // verify Filing ID passed in
-    expect(vm.$route.query.filing_id).toBe('123')
-
-    // emit Todo List _with_ the pending filing
-    wrapper.find(TodoList).vm.$emit('todo-count', 1)
-    wrapper.find(TodoList).vm.$emit('todo-items', [ { filingId: 123 } ])
-
-    // emit Filings List _without_ the completed filing
-    wrapper.find(FilingHistoryList).vm.$emit('history-count', 1)
-    wrapper.find(FilingHistoryList).vm.$emit('history-items', [ { filingId: 456 } ])
-
-    // clear Todo List so test can end
-    wrapper.find(TodoList).vm.$emit('todo-items', [])
-
-    // verify that filing is "in process"
-    expect(vm.inProcessFiling).toEqual(123)
+    expect(vm.filingId).toBeFalsy()
 
     wrapper.destroy()
   })
 
-  it('does not mark filing as PROCESSING when expecting completed filing and dashboard reflects this', () => {
-    // verify Filing ID passed in
-    expect(vm.$route.query.filing_id).toBe('123')
+  it('sets Filing Id to the numeric value of the route query parameter when it exists', () => {
+    const $route = { query: { filing_id: '123' } }
+    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
 
-    // emit Todo List _without_ the pending filing
-    wrapper.find(TodoList).vm.$emit('todo-count', 1)
-    wrapper.find(TodoList).vm.$emit('todo-items', [ { filingId: 456 } ])
-
-    // emit Filings List _with_ the completed filing
-    wrapper.find(FilingHistoryList).vm.$emit('history-count', 1)
-    wrapper.find(FilingHistoryList).vm.$emit('history-items', [ { filingId: 123 } ])
-
-    // verify that there is no "in process" filing
-    expect(vm.inProcessFiling).toBeNull()
+    expect(vm.filingId).toBe(123)
 
     wrapper.destroy()
   })
@@ -198,7 +145,7 @@ describe('Dashboard - Click Tests', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
+    router.push({ name: 'dashboard', query: {} })
 
     const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
@@ -217,15 +164,15 @@ describe('Dashboard - Click Tests', () => {
 
   it('displays the change of address warning dialog as a BCOMP', async () => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'BC00001191'
+    store.state.entityIncNo = 'BC0001191'
     store.state.entityType = 'BEN'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'dashboard' })
+    router.push({ name: 'dashboard', query: {} })
 
     const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
@@ -258,6 +205,8 @@ describe('Dashboard - Click Tests', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+    router.push({ query: {} })
+
     const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
 

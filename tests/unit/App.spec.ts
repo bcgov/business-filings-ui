@@ -238,7 +238,7 @@ describe('App as a COOP', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/CP0001191/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -247,7 +247,7 @@ describe('App as a COOP', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -536,7 +536,7 @@ describe('App as a BCOMP', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/BC0007291/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -545,7 +545,7 @@ describe('App as a BCOMP', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -796,7 +796,7 @@ describe('App as a Draft IA with approved NR', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -805,7 +805,7 @@ describe('App as a Draft IA with approved NR', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -921,7 +921,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -930,7 +930,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -1027,7 +1027,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -1036,7 +1036,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -1133,7 +1133,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -1142,7 +1142,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -1239,7 +1239,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -1248,7 +1248,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO
@@ -1389,7 +1389,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   beforeEach(async () => {
     const get = sinon.stub(axios, 'get')
 
-    // GET authorizations (role) from auth API
+    // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -1398,7 +1398,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
         }
       })))
 
-    // GET user info from auth API
+    // GET user info from Auth API
     get.withArgs('users/@me')
       .returns(new Promise((resolve) => resolve({
         data: USER_INFO

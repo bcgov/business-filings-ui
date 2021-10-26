@@ -523,7 +523,7 @@ import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 
 // Mixins, Enums and Interfaces
-import { DateMixin, EnumMixin, FilingMixin, PayApiMixin } from '@/mixins'
+import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF } from '@/interfaces'
 
@@ -548,7 +548,7 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF }
     Vue2Filters.mixin
   ]
 })
-export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, PayApiMixin) {
+export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -566,9 +566,11 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   private confirmEnabled = false
   private currentFiling: TodoItemIF = null
   private panel: number = null // currently expanded panel
+  private checkTimer: number = null
+  private inProcessFiling: number = null
 
-  @Prop({ default: null }) readonly inProcessFiling: number
   @Prop({ default: false }) readonly disableChanges: boolean
+  @Prop({ default: null }) readonly highlightId: number
 
   @Getter isBComp!: boolean
   @Getter isBcCompany!: boolean
@@ -648,6 +650,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   private async loadData (): Promise<void> {
     this.todoItems = []
 
+    // create 'task items' list from 'tasks' array from API
     for (const task of this.getTasks) {
       if (task.task?.todo) {
         this.loadTodoItem(task)
@@ -659,8 +662,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       }
     }
 
+    // report number of items back to parent (dashboard)
     this.$emit('todo-count', this.todoItems.length)
-    this.$emit('todo-items', this.todoItems)
 
     // Check if there is a draft/pending/error/paid/correction/alteration task.
     // This is a blocker because it needs to be completed first.
@@ -669,6 +672,51 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         this.isStatusPaid(task) || this.isTypeCorrection(task) || this.isTypeAlteration(task))
     })
     this.setHasBlockerTask(!!blockerTask)
+
+    // if needed, highlight a specific task
+    if (this.highlightId) this.highlightTask(this.highlightId)
+  }
+
+  /**
+   * Identifies the specified task as "in progress" and starts a
+   * process to check if the task changes to a completed filing.
+   */
+  private highlightTask (id: number): void {
+    const index = this.todoItems.findIndex(h => h.filingId === id)
+    if (index >= 0) {
+      this.inProcessFiling = id
+
+      // start check process
+      this.checkIfCompleted(id, 0)
+    }
+  }
+
+  /**
+   * Checks whether the subject filing is now Completed.
+   * Retries after 1 second for up to 10 iterations.
+   */
+  checkIfCompleted (id: number, count: number): void {
+    // stop this cycle after 10 iterations
+    if (++count > 10) {
+      this.inProcessFiling = null
+      return
+    }
+
+    // get filing's status
+    let url = `businesses/${this.getEntityIncNo}/filings/${id}`
+    this.fetchFiling(url).then(filing => {
+      // if the filing is now COMPLETED, emit event to reload all data
+      if (filing?.header?.status === FilingStatus.COMPLETED) {
+        this.$root.$emit('reloadData')
+      } else {
+        throw new Error('Filing not yet completed')
+      }
+    }).catch(() => {
+      // call this function again in 1 second
+      this.checkTimer = setTimeout(() => {
+        this.checkIfCompleted(id, count)
+      }, 1000)
+    })
   }
 
   private loadTodoItem (task: ApiTaskIF): void {
@@ -1220,8 +1268,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
       if (!res) { throw new Error('Invalid API response') }
 
       if (refreshDashboard) {
-        // emit dashboard reload trigger event
-        this.$root.$emit('triggerDashboardReload')
+        // emit event to reload all data
+        this.$root.$emit('reloadData')
       }
     }).catch(error => {
       if (error?.response) {
@@ -1279,8 +1327,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     await axios.patch(url, {}).then(res => {
       if (!res) { throw new Error('Invalid API response') }
 
-      // emit dashboard reload trigger event
-      this.$root.$emit('triggerDashboardReload')
+      // emit event to reload all data
+      this.$root.$emit('reloadData')
     }).catch(error => {
       if (error?.response) {
         if (error.response.data?.errors) {
@@ -1301,8 +1349,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   private hideCommentDialog (needReload: boolean): void {
     this.addCommentDialog = false
     if (needReload) {
-      // emit dashboard reload trigger event
-      this.$root.$emit('triggerDashboardReload')
+      // emit event to reload all data
+      this.$root.$emit('reloadData')
     }
   }
 
@@ -1375,6 +1423,12 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   private async onTasksChanged (): Promise<void> {
     // load data initially and when tasks list changes
     await this.loadData()
+  }
+
+  /** Called when this component is destroyed */
+  destroyed (): void {
+    // cancel the check timer if it is running
+    clearTimeout(this.checkTimer)
   }
 }
 </script>
