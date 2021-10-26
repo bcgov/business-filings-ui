@@ -834,39 +834,35 @@ describe('TodoList - UI', () => {
     wrapper.destroy()
   })
 
-  it('displays a PROCESSING message on a filing that is expected to be complete', async () => {
+  it('displays a PROCESSING message when the In Process variable is set', async () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
+        task: {
+          filing: {
             header: {
-              'name': 'changeOfDirectors',
-              'status': 'PENDING',
-              'paymentToken': 12345678,
-              'filingId': 123
+              name: 'changeOfDirectors',
+              status: 'PENDING',
+              paymentToken: 12345678,
+              filingId: 123
             },
             business: {},
             changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 123 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.todoItems.length).toEqual(1)
-    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
-    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    // set the "in progress" task
+    vm.inProcessFiling = 123
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].filingId).toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PROCESSING...')
@@ -877,46 +873,41 @@ describe('TodoList - UI', () => {
     wrapper.destroy()
   })
 
-  it('does not break if a filing is marked as processing, that is not in the to-do list', async () => {
+  it('does not display a PROCESSING message when the In Process variable is falsy', async () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
+        task: {
+          filing: {
             header: {
-              'name': 'changeOfDirectors',
-              'status': 'PENDING',
-              'paymentToken': 12345678,
-              'filingId': 123
+              name: 'changeOfDirectors',
+              status: 'PENDING',
+              paymentToken: 12345678,
+              filingId: 123
             },
             business: {},
             changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 456 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.todoItems.length).toEqual(1)
-    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
-    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    // clear the "in progress" task
+    vm.inProcessFiling = NaN
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].filingId).not.toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
 
     const button = item.querySelector('.list-item__actions .v-btn')
-    expect(button.disabled).toBe(false)
-    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume Payment')
+    expect(button.getAttribute('disabled')).toBeNull()
 
     wrapper.destroy()
   })
@@ -1313,39 +1304,35 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  it('displays a PROCESSING message on a filing that is expected to be complete', async () => {
+  it('displays a PROCESSING message when the In Process variable is set', async () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
+        task: {
+          filing: {
             header: {
-              'name': 'changeOfDirectors',
-              'status': 'PENDING',
-              'paymentToken': 12345678,
-              'filingId': 123
+              name: 'changeOfDirectors',
+              status: 'PENDING',
+              paymentToken: 12345678,
+              filingId: 123
             },
             business: {},
             changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 123 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.todoItems.length).toEqual(1)
-    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
-    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    // set the "in progress" task
+    vm.inProcessFiling = 123
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].filingId).toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PROCESSING...')
@@ -1356,46 +1343,41 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  it('does not break if a filing is marked as processing, that is not in the to-do list', async () => {
+  it('does not display a PROCESSING message when the In Process variable is falsy', async () => {
     // init store
     store.state.tasks = [
       {
-        'task': {
-          'filing': {
+        task: {
+          filing: {
             header: {
-              'name': 'changeOfDirectors',
-              'status': 'PENDING',
-              'paymentToken': 12345678,
-              'filingId': 123
+              name: 'changeOfDirectors',
+              status: 'PENDING',
+              paymentToken: 12345678,
+              filingId: 123
             },
             business: {},
             changeOfDirectors: {}
           }
         },
-        'enabled': true,
-        'order': 1
+        enabled: true,
+        order: 1
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 456 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
-    expect(vm.todoItems.length).toEqual(1)
-    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
-    expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
-    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    // clear the "in progress" task
+    vm.inProcessFiling = NaN
 
     const item = vm.$el.querySelector('.list-item')
-    expect(vm.todoItems[0].filingId).not.toEqual(wrapper.props('inProcessFiling'))
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
 
     const button = item.querySelector('.list-item__actions .v-btn')
-    expect(button.disabled).toBe(false)
-    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume Payment')
+    expect(button.getAttribute('disabled')).toBeNull()
 
     wrapper.destroy()
   })

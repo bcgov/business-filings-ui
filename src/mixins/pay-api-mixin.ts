@@ -21,6 +21,6 @@ export default class PayApiMixin extends Vue {
     const url = `${this.payApiUrl}codes/errors/${code}`
     return axios.get(url)
       .then(response => response?.data)
-      .catch() // ignore errors
+      .catch(() => {}) // ignore errors
   }
 }

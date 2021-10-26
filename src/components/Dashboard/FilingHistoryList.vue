@@ -391,8 +391,8 @@ import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 export default class FilingHistoryList extends Mixins(
   DateMixin, EnumMixin, FilingMixin, LegalApiMixin
 ) {
-  @Prop({ default: false })
-  readonly disableChanges: boolean
+  @Prop({ default: false }) readonly disableChanges: boolean
+  @Prop({ default: null }) readonly highlightId: number
 
   @Getter isBComp!: boolean
   @Getter isRoleStaff!: boolean
@@ -427,7 +427,7 @@ export default class FilingHistoryList extends Mixins(
   private loadData (): void {
     this.historyItems = []
 
-    // create history items from 'filings' array from API
+    // create 'history items' list from 'filings' array from API
     for (const filing of this.getFilings) {
       // safety check for required fields
       if (!filing.name || !filing.displayName || !filing.effectiveDate || !filing.submittedDate || !filing.status) {
@@ -439,8 +439,8 @@ export default class FilingHistoryList extends Mixins(
       this.loadFiling(filing)
     }
 
+    // report number of items back to parent (dashboard)
     this.$emit('history-count', this.historyItems.length)
-    this.$emit('history-items', this.historyItems)
 
     // Check if there is a pending (ie, paid / not yet completed) filing.
     // This is a blocker because it needs to be completed first.
@@ -462,9 +462,7 @@ export default class FilingHistoryList extends Mixins(
     this.setHasBlockerFiling(!!blockerFiling)
 
     // if needed, highlight a specific filing
-    // NB: use unary plus operator to cast string to number
-    const highlightId = +this.$route.query.filing_id // may be NaN (which is falsy)
-    if (highlightId) { this.highlightFiling(highlightId) }
+    if (this.highlightId) this.highlightFiling(this.highlightId)
   }
 
   /** Loads a filing into the historyItems list. */
@@ -592,8 +590,8 @@ export default class FilingHistoryList extends Mixins(
   }
 
   /** Expands the panel of the specified filing ID. */
-  private highlightFiling (filingId: number): void {
-    const index = this.historyItems.findIndex(h => h.filingId === filingId)
+  private highlightFiling (id: number): void {
+    const index = this.historyItems.findIndex(h => h.filingId === id)
     if (index >= 0) this.togglePanel(index, this.historyItems[index])
   }
 
