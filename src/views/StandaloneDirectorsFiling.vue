@@ -173,7 +173,7 @@
           </div>
 
           <div class="buttons-right">
-            <v-tooltip top color="#3b6cff">
+            <v-tooltip top color="#3b6cff" content-class="top-tooltip">
               <template v-slot:activator="{ on }">
                 <div v-on="on" class="d-inline">
                   <v-btn
@@ -286,7 +286,7 @@
           </div>
 
           <div class="buttons-right">
-            <v-tooltip top color="#3b6cff">
+            <v-tooltip top color="#3b6cff" content-class="top-tooltip">
               <template v-slot:activator="{ on }">
                 <div v-on="on" class="d-inline">
                   <v-btn
@@ -600,9 +600,9 @@ export default {
 
         // restore COD Date
         if (filing.header.effectiveDate) {
-          this.initialCodDate = this.apiToPacificDate(filing.header.effectiveDate)
+          this.initialCodDate = this.apiToYyyyMmDd(filing.header.effectiveDate)
         } else if (filing.header.date) {
-          this.initialCodDate = this.apiToPacificDate(filing.header.date)
+          this.initialCodDate = this.apiToYyyyMmDd(filing.header.date)
         } else {
           throw new Error('Missing effective date')
         }

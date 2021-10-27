@@ -175,7 +175,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       filing: {
         header: {
           name: this.name,
-          date: this.getCurrentDate,
+          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
           certifiedBy: ''
         },
         business: {
