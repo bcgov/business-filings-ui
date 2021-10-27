@@ -145,7 +145,7 @@
       </div>
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff">
+        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
           <template v-slot:activator="{ on }">
             <div v-on="on" class="d-inline">
               <v-btn
