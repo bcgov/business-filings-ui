@@ -888,7 +888,6 @@ export default {
       // (this will overwrite the current data)
       this.isFetching = true
       if (!this.isJestRunning) {
-        console.log(this.codDate)
         await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
       }
       this.isFetching = false
