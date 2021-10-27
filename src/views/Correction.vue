@@ -581,7 +581,7 @@ export default {
           name: 'correction',
           certifiedBy: this.certifiedBy,
           email: 'no_one@never.get',
-          date: this.getCurrentDate
+          date: this.getCurrentDate // NB: API will reassign this date according to its clock
         }
       }
 
