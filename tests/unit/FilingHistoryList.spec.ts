@@ -1241,7 +1241,7 @@ describe('Filing History List - paper only and other filings', () => {
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
         data: {
-          courtOrder: {}
+          order: {}
         }
       }
     ]
@@ -1487,7 +1487,7 @@ describe('Filing History List - paper only and other filings', () => {
         submittedDate: '2021-05-05 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
-          courtOrder: {
+          order: {
             effectOfOrder: 'planOfArrangement',
             fileNumber: '#1234-5678/90',
             notationOrOrder: 'A note about order'
@@ -1544,7 +1544,7 @@ describe('Filing History List - paper only and other filings', () => {
         submittedDate: '2021-05-05 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
-          courtOrder: {
+          order: {
             effectOfOrder: 'planOfArrangement',
             fileNumber: '#1234-5678/90',
             notationOrOrder: 'A note about order'
@@ -1601,7 +1601,7 @@ describe('Filing History List - paper only and other filings', () => {
         submittedDate: '2021-05-05 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
-          courtOrder: {
+          order: {
             effectOfOrder: 'planOfArrangement',
             fileNumber: '#1234-5678/90',
             notationOrOrder: 'A note about order'

@@ -553,8 +553,8 @@ export default class FilingHistoryList extends Mixins(
           this.isEffectiveDatePast(effectiveDate)
         )
 
-        item.courtOrderNumber = filing.data.courtOrder?.fileNumber || ''
-        item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.courtOrder?.effectOfOrder)
+        item.courtOrderNumber = filing.data.order?.fileNumber || ''
+        item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
         item.isFutureEffectiveAlteration = isFutureEffectiveAlteration
         item.isFutureEffectiveAlterationPending = isFutureEffectiveAlterationPending
         item.toLegalType = filing.data.alteration?.toLegalType || null
@@ -564,10 +564,10 @@ export default class FilingHistoryList extends Mixins(
       // add properties for staff filings
       if (this.isTypeStaff(filing)) {
         item.documents = [] // no documents
-        item.fileNumber = filing.data.courtOrder?.fileNumber || '' // may be falsy
+        item.fileNumber = filing.data.order?.fileNumber || '' // may be falsy
         item.isTypeStaff = true
-        item.notationOrOrder = filing.data.courtOrder?.orderDetails // should not be falsy
-        item.planOfArrangement = filing.data.courtOrder?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
+        item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
+        item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
       }
 
       this.historyItems.push(item)
