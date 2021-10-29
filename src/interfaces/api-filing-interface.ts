@@ -55,10 +55,10 @@ export interface ApiFilingIF {
     conversion?: any // some object
 
     // staff filings only
-    courtOrder?: {
+    order?: {
       effectOfOrder: EffectOfOrderTypes
       fileNumber: string
-      orderDate: string
+      orderDate?: string
       orderDetails: string
     }
 
