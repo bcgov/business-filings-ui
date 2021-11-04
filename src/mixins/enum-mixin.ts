@@ -1,6 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import {
   CorpTypeCd,
+  DissolutionNames,
+  DissolutionTypes,
   EffectOfOrderTypes,
   EntityStatus,
   FilingNames,
@@ -234,5 +236,14 @@ export default class EnumMixin extends Vue {
    */
   camelCaseToWords (s: string): string {
     return s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
+  }
+
+  /**
+   * Converts a dissolution type to its name.
+   * @param type the dissolution type to convert
+   * @returns the dissolution name
+   */
+  dissolutionTypeToName (type: DissolutionTypes): string {
+    return DissolutionNames[type as string]
   }
 }

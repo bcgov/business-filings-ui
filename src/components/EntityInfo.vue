@@ -182,7 +182,7 @@ import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { EntityStatus, CorpTypeCd, Routes } from '@/enums'
+import { EntityStatus, CorpTypeCd, Routes, DissolutionTypes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -197,6 +197,8 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
+  @State entityDissolutionDate!: Date
+  @State entityDissolutionType!: DissolutionTypes
 
   @Getter getEntityType!: CorpTypeCd
   @Getter getEntityIncNo!: number
@@ -276,9 +278,10 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
 
   /** The dissolution text. */
   private get dissolutionText (): string {
-    const dissolutionType = 'Voluntary Dissolution' // *** TODO: get from business object / store
-    const date = new Date() // *** TODO: get from business object / store
-    return `${dissolutionType} - ${this.dateToPacificDateTime(date)}`
+    const name = this.dissolutionTypeToName(this.entityDissolutionType)
+    const emDash = '—' // ALT + 0151
+    const date = this.dateToPacificDateTime(this.entityDissolutionDate)
+    return `${name} ${emDash} ${date}`
   }
 
   /** The business phone number and optional extension. */

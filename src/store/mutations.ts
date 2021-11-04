@@ -1,4 +1,4 @@
-import { EntityStatus, CorpTypeCd, FilingStatus } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes } from '@/enums'
 import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF } from '@/interfaces'
 
 export default {
@@ -43,6 +43,12 @@ export default {
   },
   entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
     state.entityFoundingDate = entityFoundingDate
+  },
+  entityDissolutionDate (state: StateIF, entityDissolutionDate: Date) {
+    state.entityDissolutionDate = entityDissolutionDate
+  },
+  entityDissolutionType (state: StateIF, entityDissolutionType: DissolutionTypes) {
+    state.entityDissolutionType = entityDissolutionType
   },
   businessEmail (state: StateIF, businessEmail: string) {
     state.businessEmail = businessEmail

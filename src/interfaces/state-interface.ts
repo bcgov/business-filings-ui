@@ -1,4 +1,4 @@
-import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
+import { CorpTypeCd, DissolutionTypes, EntityStatus, FilingStatus } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DirectorIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
 
 /** The state model interface. */
@@ -21,6 +21,8 @@ export interface StateIF {
   entityBusinessNo: string
   entityIncNo: string
   entityFoundingDate: Date
+  entityDissolutionDate: Date
+  entityDissolutionType: DissolutionTypes
   lastAnnualReportDate: string // YYYY-MM-DD
   lastAddressChangeDate: string // YYYY-MM-DD
   lastDirectorChangeDate: string // YYYY-MM-DD

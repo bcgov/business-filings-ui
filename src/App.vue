@@ -111,7 +111,8 @@ import { configJson } from '@/resources'
 import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin }
   from '@/mixins'
 import { ApiFilingIF, ApiTaskIF, BusinessIF, TaskTodoIF } from '@/interfaces'
-import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, DissolutionTypes }
+  from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
@@ -250,7 +251,8 @@ export default {
       'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
       'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
       'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate', 'setNameRequest',
-      'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject']),
+      'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject', 'setEntityDissolutionDate',
+      'setEntityDissolutionType']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -489,6 +491,13 @@ export default {
       this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
       this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
       this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
+
+      // *** TODO: get entity status (eg, Dissolved) -- see also business.goodStanding
+
+      // *** TODO: remove debugging code
+      business.dissolutionDate = this.dateToApi(new Date())
+      this.setEntityDissolutionDate(this.apiToDate(business.dissolutionDate))
+      this.setEntityDissolutionType(DissolutionTypes.HDO) // *** TODO: get from business object
 
       // store config object based on current entity type
       this.storeConfigObject(business.legalType)
