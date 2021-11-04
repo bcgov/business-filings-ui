@@ -6,17 +6,20 @@
       <v-card-text>
         <p class="genErr">Your account is currently unable to access this Incorporation Application.
           This may be because of the following:</p>
+
         <ul>
           <li>Your account is not authorized to access this Incorporation Application &mdash; contact
             the account owner to get access.</li>
           <li>Your login session has timed out &mdash; please exit and then login again.</li>
           <li>The specified URL is not valid &mdash; exit to return to the Business Registry home page.</li>
         </ul>
+
         <p class="mt-4">You can retry now, or you can exit and try to access this Incorporation Application
           at another time.</p>
+
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info />
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

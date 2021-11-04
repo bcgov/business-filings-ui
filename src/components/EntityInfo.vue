@@ -39,66 +39,73 @@
               />
             </span>
 
-            <!-- View and Change Company Information -->
-            <span v-if="showViewChangeInfoBtn">
-              <v-btn
-                small text color="primary"
-                id="company-information-button"
-                :disabled="hasBlocker || !isInGoodStanding"
-                @click="viewChangeCompanyInfo()"
-              >
-                <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                <span class="header-action-text">View and Change Company Information</span>
-              </v-btn>
-
-              <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
-                <template v-slot:activator="{ on }">
-                  <span class="pending-alert pr-2" v-on="on">
-                    <v-icon color="orange darken-2">mdi-alert</v-icon>
-                  </span>
-                </template>
-                <template v-if="isPendingDissolution">
-                  You cannot view or change company information while the company is pending dissolution.
-                </template>
-                <template v-if="isNotInCompliance">
-                  You cannot view or change company information while the company is not in compliance.
-                </template>
-              </v-tooltip>
+            <span v-if="isHistorical">
+              <v-chip class="primary mt-n1 ml-4" small label text-color="white">HISTORICAL</v-chip>
+              <span class="font-14 ml-3">{{dissolutionText}}</span>
             </span>
 
-            <!-- Dissolve Company -->
-            <span v-if="isDissolutionEnabled" class="pl-1">
-              <v-btn
-                small text color="primary"
-                id="dissolution-button"
-                :disabled="hasBlocker"
-                @click="prompDissolve()"
-              >
-                <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pr-2">
-                <span class="header-action-text">Dissolve this {{ entityDescription }}</span>
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
+            <template v-else>
+              <!-- View and Change Company Information -->
+              <span v-if="showViewChangeInfoBtn">
+                <v-btn
+                  small text color="primary"
+                  id="company-information-button"
+                  :disabled="hasBlocker || !isInGoodStanding"
+                  @click="viewChangeCompanyInfo()"
+                >
+                  <v-icon medium>mdi-file-document-edit-outline</v-icon>
+                  <span class="font-13 ml-1">View and Change Company Information</span>
+                </v-btn>
+
+                <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
                   <template v-slot:activator="{ on }">
-                    <span class="pl-1" v-on="on">
-                      <v-icon size="1rem">mdi-information-outline</v-icon>
+                    <span class="pending-alert pr-2" v-on="on">
+                      <v-icon color="orange darken-2">mdi-alert</v-icon>
                     </span>
                   </template>
-                  Dissolving the {{ entityTitle }} will make this {{ entityTitle }} historical
-                  and it will be struck from the corporate registry.
+                  <template v-if="isPendingDissolution">
+                    You cannot view or change company information while the company is pending dissolution.
+                  </template>
+                  <template v-if="isNotInCompliance">
+                    You cannot view or change company information while the company is not in compliance.
+                  </template>
                 </v-tooltip>
-              </v-btn>
-            </span>
+              </span>
 
-            <!-- Download Summary -->
-            <span v-if="showDownloadSummaryBtn">
-              <v-btn
-                small text color="primary"
-                id="download-summary-button"
-                @click="downloadBusinessSummary()"
-              >
-                <v-icon medium>mdi-file-pdf-outline</v-icon>
-                <span>Download Summary</span>
-              </v-btn>
-            </span>
+              <!-- Dissolve Company -->
+              <span v-if="showDissolutionBtn">
+                <v-btn
+                  small text color="primary"
+                  id="dissolution-button"
+                  :disabled="hasBlocker"
+                  @click="promptDissolve()"
+                >
+                  <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
+                  <span class="font-13 ml-1">Dissolve this {{ entityDescription }}</span>
+                  <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
+                    <template v-slot:activator="{ on }">
+                      <span class="pl-1" v-on="on">
+                        <v-icon size="1rem">mdi-information-outline</v-icon>
+                      </span>
+                    </template>
+                    Dissolving the {{ entityTitle }} will make this {{ entityTitle }} historical
+                    and it will be struck from the corporate registry.
+                  </v-tooltip>
+                </v-btn>
+              </span>
+
+              <!-- Download Summary -->
+              <span v-if="showDownloadSummaryBtn">
+                <v-btn
+                  small text color="primary"
+                  id="download-summary-button"
+                  @click="downloadBusinessSummary()"
+                >
+                  <v-icon medium>mdi-file-pdf-outline</v-icon>
+                  <span>Download Summary</span>
+                </v-btn>
+              </span>
+            </template>
           </menu>
         </v-col>
 
@@ -125,9 +132,18 @@
             <!-- Email -->
             <template v-if="businessId">
               <dt class="mr-2">Email:</dt>
-              <dd id="entity-business-email" @click="editBusinessProfile()">
+              <dd
+                id="entity-business-email"
+                :class="isHistorical ? 'pointer-events-none' : 'cursor-pointer'"
+                @click="editBusinessProfile()"
+              >
                 <span>{{businessEmail || 'Not Available'}}</span>
-                <v-btn small text color="primary" id="change-email-button" :disabled="hasBlocker">
+                <v-btn
+                  v-if="!isHistorical"
+                  small text color="primary"
+                  id="change-email-button"
+                  :disabled="hasBlocker"
+                >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -137,9 +153,18 @@
             <!-- Phone -->
             <template v-if="businessId">
               <dt class="mr-2">Phone:</dt>
-              <dd id="entity-business-phone" @click="editBusinessProfile()">
+              <dd
+                id="entity-business-phone"
+                :class="isHistorical ? 'pointer-events-none' : 'cursor-pointer'"
+                @click="editBusinessProfile()"
+              >
                 <span>{{fullPhoneNumber || 'Not Available'}}</span>
-                <v-btn small text color="primary" id="change-phone-button" :disabled="hasBlocker">
+                <v-btn
+                  v-if="!isHistorical"
+                  small text color="primary"
+                  id="change-phone-button"
+                  :disabled="hasBlocker"
+                >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -156,7 +181,7 @@
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { CommonMixin, EnumMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EntityStatus, CorpTypeCd, Routes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
@@ -165,7 +190,7 @@ import axios from '@/axios-auth'
 @Component({
   components: { StaffComments }
 })
-export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
+export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin) {
   @State ARFilingYear!: string
   @State entityStatus!: EntityStatus
   @State entityBusinessNo!: string
@@ -186,6 +211,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter isInGoodStanding!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
+  @Getter isHistorical!: boolean
 
   readonly axios = axios // for template
 
@@ -202,8 +228,9 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     return getFeatureFlag('download-summary-enabled')
   }
 
-  /** True if the current entity type is enabled for Dissolutions. */
-  private get isDissolutionEnabled (): boolean {
+  /** True if Dissolution button should be rendered. */
+  private get showDissolutionBtn (): boolean {
+    // is the current entity type enabled for dissolutions?
     return getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType)
   }
 
@@ -247,6 +274,13 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     return this.entityStatusToDescription(this.entityStatus, this.getEntityType)
   }
 
+  /** The dissolution text. */
+  private get dissolutionText (): string {
+    const dissolutionType = 'Voluntary Dissolution' // *** TODO: get from business object / store
+    const date = new Date() // *** TODO: get from business object / store
+    return `${dissolutionType} - ${this.dateToPacificDateTime(date)}`
+  }
+
   /** The business phone number and optional extension. */
   private get fullPhoneNumber (): string {
     if (this.businessPhone) {
@@ -262,7 +296,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   }
 
   /** Prompts the user to confirm a company dissolution filing. */
-  private async prompDissolve (): Promise<void> {
+  private async promptDissolve (): Promise<void> {
     if (!this.isInGoodStanding) {
       this.emitNotInGoodStanding()
       return
@@ -272,7 +306,8 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
 
   /** Redirects the user to the Auth UI to update their business profile. */
   private editBusinessProfile (): void {
-    if (!this.hasBlocker) {
+    // safety checks
+    if (!this.hasBlocker && !this.isHistorical) {
       window.location.assign(this.businessProfileUrl) // assume URL is always reachable
     }
   }
@@ -327,8 +362,8 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
     background: $app-bg-lt-blue;
   }
 
-  .header-action-text {
-    font-size: 0.8125rem;
+  .v-chip--label {
+    font-size: 0.6875rem;
   }
 
   // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
@@ -393,10 +428,6 @@ dt {
   margin-right: 0.5rem;
 }
 
-dd {
-  cursor: pointer;
-}
-
 // hide change buttons when not hovering on value:
 dd:not(:hover) > button {
   display: none;
@@ -421,7 +452,7 @@ dd:not(:hover) > button {
 
 // Disable btn and tooltip overrides
 ::v-deep .v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon {
-  opacity: .4 !important;
+  opacity: 0.4 !important;
   color: $app-blue !important;
 }
 </style>

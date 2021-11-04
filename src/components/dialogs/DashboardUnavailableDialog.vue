@@ -8,7 +8,7 @@
           your dashboard now, or you can exit and try to access your dashboard at another time.</p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info />
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

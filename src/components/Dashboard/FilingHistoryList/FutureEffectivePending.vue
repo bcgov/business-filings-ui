@@ -13,7 +13,7 @@
 
     <p>If this issue persists, please contact us.</p>
 
-    <contact-info class="pt-3" />
+    <ContactInfo class="mt-4" />
   </div>
 </template>
 
@@ -65,18 +65,7 @@ export default class FutureEffectivePending extends Mixins(DateMixin) {
 </script>
 
 <style lang="scss" scoped>
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
-p:first-of-type,
-p:last-of-type {
-  padding-top: 0.75rem;
-}
-
 p {
-  margin-bottom: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

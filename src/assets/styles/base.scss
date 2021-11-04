@@ -29,25 +29,9 @@
        url('../fonts/BCSans/BCSans-BoldItalic.woff') format('woff'); /* Optimized for very modern browsers */
 }
 
-html,
 body {
   min-height: 100vh;
-}
-
-html {
-  // default font size (14px)
-  font-size: 0.875rem;
-}
-
-@media (min-width: 960px) {
-  html {
-    // default font size (16px)
-    font-size: 1rem;
-  }
-}
-
-body {
-  font-size: 1rem;
+  font-size: 1rem; // 16px (default font size)
 }
 
 h1, h2, h3, h4 {
@@ -64,21 +48,30 @@ h1 {
   font-size: 2rem;
 }
 
-p {
-  font-weight: 400;
+h4 {
+  letter-spacing: 0;
+  font-size: 0.9375rem; // 15px
+  font-weight: 700; 
 }
 
-.app-action {
+p {
+  font-weight: 400;
+  color: $gray7;
+}
+
+.font-13 {
+  font-size: 0.8125rem; // 13px
+}
+
+.font-14 {
+  font-size: 0.875rem; // 14px
+}
+
+.app-blue {
   color: $app-blue !important;
 }
 
-.info-text {
-  font-size: .875rem;
-  color: $gray7;
-  font-weight: normal;
-}
-
-.error-text {
+.app-red {
   color: $app-red !important;
 }
 
@@ -148,10 +141,6 @@ p {
 
 .pre-line {
   white-space: pre-line;
-}
-
-.align-right {
-  text-align: right !important;
 }
 
 // Loading Indicator
@@ -248,14 +237,14 @@ ul.list {
 
 .no-results__title {
   color: $gray8;
-  font-size: 1rem;
+  font-size: 1rem; // 16px
   font-weight: 700;
 }
 
 .no-results__subtitle {
   margin-top: 0.25rem;
   color: $gray6;
-  font-size: 0.875rem;
+  font-size: 0.875rem; // 14px
   font-weight: 500;
 }
 
@@ -264,7 +253,7 @@ ul.list {
 }
 
 .genErr {
-  font-size: 0.9rem;
+  font-size: 0.9rem; // 14.4px
 }
 
 .white-background {
@@ -276,7 +265,15 @@ ul.list {
 }
 
 .cursor-default {
-  cursor: default; /* arrow */
+  cursor: default; // arrow
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pointer-events-none {
+  pointer-events: none;
 }
 
 // Hides an element to all devices except screen readers
@@ -306,7 +303,7 @@ ul.list {
 
   .expand-btn {
     letter-spacing: -0.01rem;
-    font-size: 0.875rem;
+    font-size: 0.875rem; // 14px
     font-weight: 700;
   }
 

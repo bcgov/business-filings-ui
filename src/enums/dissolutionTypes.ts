@@ -1,3 +1,4 @@
+// *** TODO: update these according to table in ticket
 export enum DissolutionTypes {
   ADMINISTRATIVE = 'administrative',
   COURT_ORDER_LIQUIDATION = 'courtOrderedLiquidation',

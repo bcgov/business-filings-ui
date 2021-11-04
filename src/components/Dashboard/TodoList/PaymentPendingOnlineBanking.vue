@@ -1,5 +1,5 @@
 <template>
-  <div class="online-banking-payment-pending body-2 pa-4">
+  <div class="payment-pending-online-banking-details body-2 pa-4">
     <h4>Online Banking Payment Pending</h4>
 
     <p>This {{draftTitle}} is pending payment and/or processing at your bank.</p>
@@ -24,7 +24,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
-  @Prop() readonly filing: any
+  @Prop({ required: true }) readonly filing: any
 
   /** The draft title of the subject filing. */
   private get draftTitle (): string {
@@ -34,12 +34,6 @@ export default class PaymentPendingOnlineBanking extends Vue {
 </script>
 
 <style lang="scss" scoped>
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
 p:first-of-type {
   padding-top: 0.75rem;
 }

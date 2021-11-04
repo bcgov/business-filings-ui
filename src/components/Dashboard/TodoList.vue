@@ -29,7 +29,7 @@
 
     <v-expansion-panels v-if="todoItems && todoItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
-        class="align-items-top todo-item"
+        class="align-items-top todo-item px-6 py-5"
         v-for="(item, index) in orderBy(todoItems, 'order')"
         :key="index"
         :class="{
@@ -38,11 +38,12 @@
         }"
       >
         <v-expansion-panel-header
-          class="no-dropdown-icon pt-6"
+          class="no-dropdown-icon pa-0"
           :class="{'invalid-section': isTypeAlteration(item) && requiresAlteration && !item.goodStanding}"
         >
           <div class="list-item">
             <div class="todo-label">
+              <!-- title -->
               <h3 class="list-item__title">{{item.title}}
                 <v-btn v-if="isStatusDraft(item) && isTypeCorrection(item)"
                   class="expand-btn ml-0"
@@ -53,7 +54,7 @@
                   <v-icon left>mdi-information-outline</v-icon>
                   <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                 </v-btn>
-              </h3> <!-- end of title -->
+              </h3>
 
               <!-- BCOMP AR special case -->
               <div v-if="businessId && isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)"
@@ -73,14 +74,16 @@
               <div v-else class="list-item__subtitle">
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
+                <!-- new task -->
                 <div v-if="isStatusNew(item) && item.subtitle" class="todo-subtitle">
                   <span>{{ item.subtitle }}</span>
                 </div>
 
+                <!-- draft alteration not in good stating -->
                 <div v-else-if="isStatusDraft(item) && isTypeAlteration(item) && !item.goodStanding"
                   class="todo-list-detail body-2"
                 >
-                  <p class="error-text font-weight-bold">
+                  <p class="app-red font-weight-bold">
                     <v-icon small color="error">mdi-alert</v-icon>
                     This business is not in good standing.
                   </p>
@@ -90,9 +93,10 @@
                   common reason is an overdue annual report.
                   </p>
                   <p>To resolve this issue, you MUST contact Registry Staff:</p>
-                  <ContactInfo class="pt-3" />
+                  <ContactInfo class="mt-4" />
                 </div>
 
+                <!-- alteration in good standing -->
                 <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBComp && !isCoop"
                   class="todo-subtitle my-4"
                 >
@@ -113,6 +117,7 @@
                   </v-btn>
                 </div>
 
+                <!-- draft correction or alteration -->
                 <div v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeAlteration(item))"
                   class="todo-subtitle"
                 >
@@ -129,6 +134,7 @@
                   </v-btn>
                 </div>
 
+                <!-- draft with pay error -->
                 <div v-else-if="isStatusDraft(item) && isPayError(item)" class="todo-subtitle">
                   <div>PAYMENT INCOMPLETE</div>
                   <v-btn
@@ -143,6 +149,7 @@
                   </v-btn>
                 </div>
 
+                <!-- draft incorporation -->
                 <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)"
                   class="todo-subtitle"
                 >
@@ -161,10 +168,12 @@
                   </div>
                 </div>
 
+                <!-- draft other -->
                 <div v-else-if="isStatusDraft(item)" class="todo-subtitle">
                   <div>DRAFT</div>
                 </div>
 
+                <!-- pending filing - correction or alteration, or payment incomplete -->
                 <div v-else-if="isStatusPending(item)" class="todo-subtitle">
                   <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
                     <div>FILING PENDING</div>
@@ -203,6 +212,7 @@
                   </template>
                 </div>
 
+                <!-- pending filing - payment unsuccessful -->
                 <div v-else-if="isStatusError(item)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
@@ -224,6 +234,7 @@
                   </div>
                 </div>
 
+                <!-- pending filing - paid -->
                 <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
                   <div>FILING PENDING</div>
                   <div class="vert-pipe"></div>
@@ -245,7 +256,7 @@
                   </div>
                 </div>
               </div> <!-- end of other subtitles -->
-            </div>
+            </div> <!-- end of todo label -->
 
             <div class="list-item__actions">
               <div style="width:100%">
@@ -453,7 +464,7 @@
               <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
-              <v-divider class="mt-6"></v-divider>
+              <v-divider class="my-6"></v-divider>
               <!-- the detail comments section -->
               <DetailsList
                 :filing=item
@@ -466,7 +477,7 @@
               <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
-              <v-divider class="mt-6"></v-divider>
+              <v-divider class="my-6"></v-divider>
               <!-- the detail comments section -->
               <DetailsList
                 :filing=item
@@ -1444,6 +1455,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   .v-btn:not(:disabled) {
     pointer-events: auto;
   }
+
   .theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
     color: white !important;
     background-color: $app-blue !important;
@@ -1460,6 +1472,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     pointer-events: auto;
     p {
       color: $gray7;
+      margin-top: 1rem;
     }
   }
 }
@@ -1531,7 +1544,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
   .v-list-item__title {
     font-size: 0.875rem;
-    color: $app-blue
+    color: $app-blue;
   }
 }
 
@@ -1547,22 +1560,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   justify-content: flex-start;
   height: 2.25rem; // for consistent height with and without icon button
   margin-bottom: -0.5rem; // remove extra space when subtitle displays
-}
-
-.todo-list-detail {
-  h4 {
-    letter-spacing: 0;
-    font-size: 0.9375rem;
-    font-weight: 700;
-  }
-
-  p:first-of-type {
-    padding-top: 0.75rem;
-  }
-
-  p {
-    margin-bottom: 0.5rem !important;
-  }
 }
 
 .payment-status {
@@ -1588,7 +1585,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 }
 
 ::v-deep .v-expansion-panel-content__wrap {
-  padding-bottom: 0px;
+  padding: 0;
 }
 
 .pay-error {

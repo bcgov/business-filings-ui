@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-pending body-2 pa-4 mb-4">
+  <div class="payment-pending-details body-2 pa-4">
     <h4>Payment Incomplete</h4>
 
     <p>This filing is pending payment. The payment may still be in progress or may have been
@@ -21,12 +21,6 @@ export default class PaymentPending extends Vue {}
 
 div {
   background-color: $app-bg-gray !important;
-}
-
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
 }
 
 p:first-of-type {

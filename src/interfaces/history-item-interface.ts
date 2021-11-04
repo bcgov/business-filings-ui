@@ -43,10 +43,16 @@ export interface HistoryItemIF {
   // alterations only
   courtOrderNumber?: string
   isArrangement?: boolean
+  isCompletedAlteration?: boolean
   isFutureEffectiveAlteration?: boolean
   isFutureEffectiveAlterationPending?: boolean
   toLegalType?: CorpTypeCd
   fromLegalType?: CorpTypeCd
+
+  // dissolutions only
+  isCompletedDissolution?: boolean
+  isFutureEffectiveDissolution?: boolean
+  isFutureEffectiveDissolutionPending?: boolean
 
   // staff filings only
   fileNumber?: string

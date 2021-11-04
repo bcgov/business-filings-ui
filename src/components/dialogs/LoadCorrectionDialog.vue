@@ -9,7 +9,7 @@
 
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info />
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

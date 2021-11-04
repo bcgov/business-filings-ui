@@ -7,7 +7,7 @@
         <p class="genErr">We were unable to download your document(s).</p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info />
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

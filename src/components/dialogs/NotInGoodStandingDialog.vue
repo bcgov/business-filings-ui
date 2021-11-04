@@ -12,16 +12,19 @@
         <p class="warning-title">
           Business is not in good standing
         </p>
+
         <p class="warning-text">
           This business cannot be dissolved yet. Before you can dissolve your business it must be in good standing with
           the Business Registry. There may be several reasons a business is not in good standing, but the most common
           reason is an overdue annual report.
         </p>
+
         <p class="warning-text">
           Please file any overdue annual reports and try your voluntary dissolution again or contact BC Registries
           staff:
         </p>
-        <contact-info class="pt-3" />
+
+        <ContactInfo class="mt-5" />
       </v-card-text>
 
       <v-card-actions>

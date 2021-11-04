@@ -374,19 +374,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
   })
 })
 
-describe('EntityInfo - Click Tests - Dissolution', () => {
-  const { assign } = window.location
-
-  beforeAll(() => {
-    // mock the window.location.assign function
-    delete window.location
-    window.location = { assign: jest.fn() } as any
-  })
-
-  afterAll(() => {
-    window.location.assign = assign
-  })
-
+describe('EntityInfo - Click Tests - Dissolutions', () => {
   it('displays the Dissolve this Company button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = shallowMount(EntityInfo, {
@@ -394,7 +382,7 @@ describe('EntityInfo - Click Tests - Dissolution', () => {
       vuetify,
       computed: {
         // mock this getter to override FF check
-        isDissolutionEnabled () { return true }
+        showDissolutionBtn () { return true }
       }
     })
     await Vue.nextTick()
@@ -402,7 +390,7 @@ describe('EntityInfo - Click Tests - Dissolution', () => {
     expect(wrapper.find('#dissolution-button').exists()).toBe(true)
   })
 
-  it('prompts the confirm dissolution dialog if in good standing', async () => {
+  it('prompts the Confirm Dissolution dialog if in good standing', async () => {
     store.state.entityStatus = 'GOODSTANDING'
     const router = mockRouter.mock()
 
@@ -413,15 +401,16 @@ describe('EntityInfo - Click Tests - Dissolution', () => {
       router,
       computed: {
         // mock this getter to override FF check
-        isDissolutionEnabled () { return true }
+        showDissolutionBtn () { return true }
       }
     })
     await Vue.nextTick()
+
     wrapper.find('#dissolution-button').trigger('click')
     await Vue.nextTick()
 
     // verify emit event
-    expect(wrapper.emitted().confirmDissolution).toBeTruthy()
+    expect(wrapper.emitted().confirmDissolution).toEqual([[]])
   })
 
   it('prompts the Not In Good Standing dialog', async () => {
@@ -435,14 +424,15 @@ describe('EntityInfo - Click Tests - Dissolution', () => {
       router,
       computed: {
         // mock this getter to override FF check
-        isDissolutionEnabled () { return true }
+        showDissolutionBtn () { return true }
       }
     })
     await Vue.nextTick()
+
     wrapper.find('#dissolution-button').trigger('click')
     await Vue.nextTick()
 
     // verify emit event
-    expect(wrapper.emitted().notInGoodStanding).toBeTruthy()
+    expect(wrapper.emitted().notInGoodStanding).toEqual([[]])
   })
 })

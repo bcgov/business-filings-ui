@@ -26,7 +26,7 @@
         </p>
         <template v-if="!isRoleStaff">
           <p class="genErr">If you need help, please contact us.</p>
-          <contact-info class="mt-5" />
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

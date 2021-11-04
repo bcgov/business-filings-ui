@@ -8,9 +8,9 @@
       on <DateTooltip :date="filing.effectiveDate" />.
     </p>
 
-    <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
+    <p v-if="filing.courtOrderNumber" class="mb-0">Court Order Number: {{filing.courtOrderNumber}}</p>
 
-    <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
+    <p v-if="filing.isArrangement" class="mt-0">Pursuant to a Plan of Arrangement</p>
   </div>
 </template>
 
@@ -43,6 +43,6 @@ export default class CompletedAlteration extends Mixins(EnumMixin) {
 
 <style lang="scss" scoped>
 p {
-  margin-top: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

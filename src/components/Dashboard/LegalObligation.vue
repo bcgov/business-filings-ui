@@ -8,7 +8,7 @@
         <span class="font-weight-bold">Legal Obligations:</span>
         You are required by the <em>Business Corporations Act</em> to keep the information about your corporation up
         to date with the Registrar: For example, you must file annual reports, director changes and address changes.
-        <span class="read-more-btn" @click="readMoreFlag = true">
+        <span class="app-blue cursor-pointer" @click="readMoreFlag = true">
           <span v-if="!readMoreFlag">Read more about your legal obligations...</span>
         </span>
 
@@ -37,7 +37,7 @@
             <span>Find more detailed information <a :href="detailInfoURL" target="_blank">here</a></span>
           </div>
           <div class="read-more-line">
-            <span class="read-more-btn" @click="readMoreFlag = false">Read less...</span>
+            <span class="app-blue cursor-pointer" @click="readMoreFlag = false">Read less...</span>
           </div>
         </div>
 
@@ -80,8 +80,6 @@ export default class LegalObligation extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-
 .legal-obligation-container {
   display: flex;
   justify-content: center;
@@ -106,11 +104,6 @@ li {
 
 .read-more-line {
   padding-top: 1rem
-}
-
-.read-more-btn {
-  cursor: pointer;
-  color: $primary-blue;
 }
 
 .legal-obligation-btn-panel {
