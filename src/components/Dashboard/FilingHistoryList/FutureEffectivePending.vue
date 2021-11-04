@@ -2,16 +2,19 @@
   <div v-if="filing" class="future-effective-pending-details body-2">
     <h4>{{_.subtitle}}</h4>
 
-    <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      has been recorded as {{effectiveDateTime}}.</p>
-
-    <p>It may take up to one hour to process this filing.</p>
+    <p>
+      The {{_.filingLabel}} date and time for {{_.companyLabel}}
+      has been recorded as <strong>{{effectiveDateTime}}</strong>.
+    </p>
 
     <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
 
     <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
 
-    <p>If this issue persists, please contact us.</p>
+    <p>
+      It may take up to one hour to process this filing. If this issue persists,
+      please contact us.
+    </p>
 
     <ContactInfo class="mt-4" />
   </div>

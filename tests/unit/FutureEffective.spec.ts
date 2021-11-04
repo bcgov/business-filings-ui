@@ -1,3 +1,4 @@
+/* eslint max-len: 0 */
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
@@ -32,18 +33,15 @@ describe('Future Effective IA', () => {
     })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Filing Date')
+    expect(wrapper.findAll('h4').at(0).text()).toBe('Future Effective Filing Date')
     const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(4)
+    expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('The filing date and time for this company')
     expect(paragraphs.at(0).text()).toContain('will be Unknown.')
-    expect(paragraphs.at(1).text()).toContain('If you wish to change the information')
-    expect(paragraphs.at(1).text()).toContain('in this filing, you must')
-    expect(paragraphs.at(1).text()).toContain('contact Registry Staff')
-    expect(paragraphs.at(2).text()).toContain('Withdrawing this Filing')
-    expect(paragraphs.at(2).text()).toContain('will remove this filing')
-    expect(paragraphs.at(2).text()).toContain('and all associated information')
-    expect(paragraphs.at(3).text()).toContain('Registries contact information:')
+    expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this filing, you must contact')
+    expect(paragraphs.at(1).text()).toContain('Registry Staff to file a withdrawal. Withdrawing this filing will remove')
+    expect(paragraphs.at(1).text()).toContain('this filing and all associated information, and will incur a $20.00 fee.')
+    expect(wrapper.findAll('h4').at(1).text()).toBe('Registries Contact Information:')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
@@ -63,15 +61,15 @@ describe('Future Effective IA', () => {
     })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation Date')
+    expect(wrapper.findAll('h4').at(0).text()).toBe('Future Effective Incorporation Date')
     const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(4)
+    expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('The incorporation date and time for My Incorporation')
     expect(paragraphs.at(0).text()).toContain('will be May 15, 2020 at 12:00 pm Pacific time.')
-    expect(paragraphs.at(1).text()).toContain('the information in this incorporation')
-    expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application')
-    expect(paragraphs.at(2).text()).toContain('will remove this incorporation')
-    expect(paragraphs.at(3).text()).toContain('Registries contact information:')
+    expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this incorporation, you must contact')
+    expect(paragraphs.at(1).text()).toContain('Registry Staff to file a withdrawal. Withdrawing this Incorporation Application will remove')
+    expect(paragraphs.at(1).text()).toContain('this incorporation and all associated information, and will incur a $20.00 fee.')
+    expect(wrapper.findAll('h4').at(1).text()).toBe('Registries Contact Information:')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
@@ -91,15 +89,15 @@ describe('Future Effective IA', () => {
     })
 
     // verify content
-    expect(wrapper.find('h4').text()).toBe('Future Effective Incorporation Date')
+    expect(wrapper.findAll('h4').at(0).text()).toBe('Future Effective Incorporation Date')
     const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(4)
-    expect(paragraphs.at(0).text()).toContain('The incorporation date and time for this Numbered Benefit Company')
+    expect(paragraphs.length).toBe(2)
+    expect(paragraphs.at(0).text()).toContain('The incorporation date and time for this company')
     expect(paragraphs.at(0).text()).toContain('will be May 15, 2020 at 12:00 pm Pacific time.')
-    expect(paragraphs.at(1).text()).toContain('the information in this incorporation')
-    expect(paragraphs.at(2).text()).toContain('Withdrawing this Incorporation Application')
-    expect(paragraphs.at(2).text()).toContain('will remove this incorporation')
-    expect(paragraphs.at(3).text()).toContain('Registries contact information:')
+    expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this incorporation, you must contact')
+    expect(paragraphs.at(1).text()).toContain('Registry Staff to file a withdrawal. Withdrawing this Incorporation Application will remove')
+    expect(paragraphs.at(1).text()).toContain('this incorporation and all associated information, and will incur a $20.00 fee.')
+    expect(wrapper.findAll('h4').at(1).text()).toBe('Registries Contact Information:')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
@@ -114,7 +112,7 @@ describe('Future Effective IA', () => {
         filing: {
           isFutureEffectiveAlteration: true,
           effectiveDate: new Date('2020-05-15 19:00:00 GMT'),
-          courtOrderNumber: 'NUMBER',
+          courtOrderNumber: '123',
           isArrangement: true
         }
       }
@@ -123,15 +121,15 @@ describe('Future Effective IA', () => {
     // verify content
     expect(wrapper.find('h4').text()).toBe('Future Effective Alteration Date')
     const paragraphs = wrapper.findAll('p')
-    expect(paragraphs.length).toBe(6)
+    expect(paragraphs.length).toBe(4)
     expect(paragraphs.at(0).text()).toContain('The alteration date and time for My Alteration')
     expect(paragraphs.at(0).text()).toContain('will be May 15, 2020 at 12:00 pm Pacific time.')
-    expect(paragraphs.at(1).text()).toContain('If you wish to change the information in this')
-    expect(paragraphs.at(2).text()).toContain('Withdrawing this Alteration Notice will')
-    expect(paragraphs.at(2).text()).toContain('will remove this alteration')
-    expect(paragraphs.at(3).text()).toContain('Court Order Number: NUMBER')
-    expect(paragraphs.at(4).text()).toContain('Pursuant to a Plan of Arrangement')
-    expect(paragraphs.at(5).text()).toContain('Registries contact information:')
+    expect(paragraphs.at(1).text()).toContain('Court Order Number: 123')
+    expect(paragraphs.at(2).text()).toContain('Pursuant to a Plan of Arrangement')
+    expect(paragraphs.at(3).text()).toContain('If you wish to change the information in this alteration, you must contact')
+    expect(paragraphs.at(3).text()).toContain('Registry Staff to file a withdrawal. Withdrawing this Alteration Notice will remove')
+    expect(paragraphs.at(3).text()).toContain('this alteration and all associated information, and will incur a $20.00 fee.')
+    expect(wrapper.findAll('h4').at(1).text()).toBe('Registries Contact Information:')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()

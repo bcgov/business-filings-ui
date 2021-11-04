@@ -2,14 +2,18 @@
   <div v-if="filing" class="completed-dissolution-details body-2">
     <h4>Dissolution Complete</h4>
 
-    <p>The {{entityTitle}} {{getEntityName || ''}} was successfully
+    <p>
+      The {{entityTitle}} {{getEntityName || ''}} was successfully
       <strong>dissolved on {{dissolutionDateTime}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
       and ceased to be an incorporated {{entityTitle.toLowerCase()}}
-      under the {{actTitle}}.</p>
+      under the {{actTitle}}.
+    </p>
 
-    <p><strong>You are required to retain a copy of all the dissolution documents
-      in your records book.</strong></p>
+    <p>
+      <strong>You are required to retain a copy of all the dissolution documents
+      in your records book.</strong>
+    </p>
   </div>
 </template>
 
