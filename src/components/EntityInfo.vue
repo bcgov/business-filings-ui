@@ -458,4 +458,8 @@ dd:not(:hover) > button {
   opacity: 0.4 !important;
   color: $app-blue !important;
 }
+
+::v-deep #staff-comments .v-btn {
+  margin-top: -4px;
+}
 </style>
