@@ -5,13 +5,13 @@
 
       <v-card-text id="dialog-text">
         <!-- display common message -->
-        <div class="genErr">
+        <div class="font-15">
           <p>We are unable to process your payment at this time. This {{filingName}} has been saved
             as a DRAFT and you can retry your payment from the Business Dashboard at a later time.</p>
         </div>
 
         <!-- display generic message (no errors or warnings) -->
-        <div class="genErr" v-if="!isRoleStaff && (numErrors + numWarnings) < 1">
+        <div class="font-15" v-if="!isRoleStaff && (numErrors + numWarnings) < 1">
           <p>PayBC is normally available:</p>
           <ul>
             <li>Monday to Friday: 6:00am to 9:00pm</li>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- display errors -->
-        <div class="genErr mb-4" v-if="numErrors > 0">
+        <div class="font-15 mb-4" v-if="numErrors > 0">
           <p>We were unable to process your payment due to the following errors:</p>
           <ul>
             <li v-for="(error, index) in errors" :key="index">{{ error.message }}</li>
@@ -29,7 +29,7 @@
         </div>
 
         <!-- display warnings-->
-        <div class="genErr mb-4" v-if="numWarnings > 0">
+        <div class="font-15 mb-4" v-if="numWarnings > 0">
           <p>Please note the following warnings:</p>
           <ul>
             <li v-for="(warning, index) in warnings" :key="index">{{ warning.message }}</li>
@@ -37,7 +37,7 @@
         </div>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us:</p>
+          <p class="font-15">If this error persists, please contact us:</p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>

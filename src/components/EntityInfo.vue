@@ -366,7 +366,7 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
   }
 
   .v-chip--label {
-    font-size: 0.6875rem;
+    font-size: $px-11;
   }
 
   // ENABLE THIS TO GET STAFF-SPECIFIC BACKGROUND IMAGE
@@ -377,7 +377,7 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
 }
 
 .v-breadcrumbs li {
-  font-size: 0.75rem;
+  font-size: $px-12;
 }
 
 ::v-deep {
@@ -408,7 +408,7 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
 
 #entity-description,
 #nr-subtitle {
-  font-size: 0.875rem;
+  font-size: $px-14;
   color: $gray9;
 }
 
@@ -419,7 +419,7 @@ menu > span + span {
 }
 
 dl {
-  font-size: 0.875rem;
+  font-size: $px-14;
   line-height: 1.5rem;
 }
 

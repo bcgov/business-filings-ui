@@ -4,7 +4,7 @@
       <v-card-title>Unable to Access Business</v-card-title>
 
       <v-card-text>
-        <p class="genErr">Your account is currently unable to access this Business. This may be
+        <p class="font-15">Your account is currently unable to access this Business. This may be
           because of the following:</p>
         <ul>
           <li>Your account is not authorized to access this Business &mdash; contact the Business
@@ -15,7 +15,7 @@
         <p class="mt-4">You can retry now, or you can exit and try to access this Business at
           another time.</p>
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us.</p>
+          <p class="font-15">If this error persists, please contact us.</p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
@@ -58,7 +58,3 @@ export default class BusinessAuthErrorDialog extends Vue {
   @Emit() private retry () { }
 }
 </script>
-
-<style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-</style>

@@ -896,7 +896,7 @@ export default class FilingHistoryList extends Mixins(
 
     .expand-btn {
       letter-spacing: -0.01rem;
-      font-size: 0.875rem;
+      font-size: $px-14;
       font-weight: 700;
     }
 

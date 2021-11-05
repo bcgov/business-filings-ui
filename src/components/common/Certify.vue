@@ -92,14 +92,14 @@ export default class Certify extends Vue {
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
+@import '@/assets/styles/theme.scss';
 
 #AR-step-4-container {
   margin-top: 1rem;
   padding-bottom: 0.5rem;
   padding-top: 1rem;
   line-height: 1.2rem;
-  font-size: 0.875rem;
+  font-size: $px-14;
 }
 
 .certify-container {
@@ -136,12 +136,12 @@ export default class Certify extends Vue {
 .certify-clause {
   padding-left: 2rem;
   color: black;
-  font-size: 0.875rem;
+  font-size: $px-14;
 }
 
 .certify-stmt {
   display: inline;
-  font-size: 0.875rem;
+  font-size: $px-14;
   color: black;
 }
 </style>

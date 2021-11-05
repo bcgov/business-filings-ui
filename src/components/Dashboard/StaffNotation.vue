@@ -118,9 +118,10 @@ export default class StaffNotation extends Vue {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
+
 #add-staff-filing-label {
     padding-right: 0.725rem;
-    font-size: 0.875rem;
+    font-size: $px-14;
     border-right: 1px solid $gray3;
 
     &:hover {

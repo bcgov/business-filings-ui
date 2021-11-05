@@ -3,7 +3,7 @@
     <h4>{{_.subtitle}}</h4>
 
     <p>
-      The {{_.filingLabel}} date and time for {{_.companyLabel}}
+      The {{_.filingLabel}} date and time for {{this.getEntityName || 'this company'}}
       has been recorded as <strong>{{effectiveDateTime}}</strong>.
     </p>
 
@@ -42,21 +42,18 @@ export default class FutureEffectivePending extends Mixins(DateMixin) {
     if (this.filing.isFutureEffectiveIaPending) {
       return {
         subtitle: 'Incorporation Pending',
-        filingLabel: 'incorporation',
-        companyLabel: (this.getEntityName || 'this Numbered Benefit Company')
+        filingLabel: 'incorporation'
       }
     }
     if (this.filing.isFutureEffectiveAlterationPending) {
       return {
         subtitle: 'Alteration Pending',
-        filingLabel: 'alteration',
-        companyLabel: (this.getEntityName || 'this company')
+        filingLabel: 'alteration'
       }
     }
     return {
       subtitle: 'Filing Pending',
-      filingLabel: 'filing',
-      companyLabel: (this.getEntityName || 'this company')
+      filingLabel: 'filing'
     }
   }
 

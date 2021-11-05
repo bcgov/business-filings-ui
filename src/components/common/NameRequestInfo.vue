@@ -157,19 +157,21 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 </script>
 
 <style lang="scss" scoped>
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-  }
+@import '@/assets/styles/theme.scss';
 
-  .name-request-info {
-    font-size: 0.9rem;
-    margin-left: 0.875rem
-  }
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
 
-  .nr-status-icon {
-    margin-left:-2rem;
-    margin-right:0.2 rem
-  }
+.name-request-info {
+  font-size: $px-15;
+  margin-left: 0.875rem
+}
+
+.nr-status-icon {
+  margin-left: -2rem;
+  margin-right: 0.2rem;
+}
 </style>

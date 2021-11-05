@@ -211,12 +211,14 @@ export default class StaffPayment extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
 #AR-step-5-container {
   margin-top: 1rem;
   padding-bottom: 0.5rem;
   padding-top: 1rem;
   line-height: 1.2rem;
-  font-size: 1rem;
+  font-size: $px-16;
 }
 
 .payment-container {

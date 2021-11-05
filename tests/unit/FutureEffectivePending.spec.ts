@@ -90,7 +90,7 @@ describe('Future Effective Pending', () => {
     expect(wrapper.find('h4').text()).toBe('Incorporation Pending')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('The incorporation date and time for this Numbered Benefit Company')
+    expect(paragraphs.at(0).text()).toContain('The incorporation date and time for this company')
     expect(paragraphs.at(0).text()).toContain('has been recorded as May 15, 2020 at 12:00 pm Pacific time.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing. If this issue persists,')
     expect(paragraphs.at(1).text()).toContain('please contact us.')

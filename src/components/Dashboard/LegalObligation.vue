@@ -80,6 +80,8 @@ export default class LegalObligation extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
 .legal-obligation-container {
   display: flex;
   justify-content: center;
@@ -90,7 +92,7 @@ export default class LegalObligation extends Vue {
     display: flex;
     align-items: flex-start;
     padding: 1.2rem;
-    font-size: 0.9rem;
+    font-size: $px-15;
     width: 75%;
 }
 
@@ -99,11 +101,11 @@ ul {
 }
 
 li {
-  padding-top:0.25rem
+  padding-top: 0.25rem;
 }
 
 .read-more-line {
-  padding-top: 1rem
+  padding-top: 1rem;
 }
 
 .legal-obligation-btn-panel {

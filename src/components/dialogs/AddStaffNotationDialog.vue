@@ -232,6 +232,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 .v-card__subtitle, .v-card__text {
   font-weight: normal;
   color: $gray7;
-  font-size: 1rem;
+  font-size: $px-16;
 }
 </style>

@@ -284,7 +284,7 @@ export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
 
 .v-card {
   line-height: 1.2rem;
-  font-size: 0.875rem;
+  font-size: $px-14;
 }
 
 .v-btn {
@@ -378,7 +378,7 @@ ul {
 }
 
 .director_dates {
-  font-size: 0.8rem;
+  font-size: px-13;
 }
 
 .director-header {
@@ -391,7 +391,7 @@ ul {
   span {
     width: 14rem;
     color: $app-almost-black;
-    font-size: 0.875rem;
+    font-size: $px-14;
     font-weight: 600;
     line-height: 1.1875rem;
   }

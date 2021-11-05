@@ -53,6 +53,8 @@ export default class SummaryStaffPayment extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
 #summary-payment-container {
   margin-top: 1rem;
   padding: 1.25rem;
@@ -62,7 +64,7 @@ export default class SummaryStaffPayment extends Vue {
   display: flex;
   flex-flow: column nowrap;
   position: relative;
-  font-size: 1rem;
+  font-size: $px-16;
 
   > label:first-child {
     font-weight: 700;

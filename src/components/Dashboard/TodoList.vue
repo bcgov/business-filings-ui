@@ -1489,7 +1489,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
 
 .todo-item .list-item .list-item__actions {
   .date-subtitle {
-    font-size: 0.875rem;
+    font-size: $px-14;
     margin-bottom: 4.5rem;
   }
 
@@ -1543,7 +1543,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   }
 
   .v-list-item__title {
-    font-size: 0.875rem;
+    font-size: $px-14;
     color: $app-blue;
   }
 }

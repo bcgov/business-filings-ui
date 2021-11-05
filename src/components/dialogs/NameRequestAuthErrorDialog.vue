@@ -4,7 +4,7 @@
       <v-card-title>Unable to Access Incorporation Application</v-card-title>
 
       <v-card-text>
-        <p class="genErr">Your account is currently unable to access this Incorporation Application.
+        <p class="font-15">Your account is currently unable to access this Incorporation Application.
           This may be because of the following:</p>
 
         <ul>
@@ -18,7 +18,7 @@
           at another time.</p>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us.</p>
+          <p class="font-15">If this error persists, please contact us.</p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>

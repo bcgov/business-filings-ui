@@ -82,7 +82,7 @@ export default class NotInGoodStandingDialog extends Vue {
 
 .warning-text {
   font-weight: normal;
-  font-size: 1rem;
+  font-size: $px-16;
   color: $gray7;
   line-height: 1.5rem;
 }

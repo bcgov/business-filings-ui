@@ -193,8 +193,6 @@ export default class CodDate extends Mixins(DateMixin) {
 </script>
 
 <style lang="scss" scoped>
-// @import "@/assets/styles/theme.scss";
-
 .cod-date-container {
   padding: 1.25rem;
 }

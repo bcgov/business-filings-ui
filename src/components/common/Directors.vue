@@ -1372,7 +1372,7 @@ export default class Directors extends Mixins(
 }
 .v-card {
   line-height: 1.2rem;
-  font-size: 0.875rem;
+  font-size: $px-14;
 }
 
 .v-btn {
@@ -1415,14 +1415,14 @@ ul {
 }
 
 .appoint-header {
-  font-size: 1rem;
+  font-size: $px-16;
   font-weight: bold;
   line-height: 1.5rem;
 }
 
 .address-sub-header {
   padding-bottom: 1.5rem;
-  font-size: 1rem;
+  font-size: $px-16;
   font-weight: 700;
   line-height: 1.5rem;
 }
@@ -1532,8 +1532,8 @@ ul {
 }
 
 .director_dates {
-  font-size: 0.8rem;
-  padding-left: .75rem;
+  font-size: $px-13;
+  padding-left: 0.75rem;
 }
 
 .actions .v-btn.actions__more-actions__btn {
@@ -1553,7 +1553,7 @@ ul {
   }
 
   .v-list-item__title {
-    font-size: 0.875rem;
+    font-size: $px-14;
   }
 }
 
@@ -1574,7 +1574,7 @@ ul {
   span {
     width: 13.5rem;
     color: $app-almost-black;
-    font-size: 0.875rem;
+    font-size: $px-14;
     font-weight: 600;
     line-height: 1.1875rem;
   }
@@ -1585,7 +1585,7 @@ ul {
 }
 
 .compliance-section {
-  font-size: 0.9rem;
+  font-size: $px-15;
   color: rgba(0,0,0,0.87);
 }
 

@@ -4,9 +4,9 @@
       <v-card-title>Address Change Effective 12:01 am</v-card-title>
 
       <v-card-text>
-        <p class="genErr">Address changes take effect at 12:01 am Pacific time.
+        <p class="font-15">Address changes take effect at 12:01 am Pacific time.
           No other filings can be performed until an Address Change has taken effect.</p>
-        <p class="genErr">If you need to perform other filings today, file them prior to
+        <p class="font-15">If you need to perform other filings today, file them prior to
           your Address Change filing.</p>
       </v-card-text>
 
@@ -39,7 +39,3 @@ export default class CoaWarningDialog extends Vue {
   @Emit() private proceed () { }
 }
 </script>
-
-<style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-</style>

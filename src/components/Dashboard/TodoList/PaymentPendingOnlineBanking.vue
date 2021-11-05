@@ -34,6 +34,8 @@ export default class PaymentPendingOnlineBanking extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
 p:first-of-type {
   padding-top: 0.75rem;
 }
@@ -43,6 +45,6 @@ p {
 }
 
 li {
-  font-size: 0.75rem;
+  font-size: $px-12;
 }
 </style>

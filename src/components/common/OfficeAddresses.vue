@@ -527,7 +527,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-// @import '../../assets/styles/theme.scss';
+@import "@/assets/styles/theme.scss";
 
 .address-list-container {
   padding: 1.25rem;
@@ -670,7 +670,7 @@ ul {
   padding: 1.25rem;
 
   address-edit-title {
-    font-size: 1rem;
+    font-size: $px-16;
     font-weight: bold;
     line-height: 1.375rem;
   }

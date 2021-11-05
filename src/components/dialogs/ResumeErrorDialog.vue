@@ -4,11 +4,11 @@
       <v-card-title>Unable to Resume Filing</v-card-title>
 
       <v-card-text>
-        <p class="genErr">We were unable to resume your filing. You can return to
+        <p class="font-15">We were unable to resume your filing. You can return to
           the Business Dashboard and try again.</p>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us.</p>
+          <p class="font-15">If this error persists, please contact us.</p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>

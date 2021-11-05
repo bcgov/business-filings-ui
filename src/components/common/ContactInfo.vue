@@ -29,7 +29,7 @@ export default class ContactInfo extends Vue { }
 @import '@/assets/styles/theme.scss';
 
 .contact-container {
-  font-size: 0.875rem;
+  font-size: $px-14;
   color: $gray7;
   display: flex;
 

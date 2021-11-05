@@ -6,17 +6,17 @@
       </v-card-title>
 
       <v-card-text id="dialog-text" data-test-id="cancel-pay-dialog-text">
-        <p class="genErr" v-if="errors.length < 1">
+        <p class="font-15" v-if="errors.length < 1">
           We were unable to cancel your payment.
         </p>
-        <p class="genErr" v-else>
+        <p class="font-15" v-else>
           We were unable to cancel your payment due to the following errors:
         </p>
-        <p class="genErr" v-for="(error, index) in errors" :key="index">
+        <p class="font-15" v-for="(error, index) in errors" :key="index">
           {{error.error}}
         </p>
         <template v-if="!isRoleStaff">
-          <p class="genErr">If you need help, please contact us.</p>
+          <p class="font-15">If you need help, please contact us.</p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
