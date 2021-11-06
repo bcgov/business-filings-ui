@@ -29,25 +29,33 @@
        url('../fonts/BCSans/BCSans-BoldItalic.woff') format('woff'); /* Optimized for very modern browsers */
 }
 
-html,
+.font-11 {
+  font-size: $px-11;
+}
+
+.font-12 {
+  font-size: $px-12;
+}
+
+.font-13 {
+  font-size: $px-13;
+}
+
+.font-14 {
+  font-size: $px-14;
+}
+
+.font-15 {
+  font-size: $px-15;
+}
+
+.font-16 {
+  font-size: $px-16;
+}
+
 body {
   min-height: 100vh;
-}
-
-html {
-  // default font size (14px)
-  font-size: 0.875rem;
-}
-
-@media (min-width: 960px) {
-  html {
-    // default font size (16px)
-    font-size: 1rem;
-  }
-}
-
-body {
-  font-size: 1rem;
+  @extend .font-16; // default font size
 }
 
 h1, h2, h3, h4 {
@@ -61,24 +69,25 @@ h1, h2, h3 {
 
 h1 {
   line-height: 2.25rem;
-  font-size: 2rem;
+  font-size: 2rem; // 32px
+}
+
+h4 {
+  @extend .font-15;
+  letter-spacing: 0;
+  font-weight: 700; 
 }
 
 p {
   font-weight: 400;
+  color: $gray7;
 }
 
-.app-action {
+.app-blue {
   color: $app-blue !important;
 }
 
-.info-text {
-  font-size: .875rem;
-  color: $gray7;
-  font-weight: normal;
-}
-
-.error-text {
+.app-red {
   color: $app-red !important;
 }
 
@@ -148,10 +157,6 @@ p {
 
 .pre-line {
   white-space: pre-line;
-}
-
-.align-right {
-  text-align: right !important;
 }
 
 // Loading Indicator
@@ -248,23 +253,19 @@ ul.list {
 
 .no-results__title {
   color: $gray8;
-  font-size: 1rem;
+  @extend .font-16;
   font-weight: 700;
 }
 
 .no-results__subtitle {
   margin-top: 0.25rem;
   color: $gray6;
-  font-size: 0.875rem;
+  @extend .font-14;
   font-weight: 500;
 }
 
 .gray6 {
   color: $gray6;
-}
-
-.genErr {
-  font-size: 0.9rem;
 }
 
 .white-background {
@@ -276,7 +277,15 @@ ul.list {
 }
 
 .cursor-default {
-  cursor: default; /* arrow */
+  cursor: default; // arrow
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pointer-events-none {
+  pointer-events: none;
 }
 
 // Hides an element to all devices except screen readers
@@ -306,7 +315,7 @@ ul.list {
 
   .expand-btn {
     letter-spacing: -0.01rem;
-    font-size: 0.875rem;
+    @extend .font-14;
     font-weight: 700;
   }
 

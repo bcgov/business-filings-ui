@@ -931,7 +931,7 @@ export default {
 article {
   .v-card {
     line-height: 1.2rem;
-    font-size: 0.875rem;
+    font-size: $px-14;
   }
 }
 
@@ -980,7 +980,7 @@ h2 {
 }
 
 .complianceDialogMsg {
-  font-size: 1rem;
+  font-size: $px-16;
   color: $gray7;
 }
 

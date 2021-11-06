@@ -2,18 +2,21 @@
   <div v-if="filing" class="future-effective-pending-details body-2">
     <h4>{{_.subtitle}}</h4>
 
-    <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      has been recorded as {{effectiveDateTime}}.</p>
-
-    <p>It may take up to one hour to process this filing.</p>
+    <p>
+      The {{_.filingLabel}} date and time for {{this.getEntityName || 'this company'}}
+      has been recorded as <strong>{{effectiveDateTime}}</strong>.
+    </p>
 
     <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
 
     <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
 
-    <p>If this issue persists, please contact us.</p>
+    <p>
+      It may take up to one hour to process this filing. If this issue persists,
+      please contact us.
+    </p>
 
-    <contact-info class="pt-3" />
+    <ContactInfo class="mt-4" />
   </div>
 </template>
 
@@ -39,21 +42,18 @@ export default class FutureEffectivePending extends Mixins(DateMixin) {
     if (this.filing.isFutureEffectiveIaPending) {
       return {
         subtitle: 'Incorporation Pending',
-        filingLabel: 'incorporation',
-        companyLabel: (this.getEntityName || 'this Numbered Benefit Company')
+        filingLabel: 'incorporation'
       }
     }
     if (this.filing.isFutureEffectiveAlterationPending) {
       return {
         subtitle: 'Alteration Pending',
-        filingLabel: 'alteration',
-        companyLabel: (this.getEntityName || 'this company')
+        filingLabel: 'alteration'
       }
     }
     return {
       subtitle: 'Filing Pending',
-      filingLabel: 'filing',
-      companyLabel: (this.getEntityName || 'this company')
+      filingLabel: 'filing'
     }
   }
 
@@ -65,18 +65,7 @@ export default class FutureEffectivePending extends Mixins(DateMixin) {
 </script>
 
 <style lang="scss" scoped>
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
-p:first-of-type,
-p:last-of-type {
-  padding-top: 0.75rem;
-}
-
 p {
-  margin-bottom: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

@@ -1,8 +1,10 @@
 <template>
   <div v-if="filing" class="staff-filing-details body-2">
-    <p class="info-text">{{filing.notationOrOrder}}</p>
-    <p class="info-text my-0" v-if="filing.fileNumber">Court Order Number: {{filing.fileNumber}}</p>
-    <p class="info-text my-0" v-if="filing.planOfArrangement">{{filing.planOfArrangement}}</p>
+    <p>{{filing.notationOrOrder}}</p>
+
+    <p class="mb-0" v-if="filing.fileNumber">Court Order Number: {{filing.fileNumber}}</p>
+
+    <p class="mt-0" v-if="filing.planOfArrangement">{{filing.planOfArrangement}}</p>
   </div>
 </template>
 
@@ -20,6 +22,6 @@ export default class StaffFiling extends Vue {
 
 <style lang="scss" scoped>
 p {
-  margin-bottom: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

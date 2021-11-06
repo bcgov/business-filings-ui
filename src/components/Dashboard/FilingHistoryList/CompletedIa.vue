@@ -3,9 +3,10 @@
     <h4>Incorporation Complete</h4>
 
     <p>{{getEntityName || 'A Numbered Benefit Company'}} has been successfully incorporated.</p>
+
     <p>Return to your Manage Businesses dashboard to access your business and file changes.</p>
 
-    <div class="to-dashboard-container">
+    <div class="to-dashboard-container text-center mt-6">
       <v-btn color="primary" @click.native.stop="returnToDashboard()">
         <span>Return to Dashboard</span>
       </v-btn>
@@ -29,22 +30,7 @@ export default class CompletedIa extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.to-dashboard-container {
-  text-align: center;
-  padding: 1rem;
-}
-
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
-p:first-of-type {
-  padding-top: 0.75rem;
-}
-
 p {
-  margin-bottom: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

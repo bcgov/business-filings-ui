@@ -132,7 +132,7 @@ export default class FilingMixin extends Vue {
       },
       dissolution: {
         custodialOffice: this.getRegisteredOfficeAddress,
-        dissolutionType: DissolutionTypes.VOLUNTARY // To be applied dynamically when we have dissolution variations.
+        dissolutionType: DissolutionTypes.HDV // To be applied dynamically when we have dissolution variations.
       }
     }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-unsuccessful body-2 pa-4">
+  <div class="payment-unsuccessful-details body-2 pa-4">
     <h4>Payment Unsuccessful</h4>
 
     <p>This filing is pending payment. The payment appears to have been unsuccessful for some
@@ -17,12 +17,6 @@ export default class PaymentUnsuccessful extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
 p:first-of-type {
   padding-top: 0.75rem;
 }

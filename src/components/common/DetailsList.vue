@@ -65,12 +65,6 @@ export default class DetailsList extends Mixins(DateMixin) {
 </script>
 
 <style lang="scss" scoped>
-.title-bar h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
 .title-bar {
   display: flex;
   justify-content: space-between;

@@ -8,7 +8,9 @@ const vuetify = new Vuetify({})
 
 describe('Payment Incomplete', () => {
   it('Displays expected content with no data', () => {
-    const wrapper = mount(PaymentIncomplete, { vuetify })
+    const wrapper = mount(PaymentIncomplete, { vuetify,
+      propsData: { filing: null }
+    })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Payment Incomplete -') // NB: no trailling space

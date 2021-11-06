@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-incomplete body-2 pa-4 mb-4">
+  <div class="payment-incomplete-details body-2 pa-4">
     <h4>Payment Incomplete - {{title}}</h4>
 
     <p v-html="detail" />
@@ -12,7 +12,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class PaymentIncomplete extends Vue {
   /** The subject filing. */
-  @Prop() readonly filing: any
+  @Prop({ required: true }) readonly filing: any
 
   /** The title of the subject filing. */
   private get title (): string {
@@ -31,12 +31,6 @@ export default class PaymentIncomplete extends Vue {
 
 div {
   background-color: $app-bg-gray !important;
-}
-
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
 }
 
 p:first-of-type {

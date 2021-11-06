@@ -132,8 +132,6 @@ export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/styles/theme.scss';
-
 ul {
   margin: 0;
   padding: 0;

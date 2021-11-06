@@ -73,4 +73,11 @@ describe('Enum Mixin', () => {
     expect(vm.filingTypeToName('voluntaryDissolution')).toBe('Voluntary Dissolution')
     expect(vm.filingTypeToName('someUnknownFiling')).toBe('Some Unknown Filing')
   })
+
+  it('returns correct values for dissolutionTypeToName()', () => {
+    expect(vm.dissolutionTypeToName('DISS_VOLUNTARY')).toBe('Voluntary Dissolution')
+    expect(vm.dissolutionTypeToName('DISS_ADMIN')).toBe('Administrative Dissolution')
+    expect(vm.dissolutionTypeToName('DISS_FAIL_FILE')).toBe('Dissolved for Failure to File')
+    expect(vm.dissolutionTypeToName('DISS_OTHER')).toBe('Dissolved for Other Reason')
+  })
 })

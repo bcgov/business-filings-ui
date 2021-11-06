@@ -2,22 +2,24 @@
   <div v-if="filing" class="future-effective-details body-2">
     <h4>{{_.subtitle}}</h4>
 
-    <p>The {{_.filingLabel}} date and time for {{_.companyLabel}}
-      will be <strong>{{effectiveDateTime}}</strong>.</p>
-
-    <p>If you wish to change the information in this {{_.filingLabel}}, you must
-      contact Registry Staff to file a withdrawal.</p>
-
-    <p>Withdrawing this {{_.filingTitle}} will remove this {{_.filingLabel}}
-      and all associated information, and will incur a $20.00 fee.</p>
+    <p>
+      The {{_.filingLabel}} date and time for {{this.getEntityName || 'this company'}}
+      will be <strong>{{effectiveDateTime}}</strong>.
+    </p>
 
     <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
 
     <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
 
-    <p>Registries contact information:</p>
+    <p>
+      If you wish to change the information in this {{_.filingLabel}}, you must contact
+      Registry Staff to file a withdrawal. Withdrawing this {{_.filingTitle}} will remove
+      this {{_.filingLabel}} and all associated information, and will incur a $20.00 fee.
+    </p>
 
-    <contact-info class="pt-3" />
+    <h4 class="font-14">Registries Contact Information:</h4>
+
+    <ContactInfo class="mt-4" />
   </div>
 </template>
 
@@ -44,7 +46,6 @@ export default class FutureEffective extends Mixins(DateMixin) {
       return {
         subtitle: 'Future Effective Incorporation Date',
         filingLabel: 'incorporation',
-        companyLabel: (this.getEntityName || 'this Numbered Benefit Company'),
         filingTitle: 'Incorporation Application'
       }
     }
@@ -52,15 +53,13 @@ export default class FutureEffective extends Mixins(DateMixin) {
       return {
         subtitle: 'Future Effective Alteration Date',
         filingLabel: 'alteration',
-        companyLabel: (this.getEntityName || 'this company'),
         filingTitle: 'Alteration Notice'
       }
     }
     return {
       subtitle: 'Future Effective Filing Date',
       filingLabel: 'filing',
-      companyLabel: (this.getEntityName || 'this company'),
-      filingTitle: 'Filing'
+      filingTitle: 'filing'
     }
   }
 
@@ -72,18 +71,7 @@ export default class FutureEffective extends Mixins(DateMixin) {
 </script>
 
 <style lang="scss" scoped>
-h4 {
-  letter-spacing: 0;
-  font-size: 0.9375rem;
-  font-weight: 700;
-}
-
-p:first-of-type,
-p:last-of-type {
-  padding-top: 0.75rem;
-}
-
 p {
-  margin-bottom: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

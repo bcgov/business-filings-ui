@@ -357,7 +357,7 @@ export default class AgmDate extends Mixins(DateMixin) {
 
 .agm-extension-container {
   padding: 1.125rem;
-  font-size: 1rem;
+  font-size: $px-16;
   line-height: normal;
   background-color: $app-bg-gray;
 }

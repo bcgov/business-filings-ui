@@ -29,8 +29,11 @@
                         <span
                             v-on="on"
                             id="add-staff-filing-label"
-                            @click="expand = !expand">
-                            <v-icon id="add-staff-filing-icon">mdi-plus</v-icon>Add Staff Filing
+                            class="app-blue"
+                            @click="expand = !expand"
+                        >
+                            <v-icon id="add-staff-filing-icon" class="app-blue">mdi-plus</v-icon>
+                            <span>Add Staff Filing</span>
                         </span>
                         <v-btn
                             text
@@ -47,17 +50,17 @@
                     <v-list-item-group color="primary">
                         <v-list-item @click="showRegistrarsNotationDialog()">
                             <v-list-item-title>
-                                <span class="app-action">Add Registrar's Notation</span>
+                                <span class="app-blue">Add Registrar's Notation</span>
                             </v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="showRegistrarsOrderDialog()">
                             <v-list-item-title>
-                                <span class="app-action">Add Registrar's Order</span>
+                                <span class="app-blue">Add Registrar's Order</span>
                             </v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="showCourtOrderDialog()">
                             <v-list-item-title>
-                                <span class="app-action">Add Court Order</span>
+                                <span class="app-blue">Add Court Order</span>
                             </v-list-item-title>
                         </v-list-item>
                     </v-list-item-group>
@@ -115,10 +118,10 @@ export default class StaffNotation extends Vue {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
+
 #add-staff-filing-label {
     padding-right: 0.725rem;
-    font-size: 0.875rem;
-    color: $app-blue;
+    font-size: $px-14;
     border-right: 1px solid $gray3;
 
     &:hover {
@@ -147,7 +150,6 @@ export default class StaffNotation extends Vue {
     font-size: 1.2rem;
     padding: 0.2rem;
     margin-bottom: 0.2rem;
-    color: $app-blue;
 }
 
 #app > div.v-menu__content {

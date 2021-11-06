@@ -788,7 +788,7 @@ export default {
 article {
   .v-card {
     line-height: 1.2rem;
-    font-size: 0.875rem;
+    font-size: $px-14;
   }
 }
 

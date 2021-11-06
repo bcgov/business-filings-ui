@@ -2,7 +2,7 @@
   <div class="paper-filing-details body-2">
     <p>This filing is available on paper only. To request copies of paper documents, contact BC Registry Staff:</p>
 
-    <contact-info class="pt-3" />
+    <ContactInfo class="mt-4" />
   </div>
 </template>
 
@@ -18,6 +18,6 @@ export default class PaperFiling extends Vue {}
 
 <style lang="scss" scoped>
 p {
-  margin-bottom: 0.5rem !important;
+  margin-top: 1rem !important;
 }
 </style>

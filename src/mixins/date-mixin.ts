@@ -75,13 +75,13 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020"
    * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021"
    */
-  dateToPacificDate (date: Date): string {
+  dateToPacificDate (date: Date, longMonth = false): string {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     let dateStr = date.toLocaleDateString('en-CA', {
       timeZone: 'America/Vancouver',
-      month: 'short', // Dec.
+      month: longMonth ? 'long' : 'short', // December or Dec
       day: 'numeric', // 31
       year: 'numeric' // 2020
     })
@@ -122,7 +122,7 @@ export default class DateMixin extends Vue {
   dateToPacificDateTime (date: Date): string {
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    const dateStr = this.dateToPacificDate(date)
+    const dateStr = this.dateToPacificDate(date, true)
     const timeStr = this.dateToPacificTime(date)
 
     return `${dateStr} at ${timeStr} Pacific time`

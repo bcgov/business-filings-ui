@@ -1915,7 +1915,7 @@ describe('TodoList - Click Tests', () => {
     expect(wrapper.find(PaymentIncomplete).exists()).toBe(true)
 
     // confirm the message is visible after expansion panel clicked
-    const bcolPanel = vm.$el.querySelector('.payment-incomplete')
+    const bcolPanel = vm.$el.querySelector('.payment-incomplete-details')
     expect(bcolPanel.textContent).toContain('Payment Incomplete - Error')
     expect(bcolPanel.textContent).toContain('An error has occurred')
 

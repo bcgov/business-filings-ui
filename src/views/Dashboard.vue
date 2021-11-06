@@ -50,6 +50,8 @@
           </v-col>
 
           <v-col cols="12" md="3" style="position: relative">
+            <!-- FUTURE: add "Liquidator or Custodian of Records" here -->
+
             <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-addresses-subtitle">Office Addresses</h2>
@@ -72,6 +74,7 @@
                 <v-btn text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
+                  v-if="!isHistorical"
                   :disabled="disableChanges"
                   @click.native.stop="proceedCoa()">
                   <v-icon small>mdi-pencil</v-icon>
@@ -92,6 +95,7 @@
                 <v-btn text small color="primary"
                   id="standalone-directors-button"
                   class="change-btn"
+                  v-if="!isHistorical"
                   :disabled="disableChanges"
                   @click.native.stop="goToStandaloneDirectors()">
                   <v-icon small>mdi-pencil</v-icon>
@@ -160,7 +164,7 @@ export default {
   computed: {
     ...mapState(['entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlocker', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate']),
+    ...mapGetters(['isBComp', 'hasBlocker', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {

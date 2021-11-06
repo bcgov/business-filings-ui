@@ -1,4 +1,4 @@
-import { EntityStatus, CorpTypeCd, FilingStatus } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes } from '@/enums'
 import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF } from '@/interfaces'
 
 export default {
@@ -43,6 +43,12 @@ export default {
   },
   setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {
     commit('entityFoundingDate', entityFoundingDate)
+  },
+  setEntityDissolutionDate ({ commit }, entityDissolutionDate: Date) {
+    commit('entityDissolutionDate', entityDissolutionDate)
+  },
+  setEntityDissolutionType ({ commit }, entityDissolutionType: DissolutionTypes) {
+    commit('entityDissolutionType', entityDissolutionType)
   },
   setBusinessEmail ({ commit }, businessEmail: string) {
     commit('businessEmail', businessEmail)

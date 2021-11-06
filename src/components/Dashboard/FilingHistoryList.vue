@@ -65,7 +65,11 @@
                 </div>
 
                 <!-- is this a completed IA? -->
-                <div v-else-if="filing.isCompletedIa" class="item-header__subtitle">
+                <!-- or a completed Alteration? -->
+                <!-- or a completed Dissolution? -->
+                <div v-else-if="filing.isCompletedIa || filing.isCompletedAlteration || filing.isCompletedDissolution"
+                  class="item-header__subtitle"
+                >
                   <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
                   <v-btn
                     class="details-btn"
@@ -80,7 +84,11 @@
                 </div>
 
                 <!-- is this a FE IA pending (overdue)? -->
-                <div v-else-if="filing.isFutureEffectiveIaPending" class="item-header__subtitle">
+                <!-- or a FE Alteration pending (overdue)? -->
+                <!-- or a FE Dissolution pending (overdue)? -->
+                <div v-else-if="filing.isFutureEffectiveIaPending || filing.isFutureEffectiveAlterationPending ||
+                  filing.isFutureEffectiveDissolutionPending" class="item-header__subtitle"
+                >
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
                   <span>PAID <FiledLabel :filing="filing" /></span>
@@ -97,42 +105,14 @@
                 </div>
 
                 <!-- is this a FE IA still waiting for effective date/time? -->
-                <div v-else-if="filing.isFutureEffectiveIa" class="item-header__subtitle">
-                  <span>FUTURE EFFECTIVE INCORPORATION</span>
-                  <span class="vert-pipe" />
-                  <span>PAID <FiledLabel :filing="filing" /></span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="blue darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index, filing)"
-                  >
-                    <v-icon left>mdi-information-outline</v-icon>
-                    <span>{{(panel === index) ? "Hide Details" : "View Details"}}</span>
-                  </v-btn>
-                </div>
-
-                <!-- is this a FE Alteration pending (overdue)? -->
-                <div v-else-if="filing.isFutureEffectiveAlterationPending" class="item-header__subtitle">
-                  <span class="orange--text text--darken-2">FILED AND PENDING</span>
-                  <span class="vert-pipe" />
-                  <span>PAID <FiledLabel :filing="filing" /></span>
-                  <v-btn
-                    class="details-btn"
-                    outlined
-                    color="orange darken-2"
-                    :ripple=false
-                    @click.stop="togglePanel(index, filing)"
-                  >
-                    <v-icon left>mdi-alert</v-icon>
-                    <span>{{(panel === index) ? "Hide Details" : "View Details"}}</span>
-                  </v-btn>
-                </div>
-
                 <!-- is this a FE Alteration still waiting for effective date/time? -->
-                <div v-else-if="filing.isFutureEffectiveAlteration" class="item-header__subtitle">
-                  <span>FUTURE EFFECTIVE ALTERATION</span>
+                <!-- is this a FE Dissolution still waiting for effective date/time? -->
+                <div v-else-if="filing.isFutureEffectiveIa || filing.isFutureEffectiveAlteration ||
+                  filing.isFutureEffectiveDissolution" class="item-header__subtitle"
+                >
+                  <span v-if="filing.isFutureEffectiveIa">FUTURE EFFECTIVE INCORPORATION</span>
+                  <span v-if="filing.isFutureEffectiveAlteration">FUTURE EFFECTIVE ALTERATION</span>
+                  <span v-if="filing.isFutureEffectiveDissolution">FUTURE EFFECTIVE DISSOLUTION</span>
                   <span class="vert-pipe" />
                   <span>PAID <FiledLabel :filing="filing" /></span>
                   <v-btn
@@ -147,7 +127,7 @@
                   </v-btn>
                 </div>
 
-                <!-- is this a paid filing? -->
+                <!-- is this a generic paid (not yet completed) filing? -->
                 <div v-else-if="isStatusPaid(filing)" class="item-header__subtitle">
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
@@ -193,13 +173,13 @@
                   :ripple=false
                   @click.stop="togglePanel(index, filing)"
                 >
-                  <span v-if="filing.availableOnPaperOnly" class="app-action">
+                  <span v-if="filing.availableOnPaperOnly" class="app-blue">
                     {{(panel === index) ? "Close" : "Request a Copy"}}
                   </span>
-                  <span v-else-if="filing.isTypeStaff" class="app-action">
+                  <span v-else-if="filing.isTypeStaff" class="app-blue">
                     {{(panel === index) ? "Hide" : "View"}}
                   </span>
-                  <span v-else class="app-action">
+                  <span v-else class="app-blue">
                     {{(panel === index) ? "Hide Documents" : "View Documents"}}
                   </span>
                 </v-btn>
@@ -207,7 +187,7 @@
                 <!-- the drop-down menu -->
                 <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff && !tempRegNumber">
                   <template v-slot:activator="{ on }">
-                    <v-btn text v-on="on" class="menu-btn pa-1" click.stop>
+                    <v-btn text v-on="on" class="menu-btn app-blue pa-1" click.stop>
                       <v-icon>mdi-menu-down</v-icon>
                     </v-btn>
                   </template>
@@ -215,25 +195,25 @@
                     <v-list-item-group color="primary">
                       <v-list-item v-if="!filing.isTypeStaff" :disabled="disableCorrection(filing)">
                         <v-list-item-icon>
-                          <v-icon class="app-action">mdi-file-document-edit-outline</v-icon>
+                          <v-icon class="app-blue">mdi-file-document-edit-outline</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title
                           class="file-correction-item"
                           @click.stop="correctThisFiling(filing)"
                         >
-                          <span class="app-action">File a Correction</span>
+                          <span class="app-blue">File a Correction</span>
                         </v-list-item-title>
                       </v-list-item>
 
                       <v-list-item>
                         <v-list-item-icon>
-                          <v-icon class="app-action">mdi-comment-plus</v-icon>
+                          <v-icon class="app-blue">mdi-comment-plus</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title
                           class="add-detail-comment-item"
                           @click.stop="showCommentDialog(filing)"
                         >
-                          <span class="app-action">Add Detail</span>
+                          <span class="app-blue">Add Detail</span>
                         </v-list-item-title>
                       </v-list-item>
                     </v-list-item-group>
@@ -261,34 +241,37 @@
               <CompletedIa class="mt-6" />
             </template>
 
+            <!-- is this a completed alteration? -->
+            <template v-else-if="filing.isCompletedAlteration">
+              <CompletedAlteration :filing=filing class="mt-6" />
+            </template>
+
+            <!-- is this a completed dissolution? -->
+            <template v-else-if="filing.isCompletedDissolution">
+              <CompletedDissolution :filing="filing" class="mt-6" />
+            </template>
+
             <!-- is this a FE IA pending (overdue)? -->
-            <template v-else-if="filing.isFutureEffectiveIaPending">
+            <!-- or a FE Alteration pending (overdue)? -->
+            <!-- or a FE Dissolution pending (overdue)? -->
+            <template v-else-if="filing.isFutureEffectiveIaPending || filing.isFutureEffectiveAlterationPending ||
+              filing.isFutureEffectiveDissolutionPending"
+            >
               <FutureEffectivePending :filing=filing class="mt-6" />
             </template>
 
             <!-- is this a FE IA still waiting for effective date/time? -->
-            <template v-else-if="filing.isFutureEffectiveIa">
+            <!-- or a FE Alteration still waiting for effective date/time?  -->
+            <!-- or a FE Dissolution still waiting for effective date/time?  -->
+            <template v-else-if="filing.isFutureEffectiveIa || filing.isFutureEffectiveAlteration ||
+              filing.isFutureEffectiveDissolution"
+            >
               <FutureEffective :filing=filing class="mt-6" />
             </template>
 
-            <!-- is this a FE Alteration pending (overdue)? -->
-            <template v-else-if="filing.isFutureEffectiveAlterationPending">
-              <FutureEffectivePending :filing=filing class="mt-6" />
-            </template>
-
-            <!-- is this a FE Alteration still waiting for effective date/time?  -->
-            <template v-else-if="filing.isFutureEffectiveAlteration">
-              <FutureEffective :filing=filing class="mt-6" />
-            </template>
-
-            <!-- is this a paid filing? -->
+            <!-- is this a generic paid (not yet completed) filing? -->
             <template v-else-if="isStatusPaid(filing)">
               <PendingFiling :filing=filing class="mt-6" />
-            </template>
-
-            <!-- is this a completed alteration? -->
-            <template v-else-if="isTypeAlteration(filing)">
-              <CompletedAlteration :filing=filing class="mt-6" />
             </template>
 
             <!-- is this a paper filing? -->
@@ -352,6 +335,7 @@ import { Action, Getter } from 'vuex-class'
 
 // Components and Dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
+import CompletedDissolution from './FilingHistoryList/CompletedDissolution.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
 import DocumentsList from './FilingHistoryList/DocumentsList.vue'
 import FiledLabel from './FilingHistoryList/FiledLabel.vue'
@@ -372,6 +356,7 @@ import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
   components: {
     // sub-components
     CompletedAlteration,
+    CompletedDissolution,
     CompletedIa,
     DocumentsList,
     FiledLabel,
@@ -506,6 +491,17 @@ export default class FilingHistoryList extends Mixins(
         item.correctionLink = filing.correctionLink
       }
 
+      // add properties for BCOMP COAs
+      if (this.isBComp && this.isTypeChangeOfAddress(filing)) {
+        // is this a Future Effective BCOMP COA pending (not yet completed)?
+        // (NB: this is False after the effective date)
+        item.isFutureEffectiveBcompCoaPending = (
+          filing.isFutureEffective &&
+          this.isStatusPaid(filing) &&
+          this.isEffectiveDateFuture(effectiveDate)
+        )
+      }
+
       // add properties for IAs
       if (this.isTypeIncorporationApplication(filing)) {
         // is this a completed IA? (incorp app mode only)
@@ -528,37 +524,45 @@ export default class FilingHistoryList extends Mixins(
         )
       }
 
-      // add properties for BCOMP COAs
-      if (this.isBComp && this.isTypeChangeOfAddress(filing)) {
-        // is this a Future Effective BCOMP COA pending (not yet completed)?
-        // (NB: this is False after the effective date)
-        item.isFutureEffectiveBcompCoaPending = (
-          !!filing.isFutureEffective &&
-          this.isStatusPaid(filing) &&
-          this.isEffectiveDateFuture(effectiveDate)
-        )
-      }
-
       // add properties for Alterations
       if (this.isTypeAlteration(filing)) {
+        // is this a completed alteration?
+        item.isCompletedAlteration = this.isStatusCompleted(filing)
+
         // is this a Future Effective alteration (not yet completed)?
-        const isFutureEffectiveAlteration = (
-          !!filing.isFutureEffective &&
+        item.isFutureEffectiveAlteration = (
+          filing.isFutureEffective &&
           this.isStatusPaid(filing)
         )
 
         // is this a Future Effective alteration pending (overdue)?
-        const isFutureEffectiveAlterationPending = (
-          isFutureEffectiveAlteration &&
+        item.isFutureEffectiveAlterationPending = (
+          item.isFutureEffectiveAlteration &&
           this.isEffectiveDatePast(effectiveDate)
         )
 
         item.courtOrderNumber = filing.data.order?.fileNumber || ''
         item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
-        item.isFutureEffectiveAlteration = isFutureEffectiveAlteration
-        item.isFutureEffectiveAlterationPending = isFutureEffectiveAlterationPending
         item.toLegalType = filing.data.alteration?.toLegalType || null
         item.fromLegalType = filing.data.alteration?.fromLegalType || null
+      }
+
+      // add properties for Dissolutions
+      if (this.isTypeDissolution(filing)) {
+        // is this a completed dissolution?
+        item.isCompletedDissolution = this.isStatusCompleted(filing)
+
+        // is this a Future Effective dissolution (not yet completed)?
+        item.isFutureEffectiveDissolution = (
+          filing.isFutureEffective &&
+          this.isStatusPaid(filing)
+        )
+
+        // is this a Future Effective dissolution pending (overdue)?
+        item.isFutureEffectiveDissolutionPending = (
+          item.isFutureEffectiveDissolution &&
+          this.isEffectiveDatePast(effectiveDate)
+        )
       }
 
       // add properties for staff filings
@@ -892,7 +896,7 @@ export default class FilingHistoryList extends Mixins(
 
     .expand-btn {
       letter-spacing: -0.01rem;
-      font-size: 0.875rem;
+      font-size: $px-14;
       font-weight: 700;
     }
 
@@ -901,7 +905,6 @@ export default class FilingHistoryList extends Mixins(
       height: unset !important;
       min-width: unset !important;
       padding: 0.25rem !important;
-      color: $app-blue
     }
   }
 

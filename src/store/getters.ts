@@ -102,6 +102,11 @@ export default {
     return (state.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
   },
 
+  /** Is True if business is historical (dissolved). */
+  isHistorical (state: StateIF): boolean {
+    return false // *** TODO: get from business object
+  },
+
   getNrNumber (state: StateIF): string {
     // workaround for old or new property name
     return (state.nameRequest?.nrNum || state.nameRequest?.nrNumber)

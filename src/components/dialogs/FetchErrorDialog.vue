@@ -4,14 +4,14 @@
       <v-card-title id="dialog-title">Unable to Fetch Data</v-card-title>
 
       <v-card-text id="dialog-text">
-        <p class="genErr">
+        <p class="font-15">
           We were unable to fetch some data needed for your filing.
           You can return to the Business Dashboard and try again.
         </p>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info id="dialog-contact" />
+          <p class="font-15">If this error persists, please contact us.</p>
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

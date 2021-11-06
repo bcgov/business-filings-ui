@@ -249,7 +249,7 @@ $icon-width: 2.75rem;
 // Complete filing required styling
 .complete-filing {
   color: $gray6;
-  font-size: 0.85rem;
+  font-size: $px-14;
   white-space: pre-wrap;
 }
 
@@ -276,7 +276,7 @@ $icon-width: 2.75rem;
 }
 
 .v-list-item__title {
-  font-size: 0.875rem;
+  font-size: $px-14;
   font-weight: 400;
 }
 

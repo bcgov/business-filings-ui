@@ -4,29 +4,29 @@
       <v-card-title>Invalid Incorporation Application</v-card-title>
 
       <v-card-text>
-        <p class="genErr" v-if="type === NameRequestStates.EXPIRED">
+        <p class="font-15" v-if="type === NameRequestStates.EXPIRED">
           The name request has expired.</p>
 
-        <p class="genErr" v-else-if="type === NameRequestStates.CONSUMED">
+        <p class="font-15" v-else-if="type === NameRequestStates.CONSUMED">
           The name request has already been consumed.</p>
 
-        <p class="genErr" v-else-if="type === NameRequestStates.NOT_APPROVED">
+        <p class="font-15" v-else-if="type === NameRequestStates.NOT_APPROVED">
           The name request has not been approved.</p>
 
-        <p class="genErr" v-else-if="type === NameRequestStates.NOT_FOUND">
+        <p class="font-15" v-else-if="type === NameRequestStates.NOT_FOUND">
           The name request number could not be found.</p>
 
-        <p class="genErr" v-else-if="type === NameRequestStates.NEED_CONSENT">
+        <p class="font-15" v-else-if="type === NameRequestStates.NEED_CONSENT">
           The name request number is awaiting consent.</p>
 
-        <p class="genErr" v-else>An unexpected error has occurred.</p>
+        <p class="font-15" v-else>An unexpected error has occurred.</p>
 
         <p class="mt-4">You can retry now, or you can exit and try to access this Incorporation Application
           at another time.</p>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us.</p>
-          <contact-info />
+          <p class="font-15">If this error persists, please contact us.</p>
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

@@ -13,14 +13,14 @@
 
       <v-card-text id="dialog-text">
         <!-- display generic message (no errors or warnings) -->
-        <div class="genErr" v-if="(numErrors + numWarnings) < 1">
+        <div class="font-15" v-if="(numErrors + numWarnings) < 1">
           <p>We were unable to save your {{filingName}}. You can continue to try to save this
           filing or you can exit without saving and re-create this filing at another time.</p>
           <p>If you exit this {{filingName}}, any changes you've made will not be saved.</p>
         </div>
 
         <!-- display errors -->
-        <div class="genErr mb-4" v-if="numErrors > 0">
+        <div class="font-15 mb-4" v-if="numErrors > 0">
           <p>We were unable to save your {{filingName}} due to the following errors:</p>
           <ul>
             <li v-for="(error, index) in errors" :key="index">{{error.error}}</li>
@@ -28,7 +28,7 @@
         </div>
 
         <!-- display warnings-->
-        <div class="genErr mb-4" v-if="numWarnings > 0">
+        <div class="font-15 mb-4" v-if="numWarnings > 0">
           <p>Please note the following warnings:</p>
           <ul>
             <li v-for="(warning, index) in warnings" :key="index">{{warning.warning}}</li>
@@ -36,8 +36,8 @@
         </div>
 
         <template v-if="!isRoleStaff">
-          <p class="genErr">If this error persists, please contact us:</p>
-          <contact-info />
+          <p class="font-15">If this error persists, please contact us:</p>
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

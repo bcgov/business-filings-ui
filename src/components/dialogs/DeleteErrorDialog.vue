@@ -9,24 +9,24 @@
       </v-card-title>
 
       <v-card-text id="dialog-text">
-        <p class="genErr" v-if="errors.length + warnings.length < 1">
+        <p class="font-15" v-if="errors.length + warnings.length < 1">
           We were unable to delete your filing.
         </p>
-        <p class="genErr" v-else-if="errors.length > 0">
+        <p class="font-15" v-else-if="errors.length > 0">
           We were unable to delete your filing due to the following errors:
         </p>
-        <p class="genErr" v-else>
+        <p class="font-15" v-else>
           Please note the following:
         </p>
-        <p class="genErr" v-for="(error, index) in errors" :key="index">
+        <p class="font-15" v-for="(error, index) in errors" :key="index">
           {{error.error}}
         </p>
-        <p class="genErr" v-for="(warning, index) in warnings" :key="index">
+        <p class="font-15" v-for="(warning, index) in warnings" :key="index">
           {{warning.warning}}
         </p>
         <template v-if="!isRoleStaff">
-          <p class="genErr">If you need help, please contact us.</p>
-          <contact-info class="mt-5" />
+          <p class="font-15">If you need help, please contact us.</p>
+          <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 

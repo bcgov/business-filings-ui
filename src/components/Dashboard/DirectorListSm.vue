@@ -108,7 +108,7 @@ $avatar-width: 2.75rem;
 .complete-filing {
   padding: 2rem;
   color: $gray6;
-  font-size: 0.85rem;
+  font-size: $px-14;
   white-space: pre-wrap;
   display: inline-block;
 }
@@ -132,7 +132,7 @@ $avatar-width: 2.75rem;
 .v-avatar {
   flex: 0 0 auto;
   color: $gray0;
-  font-size: 0.85rem;
+  font-size: $px-14;
 }
 
 // Director Address Information
@@ -145,7 +145,7 @@ $avatar-width: 2.75rem;
 }
 
 .v-list-item__title {
-  font-size: 0.875rem;
+  font-size: $px-14;
   font-weight: 400;
 }
 

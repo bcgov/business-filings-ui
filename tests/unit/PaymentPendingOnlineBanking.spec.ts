@@ -8,7 +8,9 @@ const vuetify = new Vuetify({})
 
 describe('Payment Pending Online Banking', () => {
   it('Displays expected content with no data', () => {
-    const wrapper = mount(PaymentPendingOnlineBanking, { vuetify })
+    const wrapper = mount(PaymentPendingOnlineBanking, { vuetify,
+      propsData: { filing: null }
+    })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Online Banking Payment Pending')
