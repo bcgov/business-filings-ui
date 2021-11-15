@@ -3,7 +3,7 @@ export enum DissolutionTypes {
   // ADMINISTRATIVE = 'administrative',
   // COURT_ORDER_LIQUIDATION = 'courtOrderedLiquidation',
   // INVOLUNTARY = 'involuntary',
-  // VOLUNTARY = 'voluntary',
+  VOLUNTARY = 'voluntary',
   // VOLUNTARY_LIQUIDATION = 'voluntaryLiquidation',
 
   D1F = 'DISS_1_FILE',
