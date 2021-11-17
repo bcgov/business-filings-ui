@@ -1575,11 +1575,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   border-left: 1px solid $gray6;
 }
 
-.v-expansion-panel-header {
-  padding-top: 1.25rem !important;
-  padding-bottom: 1.25rem !important;
-}
-
 .v-expansion-panel-header:before {
   background-color: white !important;
 }
