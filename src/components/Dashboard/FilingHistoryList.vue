@@ -887,7 +887,6 @@ export default class FilingHistoryList extends Mixins(
 
   &__label {
     flex: 1 1 auto;
-    padding-top: 0.5rem;
   }
 
   &__actions {
