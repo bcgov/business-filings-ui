@@ -19,6 +19,7 @@ export interface DissolutionFilingIF {
     legalType: string
     legalName: string
     identifier: string
+    foundingDate: string
   }
   dissolution: {
     custodialOffice: OfficeAddressIF,

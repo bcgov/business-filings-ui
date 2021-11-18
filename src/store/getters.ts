@@ -153,6 +153,11 @@ export default {
     return state.entityStatus
   },
 
+  /** The Entity Founding Date. */
+  getEntityFoundingDate (state: StateIF): Date {
+    return state.entityFoundingDate
+  },
+
   /** The entity registered office address. */
   getRegisteredOfficeAddress (state: StateIF): OfficeAddressIF {
     return state.registeredAddress

@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
+import { DateMixin } from '@/mixins'
 import { Action, State, Getter } from 'vuex-class'
 import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
 import { CorpTypeCd, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
@@ -7,7 +8,7 @@ import { CorpTypeCd, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
  * Mixin that provides some useful filing utilities.
  */
 @Component({})
-export default class FilingMixin extends Vue {
+export default class FilingMixin extends Mixins(DateMixin) {
   @Action setFilingData!: (x: any) => void
 
   @State filingData!: Array<FilingDataIF>
@@ -16,6 +17,7 @@ export default class FilingMixin extends Vue {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
   @Getter getEntityIncNo!: string
+  @Getter getEntityFoundingDate!: Date
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
 
   /**
@@ -128,7 +130,8 @@ export default class FilingMixin extends Vue {
       business: {
         legalType: this.getEntityType,
         identifier: this.getEntityIncNo,
-        legalName: this.entityName
+        legalName: this.entityName,
+        foundingDate: this.dateToApi(this.getEntityFoundingDate)
       },
       dissolution: {
         custodialOffice: this.getRegisteredOfficeAddress,
