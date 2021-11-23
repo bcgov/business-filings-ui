@@ -650,7 +650,7 @@ export default {
       this.setNameRequest(nr)
 
       // save the approved name
-      const entityName = this.getApprovedName(nr) || ''
+      const entityName = this.getNrApprovedName(nr) || ''
       this.setEntityName(entityName || 'Unknown Name')
     },
 

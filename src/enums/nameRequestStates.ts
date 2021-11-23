@@ -3,7 +3,8 @@ export enum NameRequestStates {
   APPROVED = 'APPROVED',
   CANCELLED = 'CANCELLED',
   COMPLETED = 'COMPLETED',
-  CONDITIONAL = 'CONDITIONAL',
+  CONDITIONAL = 'CONDITIONAL', // NR state
+  CONDITION = 'CONDITION', // NR name state
   DRAFT = 'DRAFT',
   EXPIRED = 'EXPIRED',
   HISTORICAL = 'HISTORICAL',
@@ -17,9 +18,5 @@ export enum NameRequestStates {
   CONSUMED = 'CONSUMED',
   NOT_FOUND = 'NOT_FOUND',
   NEED_CONSENT = 'NEED_CONSENT',
-}
-
-export enum NrNameStates {
-  APPROVED = 'APPROVED',
-  CONDITION = 'CONDITION',
+  INVALID = 'INVALID',
 }
