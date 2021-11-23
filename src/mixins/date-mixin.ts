@@ -120,6 +120,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021 at 12:00 pm Pacific time"
    */
   dateToPacificDateTime (date: Date): string {
+    // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     const dateStr = this.dateToPacificDate(date, true)
@@ -133,7 +134,9 @@ export default class DateMixin extends Vue {
    * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
    */
   dateToApi (date: Date): string {
-    if (!date) return null
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
     // replace "Zulu" timezone abbreviation with UTC offset
     return date.toISOString().replace('Z', '+00:00')
   }
@@ -275,19 +278,42 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * The number of days that 'date' is from today.
+   * Returns the number of days that 'date' is from today in Pacific timezone.
    * @returns -1 for yesterday
    * @returns 0 for today
    * @returns +1 for tomorrow
    * @returns NaN in case of error
    */
-  daysFromToday (date: string): number {
+  daysFromToday (date: Date): number {
     // safety check
-    if (!date) return NaN
+    if (!isDate(date) || isNaN(date.getTime())) return NaN
 
-    // calculate difference between start of "today" and start of "date" (in local time)
-    const todayLocalMs = new Date(this.getCurrentDate).setHours(0, 0, 0, 0)
-    const dateLocalMs = new Date(date).setHours(0, 0, 0, 0)
-    return Math.round((dateLocalMs - todayLocalMs) / MS_IN_A_DAY)
+    // set "date" to 12:00 am Pacific
+    date.setHours(0, 0, 0, 0)
+
+    // compute "today" at 12:00 am Pacific
+    const today = this.yyyyMmDdToDate(this.getCurrentDate)
+
+    // calculate difference between "date" and "today"
+    // (result should be a whole number)
+    const diff = (date.valueOf() - today.valueOf()) / MS_IN_A_DAY
+    return diff
+  }
+
+  /**
+   * Converts a date string (YYYY-MM-DD) to a Date object at 12:00:00 am Pacific time.
+   * @example 2021-11-22 -> 2021-11-22T08:00:00.00Z
+   */
+  yyyyMmDdToDate (dateStr: string): Date {
+    // safety checks
+    if (!dateStr) return null
+    if (dateStr.length !== 10) return null
+
+    const split = dateStr.split('-')
+    const year = +split[0]
+    const month = +split[1]
+    const date = +split[2]
+
+    return new Date(year, (month - 1), date)
   }
 }

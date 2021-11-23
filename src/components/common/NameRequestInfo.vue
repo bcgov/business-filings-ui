@@ -76,9 +76,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   @Prop() readonly nameRequest: any
 
   private parsedNameRequest: NameRequestIF
-
-  private nameRequestDetails:NameRequestDetailsIF
-
+  private nameRequestDetails: NameRequestDetailsIF
   private nameRequestApplicant: NameRequestApplicantIF
 
   created (): void {
@@ -101,7 +99,8 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** Return formatted expiration date */
   private formattedExpirationDate (): string {
-    return this.formatDateString(this.nameRequestDetails.expirationDate)
+    const date = new Date(this.nameRequestDetails.expirationDate)
+    return this.dateToPacificDate(date)
   }
 
   /** Return condition/consent string */

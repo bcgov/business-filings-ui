@@ -87,11 +87,19 @@ describe('Date Mixin', () => {
 
   it('returns correct values for daysFromToday()', () => {
     // init store
-    store.state.currentDate = '2021-01-20'
+    store.state.currentDate = '2021-11-23'
 
     expect(vm.daysFromToday(null)).toBeNaN()
-    expect(vm.daysFromToday('2021-01-19')).toBe(-1) // yesterday
-    expect(vm.daysFromToday('2021-01-20')).toBe(0) // today
-    expect(vm.daysFromToday('2021-01-21')).toBe(1) // tomorrow
+    expect(vm.daysFromToday(new Date(2021, 10, 22))).toBe(-1) // yesterday
+    expect(vm.daysFromToday(new Date(2021, 10, 23, 0, 0, 0, 0))).toBe(0) // today
+    expect(vm.daysFromToday(new Date(2021, 10, 23, 23, 59, 59, 999))).toBe(0) // today
+    expect(vm.daysFromToday(new Date(2021, 10, 24))).toBe(1) // tomorrow
+  })
+
+  it('returns correct values for yyyyMmDdToDate()', () => {
+    expect(vm.yyyyMmDdToDate(null)).toBeNull()
+    expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
+    expect(vm.yyyyMmDdToDate('2021-01-01')).toEqual(new Date(2021, 0, 1))
+    expect(vm.yyyyMmDdToDate('2021-12-31')).toEqual(new Date(2021, 11, 31))
   })
 })

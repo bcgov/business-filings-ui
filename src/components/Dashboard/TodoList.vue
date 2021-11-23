@@ -75,7 +75,7 @@
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- new task -->
-                <div v-if="isStatusNew(item) && item.subtitle" class="todo-subtitle">
+                <div v-if="isStatusNew(item) && !!item.subtitle" class="todo-subtitle">
                   <span>{{ item.subtitle }}</span>
                 </div>
 
@@ -751,13 +751,14 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   }
 
   private expiresText (nameRequest: any): string {
-    // NB: if expiration date is today (0) then NR is expired
-    const expireDays = this.daysFromToday(nameRequest?.expirationDate)
-    if (isNaN(expireDays) || expireDays < 1) {
+    const date = new Date(nameRequest.expirationDate)
+    const expireDays = this.daysFromToday(date)
+    // NB: 0 means NR expires today
+    if (isNaN(expireDays) || expireDays < 0) {
       return 'Expired'
-    } else if (expireDays < 2) {
+    } else if (expireDays < 1) {
       return 'Expires today'
-    } else if (expireDays < 3) {
+    } else if (expireDays < 2) {
       return 'Expires tomorrow'
     } else {
       return `Expires in ${expireDays} days`
@@ -1066,8 +1067,8 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         ? `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application - ${this.getEntityName}`
         : `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
 
-      // set subtitle only if DRAFT
-      let subtitle: string
+      // set subtitle only if DRAFT IA
+      let subtitle: string = null
       if (this.isStatusDraft(header)) {
         if (this.nameRequest) {
           subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
