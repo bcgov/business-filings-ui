@@ -76,7 +76,7 @@ export default class DateMixin extends Vue {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    let dateStr = date.toLocaleDateString('en-CA', {
+    const dateStr = date.toLocaleDateString('en-CA', {
       timeZone: 'America/Vancouver',
       month: 'numeric', // 12
       day: 'numeric', // 31
