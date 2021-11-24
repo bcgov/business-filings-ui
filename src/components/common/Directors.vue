@@ -589,6 +589,7 @@ export default class Directors extends Mixins(
   readonly directors: DirectorIF[]
 
   @Getter getEntityIncNo!: string
+  @Getter getCurrentDate!: string
   @State lastAnnualReportDate!: string
   @State entityFoundingDate!: Date
   @State lastDirectorChangeDate!: string
@@ -726,7 +727,7 @@ export default class Directors extends Mixins(
     }
 
     // appointment date must be before cessation date
-    rules.push(v => this.compareDates(v, cessationDate, '<') || 'Appointment Date must be before Cessation Date')
+    rules.push(v => this.compareYyyyMmDd(v, cessationDate, '<') || 'Appointment Date must be before Cessation Date')
 
     // appointment date must be in the past (or today)
     rules.push(v => this.dateIsNotFuture(v) || 'Appointment Date cannot be in the future')
@@ -749,7 +750,7 @@ export default class Directors extends Mixins(
     }
 
     // cessation date must be after appointment date
-    rules.push(v => this.compareDates(v, appointmentDate, '>') || 'Cessation Date must be after Appointment Date')
+    rules.push(v => this.compareYyyyMmDd(v, appointmentDate, '>') || 'Cessation Date must be after Appointment Date')
 
     // cessation date must be in the past (or today)
     rules.push(v => this.dateIsNotFuture(v) || 'Cessation Date cannot be in the future')
@@ -767,7 +768,7 @@ export default class Directors extends Mixins(
     let date: string = null
 
     if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
-      date = this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+      date = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
     } else {
       date = this.dateToYyyyMmDd(this.entityFoundingDate)
     }
@@ -1189,7 +1190,7 @@ export default class Directors extends Mixins(
    * @returns Whether the date is not in the future.
    */
   private dateIsNotFuture (thedate: string): boolean {
-    return this.compareDates(thedate, this.getCurrentDate, '<=')
+    return this.compareYyyyMmDd(thedate, this.getCurrentDate, '<=')
   }
 
   /**
@@ -1198,7 +1199,7 @@ export default class Directors extends Mixins(
    * @returns The date.
    */
   private earliestStandaloneCeaseDateToSet (director: DirectorIF): string {
-    if (this.compareDates(director.appointmentDate, this.earliestDateToSet, '>')) {
+    if (this.compareYyyyMmDd(director.appointmentDate, this.earliestDateToSet, '>')) {
       return director.appointmentDate
     } else {
       return this.earliestDateToSet

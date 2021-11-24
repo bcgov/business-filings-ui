@@ -12,7 +12,12 @@ export default {
     return state.tasks
   },
 
-  /** The current date (YYYY-MM-DD). */
+  /** The current JS Date object, which was refreshed when the dashload loaded. */
+  getCurrentJsDate (state: StateIF): Date {
+    return state.currentJsDate
+  },
+
+  /** The current date (YYYY-MM-DD), which was refreshed when the dashload loaded. */
   getCurrentDate (state: StateIF): string {
     return state.currentDate
   },

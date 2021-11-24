@@ -8,6 +8,9 @@ export default {
   setAuthRoles ({ commit }, authRoles: Array<string>) {
     commit('authRoles', authRoles)
   },
+  setCurrentJsDate ({ commit }, currentJsDate: Date) {
+    commit('currentJsDate', currentJsDate)
+  },
   setCurrentDate ({ commit }, currentDate: string) {
     commit('currentDate', currentDate)
   },

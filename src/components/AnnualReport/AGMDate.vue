@@ -151,6 +151,7 @@ export default class AgmDate extends Mixins(DateMixin) {
   @State arMinDate!: string
   @State arMaxDate!: string
   @Getter isCoop!: boolean
+  @Getter getCurrentDate!: string
 
   // Local properties.
   private dateText = '' // value in text field
@@ -182,7 +183,7 @@ export default class AgmDate extends Mixins(DateMixin) {
       !this.noAgm &&
       !!this.dateText &&
       (this.ARFilingYear === 2020) &&
-      this.compareDates(this.dateText, '2021-04-30', '>')
+      this.compareYyyyMmDd(this.dateText, '2021-04-30', '>')
     )
   }
 
@@ -197,7 +198,7 @@ export default class AgmDate extends Mixins(DateMixin) {
     // only show checkbox if 'today' is past Max AGM Date
     // where Max AGM Date is 'today' in the AR Filing Year
     // up to Apr 30 in the next year
-    return (this.compareDates(this.getCurrentDate, this.arMaxDate, '>'))
+    return (this.compareYyyyMmDd(this.getCurrentDate, this.arMaxDate, '>'))
   }
 
   /** Called when component is mounted. */

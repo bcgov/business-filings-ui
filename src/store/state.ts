@@ -4,6 +4,7 @@ export const state: StateIF = {
   keycloakRoles: [],
   authRoles: [],
   username: null,
+  currentJsDate: null,
   currentDate: null,
 
   businessEmail: null,

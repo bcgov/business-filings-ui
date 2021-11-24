@@ -875,7 +875,7 @@ export default {
           email: 'no_one@never.get',
           date: this.getCurrentDate, // NB: API will reassign this date according to its clock
           ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
-          effectiveDate: this.dateStringToApi(this.asOfDate)
+          effectiveDate: this.yyyyMmDdToApi(this.asOfDate)
         }
       }
 
@@ -1051,20 +1051,20 @@ export default {
 
       if (type === 'coa') {
         if (this.lastAddressChangeDate || this.lastAnnualReportDate) {
-          earliestAllowedDate = this.latestDate(this.lastAddressChangeDate, this.lastAnnualReportDate)
+          earliestAllowedDate = this.latestYyyyMmDd(this.lastAddressChangeDate, this.lastAnnualReportDate)
         } else {
           earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
         }
       }
       if (type === 'cod') {
         if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
-          earliestAllowedDate = this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+          earliestAllowedDate = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
         } else {
           earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
         }
       }
 
-      return (!!this.agmDate && this.compareDates(this.agmDate, earliestAllowedDate, '>='))
+      return (!!this.agmDate && this.compareYyyyMmDd(this.agmDate, earliestAllowedDate, '>='))
     },
 
     hasAction (director, action): boolean {

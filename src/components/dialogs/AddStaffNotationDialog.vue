@@ -91,6 +91,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   @Prop({ default: false }) readonly courtOrderNumberRequired: boolean
 
   @Getter getEntityIncNo!: string
+  @Getter getCurrentDate!: string
 
   /** The notation text. */
   private notation: string = ''

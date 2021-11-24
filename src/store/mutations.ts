@@ -8,6 +8,9 @@ export default {
   authRoles (state: StateIF, authRoles: Array<string>) {
     state.authRoles = authRoles
   },
+  currentJsDate (state: StateIF, currentJsDate: Date) {
+    state.currentJsDate = currentJsDate
+  },
   currentDate (state: StateIF, currentDate: string) {
     state.currentDate = currentDate
   },

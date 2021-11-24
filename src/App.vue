@@ -248,11 +248,11 @@ export default {
 
   methods: {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
-      'setBusinessPhoneExtension', 'setCurrentDate', 'setEntityName', 'setEntityType', 'setEntityStatus',
-      'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks', 'setFilings',
-      'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate', 'setNameRequest',
-      'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject', 'setEntityDissolutionDate',
-      'setEntityDissolutionType']),
+      'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
+      'setEntityStatus', 'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks',
+      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
+      'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject',
+      'setEntityDissolutionDate', 'setEntityDissolutionType']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -289,12 +289,13 @@ export default {
       this.dataLoaded = false
 
       // store today's date every time the dashboard is loaded
-      const serverDate = await this.getServerDate()
+      const jsDate: Date = await this.getServerDate()
       if (!this.isJestRunning) {
         // eslint-disable-next-line no-console
-        console.info(`It is currently ${this.dateToPacificDateTime(serverDate)}.`)
+        console.info(`It is currently ${this.dateToPacificDateTime(jsDate)}.`)
       }
-      this.setCurrentDate(this.dateToYyyyMmDd(serverDate))
+      this.setCurrentJsDate(jsDate)
+      this.setCurrentDate(this.dateToYyyyMmDd(jsDate))
 
       // check authorizations
       try {

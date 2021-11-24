@@ -790,7 +790,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
         enabled: task.enabled,
         order: task.order,
         nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BCOMP only
-        arDueDate: this.formatDateString(header.arMaxDate),
+        arDueDate: this.formatYyyyMmDd(header.arMaxDate),
         commentsLink: null // cannot add comments to Todo item
       }
       this.todoItems.push(item)
@@ -1409,7 +1409,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     // min date is the AR year on Jan 1
     // or the date of the previous AR (in case of 2 ARs held in the same year)
     // whichever is latest
-    return this.latestDate(`${ARFilingYear}-01-01`, this.lastAnnualReportDate)
+    return this.latestYyyyMmDd(`${ARFilingYear}-01-01`, this.lastAnnualReportDate)
   }
 
   /**
@@ -1421,7 +1421,7 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
     if (ARFilingYear === 2020) {
       // special case for 2020 ARs!
       // max date is _today_ or Oct 31, 2021, whichever is earliest
-      return this.earliestDate(this.getCurrentDate, '2021-10-31')
+      return this.earliestYyyyMmDd(this.getCurrentDate, '2021-10-31')
     } else if (ARFilingYear < this.getCurrentYear) {
       // for past ARs, max date is the following year on Apr 30
       return `${ARFilingYear + 1}-04-30`

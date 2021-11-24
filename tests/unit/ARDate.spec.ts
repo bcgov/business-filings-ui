@@ -31,7 +31,7 @@ describe('AnnualReport - UI', () => {
     const vm: any = wrapper.vm
 
     expect(vm.$el.querySelector('.ar-date').textContent).toContain('Sep 18, 2020')
-    expect(vm.$el.querySelector('.file-date').textContent).toContain(`Today (Jul 15, 2019)`)
+    expect(vm.$el.querySelector('.file-date').textContent).toContain('Today (Jul 15, 2019)')
 
     wrapper.destroy()
   })
