@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import ArDate from '@/components/AnnualReport/ARDate.vue'
+import MixinTester from './mixin-tester.vue'
 
 Vue.use(Vuetify)
 
@@ -15,7 +15,7 @@ describe('Date Mixin', () => {
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(ArDate, { store, vuetify })
+    const wrapper = shallowMount(MixinTester, { store, vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -41,37 +41,37 @@ describe('Date Mixin', () => {
     expect(vm.dateToYyyyMmDd(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01')
   })
 
-  it('returns correct values for compareDates()', () => {
-    expect(vm.compareDates(null, '2020-01-01', '<')).toBe(true)
-    expect(vm.compareDates('2019-12-31', null, '<')).toBe(true)
-    expect(vm.compareDates('2019-12-31', '2020-01-01', null)).toBe(true)
-    expect(vm.compareDates('2019-12-31', '2020-01-01', '<')).toBe(true)
-    expect(vm.compareDates('2020-01-01', '2019-12-31', '<')).toBe(false)
-    expect(vm.compareDates('2019-12-31', '2020-01-01', '>')).toBe(false)
-    expect(vm.compareDates('2020-01-01', '2019-12-31', '>')).toBe(true)
-    expect(vm.compareDates('2019-12-31', '2020-01-01', '==')).toBe(false)
+  it('returns correct values for compareYyyyMmDd()', () => {
+    expect(vm.compareYyyyMmDd(null, '2020-01-01', '<')).toBe(true)
+    expect(vm.compareYyyyMmDd('2019-12-31', null, '<')).toBe(true)
+    expect(vm.compareYyyyMmDd('2019-12-31', '2020-01-01', null)).toBe(true)
+    expect(vm.compareYyyyMmDd('2019-12-31', '2020-01-01', '<')).toBe(true)
+    expect(vm.compareYyyyMmDd('2020-01-01', '2019-12-31', '<')).toBe(false)
+    expect(vm.compareYyyyMmDd('2019-12-31', '2020-01-01', '>')).toBe(false)
+    expect(vm.compareYyyyMmDd('2020-01-01', '2019-12-31', '>')).toBe(true)
+    expect(vm.compareYyyyMmDd('2019-12-31', '2020-01-01', '==')).toBe(false)
   })
 
-  it('returns correct values for earliestDate()', () => {
-    expect(vm.earliestDate(null, null)).toBeNull()
-    expect(vm.earliestDate(null, '2020-01-01')).toBe('2020-01-01')
-    expect(vm.earliestDate('2019-12-31', null)).toBe('2019-12-31')
-    expect(vm.earliestDate('2019-12-31', '2020-01-01')).toBe('2019-12-31')
-    expect(vm.earliestDate('2020-01-01', '2019-12-31')).toBe('2019-12-31')
+  it('returns correct values for earliestYyyyMmDd()', () => {
+    expect(vm.earliestYyyyMmDd(null, null)).toBeNull()
+    expect(vm.earliestYyyyMmDd(null, '2020-01-01')).toBe('2020-01-01')
+    expect(vm.earliestYyyyMmDd('2019-12-31', null)).toBe('2019-12-31')
+    expect(vm.earliestYyyyMmDd('2019-12-31', '2020-01-01')).toBe('2019-12-31')
+    expect(vm.earliestYyyyMmDd('2020-01-01', '2019-12-31')).toBe('2019-12-31')
   })
 
-  it('returns correct values for latestDate()', () => {
-    expect(vm.latestDate(null, null)).toBeNull()
-    expect(vm.latestDate(null, '2020-01-01')).toBe('2020-01-01')
-    expect(vm.latestDate('2019-12-31', null)).toBe('2019-12-31')
-    expect(vm.latestDate('2019-12-31', '2020-01-01')).toBe('2020-01-01')
-    expect(vm.latestDate('2020-01-01', '2019-12-31')).toBe('2020-01-01')
+  it('returns correct values for latestYyyyMmDd()', () => {
+    expect(vm.latestYyyyMmDd(null, null)).toBeNull()
+    expect(vm.latestYyyyMmDd(null, '2020-01-01')).toBe('2020-01-01')
+    expect(vm.latestYyyyMmDd('2019-12-31', null)).toBe('2019-12-31')
+    expect(vm.latestYyyyMmDd('2019-12-31', '2020-01-01')).toBe('2020-01-01')
+    expect(vm.latestYyyyMmDd('2020-01-01', '2019-12-31')).toBe('2020-01-01')
   })
 
-  it('returns correct values for formatDateString()', () => {
-    expect(vm.formatDateString(null)).toBeNull()
-    expect(vm.formatDateString('123456789')).toBeNull()
-    expect(vm.formatDateString('2020-01-01')).toBe('Jan 1, 2020')
+  it('returns correct values for formatYyyyMmDd()', () => {
+    expect(vm.formatYyyyMmDd(null)).toBeNull()
+    expect(vm.formatYyyyMmDd('123456789')).toBeNull()
+    expect(vm.formatYyyyMmDd('2020-01-01')).toBe('Jan 1, 2020')
   })
 
   it('returns correct values for apiToPacificDateTime()', () => {
@@ -80,18 +80,29 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: fix so this works in GH CI action
-  xit('returns correct values for dateStringToApi()', () => {
-    expect(vm.dateStringToApi('2021-01-01')).toBe('2021-01-01T08:00:00+00:00') // PST
-    expect(vm.dateStringToApi('2021-07-01')).toBe('2021-07-01T07:00:00+00:00') // PDT
+  xit('returns correct values for yyyyMmDdToApi()', () => {
+    expect(vm.yyyyMmDdToApi('2021-01-01')).toBe('2021-01-01T08:00:00+00:00') // PST
+    expect(vm.yyyyMmDdToApi('2021-07-01')).toBe('2021-07-01T07:00:00+00:00') // PDT
   })
 
   it('returns correct values for daysFromToday()', () => {
     // init store
-    store.state.currentDate = '2021-01-20'
+    store.state.currentJsDate = new Date('2021-11-23T12:00:00')
 
     expect(vm.daysFromToday(null)).toBeNaN()
-    expect(vm.daysFromToday('2021-01-19')).toBe(-1) // yesterday
-    expect(vm.daysFromToday('2021-01-20')).toBe(0) // today
-    expect(vm.daysFromToday('2021-01-21')).toBe(1) // tomorrow
+    expect(vm.daysFromToday(new Date(2021, 10, 22))).toBe(-1) // yesterday
+    expect(vm.daysFromToday(new Date(2021, 10, 23, 0, 0, 0, 0))).toBe(0) // today
+    expect(vm.daysFromToday(new Date(2021, 10, 23, 23, 59, 59, 999))).toBe(0) // today
+    expect(vm.daysFromToday(new Date(2021, 10, 24))).toBe(1) // tomorrow
+  })
+
+  it('returns correct values for yyyyMmDdToDate()', () => {
+    // init store
+    store.state.currentJsDate = new Date('2021-11-23T12:00:00')
+
+    expect(vm.yyyyMmDdToDate(null)).toBeNull()
+    expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
+    expect(vm.yyyyMmDdToDate('2021-01-01')).toEqual(new Date(2021, 0, 1)) // PST
+    expect(vm.yyyyMmDdToDate('2021-07-01')).toEqual(new Date(2021, 6, 1)) // PDT
   })
 })

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import EntityInfo from '@/components/EntityInfo.vue'
+import MixinTester from './mixin-tester.vue'
 
 Vue.use(Vuetify)
 
@@ -15,7 +15,7 @@ describe('Enum Mixin', () => {
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(MixinTester, { store, vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })

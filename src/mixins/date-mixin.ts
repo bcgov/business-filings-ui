@@ -7,7 +7,7 @@ const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 /** Mixin that provides some useful date utilities. */
 @Component({})
 export default class DateMixin extends Vue {
-  @Getter getCurrentDate!: string
+  @Getter getCurrentJsDate!: Date
 
   /**
    * Fetches and returns the web server's current date (in UTC).
@@ -33,6 +33,41 @@ export default class DateMixin extends Vue {
   }
 
   /**
+   * Creates and returns a new Date object in UTC, given parameters in Pacific timezone.
+   * (This works regardless of user's local clock/timezone.)
+   * @example "2021, 0, 1, 0, 0" -> "2021-01-01T08:00:00.000Z"
+   * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z"
+   */
+  createUtcDate (year: number, month: number, day: number, hours: number = 0, minutes: number = 0): Date {
+    // use date from server to create a new date in Pacific timezone
+    // (this sets the correct tz offset in the new date)
+    const date = new Date(this.getCurrentJsDate.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
+
+    // update all date and time fields
+    date.setFullYear(year, month, day)
+    date.setHours(hours, minutes, 0, 0) // zero out seconds and milliseconds
+
+    return date
+  }
+
+  /**
+   * Converts a date string (YYYY-MM-DD) to a Date object at 12:00:00 am Pacific time.
+   * @example 2021-11-22 -> 2021-11-22T08:00:00.00Z
+   */
+  yyyyMmDdToDate (dateStr: string): Date {
+    // safety checks
+    if (!dateStr) return null
+    if (dateStr.length !== 10) return null
+
+    const split = dateStr.split('-')
+    const year = +split[0]
+    const month = +split[1]
+    const day = +split[2]
+
+    return this.createUtcDate(year, (month - 1), day)
+  }
+
+  /**
    * Converts a Date object to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
    * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
@@ -41,7 +76,7 @@ export default class DateMixin extends Vue {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    let dateStr = date.toLocaleDateString('en-CA', {
+    const dateStr = date.toLocaleDateString('en-CA', {
       timeZone: 'America/Vancouver',
       month: 'numeric', // 12
       day: 'numeric', // 31
@@ -55,7 +90,7 @@ export default class DateMixin extends Vue {
    * Converts a date string (YYYY-MM-DD) to a formatted date string (Month Day, Year).
    * @example "2020-01-01" -> "Jan 1, 2020"
    */
-  formatDateString (dateStr: string): string {
+  formatYyyyMmDd (dateStr: string): string {
     // safety checks
     if (!dateStr) return null
     if (dateStr.length !== 10) return null
@@ -72,15 +107,18 @@ export default class DateMixin extends Vue {
 
   /**
    * Converts a Date object to a date string (Month Day, Year) in Pacific timezone.
+   * @param longMonth whether to show long month name (eg, December vs Dec)
+   * @param showWeekday whether to show the weekday name (eg, Thursday)
    * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020"
    * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021"
    */
-  dateToPacificDate (date: Date, longMonth = false): string {
+  dateToPacificDate (date: Date, longMonth = false, showWeekday = false): string {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     let dateStr = date.toLocaleDateString('en-CA', {
       timeZone: 'America/Vancouver',
+      weekday: showWeekday ? 'long' : undefined, // Thursday or nothing
       month: longMonth ? 'long' : 'short', // December or Dec
       day: 'numeric', // 31
       year: 'numeric' // 2020
@@ -88,6 +126,7 @@ export default class DateMixin extends Vue {
 
     // remove period after month
     dateStr = dateStr.replace('.', '')
+
     return dateStr
   }
 
@@ -120,6 +159,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021 at 12:00 pm Pacific time"
    */
   dateToPacificDateTime (date: Date): string {
+    // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     const dateStr = this.dateToPacificDate(date, true)
@@ -133,7 +173,9 @@ export default class DateMixin extends Vue {
    * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
    */
   dateToApi (date: Date): string {
-    if (!date) return null
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
     // replace "Zulu" timezone abbreviation with UTC offset
     return date.toISOString().replace('Z', '+00:00')
   }
@@ -143,9 +185,11 @@ export default class DateMixin extends Vue {
    * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
   apiToDate (dateTimeString: string): Date {
-    if (!dateTimeString) return null
+    if (!dateTimeString) return null // safety check
+
     // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
     dateTimeString = dateTimeString.slice(0, 19) + 'Z'
+
     return new Date(dateTimeString)
   }
 
@@ -203,7 +247,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01" -> 2021-01-01T08:00:00+00:00" // PST
    * @example "2021-07-01" -> 2021-07-01T07:00:00+00:00" // PDT
    */
-  dateStringToApi (date: string): string {
+  yyyyMmDdToApi (date: string): string {
     // safety check
     if (date?.length !== 10) return null
 
@@ -225,13 +269,13 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Compares two simple date strings (YYYY-MM-DD).
+   * Compares two date strings (YYYY-MM-DD).
    * @param date1 the first date to compare
    * @param date2 the second date to compare
    * @param operator the operator to use for comparison
    * @returns the result of the comparison (true or false)
    */
-  compareDates (date1: string, date2: string, operator: string): boolean {
+  compareYyyyMmDd (date1: string, date2: string, operator: string): boolean {
     // safety check
     if (!date1 || !date2 || !operator) return true
 
@@ -243,11 +287,11 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Returns the earliest of two simple date strings (YYYY-MM-DD).
+   * Returns the earliest of two date strings (YYYY-MM-DD).
    * @param date1 first date
    * @param date2 second date
    */
-  earliestDate (date1: string, date2: string): string {
+  earliestYyyyMmDd (date1: string, date2: string): string {
     // safety check
     if (!date1 && !date2) return null
 
@@ -255,15 +299,15 @@ export default class DateMixin extends Vue {
     if (!date1) return date2
     if (!date2) return date1
 
-    return (this.compareDates(date1, date2, '<') ? date1 : date2)
+    return (this.compareYyyyMmDd(date1, date2, '<') ? date1 : date2)
   }
 
   /**
-   * Returns the latest of two simple date strings (YYYY-MM-DD).
+   * Returns the latest of two date strings (YYYY-MM-DD).
    * @param date1 first date
    * @param date2 second date
    */
-  latestDate (date1: string, date2: string): string {
+  latestYyyyMmDd (date1: string, date2: string): string {
     // safety check
     if (!date1 && !date2) return null
 
@@ -271,23 +315,30 @@ export default class DateMixin extends Vue {
     if (!date1) return date2
     if (!date2) return date1
 
-    return (this.compareDates(date1, date2, '>') ? date1 : date2)
+    return (this.compareYyyyMmDd(date1, date2, '>') ? date1 : date2)
   }
 
   /**
-   * The number of days that 'date' is from today.
+   * Returns the number of days that 'date' is from today in Pacific timezone.
    * @returns -1 for yesterday
    * @returns 0 for today
    * @returns +1 for tomorrow
    * @returns NaN in case of error
    */
-  daysFromToday (date: string): number {
+  daysFromToday (date: Date): number {
     // safety check
-    if (!date) return NaN
+    if (!isDate(date) || isNaN(date.getTime())) return NaN
 
-    // calculate difference between start of "today" and start of "date" (in local time)
-    const todayLocalMs = new Date(this.getCurrentDate).setHours(0, 0, 0, 0)
-    const dateLocalMs = new Date(date).setHours(0, 0, 0, 0)
-    return Math.round((dateLocalMs - todayLocalMs) / MS_IN_A_DAY)
+    // set "date" to 12:00 am Pacific
+    date.setHours(0, 0, 0, 0)
+
+    // compute "today" at 12:00 am Pacific
+    const today = this.getCurrentJsDate
+    today.setHours(0, 0, 0, 0)
+
+    // calculate difference between "date" and "today"
+    // (result should be a whole number)
+    const diff = (date.valueOf() - today.valueOf()) / MS_IN_A_DAY
+    return diff
   }
 }

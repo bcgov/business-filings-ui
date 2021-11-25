@@ -2,9 +2,9 @@
   <v-card flat class="ar-date-container" v-if="isBComp">
     <div class="timeline">
       <label>Annual Report Date</label>
-      <span class="date ar-date">{{formatDateString(nextARDate)}}</span>
+      <span class="date ar-date">{{formatYyyyMmDd(nextARDate)}}</span>
       <label>Filing Date</label>
-      <span class="date file-date">Today ({{formatDateString(getCurrentDate)}})</span>
+      <span class="date file-date">Today ({{formatYyyyMmDd(getCurrentDate)}})</span>
     </div>
   </v-card>
 </template>
@@ -21,6 +21,7 @@ import { DateMixin } from '@/mixins'
 export default class ArDate extends Mixins(DateMixin) {
   @State nextARDate!: string
   @Getter isBComp!: boolean
+  @Getter getCurrentDate!: string
 }
 </script>
 

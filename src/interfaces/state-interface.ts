@@ -7,7 +7,8 @@ export interface StateIF {
   keycloakRoles: Array<string>
   authRoles: Array<string>
   username: string
-  currentDate: string // 'today' as YYYY-MM-DD
+  currentJsDate: Date // 'now' as of dashboard loading in UTC
+  currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
 
   // entity info
   businessEmail: string

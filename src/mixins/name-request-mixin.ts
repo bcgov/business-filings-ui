@@ -1,6 +1,6 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { NameRequestStates, NrNameStates } from '@/enums'
+import { NameRequestStates } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 
 // Mixins
@@ -19,10 +19,11 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     return Boolean(nr &&
       nr.state &&
       nr.expirationDate &&
-      nr.names?.length > 0 &&
+      !!this.getNrApprovedName(nr) &&
       // workaround for old or new property name
       (nr.nrNum || nr.nrNumber) &&
-      nr.legalType)
+      nr.legalType
+    )
   }
 
   /**
@@ -85,7 +86,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
         lastName: nr.applicants.lastName
       },
       details: {
-        approvedName: this.getApprovedName(nr) || '',
+        approvedName: this.getNrApprovedName(nr) || '',
         consentFlag: nr.consentFlag,
         expirationDate: nr.expirationDate,
         status: nr.state
@@ -97,9 +98,10 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * Returns the Name Request's approved name (or undefined or null if not found).
    * @param nr the name request response payload
    */
-  getApprovedName (nr: any): string {
+  getNrApprovedName (nr: any): string {
     if (nr?.names?.length > 0) {
-      return nr.names.find(name => [NrNameStates.APPROVED, NrNameStates.CONDITION].includes(name.state)).name
+      return nr.names
+        .find(name => [NameRequestStates.APPROVED, NameRequestStates.CONDITION].includes(name.state))?.name
     }
     return null // should never happen
   }

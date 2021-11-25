@@ -68,6 +68,7 @@ export default class CodDate extends Mixins(DateMixin) {
   @State entityFoundingDate!: Date
   @State lastDirectorChangeDate!: string
   @Getter isBComp!: boolean
+  @Getter getCurrentDate!: string
 
   // Local properties.
   private date: string = '' // bound to date picker
@@ -97,7 +98,7 @@ export default class CodDate extends Mixins(DateMixin) {
       // For Coops, use the latest of the following dates:
       // - the last COD filing in filing history
       // - the last AR filing in filing history
-      date = this.latestDate(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+      date = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
     } else {
       // If the entity has no filing history then use the founding date.
       date = this.dateToYyyyMmDd(this.entityFoundingDate)

@@ -582,7 +582,7 @@ export default {
           certifiedBy: this.certifiedBy || '',
           email: 'no_one@never.get',
           date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-          effectiveDate: this.dateStringToApi(this.coaDate)
+          effectiveDate: this.yyyyMmDdToApi(this.coaDate)
         }
       }
 

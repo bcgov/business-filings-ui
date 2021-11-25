@@ -1,21 +1,29 @@
 <template>
   <div class="name-request-info">
-    <v-row>
-      <v-col cols="4">
-        <ul>
+    <v-row no-gutters>
+      <v-col cols="6" class="pl-8">
+        <ul class="ma-0 pa-0">
           <li>
-            <label>
-              <strong>Name Request</strong>
-            </label>
+            <label class="hdr">Name Request</label>
           </li>
-          <li>Entity Type: {{ entityTypeDescription() }}</li>
-          <li>Request Type: {{ requestType() }}</li>
-          <li>Expiry Date: {{ formattedExpirationDate() }}</li>
+          <li class="mt-4">
+            <span class="key">Entity Type:</span>
+            <span class="val">{{ entityTypeDescription() }}</span>
+          </li>
+          <li>
+            <span class="key">Request Type:</span>
+            <span class="val">{{ requestType() }}</span>
+          </li>
+          <li>
+            <span class="key">Expiry Date:</span>
+            <span class="val">{{ formattedExpirationDate() }}</span>
+          </li>
           <li>
             <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED ||
                           nameRequestDetails.status === NameRequestStates.CONDITIONAL"
               color="green" class="nr-status-icon">mdi-check</v-icon>
-            Status: {{ nameRequestDetails.status | capitalize }}
+            <span class="key">Status:</span>
+            <span class="val">{{ nameRequestDetails.status | capitalize }}</span>
           </li>
           <li id="condition-consent">
             <v-icon v-if="conditionConsent === NOT_REQUIRED_STATE ||
@@ -24,21 +32,33 @@
               color="green" class="nr-status-icon">mdi-check</v-icon>
             <v-icon v-if="conditionConsent === NOT_RECEIVED_STATE" color="red"
               class="nr-status-icon">mdi-close</v-icon>
-            Condition/Consent: {{ conditionConsent }}
+            <span class="key">Condition/Consent:</span>
+            <span class="val">{{ conditionConsent }}</span>
           </li>
         </ul>
       </v-col>
-      <v-col id="name-request-applicant-info" cols="8">
+
+      <v-col id="name-request-applicant-info" cols="6">
         <ul>
           <li>
-            <label>
-              <strong>Name Request Applicant</strong>
-            </label>
+            <label class="hdr">Name Request Applicant</label>
           </li>
-          <li>Name: {{ applicantName() }}</li>
-          <li>Address: {{ applicantAddress() }}</li>
-          <li>Email: {{ nameRequestApplicant.emailAddress }}</li>
-          <li>Phone: {{ nameRequestApplicant.phoneNumber | VMask("(###) ###-####") }}</li>
+          <li class="mt-4">
+            <span class="key">Name:</span>
+            <span class="val">{{ applicantName() }}</span>
+          </li>
+          <li>
+            <span class="key">Address:</span>
+            <span class="val">{{ applicantAddress() }}</span>
+          </li>
+          <li>
+            <span class="key">Email:</span>
+            <span class="val">{{ nameRequestApplicant.emailAddress }}</span>
+          </li>
+          <li>
+            <span class="key">Phone:</span>
+            <span class="val">{{ nameRequestApplicant.phoneNumber | VMask("(###) ###-####") }}</span>
+          </li>
         </ul>
       </v-col>
     </v-row>
@@ -76,9 +96,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   @Prop() readonly nameRequest: any
 
   private parsedNameRequest: NameRequestIF
-
-  private nameRequestDetails:NameRequestDetailsIF
-
+  private nameRequestDetails: NameRequestDetailsIF
   private nameRequestApplicant: NameRequestApplicantIF
 
   created (): void {
@@ -101,7 +119,8 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 
   /** Return formatted expiration date */
   private formattedExpirationDate (): string {
-    return this.formatDateString(this.nameRequestDetails.expirationDate)
+    const date = new Date(this.nameRequestDetails.expirationDate)
+    return this.dateToPacificDateTime(date)
   }
 
   /** Return condition/consent string */
@@ -160,18 +179,29 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 @import '@/assets/styles/theme.scss';
 
 ul {
-  margin: 0;
-  padding: 0;
   list-style-type: none;
-}
 
-.name-request-info {
-  font-size: $px-15;
-  margin-left: 0.875rem
+  .hdr {
+    font-size: $px-16;
+    font-weight: bold;
+    color: $gray9;
+  }
+
+  .key {
+    font-size: $px-15;
+    font-weight: bold;
+    color: $gray9;
+  }
+
+  .val {
+    padding-left: 4px;
+    font-size: $px-15;
+    color: $gray7;
+  }
 }
 
 .nr-status-icon {
-  margin-left: -2rem;
-  margin-right: 0.2rem;
+  margin-left: -28px;
+  margin-right: 4px;
 }
 </style>
