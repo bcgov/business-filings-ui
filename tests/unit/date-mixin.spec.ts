@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import ArDate from '@/components/AnnualReport/ARDate.vue'
+import MixinTester from './mixin-tester.vue'
 
 Vue.use(Vuetify)
 
@@ -15,7 +15,7 @@ describe('Date Mixin', () => {
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(ArDate, { store, vuetify })
+    const wrapper = shallowMount(MixinTester, { store, vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -97,6 +97,9 @@ describe('Date Mixin', () => {
   })
 
   it('returns correct values for yyyyMmDdToDate()', () => {
+    // init store
+    store.state.currentJsDate = new Date('2021-11-23T12:00:00')
+
     expect(vm.yyyyMmDdToDate(null)).toBeNull()
     expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
     expect(vm.yyyyMmDdToDate('2021-01-01')).toEqual(new Date(2021, 0, 1)) // PST

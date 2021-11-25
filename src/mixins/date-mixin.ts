@@ -107,15 +107,18 @@ export default class DateMixin extends Vue {
 
   /**
    * Converts a Date object to a date string (Month Day, Year) in Pacific timezone.
+   * @param longMonth whether to show long month name (eg, December vs Dec)
+   * @param showWeekday whether to show the weekday name (eg, Thursday)
    * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020"
    * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021"
    */
-  dateToPacificDate (date: Date, longMonth = false): string {
+  dateToPacificDate (date: Date, longMonth = false, showWeekday = false): string {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     let dateStr = date.toLocaleDateString('en-CA', {
       timeZone: 'America/Vancouver',
+      weekday: showWeekday ? 'long' : undefined, // Thursday or nothing
       month: longMonth ? 'long' : 'short', // December or Dec
       day: 'numeric', // 31
       year: 'numeric' // 2020
@@ -123,6 +126,7 @@ export default class DateMixin extends Vue {
 
     // remove period after month
     dateStr = dateStr.replace('.', '')
+
     return dateStr
   }
 
@@ -181,9 +185,11 @@ export default class DateMixin extends Vue {
    * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
   apiToDate (dateTimeString: string): Date {
-    if (!dateTimeString) return null
+    if (!dateTimeString) return null // safety check
+
     // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
     dateTimeString = dateTimeString.slice(0, 19) + 'Z'
+
     return new Date(dateTimeString)
   }
 
