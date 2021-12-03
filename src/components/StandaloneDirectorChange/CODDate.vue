@@ -40,7 +40,7 @@
             Date must be in format YYYY/MM/DD.
           </span>
           <span v-else-if="!$v.dateFormatted.isValidCodDate">
-            Please enter a month between {{formatDate(minDate)}} and {{formatDate(maxDate)}}.
+            Please enter a day between {{formatDate(minDate, false)}} and {{formatDate(maxDate, false)}}.
           </span>
         </div>
       </div>
@@ -119,8 +119,8 @@ export default class CodDate extends Mixins(DateMixin) {
    * Local helper to change date from YYYY-MM-DD to YYYY/MM/DD.
    * @returns The formatted date.
    */
-  private formatDate (date: string): string {
-    if (!this.isValidDate(date, '-')) return ''
+  private formatDate (date: string, validate = true): string {
+    if (validate && !this.isValidDate(date, '-')) return ''
     const [year, month, day] = date.split('-')
     return `${year}/${month}/${day}`
   }
