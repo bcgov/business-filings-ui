@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -41,7 +41,8 @@
     "vue2-filters": "^0.10.0",
     "vuelidate": "^0.7.5",
     "vuetify": "^2.3.9",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "webpack-remove-serviceworker-plugin": "^1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
@@ -51,7 +52,6 @@
     "@typescript-eslint/parser": "^2.34.0",
     "@vue/cli-plugin-babel": "4.4.1",
     "@vue/cli-plugin-eslint": "4.2.3",
-    "@vue/cli-plugin-pwa": "4.2.3",
     "@vue/cli-plugin-typescript": "4.2.3",
     "@vue/cli-plugin-unit-jest": "4.2.3",
     "@vue/cli-service": "4.2.3",
