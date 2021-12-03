@@ -10,7 +10,6 @@ import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import { fetchConfig, initLdClient } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
-import '@/registerServiceWorker'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
 import '@/assets/styles/overrides.scss'
