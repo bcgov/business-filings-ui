@@ -109,42 +109,75 @@ describe('COD Date - COOPs', () => {
     expect(valids[1]).toEqual([true])
   })
 
-  it('invalidates the component when entered month is after Max Date', () => {
+  it('invalidates the component when entered date is after Max Date', () => {
     wrapper = mount(CodDate, {
       store,
       vuetify,
       computed: {
         minDate () {
-          return '2019-01-01'
+          return '2019-05-05'
         },
         maxDate () {
-          return '2019-05-05'
+          return '2019-05-10'
+        },
+        codDateRules () {
+          return []
         }
       }
     })
 
-    wrapper.setData({ dateFormatted: '2019/11/11' })
-    wrapper.vm.$v.$touch()
+    // force all dates to appear valid
+    jest.spyOn((wrapper.vm as any), 'isValidDate').mockImplementation(() => true)
+
+    // verify initial validators and error message
+    expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(false)
+    expect(wrapper.vm.$v.dateFormatted.isValidFormat).toBe(false)
     expect(wrapper.vm.$v.dateFormatted.isValidCodDate).toBe(false)
+    expect(wrapper.find('.validationErrorInfo').exists()).toBe(false)
+
+    // set a date after Max Date
+    wrapper.setData({ date: '2019-05-11' })
+
+    // verify validators and error message
+    expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(true)
+    expect(wrapper.vm.$v.dateFormatted.isValidFormat).toBe(true)
+    expect(wrapper.vm.$v.dateFormatted.isValidCodDate).toBe(false)
+    expect(wrapper.find('.validationErrorInfo > span').text())
+      .toContain('Please enter a day between 2019/05/05 and 2019/05/10.')
   })
 
-  it('invalidates the component when entered month is before Min Date', () => {
+  it('invalidates the component when entered date is before Min Date', () => {
     wrapper = mount(CodDate, {
       store,
       vuetify,
       computed: {
         minDate () {
-          return '2019-01-01'
+          return '2019-05-05'
         },
         maxDate () {
-          return '2019-05-05'
+          return '2019-05-10'
         }
       }
     })
 
-    wrapper.setData({ dateFormatted: '2018/11/11' })
-    wrapper.vm.$v.$touch()
+    // force all dates to appear valid
+    jest.spyOn((wrapper.vm as any), 'isValidDate').mockImplementation(() => true)
+
+    // verify initial validators and error message
+    expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(false)
+    expect(wrapper.vm.$v.dateFormatted.isValidFormat).toBe(false)
     expect(wrapper.vm.$v.dateFormatted.isValidCodDate).toBe(false)
+    expect(wrapper.find('.validationErrorInfo').exists()).toBe(false)
+
+    // set a date before Min Date
+    wrapper.setData({ date: '2019-05-04' })
+
+    // verify validators and error message
+    expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(true)
+    expect(wrapper.vm.$v.dateFormatted.isValidFormat).toBe(true)
+    expect(wrapper.vm.$v.dateFormatted.isValidCodDate).toBe(false)
+    expect(wrapper.find('.validationErrorInfo > span').text())
+      .toContain('Please enter a day between 2019/05/05 and 2019/05/10.')
   })
 })
 
