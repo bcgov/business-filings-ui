@@ -96,14 +96,21 @@
 
               <!-- Download Summary -->
               <span v-if="showDownloadSummaryBtn">
-                <v-btn
-                  small text color="primary"
-                  id="download-summary-button"
-                  @click="downloadBusinessSummary()"
-                >
-                  <v-icon medium>mdi-file-pdf-outline</v-icon>
-                  <span>Download Summary</span>
-                </v-btn>
+                <v-tooltip top content-class="top-tooltip">
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      small text color="primary"
+                      id="download-summary-button"
+                      @click="downloadBusinessSummary()"
+                      v-on="on"
+                    >
+                      <img src="@/assets/images/business_summary_icon.svg" alt="" class="pa-1">
+                      <span class="font-13 ml-1">Business Summary</span>
+                    </v-btn>
+                  </template>
+                  View and download a summary of information about the {{ entityTitle }}, including office addresses
+                  and directors.
+                </v-tooltip>
               </span>
             </template>
           </menu>
