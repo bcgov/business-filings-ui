@@ -27,6 +27,7 @@ export interface StateIF {
   lastAnnualReportDate: string // YYYY-MM-DD
   lastAddressChangeDate: string // YYYY-MM-DD
   lastDirectorChangeDate: string // YYYY-MM-DD
+  isHistorical: boolean
 
   // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only

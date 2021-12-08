@@ -22,6 +22,7 @@ export const state: StateIF = {
   lastAnnualReportDate: null,
   lastAddressChangeDate: null,
   lastDirectorChangeDate: null,
+  isHistorical: false, // *** TODO: get from business object instead
 
   nextARDate: null,
   ARFilingYear: null,

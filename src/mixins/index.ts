@@ -1,3 +1,4 @@
+import AllowableActionsMixin from './allowable-actions-mixin'
 import AuthApiMixin from './auth-api-mixin'
 import CommonMixin from './common-mixin'
 import CountriesProvincesMixin from './countries-provinces-mixin'
@@ -11,6 +12,7 @@ import PayApiMixin from './pay-api-mixin'
 import ResourceLookupMixin from './resource-lookup-mixin'
 
 export {
+  AllowableActionsMixin,
   AuthApiMixin,
   CommonMixin,
   CountriesProvincesMixin,

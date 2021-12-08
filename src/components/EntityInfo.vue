@@ -31,7 +31,7 @@
 
           <menu class="mt-4 ml-n4">
             <!-- Staff Comments -->
-            <span v-if="businessId && isRoleStaff">
+            <span v-if="businessId && isAllowed(AllowableActions.ADD_STAFF_COMMENT)">
               <StaffComments
                 :axios="axios"
                 :businessId="businessId"
@@ -46,7 +46,7 @@
 
             <template v-else>
               <!-- View and Change Company Information -->
-              <span v-if="showViewChangeInfoBtn">
+              <span v-if="isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)">
                 <v-btn
                   small text color="primary"
                   id="company-information-button"
@@ -73,7 +73,7 @@
               </span>
 
               <!-- Dissolve Company -->
-              <span v-if="showDissolutionBtn">
+              <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
                 <v-btn
                   small text color="primary"
                   id="dissolution-button"
@@ -94,8 +94,8 @@
                 </v-btn>
               </span>
 
-              <!-- Download Summary -->
-              <span v-if="showDownloadSummaryBtn">
+              <!-- Download Business Summary -->
+              <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
                 <v-tooltip top content-class="top-tooltip">
                   <template v-slot:activator="{ on }">
                     <v-btn
@@ -141,12 +141,12 @@
               <dt class="mr-2">Email:</dt>
               <dd
                 id="entity-business-email"
-                :class="isHistorical ? 'pointer-events-none' : 'cursor-pointer'"
+                :class="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE) ? 'cursor-pointer' : 'pointer-events-none'"
                 @click="editBusinessProfile()"
               >
                 <span>{{businessEmail || 'Not Available'}}</span>
                 <v-btn
-                  v-if="!isHistorical"
+                  v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
                   small text color="primary"
                   id="change-email-button"
                   :disabled="hasBlocker"
@@ -162,12 +162,12 @@
               <dt class="mr-2">Phone:</dt>
               <dd
                 id="entity-business-phone"
-                :class="isHistorical ? 'pointer-events-none' : 'cursor-pointer'"
+                :class="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE) ? 'cursor-pointer' : 'pointer-events-none'"
                 @click="editBusinessProfile()"
               >
                 <span>{{fullPhoneNumber || 'Not Available'}}</span>
                 <v-btn
-                  v-if="!isHistorical"
+                  v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
                   small text color="primary"
                   id="change-phone-button"
                   :disabled="hasBlocker"
@@ -187,9 +187,8 @@
 <script lang="ts">
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
-import { CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { EntityStatus, CorpTypeCd, Routes, DissolutionTypes } from '@/enums'
+import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
+import { AllowableActions, EntityStatus, CorpTypeCd, Routes, DissolutionTypes } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -197,7 +196,7 @@ import axios from '@/axios-auth'
 @Component({
   components: { StaffComments }
 })
-export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin) {
+export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin) {
   @State ARFilingYear!: string
   @State entityStatus!: EntityStatus
   @State entityBusinessNo!: string
@@ -222,26 +221,12 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
   @Getter isNotInCompliance!: boolean
   @Getter isHistorical!: boolean
 
-  readonly axios = axios // for template
+  // enums for template
+  readonly axios = axios
+  readonly AllowableActions = AllowableActions
 
   /** Whether to show the hover style. */
   private showHoverStyle = false
-
-  /** True if View and Change Company Info button should be rendered. */
-  private get showViewChangeInfoBtn (): boolean {
-    return (this.isBComp || this.isBcCompany || this.isUlc)
-  }
-
-  /** True if Download Summary button should be rendered. */
-  private get showDownloadSummaryBtn (): boolean {
-    return getFeatureFlag('download-summary-enabled')
-  }
-
-  /** True if Dissolution button should be rendered. */
-  private get showDissolutionBtn (): boolean {
-    // is the current entity type enabled for dissolutions?
-    return getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType)
-  }
 
   /** The Business ID string. */
   private get businessId (): string {
@@ -316,10 +301,7 @@ export default class EntityInfo extends Mixins(CommonMixin, DateMixin, EnumMixin
 
   /** Redirects the user to the Auth UI to update their business profile. */
   private editBusinessProfile (): void {
-    // safety checks
-    if (!this.hasBlocker && !this.isHistorical) {
-      window.location.assign(this.businessProfileUrl) // assume URL is always reachable
-    }
+    window.location.assign(this.businessProfileUrl) // assume URL is always reachable
   }
 
   /** Downloads business summary PDF. */

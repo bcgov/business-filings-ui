@@ -48,17 +48,17 @@
                 </template>
                 <v-list dense>
                     <v-list-item-group color="primary">
-                        <v-list-item @click="showRegistrarsNotationDialog()">
+                        <v-list-item @click="showRegistrarsNotationDialog()" :disabled="disabled">
                             <v-list-item-title>
                                 <span class="app-blue">Add Registrar's Notation</span>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="showRegistrarsOrderDialog()">
+                        <v-list-item @click="showRegistrarsOrderDialog()" :disabled="disabled">
                             <v-list-item-title>
                                 <span class="app-blue">Add Registrar's Order</span>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="showCourtOrderDialog()">
+                        <v-list-item @click="showCourtOrderDialog()" :disabled="disabled">
                             <v-list-item-title>
                                 <span class="app-blue">Add Court Order</span>
                             </v-list-item-title>
@@ -86,6 +86,9 @@ export default class StaffNotation extends Vue {
 
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset: string
+
+  /** Prop for disabling the menu items. */
+  @Prop({ default: false }) readonly disabled: boolean
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
@@ -129,8 +132,8 @@ export default class StaffNotation extends Vue {
     }
 }
 
-// This class will be applied when addScrollbarOffset prop is true
-// This is necessary to align with FilingHistoryList component that may have an active scroll bar
+// This class will be applied when addScrollbarOffset prop is true.
+// This is necessary to align with FilingHistoryList component that may have an active scroll bar.
 .add-scrollbar-offset {
     overflow-y: scroll;
     scrollbar-color: transparent transparent; // FireFox uses this property
@@ -141,7 +144,7 @@ export default class StaffNotation extends Vue {
     }
 }
 
-// Fix the transparent added by .add-scrollbar-offset (Firefox only)
+// Fix the transparent added by .add-scrollbar-offset (Firefox only).
 ::v-deep .add-notation-dialog {
     scrollbar-color: auto;
 }
@@ -155,7 +158,12 @@ export default class StaffNotation extends Vue {
 #app > div.v-menu__content {
     margin: 0.625rem 0 0 0;
 }
+
 .v-btn.active .v-icon {
     transform: rotate(-180deg);
+}
+
+::v-deep .theme--light.v-list-item--disabled {
+  opacity: 0.38 !important;
 }
 </style>

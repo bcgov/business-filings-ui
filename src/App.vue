@@ -178,8 +178,8 @@ export default {
       return sessionStorage.getItem('BUSINESS_ID')
     },
 
-    /** The Business Create URL string. */
-    createUiUrl (): string {
+    /** The Create URL string. */
+    createUrl (): string {
       return sessionStorage.getItem('CREATE_URL')
     },
 
@@ -719,7 +719,7 @@ export default {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUiUrl}define-dissolution?id=${this.getEntityIncNo}`
+      const url = `${this.createUrl}define-dissolution?id=${this.getEntityIncNo}`
       window.location.assign(url) // assume URL is always reachable
     },
 
