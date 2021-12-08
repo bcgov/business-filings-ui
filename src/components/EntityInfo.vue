@@ -449,6 +449,12 @@ dd:not(:hover) > button {
 }
 
 ::v-deep #staff-comments .v-btn {
-  margin-top: -4px;
+  margin-top: -4px; // for vertical alignment
+}
+
+#company-information-button,
+#dissolution-button,
+#download-summary-button {
+  margin-top: -4px; // for vertical alignment
 }
 </style>
