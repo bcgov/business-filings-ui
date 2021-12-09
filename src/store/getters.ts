@@ -109,7 +109,7 @@ export default {
 
   /** Is True if business is historical (dissolved). */
   isHistorical (state: StateIF): boolean {
-    return false // *** TODO: get from business object
+    return state.isHistorical // *** TODO: get from business object instead
   },
 
   getNrNumber (state: StateIF): string {

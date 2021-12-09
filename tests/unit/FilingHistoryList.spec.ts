@@ -62,7 +62,8 @@ describe('Filing History List - misc functionality', () => {
   ]
 
   it('handles empty data', async () => {
-    // init store
+    // init data
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
@@ -76,6 +77,7 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').text()).toContain('You have no filing history')
 
+    sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 
@@ -348,7 +350,7 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.disableCorrection({})).toBe(true)
   })
 
-  it('returns correct values for misc helper methods', async () => {
+  it('returns correct values for disableCorrection()', async () => {
     // init store
     store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
@@ -365,13 +367,34 @@ describe('Filing History List - misc functionality', () => {
       name: null
     }
 
+    // no conditions:
+    jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
     expect(vm.disableCorrection({ ...item })).toBe(false)
+
+    // only first condition:
+    jest.spyOn(vm, 'isAllowed').mockReturnValue(false)
+    expect(vm.disableCorrection({ ...item })).toBe(true)
+    jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
+
+    // only second condition:
     expect(vm.disableCorrection({ ...item, availableOnPaperOnly: true })).toBe(true)
+
+    // only third condition:
     expect(vm.disableCorrection({ ...item, isTypeStaff: true })).toBe(true)
+
+    // only fourth condition:
     expect(vm.disableCorrection({ ...item, isFutureEffective: true })).toBe(true)
+
+    // only fifth condition:
     expect(vm.disableCorrection({ ...item, status: 'CORRECTED' })).toBe(true)
+
+    // only sixth condition:
     expect(vm.disableCorrection({ ...item, name: 'alteration' })).toBe(true)
+
+    // only seventh condition:
     expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
+
+    // only eighth condition:
     expect(vm.disableCorrection({ ...item, name: 'transition' })).toBe(true)
   })
 })
@@ -625,6 +648,7 @@ describe('Filing History List - redirections', () => {
   it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.keycloakRoles = ['staff']
     store.state.entityIncNo = 'BC1234567'
     store.state.filings = [
@@ -667,6 +691,7 @@ describe('Filing History List - redirections', () => {
     const createUrl = 'business/edit/BC1234567/correction?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
+    sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
 })

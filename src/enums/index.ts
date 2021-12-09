@@ -1,4 +1,5 @@
 export * from './actions'
+export * from './allowableActions'
 export * from './dissolutionTypesNames'
 export * from './entityStatus'
 export * from './filingCodes'

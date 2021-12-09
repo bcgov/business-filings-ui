@@ -375,15 +375,19 @@ describe('EntityInfo - Click Tests - Alterations', () => {
 })
 
 describe('EntityInfo - Click Tests - Dissolutions', () => {
+  // mock the mixin to always return True
+  const AllowableActionsMixin: any = {
+    methods: {
+      isAllowed: () => true
+    }
+  }
+
   it('displays the Dissolve this Company button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = shallowMount(EntityInfo, {
       store,
       vuetify,
-      computed: {
-        // mock this getter to override FF check
-        showDissolutionBtn () { return true }
-      }
+      mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
 
@@ -399,10 +403,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
       store,
       vuetify,
       router,
-      computed: {
-        // mock this getter to override FF check
-        showDissolutionBtn () { return true }
-      }
+      mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
 
@@ -422,10 +423,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
       store,
       vuetify,
       router,
-      computed: {
-        // mock this getter to override FF check
-        showDissolutionBtn () { return true }
-      }
+      mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
 

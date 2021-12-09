@@ -24,7 +24,6 @@
               <LegalObligation/>
               <TodoList
                 :highlightId="filingId"
-                :disableChanges="disableChanges"
                 @todo-count="todoCount = $event"
               />
             </section>
@@ -35,15 +34,15 @@
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
                 <StaffNotation
-                  v-if="isRoleStaff && !tempRegNumber"
+                  v-if="isRoleStaff && !!businessId"
                   addScrollbarOffset="true"
+                  :disabled="!isAllowed(AllowableActions.FILE_STAFF_NOTATION)"
                   @close="reloadDataIfNeeded($event)"
                 />
               </header>
               <FilingHistoryList
                 class="mt-3"
                 :highlightId="filingId"
-                :disableChanges="disableChanges"
                 @history-count="historyCount = $event"
               />
             </section>
@@ -75,7 +74,7 @@
                   id="standalone-addresses-button"
                   class="change-btn"
                   v-if="!isHistorical"
-                  :disabled="disableChanges"
+                  :disabled="!isAllowed(AllowableActions.FILE_ADDRESS_CHANGE)"
                   @click.native.stop="proceedCoa()">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
@@ -96,7 +95,7 @@
                   id="standalone-directors-button"
                   class="change-btn"
                   v-if="!isHistorical"
-                  :disabled="disableChanges"
+                  :disabled="!isAllowed(AllowableActions.FILE_DIRECTOR_CHANGE)"
                   @click.native.stop="goToStandaloneDirectors()">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
@@ -120,7 +119,6 @@
 
 <script lang="ts">
 // Libraries
-import axios from '@/axios-auth'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 // Components and Dialogs
@@ -133,15 +131,15 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
-import { EntityStatus, FilingStatus, Routes } from '@/enums'
+import { EntityStatus, FilingStatus, Routes, AllowableActions } from '@/enums'
 
 // Mixins
-import { DateMixin, EnumMixin } from '@/mixins'
+import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 
 export default {
   name: 'Dashboard',
 
-  mixins: [DateMixin, EnumMixin],
+  mixins: [AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin],
 
   components: {
     TodoList,
@@ -157,14 +155,17 @@ export default {
     return {
       todoCount: 0,
       historyCount: 0,
-      coaWarningDialog: false
+      coaWarningDialog: false,
+
+      // enum in template
+      AllowableActions
     }
   },
 
   computed: {
     ...mapState(['entityStatus']),
 
-    ...mapGetters(['isBComp', 'hasBlocker', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate']),
+    ...mapGetters(['isBComp', 'isHistorical', 'isCoaPending', 'getCoaEffectiveDate']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
@@ -176,18 +177,9 @@ export default {
       return (this.entityStatus === EntityStatus.FILED_INCORP_APP)
     },
 
-    /**
-     * Whether to block a new filing, ie:
-     * 1) there is a blocker task in the todo list or blocker filing in the filing history list
-     * 2) this is a temporary reg number until it switches to a real business number
-     */
-    disableChanges (): boolean {
-      return (this.hasBlocker || !!this.tempRegNumber)
-    },
-
-    /** The Incorporation Application's Temporary Registration Number string. */
-    tempRegNumber (): string {
-      return sessionStorage.getItem('TEMP_REG_NUMBER')
+    /** The Business ID string. */
+    businessId (): string {
+      return sessionStorage.getItem('BUSINESS_ID')
     },
 
     /** The Filing ID route query parameter. May be NaN (which is falsy). */

@@ -185,7 +185,7 @@
                 </v-btn>
 
                 <!-- the drop-down menu -->
-                <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff && !tempRegNumber">
+                <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff && !!businessId">
                   <template v-slot:activator="{ on }">
                     <v-btn text v-on="on" class="menu-btn app-blue pa-1" click.stop>
                       <v-icon>mdi-menu-down</v-icon>
@@ -193,7 +193,7 @@
                   </template>
                   <v-list dense>
                     <v-list-item-group color="primary">
-                      <v-list-item v-if="!filing.isTypeStaff" :disabled="disableCorrection(filing)">
+                      <v-list-item :disabled="disableCorrection(filing)">
                         <v-list-item-icon>
                           <v-icon class="app-blue">mdi-file-document-edit-outline</v-icon>
                         </v-list-item-icon>
@@ -315,11 +315,11 @@
     <!-- No Results Message -->
     <v-card class="no-results" flat v-if="!historyItems.length">
       <v-card-text>
-        <template v-if="tempRegNumber">
+        <template v-if="!!tempRegNumber">
           <div class="no-results__subtitle">Complete your filing to display</div>
         </template>
 
-        <template v-else>
+        <template v-if="!!businessId">
           <div class="no-results__title">You have no filing history</div>
           <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
         </template>
@@ -348,9 +348,9 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums, Interfaces and Mixins
-import { FilingTypes, Routes } from '@/enums'
+import { AllowableActions, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF } from '@/interfaces'
-import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -374,9 +374,8 @@ import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
   }
 })
 export default class FilingHistoryList extends Mixins(
-  DateMixin, EnumMixin, FilingMixin, LegalApiMixin
+  AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
 ) {
-  @Prop({ default: false }) readonly disableChanges: boolean
   @Prop({ default: null }) readonly highlightId: number
 
   @Getter isBComp!: boolean
@@ -407,6 +406,11 @@ export default class FilingHistoryList extends Mixins(
   /** The IA's Temporary Registration Number string. */
   private get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
+
+  /** The Business ID string. */
+  private get businessId (): string {
+    return sessionStorage.getItem('BUSINESS_ID')
   }
 
   private loadData (): void {
@@ -842,7 +846,7 @@ export default class FilingHistoryList extends Mixins(
   /** Whether to disable correction for this history item. */
   private disableCorrection (item: HistoryItemIF): boolean {
     return (
-      this.disableChanges ||
+      !this.isAllowed(AllowableActions.FILE_CORRECTION) ||
       item.availableOnPaperOnly ||
       item.isTypeStaff ||
       item.isFutureEffective ||

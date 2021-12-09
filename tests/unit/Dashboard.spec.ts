@@ -3,10 +3,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
-import sinon from 'sinon'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
-import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import flushPromises from 'flush-promises'
 
@@ -62,39 +60,93 @@ describe('Dashboard - UI', () => {
   })
 
   it('enables standalone filing buttons when there are no blockers', () => {
-    expect(vm.disableChanges).toEqual(false)
-    expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
-    expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
-  })
-
-  it('disables standalone filing buttons when there is a blocker task in the todo list', () => {
-    store.state.hasBlockerTask = true
-
-    expect(vm.hasBlocker).toEqual(true)
-    expect(vm.disableChanges).toEqual(true)
-    expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
-    expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
-  })
-
-  it('disables standalone filing buttons when there is a Temporary Reg Number', () => {
-    sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
-
+    // re-mount the component since setting session storage is not reactive
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    expect(localVm.disableChanges).toEqual(true)
+    store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = false
+    store.state.isCoaPending = false
+    expect(localVm.hasBlocker).toEqual(false)
+
+    expect(localVm.isAllowed('fileAddressChange')).toBe(true)
+    expect(localVm.isAllowed('fileDirectorChange')).toBe(true)
+
+    expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
+    expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
+  })
+
+  it('disables standalone filing buttons when there is a blocker task', () => {
+    // re-mount the component since setting session storage is not reactive
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localVm: any = localWrapper.vm
+
+    store.state.hasBlockerTask = true
+    store.state.hasBlockerFiling = false
+    store.state.isCoaPending = false
+    expect(localVm.hasBlocker).toEqual(true)
+
+    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
+    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
-    sessionStorage.clear()
+  })
+
+  it('disables standalone filing buttons when there is a blocker filing', () => {
+    // re-mount the component since setting session storage is not reactive
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localVm: any = localWrapper.vm
+
+    store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = true
+    store.state.isCoaPending = false
+    expect(localVm.hasBlocker).toEqual(true)
+
+    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
+    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+
+    expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
+    expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
   it('disables filing buttons when there is a BCOMP Future Effective COA', () => {
-    store.state.isCoaPending = true
+    // re-mount the component since setting session storage is not reactive
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localVm: any = localWrapper.vm
 
-    expect(vm.hasBlocker).toEqual(true)
-    expect(vm.disableChanges).toEqual(true)
-    expect(wrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
-    expect(wrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+    store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = false
+    store.state.isCoaPending = true
+    expect(localVm.hasBlocker).toEqual(true)
+
+    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
+    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+
+    expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
+    expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+  })
+
+  it('disables standalone filing buttons when there is no Business ID', () => {
+    // re-mount the component since setting session storage is not reactive
+    sessionStorage.removeItem('BUSINESS_ID')
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localVm: any = localWrapper.vm
+
+    store.state.hasBlockerTask = false
+    store.state.hasBlockerFiling = false
+    store.state.isCoaPending = false
+    expect(localVm.hasBlocker).toEqual(false)
+
+    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
+    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+
+    expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
+    expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 })
 
@@ -136,9 +188,10 @@ describe('Dashboard - Click Tests', () => {
   })
 
   it('routes to Standalone Office Address Filing page when EDIT is clicked', async () => {
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP1234567'
+    store.state.entityIncNo = 'CP1234567'
     store.state.entityType = 'CP'
 
     // create a Local Vue and install router on it
@@ -163,9 +216,10 @@ describe('Dashboard - Click Tests', () => {
   })
 
   it('displays the change of address warning dialog as a BCOMP', async () => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     // init store
-    store.state.businessId = 'BC00001191'
-    store.state.entityIncNo = 'BC0001191'
+    store.state.businessId = 'BC1234567'
+    store.state.entityIncNo = 'BC1234567'
     store.state.entityType = 'BEN'
 
     // create a Local Vue and install router on it
@@ -197,9 +251,10 @@ describe('Dashboard - Click Tests', () => {
   })
 
   it('routes to Standalone Directors Filing page when EDIT is clicked', async () => {
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP1234567'
+    store.state.entityIncNo = 'CP1234567'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

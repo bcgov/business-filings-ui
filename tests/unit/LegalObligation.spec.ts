@@ -84,44 +84,52 @@ async function waitForUpdate () {
 
 describe('Legal Obligation', () => {
   beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.entityType = 'BEN'
+    store.state.entityIncNo = 'BC1234567'
+  })
+
+  afterAll(() => {
+    sessionStorage.removeItem('BUSINESS_ID')
+    store.state.entityType = null
+    store.state.entityIncNo = null
   })
 
   it('do not show the legal obligation section if there are no filings', async () => {
-    store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(LegalObligation, { store, vuetify })
     await waitForUpdate()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+
     wrapper.destroy()
   })
 
   it('shows the legal obligation section if it is a new business with no maintenance filing', async () => {
-    store.state.entityIncNo = 'CP0001191'
     store.state.filings = newBusinessFiling
 
     const wrapper = mount(LegalObligation, { store, vuetify })
+    const vm = wrapper.vm as any
     await waitForUpdate()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(true)
+
     wrapper.destroy()
   })
 
   it('do not show the legal obligation section if the business has maintenance filings', async () => {
-    store.state.entityIncNo = 'CP0001191'
     store.state.filings = businessWithMaintenanceFiling
 
     const wrapper = mount(LegalObligation, { store, vuetify })
     await waitForUpdate()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+
     wrapper.destroy()
   })
 
   it('hides the legal obligation section on clicking dismiss button', async () => {
-    store.state.entityIncNo = 'CP0001191'
     store.state.filings = newBusinessFiling
 
     const wrapper = mount(LegalObligation, { store, vuetify })
@@ -131,11 +139,11 @@ describe('Legal Obligation', () => {
     wrapper.find('#dismiss-btn').trigger('click')
     await waitForUpdate()
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+
     wrapper.destroy()
   })
 
   it('hides the legal obligation section if there is a task', async () => {
-    store.state.entityIncNo = 'CP0001191'
     store.state.filings = newBusinessFiling
     store.state.tasks = taskList
 
@@ -143,9 +151,12 @@ describe('Legal Obligation', () => {
     await waitForUpdate()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+
     wrapper.destroy()
   })
+})
 
+describe('Legal Obligation - temp reg number', () => {
   it('hides the legal obligation section for temp reg number', async () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
     store.state.filings = newBusinessFiling
@@ -154,6 +165,8 @@ describe('Legal Obligation', () => {
     await waitForUpdate()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
+
+    sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
   })
 })

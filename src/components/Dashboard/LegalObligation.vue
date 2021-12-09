@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showLegalObligation && isBComp && isBusinessWithNoMaintenanceFilings && !tempRegNumber"
+  <div v-if="showLegalObligation && isBComp && isBusinessWithNoMaintenanceFilings && !!businessId"
     class="legal-obligation-container"
   >
     <v-card flat class="legal-obligation-section">
@@ -72,9 +72,9 @@ export default class LegalObligation extends Vue {
       'incorporated-companies#manage'
   }
 
-  /** The Incorporation Application's Temporary Registration Number string. */
-  private get tempRegNumber (): string {
-    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  /** The Business ID string. */
+  private get businessId (): string {
+    return sessionStorage.getItem('BUSINESS_ID')
   }
 }
 </script>

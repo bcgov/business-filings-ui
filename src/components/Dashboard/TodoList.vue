@@ -441,7 +441,7 @@
                 <template v-else-if="isStatusNew(item) && isTypeAnnualReport(item)">
                   <v-btn class="btn-file-now"
                     color="primary"
-                    :disabled="!item.enabled || isCoaPending || (isBComp && !enableCheckbox[index]) || disableChanges"
+                    :disabled="isFileAnnualReportDisabled(item, index)"
                     @click.native.stop="doFileNow(item)"
                   >
                     <span>File Annual Report</span>
@@ -534,8 +534,8 @@ import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 
 // Mixins, Enums and Interfaces
-import { DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { AllowableActions, CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF } from '@/interfaces'
 
 @Component({
@@ -559,7 +559,9 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF }
     Vue2Filters.mixin
   ]
 })
-export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin) {
+export default class TodoList extends Mixins(
+  AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin
+) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -580,7 +582,6 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   private checkTimer: number = null
   private inProcessFiling: number = null
 
-  @Prop({ default: false }) readonly disableChanges: boolean
   @Prop({ default: null }) readonly highlightId: number
 
   @Getter isBComp!: boolean
@@ -656,6 +657,15 @@ export default class TodoList extends Mixins(DateMixin, EnumMixin, FilingMixin, 
   /** Alteration action button label. */
   private get alterationBtnLabel (): string {
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
+  }
+
+  /** Whether the File Annual Report button should be disabled. */
+  private isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
+    return (
+      !item.enabled ||
+      (this.isBComp && !this.enableCheckbox[index]) ||
+      !this.isAllowed(AllowableActions.FILE_ANNUAL_REPORT)
+    )
   }
 
   private async loadData (): Promise<void> {
