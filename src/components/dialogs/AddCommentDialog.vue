@@ -36,7 +36,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
 import { HistoryItemIF, TodoItemIF } from '@/interfaces'
@@ -47,8 +46,6 @@ import { HistoryItemIF, TodoItemIF } from '@/interfaces'
   }
 })
 export default class AddCommentDialog extends Vue {
-  @Getter getEntityIncNo!: number
-
   /** Prop to display the dialog. */
   @Prop() readonly dialog: boolean
 

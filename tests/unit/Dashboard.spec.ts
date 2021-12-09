@@ -191,7 +191,6 @@ describe('Dashboard - Click Tests', () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
     store.state.businessId = 'CP1234567'
-    store.state.entityIncNo = 'CP1234567'
     store.state.entityType = 'CP'
 
     // create a Local Vue and install router on it
@@ -219,7 +218,6 @@ describe('Dashboard - Click Tests', () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     // init store
     store.state.businessId = 'BC1234567'
-    store.state.entityIncNo = 'BC1234567'
     store.state.entityType = 'BEN'
 
     // create a Local Vue and install router on it
@@ -254,7 +252,6 @@ describe('Dashboard - Click Tests', () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
     store.state.businessId = 'CP1234567'
-    store.state.entityIncNo = 'CP1234567'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

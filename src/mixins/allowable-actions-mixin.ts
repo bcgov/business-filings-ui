@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd } from '@/enums'
+import { AllowableActions, CorpTypeCd, EntityState } from '@/enums'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -21,20 +21,25 @@ export default class AllowableActionsMixin extends Vue {
     const businessId = sessionStorage.getItem('BUSINESS_ID')
 
     switch (action) {
+      case AllowableActions.ADD_DETAIL_COMMENT: {
+        return (!!businessId && this.isRoleStaff)
+      }
+
       case AllowableActions.ADD_STAFF_COMMENT: {
         return this.isRoleStaff
       }
 
       case AllowableActions.DISSOLVE_COMPANY: {
-        return getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType)
+        return (!this.isHistorical && !this.hasBlocker && !!businessId &&
+          !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType))
       }
 
       case AllowableActions.DOWNLOAD_BUSINESS_SUMMARY: {
-        return getFeatureFlag('download-summary-enabled')
+        return (!!businessId && !!getFeatureFlag('download-summary-enabled'))
       }
 
       case AllowableActions.EDIT_BUSINESS_PROFILE: {
-        return (!this.isHistorical && !!businessId)
+        return !!businessId
       }
 
       case AllowableActions.FILE_ADDRESS_CHANGE: {

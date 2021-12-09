@@ -588,7 +588,7 @@ export default class Directors extends Mixins(
   @Prop({ default: () => [] })
   readonly directors: DirectorIF[]
 
-  @Getter getEntityIncNo!: string
+  @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
   @State lastAnnualReportDate!: string
   @State entityFoundingDate!: Date
@@ -797,8 +797,8 @@ export default class Directors extends Mixins(
   /** Fetches the list of directors on As Of Date from the Legal API. */
   // FUTURE: this API call should be in the parent component or some mixin/service
   private async fetchDirectors (): Promise<void> {
-    if (this.getEntityIncNo && this.asOfDate) {
-      const url = `businesses/${this.getEntityIncNo}/directors?date=${this.asOfDate}`
+    if (this.getBusinessId && this.asOfDate) {
+      const url = `businesses/${this.getBusinessId}/directors?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         if (response?.data?.directors) {
           const directors = response.data.directors as DirectorIF[]

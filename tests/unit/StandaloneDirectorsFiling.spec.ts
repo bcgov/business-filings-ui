@@ -74,7 +74,7 @@ const sampleDirectors = [
 describe('Standalone Directors Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP0001191'
     store.state.currentDate = '2019-07-15'
     // set Last Filing Date and verify new Min Date
     store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
@@ -331,7 +331,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
 describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -418,7 +418,7 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
 describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -509,7 +509,7 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
 describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -606,7 +606,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
     store.state.entityFoundingDate = new Date('2000-01-01')
@@ -946,7 +946,6 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -1056,7 +1055,6 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -1204,7 +1202,6 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -1363,7 +1360,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessId = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
@@ -1590,7 +1587,6 @@ describe('Standalone Directors Filing - payment required error', () => {
     // init store
     store.state.currentDate = '2019-07-15'
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017

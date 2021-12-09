@@ -22,8 +22,8 @@ describe('EntityInfo - data', () => {
     store.state.entityName = 'My Business'
     store.state.entityStatus = 'GOODSTANDING'
     store.state.entityType = 'CP'
-    store.state.entityBusinessNo = '123456789'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessNumber = '123456789'
+    store.state.businessId = 'CP0001191'
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
     store.state.businessPhoneExtension = '444'
@@ -114,8 +114,8 @@ describe('EntityInfo - data', () => {
     store.state.entityName = null
     store.state.entityType = null
     store.state.entityStatus = null
-    store.state.entityBusinessNo = null
-    store.state.entityIncNo = null
+    store.state.businessNumber = null
+    store.state.businessId = null
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
@@ -167,15 +167,6 @@ describe('EntityInfo - company info button and tooltip', () => {
       buttonExists: true,
       buttonDisabled: undefined,
       tooltipExists: false
-    },
-    {
-      businessId: 'BC1234567',
-      entityType: 'BEN',
-      entityStatus: 'PENDINGDISSOLUTION',
-      buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: true,
-      tooltipContains: 'pending dissolution'
     },
     {
       businessId: 'BC1234567',
@@ -354,7 +345,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityIncNo = 'BC1234567'
+    store.state.businessId = 'BC1234567'
     store.state.entityStatus = 'GOODSTANDING'
     store.state.entityType = 'BEN'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this

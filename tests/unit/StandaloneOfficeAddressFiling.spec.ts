@@ -51,7 +51,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
   })
 
@@ -312,7 +311,6 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -384,7 +382,6 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -460,7 +457,6 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -530,7 +526,6 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = 'BEN'
 
@@ -611,7 +606,6 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -884,7 +878,6 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = 'BEN'
 
@@ -1169,7 +1162,6 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -1300,7 +1292,6 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = 'BEN'
 
@@ -1431,7 +1422,6 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -1522,7 +1512,6 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
   beforeEach(() => {
     // init store
     store.state.businessId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = 'BEN'
 
@@ -1629,7 +1618,6 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
   beforeEach(() => {
     // init store
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
@@ -1875,7 +1863,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
     // init store
     store.state.currentDate = '2019-07-15'
     store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017

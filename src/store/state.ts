@@ -11,18 +11,18 @@ export const state: StateIF = {
   businessPhone: null,
   businessPhoneExtension: null,
 
+  businessId: null,
+  businessNumber: null,
+  complianceWarnings: [],
   entityName: null,
   entityType: null,
+  entityState: null,
   entityStatus: null,
-  entityBusinessNo: null,
-  entityIncNo: null,
   entityFoundingDate: null,
-  entityDissolutionDate: null,
-  entityDissolutionType: null,
+  historicalText: null,
   lastAnnualReportDate: null,
   lastAddressChangeDate: null,
   lastDirectorChangeDate: null,
-  isHistorical: false, // *** TODO: get from business object instead
 
   nextARDate: null,
   ARFilingYear: null,

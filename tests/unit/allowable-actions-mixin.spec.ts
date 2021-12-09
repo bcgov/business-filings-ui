@@ -11,7 +11,7 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 // mock global function
-const getFeatureFlag = jest.spyOn(FeatureFlags as any, 'getFeatureFlag')
+const getFeatureFlag = jest.spyOn((FeatureFlags as any), 'getFeatureFlag')
 
 describe('Allowable Actions Mixin', () => {
   let vm: any
@@ -29,82 +29,110 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed('')).toBeNull()
   })
 
-  it('identifies whether Add Staff Comments is allowed', () => {
-    // initial state
+  it('identifies whether Add Detail Comment is allowed', () => {
+    const tests = [
+      // no conditions:
+      { businessId: null, roles: [], expected: false },
+      // only first condition:
+      { businessId: 'CP1234567', roles: [], expected: false },
+      // only second condition:
+      { businessId: null, roles: ['staff'], expected: false },
+      // all conditions:
+      { businessId: 'CP1234567', roles: ['staff'], expected: true }
+    ]
+
+    for (let test of tests) {
+      if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
+      else sessionStorage.removeItem('BUSINESS_ID')
+      store.state.keycloakRoles = test.roles
+      expect(vm.isAllowed('addDetailComment')).toBe(test.expected)
+    }
+  })
+
+  it('identifies whether Add Staff Comment is allowed', () => {
+    // no conditions:
+    store.state.keycloakRoles = []
     expect(vm.isAllowed('addStaffComment')).toBe(false)
 
+    // all conditions:
     store.state.keycloakRoles = ['staff']
     expect(vm.isAllowed('addStaffComment')).toBe(true)
-
-    // cleanup
-    store.state.keycloakRoles = []
   })
 
   it('identifies whether Dissolve Company is allowed', () => {
     store.state.entityType = 'BC'
 
     const tests = [
-      // no supported dissolution entities:
-      { value: [], expected: false },
-      // missing current dissolution entity:
-      { value: ['CP'], expected: false },
-      // with current dissolution entity:
-      { value: ['BC'], expected: true }
+      // no conditions:
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, flag: [], expected: false },
+      // only first condition:
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, flag: [], expected: false },
+      // only second condition:
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, flag: [], expected: false },
+      // only thirdcondition:
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: 'CP1234567', flag: [], expected: false },
+      // only fourth condition:
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, flag: ['BC'], expected: false },
+      // all conditions:
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', flag: ['BC'], expected: true }
     ]
 
     for (let test of tests) {
-      getFeatureFlag.mockReturnValue(test.value)
+      store.state.entityState = test.entityState
+      jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
+      if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
+      else sessionStorage.removeItem('BUSINESS_ID')
+      getFeatureFlag.mockReturnValue(test.flag)
       expect(vm.isAllowed('dissolveCompany')).toBe(test.expected)
     }
-
-    // cleanup
-    store.state.entityType = null
   })
 
   it('identifies whether Download Business Summary is allowed', () => {
-    getFeatureFlag.mockReturnValue(false)
-    expect(vm.isAllowed('downloadBusinessSummary')).toBe(false)
-
-    getFeatureFlag.mockReturnValue(true)
-    expect(vm.isAllowed('downloadBusinessSummary')).toBe(true)
-  })
-
-  it('identifies whether Edit Business Profile is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, businessId: null, expected: false },
+      { businessId: null, flag: false, expected: false },
       // only first condition:
-      { isHistorical: false, businessId: null, expected: false },
+      { businessId: 'CP1234567', flag: false, expected: false },
       // only second condition:
-      { isHistorical: true, businessId: 'CP1234567', expected: false },
+      { businessId: null, flag: true, expected: false },
       // all conditions:
-      { isHistorical: false, businessId: 'CP1234567', expected: true }
+      { businessId: 'CP1234567', flag: true, expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
-      expect(vm.isAllowed('editBusinessProfile')).toBe(test.expected)
+      getFeatureFlag.mockReturnValue(test.flag)
+      expect(vm.isAllowed('downloadBusinessSummary')).toBe(test.expected)
     }
+  })
+
+  it('identifies whether Edit Business Profile is allowed', () => {
+    // no conditions:
+    sessionStorage.removeItem('BUSINESS_ID')
+    expect(vm.isAllowed('editBusinessProfile')).toBe(false)
+
+    // all conditions:
+    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
+    expect(vm.isAllowed('editBusinessProfile')).toBe(true)
   })
 
   it('identifies whether File Address Change is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, hasBlocker: true, businessId: null, expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, expected: false },
       // only first condition:
-      { isHistorical: false, hasBlocker: true, businessId: null, expected: false },
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, expected: false },
       // only second condition:
-      { isHistorical: true, hasBlocker: false, businessId: null, expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, expected: false },
       // only third condition:
-      { isHistorical: true, hasBlocker: true, businessId: 'CP1234567', expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: 'CP1234567', expected: false },
       // all conditions:
-      { isHistorical: false, hasBlocker: false, businessId: 'CP1234567', expected: true }
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
+      store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -115,19 +143,19 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether File Annual Report is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, hasBlocker: true, businessId: null, expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, expected: false },
       // only first condition:
-      { isHistorical: false, hasBlocker: true, businessId: null, expected: false },
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, expected: false },
       // only second condition:
-      { isHistorical: true, hasBlocker: false, businessId: null, expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, expected: false },
       // only third condition:
-      { isHistorical: true, hasBlocker: true, businessId: 'CP1234567', expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: 'CP1234567', expected: false },
       // all conditions:
-      { isHistorical: false, hasBlocker: false, businessId: 'CP1234567', expected: true }
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
+      store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -138,21 +166,21 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether File Correction is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, hasBlocker: true, businessId: null, roles: [], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, roles: [], expected: false },
       // only first condition:
-      { isHistorical: false, hasBlocker: true, businessId: null, roles: [], expected: false },
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, roles: [], expected: false },
       // only second condition:
-      { isHistorical: true, hasBlocker: false, businessId: null, roles: [], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, roles: [], expected: false },
       // only third condition:
-      { isHistorical: true, hasBlocker: true, businessId: 'CP1234567', roles: [], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: 'CP1234567', roles: [], expected: false },
       // only fourth condition:
-      { isHistorical: true, hasBlocker: true, businessId: null, roles: ['staff'], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, roles: ['staff'], expected: false },
       // all conditions:
-      { isHistorical: false, hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true }
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
+      store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -164,19 +192,19 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether File Director Change is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, hasBlocker: true, businessId: null, expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, expected: false },
       // only first condition:
-      { isHistorical: false, hasBlocker: true, businessId: null, expected: false },
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, expected: false },
       // only second condition:
-      { isHistorical: true, hasBlocker: false, businessId: null, expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, expected: false },
       // only third condition:
-      { isHistorical: true, hasBlocker: true, businessId: 'CP1234567', expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: 'CP1234567', expected: false },
       // all conditions:
-      { isHistorical: false, hasBlocker: false, businessId: 'CP1234567', expected: true }
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
+      store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -187,21 +215,21 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether File Staff Notation is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, hasBlocker: true, businessId: null, roles: [], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, roles: [], expected: false },
       // only first condition:
-      { isHistorical: false, hasBlocker: true, businessId: null, roles: [], expected: false },
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, roles: [], expected: false },
       // only second condition:
-      { isHistorical: true, hasBlocker: false, businessId: null, roles: [], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, roles: [], expected: false },
       // only third condition:
-      { isHistorical: true, hasBlocker: true, businessId: 'CP1234567', roles: [], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: 'CP1234567', roles: [], expected: false },
       // only fourth condition:
-      { isHistorical: true, hasBlocker: true, businessId: null, roles: ['staff'], expected: false },
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, roles: ['staff'], expected: false },
       // all conditions:
-      { isHistorical: false, hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true }
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
+      store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -213,25 +241,25 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether View Change Company Info is allowed', () => {
     const tests = [
       // no conditions:
-      { isHistorical: true, entityType: null, expected: false },
+      { entityState: 'HISTORICAL', entityType: null, expected: false },
       // only first condition:
-      { isHistorical: false, entityType: null, expected: false },
+      { entityState: 'ACTIVE', entityType: null, expected: false },
       // only second condition (BEN):
-      { isHistorical: true, entityType: 'BEN', expected: false },
+      { entityState: 'HISTORICAL', entityType: 'BEN', expected: false },
       // only second condition (BC):
-      { isHistorical: true, entityType: 'BC', expected: false },
+      { entityState: 'HISTORICAL', entityType: 'BC', expected: false },
       // only second condition (ULC):
-      { isHistorical: true, entityType: 'ULC', expected: false },
+      { entityState: 'HISTORICAL', entityType: 'ULC', expected: false },
       // all conditions (BEN):
-      { isHistorical: false, entityType: 'BEN', expected: true },
+      { entityState: 'ACTIVE', entityType: 'BEN', expected: true },
       // all conditions (BC):
-      { isHistorical: false, entityType: 'BC', expected: true },
+      { entityState: 'ACTIVE', entityType: 'BC', expected: true },
       // all conditions (ULC):
-      { isHistorical: false, entityType: 'ULC', expected: true }
+      { entityState: 'ACTIVE', entityType: 'ULC', expected: true }
     ]
 
     for (let test of tests) {
-      store.state.isHistorical = test.isHistorical
+      store.state.entityState = test.entityState
       store.state.entityType = test.entityType
       expect(vm.isAllowed('viewChangeCompanyInfo')).toBe(test.expected)
     }

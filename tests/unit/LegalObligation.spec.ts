@@ -86,13 +86,13 @@ describe('Legal Obligation', () => {
   beforeAll(() => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.entityType = 'BEN'
-    store.state.entityIncNo = 'BC1234567'
+    store.state.businessId = 'BC1234567'
   })
 
   afterAll(() => {
     sessionStorage.removeItem('BUSINESS_ID')
     store.state.entityType = null
-    store.state.entityIncNo = null
+    store.state.businessId = null
   })
 
   it('do not show the legal obligation section if there are no filings', async () => {

@@ -240,7 +240,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   readonly addresses: RegRecAddressesIF
 
   @Getter isBComp!: boolean
-  @Getter getEntityIncNo!: string
+  @Getter getBusinessId!: string
 
   /** Effective date for fetching office addresses. */
   private asOfDate: string
@@ -294,8 +294,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Fetches the office addresses on As Of Date from the Legal API. */
   // FUTURE: this API call should be in the parent component or some mixin/service
   private async fetchAddresses (): Promise<void> {
-    if (this.getEntityIncNo && this.asOfDate) {
-      const url = `businesses/${this.getEntityIncNo}/addresses?date=${this.asOfDate}`
+    if (this.getBusinessId && this.asOfDate) {
+      const url = `businesses/${this.getBusinessId}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
         // registered office is required
         const registeredOffice = response?.data?.registeredOffice

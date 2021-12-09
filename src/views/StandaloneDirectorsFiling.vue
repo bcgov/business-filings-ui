@@ -409,7 +409,8 @@ export default {
   computed: {
     ...mapState(['entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isBComp', 'isRoleStaff', 'getCurrentDate', 'getEntityName', 'getEntityIncNo', 'getEntityType']),
+    ...mapGetters(['isBComp', 'isRoleStaff', 'getCurrentDate', 'getEntityName', 'getBusinessId',
+      'getEntityType']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -483,7 +484,7 @@ export default {
 
   async mounted (): Promise<void> {
     // if tombstone data isn't set, go back to dashboard
-    if (!this.getEntityIncNo || isNaN(this.filingId)) {
+    if (!this.getBusinessId || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
       console.log('Standalone Directors Filing error - missing Entity Inc No or Filing ID!')
       this.$router.push({ name: Routes.DASHBOARD })
@@ -558,7 +559,7 @@ export default {
     ...mapActions(['setFilingData']),
 
     async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
+      const url = `businesses/${this.getBusinessId}/filings/${this.filingId}`
       await axios.get(url).then(async response => {
         const filing: any = response?.data?.filing
 
@@ -567,7 +568,7 @@ export default {
         if (!filing.header) throw new Error('Missing header')
         if (!filing.business) throw new Error('Missing business')
         if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('Invalid filing type')
-        if (filing.business.identifier !== this.getEntityIncNo) throw new Error('Invalid business identifier')
+        if (filing.business.identifier !== this.getBusinessId) throw new Error('Invalid business identifier')
         if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // restore Certified By (but not Date)
@@ -703,7 +704,7 @@ export default {
     async saveFiling (isDraft) {
       this.resetErrors()
 
-      const hasPendingFilings = await this.hasTasks(this.getEntityIncNo)
+      const hasPendingFilings = await this.hasTasks(this.getBusinessId)
       if (hasPendingFilings) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
@@ -748,7 +749,7 @@ export default {
       const business = {
         business: {
           foundingDate: this.dateToApi(this.entityFoundingDate),
-          identifier: this.getEntityIncNo,
+          identifier: this.getBusinessId,
           legalName: this.getEntityName,
           legalType: this.getEntityType
         }
@@ -776,12 +777,12 @@ export default {
 
         if (this.filingId > 0) {
           // we have a filing id, so update (put) an existing filing
-          let url = `businesses/${this.getEntityIncNo}/filings/${this.filingId}`
+          let url = `businesses/${this.getBusinessId}/filings/${this.filingId}`
           if (isDraft) { url += '?draft=true' }
           response = await axios.put(url, data)
         } else {
           // filing id is 0, so create (post) a new filing
-          let url = `businesses/${this.getEntityIncNo}/filings`
+          let url = `businesses/${this.getBusinessId}/filings`
           if (isDraft) { url += '?draft=true' }
           response = await axios.post(url, data)
         }

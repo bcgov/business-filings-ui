@@ -90,7 +90,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   /** Prop to require court order number regardless the plan of arrangement. */
   @Prop({ default: false }) readonly courtOrderNumberRequired: boolean
 
-  @Getter getEntityIncNo!: string
+  @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
 
   /** The notation text. */
@@ -180,7 +180,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
           certifiedBy: ''
         },
         business: {
-          identifier: this.getEntityIncNo
+          identifier: this.getBusinessId
         },
         [this.name]: {
           fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
@@ -190,7 +190,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
       }
     }
 
-    const url = `businesses/${this.getEntityIncNo}/filings`
+    const url = `businesses/${this.getBusinessId}/filings`
     let success = false
     await axios.post(url, data).then(res => {
       success = true

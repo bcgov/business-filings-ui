@@ -1,5 +1,6 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes } from '@/enums'
-import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF } from '@/interfaces'
+import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes, EntityState } from '@/enums'
+import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, ComplianceWarning }
+  from '@/interfaces'
 
 export default {
   keycloakRoles (state: StateIF, keycloakRoles: Array<string>) {
@@ -29,29 +30,32 @@ export default {
   arMaxDate (state: StateIF, date: string) {
     state.arMaxDate = date
   },
-  entityBusinessNo (state: StateIF, entityBusinessNo: string) {
-    state.entityBusinessNo = entityBusinessNo
+  businessId (state: StateIF, businessId: string) {
+    state.businessId = businessId
   },
-  entityName (state: StateIF, entityName: string) {
-    state.entityName = entityName
+  businessNumber (state: StateIF, businessNumber: string) {
+    state.businessNumber = businessNumber
   },
-  entityType (state: StateIF, entityType: CorpTypeCd) {
-    state.entityType = entityType
-  },
-  entityStatus (state: StateIF, entityStatus: EntityStatus) {
-    state.entityStatus = entityStatus
-  },
-  entityIncNo (state: StateIF, entityIncNo: string) {
-    state.entityIncNo = entityIncNo
+  complianceWarnings (state: StateIF, complianceWarnings: Array<ComplianceWarning>) {
+    state.complianceWarnings = complianceWarnings
   },
   entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
     state.entityFoundingDate = entityFoundingDate
   },
-  entityDissolutionDate (state: StateIF, entityDissolutionDate: Date) {
-    state.entityDissolutionDate = entityDissolutionDate
+  entityName (state: StateIF, entityName: string) {
+    state.entityName = entityName
   },
-  entityDissolutionType (state: StateIF, entityDissolutionType: DissolutionTypes) {
-    state.entityDissolutionType = entityDissolutionType
+  entityState (state: StateIF, entityState: EntityState) {
+    state.entityState = entityState
+  },
+  entityStatus (state: StateIF, entityStatus: EntityStatus) {
+    state.entityStatus = entityStatus
+  },
+  entityType (state: StateIF, entityType: CorpTypeCd) {
+    state.entityType = entityType
+  },
+  historicalText (state: StateIF, text: string) {
+    state.historicalText = text
   },
   businessEmail (state: StateIF, businessEmail: string) {
     state.businessEmail = businessEmail

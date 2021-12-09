@@ -1,5 +1,5 @@
-import { CorpTypeCd, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, StateIF, ApiTaskIF, OfficeAddressIF, DirectorIF } from '@/interfaces'
+import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { ApiFilingIF, StateIF, ApiTaskIF, OfficeAddressIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -42,9 +42,14 @@ export default {
     return state.coaEffectiveDate
   },
 
-  /** The entity identifier. */
-  getEntityBusinessNo (state: StateIF): string {
-    return state.entityBusinessNo
+  /** The business identifier (aka Incorporation Number). */
+  getBusinessId (state: StateIF): string {
+    return state.businessId
+  },
+
+  /** The entity business number. */
+  getBusinessNumber (state: StateIF): string {
+    return state.businessNumber
   },
 
   /** The entity name. */
@@ -97,19 +102,24 @@ export default {
     return (state.entityStatus === EntityStatus.GOOD_STANDING)
   },
 
-  /** Is True if business is pending dissolution. */
-  isPendingDissolution (state: StateIF): boolean {
-    return (state.entityStatus === EntityStatus.PENDING_DISSOLUTION)
-  },
-
   /** Is True if business is not in compliance. */
   isNotInCompliance (state: StateIF): boolean {
     return (state.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
   },
 
+  /** Is True if business is active. */
+  isActive (state: StateIF): boolean {
+    return (state.entityState === EntityState.ACTIVE)
+  },
+
   /** Is True if business is historical (dissolved). */
   isHistorical (state: StateIF): boolean {
-    return state.isHistorical // *** TODO: get from business object instead
+    return (state.entityState === EntityState.HISTORICAL)
+  },
+
+  /** Is True if business is in liquidation. */
+  isLiquidation (state: StateIF): boolean {
+    return (state.entityState === EntityState.LIQUIDATION)
   },
 
   getNrNumber (state: StateIF): string {
@@ -141,11 +151,6 @@ export default {
       state.filings.length === 1 &&
       state.filings[0].name === FilingTypes.INCORPORATION_APPLICATION
     )
-  },
-
-  /** The Entity Incorporation Number (aka business identifier). */
-  getEntityIncNo (state: StateIF): string {
-    return state.entityIncNo
   },
 
   /** The Entity Type. */

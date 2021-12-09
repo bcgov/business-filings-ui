@@ -24,9 +24,6 @@ const propsData = {
 
 describe('AddCommentDialog', () => {
   it('renders the page contents correctly', () => {
-    // init store
-    store.state.entityIncNo = 123
-
     const wrapper = shallowMount(AddCommentDialog,
       {
         propsData,
@@ -34,13 +31,13 @@ describe('AddCommentDialog', () => {
         vuetify
       })
     const vm: any = wrapper.vm
+    Vue.nextTick()
 
     expect(wrapper.find('#dialog-title').text()).toBe('Add Detail')
     expect(wrapper.find(DetailComment).exists()).toBe(true)
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
-    expect(vm.getEntityIncNo).toBe(123)
     expect(vm.dialog).toBe(true)
     expect(vm.filing.filingId).toBe(456)
     expect(vm.attach).toBe('#parent-page')
@@ -69,9 +66,6 @@ describe('AddCommentDialog', () => {
   })
 
   it('emits Close=true event when user clicks Save button', async () => {
-    // init store
-    store.state.entityIncNo = 123
-
     // mock "post a comment" endpoint
     sinon
       .stub(axios, 'post')

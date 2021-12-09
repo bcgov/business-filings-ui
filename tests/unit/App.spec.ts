@@ -488,8 +488,8 @@ describe('App as a COOP', () => {
   it('fetches Entity Info properly', () => {
     expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
     expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
-    expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.getters.getEntityIncNo).toBe('CP0001191')
+    expect(vm.$store.state.businessNumber).toBe('123456789')
+    expect(vm.$store.getters.getBusinessId).toBe('CP0001191')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
     expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
   })
@@ -740,8 +740,8 @@ describe('App as a BCOMP', () => {
   it('fetches Entity Info properly', () => {
     expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
     expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
-    expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.getters.getEntityIncNo).toBe('BC0007291')
+    expect(vm.$store.state.businessNumber).toBe('123456789')
+    expect(vm.$store.getters.getBusinessId).toBe('BC0007291')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
     expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
   })
@@ -884,7 +884,7 @@ describe('App as a Draft IA with approved NR', () => {
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getBusinessId).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
     expect(vm.$store.getters.getEntityStatus).toBe('DRAFT_INCORP_APP')
@@ -1338,7 +1338,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getBusinessId).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
     expect(vm.$store.getters.getEntityStatus).toBe('FILED_INCORP_APP')
@@ -1488,7 +1488,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getBusinessId).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
     expect(vm.$store.getters.getEntityStatus).toBe('FILED_INCORP_APP')

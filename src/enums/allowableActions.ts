@@ -1,4 +1,5 @@
 export enum AllowableActions {
+  ADD_DETAIL_COMMENT = 'addDetailComment',
   ADD_STAFF_COMMENT = 'addStaffComment',
   EDIT_BUSINESS_PROFILE = 'editBusinessProfile',
   DISSOLVE_COMPANY = 'dissolveCompany',

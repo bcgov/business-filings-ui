@@ -69,6 +69,7 @@
         </div>
     </div>
 </template>
+
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 
@@ -164,6 +165,6 @@ export default class StaffNotation extends Vue {
 }
 
 ::v-deep .theme--light.v-list-item--disabled {
-  opacity: 0.38 !important;
+    opacity: 0.38 !important;
 }
 </style>

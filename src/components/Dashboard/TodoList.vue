@@ -589,6 +589,7 @@ export default class TodoList extends Mixins(
   @Getter isCoop!: boolean
   @Getter isUlc!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter getBusinessId!: string
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter isInGoodStanding!: boolean
@@ -724,7 +725,7 @@ export default class TodoList extends Mixins(
     }
 
     // get filing's status
-    let url = `businesses/${this.getEntityIncNo}/filings/${id}`
+    let url = `businesses/${this.getBusinessId}/filings/${id}`
     this.fetchFiling(url).then(filing => {
       // if the filing is now COMPLETED, emit event to reload all data
       if (filing?.header?.status === FilingStatus.COMPLETED) {
@@ -878,7 +879,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -917,7 +918,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
 
       }
       this.todoItems.push(item)
@@ -959,7 +960,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -990,7 +991,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1020,7 +1021,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1056,7 +1057,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1107,7 +1108,7 @@ export default class TodoList extends Mixins(
         payErrorObj,
         isEmptyFiling: !haveData,
         nameRequest: this.nameRequest,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getBusinessId}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1128,12 +1129,6 @@ export default class TodoList extends Mixins(
         this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
-      // FUTURE: uncomment when/if we have NRs without a draft
-      // case FilingTypes.NAME_REQUEST:
-      //   // redirect to Create web app to create this Incorporation Application
-      //   const url = `${this.createUrl}?id=${this.tempRegNumber}`
-      //   window.location.assign(url) // assume URL is always reachable
-      //   break
       default:
         // eslint-disable-next-line no-console
         console.log('doFileNow(), invalid type for task =', item)
@@ -1169,7 +1164,7 @@ export default class TodoList extends Mixins(
       case FilingTypes.CORRECTION:
         if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
           // redirect to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${item.filingId}`
+          const correctionUrl = `${this.editUrl}${this.getBusinessId}/correction?correction-id=${item.filingId}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } else {
           // resume this Correction Filing
@@ -1188,13 +1183,13 @@ export default class TodoList extends Mixins(
 
       case FilingTypes.ALTERATION:
         // redirect to Edit web app to alter this company
-        const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.filingId}`
+        const alterationUrl = `${this.editUrl}${this.getBusinessId}/alteration?alteration-id=${item.filingId}`
         window.location.assign(alterationUrl) // assume URL is always reachable
         break
 
       case FilingTypes.DISSOLUTION:
         // redirect to Create web app to dissolve this company
-        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getEntityIncNo}`
+        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getBusinessId}`
         window.location.assign(dissolutionUrl) // assume URL is always reachable
         break
 
@@ -1283,7 +1278,7 @@ export default class TodoList extends Mixins(
   }
 
   private async doDeleteDraft (item: TodoItemIF, refreshDashboard: boolean = true): Promise<void> {
-    const id = this.getEntityIncNo || this.tempRegNumber
+    const id = this.getBusinessId || this.tempRegNumber
     const url = `businesses/${id}/filings/${item.filingId}`
 
     await axios.delete(url).then(res => {
@@ -1344,7 +1339,7 @@ export default class TodoList extends Mixins(
   }
 
   private async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
-    const url = `businesses/${this.getEntityIncNo}/filings/${item.filingId}`
+    const url = `businesses/${this.getBusinessId}/filings/${item.filingId}`
 
     await axios.patch(url, {}).then(res => {
       if (!res) { throw new Error('Invalid API response') }

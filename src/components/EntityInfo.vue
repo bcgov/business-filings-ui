@@ -25,8 +25,8 @@
             </div>
 
             <!-- Entity Type -->
-            <div v-if="entityDescription" id="entity-description">{{ entityDescription }}</div>
-            <div v-if="nrDescription" id="nr-subtitle">{{ nrDescription }}</div>
+            <div v-if="businessId" id="entity-description">{{ entityDescription }}</div>
+            <div v-if="tempRegNumber" id="nr-subtitle">{{ nrDescription }}</div>
           </header>
 
           <menu class="mt-4 ml-n4">
@@ -41,7 +41,7 @@
 
             <span v-if="isHistorical">
               <v-chip class="primary mt-n1 ml-4" small label text-color="white">HISTORICAL</v-chip>
-              <span class="font-14 ml-3">{{dissolutionText}}</span>
+              <span class="font-14 ml-3">{{historicalText}}</span>
             </span>
 
             <template v-else>
@@ -57,18 +57,13 @@
                   <span class="font-13 ml-1">View and Change Company Information</span>
                 </v-btn>
 
-                <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
+                <v-tooltip top content-class="pending-tooltip" v-if="isNotInCompliance">
                   <template v-slot:activator="{ on }">
                     <span class="pending-alert pr-2" v-on="on">
                       <v-icon color="orange darken-2">mdi-alert</v-icon>
                     </span>
                   </template>
-                  <template v-if="isPendingDissolution">
-                    You cannot view or change company information while the company is pending dissolution.
-                  </template>
-                  <template v-if="isNotInCompliance">
-                    You cannot view or change company information while the company is not in compliance.
-                  </template>
+                  You cannot view or change company information while the company is not in compliance.
                 </v-tooltip>
               </span>
 
@@ -121,13 +116,13 @@
             <!-- Business Number -->
             <template v-if="businessId">
               <dt class="mr-2">Business Number:</dt>
-              <dd id="entity-business-number">{{ entityBusinessNo || 'Not Available' }}</dd>
+              <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
             </template>
 
             <!-- Incorporation Number -->
             <template v-if="businessId">
               <dt class="mr-2">Incorporation Number:</dt>
-              <dd id="entity-incorporation-number">{{ getEntityIncNo || 'Not Available' }}</dd>
+              <dd id="entity-incorporation-number">{{ getBusinessId || 'Not Available' }}</dd>
             </template>
 
             <!-- NR Number -->
@@ -149,7 +144,6 @@
                   v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
                   small text color="primary"
                   id="change-email-button"
-                  :disabled="hasBlocker"
                 >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
@@ -170,7 +164,6 @@
                   v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
                   small text color="primary"
                   id="change-phone-button"
-                  :disabled="hasBlocker"
                 >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
@@ -188,7 +181,7 @@
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, EntityStatus, CorpTypeCd, Routes, DissolutionTypes } from '@/enums'
+import { AllowableActions, EntityStatus, CorpTypeCd, Routes, DissolutionTypes, FilingNames } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -199,15 +192,14 @@ import axios from '@/axios-auth'
 export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin) {
   @State ARFilingYear!: string
   @State entityStatus!: EntityStatus
-  @State entityBusinessNo!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
-  @State entityDissolutionDate!: Date
-  @State entityDissolutionType!: DissolutionTypes
+  @State historicalText!: string
 
+  @Getter getBusinessNumber!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter getEntityIncNo!: number
+  @Getter getBusinessId!: number
   @Getter getEntityName!: string
   @Getter isRoleStaff!: boolean
   @Getter isBComp!: boolean
@@ -217,7 +209,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Getter getNrNumber!: string
   @Getter hasBlocker!: boolean
   @Getter isInGoodStanding!: boolean
-  @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
   @Getter isHistorical!: boolean
 
@@ -265,15 +256,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The NR description. */
   private get nrDescription (): string {
-    return this.entityStatusToDescription(this.entityStatus, this.getEntityType)
-  }
-
-  /** The dissolution text. */
-  private get dissolutionText (): string {
-    const name = this.dissolutionTypeToName(this.entityDissolutionType)
-    const emDash = '—' // ALT + 0151
-    const date = this.dateToPacificDateTime(this.entityDissolutionDate)
-    return `${name} ${emDash} ${date}`
+    return `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.INCORPORATION_APPLICATION}`
   }
 
   /** The business phone number and optional extension. */
@@ -286,7 +269,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** Redirects the user to the Edit UI to view or change their company information. */
   private viewChangeCompanyInfo (): void {
-    const url = `${this.editUrl}${this.getEntityIncNo}/alteration`
+    const url = `${this.editUrl}${this.getBusinessId}/alteration`
     window.location.assign(url) // assume URL is always reachable
   }
 

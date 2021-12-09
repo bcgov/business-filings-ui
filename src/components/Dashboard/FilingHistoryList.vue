@@ -205,7 +205,7 @@
                         </v-list-item-title>
                       </v-list-item>
 
-                      <v-list-item>
+                      <v-list-item :disabled="!isAllowed(AllowableActions.ADD_DETAIL_COMMENT)">
                         <v-list-item-icon>
                           <v-icon class="app-blue">mdi-comment-plus</v-icon>
                         </v-list-item-icon>
@@ -380,6 +380,7 @@ export default class FilingHistoryList extends Mixins(
 
   @Getter isBComp!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter getBusinessId!: string
   @Getter getFilings!: Array<ApiFilingIF>
 
   @Action setIsCoaPending!: ActionBindingIF
@@ -397,6 +398,9 @@ export default class FilingHistoryList extends Mixins(
   private currentFiling: HistoryItemIF = null
   private loadingOneIndex = -1
   private isBusy = false
+
+  // enum for template
+  readonly AllowableActions = AllowableActions
 
   /** The Edit URL string. */
   private get editUrl (): string {
@@ -654,7 +658,7 @@ export default class FilingHistoryList extends Mixins(
 
           // create draft IA Correction filing
           const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-          const draftCorrection = await this.createFiling(this.getEntityIncNo, correctionIaFiling, true)
+          const draftCorrection = await this.createFiling(this.getBusinessId, correctionIaFiling, true)
           const draftCorrectionId = +draftCorrection?.header?.filingId
 
           if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
@@ -663,7 +667,7 @@ export default class FilingHistoryList extends Mixins(
 
           // redirect to Edit web app to correct this IA
           // NB: no need to clear spinner on redirect
-          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${draftCorrectionId}`
+          const correctionUrl = `${this.editUrl}${this.getBusinessId}/correction?correction-id=${draftCorrectionId}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } catch (error) {
           // clear spinner on error
@@ -786,7 +790,7 @@ export default class FilingHistoryList extends Mixins(
               if (prop === item.name) title = item.displayName
               else title = this.filingTypeToName(prop as FilingTypes, null, true)
               const date = this.dateToYyyyMmDd(item.submittedDate)
-              const filename = `${this.getEntityIncNo} ${title} - ${date}.pdf`
+              const filename = `${this.getBusinessId} ${title} - ${date}.pdf`
               const link = legalFiling[prop] as string
               pushDocument(title, filename, link)
             }
@@ -795,7 +799,7 @@ export default class FilingHistoryList extends Mixins(
           // this is a submission level output
           const title = this.camelCaseToWords(prop)
           const date = this.dateToYyyyMmDd(item.submittedDate)
-          const filename = `${this.getEntityIncNo} ${title} - ${date}.pdf`
+          const filename = `${this.getBusinessId} ${title} - ${date}.pdf`
           const link = documents[prop] as string
           pushDocument(title, filename, link)
         }
