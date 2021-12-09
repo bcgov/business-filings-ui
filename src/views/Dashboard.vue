@@ -9,13 +9,9 @@
 
     <v-container id="dashboard-container" class="view-container">
       <article id="dashboard-article">
-        <header>
-          <h1 data-test-id="dashboard-title">Dashboard</h1>
-        </header>
-
         <v-row>
           <v-col cols="12" md="9">
-            <section>
+            <section v-if="!isHistorical">
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-todo-subtitle">
                   <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
@@ -49,7 +45,18 @@
           </v-col>
 
           <v-col cols="12" md="3" style="position: relative">
-            <!-- FUTURE: add "Liquidator or Custodian of Records" here -->
+            <section v-if="isHistorical && getCustodians.length >= 1">
+              <header class="aside-header mb-3">
+                <h2 data-test-id="dashboard-custodians-subtitle">Custodian of Records</h2>
+              </header>
+              <div class="scrollable-container" style="max-height: 49rem">
+                <v-card flat>
+                  <CustodianListSm
+                    :custodians="getCustodians"
+                  />
+                </v-card>
+              </div>
+            </section>
 
             <section>
               <header class="aside-header mb-3">
@@ -125,6 +132,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
+import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
@@ -145,6 +153,7 @@ export default {
     TodoList,
     FilingHistoryList,
     AddressListSm,
+    CustodianListSm,
     DirectorListSm,
     LegalObligation,
     StaffNotation,
@@ -164,8 +173,7 @@ export default {
 
   computed: {
     ...mapState(['entityStatus']),
-
-    ...mapGetters(['isBComp', 'isHistorical', 'isCoaPending', 'getCoaEffectiveDate']),
+    ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate', 'getCustodians']),
 
     /** Whether this is a Draft Incorporation Application. */
     isIncorpAppTask (): boolean {
