@@ -60,8 +60,8 @@ export default {
   setGoodStanding ({ commit }, goodStanding: boolean) {
     commit('goodStanding', goodStanding)
   },
-  setHistoricalText ({ commit }, text: string) {
-    commit('historicalText', text)
+  setReasonText ({ commit }, text: string) {
+    commit('reasonText', text)
   },
   setBusinessEmail ({ commit }, businessEmail: string) {
     commit('businessEmail', businessEmail)

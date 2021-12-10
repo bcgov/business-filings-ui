@@ -212,11 +212,11 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020 at 04:00 pm Pacific time" (PST example)
    * @example "2021-07-01T00:00:00.000000+00:00" -> "Jun 30, 2021 at 05:00 pm Pacific time" (PDT example)
    */
-  apiToPacificDateTime (dateTimeString: string): string {
+  apiToPacificDateTime (dateTimeString: string, longMonth = false): string {
     if (!dateTimeString) return null // safety check
 
     const date = this.apiToDate(dateTimeString)
-    const dateStr = this.dateToPacificDate(date)
+    const dateStr = this.dateToPacificDate(date, longMonth)
     const timeStr = this.dateToPacificTime(date)
 
     return `${dateStr} at ${timeStr} Pacific time`

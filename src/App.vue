@@ -254,7 +254,7 @@ export default {
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
       'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject',
-      'setHistoricalText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings', 'setGoodStanding']),
+      'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings', 'setGoodStanding']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -500,14 +500,22 @@ export default {
       this.setGoodStanding(business.goodStanding)
 
       if (business.state === EntityState.HISTORICAL && business.stateFiling) {
+        // fetch the filing that changed the business state
         const stateFiling = await this.fetchFiling(business.stateFiling)
 
-        // *** TODO: implement this based on state filing data
-        // eg, Voluntary Dissolution - September 12, 2021 at 11:35 pm Pacific time
-        // eg, Administrative Dissolution - September 12, 2021 at 11:35 pm Pacific time
-        const name = this.dissolutionTypeToName(DissolutionTypes.VOLUNTARY)
-        const date: string = this.dateToPacificDateTime(new Date())
-        this.setHistoricalText(`${name} - ${date}`)
+        // parse it (specific to dissolution filing atm)
+        const dissolutionType = stateFiling?.dissolution?.dissolutionType as DissolutionTypes
+        const effectiveDate = stateFiling?.header?.effectiveDate as string
+
+        // create the reason text to display in the info header
+        if (dissolutionType && effectiveDate) {
+          const name = this.dissolutionTypeToName(dissolutionType)
+          const enDash = '–' // ALT + 0150
+          const date: string = this.apiToPacificDateTime(effectiveDate, true)
+          this.setReasonText(`${name} ${enDash} ${date}`)
+        } else {
+          console.log('ERROR - invalid dissolution filing =', stateFiling) // eslint-disable-line no-console
+        }
       }
 
       // store config object based on current entity type
@@ -719,7 +727,7 @@ export default {
       this.setConfigObject(configObject)
     },
 
-    /** Redirects the user to the Create UI to start a company dissolution filing. */
+    /** Creates a draft filing and redirects the user to the Create UI to start a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
       const draftDissolution = await this.createFiling(this.getIdentifier, dissolutionFiling, true)

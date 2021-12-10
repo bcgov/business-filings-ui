@@ -27,7 +27,7 @@ export interface StateIF {
   entityStatus: EntityStatus
   entityType: CorpTypeCd
   goodStanding: boolean
-  historicalText: string
+  reasonText: string
   lastAnnualReportDate: string // YYYY-MM-DD
   lastAddressChangeDate: string // YYYY-MM-DD
   lastDirectorChangeDate: string // YYYY-MM-DD

@@ -41,7 +41,7 @@
 
             <span v-if="isHistorical">
               <v-chip class="primary mt-n1 ml-4" small label text-color="white">HISTORICAL</v-chip>
-              <span class="font-14 ml-3">{{historicalText}}</span>
+              <span class="font-14 ml-3">{{reasonText || 'Unknown Reason'}}</span>
             </span>
 
             <template v-else>
@@ -57,7 +57,7 @@
                   <span class="font-13 ml-1">View and Change Company Information</span>
                 </v-btn>
 
-                <!-- *** TODO: do something with goodStanding flag:
+                <!-- *** TODO:
                   Good Standing - we allow the user to click the Change Company
                   Information and Dissolve this Company buttons in the tombstones,
                   but each would open the “Not in Good Standing” modal. (we still
@@ -209,7 +209,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
-  @State historicalText!: string
+  @State reasonText!: string
 
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: CorpTypeCd
@@ -454,5 +454,9 @@ dd:not(:hover) > button {
 #dissolution-button,
 #download-summary-button {
   margin-top: -4px; // for vertical alignment
+}
+
+::v-deep .v-chip__content {
+  letter-spacing: 0.5px;
 }
 </style>

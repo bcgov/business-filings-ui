@@ -60,8 +60,8 @@ export default {
   goodStanding (state: StateIF, goodStanding: boolean) {
     state.goodStanding = goodStanding
   },
-  historicalText (state: StateIF, text: string) {
-    state.historicalText = text
+  reasonText (state: StateIF, text: string) {
+    state.reasonText = text
   },
   businessEmail (state: StateIF, businessEmail: string) {
     state.businessEmail = businessEmail

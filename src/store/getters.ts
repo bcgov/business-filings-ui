@@ -127,7 +127,7 @@ export default {
     return (state.entityState === EntityState.ACTIVE)
   },
 
-  /** Is True if business is historical (dissolved). */
+  /** Is True if business is historical (ie, dissolved). */
   isHistorical (state: StateIF): boolean {
     return (state.entityState === EntityState.HISTORICAL)
   },
