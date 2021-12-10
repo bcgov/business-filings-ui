@@ -1,73 +1,76 @@
 <template>
-    <div id="staff-notation" class="pr-6" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
-        <AddStaffNotationDialog
-            :dialog="isAddingRegistrarsNotation"
-            @close="hideRegistrarsNotationDialog($event)"
-            attach="#staff-notation"
-            displayName="Registrar's Notation"
-            name="registrarsNotation"
-        />
-        <AddStaffNotationDialog
-            :dialog="isAddingRegistrarsOrder"
-            @close="hideRegistrarsOrderDialog($event)"
-            attach="#staff-notation"
-            displayName="Registrar's Order"
-            name="registrarsOrder"
-        />
-        <AddStaffNotationDialog
-            :dialog="isAddingCourtOrder"
-            @close="hideCourtOrderDialog($event)"
-            attach="#staff-notation"
-            displayName="Court Order"
-            name="courtOrder"
-            courtOrderNumberRequired="true"
-        />
-        <div class="filing-item__actions">
-            <v-menu offset-y left transition="slide-y-transition" v-model="expand">
-                <template v-slot:activator="{ on }">
-                    <span><!-- This span is needed to fix a positioning issue with the menu -->
-                        <span
-                            v-on="on"
-                            id="add-staff-filing-label"
-                            class="app-blue"
-                            @click="expand = !expand"
-                        >
-                            <v-icon id="add-staff-filing-icon" class="app-blue">mdi-plus</v-icon>
-                            <span>Add Staff Filing</span>
-                        </span>
-                        <v-btn
-                            text
-                            v-on="on"
-                            class="menu-btn"
-                            :class="{active: expand}"
-                            @click="expand = !expand"
-                        >
-                            <v-icon>mdi-menu-down</v-icon>
-                        </v-btn>
-                    </span>
-                </template>
-                <v-list dense>
-                    <v-list-item-group color="primary">
-                        <v-list-item @click="showRegistrarsNotationDialog()" :disabled="disabled">
-                            <v-list-item-title>
-                                <span class="app-blue">Add Registrar's Notation</span>
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="showRegistrarsOrderDialog()" :disabled="disabled">
-                            <v-list-item-title>
-                                <span class="app-blue">Add Registrar's Order</span>
-                            </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item @click="showCourtOrderDialog()" :disabled="disabled">
-                            <v-list-item-title>
-                                <span class="app-blue">Add Court Order</span>
-                            </v-list-item-title>
-                        </v-list-item>
-                    </v-list-item-group>
-                </v-list>
-            </v-menu>
-        </div>
+  <div id="staff-notation" class="pr-6" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
+    <AddStaffNotationDialog
+      :dialog="isAddingRegistrarsNotation"
+      @close="hideRegistrarsNotationDialog($event)"
+      attach="#staff-notation"
+      displayName="Registrar's Notation"
+      name="registrarsNotation"
+    />
+
+    <AddStaffNotationDialog
+      :dialog="isAddingRegistrarsOrder"
+      @close="hideRegistrarsOrderDialog($event)"
+      attach="#staff-notation"
+      displayName="Registrar's Order"
+      name="registrarsOrder"
+    />
+
+    <AddStaffNotationDialog
+      :dialog="isAddingCourtOrder"
+      @close="hideCourtOrderDialog($event)"
+      attach="#staff-notation"
+      displayName="Court Order"
+      name="courtOrder"
+      courtOrderNumberRequired="true"
+    />
+
+    <div class="filing-item__actions">
+      <v-menu offset-y left transition="slide-y-transition" v-model="expand">
+        <template v-slot:activator="{ on }">
+          <span><!-- This span is needed to fix a positioning issue with the menu -->
+            <span
+              v-on="on"
+              id="add-staff-filing-label"
+              class="app-blue"
+              @click="expand = !expand"
+            >
+              <v-icon id="add-staff-filing-icon" class="app-blue">mdi-plus</v-icon>
+              <span>Add Staff Filing</span>
+            </span>
+            <v-btn
+              text
+              v-on="on"
+              class="menu-btn"
+              :class="{active: expand}"
+              @click="expand = !expand"
+            >
+              <v-icon>mdi-menu-down</v-icon>
+            </v-btn>
+          </span>
+        </template>
+        <v-list dense>
+          <v-list-item-group color="primary">
+            <v-list-item @click="showRegistrarsNotationDialog()" :disabled="disabled">
+              <v-list-item-title>
+                <span class="app-blue">Add Registrar's Notation</span>
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="showRegistrarsOrderDialog()" :disabled="disabled">
+              <v-list-item-title>
+                <span class="app-blue">Add Registrar's Order</span>
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="showCourtOrderDialog()" :disabled="disabled">
+              <v-list-item-title>
+                <span class="app-blue">Add Court Order</span>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -94,20 +97,25 @@ export default class StaffNotation extends Vue {
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
   }
+
   hideRegistrarsNotationDialog (needReload: boolean): void {
     this.isAddingRegistrarsNotation = false
     this.close(needReload)
   }
+
   showRegistrarsOrderDialog (): void {
     this.isAddingRegistrarsOrder = true
   }
+
   hideRegistrarsOrderDialog (needReload: boolean): void {
     this.isAddingRegistrarsOrder = false
     this.close(needReload)
   }
+
   showCourtOrderDialog (): void {
     this.isAddingCourtOrder = true
   }
+
   hideCourtOrderDialog (needReload: boolean): void {
     this.isAddingCourtOrder = false
     this.close(needReload)
@@ -124,47 +132,47 @@ export default class StaffNotation extends Vue {
 @import "@/assets/styles/theme.scss";
 
 #add-staff-filing-label {
-    padding-right: 0.725rem;
-    font-size: $px-14;
-    border-right: 1px solid $gray3;
+  padding-right: 0.725rem;
+  font-size: $px-14;
+  border-right: 1px solid $gray3;
 
-    &:hover {
-      cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 // This class will be applied when addScrollbarOffset prop is true.
 // This is necessary to align with FilingHistoryList component that may have an active scroll bar.
 .add-scrollbar-offset {
-    overflow-y: scroll;
-    scrollbar-color: transparent transparent; // FireFox uses this property
+  overflow-y: scroll;
+  scrollbar-color: transparent transparent; // FireFox uses this property
 
-    // Webkit browsers use ::-webkit-scrollbar pseudo element
-    &::-webkit-scrollbar {
-        background: transparent;
-    }
+  // Webkit browsers use ::-webkit-scrollbar pseudo element
+  &::-webkit-scrollbar {
+    background: transparent;
+  }
 }
 
 // Fix the transparent added by .add-scrollbar-offset (Firefox only).
 ::v-deep .add-notation-dialog {
-    scrollbar-color: auto;
+  scrollbar-color: auto;
 }
 
 #add-staff-filing-icon {
-    font-size: 1.2rem;
-    padding: 0.2rem;
-    margin-bottom: 0.2rem;
+  font-size: 1.2rem;
+  padding: 0.2rem;
+  margin-bottom: 0.2rem;
 }
 
 #app > div.v-menu__content {
-    margin: 0.625rem 0 0 0;
+  margin: 0.625rem 0 0 0;
 }
 
 .v-btn.active .v-icon {
-    transform: rotate(-180deg);
+  transform: rotate(-180deg);
 }
 
 ::v-deep .theme--light.v-list-item--disabled {
-    opacity: 0.38 !important;
+  opacity: 0.38 !important;
 }
 </style>
