@@ -1,7 +1,7 @@
 <template>
   <div id="address-list-sm">
     <!-- when "disabled", expand all panels and disable expansion -->
-    <v-expansion-panels accordion multiple :value="disabled ? [0,1] : [0]" :disabled="disabled">
+    <v-expansion-panels accordion multiple :value="expansionValue" :disabled="disabled">
       <!-- Registered Office -->
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
@@ -226,12 +226,25 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   @Getter isBComp!: boolean
   @Getter isCorp!: boolean
   @Getter isCoaPending!: boolean
+  @Getter isHistorical!: boolean
   @State registeredAddress!: OfficeAddressIF
   @State recordsAddress!: OfficeAddressIF
 
   /** Whether to appear disabled. */
   private get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
+  }
+
+  /** Value indicating open or closed state of accordion. */
+  private get expansionValue (): Array<number> {
+    const OPEN_PANEL = 0
+    const CLOSE_PANEL = 1
+
+    if (this.isHistorical) {
+      return [] // All panels closed by default
+    } else if (this.disabled) {
+      return [OPEN_PANEL, CLOSE_PANEL]
+    } else return [OPEN_PANEL]
   }
 }
 </script>

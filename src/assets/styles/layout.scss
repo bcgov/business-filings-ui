@@ -75,7 +75,10 @@
 
 // Scrollable Container
 .scrollable-container {
-  overflow-y:scroll;
+  overflow-y: hidden;
+  &:hover {
+    overflow-y: auto;
+  }
 }
 
 // Hide scrollbar for Chrome, Safari and Opera
