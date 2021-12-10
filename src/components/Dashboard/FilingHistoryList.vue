@@ -380,7 +380,7 @@ export default class FilingHistoryList extends Mixins(
 
   @Getter isBComp!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter getBusinessId!: string
+  @Getter getIdentifier!: string
   @Getter getFilings!: Array<ApiFilingIF>
 
   @Action setIsCoaPending!: ActionBindingIF
@@ -658,7 +658,7 @@ export default class FilingHistoryList extends Mixins(
 
           // create draft IA Correction filing
           const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-          const draftCorrection = await this.createFiling(this.getBusinessId, correctionIaFiling, true)
+          const draftCorrection = await this.createFiling(this.getIdentifier, correctionIaFiling, true)
           const draftCorrectionId = +draftCorrection?.header?.filingId
 
           if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
@@ -667,7 +667,7 @@ export default class FilingHistoryList extends Mixins(
 
           // redirect to Edit web app to correct this IA
           // NB: no need to clear spinner on redirect
-          const correctionUrl = `${this.editUrl}${this.getBusinessId}/correction?correction-id=${draftCorrectionId}`
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction?correction-id=${draftCorrectionId}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } catch (error) {
           // clear spinner on error
@@ -790,7 +790,7 @@ export default class FilingHistoryList extends Mixins(
               if (prop === item.name) title = item.displayName
               else title = this.filingTypeToName(prop as FilingTypes, null, true)
               const date = this.dateToYyyyMmDd(item.submittedDate)
-              const filename = `${this.getBusinessId} ${title} - ${date}.pdf`
+              const filename = `${this.getIdentifier} ${title} - ${date}.pdf`
               const link = legalFiling[prop] as string
               pushDocument(title, filename, link)
             }
@@ -799,7 +799,7 @@ export default class FilingHistoryList extends Mixins(
           // this is a submission level output
           const title = this.camelCaseToWords(prop)
           const date = this.dateToYyyyMmDd(item.submittedDate)
-          const filename = `${this.getBusinessId} ${title} - ${date}.pdf`
+          const filename = `${this.getIdentifier} ${title} - ${date}.pdf`
           const link = documents[prop] as string
           pushDocument(title, filename, link)
         }
@@ -857,7 +857,9 @@ export default class FilingHistoryList extends Mixins(
       this.isStatusCorrected(item) ||
       this.isTypeAlteration(item) ||
       this.isTypeCorrection(item) ||
-      this.isTypeTransition(item)
+      this.isTypeTransition(item) ||
+      // at the moment, only BEN IA corrections are supported:
+      (this.isTypeIncorporationApplication(item) && !this.isBComp)
     )
   }
 

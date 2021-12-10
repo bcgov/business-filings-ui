@@ -108,11 +108,12 @@ import {
 import { configJson } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
-import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin }
-  from '@/mixins'
+import {
+  AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin
+} from '@/mixins'
 import { ApiFilingIF, ApiTaskIF, BusinessIF, TaskTodoIF } from '@/interfaces'
 import {
-  EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState
+  EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState, DissolutionTypes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -167,7 +168,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getBusinessId', 'getEntityName', 'getEntityType']),
+    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
@@ -250,10 +251,10 @@ export default {
   methods: {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
-      'setEntityStatus', 'setBusinessNumber', 'setBusinessId', 'setEntityFoundingDate', 'setTasks',
+      'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
       'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject',
-      'setHistoricalText', 'setEntityState', 'setComplianceWarnings']),
+      'setHistoricalText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings', 'setGoodStanding']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -484,23 +485,19 @@ export default {
         console.error('WARNING: Legal Type in Legal db does not match Corp Type in Auth db!')
       }
 
+      // FUTURE: change this to a single setter/object?
+      this.setAdminFreeze(business.adminFreeze || false) // *** TODO: remove after API update
       this.setEntityName(business.legalName)
-      this.setEntityState(business.state)
+      this.setEntityState(business.state || EntityState.ACTIVE) // *** TODO: remove after API update
       this.setEntityType(business.legalType)
-      this.setBusinessNumber(business.taxId) // may be empty
-      this.setBusinessId(business.identifier)
+      this.setBusinessNumber(business.taxId || null) // may be empty
+      this.setIdentifier(business.identifier)
       this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
       this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
       this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
       this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
-
-      // *** TODO: how do we know if a business is Not In Compliance?
-      if (business.complianceWarnings?.length > 0) {
-        this.setComplianceWarnings(business.complianceWarnings)
-        this.setEntityStatus(EntityStatus.NOT_IN_COMPLIANCE)
-      } else {
-        this.setEntityStatus(business.goodStanding ? EntityStatus.GOOD_STANDING : EntityStatus.NOT_IN_COMPLIANCE)
-      }
+      this.setComplianceWarnings(Array.isArray(business.complianceWarnings) ? business.complianceWarnings : [])
+      this.setGoodStanding(business.goodStanding)
 
       if (business.state === EntityState.HISTORICAL && business.stateFiling) {
         const stateFiling = await this.fetchFiling(business.stateFiling)
@@ -508,7 +505,7 @@ export default {
         // *** TODO: implement this based on state filing data
         // eg, Voluntary Dissolution - September 12, 2021 at 11:35 pm Pacific time
         // eg, Administrative Dissolution - September 12, 2021 at 11:35 pm Pacific time
-        const name = 'Voluntary Dissolution' // this.dissolutionTypeToName(this.entityDissolutionType)
+        const name = this.dissolutionTypeToName(DissolutionTypes.VOLUNTARY)
         const date: string = this.dateToPacificDateTime(new Date())
         this.setHistoricalText(`${name} - ${date}`)
       }
@@ -551,7 +548,7 @@ export default {
       }
 
       // store business info
-      this.setBusinessId(identifier)
+      this.setIdentifier(identifier)
       this.setEntityType(legalType)
 
       // store NR Number if present
@@ -725,14 +722,14 @@ export default {
     /** Redirects the user to the Create UI to start a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
-      const draftDissolution = await this.createFiling(this.getBusinessId, dissolutionFiling, true)
+      const draftDissolution = await this.createFiling(this.getIdentifier, dissolutionFiling, true)
       const draftDissolutionId = +draftDissolution?.header?.filingId
 
       if (!draftDissolution || isNaN(draftDissolutionId)) {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUrl}define-dissolution?id=${this.getBusinessId}`
+      const url = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
       window.location.assign(url) // assume URL is always reachable
     },
 

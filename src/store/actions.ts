@@ -1,4 +1,4 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes, EntityState } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
 import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, ComplianceWarning }
   from '@/interfaces'
 
@@ -24,14 +24,17 @@ export default {
   setARFilingYear ({ commit }, year: number) {
     commit('ARFilingYear', year)
   },
-  setArMinDate ({ commit }, date: string) {
-    commit('arMinDate', date)
+  setAdminFreeze ({ commit }, adminFreeze: boolean) {
+    commit('adminFreeze', adminFreeze)
   },
   setArMaxDate ({ commit }, date: string) {
     commit('arMaxDate', date)
   },
-  setBusinessId ({ commit }, businessId: string) {
-    commit('businessId', businessId)
+  setArMinDate ({ commit }, date: string) {
+    commit('arMinDate', date)
+  },
+  setIdentifier ({ commit }, identifier: string) {
+    commit('identifier', identifier)
   },
   setBusinessNumber ({ commit }, businessNumber: string) {
     commit('businessNumber', businessNumber)
@@ -53,6 +56,9 @@ export default {
   },
   setEntityType ({ commit }, entityType: CorpTypeCd) {
     commit('entityType', entityType)
+  },
+  setGoodStanding ({ commit }, goodStanding: boolean) {
+    commit('goodStanding', goodStanding)
   },
   setHistoricalText ({ commit }, text: string) {
     commit('historicalText', text)

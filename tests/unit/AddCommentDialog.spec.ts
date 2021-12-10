@@ -31,7 +31,6 @@ describe('AddCommentDialog', () => {
         vuetify
       })
     const vm: any = wrapper.vm
-    Vue.nextTick()
 
     expect(wrapper.find('#dialog-title').text()).toBe('Add Detail')
     expect(wrapper.find(DetailComment).exists()).toBe(true)

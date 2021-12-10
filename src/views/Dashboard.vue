@@ -126,7 +126,7 @@
 
 <script lang="ts">
 // Libraries
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 // Components and Dialogs
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -139,7 +139,7 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
 
 // Enums and Interfaces
-import { EntityStatus, FilingStatus, Routes, AllowableActions } from '@/enums'
+import { FilingStatus, Routes, AllowableActions } from '@/enums'
 
 // Mixins
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
@@ -172,18 +172,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['entityStatus']),
-    ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate', 'getCustodians']),
-
-    /** Whether this is a Draft Incorporation Application. */
-    isIncorpAppTask (): boolean {
-      return (this.entityStatus === EntityStatus.DRAFT_INCORP_APP)
-    },
-
-    /** Whether this is a Paid or Completed Incorporation Application. */
-    isIncorpAppFiling (): boolean {
-      return (this.entityStatus === EntityStatus.FILED_INCORP_APP)
-    },
+    ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
+      'isIncorpAppTask', 'isIncorpAppFiling']),
 
     /** The Business ID string. */
     businessId (): string {

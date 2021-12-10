@@ -43,11 +43,11 @@ export default {
   },
 
   /** The business identifier (aka Incorporation Number). */
-  getBusinessId (state: StateIF): string {
-    return state.businessId
+  getIdentifier (state: StateIF): string {
+    return state.identifier
   },
 
-  /** The entity business number. */
+  /** The business number (aka Tax ID). */
   getBusinessNumber (state: StateIF): string {
     return state.businessNumber
   },
@@ -97,14 +97,29 @@ export default {
     return state.authRoles.includes('view')
   },
 
+  /** Is True if business is pending dissolution. */
+  isPendingDissolution (state: StateIF): boolean {
+    return false // FUTURE: implement this
+  },
+
   /** Is True if business is in good standing. */
-  isInGoodStanding (state: StateIF): boolean {
-    return (state.entityStatus === EntityStatus.GOOD_STANDING)
+  isGoodStanding (state: StateIF): boolean {
+    return state.goodStanding
   },
 
   /** Is True if business is not in compliance. */
   isNotInCompliance (state: StateIF): boolean {
-    return (state.entityStatus === EntityStatus.NOT_IN_COMPLIANCE)
+    return (state.complianceWarnings.length > 0)
+  },
+
+  /** Is True if this is a Draft Incorporation Application. */
+  isIncorpAppTask (state: StateIF): boolean {
+    return (state.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+  },
+
+  /** Is True if this is a Paid or Completed Incorporation Application. */
+  isIncorpAppFiling (state: StateIF): boolean {
+    return (state.entityStatus === EntityStatus.FILED_INCORP_APP)
   },
 
   /** Is True if business is active. */

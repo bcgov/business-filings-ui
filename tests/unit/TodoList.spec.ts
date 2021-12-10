@@ -1593,7 +1593,7 @@ describe('TodoList - Click Tests', () => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.businessId = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
 
     // mock the window.location.assign function
@@ -1929,7 +1929,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.businessId = 'BC0007291'
+    store.state.identifier = 'BC0007291'
 
     // mock the window.location.assign function
     delete window.location
@@ -2298,7 +2298,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.businessId = 'BC1234567'
+    store.state.identifier = 'BC1234567'
     // init draft Correction filing task
     store.state.tasks = [
       {
@@ -2357,8 +2357,8 @@ describe('TodoList - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.businessId = 'BC1234567'
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.identifier = 'BC1234567'
+    store.state.goodStanding = true
     store.state.entityType = 'BEN'
     store.state.tasks = [
       {
@@ -2563,7 +2563,7 @@ describe('TodoList - Delete Draft', () => {
     // init
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.businessId = 'T123456789'
+    store.state.identifier = 'T123456789'
     store.state.entityType = 'BEN'
     store.state.entityStatus = 'DRAFT_INCORP_APP'
     store.state.tasks = [

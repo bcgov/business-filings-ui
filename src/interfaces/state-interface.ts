@@ -1,4 +1,4 @@
-import { EntityState, CorpTypeCd, DissolutionTypes, EntityStatus, FilingStatus } from '@/enums'
+import { EntityState, CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, ComplianceWarning, DirectorIF, FilingDataIF, OfficeAddressIF }
   from '@/interfaces'
 
@@ -17,7 +17,8 @@ export interface StateIF {
   businessPhoneExtension: string
 
   // business info
-  businessId: string
+  adminFreeze: boolean
+  identifier: string
   businessNumber: string
   complianceWarnings: Array<ComplianceWarning>
   entityFoundingDate: Date
@@ -25,6 +26,7 @@ export interface StateIF {
   entityState: EntityState
   entityStatus: EntityStatus
   entityType: CorpTypeCd
+  goodStanding: boolean
   historicalText: string
   lastAnnualReportDate: string // YYYY-MM-DD
   lastAddressChangeDate: string // YYYY-MM-DD

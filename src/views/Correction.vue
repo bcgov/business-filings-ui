@@ -261,7 +261,7 @@ export default {
   computed: {
     ...mapState(['entityFoundingDate', 'filingData']),
 
-    ...mapGetters(['isRoleStaff', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getBusinessId']),
+    ...mapGetters(['isRoleStaff', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getIdentifier']),
 
     /** Returns True if loading container should be shown, else False. */
     showLoadingContainer (): boolean {
@@ -362,7 +362,7 @@ export default {
     this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
 
     // if required data isn't set, go back to dashboard
-    if (!this.getBusinessId || isNaN(this.correctedFilingId)) {
+    if (!this.getIdentifier || isNaN(this.correctedFilingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   },
@@ -430,7 +430,7 @@ export default {
 
     /** Fetches the draft correction filing. */
     async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.getBusinessId}/filings/${this.filingId}`
+      const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
       await axios.get(url).then(res => {
         const filing: any = res?.data?.filing
 
@@ -441,7 +441,7 @@ export default {
         if (!filing.correction) throw new Error('Missing correction')
         if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
         if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-        if (filing.business.identifier !== this.getBusinessId) throw new Error('Invalid business identifier')
+        if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
         if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // load Certified By (but not Date)
@@ -484,7 +484,7 @@ export default {
 
     /** Fetches the original filing to correct. */
     async fetchOrigFiling (): Promise<void> {
-      const url = `businesses/${this.getBusinessId}/filings/${this.correctedFilingId}`
+      const url = `businesses/${this.getIdentifier}/filings/${this.correctedFilingId}`
       await axios.get(url).then(res => {
         this.origFiling = res?.data?.filing
 
@@ -493,7 +493,7 @@ export default {
         if (!this.origFiling.header) throw new Error('Missing header')
         if (!this.origFiling.business) throw new Error('Missing business')
         if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
-        if (this.origFiling.business.identifier !== this.getBusinessId) throw new Error('Invalid business identifier')
+        if (this.origFiling.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
         if (this.origFiling.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
         // FUTURE:
@@ -567,7 +567,7 @@ export default {
     async saveFiling (isDraft): Promise<any> {
       this.resetErrors()
 
-      const hasPendingFilings: boolean = await this.hasTasks(this.getBusinessId)
+      const hasPendingFilings: boolean = await this.hasTasks(this.getIdentifier)
       if (hasPendingFilings) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
@@ -609,7 +609,7 @@ export default {
       const business: any = {
         business: {
           foundingDate: this.dateToApi(this.entityFoundingDate),
-          identifier: this.getBusinessId,
+          identifier: this.getIdentifier,
           legalName: this.getEntityName,
           legalType: this.getEntityType
         }
@@ -644,12 +644,12 @@ export default {
 
         if (this.filingId > 0) {
           // we have a filing id, so update (put) an existing filing
-          let url = `businesses/${this.getBusinessId}/filings/${this.filingId}`
+          let url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
           if (isDraft) { url += '?draft=true' }
           response = await axios.put(url, data)
         } else {
           // filing id is 0, so create (post) a new filing
-          let url = `businesses/${this.getBusinessId}/filings`
+          let url = `businesses/${this.getIdentifier}/filings`
           if (isDraft) { url += '?draft=true' }
           response = await axios.post(url, data)
         }

@@ -15,13 +15,14 @@ export interface ComplianceWarning {
 
 /** The Business object from the API. */
 export interface BusinessIF {
+  adminFreeze: boolean
   arMaxDate: isoDatePacific // not used
   arMinDate: isoDatePacific // not used
   complianceWarnings?: Array<ComplianceWarning>
   fiscalYearEndDate: isoDatePacific // not used
   foundingDate: apiDateTimeUtc
-  goodStanding?: boolean
-  hasRestrictions: boolean
+  goodStanding: boolean
+  hasRestrictions: boolean // FUTURE: is this obsolete???
   identifier: string
   lastAddressChangeDate: isoDatePacific
   lastAnnualGeneralMeetingDate: isoDatePacific // not used
@@ -35,5 +36,5 @@ export interface BusinessIF {
   taxId?: string // aka Business Number // may be undefined
   state: EntityState
   stateFiling?: string
-  submitter?: string // not used
+  submitter: string // not used
 }

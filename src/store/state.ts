@@ -11,7 +11,8 @@ export const state: StateIF = {
   businessPhone: null,
   businessPhoneExtension: null,
 
-  businessId: null,
+  adminFreeze: null,
+  identifier: null,
   businessNumber: null,
   complianceWarnings: [],
   entityName: null,
@@ -19,6 +20,7 @@ export const state: StateIF = {
   entityState: null,
   entityStatus: null,
   entityFoundingDate: null,
+  goodStanding: null,
   historicalText: null,
   lastAnnualReportDate: null,
   lastAddressChangeDate: null,

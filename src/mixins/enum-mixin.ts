@@ -1,10 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import {
-  CorpTypeCd,
   DissolutionNames,
   DissolutionTypes,
   EffectOfOrderTypes,
-  EntityStatus,
   FilingNames,
   FilingStatus,
   FilingTypes,
@@ -221,6 +219,9 @@ export default class EnumMixin extends Vue {
    * @returns the dissolution name
    */
   dissolutionTypeToName (type: DissolutionTypes): string {
-    return DissolutionNames[type as string]
+    switch (type) {
+      case DissolutionTypes.VOLUNTARY: return DissolutionNames.VOLUNTARY
+      default: return null
+    }
   }
 }

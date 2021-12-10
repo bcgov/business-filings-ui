@@ -20,10 +20,10 @@ describe('EntityInfo - data', () => {
 
     // set store properties
     store.state.entityName = 'My Business'
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.goodStanding = true
     store.state.entityType = 'CP'
     store.state.businessNumber = '123456789'
-    store.state.businessId = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
     store.state.businessPhoneExtension = '444'
@@ -115,7 +115,7 @@ describe('EntityInfo - data', () => {
     store.state.entityType = null
     store.state.entityStatus = null
     store.state.businessNumber = null
-    store.state.businessId = null
+    store.state.identifier = null
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
@@ -136,18 +136,18 @@ describe('EntityInfo - data', () => {
 })
 
 describe('EntityInfo - company info button and tooltip', () => {
-  const params = [
+  const variations = [
     {
       businessId: 'CP1234567',
       entityType: 'CP',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: false,
       tooltipExists: false
     },
     {
       businessId: 'BC1234567',
       entityType: 'BEN',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: true,
       buttonDisabled: undefined,
       tooltipExists: false
@@ -155,7 +155,7 @@ describe('EntityInfo - company info button and tooltip', () => {
     {
       businessId: 'BC1234567',
       entityType: 'BC',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: true,
       buttonDisabled: undefined,
       tooltipExists: false
@@ -163,7 +163,7 @@ describe('EntityInfo - company info button and tooltip', () => {
     {
       businessId: 'BC1234567',
       entityType: 'ULC',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: true,
       buttonDisabled: undefined,
       tooltipExists: false
@@ -171,7 +171,7 @@ describe('EntityInfo - company info button and tooltip', () => {
     {
       businessId: 'BC1234567',
       entityType: 'BEN',
-      entityStatus: 'NOTINCOMPLIANCE',
+      complianceWarnings: [{}, {}],
       buttonExists: true,
       buttonDisabled: 'true',
       tooltipExists: true,
@@ -197,34 +197,37 @@ describe('EntityInfo - company info button and tooltip', () => {
       businessId: null,
       tempRegNumber: null,
       entityType: null,
+      goodStanding: false,
+      complianceWarnings: null,
       entityStatus: null,
       buttonExists: false,
       tooltipExists: false
     }
   ]
 
-  // eslint-disable-next-line max-len
-  params.forEach(({ businessId, tempRegNumber, entityType, entityStatus, buttonExists, buttonDisabled, tooltipExists, tooltipContains }) => {
-    it(`displays properly for a ${entityType} in ${entityStatus}`, async () => {
+  variations.forEach((_, index) => {
+    it(`displays company info button and tooltips properly - variation #${index}`, async () => {
       sessionStorage.clear()
-      if (businessId) sessionStorage.setItem('BUSINESS_ID', businessId)
-      if (tempRegNumber) sessionStorage.setItem('TEMP_REG_NUMBER', tempRegNumber)
+      if (_.businessId) sessionStorage.setItem('BUSINESS_ID', _.businessId)
+      if (_.tempRegNumber) sessionStorage.setItem('TEMP_REG_NUMBER', _.tempRegNumber)
 
-      store.state.entityType = entityType
-      store.state.entityStatus = entityStatus
+      store.state.entityType = _.entityType
+      store.state.goodStanding = _.goodStanding || false
+      store.state.complianceWarnings = _.complianceWarnings || []
+      store.state.entityStatus = _.entityStatus || null
 
       const wrapper = shallowMount(EntityInfo, { store, vuetify })
       await Vue.nextTick()
 
       // verify button
       const companyInformationButton = wrapper.find('#company-information-button')
-      expect(companyInformationButton.exists()).toBe(buttonExists)
-      if (buttonExists) expect(companyInformationButton.attributes('disabled')).toBe(buttonDisabled)
+      expect(companyInformationButton.exists()).toBe(_.buttonExists)
+      if (_.buttonExists) expect(companyInformationButton.attributes('disabled')).toBe(_.buttonDisabled)
 
       // verify tooltip
       const vTooltipStub = wrapper.find('v-tooltip-stub')
-      expect(vTooltipStub.exists()).toBe(tooltipExists)
-      if (tooltipExists) expect(vTooltipStub.text()).toContain(tooltipContains)
+      expect(vTooltipStub.exists()).toBe(_.tooltipExists)
+      if (_.tooltipExists) expect(vTooltipStub.text()).toContain(_.tooltipContains)
     })
   })
 })
@@ -345,8 +348,8 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.businessId = 'BC1234567'
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.identifier = 'BC1234567'
+    store.state.goodStanding = true
     store.state.entityType = 'BEN'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
@@ -386,7 +389,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
   })
 
   it('prompts the Confirm Dissolution dialog if in good standing', async () => {
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.goodStanding = true
     const router = mockRouter.mock()
 
     // mount the component and wait for everything to stabilize
@@ -406,7 +409,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
   })
 
   it('prompts the Not In Good Standing dialog', async () => {
-    store.state.entityStatus = ''
+    store.state.goodStanding = false
     const router = mockRouter.mock()
 
     // mount the component and wait for everything to stabilize

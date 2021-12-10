@@ -16,7 +16,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
 
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter getBusinessId!: string
+  @Getter getIdentifier!: string
   @Getter getEntityFoundingDate!: Date
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
 
@@ -129,13 +129,13 @@ export default class FilingMixin extends Mixins(DateMixin) {
       },
       business: {
         legalType: this.getEntityType,
-        identifier: this.getBusinessId,
+        identifier: this.getIdentifier,
         legalName: this.entityName,
         foundingDate: this.dateToApi(this.getEntityFoundingDate)
       },
       dissolution: {
         custodialOffice: this.getRegisteredOfficeAddress,
-        dissolutionType: DissolutionTypes.VOLUNTARY // To be applied dynamically when we have dissolution variations.
+        dissolutionType: DissolutionTypes.VOLUNTARY // FUTURE: apply dynamically when we have dissolution variations
       }
     }
 

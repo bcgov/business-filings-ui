@@ -1,4 +1,4 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes, EntityState } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
 import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, ComplianceWarning }
   from '@/interfaces'
 
@@ -24,14 +24,17 @@ export default {
   ARFilingYear (state: StateIF, year: number) {
     state.ARFilingYear = year
   },
-  arMinDate (state: StateIF, date: string) {
-    state.arMinDate = date
+  adminFreeze (state: StateIF, adminFreeze: boolean) {
+    state.adminFreeze = adminFreeze
   },
   arMaxDate (state: StateIF, date: string) {
     state.arMaxDate = date
   },
-  businessId (state: StateIF, businessId: string) {
-    state.businessId = businessId
+  arMinDate (state: StateIF, date: string) {
+    state.arMinDate = date
+  },
+  identifier (state: StateIF, identifier: string) {
+    state.identifier = identifier
   },
   businessNumber (state: StateIF, businessNumber: string) {
     state.businessNumber = businessNumber
@@ -53,6 +56,9 @@ export default {
   },
   entityType (state: StateIF, entityType: CorpTypeCd) {
     state.entityType = entityType
+  },
+  goodStanding (state: StateIF, goodStanding: boolean) {
+    state.goodStanding = goodStanding
   },
   historicalText (state: StateIF, text: string) {
     state.historicalText = text

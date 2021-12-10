@@ -50,20 +50,35 @@
                 <v-btn
                   small text color="primary"
                   id="company-information-button"
-                  :disabled="hasBlocker || !isInGoodStanding"
+                  :disabled="hasBlocker || !isGoodStanding"
                   @click="viewChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
                   <span class="font-13 ml-1">View and Change Company Information</span>
                 </v-btn>
 
-                <v-tooltip top content-class="pending-tooltip" v-if="isNotInCompliance">
+                <!-- *** TODO: do something with goodStanding flag:
+                  Good Standing - we allow the user to click the Change Company
+                  Information and Dissolve this Company buttons in the tombstones,
+                  but each would open the “Not in Good Standing” modal. (we still
+                  have to build the modal for Change Company info and update that
+                  function). Also in the future, we will show some kind of visual
+                  tag/badge, similar to the historical tag, that will say “Not in
+                  Good Standing”. There will also be similar tags in the future for
+                  other statuses. -->
+
+                <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
                   <template v-slot:activator="{ on }">
                     <span class="pending-alert pr-2" v-on="on">
                       <v-icon color="orange darken-2">mdi-alert</v-icon>
                     </span>
                   </template>
-                  You cannot view or change company information while the company is not in compliance.
+                  <template v-if="isPendingDissolution">
+                    You cannot view or change company information while the company is pending dissolution.
+                  </template>
+                  <template v-if="isNotInCompliance">
+                    You cannot view or change company information while the company is not in compliance.
+                  </template>
                 </v-tooltip>
               </span>
 
@@ -122,7 +137,7 @@
             <!-- Incorporation Number -->
             <template v-if="businessId">
               <dt class="mr-2">Incorporation Number:</dt>
-              <dd id="entity-incorporation-number">{{ getBusinessId || 'Not Available' }}</dd>
+              <dd id="entity-incorporation-number">{{ getIdentifier || 'Not Available' }}</dd>
             </template>
 
             <!-- NR Number -->
@@ -181,7 +196,7 @@
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, EntityStatus, CorpTypeCd, Routes, DissolutionTypes, FilingNames } from '@/enums'
+import { AllowableActions, CorpTypeCd, Routes, FilingNames } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -191,7 +206,6 @@ import axios from '@/axios-auth'
 })
 export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin) {
   @State ARFilingYear!: string
-  @State entityStatus!: EntityStatus
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
@@ -199,7 +213,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter getBusinessId!: number
+  @Getter getIdentifier!: number
   @Getter getEntityName!: string
   @Getter isRoleStaff!: boolean
   @Getter isBComp!: boolean
@@ -208,7 +222,8 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Getter isUlc!: boolean
   @Getter getNrNumber!: string
   @Getter hasBlocker!: boolean
-  @Getter isInGoodStanding!: boolean
+  @Getter isGoodStanding!: boolean
+  @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
   @Getter isHistorical!: boolean
 
@@ -269,13 +284,13 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** Redirects the user to the Edit UI to view or change their company information. */
   private viewChangeCompanyInfo (): void {
-    const url = `${this.editUrl}${this.getBusinessId}/alteration`
+    const url = `${this.editUrl}${this.getIdentifier}/alteration`
     window.location.assign(url) // assume URL is always reachable
   }
 
   /** Prompts the user to confirm a company dissolution filing. */
   private async promptDissolve (): Promise<void> {
-    if (!this.isInGoodStanding) {
+    if (!this.isGoodStanding) {
       this.emitNotInGoodStanding()
       return
     }

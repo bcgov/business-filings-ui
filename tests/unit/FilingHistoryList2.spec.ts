@@ -45,7 +45,7 @@ filings.forEach((filing: any, index: number) => {
     let wrapper, vm
 
     beforeAll(() => {
-      store.state.businessId = ENTITY_INC_NO
+      store.state.identifier = ENTITY_INC_NO
       store.state.filings = [filing]
 
       const get = sinon.stub(axios, 'get')

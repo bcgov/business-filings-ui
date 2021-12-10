@@ -26,7 +26,7 @@ describe('Directors as a COOP', () => {
 
   beforeEach(done => {
     // init store
-    store.state.businessId = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     const directors = [
       {
@@ -163,7 +163,7 @@ describe('Directors as a BCOMP', () => {
 
   beforeEach(done => {
     // init store
-    store.state.businessId = 'BC0007291'
+    store.state.identifier = 'BC0007291'
     store.state.entityType = 'BEN'
     const directors = [
       {
