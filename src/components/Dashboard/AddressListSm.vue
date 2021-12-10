@@ -235,12 +235,16 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
 
+  /** Value indicating open or closed state of accordion. */
   private get expansionValue (): Array<number> {
+    const OPEN_PANEL = 0
+    const CLOSE_PANEL = 1
+
     if (this.isHistorical) {
-      return []
+      return [] // All panels closed by default
     } else if (this.disabled) {
-      return [0, 1]
-    } else return [0]
+      return [OPEN_PANEL, CLOSE_PANEL]
+    } else return [OPEN_PANEL]
   }
 }
 </script>
