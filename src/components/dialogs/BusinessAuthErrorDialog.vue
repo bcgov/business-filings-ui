@@ -6,14 +6,17 @@
       <v-card-text>
         <p class="font-15">Your account is currently unable to access this Business. This may be
           because of the following:</p>
+
         <ul>
           <li>Your account is not authorized to access this Business &mdash; contact the Business
             owner to get access.</li>
           <li>Your login session has timed out &mdash; please exit and then login again.</li>
           <li>The specified Business Identifier is not valid.</li>
-          </ul>
+        </ul>
+
         <p class="mt-4">You can retry now, or you can exit and try to access this Business at
           another time.</p>
+
         <template v-if="!isRoleStaff">
           <p class="font-15">If this error persists, please contact us.</p>
           <ContactInfo class="mt-5" />

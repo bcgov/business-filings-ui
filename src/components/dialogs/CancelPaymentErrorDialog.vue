@@ -15,6 +15,7 @@
         <p class="font-15" v-for="(error, index) in errors" :key="index">
           {{error.error}}
         </p>
+
         <template v-if="!isRoleStaff">
           <p class="font-15">If you need help, please contact us.</p>
           <ContactInfo class="mt-5" />

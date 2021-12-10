@@ -6,6 +6,7 @@
       <v-card-text>
         <p class="font-15">We are currently unable to access your dashboard. You can retry to access
           your dashboard now, or you can exit and try to access your dashboard at another time.</p>
+
         <template v-if="!isRoleStaff">
           <p class="font-15">If this error persists, please contact us.</p>
           <ContactInfo class="mt-5" />

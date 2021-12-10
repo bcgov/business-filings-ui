@@ -173,7 +173,7 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isIncorpAppTask', 'isIncorpAppFiling']),
+      'isIncorpAppTask', 'isIncorpAppFiling', 'getCustodians']),
 
     /** The Business ID string. */
     businessId (): string {

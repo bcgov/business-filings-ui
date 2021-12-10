@@ -50,22 +50,12 @@
                 <v-btn
                   small text color="primary"
                   id="company-information-button"
-                  :disabled="hasBlocker || !isGoodStanding"
-                  @click="viewChangeCompanyInfo()"
+                  :disabled="hasBlocker"
+                  @click="promptChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
                   <span class="font-13 ml-1">View and Change Company Information</span>
                 </v-btn>
-
-                <!-- *** TODO:
-                  Good Standing - we allow the user to click the Change Company
-                  Information and Dissolve this Company buttons in the tombstones,
-                  but each would open the “Not in Good Standing” modal. (we still
-                  have to build the modal for Change Company info and update that
-                  function). Also in the future, we will show some kind of visual
-                  tag/badge, similar to the historical tag, that will say “Not in
-                  Good Standing”. There will also be similar tags in the future for
-                  other statuses. -->
 
                 <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
                   <template v-slot:activator="{ on }">
@@ -196,7 +186,7 @@
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, CorpTypeCd, Routes, FilingNames } from '@/enums'
+import { AllowableActions, CorpTypeCd, Routes, FilingNames, NigsMessage } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -282,16 +272,25 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     return ''
   }
 
-  /** Redirects the user to the Edit UI to view or change their company information. */
-  private viewChangeCompanyInfo (): void {
-    const url = `${this.editUrl}${this.getIdentifier}/alteration`
-    window.location.assign(url) // assume URL is always reachable
+  /**
+   * Emits an event to display NIGS dialog if company is not in good standing.
+   * Otherwise, redirects user to the Edit UI to view or change their company information.
+   */
+  private promptChangeCompanyInfo (): void {
+    if (!this.isGoodStanding) {
+      this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
+    } else {
+      const url = `${this.editUrl}${this.getIdentifier}/alteration`
+      window.location.assign(url) // assume URL is always reachable
+    }
   }
 
-  /** Prompts the user to confirm a company dissolution filing. */
-  private async promptDissolve (): Promise<void> {
+  /**
+   * Emits an event to display NIGS dialog if company is not in good standing.
+   * Otherwise, emits an event to prompt user to confirm voluntary dissolution. */
+  private promptDissolve (): void {
     if (!this.isGoodStanding) {
-      this.emitNotInGoodStanding()
+      this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
       return
     }
     this.emitConfirmDissolution()
@@ -337,7 +336,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   // Pass not in good standing event to parent.
   @Emit('notInGoodStanding')
-  private emitNotInGoodStanding (): void { }
+  private emitNotInGoodStanding (message: NigsMessage): void {}
 }
 </script>
 

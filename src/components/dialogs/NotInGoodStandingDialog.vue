@@ -13,16 +13,37 @@
           Business is not in good standing
         </p>
 
-        <p class="warning-text">
-          This business cannot be dissolved yet. Before you can dissolve your business it must be in good standing with
-          the Business Registry. There may be several reasons a business is not in good standing, but the most common
-          reason is an overdue annual report.
-        </p>
+        <template v-if="isDissolveMessage">
+          <p class="warning-text">
+            This business cannot be dissolved yet. Before you can dissolve your business, it must be
+            in good standing with BC Registries. There may be several reasons why a business is not
+            in good standing, but the most common reason is an overdue annual report.
+          </p>
 
-        <p class="warning-text">
-          Please file any overdue annual reports and try your voluntary dissolution again or contact BC Registries
-          staff:
-        </p>
+          <p class="warning-text">
+            Please file any overdue annual reports and try your voluntary dissolution again, or
+            contact BC Registries staff:
+          </p>
+        </template>
+
+        <template v-else-if="isChangeCompanyInfoMessage">
+          <p class="warning-text">
+            Company information cannot be changed yet. Before you can change company information, it
+            must be in good standing with BC Registries. There may be several reasons why a business
+            is not in good standing, but the most common reason is an overdue annual report.
+          </p>
+
+          <p class="warning-text">
+            Please file any overdue annual reports and try changing company information again, or
+            contact BC Registries staff:
+          </p>
+        </template>
+
+        <template v-else>
+          <p class="warning-text">
+            Please contact BC Registries staff:
+          </p>
+        </template>
 
         <ContactInfo class="mt-5" />
       </v-card-text>
@@ -46,13 +67,25 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
+import { NigsMessage } from '@/enums'
 
 @Component({
   components: { ContactInfo }
 })
 export default class NotInGoodStandingDialog extends Vue {
   // Prop to display the dialog.
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
+
+  // Prop to select display message.
+  @Prop() readonly message: NigsMessage
+
+  get isDissolveMessage (): boolean {
+    return (this.message === NigsMessage.DISSOLVE)
+  }
+
+  get isChangeCompanyInfoMessage (): boolean {
+    return (this.message === NigsMessage.CHANGE_COMPANY_INFO)
+  }
 
   // Pass click event to parent.
   @Emit() private close () { }

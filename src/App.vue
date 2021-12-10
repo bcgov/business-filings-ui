@@ -39,6 +39,7 @@
 
     <NotInGoodStandingDialog
       :dialog="notInGoodStandingDialog"
+      :message="nigsMessage"
       @close="notInGoodStandingDialog = false"
       attach="#app"
     />
@@ -70,7 +71,7 @@
       <main v-if="isSigninRoute || dataLoaded">
         <EntityInfo
           @confirmDissolution="confirmDissolutionDialog = true"
-          @notInGoodStanding="notInGoodStandingDialog = true"
+          @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
         />
         <router-view />
       </main>
@@ -108,13 +109,11 @@ import {
 import { configJson } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
-import {
-  AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin
-} from '@/mixins'
+import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
+  NameRequestMixin } from '@/mixins'
 import { ApiFilingIF, ApiTaskIF, BusinessIF, TaskTodoIF } from '@/interfaces'
-import {
-  EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState, DissolutionTypes
-} from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState,
+  DissolutionTypes, NigsMessage } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
@@ -134,6 +133,7 @@ export default {
       nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
       notInGoodStandingDialog: false,
+      nigsMessage: null as NigsMessage,
       localNrNumber: null as string,
       corpTypeCd: null as CorpTypeCd,
 

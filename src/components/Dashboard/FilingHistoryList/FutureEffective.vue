@@ -12,12 +12,12 @@
     <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
 
     <p>
-      If you wish to change the information in this {{_.filingLabel}}, you must contact
-      Registry Staff to file a withdrawal. Withdrawing this {{_.filingTitle}} will remove
+      If you wish to change the information in this {{_.filingLabel}}, you must contact BC
+      Registries staff to file a withdrawal. Withdrawing this {{_.filingTitle}} will remove
       this {{_.filingLabel}} and all associated information, and will incur a $20.00 fee.
     </p>
 
-    <h4 class="font-14">Registries Contact Information:</h4>
+    <h4 class="font-14">BC Registries Contact Information:</h4>
 
     <ContactInfo class="mt-4" />
   </div>

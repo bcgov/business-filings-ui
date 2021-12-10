@@ -88,11 +88,13 @@
                     This business is not in good standing.
                   </p>
 
-                  <p>Before you can alter your business it must be in good standing with the Business Registry.
-                  There may be several reasons a business is not in good standing, but the most
-                  common reason is an overdue annual report.
+                  <p>
+                    Before you can alter your business it must be in good standing with BC Registries.
+                    There may be several reasons why a business is not in good standing, but the most
+                    common reason is an overdue annual report.
                   </p>
-                  <p>To resolve this issue, you MUST contact Registry Staff:</p>
+
+                  <p>To resolve this issue, you MUST contact BC Registries staff:</p>
                   <ContactInfo class="mt-4" />
                 </div>
 
@@ -1240,7 +1242,7 @@ export default class TodoList extends Mixins(
     const line2 = this.nameRequest
       ? 'You will be returned to your Manage Businesses dashboard where you can use the Name Request ' +
         'associated with this application for a future application.'
-      : 'You will be returned to the Business Registry home page.'
+      : 'You will be returned to the BC Registries home page.'
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(

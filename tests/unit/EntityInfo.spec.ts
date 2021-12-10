@@ -4,7 +4,9 @@ import VueRouter from 'vue-router'
 import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
+import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
+import { min } from 'lodash'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -135,65 +137,106 @@ describe('EntityInfo - data', () => {
   })
 })
 
+describe('EntityInfo - Staff Comments', () => {
+  it('does not display Staff Comments component when there is no business id', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', null)
+    store.state.keycloakRoles = []
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find(StaffComments).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('does not display Staff Comments component when not allowed', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.keycloakRoles = []
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find(StaffComments).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('displays Staff Comments component when conditions are met', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.keycloakRoles = ['staff']
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find(StaffComments).exists()).toBe(true)
+
+    store.state.keycloakRoles = []
+    wrapper.destroy()
+  })
+})
+
 describe('EntityInfo - company info button and tooltip', () => {
   const variations = [
-    {
+    { // 0
       businessId: 'CP1234567',
       entityType: 'CP',
       goodStanding: true,
       buttonExists: false,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 1
       businessId: 'BC1234567',
       entityType: 'BEN',
       goodStanding: true,
       buttonExists: true,
-      buttonDisabled: undefined,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 2
       businessId: 'BC1234567',
       entityType: 'BC',
       goodStanding: true,
       buttonExists: true,
-      buttonDisabled: undefined,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 3
       businessId: 'BC1234567',
       entityType: 'ULC',
       goodStanding: true,
       buttonExists: true,
-      buttonDisabled: undefined,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 4
       businessId: 'BC1234567',
       entityType: 'BEN',
       complianceWarnings: [{}, {}],
       buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: true,
-      tooltipContains: 'not in compliance'
+      tooltip: 'not in compliance'
     },
-    {
+    { // 5
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'DRAFT_INCORP_APP',
       buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 6
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'FILED_INCORP_APP',
       buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 7
       businessId: null,
       tempRegNumber: null,
       entityType: null,
@@ -201,7 +244,7 @@ describe('EntityInfo - company info button and tooltip', () => {
       complianceWarnings: null,
       entityStatus: null,
       buttonExists: false,
-      tooltipExists: false
+      tooltip: null
     }
   ]
 
@@ -222,12 +265,11 @@ describe('EntityInfo - company info button and tooltip', () => {
       // verify button
       const companyInformationButton = wrapper.find('#company-information-button')
       expect(companyInformationButton.exists()).toBe(_.buttonExists)
-      if (_.buttonExists) expect(companyInformationButton.attributes('disabled')).toBe(_.buttonDisabled)
 
       // verify tooltip
       const vTooltipStub = wrapper.find('v-tooltip-stub')
-      expect(vTooltipStub.exists()).toBe(_.tooltipExists)
-      if (_.tooltipExists) expect(vTooltipStub.text()).toContain(_.tooltipContains)
+      expect(vTooltipStub.exists()).toBe(!!_.tooltip)
+      if (_.tooltip) expect(vTooltipStub.text()).toContain(_.tooltip)
     })
   })
 })
@@ -330,6 +372,52 @@ describe('EntityInfo - breadcrumbs', () => {
   })
 })
 
+describe('EntityInfo - Historical badge', () => {
+  const variations = [
+    { // 0
+      state: 'ACTIVE',
+      exists: false
+    },
+    { // 1
+      state: 'LIQUIDATION',
+      exists: false
+    },
+    { // 2
+      state: 'HISTORICAL',
+      exists: true,
+      text: null
+    },
+    { // 3
+      state: 'HISTORICAL',
+      exists: true,
+      text: 'Some Reason Text'
+    }
+  ]
+
+  variations.forEach((_, index) => {
+    it(`conditionally displays historical badge - variation #${index}`, async () => {
+      // init store
+      store.state.entityState = _.state
+      store.state.reasonText = _.text
+
+      const router = mockRouter.mock()
+      const wrapper = mount(EntityInfo, { vuetify, store, router })
+      await Vue.nextTick()
+
+      expect(wrapper.find('.v-chip').exists()).toBe(_.exists)
+      if (_.exists) {
+        expect(wrapper.find('.v-chip__content').text()).toBe('HISTORICAL')
+        expect(wrapper.find('.v-chip + span').text()).toBe(_.text || 'Unknown Reason')
+      }
+
+      // cleanup
+      store.state.entityState = null
+      store.state.reasonText = null
+      wrapper.destroy()
+    })
+  })
+})
+
 describe('EntityInfo - Click Tests - Alterations', () => {
   const { assign } = window.location
 
@@ -425,6 +513,6 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     await Vue.nextTick()
 
     // verify emit event
-    expect(wrapper.emitted().notInGoodStanding).toEqual([[]])
+    expect(wrapper.emitted().notInGoodStanding).toEqual([['dissolve']])
   })
 })
