@@ -4,7 +4,9 @@ import VueRouter from 'vue-router'
 import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
+import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
+import { min } from 'lodash'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -20,10 +22,10 @@ describe('EntityInfo - data', () => {
 
     // set store properties
     store.state.entityName = 'My Business'
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.goodStanding = true
     store.state.entityType = 'CP'
-    store.state.entityBusinessNo = '123456789'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.businessNumber = '123456789'
+    store.state.identifier = 'CP0001191'
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
     store.state.businessPhoneExtension = '444'
@@ -114,8 +116,8 @@ describe('EntityInfo - data', () => {
     store.state.entityName = null
     store.state.entityType = null
     store.state.entityStatus = null
-    store.state.entityBusinessNo = null
-    store.state.entityIncNo = null
+    store.state.businessNumber = null
+    store.state.identifier = null
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
@@ -135,105 +137,139 @@ describe('EntityInfo - data', () => {
   })
 })
 
+describe('EntityInfo - Staff Comments', () => {
+  it('does not display Staff Comments component when there is no business id', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', null)
+    store.state.keycloakRoles = []
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find(StaffComments).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('does not display Staff Comments component when not allowed', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.keycloakRoles = []
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find(StaffComments).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('displays Staff Comments component when conditions are met', async () => {
+    // init session storage + store
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.state.keycloakRoles = ['staff']
+
+    const router = mockRouter.mock()
+    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find(StaffComments).exists()).toBe(true)
+
+    store.state.keycloakRoles = []
+    wrapper.destroy()
+  })
+})
+
 describe('EntityInfo - company info button and tooltip', () => {
-  const params = [
-    {
+  const variations = [
+    { // 0
       businessId: 'CP1234567',
       entityType: 'CP',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: false,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 1
       businessId: 'BC1234567',
       entityType: 'BEN',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: true,
-      buttonDisabled: undefined,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 2
       businessId: 'BC1234567',
       entityType: 'BC',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: true,
-      buttonDisabled: undefined,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 3
       businessId: 'BC1234567',
       entityType: 'ULC',
-      entityStatus: 'GOODSTANDING',
+      goodStanding: true,
       buttonExists: true,
-      buttonDisabled: undefined,
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 4
       businessId: 'BC1234567',
       entityType: 'BEN',
-      entityStatus: 'PENDINGDISSOLUTION',
+      complianceWarnings: [{}, {}],
       buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: true,
-      tooltipContains: 'pending dissolution'
+      tooltip: 'not in compliance'
     },
-    {
-      businessId: 'BC1234567',
-      entityType: 'BEN',
-      entityStatus: 'NOTINCOMPLIANCE',
-      buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: true,
-      tooltipContains: 'not in compliance'
-    },
-    {
+    { // 5
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'DRAFT_INCORP_APP',
       buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 6
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'FILED_INCORP_APP',
       buttonExists: true,
-      buttonDisabled: 'true',
-      tooltipExists: false
+      tooltip: null
     },
-    {
+    { // 7
       businessId: null,
       tempRegNumber: null,
       entityType: null,
+      goodStanding: false,
+      complianceWarnings: null,
       entityStatus: null,
       buttonExists: false,
-      tooltipExists: false
+      tooltip: null
     }
   ]
 
-  // eslint-disable-next-line max-len
-  params.forEach(({ businessId, tempRegNumber, entityType, entityStatus, buttonExists, buttonDisabled, tooltipExists, tooltipContains }) => {
-    it(`displays properly for a ${entityType} in ${entityStatus}`, async () => {
+  variations.forEach((_, index) => {
+    it(`displays company info button and tooltips properly - variation #${index}`, async () => {
       sessionStorage.clear()
-      if (businessId) sessionStorage.setItem('BUSINESS_ID', businessId)
-      if (tempRegNumber) sessionStorage.setItem('TEMP_REG_NUMBER', tempRegNumber)
+      if (_.businessId) sessionStorage.setItem('BUSINESS_ID', _.businessId)
+      if (_.tempRegNumber) sessionStorage.setItem('TEMP_REG_NUMBER', _.tempRegNumber)
 
-      store.state.entityType = entityType
-      store.state.entityStatus = entityStatus
+      store.state.entityType = _.entityType
+      store.state.goodStanding = _.goodStanding || false
+      store.state.complianceWarnings = _.complianceWarnings || []
+      store.state.entityStatus = _.entityStatus || null
 
       const wrapper = shallowMount(EntityInfo, { store, vuetify })
       await Vue.nextTick()
 
       // verify button
       const companyInformationButton = wrapper.find('#company-information-button')
-      expect(companyInformationButton.exists()).toBe(buttonExists)
-      if (buttonExists) expect(companyInformationButton.attributes('disabled')).toBe(buttonDisabled)
+      expect(companyInformationButton.exists()).toBe(_.buttonExists)
 
       // verify tooltip
       const vTooltipStub = wrapper.find('v-tooltip-stub')
-      expect(vTooltipStub.exists()).toBe(tooltipExists)
-      if (tooltipExists) expect(vTooltipStub.text()).toContain(tooltipContains)
+      expect(vTooltipStub.exists()).toBe(!!_.tooltip)
+      if (_.tooltip) expect(vTooltipStub.text()).toContain(_.tooltip)
     })
   })
 })
@@ -336,6 +372,52 @@ describe('EntityInfo - breadcrumbs', () => {
   })
 })
 
+describe('EntityInfo - Historical badge', () => {
+  const variations = [
+    { // 0
+      state: 'ACTIVE',
+      exists: false
+    },
+    { // 1
+      state: 'LIQUIDATION',
+      exists: false
+    },
+    { // 2
+      state: 'HISTORICAL',
+      exists: true,
+      text: null
+    },
+    { // 3
+      state: 'HISTORICAL',
+      exists: true,
+      text: 'Some Reason Text'
+    }
+  ]
+
+  variations.forEach((_, index) => {
+    it(`conditionally displays historical badge - variation #${index}`, async () => {
+      // init store
+      store.state.entityState = _.state
+      store.state.reasonText = _.text
+
+      const router = mockRouter.mock()
+      const wrapper = mount(EntityInfo, { vuetify, store, router })
+      await Vue.nextTick()
+
+      expect(wrapper.find('.v-chip').exists()).toBe(_.exists)
+      if (_.exists) {
+        expect(wrapper.find('.v-chip__content').text()).toBe('HISTORICAL')
+        expect(wrapper.find('.v-chip + span').text()).toBe(_.text || 'Unknown Reason')
+      }
+
+      // cleanup
+      store.state.entityState = null
+      store.state.reasonText = null
+      wrapper.destroy()
+    })
+  })
+})
+
 describe('EntityInfo - Click Tests - Alterations', () => {
   const { assign } = window.location
 
@@ -354,8 +436,8 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityIncNo = 'BC1234567'
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.identifier = 'BC1234567'
+    store.state.goodStanding = true
     store.state.entityType = 'BEN'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
@@ -395,7 +477,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
   })
 
   it('prompts the Confirm Dissolution dialog if in good standing', async () => {
-    store.state.entityStatus = 'GOODSTANDING'
+    store.state.goodStanding = true
     const router = mockRouter.mock()
 
     // mount the component and wait for everything to stabilize
@@ -415,7 +497,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
   })
 
   it('prompts the Not In Good Standing dialog', async () => {
-    store.state.entityStatus = ''
+    store.state.goodStanding = false
     const router = mockRouter.mock()
 
     // mount the component and wait for everything to stabilize
@@ -431,6 +513,6 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     await Vue.nextTick()
 
     // verify emit event
-    expect(wrapper.emitted().notInGoodStanding).toEqual([[]])
+    expect(wrapper.emitted().notInGoodStanding).toEqual([['dissolve']])
   })
 })

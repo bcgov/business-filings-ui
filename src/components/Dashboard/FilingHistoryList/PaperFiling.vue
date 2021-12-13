@@ -1,6 +1,9 @@
 <template>
   <div class="paper-filing-details body-2">
-    <p>This filing is available on paper only. To request copies of paper documents, contact BC Registry Staff:</p>
+    <p>
+      This filing is available on paper only. To request copies of paper documents,
+      contact BC Registries staff:
+    </p>
 
     <ContactInfo class="mt-4" />
   </div>

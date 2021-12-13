@@ -15,7 +15,7 @@ describe('Paper Filing', () => {
     const paraText = wrapper.find('p').text()
     expect(paraText).toContain('This filing is available on paper only.')
     expect(paraText).toContain('To request copies of paper documents,')
-    expect(paraText).toContain('contact BC Registry Staff:')
+    expect(paraText).toContain('contact BC Registries staff:')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()

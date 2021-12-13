@@ -38,7 +38,6 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeCorrection({ name: 'correction' })).toBe(true)
     expect(vm.isTypeDissolution({ name: 'dissolution' })).toBe(true)
     expect(vm.isTypeIncorporationApplication({ name: 'incorporationApplication' })).toBe(true)
-    expect(vm.isTypeNameRequest({ name: 'nameRequest' })).toBe(true)
     expect(vm.isTypeTransition({ name: 'transition' })).toBe(true)
 
     expect(vm.isTypeStaff({ name: 'registrarsNotation' })).toBe(true)
@@ -51,12 +50,6 @@ describe('Enum Mixin', () => {
     expect(vm.isPayMethodDirectPay({ paymentMethod: 'DIRECT_PAY' })).toBe(true)
     expect(vm.isPayMethodDrawdown({ paymentMethod: 'DRAWDOWN' })).toBe(true)
     expect(vm.isPayMethodOnlineBanking({ paymentMethod: 'ONLINE_BANKING' })).toBe(true)
-  })
-
-  it('returns correct values for entityStatusToDescription()', () => {
-    expect(vm.entityStatusToDescription('NAME_REQUEST', 'BC')).toBe('BC Limited Company Name Request')
-    expect(vm.entityStatusToDescription('DRAFT_INCORP_APP', 'BEN')).toBe('BC Benefit Company Incorporation Application')
-    expect(vm.entityStatusToDescription('FILED_INCORP_APP', 'C')).toBe('BC Limited Company Incorporation Application')
   })
 
   it('returns correct values for filingTypeToName()', () => {
@@ -74,9 +67,6 @@ describe('Enum Mixin', () => {
   })
 
   it('returns correct values for dissolutionTypeToName()', () => {
-    expect(vm.dissolutionTypeToName('DISS_VOLUNTARY')).toBe('Voluntary Dissolution')
-    expect(vm.dissolutionTypeToName('DISS_ADMIN')).toBe('Administrative Dissolution')
-    expect(vm.dissolutionTypeToName('DISS_FAIL_FILE')).toBe('Dissolved for Failure to File')
-    expect(vm.dissolutionTypeToName('DISS_OTHER')).toBe('Dissolved for Other Reason')
+    expect(vm.dissolutionTypeToName('voluntary')).toBe('Voluntary Dissolution')
   })
 })

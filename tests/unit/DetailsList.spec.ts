@@ -184,7 +184,7 @@ describe('Details List', () => {
 
     expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
     expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
-    expect(wrapper.find('.body-2').text()).toContain('Registry Staff')
+    expect(wrapper.find('.body-2').text()).toContain('BC Registries Staff')
     expect(wrapper.find('.body-2 .pre-line').text())
       .toContain('Correction for Annual Report (2018), filed on 2018-01-08.')
 

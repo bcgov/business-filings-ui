@@ -88,11 +88,13 @@
                     This business is not in good standing.
                   </p>
 
-                  <p>Before you can alter your business it must be in good standing with the Business Registry.
-                  There may be several reasons a business is not in good standing, but the most
-                  common reason is an overdue annual report.
+                  <p>
+                    Before you can alter your business it must be in good standing with BC Registries.
+                    There may be several reasons why a business is not in good standing, but the most
+                    common reason is an overdue annual report.
                   </p>
-                  <p>To resolve this issue, you MUST contact Registry Staff:</p>
+
+                  <p>To resolve this issue, you MUST contact BC Registries staff:</p>
                   <ContactInfo class="mt-4" />
                 </div>
 
@@ -535,7 +537,7 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 
 // Mixins, Enums and Interfaces
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { AllowableActions, CorpTypeCd, EntityStatus, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF } from '@/interfaces'
 
 @Component({
@@ -589,15 +591,15 @@ export default class TodoList extends Mixins(
   @Getter isCoop!: boolean
   @Getter isUlc!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter getIdentifier!: string
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
-  @Getter isInGoodStanding!: boolean
+  @Getter isGoodStanding!: boolean
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
-  @State entityStatus!: EntityStatus
 
   @Action setARFilingYear!: ActionBindingIF
   @Action setArMinDate!: ActionBindingIF
@@ -724,7 +726,7 @@ export default class TodoList extends Mixins(
     }
 
     // get filing's status
-    let url = `businesses/${this.getEntityIncNo}/filings/${id}`
+    let url = `businesses/${this.getIdentifier}/filings/${id}`
     this.fetchFiling(url).then(filing => {
       // if the filing is now COMPLETED, emit event to reload all data
       if (filing?.header?.status === FilingStatus.COMPLETED) {
@@ -855,7 +857,7 @@ export default class TodoList extends Mixins(
     const header = filing.header
 
     if (dissolution && business && header) {
-      if (!this.isInGoodStanding && this.isStatusDraft(header)) {
+      if (!this.isGoodStanding && this.isStatusDraft(header)) {
         task.enabled = false
       }
 
@@ -873,12 +875,12 @@ export default class TodoList extends Mixins(
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isInGoodStanding,
+        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
         comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -894,7 +896,7 @@ export default class TodoList extends Mixins(
     const header = filing.header
 
     if (alteration && business && header) {
-      if (!this.isInGoodStanding && this.isStatusDraft(header)) {
+      if (!this.isGoodStanding && this.isStatusDraft(header)) {
         task.enabled = false
       }
 
@@ -912,12 +914,12 @@ export default class TodoList extends Mixins(
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isInGoodStanding,
+        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
         comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
 
       }
       this.todoItems.push(item)
@@ -959,7 +961,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -990,7 +992,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1020,7 +1022,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1056,7 +1058,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1107,7 +1109,7 @@ export default class TodoList extends Mixins(
         payErrorObj,
         isEmptyFiling: !haveData,
         nameRequest: this.nameRequest,
-        commentsLink: `businesses/${this.getEntityIncNo}/filings/${header.filingId}/comments`
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
       }
       this.todoItems.push(item)
     } else {
@@ -1128,12 +1130,6 @@ export default class TodoList extends Mixins(
         this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
-      // FUTURE: uncomment when/if we have NRs without a draft
-      // case FilingTypes.NAME_REQUEST:
-      //   // redirect to Create web app to create this Incorporation Application
-      //   const url = `${this.createUrl}?id=${this.tempRegNumber}`
-      //   window.location.assign(url) // assume URL is always reachable
-      //   break
       default:
         // eslint-disable-next-line no-console
         console.log('doFileNow(), invalid type for task =', item)
@@ -1169,7 +1165,7 @@ export default class TodoList extends Mixins(
       case FilingTypes.CORRECTION:
         if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
           // redirect to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.getEntityIncNo}/correction?correction-id=${item.filingId}`
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction?correction-id=${item.filingId}`
           window.location.assign(correctionUrl) // assume URL is always reachable
         } else {
           // resume this Correction Filing
@@ -1188,13 +1184,13 @@ export default class TodoList extends Mixins(
 
       case FilingTypes.ALTERATION:
         // redirect to Edit web app to alter this company
-        const alterationUrl = `${this.editUrl}${this.getEntityIncNo}/alteration?alteration-id=${item.filingId}`
+        const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration?alteration-id=${item.filingId}`
         window.location.assign(alterationUrl) // assume URL is always reachable
         break
 
       case FilingTypes.DISSOLUTION:
         // redirect to Create web app to dissolve this company
-        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getEntityIncNo}`
+        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
         window.location.assign(dissolutionUrl) // assume URL is always reachable
         break
 
@@ -1246,7 +1242,7 @@ export default class TodoList extends Mixins(
     const line2 = this.nameRequest
       ? 'You will be returned to your Manage Businesses dashboard where you can use the Name Request ' +
         'associated with this application for a future application.'
-      : 'You will be returned to the Business Registry home page.'
+      : 'You will be returned to the BC Registries home page.'
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
@@ -1283,7 +1279,7 @@ export default class TodoList extends Mixins(
   }
 
   private async doDeleteDraft (item: TodoItemIF, refreshDashboard: boolean = true): Promise<void> {
-    const id = this.getEntityIncNo || this.tempRegNumber
+    const id = this.getIdentifier || this.tempRegNumber
     const url = `businesses/${id}/filings/${item.filingId}`
 
     await axios.delete(url).then(res => {
@@ -1344,7 +1340,7 @@ export default class TodoList extends Mixins(
   }
 
   private async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
-    const url = `businesses/${this.getEntityIncNo}/filings/${item.filingId}`
+    const url = `businesses/${this.getIdentifier}/filings/${item.filingId}`
 
     await axios.patch(url, {}).then(res => {
       if (!res) { throw new Error('Invalid API response') }

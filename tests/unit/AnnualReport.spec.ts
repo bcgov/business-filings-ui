@@ -36,8 +36,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 describe('Annual Report - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.ARFilingYear = 2017
     store.state.arMinDate = '2017-01-01'
     store.state.arMaxDate = '2018-04-30'
@@ -97,7 +96,7 @@ describe('Annual Report - Part 1 - UI', () => {
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.getters.getEntityIncNo).toEqual('CP0001191')
+    expect(vm.$store.getters.getIdentifier).toEqual('CP0001191')
     expect(vm.$store.getters.getEntityType).toEqual('CP')
     expect(vm.$store.state.ARFilingYear).toEqual(2017)
     expect(vm.$store.state.currentFilingStatus).toEqual('NEW')
@@ -416,8 +415,7 @@ describe('Annual Report - Part 1 - UI', () => {
 describe('Annual Report - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
-    store.state.businesId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
+    store.state.identifier = 'BC0007291'
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
@@ -459,7 +457,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    expect(vm.$store.getters.getEntityIncNo).toEqual('BC0007291')
+    expect(vm.$store.getters.getIdentifier).toEqual('BC0007291')
     expect(vm.$store.getters.getEntityType).toEqual('BEN')
     expect(vm.$store.state.ARFilingYear).toEqual(2018)
     expect(vm.$store.state.nextARDate).toEqual('2018-09-26')
@@ -621,7 +619,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
 describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
@@ -699,7 +697,7 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
 describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
@@ -781,7 +779,7 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
 describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
@@ -869,8 +867,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
@@ -1146,8 +1143,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
+    store.state.identifier = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
     store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
@@ -1273,8 +1269,7 @@ describe('Annual Report - Part 4 - Saving', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
@@ -1421,8 +1416,7 @@ describe('Annual Report - Part 5 - Data', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = currentFilingYear
@@ -1695,8 +1689,7 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'BC0007291'
-    store.state.entityIncNo = 'BC0007291'
+    store.state.identifier = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
     store.state.entityType = 'BEN'
     store.state.ARFilingYear = 2018
@@ -1854,8 +1847,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
@@ -2056,8 +2048,7 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   store.state.entityType = 'CP'
   store.state.ARFilingYear = 2017
   store.state.currentFilingStatus = 'NEW'
-  store.state.businessId = 'CP0001191'
-  store.state.entityIncNo = 'CP0001191'
+  store.state.identifier = 'CP0001191'
 
   beforeEach(() => {
     const localVue = createLocalVue()
@@ -2165,8 +2156,7 @@ describe('Annual Report - payment required error', () => {
 
   beforeEach(() => {
     // init store
-    store.state.businessId = 'CP0001191'
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017

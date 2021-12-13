@@ -5,6 +5,7 @@
 
       <v-card-text>
         <p class="font-15">We were unable to download your document(s).</p>
+
         <template v-if="!isRoleStaff">
           <p class="font-15">If this error persists, please contact us.</p>
           <ContactInfo class="mt-5" />

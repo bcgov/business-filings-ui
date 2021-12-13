@@ -12,7 +12,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 describe('Complete Filing', () => {
   it('Displays expected content with entityName', () => {
     store.state.entityName = 'My Business'
-    store.state.entityIncNo = null
+    store.state.identifier = null
 
     const wrapper = shallowMount(CompletedIa, { store, vuetify })
 
@@ -28,9 +28,9 @@ describe('Complete Filing', () => {
     wrapper.destroy()
   })
 
-  it('Displays expected content with entityIncNo', () => {
+  it('Displays expected content with businessId', () => {
     store.state.entityName = null
-    store.state.entityIncNo = 'BC1234567'
+    store.state.identifier = 'BC1234567'
 
     const wrapper = shallowMount(CompletedIa, { store, vuetify })
 

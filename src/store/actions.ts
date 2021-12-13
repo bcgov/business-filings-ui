@@ -1,5 +1,6 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, DissolutionTypes } from '@/enums'
-import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF } from '@/interfaces'
+import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
+import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, ComplianceWarning }
+  from '@/interfaces'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -23,35 +24,44 @@ export default {
   setARFilingYear ({ commit }, year: number) {
     commit('ARFilingYear', year)
   },
-  setArMinDate ({ commit }, date: string) {
-    commit('arMinDate', date)
+  setAdminFreeze ({ commit }, adminFreeze: boolean) {
+    commit('adminFreeze', adminFreeze)
   },
   setArMaxDate ({ commit }, date: string) {
     commit('arMaxDate', date)
   },
-  setEntityBusinessNo ({ commit }, entityBusinessNo: string) {
-    commit('entityBusinessNo', entityBusinessNo)
+  setArMinDate ({ commit }, date: string) {
+    commit('arMinDate', date)
   },
-  setEntityName ({ commit }, entityName: string) {
-    commit('entityName', entityName)
+  setIdentifier ({ commit }, identifier: string) {
+    commit('identifier', identifier)
   },
-  setEntityType ({ commit }, entityType: CorpTypeCd) {
-    commit('entityType', entityType)
+  setBusinessNumber ({ commit }, businessNumber: string) {
+    commit('businessNumber', businessNumber)
   },
-  setEntityStatus ({ commit }, entityStatus: EntityStatus) {
-    commit('entityStatus', entityStatus)
-  },
-  setEntityIncNo ({ commit }, entityIncNo: string) {
-    commit('entityIncNo', entityIncNo)
+  setComplianceWarnings ({ commit }, complianceWarnings: Array<ComplianceWarning>) {
+    commit('complianceWarnings', complianceWarnings)
   },
   setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {
     commit('entityFoundingDate', entityFoundingDate)
   },
-  setEntityDissolutionDate ({ commit }, entityDissolutionDate: Date) {
-    commit('entityDissolutionDate', entityDissolutionDate)
+  setEntityName ({ commit }, entityName: string) {
+    commit('entityName', entityName)
   },
-  setEntityDissolutionType ({ commit }, entityDissolutionType: DissolutionTypes) {
-    commit('entityDissolutionType', entityDissolutionType)
+  setEntityState ({ commit }, entityState: EntityState) {
+    commit('entityState', entityState)
+  },
+  setEntityStatus ({ commit }, entityStatus: EntityStatus) {
+    commit('entityStatus', entityStatus)
+  },
+  setEntityType ({ commit }, entityType: CorpTypeCd) {
+    commit('entityType', entityType)
+  },
+  setGoodStanding ({ commit }, goodStanding: boolean) {
+    commit('goodStanding', goodStanding)
+  },
+  setReasonText ({ commit }, text: string) {
+    commit('reasonText', text)
   },
   setBusinessEmail ({ commit }, businessEmail: string) {
     commit('businessEmail', businessEmail)

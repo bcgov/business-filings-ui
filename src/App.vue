@@ -39,6 +39,7 @@
 
     <NotInGoodStandingDialog
       :dialog="notInGoodStandingDialog"
+      :message="nigsMessage"
       @close="notInGoodStandingDialog = false"
       attach="#app"
     />
@@ -70,7 +71,7 @@
       <main v-if="isSigninRoute || dataLoaded">
         <EntityInfo
           @confirmDissolution="confirmDissolutionDialog = true"
-          @notInGoodStanding="notInGoodStandingDialog = true"
+          @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
         />
         <router-view />
       </main>
@@ -108,11 +109,11 @@ import {
 import { configJson } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
-import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin }
-  from '@/mixins'
+import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
+  NameRequestMixin } from '@/mixins'
 import { ApiFilingIF, ApiTaskIF, BusinessIF, TaskTodoIF } from '@/interfaces'
-import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, DissolutionTypes }
-  from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState,
+  DissolutionTypes, NigsMessage } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
@@ -132,6 +133,7 @@ export default {
       nameRequestInvalidDialog: false,
       nameRequestInvalidType: null as NameRequestStates,
       notInGoodStandingDialog: false,
+      nigsMessage: null as NigsMessage,
       localNrNumber: null as string,
       corpTypeCd: null as CorpTypeCd,
 
@@ -166,7 +168,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getEntityIncNo', 'getEntityName', 'getEntityType']),
+    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
@@ -249,10 +251,10 @@ export default {
   methods: {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
-      'setEntityStatus', 'setEntityBusinessNo', 'setEntityIncNo', 'setEntityFoundingDate', 'setTasks',
+      'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
       'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject',
-      'setEntityDissolutionDate', 'setEntityDissolutionType']),
+      'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings', 'setGoodStanding']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -369,7 +371,7 @@ export default {
       if (!data || data.length !== 6) throw new Error('Incomplete business data')
 
       this.storeEntityInfo(data[0])
-      this.storeBusinessInfo(data[1])
+      await this.storeBusinessInfo(data[1])
       this.storeTasks(data[2])
       this.storeFilings(data[3])
       this.storeAddresses(data[4])
@@ -465,7 +467,7 @@ export default {
     },
 
     /** Stores business info from Legal API. */
-    storeBusinessInfo (response: any): void {
+    async storeBusinessInfo (response: any): Promise<void> {
       const business = response?.data?.business as BusinessIF
 
       if (!business) {
@@ -483,22 +485,38 @@ export default {
         console.error('WARNING: Legal Type in Legal db does not match Corp Type in Auth db!')
       }
 
+      // FUTURE: change this to a single setter/object?
+      this.setAdminFreeze(business.adminFreeze || false) // *** TODO: remove after API update
       this.setEntityName(business.legalName)
+      this.setEntityState(business.state || EntityState.ACTIVE) // *** TODO: remove after API update
       this.setEntityType(business.legalType)
-      this.setEntityStatus(business.goodStanding ? EntityStatus.GOOD_STANDING : EntityStatus.NOT_IN_COMPLIANCE)
-      this.setEntityBusinessNo(business.taxId) // may be empty
-      this.setEntityIncNo(business.identifier)
+      this.setBusinessNumber(business.taxId || null) // may be empty
+      this.setIdentifier(business.identifier)
       this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
       this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
       this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
       this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
+      this.setComplianceWarnings(Array.isArray(business.complianceWarnings) ? business.complianceWarnings : [])
+      this.setGoodStanding(business.goodStanding)
 
-      // *** TODO: get entity status (eg, Dissolved) -- see also business.goodStanding
+      if (business.state === EntityState.HISTORICAL && business.stateFiling) {
+        // fetch the filing that changed the business state
+        const stateFiling = await this.fetchFiling(business.stateFiling)
 
-      // *** TODO: remove debugging code
-      business.dissolutionDate = this.dateToApi(new Date())
-      this.setEntityDissolutionDate(this.apiToDate(business.dissolutionDate))
-      this.setEntityDissolutionType(DissolutionTypes.HDO) // *** TODO: get from business object
+        // parse it (specific to dissolution filing atm)
+        const dissolutionType = stateFiling?.dissolution?.dissolutionType as DissolutionTypes
+        const effectiveDate = stateFiling?.header?.effectiveDate as string
+
+        // create the reason text to display in the info header
+        if (dissolutionType && effectiveDate) {
+          const name = this.dissolutionTypeToName(dissolutionType)
+          const enDash = '–' // ALT + 0150
+          const date: string = this.apiToPacificDateTime(effectiveDate, true)
+          this.setReasonText(`${name} ${enDash} ${date}`)
+        } else {
+          console.log('ERROR - invalid dissolution filing =', stateFiling) // eslint-disable-line no-console
+        }
+      }
 
       // store config object based on current entity type
       this.storeConfigObject(business.legalType)
@@ -538,7 +556,7 @@ export default {
       }
 
       // store business info
-      this.setEntityIncNo(identifier)
+      this.setIdentifier(identifier)
       this.setEntityType(legalType)
 
       // store NR Number if present
@@ -709,17 +727,17 @@ export default {
       this.setConfigObject(configObject)
     },
 
-    /** Redirects the user to the Create UI to start a company dissolution filing. */
+    /** Creates a draft filing and redirects the user to the Create UI to start a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
-      const draftDissolution = await this.createFiling(this.getEntityIncNo, dissolutionFiling, true)
+      const draftDissolution = await this.createFiling(this.getIdentifier, dissolutionFiling, true)
       const draftDissolutionId = +draftDissolution?.header?.filingId
 
       if (!draftDissolution || isNaN(draftDissolutionId)) {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUrl}define-dissolution?id=${this.getEntityIncNo}`
+      const url = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
       window.location.assign(url) // assume URL is always reachable
     },
 

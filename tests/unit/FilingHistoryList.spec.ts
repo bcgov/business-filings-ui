@@ -64,7 +64,7 @@ describe('Filing History List - misc functionality', () => {
   it('handles empty data', async () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store, vuetify })
@@ -83,7 +83,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = SAMPLE_FILINGS
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 222 }, vuetify })
@@ -98,7 +98,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('displays multiple filing items', async () => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -195,7 +195,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a paper-only filing', async () => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: true,
@@ -246,7 +246,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a regular filing', async () => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -299,7 +299,7 @@ describe('Filing History List - misc functionality', () => {
   xit('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
     // init store
     store.state.entityType = 'BEN'
-    store.state.entityIncNo = 'BC0007291'
+    store.state.identifier = 'BC0007291'
     store.state.filings = SAMPLE_FILINGS
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 666 }, vuetify })
@@ -320,7 +320,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('returns correct values for the date comparison methods', async () => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store })
@@ -340,7 +340,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('disables corrections when "disable changes" prop is set', async () => {
     // init store
-    store.state.entityIncNo = 'CP0001191'
+    store.state.identifier = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: true } })
@@ -351,8 +351,6 @@ describe('Filing History List - misc functionality', () => {
   })
 
   it('returns correct values for disableCorrection()', async () => {
-    // init store
-    store.state.entityIncNo = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: false } })
@@ -396,6 +394,14 @@ describe('Filing History List - misc functionality', () => {
 
     // only eighth condition:
     expect(vm.disableCorrection({ ...item, name: 'transition' })).toBe(true)
+
+    // only ninth condition (as a BEN):
+    store.state.entityType = 'BEN'
+    expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
+
+    // only ninth condition (as a CP):
+    store.state.entityType = 'CP'
+    expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
   })
 })
 
@@ -650,7 +656,7 @@ describe('Filing History List - redirections', () => {
     sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.keycloakRoles = ['staff']
-    store.state.entityIncNo = 'BC1234567'
+    store.state.identifier = 'BC1234567'
     store.state.filings = [
       {
         availableOnPaperOnly: false,

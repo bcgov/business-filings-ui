@@ -1,10 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import {
-  CorpTypeCd,
   DissolutionNames,
   DissolutionTypes,
   EffectOfOrderTypes,
-  EntityStatus,
   FilingNames,
   FilingStatus,
   FilingTypes,
@@ -119,11 +117,6 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
-  /** Returns True if filing is a Name Request. */
-  isTypeNameRequest (item: any): boolean {
-    return (item.name === FilingTypes.NAME_REQUEST)
-  }
-
   /** Returns True if filing is a Transition. */
   isTypeTransition (item: any): boolean {
     return (item.name === FilingTypes.TRANSITION)
@@ -181,23 +174,6 @@ export default class EnumMixin extends Vue {
   getCorpTypeNumberedDescription = GetCorpNumberedDescription
 
   /**
-   * Converts the entity status and type to a description.
-   * @param status the entity status to convert
-   * @param type the entity type to convert
-   * @returns the description
-   */
-  entityStatusToDescription (status: EntityStatus, type: CorpTypeCd): string {
-    switch (status) {
-      case EntityStatus.NAME_REQUEST:
-        return `${this.getCorpTypeDescription(type)} ${FilingNames.NAME_REQUEST}`
-      case EntityStatus.DRAFT_INCORP_APP:
-      case EntityStatus.FILED_INCORP_APP:
-        return `${this.getCorpTypeDescription(type)} ${FilingNames.INCORPORATION_APPLICATION}`
-    }
-    return '' // should never happen
-  }
-
-  /**
    * Converts the filing type to a filing name.
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
@@ -218,7 +194,6 @@ export default class EnumMixin extends Vue {
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER
       case FilingTypes.DISSOLUTION: return FilingNames.DISSOLUTION
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
-      case FilingTypes.NAME_REQUEST: return FilingNames.NAME_REQUEST
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
@@ -244,6 +219,9 @@ export default class EnumMixin extends Vue {
    * @returns the dissolution name
    */
   dissolutionTypeToName (type: DissolutionTypes): string {
-    return DissolutionNames[type as string]
+    switch (type) {
+      case DissolutionTypes.VOLUNTARY: return DissolutionNames.VOLUNTARY
+      default: return null
+    }
   }
 }

@@ -184,7 +184,7 @@ const USER_INFO = {
 }
 
 // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
-// must include keycloakRoles=["staff"]
+// must include keycloakRoles=['staff']
 const KEYCLOAK_TOKEN_STAFF = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
   'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
   'HAiOjE1Njg0ODk1NTksIm5iZiI6MCwiaWF0IjoxNTY4NDAzMTYwLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2' +
@@ -460,6 +460,7 @@ describe('App as a COOP', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -487,9 +488,9 @@ describe('App as a COOP', () => {
 
   it('fetches Entity Info properly', () => {
     expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
-    expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
-    expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.getters.getEntityIncNo).toBe('CP0001191')
+    expect(vm.$store.getters.isGoodStanding).toBe(true)
+    expect(vm.$store.state.businessNumber).toBe('123456789')
+    expect(vm.$store.getters.getIdentifier).toBe('CP0001191')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
     expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
   })
@@ -712,6 +713,7 @@ describe('App as a BCOMP', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -739,9 +741,9 @@ describe('App as a BCOMP', () => {
 
   it('fetches Entity Info properly', () => {
     expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
-    expect(vm.$store.getters.getEntityStatus).toBe('GOODSTANDING')
-    expect(vm.$store.state.entityBusinessNo).toBe('123456789')
-    expect(vm.$store.getters.getEntityIncNo).toBe('BC0007291')
+    expect(vm.$store.getters.isGoodStanding).toBe(true)
+    expect(vm.$store.state.businessNumber).toBe('123456789')
+    expect(vm.$store.getters.getIdentifier).toBe('BC0007291')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
     expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
   })
@@ -870,6 +872,7 @@ describe('App as a Draft IA with approved NR', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -884,10 +887,10 @@ describe('App as a Draft IA with approved NR', () => {
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
-    expect(vm.$store.getters.getEntityStatus).toBe('DRAFT_INCORP_APP')
+    expect(vm.$store.getters.isIncorpAppTask).toBe(true)
 
     // verify loaded task
     expect(vm.$store.state.tasks.length).toBe(1)
@@ -996,6 +999,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -1102,6 +1106,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -1208,6 +1213,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -1324,6 +1330,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -1338,10 +1345,10 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
-    expect(vm.$store.getters.getEntityStatus).toBe('FILED_INCORP_APP')
+    expect(vm.$store.getters.isIncorpAppFiling).toBe(true)
 
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
@@ -1474,6 +1481,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
     })
     vm = wrapper.vm
 
+    // wait for everything to settle
     await flushPromises()
   })
 
@@ -1488,10 +1496,10 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getEntityIncNo).toBe('T123456789')
+    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
-    expect(vm.$store.getters.getEntityStatus).toBe('FILED_INCORP_APP')
+    expect(vm.$store.getters.isIncorpAppFiling).toBe(true)
 
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
@@ -1518,5 +1526,149 @@ describe('App as a COMPLETED Incorporation Application', () => {
     expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
     expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
     expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
+  })
+})
+
+describe('App as an historical business', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/BC1234567/authorizations')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
+
+    // GET entity info from Auth API
+    get.withArgs('entities/BC1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          // Auth API Entity data
+          contacts: [
+            {
+              email: 'first.last@email.com',
+              phone: '(111)-222-3333',
+              phoneExtension: '444'
+            }
+          ]
+        }
+      })))
+
+    // GET business info from Legal API
+    get.withArgs('businesses/BC1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+        {
+          // Legal API Business data
+          business: {
+            arMaxDate: '2021-12-10',
+            arMinDate: '2022-12-02',
+            dissolutionDate: '2021-12-06',
+            fiscalYearEndDate: '2021-12-02',
+            foundingDate: '2021-12-02T20:15:00+00:00',
+            goodStanding: true,
+            hasRestrictions: false,
+            identifier: 'BC1234567',
+            lastAddressChangeDate: '2021-12-02',
+            lastAnnualGeneralMeetingDate: '',
+            lastAnnualReportDate: '',
+            lastDirectorChangeDate: '2021-12-02',
+            lastLedgerTimestamp: '2021-12-02T21:00:36.895648+00:00',
+            lastModified: '2021-12-06T19:58:53.878809+00:00',
+            legalName: 'HISTORICAL CORP.',
+            legalType: 'BEN',
+            nextAnnualReport: '2022-12-02T08:00:00+00:00',
+            state: 'HISTORICAL',
+            stateFiling: 'businesses/BC1234567/filings/113526',
+            submitter: 'bcsc/pmd3qdz4hzr3hpwbm7jwufel6flpqtyj'
+          }
+        }
+      })))
+
+    // GET tasks
+    get.withArgs('businesses/BC1234567/tasks')
+      .returns(new Promise((resolve) => resolve({ data: { tasks: [] } })))
+
+    // GET filings
+    get.withArgs('businesses/BC1234567/filings')
+      .returns(new Promise((resolve) => resolve({ data: { filings: [] } })))
+
+    // GET state filing
+    get.withArgs('businesses/BC1234567/filings/113526')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            business: {},
+            dissolution: {
+              dissolutionType: 'voluntary'
+            },
+            header: {
+              effectiveDate: '2021-12-06T20:05:35.168290+00:00'
+            }
+          }
+        }
+      })))
+
+    // GET addresses
+    get.withArgs('businesses/BC1234567/addresses')
+      .returns(new Promise((resolve) => resolve({ data: {} })))
+
+    // GET directors
+    get.withArgs('businesses/BC1234567/directors')
+      .returns(new Promise((resolve) => resolve({ data: { directors: [] } })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      sync: false,
+      localVue,
+      router,
+      store,
+      vuetify
+    })
+    vm = wrapper.vm
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches and parses state filing properly', () => {
+    expect(vm.$store.getters.isActive).toBe(false)
+    expect(vm.$store.getters.isHistorical).toBe(true)
+    expect(vm.$store.getters.isLiquidation).toBe(false)
+    expect(vm.$store.state.reasonText).toContain('Voluntary Dissolution')
+    expect(vm.$store.state.reasonText).toContain('December 6, 2021 at 12:05 pm Pacific time')
   })
 })

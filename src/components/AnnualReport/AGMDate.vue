@@ -101,9 +101,9 @@
               <p>A general meeting of every association must be held at least once in every calendar year
                 within 4 months after the end of its financial year, to be in compliance with the Cooperative
                 Association Act (Section 143).</p>
-              <p>You can continue your filing, and there is no fee enforced by BC Registries and Online
-                Services for being out of compliance with legislation. However, it is important to hold a valid
-                AGM in the next calendar year to be in compliance with the Cooperative Association Act.</p>
+              <p>You can continue your filing, and there is no fee enforced by BC Registries for being out of
+                compliance with legislation. However, it is important to hold a valid AGM in the next calendar
+                year to be in compliance with the Cooperative Association Act.</p>
             </div>
           </div>
         </v-expand-transition>

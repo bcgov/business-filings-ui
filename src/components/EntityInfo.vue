@@ -25,8 +25,8 @@
             </div>
 
             <!-- Entity Type -->
-            <div v-if="entityDescription" id="entity-description">{{ entityDescription }}</div>
-            <div v-if="nrDescription" id="nr-subtitle">{{ nrDescription }}</div>
+            <div v-if="businessId" id="entity-description">{{ entityDescription }}</div>
+            <div v-if="tempRegNumber" id="nr-subtitle">{{ nrDescription }}</div>
           </header>
 
           <menu class="mt-4 ml-n4">
@@ -41,7 +41,7 @@
 
             <span v-if="isHistorical">
               <v-chip class="primary mt-n1 ml-4" small label text-color="white">HISTORICAL</v-chip>
-              <span class="font-14 ml-3">{{dissolutionText}}</span>
+              <span class="font-14 ml-3">{{reasonText || 'Unknown Reason'}}</span>
             </span>
 
             <template v-else>
@@ -50,8 +50,8 @@
                 <v-btn
                   small text color="primary"
                   id="company-information-button"
-                  :disabled="hasBlocker || !isInGoodStanding"
-                  @click="viewChangeCompanyInfo()"
+                  :disabled="hasBlocker"
+                  @click="promptChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
                   <span class="font-13 ml-1">View and Change Company Information</span>
@@ -121,13 +121,13 @@
             <!-- Business Number -->
             <template v-if="businessId">
               <dt class="mr-2">Business Number:</dt>
-              <dd id="entity-business-number">{{ entityBusinessNo || 'Not Available' }}</dd>
+              <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
             </template>
 
             <!-- Incorporation Number -->
             <template v-if="businessId">
               <dt class="mr-2">Incorporation Number:</dt>
-              <dd id="entity-incorporation-number">{{ getEntityIncNo || 'Not Available' }}</dd>
+              <dd id="entity-incorporation-number">{{ getIdentifier || 'Not Available' }}</dd>
             </template>
 
             <!-- NR Number -->
@@ -149,7 +149,6 @@
                   v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
                   small text color="primary"
                   id="change-email-button"
-                  :disabled="hasBlocker"
                 >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
@@ -170,7 +169,6 @@
                   v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
                   small text color="primary"
                   id="change-phone-button"
-                  :disabled="hasBlocker"
                 >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
@@ -188,7 +186,7 @@
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, EntityStatus, CorpTypeCd, Routes, DissolutionTypes } from '@/enums'
+import { AllowableActions, CorpTypeCd, Routes, FilingNames, NigsMessage } from '@/enums'
 import { BreadcrumbIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
@@ -198,16 +196,14 @@ import axios from '@/axios-auth'
 })
 export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin) {
   @State ARFilingYear!: string
-  @State entityStatus!: EntityStatus
-  @State entityBusinessNo!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
-  @State entityDissolutionDate!: Date
-  @State entityDissolutionType!: DissolutionTypes
+  @State reasonText!: string
 
+  @Getter getBusinessNumber!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter getEntityIncNo!: number
+  @Getter getIdentifier!: number
   @Getter getEntityName!: string
   @Getter isRoleStaff!: boolean
   @Getter isBComp!: boolean
@@ -216,7 +212,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Getter isUlc!: boolean
   @Getter getNrNumber!: string
   @Getter hasBlocker!: boolean
-  @Getter isInGoodStanding!: boolean
+  @Getter isGoodStanding!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
   @Getter isHistorical!: boolean
@@ -265,15 +261,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The NR description. */
   private get nrDescription (): string {
-    return this.entityStatusToDescription(this.entityStatus, this.getEntityType)
-  }
-
-  /** The dissolution text. */
-  private get dissolutionText (): string {
-    const name = this.dissolutionTypeToName(this.entityDissolutionType)
-    const emDash = '—' // ALT + 0151
-    const date = this.dateToPacificDateTime(this.entityDissolutionDate)
-    return `${name} ${emDash} ${date}`
+    return `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.INCORPORATION_APPLICATION}`
   }
 
   /** The business phone number and optional extension. */
@@ -284,16 +272,25 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     return ''
   }
 
-  /** Redirects the user to the Edit UI to view or change their company information. */
-  private viewChangeCompanyInfo (): void {
-    const url = `${this.editUrl}${this.getEntityIncNo}/alteration`
-    window.location.assign(url) // assume URL is always reachable
+  /**
+   * Emits an event to display NIGS dialog if company is not in good standing.
+   * Otherwise, redirects user to the Edit UI to view or change their company information.
+   */
+  private promptChangeCompanyInfo (): void {
+    if (!this.isGoodStanding) {
+      this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
+    } else {
+      const url = `${this.editUrl}${this.getIdentifier}/alteration`
+      window.location.assign(url) // assume URL is always reachable
+    }
   }
 
-  /** Prompts the user to confirm a company dissolution filing. */
-  private async promptDissolve (): Promise<void> {
-    if (!this.isInGoodStanding) {
-      this.emitNotInGoodStanding()
+  /**
+   * Emits an event to display NIGS dialog if company is not in good standing.
+   * Otherwise, emits an event to prompt user to confirm voluntary dissolution. */
+  private promptDissolve (): void {
+    if (!this.isGoodStanding) {
+      this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
       return
     }
     this.emitConfirmDissolution()
@@ -339,7 +336,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   // Pass not in good standing event to parent.
   @Emit('notInGoodStanding')
-  private emitNotInGoodStanding (): void { }
+  private emitNotInGoodStanding (message: NigsMessage): void {}
 }
 </script>
 
@@ -456,5 +453,9 @@ dd:not(:hover) > button {
 #dissolution-button,
 #download-summary-button {
   margin-top: -4px; // for vertical alignment
+}
+
+::v-deep .v-chip__content {
+  letter-spacing: 0.5px;
 }
 </style>

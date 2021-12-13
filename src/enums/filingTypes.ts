@@ -9,7 +9,6 @@ export enum FilingTypes {
   COURT_ORDER = 'courtOrder',
   DISSOLUTION = 'dissolution',
   INCORPORATION_APPLICATION = 'incorporationApplication',
-  NAME_REQUEST = 'nameRequest',
   SPECIAL_RESOLUTION = 'specialResolution',
   TRANSITION = 'transition',
   REGISTRARS_NOTATION = 'registrarsNotation',

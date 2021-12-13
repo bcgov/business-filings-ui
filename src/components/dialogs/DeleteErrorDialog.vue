@@ -24,6 +24,7 @@
         <p class="font-15" v-for="(warning, index) in warnings" :key="index">
           {{warning.warning}}
         </p>
+
         <template v-if="!isRoleStaff">
           <p class="font-15">If you need help, please contact us.</p>
           <ContactInfo class="mt-5" />

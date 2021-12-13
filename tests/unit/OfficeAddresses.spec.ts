@@ -30,7 +30,7 @@ function getAddressX (x: number, type: string): any {
 describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
     store.state.entityType = 'CP'
-    store.state.entityIncNo = 'CP0000841'
+    store.state.identifier = 'CP0000841'
   })
 
   it('fetches the original office addresses with different delivery and mailing', async () => {
@@ -196,7 +196,7 @@ describe('OfficeAddresses as a BCOMP', () => {
   beforeAll(() => {
     // init store
     store.state.entityType = 'BEN'
-    store.state.entityIncNo = 'BC1218881'
+    store.state.identifier = 'BC1218881'
   })
 
   it('fetches the original office addresses with different registered and records', async () => {
