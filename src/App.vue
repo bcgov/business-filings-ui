@@ -486,9 +486,9 @@ export default {
       }
 
       // FUTURE: change this to a single setter/object?
-      this.setAdminFreeze(business.adminFreeze || false) // *** TODO: remove after API update
+      this.setAdminFreeze(business.adminFreeze)
       this.setEntityName(business.legalName)
-      this.setEntityState(business.state || EntityState.ACTIVE) // *** TODO: remove after API update
+      this.setEntityState(business.state)
       this.setEntityType(business.legalType)
       this.setBusinessNumber(business.taxId || null) // may be empty
       this.setIdentifier(business.identifier)
