@@ -18,6 +18,7 @@ export interface BusinessIF {
   adminFreeze: boolean
   arMaxDate: isoDatePacific // not used
   arMinDate: isoDatePacific // not used
+  dissolutionDate: apiDateTimeUtc // not used
   complianceWarnings?: Array<ComplianceWarning>
   fiscalYearEndDate: isoDatePacific // not used
   foundingDate: apiDateTimeUtc
