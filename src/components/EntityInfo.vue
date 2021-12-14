@@ -40,7 +40,9 @@
             </span>
 
             <span v-if="isHistorical">
-              <v-chip class="primary mt-n1 ml-4" small label text-color="white">HISTORICAL</v-chip>
+              <v-chip class="primary mt-n1 ml-4 pointer-events-none" small label text-color="white">
+                <strong>HISTORICAL</strong>
+              </v-chip>
               <span class="font-14 ml-3">{{reasonText || 'Unknown Reason'}}</span>
             </span>
 
@@ -395,7 +397,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 #entity-description,
 #nr-subtitle {
   font-size: $px-14;
-  color: $gray9;
+  color: $gray7;
 }
 
 // vertical lines between buttons:
