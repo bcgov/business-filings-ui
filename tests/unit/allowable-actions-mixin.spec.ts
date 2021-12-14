@@ -241,25 +241,29 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether View Change Company Info is allowed', () => {
     const tests = [
       // no conditions:
-      { entityState: 'HISTORICAL', entityType: null, expected: false },
+      { entityState: 'HISTORICAL', businessId: null, entityType: null, expected: false },
       // only first condition:
-      { entityState: 'ACTIVE', entityType: null, expected: false },
-      // only second condition (BEN):
-      { entityState: 'HISTORICAL', entityType: 'BEN', expected: false },
-      // only second condition (BC):
-      { entityState: 'HISTORICAL', entityType: 'BC', expected: false },
-      // only second condition (ULC):
-      { entityState: 'HISTORICAL', entityType: 'ULC', expected: false },
+      { entityState: 'ACTIVE', businessId: null, entityType: null, expected: false },
+      // only second condition:
+      { entityState: 'HISTORICAL', businessId: 'CP1234567', entityType: null, expected: false },
+      // only third condition (BEN):
+      { entityState: 'HISTORICAL', businessId: null, entityType: 'BEN', expected: false },
+      // only third condition (BC):
+      { entityState: 'HISTORICAL', businessId: null, entityType: 'BC', expected: false },
+      // only third condition (ULC):
+      { entityState: 'HISTORICAL', businessId: null, entityType: 'ULC', expected: false },
       // all conditions (BEN):
-      { entityState: 'ACTIVE', entityType: 'BEN', expected: true },
+      { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'BEN', expected: true },
       // all conditions (BC):
-      { entityState: 'ACTIVE', entityType: 'BC', expected: true },
+      { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'BC', expected: true },
       // all conditions (ULC):
-      { entityState: 'ACTIVE', entityType: 'ULC', expected: true }
+      { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'ULC', expected: true }
     ]
 
     for (let test of tests) {
       store.state.entityState = test.entityState
+      if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
+      else sessionStorage.removeItem('BUSINESS_ID')
       store.state.entityType = test.entityType
       expect(vm.isAllowed('viewChangeCompanyInfo')).toBe(test.expected)
     }

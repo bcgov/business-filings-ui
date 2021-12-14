@@ -89,9 +89,9 @@
                   </p>
 
                   <p>
-                    Before you can alter your business it must be in good standing with BC Registries.
-                    There may be several reasons why a business is not in good standing, but the most
-                    common reason is an overdue annual report.
+                    Before you can alter your business, it must be in good standing with the Business
+                    Registry. There may be several reasons why a business is not in good standing, but
+                    the most common reason is an overdue annual report.
                   </p>
 
                   <p>To resolve this issue, you MUST contact BC Registries staff:</p>
@@ -1240,9 +1240,8 @@ export default class TodoList extends Mixins(
     const line1 = `Deleting this ${item.draftTitle} will remove this application and all information ` +
       'associated with this application.'
     const line2 = this.nameRequest
-      ? 'You will be returned to your Manage Businesses dashboard where you can use the Name Request ' +
-        'associated with this application for a future application.'
-      : 'You will be returned to the BC Registries home page.'
+      ? 'You will be returned to My Business Registry.'
+      : 'You will be returned to the Business Registry page.'
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(

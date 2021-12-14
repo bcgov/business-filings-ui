@@ -226,15 +226,13 @@ describe('EntityInfo - company info button and tooltip', () => {
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'DRAFT_INCORP_APP',
-      buttonExists: true,
-      tooltip: null
+      buttonExists: false
     },
     { // 6
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'FILED_INCORP_APP',
-      buttonExists: true,
-      tooltip: null
+      buttonExists: false
     },
     { // 7
       businessId: null,

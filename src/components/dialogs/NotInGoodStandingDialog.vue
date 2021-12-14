@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent>
+  <v-dialog v-model="dialog" width="45rem" persistent content-class="not-in-good-standing-dialog">
     <v-card class="pa-5">
       <v-card-subtitle class="pt-5" align="center">
         <v-icon color="error" large>mdi-information-outline</v-icon>
@@ -15,27 +15,28 @@
 
         <template v-if="isDissolveMessage">
           <p class="warning-text">
-            This business cannot be dissolved yet. Before you can dissolve your business, it must be
-            in good standing with BC Registries. There may be several reasons why a business is not
-            in good standing, but the most common reason is an overdue annual report.
+            This business cannot be dissolved at this time because it is not in good standing
+            with the Business Registry. There may be several reasons why a business is not in
+            good standing, but the most common reason is an overdue annual report.
           </p>
 
           <p class="warning-text">
-            Please file any overdue annual reports and try your voluntary dissolution again, or
-            contact BC Registries staff:
+            Please file any overdue annual reports in your To Do list and try your voluntary
+            dissolution again, or contact BC Registries staff:
           </p>
         </template>
 
         <template v-else-if="isChangeCompanyInfoMessage">
           <p class="warning-text">
-            Company information cannot be changed yet. Before you can change company information, it
-            must be in good standing with BC Registries. There may be several reasons why a business
-            is not in good standing, but the most common reason is an overdue annual report.
+            The complete company information for this business cannot be viewed or changed at
+            this time because the business is not in good standing with the Business Registry.
+            There may be several reasons why a business is not in good standing, but the most
+            common reason is an overdue annual report.
           </p>
 
           <p class="warning-text">
-            Please file any overdue annual reports and try changing company information again, or
-            contact BC Registries staff:
+            Please file any overdue annual reports in your To Do list and try to view and change
+            the company information again, or contact BC Registries staff:
           </p>
         </template>
 
