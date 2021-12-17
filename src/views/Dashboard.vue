@@ -9,7 +9,7 @@
 
     <v-container id="dashboard-container" class="view-container">
       <article id="dashboard-article">
-        <v-row>
+        <v-row class="mt-n9">
           <v-col cols="12" md="9">
             <section v-if="!isHistorical">
               <header>
