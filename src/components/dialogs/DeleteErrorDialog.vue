@@ -19,10 +19,10 @@
           Please note the following:
         </p>
         <p class="font-15" v-for="(error, index) in errors" :key="index">
-          {{error.error}}
+          {{error.error || error.message}}
         </p>
         <p class="font-15" v-for="(warning, index) in warnings" :key="index">
-          {{warning.warning}}
+          {{warning.warning || warning.message}}
         </p>
 
         <template v-if="!isRoleStaff">

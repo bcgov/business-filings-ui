@@ -3,7 +3,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { CommonMixin } from '@/mixins'
 import { ApiDocumentsIF, CommentIF, DocumentIF } from '@/interfaces'
-import { Roles } from '@/enums'
+import { FilingStatus, Roles } from '@/enums'
 
 /**
  * Mixin that provides integration with the Legal API.
@@ -234,6 +234,25 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
         window.URL.revokeObjectURL(url)
         a.remove()
       }
+    })
+  }
+
+  /** Checks if the specified business has any pending tasks.
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns True if there are any non-NEW tasks, else False
+   */
+  async hasPendingTasks (businessId: string): Promise<boolean> {
+    return this.fetchTasks(businessId).then(response => {
+      if (response?.data?.tasks) {
+        response.data.tasks.forEach(task => {
+          if (task?.task?.filing?.header) {
+            if (task.task.filing.header.status !== FilingStatus.NEW) {
+              return true
+            }
+          }
+        })
+      }
+      return false
     })
   }
 }

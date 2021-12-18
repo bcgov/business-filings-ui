@@ -128,7 +128,7 @@
 // Libraries
 import { mapActions, mapGetters } from 'vuex'
 
-// Components and Dialogs
+// Components and dialogs
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
@@ -138,7 +138,7 @@ import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
 
-// Enums and Interfaces
+// Enums and interfaces
 import { FilingStatus, Routes, AllowableActions } from '@/enums'
 
 // Mixins

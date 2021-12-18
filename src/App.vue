@@ -265,6 +265,7 @@ export default {
     }
   },
 
+  /** Called when component is created. */
   created (): void {
     // listen for reload data events
     this.$root.$on('reloadData', () => this.fetchData())
@@ -273,6 +274,7 @@ export default {
     this.$root.$on('showSpinner', (flag = false) => { this.showSpinner = flag })
   },
 
+  /** Called when component is mounted. */
   async mounted (): Promise<void> {
     // do not fetch data if we need to authenticate
     // just let signin page do its thing

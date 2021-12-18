@@ -1,5 +1,5 @@
 <template>
-  <v-card flat id="AR-step-4-container">
+  <v-card flat>
     <div class="certify-container">
       <div class="certifiedby-container">
         <label>Legal Name</label>
@@ -94,7 +94,7 @@ export default class Certify extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#AR-step-4-container {
+.v-card {
   margin-top: 1rem;
   padding-bottom: 0.5rem;
   padding-top: 1rem;

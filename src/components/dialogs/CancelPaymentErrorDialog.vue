@@ -13,7 +13,7 @@
           We were unable to cancel your payment due to the following errors:
         </p>
         <p class="font-15" v-for="(error, index) in errors" :key="index">
-          {{error.error}}
+          {{error.error || error.message}}
         </p>
 
         <template v-if="!isRoleStaff">

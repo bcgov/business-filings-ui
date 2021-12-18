@@ -1,14 +1,14 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="save-error-dialog">
+  <v-dialog v-model="dialog" width="50rem" persistent :attach="attach" content-class="save-error-dialog">
     <v-card>
       <!-- if there are errors, or neither errors nor warnings... -->
       <v-card-title id="dialog-title" v-if="numErrors > 0 || numWarnings < 1">
-        Unable to save {{filingName}}
+        Unable to Save {{filingName}}
       </v-card-title>
 
       <!-- otherwise there are only warnings... -->
       <v-card-title id="dialog-title" v-else>
-        {{filingName}} saved with warnings
+        {{filingName}} Saved with Warnings
       </v-card-title>
 
       <v-card-text id="dialog-text">
@@ -23,7 +23,9 @@
         <div class="font-15 mb-4" v-if="numErrors > 0">
           <p>We were unable to save your {{filingName}} due to the following errors:</p>
           <ul>
-            <li v-for="(error, index) in errors" :key="index">{{error.error}}</li>
+            <li v-for="(error, index) in errors" :key="index">
+              {{error.error || error.message}}
+            </li>
           </ul>
         </div>
 
@@ -31,7 +33,9 @@
         <div class="font-15 mb-4" v-if="numWarnings > 0">
           <p>Please note the following warnings:</p>
           <ul>
-            <li v-for="(warning, index) in warnings" :key="index">{{warning.warning}}</li>
+            <li v-for="(warning, index) in warnings" :key="index">
+              {{warning.warning || warning.message}}
+            </li>
           </ul>
         </div>
 
@@ -45,7 +49,7 @@
 
       <!-- if there are errors, or neither errors nor warnings... -->
       <v-card-actions v-if="numErrors > 0 || numWarnings < 1">
-        <v-btn id="dialog-exit-button" color="primary" text @click="exit()">Exit without saving</v-btn>
+        <v-btn id="dialog-exit-button" color="primary" text @click="exit()">Return to Filing</v-btn>
         <v-spacer></v-spacer>
         <v-btn id="dialog-retry-button" color="primary" text @click="retry()" :disabled="disableRetry">Retry</v-btn>
       </v-card-actions>

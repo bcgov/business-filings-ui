@@ -11,7 +11,7 @@ import flushPromises from 'flush-promises'
 
 // Components
 import Correction from '@/views/Correction.vue'
-import { DetailComment, Certify, StaffPayment } from '@/components/common'
+import { DetailComment, Certify } from '@/components/common'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 
 // suppress various warnings:
@@ -83,14 +83,12 @@ describe('Correction - UI', () => {
     // verify sub-components
     expect(wrapper.find(DetailComment).exists()).toBe(true)
     expect(wrapper.find(Certify).exists()).toBe(true)
-    expect(wrapper.find(StaffPayment).exists()).toBe(true)
     expect(wrapper.find(SbcFeeSummary).exists()).toBe(true)
 
     // verify rendered page
     expect(wrapper.find('#correction-header').text()).toBe('Correction —')
     expect(wrapper.find('#correction-step-1-header').text()).toBe('1. Detail')
     expect(wrapper.find('#correction-step-2-header').text()).toBe('2. Certify')
-    expect(wrapper.find('#correction-step-3-header').text()).toBe('3. Staff Payment')
 
     wrapper.destroy()
   })
@@ -163,28 +161,19 @@ describe('Correction - UI', () => {
     expect(vm.isPayRequired).toBe(true)
 
     // verify "validated" - all true
-    vm.staffPaymentFormValid = true
     vm.detailCommentValid = true
     vm.certifyFormValid = true
-    expect(vm.validated).toBe(true)
-
-    // verify "validated" - invalid Staff Payment form
-    vm.staffPaymentFormValid = false
-    vm.detailCommentValid = true
-    vm.certifyFormValid = true
-    expect(vm.validated).toBe(false)
+    expect(vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Detail Comment form
-    vm.staffPaymentFormValid = true
     vm.detailCommentValid = false
     vm.certifyFormValid = true
-    expect(vm.validated).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
-    vm.staffPaymentFormValid = true
     vm.detailCommentValid = true
     vm.certifyFormValid = false
-    expect(vm.validated).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()
   })
@@ -204,7 +193,6 @@ describe('Correction - UI', () => {
       stubs: {
         DetailComment: true,
         Certify: true,
-        StaffPayment: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -220,7 +208,7 @@ describe('Correction - UI', () => {
     expect(vm.dataLoaded).toBe(true)
     expect(vm.showLoadingContainer).toBe(false)
     expect(vm.title).toBe('Annual Report (2018)')
-    expect(vm.agmYear).toBe(2018)
+    expect(vm.agmYear).toBe('2018')
     expect(vm.originalFilingDate).toBe('Dec 23, 2018')
     expect(vm.defaultComment).toBe('Correction for Annual Report (2018), filed on Dec 23, 2018.')
 
@@ -228,7 +216,7 @@ describe('Correction - UI', () => {
   })
 
   it('saves draft correction properly', async () => {
-    // mock "get tasks" endpoint - needed for hasTasks()
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinonAxiosGet
       .withArgs('businesses/CP1234567/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
@@ -264,7 +252,6 @@ describe('Correction - UI', () => {
       stubs: {
         DetailComment: true,
         Certify: true,
-        StaffPayment: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -332,7 +319,6 @@ describe('Correction - UI', () => {
       stubs: {
         DetailComment: true,
         Certify: true,
-        StaffPayment: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -396,7 +382,6 @@ describe('Correction - UI', () => {
       stubs: {
         DetailComment: true,
         Certify: true,
-        StaffPayment: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -459,7 +444,6 @@ describe('Correction - UI', () => {
       stubs: {
         DetailComment: true,
         Certify: true,
-        StaffPayment: true,
         SbcFeeSummary: true
       },
       mocks: { $route }

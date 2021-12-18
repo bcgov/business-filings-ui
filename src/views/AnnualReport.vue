@@ -11,6 +11,15 @@
       @exit="navigateToDashboard(true)"
     />
 
+    <PaymentErrorDialog
+      attach="#annual-report"
+      filingName="Annual Report"
+      :dialog="paymentErrorDialog"
+      :errors="saveErrors"
+      :warnings="saveWarnings"
+      @exit="onPaymentErrorDialogExit()"
+    />
+
     <ResumeErrorDialog
       attach="#annual-report"
       :dialog="resumeErrorDialog"
@@ -20,22 +29,22 @@
     <SaveErrorDialog
       attach="#annual-report"
       filingName="Annual Report"
-      :dialog="saveErrorDialog"
+      :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
       :warnings="saveWarnings"
-      @exit="navigateToDashboard(true)"
-      @retry="onClickFilePay()"
-      @okay="resetErrors()"
+      @exit="saveErrorReason=null"
+      @retry="onSaveErrorDialogRetry()"
+      @okay="onSaveErrorDialogOkay()"
     />
 
-    <PaymentErrorDialog
+    <StaffPaymentDialog
       attach="#annual-report"
-      filingName="Annual Report"
-      :dialog="paymentErrorDialog"
-      :errors="saveErrors"
-      :warnings="saveWarnings"
-      @exit="navigateToDashboard(true)"
+      :dialog="staffPaymentDialog"
+      :staffPaymentData.sync="staffPaymentData"
+      :loading="filingPaying"
+      @exit="staffPaymentDialog=false"
+      @submit="onClickFilePay(true)"
     />
 
     <!-- Initial Page Load Transition -->
@@ -58,6 +67,7 @@
       </div>
     </v-fade-transition>
 
+    <!-- Main Body -->
     <v-container id="annual-report-container" class="view-container">
       <v-row>
         <v-col cols="12" lg="9">
@@ -69,7 +79,7 @@
             >
               <!-- Page Title -->
               <header>
-                <h1 id="AR-header">File {{ARFilingYear}} Annual Report
+                <h1 id="annual-report-header">File {{ARFilingYear}} Annual Report
                   <span class="font-italic" v-if="getReportState"> &mdash; {{getReportState}}</span>
                 </h1>
                 <p>Select your Annual General Meeting date, then verify or change your Office Addresses
@@ -79,7 +89,7 @@
               <!-- Annual General Meeting Date -->
               <section>
                 <header>
-                  <h2 id="AR-step-1-header">1. Annual General Meeting Date</h2>
+                  <h2 id="agm-date-header">1. Annual General Meeting Date</h2>
                   <p>Select your Annual General Meeting (AGM) date</p>
                 </header>
                 <AgmDate
@@ -98,7 +108,7 @@
               <!-- Registered Office Addresses -->
               <section v-show="agmDateValid">
                 <header>
-                  <h2 id="AR-step-2-header">2. Registered Office Addresses
+                  <h2 id="addresses-header">2. Registered Office Addresses
                     <span class="as-of-date" v-if="agmDate">(as of {{ARFilingYear}} Annual General Meeting)</span>
                     <span class="as-of-date" v-else>(as of {{asOfDate}})</span>
                   </h2>
@@ -117,7 +127,7 @@
               <!-- Directors -->
               <section v-show="agmDateValid">
                 <header>
-                  <h2 id="AR-step-3-header">3. Directors</h2>
+                  <h2 id="directors-header">3. Directors</h2>
                   <p v-if="allowChange('cod')">Tell us who was elected or appointed and who ceased to be
                     a director at your {{ARFilingYear}} AGM</p>
                   <p v-else>This is your list of directors active as of {{asOfDate}}, including
@@ -143,7 +153,7 @@
             >
               <!-- Page Title -->
               <header>
-                <h1 id="AR-header-BC">File {{ARFilingYear}} Annual Report
+                <h1 id="annual-report-header-BC">File {{ARFilingYear}} Annual Report
                   <span style="font-style: italic" v-if="getReportState"> &mdash; {{getReportState}}</span>
                 </h1>
                 <p>Please review all the information before you file and pay</p>
@@ -165,7 +175,7 @@
               <!-- Business Details -->
               <section>
                 <header>
-                  <h2 id="AR-header-1-BC">1. Business Details</h2>
+                  <h2 id="business-details-header">1. Business Details</h2>
                 </header>
                 <ArDate />
                 <br>
@@ -178,7 +188,7 @@
               <!-- Directors -->
               <section>
                 <header>
-                  <h2 id="AR-header-2-BC">2. Directors</h2>
+                  <h2 id="directors-header-BC">2. Directors</h2>
                 </header>
                 <SummaryDirectors
                   :directors="originalDirectors"
@@ -191,8 +201,8 @@
             <!-- Certify -->
             <section v-show="isBComp || agmDateValid">
               <header>
-                <h2 id="AR-step-4-header" v-if="isBComp">3. Certify</h2>
-                <h2 id="AR-step-4-header" v-else>4. Certify</h2>
+                <h2 id="certify-header" v-if="isBComp">3. Certify</h2>
+                <h2 id="certify-header" v-else>4. Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
               <Certify
@@ -201,17 +211,6 @@
                 :entityDisplay="displayName()"
                 :message="certifyMessage"
                 @valid="certifyFormValid=$event"
-              />
-            </section>
-
-            <!-- Staff Payment -->
-            <section v-if="isRoleStaff" v-show="isBComp || agmDateValid">
-              <header>
-                <h2 id="AR-step-5-header">5. Staff Payment</h2>
-              </header>
-              <StaffPayment
-                :staffPaymentData.sync="staffPaymentData"
-                @valid="staffPaymentFormValid=$event"
               />
             </section>
           </section>
@@ -268,7 +267,7 @@
                 id="ar-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!validated || busySaving"
+                :disabled="!isPageValid || busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -307,7 +306,7 @@
                 id="ar-file-pay-bc-btn"
                 color="primary"
                 large
-                :disabled="!validated || busySaving"
+                :disabled="!isPageValid || busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -334,182 +333,197 @@
 
 <script lang="ts">
 // Libraries
-import axios from '@/axios-auth'
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Action, Getter, State } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 
-// Components
+// Components and dialogs
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, OfficeAddresses, StaffPayment, SummaryDirectors, SummaryOfficeAddresses }
-  from '@/components/common'
+import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
+import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
+  StaffPaymentDialog } from '@/components/dialogs'
 
-// Dialogs
-import { ConfirmDialog, PaymentErrorDialog, FetchErrorDialog, ResumeErrorDialog, SaveErrorDialog }
-  from '@/components/dialogs'
+// Mixins, enums and interfaces
+import { CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
+import { CorpTypeCd, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
+  from '@/enums'
+import { ActionBindingIF, ConfirmDialogType, DirectorIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 
-// Mixins
-import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-
-// Enums and Interfaces
-import { FilingCodes, FilingStatus, FilingTypes, Routes, StaffPaymentOptions } from '@/enums'
-import { StaffPaymentIF } from '@/interfaces'
-
-export default {
-  name: 'AnnualReport',
-
-  mixins: [CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin],
-
+@Component({
   components: {
-    ArDate,
     AgmDate,
-    OfficeAddresses,
-    Directors,
+    ArDate,
     Certify,
-    StaffPayment,
-    SbcFeeSummary,
-    SummaryOfficeAddresses,
-    SummaryDirectors,
     ConfirmDialog,
-    PaymentErrorDialog,
+    Directors,
     FetchErrorDialog,
+    OfficeAddresses,
+    PaymentErrorDialog,
     ResumeErrorDialog,
-    SaveErrorDialog
-  },
+    SaveErrorDialog,
+    SbcFeeSummary,
+    StaffPaymentDialog,
+    SummaryDirectors,
+    SummaryOfficeAddresses
+  }
+})
+export default class AnnualReport extends Mixins(
+  CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin
+) {
+  // Refs
+  $refs!: {
+    confirm: ConfirmDialogType,
+    directorsComponent: Directors,
+    officeAddressesComponent: OfficeAddresses
+  }
 
-  data () {
-    return {
-      // properties for AgmDate component
-      newAgmDate: null, // for resuming draft
-      newAgmExtension: null, // for resuming draft
-      newNoAgm: null, // for resuming draft
-      agmDate: null,
-      agmExtension: null,
-      noAgm: null,
-      agmDateValid: false,
+  @State entityFoundingDate!: Date
+  @State filingData!: Array<FilingDataIF>
+  @State ARFilingYear!: number
+  @State arMinDate!: string
+  @State arMaxDate!: string
+  @State nextARDate!: string
+  @State directors!: Array<DirectorIF>
+  @State lastAddressChangeDate!: string
+  @State lastDirectorChangeDate!: string
+  @State lastAnnualReportDate!: string
 
-      // properties for OfficeAddresses component
-      originalAddresses: { registeredOffice: {}, recordsOffice: {} },
-      updatedAddresses: { registeredOffice: {}, recordsOffice: {} },
-      addressesFormValid: null as boolean,
+  @Getter isBComp!: boolean
+  @Getter isCoop!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isCurrentFilingEditable!: boolean
+  @Getter getReportState!: string
+  @Getter getCurrentYear!: number
+  @Getter getCurrentDate!: string
+  @Getter getEntityType!: CorpTypeCd
+  @Getter getEntityName!: string
+  @Getter getIdentifier!: string
 
-      // properties for Directors component
-      originalDirectors: [],
-      updatedDirectors: [],
-      directorFormValid: true,
-      directorEditInProgress: false,
+  @Action setFilingData!: ActionBindingIF
 
-      // properties for Certify component
-      certifiedBy: '',
-      isCertified: false,
-      certifyFormValid: null,
+  // variables for AgmDate component
+  private newAgmDate = null // for resuming draft
+  private newAgmExtension = null // for resuming draft
+  private newNoAgm = null // for resuming draft
+  private agmDate = null
+  private agmExtension = null
+  private noAgm = null
+  private agmDateValid = false
 
-      // properties for StaffPayment component
-      staffPaymentData: { option: StaffPaymentOptions.NONE } as StaffPaymentIF,
-      staffPaymentFormValid: null,
+  // variables for OfficeAddresses component
+  private originalAddresses: any = { registeredOffice: {}, recordsOffice: {} }
+  private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
+  private addressesFormValid: boolean = null
 
-      // flags for displaying dialogs
-      fetchErrorDialog: false,
-      resumeErrorDialog: false,
-      saveErrorDialog: false,
-      paymentErrorDialog: false,
+  // variables for Directors component
+  private originalDirectors = []
+  private updatedDirectors = []
+  private directorFormValid = true
+  private directorEditInProgress = false
 
-      // other local properties
-      totalFee: 0,
-      filingId: null,
-      loadingMessage: '',
-      dataLoaded: false,
-      isFetching: false,
-      saving: false as boolean, // true only when saving
-      savingResuming: false as boolean, // true only when saving and resuming
-      filingPaying: false as boolean, // true only when filing and paying
-      haveChanges: false,
-      saveErrors: [],
-      saveWarnings: [],
+  // variables for Certify component
+  private certifiedBy = ''
+  private isCertified = false
+  private certifyFormValid = null
 
-      // enum in template
-      FilingTypes
+  // variables for staff payment
+  private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  private staffPaymentDialog = false
+
+  // variables for displaying dialogs
+  private fetchErrorDialog = false
+  private resumeErrorDialog = false
+  private saveErrorReason: SaveErrorReasons = null
+  private paymentErrorDialog = false
+
+  // other variables
+  private totalFee = 0
+  private filingId: number = null
+  private savedFiling = null // filing during save
+  private loadingMessage = ''
+  private dataLoaded = false
+  private isFetching = false
+  private saving = false // true only when saving
+  private savingResuming = false // true only when saving and resuming
+  private filingPaying = false // true only when filing and paying
+  private haveChanges = false
+  private saveErrors = []
+  private saveWarnings = []
+
+  /** True if loading container should be shown, else False. */
+  get showLoadingContainer (): boolean {
+    // show loading container when data isn't yet loaded and when
+    // no dialogs are displayed (otherwise dialogs may be hidden)
+    return (!this.dataLoaded && !this.fetchErrorDialog && !this.resumeErrorDialog &&
+      !this.saveErrorReason && !this.paymentErrorDialog)
+  }
+
+  /**
+   * The As Of date, used to query data, as Effective Date, and as Annual Report Date.
+   * (Depends on whether entity is a Coop or BComp.)
+   * @returns date as "YYYY-MM-DD"
+   */
+  get asOfDate (): string {
+    if (this.isCoop) {
+      // if AGM Date is set then use it
+      if (this.agmDate) return this.agmDate
+      // if filing is in past year then use last day in that year
+      if (this.ARFilingYear < this.getCurrentYear) return `${this.ARFilingYear}-12-31`
     }
-  },
-
-  computed: {
-    ...mapState(['ARFilingYear', 'arMinDate', 'arMaxDate', 'nextARDate', 'entityFoundingDate', 'directors',
-      'filingData', 'lastAddressChangeDate', 'lastDirectorChangeDate', 'lastAnnualReportDate']),
-
-    ...mapGetters(['isBComp', 'isCoop', 'isRoleStaff', 'isCurrentFilingEditable', 'getReportState',
-      'getCurrentYear', 'getCurrentDate', 'getEntityType', 'getEntityName', 'getIdentifier']),
-
-    /** Returns True if loading container should be shown, else False. */
-    showLoadingContainer (): boolean {
-      return (!this.dataLoaded && !this.fetchErrorDialog && !this.resumeErrorDialog &&
-        !this.saveErrorDialog && !this.paymentErrorDialog)
-    },
-
-    /**
-     * The As Of date, used to query data, as Effective Date, and as Annual Report Date.
-     * (Depends on whether entity is a Coop or BComp.)
-     * @returns date as "YYYY-MM-DD"
-     */
-    asOfDate (): string {
-      if (this.isCoop) {
-        // if AGM Date is set then use it
-        if (this.agmDate) return this.agmDate
-        // if filing is in past year then use last day in that year
-        if (this.ARFilingYear < this.getCurrentYear) return `${this.ARFilingYear}-12-31`
-      }
-      if (this.isBComp) {
-        return this.nextARDate
-      }
-      // should never get here
-      return this.getCurrentDate
-    },
-
-    certifyMessage (): string {
-      if (this.isBComp) {
-        return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
-      }
-      return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
-    },
-
-    /** The Pay API URL string. */
-    payApiUrl (): string {
-      return sessionStorage.getItem('PAY_API_URL')
-    },
-
-    /** The Auth URL string. */
-    authUrl (): string {
-      return sessionStorage.getItem('AUTH_WEB_URL')
-    },
-
-    /** The Base URL string. */
-    baseUrl (): string {
-      return sessionStorage.getItem('BASE_URL')
-    },
-
-    validated (): boolean {
-      const staffPaymentValid = (!this.isRoleStaff || !this.isPayRequired || this.staffPaymentFormValid)
-
-      if (this.isCoop) {
-        return (staffPaymentValid && this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
-          this.certifyFormValid && !this.directorEditInProgress)
-      }
-      return (staffPaymentValid && this.certifyFormValid)
-    },
-
-    /** True when saving, saving and resuming, or filing and paying. */
-    busySaving (): boolean {
-      return (this.saving || this.savingResuming || this.filingPaying)
-    },
-
-    isPayRequired (): boolean {
-      // FUTURE: modify rule here as needed
-      return (this.totalFee > 0)
+    if (this.isBComp) {
+      return this.nextARDate
     }
-  },
+    // should never get here
+    return this.getCurrentDate
+  }
 
+  get certifyMessage (): string {
+    if (this.isBComp) {
+      return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
+    }
+    return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
+  }
+
+  /** The Pay API URL string. */
+  get payApiUrl (): string {
+    return sessionStorage.getItem('PAY_API_URL')
+  }
+
+  /** The Auth URL string. */
+  get authUrl (): string {
+    return sessionStorage.getItem('AUTH_WEB_URL')
+  }
+
+  /** The Base URL string. */
+  get baseUrl (): string {
+    return sessionStorage.getItem('BASE_URL')
+  }
+
+  /** True if page is valid, else False. */
+  get isPageValid (): boolean {
+    if (this.isCoop) {
+      return (this.agmDateValid && this.addressesFormValid && this.directorFormValid &&
+        this.certifyFormValid && !this.directorEditInProgress)
+    }
+    return this.certifyFormValid
+  }
+
+  /** True when saving, saving and resuming, or filing and paying. */
+  get busySaving (): boolean {
+    return (this.saving || this.savingResuming || this.filingPaying)
+  }
+
+  /** True if payment is required, else False. */
+  get isPayRequired (): boolean {
+    // FUTURE: modify rule here as needed
+    return (this.totalFee > 0)
+  }
+
+  /** Called when component is created. */
   created (): void {
     // init
     this.setFilingData([])
@@ -526,11 +540,12 @@ export default {
       }
     }
 
-    // Filing ID may be 0, N or NaN
+    // Filing ID may be 0, a number or NaN
     this.filingId = +this.$route.params.filingId
-  },
+  }
 
-  mounted (): void {
+  /** Called when component is mounted. */
+  async mounted (): Promise<void> {
     // if tombstone data isn't set, go back to dashboard
     if (!this.getIdentifier || !this.ARFilingYear || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
@@ -553,47 +568,47 @@ export default {
 
     // wait until entire view is rendered (including all child components)
     // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
-    this.$nextTick(async () => {
-      if (this.filingId > 0) {
-        // resume draft filing
-        this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
-        await this.fetchDraftFiling()
-        // fetch original office addresses and directors
-        // update working data only if it wasn't in the draft
-        if (!this.isJestRunning) {
-          const isEmptyAddresses =
-            (isEmpty(this.updatedAddresses.recordsOffice) && isEmpty(this.updatedAddresses.registeredOffice))
-          await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmptyAddresses)
-          await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
-        }
-      } else {
-        // this is a new filing
-        this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
-        // fetch original office addresses and directors + update working data
-        if (!this.isJestRunning) {
-          await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
-          await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
-        }
-      }
+    await this.$nextTick()
 
-      this.dataLoaded = true
-
-      // for BComp, add AR filing code now
-      // for Coop, code is added when AGM Date becomes valid
-      // use existing Priority and Waive Fees flags
-      if (this.isBComp) {
-        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
-          (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    if (this.filingId > 0) {
+      // resume draft filing
+      this.loadingMessage = `Resuming Your ${this.ARFilingYear} Annual Report`
+      await this.fetchDraftFiling()
+      // fetch original office addresses and directors
+      // update working data only if it wasn't in the draft
+      if (!this.isJestRunning) {
+        const isEmptyAddresses =
+          (isEmpty(this.updatedAddresses.recordsOffice) && isEmpty(this.updatedAddresses.registeredOffice))
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmptyAddresses)
+        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, isEmpty(this.updatedDirectors))
       }
-    })
-  },
+    } else {
+      // this is a new filing
+      this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
+      // fetch original office addresses and directors + update working data
+      if (!this.isJestRunning) {
+        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
+        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+      }
+    }
+
+    this.dataLoaded = true
+
+    // for BComp, add AR filing code now
+    // for Coop, code is added when AGM Date becomes valid
+    // use existing Priority and Waive Fees flags
+    if (this.isBComp) {
+      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
+        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    }
+  }
 
   destroyed (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
-  },
+  }
 
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave (to, from, next): void {
     if (!this.haveChanges) {
       // no changes -- resolve promise right away
       next()
@@ -621,530 +636,615 @@ export default {
       this.haveChanges = false
       next()
     })
-  },
+  }
 
-  methods: {
-    ...mapActions(['setFilingData']),
+  async fetchDraftFiling (): Promise<void> {
+    const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
+    await this.fetchFiling(url).then(filing => {
+      // verify data
+      if (!filing) throw new Error('Missing filing')
 
-    async fetchDraftFiling (): Promise<void> {
-      const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-      await axios.get(url).then(async response => {
-        // verify data
-        const filing: any = response?.data?.filing
-        if (!filing) throw new Error('Missing filing')
+      const header = filing.header
+      if (!header) throw new Error('Missing header')
 
-        const header = filing.header
-        if (!header) throw new Error('Missing header')
+      const business = filing.business
+      if (!business) throw new Error('Missing business')
 
-        const business = filing.business
-        if (!business) throw new Error('Missing business')
+      const annualReport = filing.annualReport
+      if (!annualReport) throw new Error('Missing annual report')
 
-        const annualReport = filing.annualReport
-        if (!annualReport) throw new Error('Missing annual report')
+      if (header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('Invalid filing type')
+      if (header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
+      if (business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
+      if (business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
 
-        if (header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('Invalid filing type')
-        if (header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-        if (business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-        if (business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
+      // restore Certified By (but not Date)
+      this.certifiedBy = header.certifiedBy
 
-        // restore Certified By (but not Date)
-        this.certifiedBy = header.certifiedBy
-
-        // restore Staff Payment data
-        if (header.routingSlipNumber) {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.FAS,
-            routingSlipNumber: header.routingSlipNumber,
-            isPriority: header.priority
-          }
-        } else if (header.bcolAccountNumber) {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.BCOL,
-            bcolAccountNumber: header.bcolAccountNumber,
-            datNumber: header.datNumber,
-            folioNumber: header.folioNumber,
-            isPriority: header.priority
-          }
-        } else if (header.waiveFees) {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.NO_FEE
-          }
-        } else {
-          this.staffPaymentData = {
-            option: StaffPaymentOptions.NONE
-          }
-        }
-
-        // NB: ARFilingYear, arMaxDate and arMinDate were set in the store by the TodoList component
-
-        // restore AGM Date
-        if (this.isCoop) {
-          // set the new AGM date in the AGM Date component (may be null or empty)
-          this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
-          // set the new No AGM flag in the AGM Date component (may be undefined)
-          this.newNoAgm = annualReport.didNotHoldAgm || false
-        } else {
-          // otherwise asOfDate will be calculated some other way (see getter)
-        }
-
-        // restore AGM Extension flag
-        this.newAgmExtension = annualReport.agmExtension || false
-
-        // restore Change of Directors data (if it was saved)
-        const changeOfDirectors = filing.changeOfDirectors
-        if (changeOfDirectors) {
-          if (changeOfDirectors.directors?.length > 0) {
-            this.updatedDirectors = changeOfDirectors.directors
-            // NB: filing data will be set by director paid/free events
-          } else {
-            throw new Error('Invalid change of directors object')
-          }
-        } else {
-          // changeOfDirectors is optional
-          // leave existing directors intact
-        }
-
-        // restore Change of Address data (if it was saved)
-        const changeOfAddress = filing.changeOfAddress
-        if (changeOfAddress) {
-          // registered office is required
-          // records office is required for BCOMP only
-          const registeredOffice = changeOfAddress.offices?.registeredOffice
-          const recordsOffice = changeOfAddress.offices?.recordsOffice
-          if (this.isBComp && registeredOffice && recordsOffice) {
-            this.updatedAddresses = { registeredOffice, recordsOffice }
-          } else if (!this.isBComp && registeredOffice) {
-            this.updatedAddresses = { registeredOffice }
-          } else {
-            throw new Error('Invalid change of address object')
-          }
-
-          // update filing data
-          // always set Priority flag to false
-          // use existing Waive Fees flag
-          this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, false,
-            (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-        } else {
-          // changeOfAddress is optional
-          // leave existing office addresses intact
-        }
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('fetchDraftFiling() error =', error)
-        this.resumeErrorDialog = true
-      })
-    },
-
-    /**
-     * Callback method for the "modified" event from OfficeAddress.
-     * @param modified a boolean indicating whether or not the office address(es) have been modified from their
-     * original values.
-     */
-    officeModifiedEventHandler (modified: boolean): void {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-      // when office addresses change, update filing data
-      // always set Priority flag to false
-      // use existing Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT, false,
-        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-    },
-
-    directorsPaidChange (modified: boolean) {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-      // when there is a directors paid change, update filing data
-      // always set Priority flag to false
-      // use existing Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT, false,
-        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-    },
-
-    directorsFreeChange (modified: boolean) {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-      // when there is a directors free change, update filing data
-      // always set Priority flag to false
-      // use existing Waive Fees flag
-      this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false,
-        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-    },
-
-    onAgmDateChange (val: string) {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-      this.agmDate = val
-    },
-
-    onAgmExtensionChange (val: boolean) {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-      this.agmExtension = val
-    },
-
-    onNoAgmChange (val: boolean) {
-      // either this property is True, or else AGM Date must be set
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-      this.noAgm = val
-    },
-
-    async onAgmDateValidChange (val: boolean): Promise<void> {
-      this.agmDateValid = val
-      // when validity changes, update filing data
-      // use existing Priority and Waive Fees flags
-      this.updateFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT, this.staffPaymentData.isPriority,
-        (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-    },
-
-    async onClickSave () {
-      // prevent double saving
-      if (this.busySaving) return
-
-      this.saving = true
-      const filing = await this.saveFiling(true)
-      if (filing) {
-        // save Filing ID for future PUTs
-        this.filingId = +filing.header.filingId // number
+      // restore Staff Payment data
+      if (header.routingSlipNumber) {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.FAS,
+          routingSlipNumber: header.routingSlipNumber,
+          isPriority: header.priority
+        } as StaffPaymentIF
+      } else if (header.bcolAccountNumber) {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.BCOL,
+          bcolAccountNumber: header.bcolAccountNumber,
+          datNumber: header.datNumber,
+          folioNumber: header.folioNumber,
+          isPriority: header.priority
+        } as StaffPaymentIF
+      } else if (header.waiveFees) {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.NO_FEE
+        } as StaffPaymentIF
+      } else {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.NONE
+        } as StaffPaymentIF
       }
-      this.saving = false
-    },
 
-    async onClickSaveResume () {
-      // prevent double saving
-      if (this.busySaving) return
+      // NB: ARFilingYear, arMaxDate and arMinDate were set in the store by the TodoList component
 
-      this.savingResuming = true
-      const filing = await this.saveFiling(true)
-      // on success, go to dashboard
-      if (filing) {
-        this.$router.push({ name: Routes.DASHBOARD })
+      // restore AGM Date
+      if (this.isCoop) {
+        // set the new AGM date in the AGM Date component (may be null or empty)
+        this.newAgmDate = annualReport.annualGeneralMeetingDate || ''
+        // set the new No AGM flag in the AGM Date component (may be undefined)
+        this.newNoAgm = annualReport.didNotHoldAgm || false
+      } else {
+        // otherwise asOfDate will be calculated some other way (see getter)
       }
-      this.savingResuming = false
-    },
 
-    async onClickFilePay () {
-      // prevent double saving
-      if (this.busySaving) return
+      // restore AGM Extension flag
+      this.newAgmExtension = annualReport.agmExtension || false
 
-      this.filingPaying = true
-      const filing = await this.saveFiling(false) // not a draft
-
-      // on success, redirect to Pay URL
-      if (filing && filing.header) {
-        const filingId: number = +filing.header.filingId
-        const isPaymentActionRequired: boolean = filing.header?.isPaymentActionRequired || false
-
-        // if payment action is required, redirect to Pay URL
-        if (isPaymentActionRequired) {
-          const paymentToken = filing.header.paymentToken
-          const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + filingId)
-          const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
-
-          // assume Pay URL is always reachable
-          // otherwise, user will have to retry payment later
-          window.location.assign(payUrl)
+      // restore Change of Directors data (if it was saved)
+      const changeOfDirectors = filing.changeOfDirectors
+      if (changeOfDirectors) {
+        if (changeOfDirectors.directors?.length > 0) {
+          this.updatedDirectors = changeOfDirectors.directors
+          // NB: filing data will be set by director paid/free events
         } else {
-          // route directly to dashboard
-          this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: filingId } })
+          throw new Error('Invalid change of directors object')
         }
+      } else {
+        // changeOfDirectors is optional
+        // leave existing directors intact
       }
-      this.filingPaying = false
-    },
 
-    async saveFiling (isDraft) {
-      this.resetErrors()
+      // restore Change of Address data (if it was saved)
+      const changeOfAddress = filing.changeOfAddress
+      if (changeOfAddress) {
+        // registered office is required
+        // records office is required for BCOMP only
+        const registeredOffice = changeOfAddress.offices?.registeredOffice
+        const recordsOffice = changeOfAddress.offices?.recordsOffice
+        if (this.isBComp && registeredOffice && recordsOffice) {
+          this.updatedAddresses = { registeredOffice, recordsOffice }
+        } else if (!this.isBComp && registeredOffice) {
+          this.updatedAddresses = { registeredOffice }
+        } else {
+          throw new Error('Invalid change of address object')
+        }
 
-      const hasPendingFilings = await this.hasTasks(this.getIdentifier)
-      if (hasPendingFilings) {
+        // update filing data
+        // always set Priority flag to false
+        // use existing Waive Fees flag
+        this.updateFilingData('add', FilingCodes.ADDRESS_CHANGE_OT, false,
+          (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+      } else {
+        // changeOfAddress is optional
+        // leave existing office addresses intact
+      }
+    }).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('fetchDraftFiling() error =', error)
+      this.resumeErrorDialog = true
+    })
+  }
+
+  /**
+   * Callback method for the "modified" event from OfficeAddress.
+   * @param modified a boolean indicating whether or not the office address(es) have been modified from their
+   * original values.
+   */
+  officeModifiedEventHandler (modified: boolean): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+    // when office addresses change, update filing data
+    // always set Priority flag to false
+    // use existing Waive Fees flag
+    this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.ADDRESS_CHANGE_OT, false,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  directorsPaidChange (modified: boolean): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+    // when there is a directors paid change, update filing data
+    // always set Priority flag to false
+    // use existing Waive Fees flag
+    this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.DIRECTOR_CHANGE_OT, false,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  directorsFreeChange (modified: boolean): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+    // when there is a directors free change, update filing data
+    // always set Priority flag to false
+    // use existing Waive Fees flag
+    this.updateFilingData(modified ? 'add' : 'remove', FilingCodes.FREE_DIRECTOR_CHANGE_OT, false,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  onAgmDateChange (val: string): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+    this.agmDate = val
+  }
+
+  onAgmExtensionChange (val: boolean): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+    this.agmExtension = val
+  }
+
+  onNoAgmChange (val: boolean): void {
+    // either this property is True, or else AGM Date must be set
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+    this.noAgm = val
+  }
+
+  async onAgmDateValidChange (val: boolean): Promise<void> {
+    this.agmDateValid = val
+    // when validity changes, update filing data
+    // use existing Priority and Waive Fees flags
+    this.updateFilingData(val ? 'add' : 'remove', FilingCodes.ANNUAL_REPORT_OT, this.staffPaymentData.isPriority,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+  }
+
+  /**
+   * Called when user clicks Save button
+   * or when user retries from Save Error dialog.
+   */
+  async onClickSave (): Promise<void> {
+    // prevent double saving
+    if (this.busySaving) return
+
+    this.saving = true
+
+    // save draft filing
+    this.savedFiling = await this.saveFiling(true).catch(error => {
+      console.log('onClickSave() save error =', error) // eslint-disable-line no-console
+      this.saveErrorReason = SaveErrorReasons.SAVE
+      // try to return filing (which may exist depending on save error)
+      return error?.response?.data?.filing || null
+    })
+
+    // if there was no error, finish save process now
+    // otherwise, dialog may finish this later
+    if (!this.saveErrorReason) this.onClickSaveFinish()
+
+    this.saving = false
+  }
+
+  onClickSaveFinish (): void {
+    const filingId = +this.savedFiling?.header?.filingId
+    // safety check
+    if (filingId > 0) {
+      // changes were saved, so clear flag
+      this.haveChanges = false
+      // save filing ID for future updates
+      this.filingId = filingId
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('onClickSaveFinish(): invalid filing ID, filing =', null)
+    }
+  }
+
+  /**
+   * Called when user clicks Save and Resume later button
+   * or when user retries from Save Error dialog.
+   */
+  async onClickSaveResume (): Promise<void> {
+    // prevent double saving
+    if (this.busySaving) return
+
+    this.savingResuming = true
+
+    // save draft filing
+    this.savedFiling = await this.saveFiling(true).catch(error => {
+      console.log('onClickSaveResume() save error =', error) // eslint-disable-line no-console
+      this.saveErrorReason = SaveErrorReasons.SAVE_RESUME
+      // try to return filing (which may exist depending on save error)
+      return error?.response?.data?.filing || null
+    })
+
+    // if there was no error, finish save-resume process now
+    // otherwise, dialog may finish this later
+    if (!this.saveErrorReason) this.onClickSaveResumeFinish()
+
+    this.savingResuming = false
+  }
+
+  onClickSaveResumeFinish (): void {
+    const filingId = +this.savedFiling?.header?.filingId
+    // safety check
+    if (filingId > 0) {
+      // changes were saved, so clear flag
+      this.haveChanges = false
+      // go to dashboard
+      this.$router.push({ name: Routes.DASHBOARD })
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('onClickSaveResumeFinish(): invalid filing ID, filing =', null)
+    }
+  }
+
+  /**
+   * Called when user clicks File and Pay button
+   * or when user retries from Save Error dialog
+   * or when user submits from Staff Payment dialog.
+   */
+  async onClickFilePay (fromStaffPayment = false): Promise<void> {
+    // prevent double saving
+    if (this.busySaving) return
+
+    // if this is a staff user clicking File and Pay (not Submit) and payment is required
+    // then detour via Staff Payment dialog
+    if (this.isRoleStaff && !fromStaffPayment && this.isPayRequired) {
+      this.staffPaymentDialog = true
+      return
+    }
+
+    this.filingPaying = true
+
+    // save final filing (not draft)
+    this.savedFiling = await this.saveFiling(false).catch(error => {
+      if (error?.response?.status === PAYMENT_REQUIRED) {
+        // changes were saved if a 402 is received, so clear flag
+        this.haveChanges = false
+        // display payment error dialog
+        this.paymentErrorDialog = true
+        // try to return filing (which should exist in this case)
+        return error?.response?.data?.filing || null
+      } else {
+        console.log('onClickFilePay() save error =', error) // eslint-disable-line no-console
+        this.saveErrorReason = SaveErrorReasons.FILE_PAY
+        // try to return filing (which may exist depending on save error)
+        return error?.response?.data?.filing || null
+      }
+    })
+
+    // if there were no errors, finish file-pay process now
+    // otherwise, dialogs may finish this later
+    if (!this.paymentErrorDialog && !this.saveErrorReason) this.onClickFilePayFinish()
+
+    this.filingPaying = false
+  }
+
+  onClickFilePayFinish (): void {
+    const filingId = +this.savedFiling?.header?.filingId
+
+    // safety check
+    if (filingId > 0) {
+      // changes were saved, so clear flag
+      this.haveChanges = false
+
+      // save filing ID for future updates
+      this.filingId = filingId
+
+      const isPaymentActionRequired = Boolean(this.savedFiling.header.isPaymentActionRequired)
+
+      // if payment action is required, redirect to Pay URL
+      if (isPaymentActionRequired) {
+        const paymentToken = this.savedFiling.header.paymentToken
+        const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + this.filingId)
+        const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+        // assume Pay URL is always reachable
+        // otherwise, user will have to retry payment later
+        window.location.assign(payUrl)
+      } else {
+        // route directly to dashboard
+        this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
+      }
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('onClickFilePayFinish(): invalid filing ID, filing =', null)
+    }
+  }
+
+  /** Builds and saves the filing. NB: Caller needs to catch exceptions. */
+  async saveFiling (isDraft): Promise<any> {
+    this.saveErrors = []
+    this.saveWarnings = []
+
+    // if this is a new filing, ensure there are no pending tasks
+    if (this.filingId === 0) {
+      const hasPendingTasks = await this.hasPendingTasks(this.getIdentifier)
+        .catch(() => {
+          this.saveErrors = [{ error: 'Unable to check server for pending tasks.' }]
+          throw new Error()
+        })
+
+      if (hasPendingTasks) {
         this.saveErrors = [
           { error: 'Another draft filing already exists. Please complete it before creating a new filing.' }
         ]
-        this.saveErrorDialog = true
-        return null
+        throw new Error()
       }
+    }
 
-      let annualReport = null
-      let changeOfDirectors = null
-      let changeOfAddress = null
+    let annualReport = null
+    let changeOfDirectors = null
+    let changeOfAddress = null
 
-      const header = {
-        header: {
-          name: FilingTypes.ANNUAL_REPORT,
-          certifiedBy: this.certifiedBy || '',
-          email: 'no_one@never.get',
-          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-          ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
-          effectiveDate: this.yyyyMmDdToApi(this.asOfDate)
+    const header: any = {
+      header: {
+        name: FilingTypes.ANNUAL_REPORT,
+        certifiedBy: this.certifiedBy || '',
+        email: 'no_one@never.get',
+        date: this.getCurrentDate, // NB: API will reassign this date according to its clock
+        ARFilingYear: this.ARFilingYear, // NB: used by TodoList when loading draft AR
+        effectiveDate: this.yyyyMmDdToApi(this.asOfDate)
+      }
+    }
+
+    // save AR min and max dates (COOP only)
+    // NB: save in local tz
+    // NB: used by TodoList when loading draft AR
+    if (this.isCoop) {
+      header.header['arMinDate'] = this.arMinDate
+      header.header['arMaxDate'] = this.arMaxDate
+    }
+
+    switch (this.staffPaymentData.option) {
+      case StaffPaymentOptions.FAS:
+        header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
+        header.header['priority'] = this.staffPaymentData.isPriority
+        break
+
+      case StaffPaymentOptions.BCOL:
+        header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
+        header.header['datNumber'] = this.staffPaymentData.datNumber
+        header.header['folioNumber'] = this.staffPaymentData.folioNumber
+        header.header['priority'] = this.staffPaymentData.isPriority
+        break
+
+      case StaffPaymentOptions.NO_FEE:
+        header.header['waiveFees'] = true
+        break
+
+      case StaffPaymentOptions.NONE: // should never happen
+        break
+    }
+
+    const business: any = {
+      business: {
+        foundingDate: this.dateToApi(this.entityFoundingDate),
+        identifier: this.getIdentifier,
+        legalName: this.getEntityName,
+        legalType: this.getEntityType
+      }
+    }
+
+    if (this.isCoop) {
+      annualReport = {
+        annualReport: {
+          annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
+          // save AGM Extension as false if No AGM is true
+          agmExtension: (!this.noAgm && this.agmExtension) || false,
+          didNotHoldAgm: this.noAgm || false,
+          annualReportDate: this.asOfDate, // use by COOP only
+          // NB: there was an enrichment ticket to populate offices and directors here
+          offices: {
+            registeredOffice: this.updatedAddresses.registeredOffice
+          },
+          directors: this.updatedDirectors.filter(el => el.cessationDate === null)
         }
       }
+    }
 
-      // save AR min and max dates (COOP only)
-      // NB: save in local tz
-      // NB: used by TodoList when loading draft AR
-      if (this.isCoop) {
-        header.header['arMinDate'] = this.arMinDate
-        header.header['arMaxDate'] = this.arMaxDate
-      }
-
-      switch (this.staffPaymentData.option) {
-        case StaffPaymentOptions.FAS:
-          header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
-          header.header['priority'] = this.staffPaymentData.isPriority
-          break
-
-        case StaffPaymentOptions.BCOL:
-          header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
-          header.header['datNumber'] = this.staffPaymentData.datNumber
-          header.header['folioNumber'] = this.staffPaymentData.folioNumber
-          header.header['priority'] = this.staffPaymentData.isPriority
-          break
-
-        case StaffPaymentOptions.NO_FEE:
-          header.header['waiveFees'] = true
-          break
-
-        case StaffPaymentOptions.NONE: // should never happen
-          break
-      }
-
-      const business = {
-        business: {
-          foundingDate: this.dateToApi(this.entityFoundingDate),
-          identifier: this.getIdentifier,
-          legalName: this.getEntityName,
-          legalType: this.getEntityType
+    if (this.isBComp) {
+      annualReport = {
+        annualReport: {
+          annualReportDate: this.asOfDate,
+          nextARDate: this.nextARDate, // used by BCOMP only
+          // NB: there was an enrichment ticket to populate offices and directors here
+          offices: {
+            registeredOffice: this.originalAddresses.registeredOffice,
+            recordsOffice: this.originalAddresses.recordsOffice
+          },
+          directors: this.originalDirectors
         }
       }
+    }
 
-      if (this.isCoop) {
-        annualReport = {
-          annualReport: {
-            annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
-            // save AGM Extension as false if No AGM is true
-            agmExtension: (!this.noAgm && this.agmExtension) || false,
-            didNotHoldAgm: this.noAgm || false,
-            annualReportDate: this.asOfDate, // use by COOP only
-            // NB: there was an enrichment ticket to populate offices and directors here
-            offices: {
-              registeredOffice: this.updatedAddresses.registeredOffice
-            },
-            directors: this.updatedDirectors.filter(el => el.cessationDate === null)
+    // non-BCOMP only
+    if (
+      this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
+      this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)
+    ) {
+      changeOfDirectors = {
+        changeOfDirectors: {
+          directors: this.updatedDirectors
+        }
+      }
+    }
+
+    // non-BCOMP only
+    if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
+      changeOfAddress = {
+        changeOfAddress: {
+          legalType: this.getEntityType,
+          offices: {
+            registeredOffice: this.updatedAddresses.registeredOffice
           }
         }
       }
+    }
 
-      if (this.isBComp) {
-        annualReport = {
-          annualReport: {
-            annualReportDate: this.asOfDate,
-            nextARDate: this.nextARDate, // used by BCOMP only
-            // NB: there was an enrichment ticket to populate offices and directors here
-            offices: {
-              registeredOffice: this.originalAddresses.registeredOffice,
-              recordsOffice: this.originalAddresses.recordsOffice
-            },
-            directors: this.originalDirectors
-          }
-        }
+    // build filing data
+    const data = Object.assign({}, header, business, annualReport, changeOfAddress, changeOfDirectors)
+
+    try {
+      if (this.filingId > 0) {
+        // we have a filing id, so update an existing filing
+        return this.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
+      } else {
+        // filing id is 0, so create a new filing
+        return this.createFiling(this.getIdentifier, data, isDraft)
       }
+    } catch (error) {
+      // save errors or warnings, if any
+      this.saveErrors = error?.response?.data?.errors || []
+      this.saveWarnings = error?.response?.data?.warnings || []
+      throw error
+    }
+  }
 
-      // non-BCOMP only
-      if (
-        this.hasFilingCode(FilingCodes.DIRECTOR_CHANGE_OT) ||
-        this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)
-      ) {
-        changeOfDirectors = {
-          changeOfDirectors: {
-            directors: this.updatedDirectors
-          }
-        }
+  /** Handler for dialog Exit click events. */
+  navigateToDashboard (ignoreChanges: boolean = false): void {
+    if (ignoreChanges) this.haveChanges = false
+    this.$router.push({ name: Routes.DASHBOARD })
+      .catch(() => {}) // ignore error in case navigation was aborted
+  }
+
+  /**
+   * Returns True if the selected AGM Date is >= the earliest allowed date.
+   * Used for Coops only.
+   */
+  allowChange (type): boolean {
+    let earliestAllowedDate: string = null
+
+    if (type === 'coa') {
+      if (this.lastAddressChangeDate || this.lastAnnualReportDate) {
+        earliestAllowedDate = this.latestYyyyMmDd(this.lastAddressChangeDate, this.lastAnnualReportDate)
+      } else {
+        earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
       }
-
-      // non-BCOMP only
-      if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
-        changeOfAddress = {
-          changeOfAddress: {
-            legalType: this.getEntityType,
-            offices: {
-              registeredOffice: this.updatedAddresses.registeredOffice
-            }
-          }
-        }
+    }
+    if (type === 'cod') {
+      if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
+        earliestAllowedDate = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+      } else {
+        earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
       }
+    }
 
-      const data = {
-        filing: Object.assign(
-          {},
-          header,
-          business,
-          annualReport,
-          changeOfAddress,
-          changeOfDirectors
-        )
-      }
+    return (!!this.agmDate && this.compareYyyyMmDd(this.agmDate, earliestAllowedDate, '>='))
+  }
 
-      try {
-        let response
+  hasAction (director, action): boolean {
+    return (director.actions.indexOf(action) >= 0)
+  }
 
-        if (this.filingId > 0) {
-          // we have a filing id, so update (put) an existing filing
-          let url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-          if (isDraft) { url += '?draft=true' }
-          response = await axios.put(url, data)
-        } else {
-          // filing id is 0, so create (post) a new filing
-          let url = `businesses/${this.getIdentifier}/filings`
-          if (isDraft) { url += '?draft=true' }
-          response = await axios.post(url, data)
-        }
-
-        const filing = response?.data?.filing
-        if (!filing) {
-          throw new Error('Invalid API response')
-        }
-
-        // clear flag
-        this.haveChanges = false
-        return filing
-      } catch (error) {
-        this.saveErrors = error?.response?.data?.errors || []
-        this.saveWarnings = error?.response?.data?.warnings || []
-
-        if (error?.response?.status === PAYMENT_REQUIRED) {
-          // changes were saved if a 402 is received, so clear flag
-          this.haveChanges = false
-          this.paymentErrorDialog = true
-          // save succeeded, so return filing
-          return error?.response?.data?.filing
-        } else {
-          if (!this.isJestRunning) {
-            // eslint-disable-next-line no-console
-            console.log('saveFiling() error =', error)
-          }
-          this.saveErrorDialog = true
-          // save failed, so return null
-          return null
-        }
-      }
-    },
-
-    navigateToDashboard (ignoreChanges: boolean = false) {
-      if (ignoreChanges) this.haveChanges = false
-      this.$router.push({ name: Routes.DASHBOARD })
-        .catch(() => {}) // ignore error in case navigation was aborted
-    },
-
-    resetErrors () {
+  /** Handles Exit event from Payment Error dialog. */
+  onPaymentErrorDialogExit (): void {
+    if (this.isRoleStaff) {
+      // close Payment Error dialog -- this
+      // leaves user on Staff Payment dialog
       this.paymentErrorDialog = false
-      this.saveErrorDialog = false
-      this.saveErrors = []
-      this.saveWarnings = []
-    },
-
-    /**
-     * Returns True if the selected AGM Date is >= the earliest allowed date.
-     * Used for Coops only.
-     */
-    allowChange (type): boolean {
-      let earliestAllowedDate: string = null
-
-      if (type === 'coa') {
-        if (this.lastAddressChangeDate || this.lastAnnualReportDate) {
-          earliestAllowedDate = this.latestYyyyMmDd(this.lastAddressChangeDate, this.lastAnnualReportDate)
-        } else {
-          earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
-        }
-      }
-      if (type === 'cod') {
-        if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
-          earliestAllowedDate = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
-        } else {
-          earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
-        }
-      }
-
-      return (!!this.agmDate && this.compareYyyyMmDd(this.agmDate, earliestAllowedDate, '>='))
-    },
-
-    hasAction (director, action): boolean {
-      return (director.actions.indexOf(action) >= 0)
-    },
-
-    /** Returns True if the specified business has any pending tasks, else False. */
-    // FUTURE move this to Legal API mixin
-    async hasTasks (businessId): Promise<boolean> {
-      let hasPendingItems = false
-      if (this.filingId === 0) {
-        const url = `businesses/${businessId}/tasks`
-        await axios.get(url)
-          .then(response => {
-            if (response?.data?.tasks) {
-              // FUTURE: use find() or some() so this doesn't iterate over all tasks
-              response.data.tasks.forEach(task => {
-                if (task?.task?.filing?.header) {
-                  if (task.task.filing.header.status !== FilingStatus.NEW) {
-                    hasPendingItems = true
-                  }
-                }
-              })
-            }
-          })
-          .catch(error => {
-            // eslint-disable-next-line no-console
-            console.log('hasTasks() error =', error)
-            this.saveErrorDialog = true
-          })
-      }
-      return hasPendingItems
+    } else {
+      // close the dialog and go to dashboard --
+      // user will have to retry payment from there
+      this.paymentErrorDialog = false
+      this.navigateToDashboard(true)
     }
-  },
+  }
 
-  watch: {
-    async asOfDate () {
-      // ignore changes before data is loaded
-      if (!this.dataLoaded) return null
-
-      // fetch original office addresses and directors with new date + update working data
-      // (this will overwrite the current data)
-      this.isFetching = true
-      if (!this.isJestRunning) {
-        await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
-        await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
-      }
-      this.isFetching = false
-    },
-
-    /** Called when Is Certified changes. */
-    isCertified (val: boolean) {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-    },
-
-    /** Called when Certified By changes. */
-    certifiedBy (val: string) {
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
-    },
-
-    /** Called when Staff Payment Data changes. */
-    staffPaymentData (val: StaffPaymentIF) {
-      const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
-
-      // apply Priority flag to AR filing code only
-      // simply re-add the AR code with the updated Priority flag and existing Waive Fees flag
-      if (this.isBComp) {
-        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val.isPriority, waiveFees)
-      } else if (this.isCoop) {
-        this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val.isPriority, waiveFees)
-      }
-
-      // add/remove Waive Fees flag to all filing codes
-      this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
-
-      // only record changes once the initial data is loaded
-      this.haveChanges = this.dataLoaded
+  /** Handles Retry events from Save Error dialog. */
+  async onSaveErrorDialogRetry (): Promise<void> {
+    switch (this.saveErrorReason) {
+      case SaveErrorReasons.SAVE:
+        // close the dialog and retry save
+        this.saveErrorReason = null
+        await this.onClickSave()
+        break
+      case SaveErrorReasons.SAVE_RESUME:
+        // close the dialog and retry save-resume
+        this.saveErrorReason = null
+        await this.onClickSaveResume()
+        break
+      case SaveErrorReasons.FILE_PAY:
+        // close the dialog and retry file-pay
+        this.saveErrorReason = null
+        if (this.isRoleStaff) await this.onClickFilePay(true)
+        else await this.onClickFilePay()
+        break
     }
+  }
+
+  /** Handles Okay events from Save Error dialog. */
+  onSaveErrorDialogOkay (): void {
+    switch (this.saveErrorReason) {
+      case SaveErrorReasons.SAVE:
+        // close the dialog and finish save process
+        this.saveErrorReason = null
+        this.onClickSaveFinish()
+        break
+      case SaveErrorReasons.SAVE_RESUME:
+        // close the dialog and finish save-resume process
+        this.saveErrorReason = null
+        this.onClickSaveResumeFinish()
+        break
+      case SaveErrorReasons.FILE_PAY:
+        // close the dialog and finish file-pay process
+        this.saveErrorReason = null
+        this.onClickFilePayFinish()
+        break
+    }
+  }
+
+  @Watch('asOfDate')
+  async onAsOfDateChanged (): Promise<void> {
+    // ignore changes before data is loaded
+    if (!this.dataLoaded) return null
+
+    // fetch original office addresses and directors with new date + update working data
+    // (this will overwrite the current data)
+    this.isFetching = true
+    if (!this.isJestRunning) {
+      await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
+      await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
+    }
+    this.isFetching = false
+  }
+
+  @Watch('isCertified')
+  onIsCertifiedChanged (val: boolean): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+  }
+
+  @Watch('certifiedBy')
+  onCertifiedByChanged (val: string): void {
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
+  }
+
+  @Watch('staffPaymentData')
+  onStaffPaymentDataChanged (val: StaffPaymentIF): void {
+    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
+
+    // apply Priority flag to AR filing code only
+    // simply re-add the AR code with the updated Priority flag and existing Waive Fees flag
+    if (this.isBComp) {
+      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val.isPriority, waiveFees)
+    } else if (this.isCoop) {
+      this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val.isPriority, waiveFees)
+    }
+
+    // add/remove Waive Fees flag to all filing codes
+    this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
+
+    // only record changes once the initial data is loaded
+    this.haveChanges = this.dataLoaded
   }
 }
 </script>
