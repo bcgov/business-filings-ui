@@ -1,17 +1,17 @@
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff, 'hover': showHoverStyle }">
     <v-container class="pt-0 pb-0">
-      <v-breadcrumbs :items="breadcrumbs" divider=">" class="mt-1 pa-0">
-        <v-breadcrumbs-item
-          slot="item"
-          slot-scope="{ item }"
-          exact
-          :to="item.to"
-          :href="item.href"
-        >
-          {{ item.text }}
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
+<!--      <v-breadcrumbs :items="breadcrumbs" divider=">" class="mt-1 pa-0">-->
+<!--        <v-breadcrumbs-item-->
+<!--          slot="item"-->
+<!--          slot-scope="{ item }"-->
+<!--          exact-->
+<!--          :to="item.to"-->
+<!--          :href="item.href"-->
+<!--        >-->
+<!--          {{ item.text }}-->
+<!--        </v-breadcrumbs-item>-->
+<!--      </v-breadcrumbs>-->
 
       <v-row no-gutters class="pt-3 pb-4">
         <v-col cols="12" md="9">

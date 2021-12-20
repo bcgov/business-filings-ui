@@ -69,6 +69,7 @@
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
+        <BreadCrumb :breadcrumbs="breadcrumbs" />
         <EntityInfo
           @confirmDissolution="confirmDissolutionDialog = true"
           @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
@@ -93,6 +94,7 @@ import { updateLdUser } from '@/utils'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
+import { BreadCrumb } from '@bcrs-shared-components/bread-crumb'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
@@ -106,12 +108,12 @@ import {
 } from '@/components/dialogs'
 
 // Configuration objects
-import { configJson } from '@/resources'
+import { configJson, dashboardBreadcrumb, staffDashboardBreadcrumb } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
 import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
   NameRequestMixin } from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, BusinessIF, TaskTodoIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, BusinessIF, BreadcrumbIF, TaskTodoIF } from '@/interfaces'
 import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState,
   DissolutionTypes, NigsMessage } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -155,6 +157,7 @@ export default {
   },
 
   components: {
+    BreadCrumb,
     ConfirmDissolution,
     DashboardUnavailableDialog,
     BusinessAuthErrorDialog,
@@ -168,7 +171,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType']),
+    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
@@ -219,6 +222,20 @@ export default {
     /** The About text. */
     aboutText (): string {
       return process.env.ABOUT_TEXT
+    },
+
+    /** The route breadcrumbs list. */
+    breadcrumbs (): Array<BreadcrumbIF> {
+      const breadcrumbs = this.$route?.meta?.breadcrumb
+
+      return [
+        this.isRoleStaff ? staffDashboardBreadcrumb : dashboardBreadcrumb,
+        {
+          text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
+          to: { name: Routes.DASHBOARD }
+        },
+        ...(breadcrumbs || [])
+      ]
     }
   },
 
