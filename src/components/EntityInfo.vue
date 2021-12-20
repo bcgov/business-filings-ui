@@ -1,18 +1,6 @@
 <template>
   <div id="entity-info" :class="{ 'staff': isRoleStaff, 'hover': showHoverStyle }">
     <v-container class="pt-0 pb-0">
-<!--      <v-breadcrumbs :items="breadcrumbs" divider=">" class="mt-1 pa-0">-->
-<!--        <v-breadcrumbs-item-->
-<!--          slot="item"-->
-<!--          slot-scope="{ item }"-->
-<!--          exact-->
-<!--          :to="item.to"-->
-<!--          :href="item.href"-->
-<!--        >-->
-<!--          {{ item.text }}-->
-<!--        </v-breadcrumbs-item>-->
-<!--      </v-breadcrumbs>-->
-
       <v-row no-gutters class="pt-3 pb-4">
         <v-col cols="12" md="9">
           <header>
@@ -251,11 +239,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  /** The Manage Businesses URL string. */
-  private get manageBusinessesUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-  }
-
   /** The entity description. */
   private get entityDescription (): string {
     return this.getCorpTypeDescription(this.getEntityType)
@@ -306,30 +289,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   /** Downloads business summary PDF. */
   private downloadBusinessSummary (): void {
     // FUTURE
-  }
-
-  /** The route breadcrumbs list. */
-  private get breadcrumbs (): Array<BreadcrumbIF> {
-    const breadcrumbs = this.$route?.meta?.breadcrumb
-
-    // Apply the filing year to the breadcrumb trail for Annual Reports
-    const ArCrumb = breadcrumbs?.find(item => item.to.name === Routes.ANNUAL_REPORT)
-    if (ArCrumb) ArCrumb.text = `File ${this.ARFilingYear} Annual Report`
-
-    return [
-      {
-        text: 'Manage Businesses Dashboard',
-        disabled: false,
-        href: this.manageBusinessesUrl
-      },
-      {
-        text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
-        disabled: false,
-        exact: true,
-        to: { name: Routes.DASHBOARD }
-      },
-      ...(breadcrumbs || [])
-    ]
   }
 
   // Pass confirm dissolution event to parent.
