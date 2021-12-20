@@ -94,7 +94,7 @@ import { updateLdUser } from '@/utils'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
-import { BreadCrumb } from '@bcrs-shared-components/bread-crumb'
+import { BreadCrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
