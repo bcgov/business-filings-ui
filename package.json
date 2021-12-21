@@ -19,7 +19,7 @@
     "@bcrs-shared-components/bread-crumb": "^1.0.0",
     "@bcrs-shared-components/corp-type-module": "1.0.3",
     "@bcrs-shared-components/court-order-poa": "1.0.14",
-    "@bcrs-shared-components/enums": "1.0.8",
+    "@bcrs-shared-components/enums": "1.0.14",
     "@bcrs-shared-components/interfaces": "1.0.28",
     "@bcrs-shared-components/staff-comments": "1.2.0",
     "@mdi/font": "^5.5.55",
