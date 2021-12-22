@@ -108,7 +108,7 @@ import {
 } from '@/components/dialogs'
 
 // Configuration objects
-import { configJson, dashboardBreadcrumb, staffDashboardBreadcrumb } from '@/resources'
+import { configJson, dashboardBreadcrumb, homeBreadCrumb, staffDashboardBreadcrumb } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
 import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
@@ -229,6 +229,7 @@ export default {
       const breadcrumbs = this.$route?.meta?.breadcrumb
 
       return [
+        homeBreadCrumb,
         this.isRoleStaff ? staffDashboardBreadcrumb : dashboardBreadcrumb,
         {
           text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
