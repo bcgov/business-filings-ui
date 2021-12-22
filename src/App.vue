@@ -108,7 +108,7 @@ import {
 } from '@/components/dialogs'
 
 // Configuration objects
-import { configJson, dashboardBreadcrumb, staffDashboardBreadcrumb } from '@/resources'
+import { configJson, DashboardBreadcrumb, HomeBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
 import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
@@ -227,15 +227,23 @@ export default {
     /** The route breadcrumbs list. */
     breadcrumbs (): Array<BreadcrumbIF> {
       const breadcrumbs = this.$route?.meta?.breadcrumb
-
-      return [
-        this.isRoleStaff ? staffDashboardBreadcrumb : dashboardBreadcrumb,
+      const crumbs: Array<BreadcrumbIF> = [
         {
           text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])
       ]
+
+      // Set base crumbs based on user role
+      // Staff don't want the home landing page and they can't access the Manage Business Dashboard
+      if (this.isRoleStaff) {
+        crumbs.unshift(StaffDashboardBreadcrumb) // If staff, set StaffDashboard as home crumb
+      } else {
+        crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb) // For non-staff, set Home and Dashboard crumbs
+      }
+
+      return crumbs
     }
   },
 

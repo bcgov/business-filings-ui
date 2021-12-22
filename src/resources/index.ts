@@ -1,2 +1,2 @@
 export * from './business-config'
-export * from './breadcrumb-resources'
+export * from './BreadcrumbResources'
