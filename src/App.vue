@@ -227,7 +227,7 @@ export default {
     /** The route breadcrumbs list. */
     breadcrumbs (): Array<BreadcrumbIF> {
       const breadcrumbs = this.$route?.meta?.breadcrumb
-      const crumbs = [
+      const crumbs: Array<BreadcrumbIF> = [
         {
           text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
           to: { name: Routes.DASHBOARD }
