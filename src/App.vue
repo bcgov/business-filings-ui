@@ -227,16 +227,21 @@ export default {
     /** The route breadcrumbs list. */
     breadcrumbs (): Array<BreadcrumbIF> {
       const breadcrumbs = this.$route?.meta?.breadcrumb
-
-      return [
-        HomeBreadCrumb,
-        this.isRoleStaff ? StaffDashboardBreadcrumb : DashboardBreadcrumb,
+      const crumbs = [
         {
           text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])
       ]
+
+      if (this.isRoleStaff) {
+        crumbs.unshift(StaffDashboardBreadcrumb)
+      } else {
+        crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb)
+      }
+
+      return crumbs
     }
   },
 
