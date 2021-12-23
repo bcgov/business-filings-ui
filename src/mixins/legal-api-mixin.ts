@@ -53,12 +53,12 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
   /**
    * Fetches parties list.
    * @param businessId the business identifier (aka entity inc no)
-   * @param partyRole optional role to filter parties response
-   * @returns a promise to return the custodians from the response
+   * @param role optional role to filter parties response
+   * @returns a promise to return the parties from the response
    */
-  async fetchParties (businessId: string, partyRole: Roles = null): Promise<any> {
+  async fetchParties (businessId: string, role: Roles = null): Promise<any> {
     let url = `businesses/${businessId}/parties`
-    if (partyRole) url += `?role=${partyRole}`
+    if (role) url += `?role=${role}`
     return axios.get(url)
   }
 
