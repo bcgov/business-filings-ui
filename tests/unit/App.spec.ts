@@ -1361,6 +1361,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
+    console.log()
     expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
