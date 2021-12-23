@@ -1,5 +1,5 @@
 import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
-import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, ComplianceWarning }
+import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, ComplianceWarning, PartiesIF }
   from '@/interfaces'
 
 export default {
@@ -89,6 +89,9 @@ export default {
   },
   setDirectors ({ commit }, directors: Array<DirectorIF>) {
     commit('directors', directors)
+  },
+  setCustodians ({ commit }, custodians: Array<PartiesIF>) {
+    commit('custodians', custodians)
   },
   setLastAnnualReportDate ({ commit }, date: string) {
     commit('lastAnnualReportDate', date)

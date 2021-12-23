@@ -7,9 +7,9 @@
       >
         <v-expansion-panel-header class="address-panel-toggle">
           <div class="avatar-container">
-            <v-avatar color="primary" size="25">{{ custodian.officer.firstName.substring(0,1) }}</v-avatar>
+            <v-avatar color="primary" size="25">{{ officerName(custodian).substring(0,1) }}</v-avatar>
           </div>
-          <div class="list-item__title">{{ custodian.officer.firstName }} {{ custodian.officer.lastName }}</div>
+          <div class="list-item__title">{{ officerName(custodian) }}</div>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
@@ -67,11 +67,19 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
+import { OfficerIF, PartiesIF } from '@/interfaces'
 
 @Component({})
 export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   @Prop({ default: [] })
-  readonly custodians: Array<object>
+  readonly custodians: Array<PartiesIF>
+
+  /** Return the officer person or org name */
+  private officerName (party: PartiesIF): string {
+    return party.officer.firstName
+      ? `${party.officer.firstName} ${party.officer.lastName}`
+      : party.officer.organizationName
+  }
 }
 </script>
 

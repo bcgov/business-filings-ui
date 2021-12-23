@@ -167,7 +167,7 @@ const BCOMP_PARTIES = [
     roles: [
       {
         appointmentDate: '2020-07-06',
-        roleType: 'Incorporator'
+        roleType: 'incorporator'
       }
     ]
   }
@@ -411,11 +411,11 @@ describe('App as a COOP', () => {
       })))
 
     // GET directors
-    get.withArgs('businesses/CP0001191/directors')
+    get.withArgs('businesses/CP0001191/parties')
       .returns(new Promise((resolve) => resolve({
         data:
         {
-          directors: [
+          parties: [
             {
               'officer': {
                 'firstName': 'Peter',
@@ -427,7 +427,8 @@ describe('App as a COOP', () => {
                 'addressRegion': 'BC',
                 'postalCode': 'V8W 2C3',
                 'addressCountry': 'CA'
-              }
+              },
+              'roles': ['director']
             },
             {
               'officer': {
@@ -440,7 +441,22 @@ describe('App as a COOP', () => {
                 'addressRegion': 'Scotland',
                 'postalCode': 'G1 2FFF',
                 'addressCountry': 'UK'
-              }
+              },
+              'roles': ['director']
+            },
+            {
+              'officer': {
+                'firstName': 'Jackie',
+                'lastName': 'Smith'
+              },
+              'deliveryAddress': {
+                'streetAddress': '220 Electra St',
+                'addressCity': 'Vancouver',
+                'addressRegion': 'BC',
+                'postalCode': '123 FFF',
+                'addressCountry': 'CA'
+              },
+              'roles': ['custodian']
             }
           ]
         }
@@ -521,6 +537,11 @@ describe('App as a COOP', () => {
     expect(vm.$store.state.directors.length).toBe(2)
     expect(vm.$store.state.directors[0].officer.lastName).toBe('Griffin')
     expect(vm.$store.state.directors[1].officer.lastName).toBe('Swanson')
+  })
+
+  it('fetches Custodians properly', () => {
+    expect(vm.$store.state.custodians.length).toBe(1)
+    expect(vm.$store.state.custodians[0].officer.lastName).toBe('Smith')
   })
 })
 

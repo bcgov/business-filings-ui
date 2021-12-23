@@ -36,6 +36,7 @@ export const state: StateIF = {
   registeredAddress: null,
   recordsAddress: null,
   directors: [],
+  custodians: [],
   nameRequest: null,
 
   currentFilingStatus: null,

@@ -3,6 +3,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { CommonMixin } from '@/mixins'
 import { ApiDocumentsIF, CommentIF, DocumentIF } from '@/interfaces'
+import { Roles } from '@/enums'
 
 /**
  * Mixin that provides integration with the Legal API.
@@ -50,12 +51,14 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
   }
 
   /**
-   * Fetches directors list.
+   * Fetches parties list.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the directors from the response
+   * @param partyRole optional role to filter parties response
+   * @returns a promise to return the custodians from the response
    */
-  async fetchDirectors (businessId: string): Promise<any> {
-    const url = `businesses/${businessId}/directors`
+  async fetchParties (businessId: string, partyRole: Roles = null): Promise<any> {
+    let url = `businesses/${businessId}/parties`
+    if (partyRole) url += `?role=${partyRole}`
     return axios.get(url)
   }
 

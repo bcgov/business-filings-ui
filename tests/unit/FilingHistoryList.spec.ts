@@ -509,7 +509,7 @@ describe('Filing History List - redirections', () => {
         },
         roles: [
           {
-            roleType: 'Incorporator',
+            roleType: 'incorporator',
             appointmentDate: '2018-01-01'
           }
         ]
