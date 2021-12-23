@@ -67,7 +67,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
-import { OfficerIF, PartiesIF } from '@/interfaces'
+import { PartiesIF } from '@/interfaces'
 
 @Component({})
 export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {

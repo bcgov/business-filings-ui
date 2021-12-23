@@ -121,7 +121,7 @@ import {
   LegalApiMixin,
   NameRequestMixin
 } from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, PartiesIF, TaskTodoIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, TaskTodoIF } from '@/interfaces'
 import {
   CorpTypeCd,
   DissolutionTypes,
@@ -135,7 +135,6 @@ import {
   Routes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import routes from '@/routes'
 
 export default {
   name: 'App',
@@ -755,8 +754,8 @@ export default {
     storeParties (response: any): void {
       const parties = response?.data?.parties
       if (parties) {
-        const directorsList = parties?.filter(parties => parties.roles?.includes(Roles.DIRECTOR))
-        const custodianList = parties?.filter(parties => parties.roles?.includes(Roles.CUSTODIAN))
+        const directorsList = parties?.filter(partiesArr => partiesArr.roles?.includes(Roles.DIRECTOR))
+        const custodianList = parties?.filter(partiesArr => partiesArr.roles?.includes(Roles.CUSTODIAN))
 
         // Directors
         if (directorsList) {
