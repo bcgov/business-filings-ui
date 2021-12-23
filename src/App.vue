@@ -135,6 +135,7 @@ import {
   Routes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import routes from '@/routes'
 
 export default {
   name: 'App',
@@ -652,14 +653,15 @@ export default {
       // set addresses
       this.storeAddresses({ data: incorporationApplication.offices || [] })
 
-      // set directors
-      // (ie, parties that have a role of Director)
-      const directors = incorporationApplication.parties?.filter(party =>
-        party.roles.filter(role =>
-          role.roleType === Roles.DIRECTOR
-        ).length !== 0
+      // Format party roles
+      incorporationApplication.parties.forEach(
+        party => party.roles?.forEach(
+          (role, index) => { party.roles[index] = role.roleType?.toLowerCase() }
+        )
       )
-      this.storeDirectors({ data: { directors: directors || [] } })
+
+      // Set parties
+      this.storeParties({ data: { parties: incorporationApplication.parties || [] } })
 
       // add this as a filing (for Filing History List)
       const filingItem: ApiFilingIF = {
@@ -753,20 +755,24 @@ export default {
     storeParties (response: any): void {
       const parties = response?.data?.parties
       if (parties) {
-        const partiesSorted = parties.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
-        const directorsList = partiesSorted.filter(parties => parties.roles.includes(Roles.DIRECTOR))
-        const custodianList = partiesSorted.filter(parties => parties.roles.includes(Roles.CUSTODIAN))
+        const directorsList = parties?.filter(parties => parties.roles?.includes(Roles.DIRECTOR))
+        const custodianList = parties?.filter(parties => parties.roles?.includes(Roles.CUSTODIAN))
 
         // Directors
-        for (var i = 0; i < directorsList.length; i++) {
-          directorsList[i].id = i + 1
-          directorsList[i].isNew = false
-          directorsList[i].isDirectorActive = true
+        if (directorsList) {
+          const directorsListSorted = directorsList.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
+          for (var i = 0; i < directorsListSorted.length; i++) {
+            directorsListSorted[i].id = i + 1
+            directorsListSorted[i].isNew = false
+            directorsListSorted[i].isDirectorActive = true
+          }
+          this.setDirectors(directorsListSorted)
         }
-        this.setDirectors(directorsList)
 
         // Custodians
-        this.setCustodians(custodianList)
+        if (custodianList) {
+          this.setCustodians(custodianList)
+        }
       } else {
         throw new Error('Invalid parties')
       }

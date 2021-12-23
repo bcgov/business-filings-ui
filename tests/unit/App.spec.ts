@@ -138,11 +138,11 @@ const BCOMP_PARTIES = [
     roles: [
       {
         appointmentDate: '2020-07-06',
-        roleType: 'Completing Party'
+        roleType: 'completing party'
       },
       {
         appointmentDate: '2020-07-06',
-        roleType: 'Director'
+        roleType: 'director'
       }
     ]
   },
@@ -1361,12 +1361,11 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    console.log()
     expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
-  it('fetches IA filing properly', () => {
+  it.only('fetches IA filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')

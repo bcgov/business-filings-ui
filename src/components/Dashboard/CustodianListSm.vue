@@ -71,7 +71,7 @@ import { OfficerIF, PartiesIF } from '@/interfaces'
 
 @Component({})
 export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
-  @Prop({ default: [] })
+  @Prop({ default: () => [] })
   readonly custodians: Array<PartiesIF>
 
   /** Return the officer person or org name */
