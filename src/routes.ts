@@ -12,7 +12,7 @@ import { Routes } from '@/enums'
 
 export default [
   {
-    path: '/dashboard',
+    path: '/',
     name: Routes.DASHBOARD,
     component: Dashboard,
     meta: {
@@ -114,6 +114,6 @@ export default [
   {
     // default/fallback route
     path: '*',
-    redirect: '/dashboard'
+    redirect: '/'
   }
 ]

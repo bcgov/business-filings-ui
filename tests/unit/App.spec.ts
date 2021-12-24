@@ -84,7 +84,8 @@ const BCOMP_DIRECTORS = [
       addressRegion: 'BC',
       postalCode: 'V8W 2C3',
       addressCountry: 'CA'
-    }
+    },
+    roles: ['director']
   },
   {
     officer: {
@@ -104,7 +105,8 @@ const BCOMP_DIRECTORS = [
       addressRegion: 'Scotland',
       postalCode: 'G1 2FFF',
       addressCountry: 'UK'
-    }
+    },
+    roles: ['director']
   }
 ]
 
@@ -709,11 +711,11 @@ describe('App as a BCOMP', () => {
       })))
 
     // GET directors
-    get.withArgs('businesses/BC0007291/directors')
+    get.withArgs('businesses/BC0007291/parties')
       .returns(new Promise((resolve) => resolve({
         data:
         {
-          directors: BCOMP_DIRECTORS
+          parties: BCOMP_DIRECTORS
         }
       })))
 
@@ -1365,7 +1367,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
-  it.only('fetches IA filing properly', () => {
+  it('fetches IA filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
@@ -1658,8 +1660,8 @@ describe('App as an historical business', () => {
       .returns(new Promise((resolve) => resolve({ data: {} })))
 
     // GET directors
-    get.withArgs('businesses/BC1234567/directors')
-      .returns(new Promise((resolve) => resolve({ data: { directors: [] } })))
+    get.withArgs('businesses/BC1234567/parties')
+      .returns(new Promise((resolve) => resolve({ data: { parties: [] } })))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
