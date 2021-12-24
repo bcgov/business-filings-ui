@@ -15,7 +15,9 @@
           <div class="avatar-container">
             <v-avatar color="primary" size="25">{{ director.officer.firstName.substring(0,1) }}</v-avatar>
           </div>
-          <div class="list-item__title">{{ director.officer.firstName }} {{ director.officer.lastName }}</div>
+          <div class="list-item__title">
+            {{ director.officer.firstName }} {{ director.officer.middleInitial }} {{ director.officer.lastName }}
+          </div>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>

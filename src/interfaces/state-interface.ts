@@ -1,5 +1,5 @@
 import { EntityState, CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, ComplianceWarning, DirectorIF, FilingDataIF, OfficeAddressIF }
+import { ApiFilingIF, ApiTaskIF, ComplianceWarning, DirectorIF, FilingDataIF, OfficeAddressIF, PartiesIF }
   from '@/interfaces'
 
 /** The state model interface. */
@@ -44,6 +44,7 @@ export interface StateIF {
   registeredAddress: OfficeAddressIF
   recordsAddress: OfficeAddressIF
   directors: Array<DirectorIF>
+  custodians: Array<PartiesIF>
   nameRequest: any
 
   currentFilingStatus: FilingStatus

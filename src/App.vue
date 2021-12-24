@@ -111,11 +111,29 @@ import {
 import { configJson, DashboardBreadcrumb, HomeBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
-import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
-  NameRequestMixin } from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, BusinessIF, BreadcrumbIF, TaskTodoIF } from '@/interfaces'
-import { EntityStatus, CorpTypeCd, FilingTypes, NameRequestStates, Routes, FilingStatus, Roles, EntityState,
-  DissolutionTypes, NigsMessage } from '@/enums'
+import {
+  AuthApiMixin,
+  CommonMixin,
+  DateMixin,
+  DirectorMixin,
+  EnumMixin,
+  FilingMixin,
+  LegalApiMixin,
+  NameRequestMixin
+} from '@/mixins'
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, TaskTodoIF } from '@/interfaces'
+import {
+  CorpTypeCd,
+  DissolutionTypes,
+  EntityState,
+  EntityStatus,
+  FilingStatus,
+  FilingTypes,
+  NameRequestStates,
+  NigsMessage,
+  Roles,
+  Routes
+} from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
@@ -277,9 +295,10 @@ export default {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
-      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setLastAnnualReportDate',
-      'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate', 'setConfigObject',
-      'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings', 'setGoodStanding']),
+      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setCustodians',
+      'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
+      'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings',
+      'setGoodStanding']),
 
     /** Starts token service to refresh KC token periodically. */
     async startTokenService (): Promise<void> {
@@ -390,7 +409,7 @@ export default {
         this.fetchTasks(this.businessId),
         this.fetchFilings(this.businessId || this.tempRegNumber),
         this.fetchAddresses(this.businessId),
-        this.fetchDirectors(this.businessId)
+        this.fetchParties(this.businessId)
       ])
 
       if (!data || data.length !== 6) throw new Error('Incomplete business data')
@@ -400,7 +419,7 @@ export default {
       this.storeTasks(data[2])
       this.storeFilings(data[3])
       this.storeAddresses(data[4])
-      this.storeDirectors(data[5])
+      this.storeParties(data[5])
     },
 
     /** Fetches and stores the incorp app data. */
@@ -633,14 +652,19 @@ export default {
       // set addresses
       this.storeAddresses({ data: incorporationApplication.offices || [] })
 
-      // set directors
-      // (ie, parties that have a role of Director)
-      const directors = incorporationApplication.parties?.filter(party =>
-        party.roles.filter(role =>
-          role.roleType === Roles.DIRECTOR
-        ).length !== 0
+      // Format party roles from IA
+      incorporationApplication.parties.forEach( // Check each party for roles
+        party => party.roles?.forEach( // Check each role for roleType
+          (role, index) => {
+            if (role.roleType) { // If roleType exists, assign it to parent role index
+              party.roles[index] = role.roleType.toLowerCase()
+            }
+          }
+        )
       )
-      this.storeDirectors({ data: { directors: directors || [] } })
+
+      // Set parties
+      this.storeParties({ data: { parties: incorporationApplication.parties || [] } })
 
       // add this as a filing (for Filing History List)
       const filingItem: ApiFilingIF = {
@@ -731,18 +755,29 @@ export default {
       }
     },
 
-    storeDirectors (response: any): void {
-      const directors = response?.data?.directors
-      if (directors) {
-        const directorsSorted = directors.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
-        for (var i = 0; i < directorsSorted.length; i++) {
-          directorsSorted[i].id = i + 1
-          directorsSorted[i].isNew = false
-          directorsSorted[i].isDirectorActive = true
+    storeParties (response: any): void {
+      const parties = response?.data?.parties
+      if (parties) {
+        const directorsList = parties?.filter(party => party.roles?.includes(Roles.DIRECTOR))
+        const custodianList = parties?.filter(party => party.roles?.includes(Roles.CUSTODIAN))
+
+        // Directors
+        if (directorsList) {
+          const directorsListSorted = directorsList.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
+          for (var i = 0; i < directorsListSorted.length; i++) {
+            directorsListSorted[i].id = i + 1
+            directorsListSorted[i].isNew = false
+            directorsListSorted[i].isDirectorActive = true
+          }
+          this.setDirectors(directorsListSorted)
         }
-        this.setDirectors(directorsSorted)
+
+        // Custodians
+        if (custodianList) {
+          this.setCustodians(custodianList)
+        }
       } else {
-        throw new Error('Invalid directors')
+        throw new Error('Invalid parties')
       }
     },
 

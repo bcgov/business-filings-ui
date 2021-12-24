@@ -5,6 +5,7 @@ export interface OfficerIF {
   prevFirstName?: string
   prevLastName?: string
   prevMiddleInitial?: string
+  organizationName?: string
 }
 
 /** An empty officer object. Note: don't assign this - make a copy instead. */

@@ -3,6 +3,7 @@ import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
 import axios from '@/axios-auth'
 import MixinTester from './mixin-tester.vue'
+import { Roles } from '@/enums'
 
 describe('Legal API Mixin', () => {
   let get: any
@@ -111,11 +112,11 @@ describe('Legal API Mixin', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/directors')
+    get.withArgs('businesses/CP1234567/parties?role=director')
       .returns(new Promise((resolve) => resolve({ data: DIRECTORS })))
 
     // call method
-    const directors = await vm.fetchDirectors('CP1234567')
+    const directors = await vm.fetchParties('CP1234567', Roles.DIRECTOR)
 
     // verify data
     expect(directors).toEqual({ data: DIRECTORS })

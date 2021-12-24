@@ -1,5 +1,5 @@
 import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
-import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, ComplianceWarning }
+import { DirectorIF, FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, ComplianceWarning, PartiesIF }
   from '@/interfaces'
 
 export default {
@@ -89,6 +89,9 @@ export default {
   },
   directors (state: StateIF, directors: Array<DirectorIF>) {
     state.directors = directors
+  },
+  custodians (state: StateIF, custodians: Array<PartiesIF>) {
+    state.custodians = custodians
   },
   lastAnnualReportDate (state: StateIF, date: string) {
     state.lastAnnualReportDate = date
