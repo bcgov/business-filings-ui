@@ -41,7 +41,7 @@ describe('Save Error Dialog', () => {
     wrapper.destroy()
   })
 
-  xit('displays generic message for staff', () => {
+  it('displays generic message for staff', () => {
     // init store
     store.state.keycloakRoles = ['staff']
 
@@ -92,6 +92,9 @@ describe('Save Error Dialog', () => {
   })
 
   it('displays warnings', () => {
+    // init store
+    store.state.keycloakRoles = []
+
     const wrapper = shallowMount(SaveErrorDialog,
       {
         propsData: {
@@ -112,7 +115,7 @@ describe('Save Error Dialog', () => {
     wrapper.destroy()
   })
 
-  xit('emits an event when Exit button is clicked', async () => {
+  it('emits an event when Exit button is clicked', async () => {
     // init store
     store.state.keycloakRoles = []
 
@@ -127,7 +130,7 @@ describe('Save Error Dialog', () => {
 
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-exit-button')
-    expect(exitButton.text()).toBe('Exit without saving')
+    expect(exitButton.text()).toBe('Return to Filing')
     exitButton.trigger('click')
     await Vue.nextTick()
 

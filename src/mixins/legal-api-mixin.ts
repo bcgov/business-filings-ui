@@ -243,16 +243,14 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
    */
   async hasPendingTasks (businessId: string): Promise<boolean> {
     return this.fetchTasks(businessId).then(response => {
-      if (response?.data?.tasks) {
-        response.data.tasks.forEach(task => {
-          if (task?.task?.filing?.header) {
-            if (task.task.filing.header.status !== FilingStatus.NEW) {
-              return true
-            }
+      const tasks = response?.data?.tasks || []
+      return tasks.some(task => {
+        if (task?.task?.filing?.header) {
+          if (task.task.filing.header.status !== FilingStatus.NEW) {
+            return true
           }
-        })
-      }
-      return false
+        }
+      })
     })
   }
 }

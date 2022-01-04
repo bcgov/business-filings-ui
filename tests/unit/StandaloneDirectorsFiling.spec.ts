@@ -91,7 +91,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  xit('enables Validated flag when sub-component flags are valid', () => {
+  it('enables page valid flags when sub-component flags are valid', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -102,13 +102,14 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
 
-    // confirm that flag is set correctly
+    // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(true)
+    expect(vm.isReviewPageValid).toEqual(true)
 
     wrapper.destroy()
   })
 
-  xit('disables Validated flag when COD Date component is invalid', () => {
+  it('disables page valid flags when COD Date component is invalid', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -119,13 +120,14 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
 
-    // confirm that flag is set correctly
+    // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
+    expect(vm.isReviewPageValid).toEqual(true)
 
     wrapper.destroy()
   })
 
-  xit('disables Validated flag when Directors component is invalid', () => {
+  it('disables page valid flags when Directors component is invalid', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -136,8 +138,9 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
 
-    // confirm that flag is set correctly
+    // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
+    expect(vm.isReviewPageValid).toEqual(true)
 
     wrapper.destroy()
   })
@@ -156,7 +159,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  xit('disables Validated flag when Certify component is invalid', () => {
+  it('disables page valid flags when Certify component is invalid', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -167,57 +170,14 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.certifyFormValid = false
     store.state.filingData = [{}] // dummy data
 
-    // confirm that flag is set correctly
-    expect(vm.isEditPageValid).toEqual(false)
+    // confirm that flags are set correctly
+    expect(vm.isEditPageValid).toEqual(true)
+    expect(vm.isReviewPageValid).toEqual(false)
 
     wrapper.destroy()
   })
 
-  xit('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { filingId: 0 } } // new filing id
-    const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
-    const vm: any = wrapper.vm
-
-    // set properties
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
-
-    // set properties to make only staff payment invalid
-    store.state.keycloakRoles = ['staff']
-    vm.totalFee = 1
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // confirm that form is invalid
-    expect(vm.isEditPageValid).toEqual(false)
-
-    // toggle keycloak role to make payment valid
-    store.state.keycloakRoles = []
-    expect(vm.isEditPageValid).toEqual(true)
-    store.state.keycloakRoles = ['staff']
-
-    // toggle total fee to make payment valid
-    vm.totalFee = 0
-    expect(vm.isEditPageValid).toEqual(true)
-    vm.totalFee = 1
-
-    // toggle staff payment form valid to make payment valid
-    vm.staffPaymentFormValid = true // *** obsolete
-    expect(vm.isEditPageValid).toEqual(true)
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // we should be back where we started
-    expect(vm.isEditPageValid).toEqual(false)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
-
-    wrapper.destroy()
-  })
-
-  xit('disables Validated flag when no filing changes were made (ie: nothing to file)', () => {
+  it('disables page valid flags when no filing changes were made (ie: nothing to file)', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -228,13 +188,14 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     vm.certifyFormValid = true
     store.state.filingData = [] // no data
 
-    // confirm that flag is set correctly
+    // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
+    expect(vm.isReviewPageValid).toEqual(false)
 
     wrapper.destroy()
   })
 
-  it('enables File & Pay button when Validated is true', () => {
+  it('enables File & Pay button when page valid flag is true', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       store,
@@ -267,7 +228,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables File & Pay button when Validated is false', () => {
+  it('disables File & Pay button when page valid flag is false', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       store,
@@ -343,11 +304,12 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
     sinon.restore()
   })
 
-  xit('fetches a draft Standalone Directors filing with FAS staff payment', async () => {
+  it('fetches a draft Standalone Directors filing with FAS staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    // wait for draft to be fetched
+    await flushPromises()
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -432,11 +394,12 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
     sinon.restore()
   })
 
-  xit('fetches a draft Standalone Directors filing with BCOL staff payment', async () => {
+  it('fetches a draft Standalone Directors filing with BCOL staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    // wait for draft to be fetched
+    await flushPromises()
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -520,11 +483,12 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
     sinon.restore()
   })
 
-  xit('fetches a draft Standalone Directors filing with No Fee staff payment', async () => {
+  it('fetches a draft Standalone Directors filing with No Fee staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    // wait for draft to be fetched
+    await flushPromises()
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -702,7 +666,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a COOP', async () => {
     // init store
     store.state.entityType = 'CP'
@@ -772,7 +736,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     wrapper.destroy()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a BCOMP', async () => {
     // init store
     store.state.entityType = 'BEN'
@@ -841,7 +805,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     wrapper.destroy()
   })
 
-  xit('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
+  it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -974,7 +938,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     sinon.restore()
   })
 
-  xit('saves a new filing and routes to Dashboard URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and routes to Dashboard URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -1001,7 +965,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     expect(vm.$route.name).toBe('dashboard')
 
     // verify route param
-    expect(vm.$route.query).toEqual({ filing_id: 123 })
+    expect(vm.$route.query).toEqual({ filing_id: '123' })
 
     wrapper.destroy()
   })
@@ -1462,7 +1426,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     sinon.restore()
   })
 
-  xit('sets the required fields to display errors from the api after a POST call',
+  it('sets the required fields to display errors from the api after a POST call',
     async () => {
       const $route = { params: { filingId: 0 } } // new filing id
       const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
@@ -1487,7 +1451,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       await vm.onClickFilePay()
 
       // verify error dialog values set to what was returned
-      expect(vm.saveErrorDialog).toBe(true)
+      expect(vm.saveErrorReason).toBeTruthy()
       expect(vm.saveErrors.length).toBe(1)
       expect(vm.saveErrors[0].error).toBe('err msg post')
       expect(vm.saveWarnings.length).toBe(1)
@@ -1497,7 +1461,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
     }
   )
 
-  xit('sets the required fields to display errors from the api after a PUT call',
+  it('sets the required fields to display errors from the api after a PUT call',
     async () => {
       const $route = { params: { filingId: 123 } } // existing filing id
       const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
@@ -1522,7 +1486,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       await vm.onClickFilePay()
 
       // verify error dialog values set to what was returned
-      expect(vm.saveErrorDialog).toBe(true)
+      expect(vm.saveErrorReason).toBeTruthy()
       expect(vm.saveErrors.length).toBe(1)
       expect(vm.saveErrors[0].error).toBe('err msg put')
       expect(vm.saveWarnings.length).toBe(1)
@@ -1590,7 +1554,7 @@ describe('Standalone Directors Filing - payment required error', () => {
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 
-  xit('handles error on File and Save', async () => {
+  it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')

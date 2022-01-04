@@ -41,7 +41,7 @@ describe('Payment Error Dialog', () => {
     wrapper.destroy()
   })
 
-  xit('displays generic message for staff', () => {
+  it('displays generic message for staff', () => {
     // init store
     store.state.keycloakRoles = ['staff']
 
@@ -59,10 +59,6 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')
-    expect(wrapper.find('#dialog-text').text()).toContain('This FILING has been')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('PayBC is normally available')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('If this error persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(false)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -95,6 +91,9 @@ describe('Payment Error Dialog', () => {
   })
 
   it('displays warnings', () => {
+    // init store
+    store.state.keycloakRoles = []
+
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {

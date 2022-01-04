@@ -634,7 +634,6 @@ export default class StandaloneDirectorsFiling extends Mixins(
 
     // save draft filing
     this.savedFiling = await this.saveFiling(true).catch(error => {
-      console.log('onClickSave() save error =', error) // eslint-disable-line no-console
       this.saveErrorReason = SaveErrorReasons.SAVE
       // try to return filing (which may exist depending on save error)
       return error?.response?.data?.filing || null
@@ -673,7 +672,6 @@ export default class StandaloneDirectorsFiling extends Mixins(
 
     // save draft filing
     this.savedFiling = await this.saveFiling(true).catch(error => {
-      console.log('onClickSaveResume() save error =', error) // eslint-disable-line no-console
       this.saveErrorReason = SaveErrorReasons.SAVE_RESUME
       // try to return filing (which may exist depending on save error)
       return error?.response?.data?.filing || null
@@ -728,7 +726,6 @@ export default class StandaloneDirectorsFiling extends Mixins(
         // try to return filing (which should exist in this case)
         return error?.response?.data?.filing || null
       } else {
-        console.log('onClickFilePay() save error =', error) // eslint-disable-line no-console
         this.saveErrorReason = SaveErrorReasons.FILE_PAY
         // try to return filing (which may exist depending on save error)
         return error?.response?.data?.filing || null
@@ -848,13 +845,15 @@ export default class StandaloneDirectorsFiling extends Mixins(
     const data = Object.assign({}, header, business, changeOfDirectors)
 
     try {
+      let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        return this.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
+        ret = await this.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        return this.createFiling(this.getIdentifier, data, isDraft)
+        ret = await this.createFiling(this.getIdentifier, data, isDraft)
       }
+      return ret
     } catch (error) {
       // save errors or warnings, if any
       this.saveErrors = error?.response?.data?.errors || []

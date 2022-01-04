@@ -255,50 +255,6 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  xit('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { filingId: '0' } } // new filing id
-    const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
-    const vm: any = wrapper.vm
-
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-
-    // set properties to make only staff payment invalid
-    store.state.keycloakRoles = ['staff']
-    vm.totalFee = 1
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // confirm that form is invalid
-    expect(vm.isPageValid).toEqual(false)
-
-    // toggle keycloak role to make payment valid
-    store.state.keycloakRoles = []
-    expect(vm.isPageValid).toEqual(true)
-    store.state.keycloakRoles = ['staff']
-
-    // toggle total fee to make payment valid
-    vm.totalFee = 0
-    expect(vm.isPageValid).toEqual(true)
-    vm.totalFee = 1
-
-    // toggle staff payment form valid to make payment valid
-    vm.staffPaymentFormValid = true // *** obsolete
-    expect(vm.isPageValid).toEqual(true)
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // we should be back where we started
-    expect(vm.isPageValid).toEqual(false)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
-
-    wrapper.destroy()
-  })
-
   it('enables File & Pay button when form is validated', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -447,46 +403,6 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     wrapper.destroy()
   })
 
-  xit('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { filingId: '0' } } // new filing id
-    const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
-    const vm: any = wrapper.vm
-
-    // set properties
-    vm.certifyFormValid = true
-    // set properties to make only staff payment invalid
-    store.state.keycloakRoles = ['staff']
-    vm.totalFee = 1
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // confirm that form is invalid
-    expect(vm.isPageValid).toEqual(false)
-
-    // toggle keycloak role to make payment valid
-    store.state.keycloakRoles = []
-    expect(vm.isPageValid).toEqual(true)
-    store.state.keycloakRoles = ['staff']
-
-    // toggle total fee to make payment valid
-    vm.totalFee = 0
-    expect(vm.isPageValid).toEqual(true)
-    vm.totalFee = 1
-
-    // toggle staff payment form valid to make payment valid
-    vm.staffPaymentFormValid = true // *** obsolete
-    expect(vm.isPageValid).toEqual(true)
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // we should be back where we started
-    expect(vm.isPageValid).toEqual(false)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
-
-    wrapper.destroy()
-  })
-
   it('enables File & Pay button when form is validated', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -567,6 +483,8 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
+    store.state.arMinDate = '2017-01-01'
+    store.state.arMaxDate = '2018-04-30'
 
     // mock "fetch a draft filing" endpoint
     sinon
@@ -607,11 +525,12 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
     sinon.restore()
   })
 
-  xit('fetches a draft AR filing with FAS staff payment', async () => {
+  it('fetches a draft AR filing with FAS staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    // wait for draft to be fetched
+    await flushPromises()
 
     // FUTURE: verify that Draft Date (for directors) was restored
     // (should be '2018-07-15')
@@ -645,6 +564,8 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
+    store.state.arMinDate = '2017-01-01'
+    store.state.arMaxDate = '2018-04-30'
 
     // mock "fetch a draft filing" endpoint
     sinon
@@ -687,11 +608,12 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
     sinon.restore()
   })
 
-  xit('fetches a draft AR filing with BCOL staff payment', async () => {
+  it('fetches a draft AR filing with BCOL staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    // wait for draft to be fetched
+    await flushPromises()
 
     // FUTURE: verify that Draft Date (for directors) was restored
     // (should be '2018-07-15')
@@ -727,6 +649,8 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
+    store.state.arMinDate = '2017-01-01'
+    store.state.arMaxDate = '2018-04-30'
 
     // mock "fetch a draft filing" endpoint
     sinon
@@ -766,11 +690,12 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
     sinon.restore()
   })
 
-  xit('fetches a draft AR filing with No Fee staff payment', async () => {
+  it('fetches a draft AR filing with No Fee staff payment', async () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await Vue.nextTick()
+    // wait for draft to be fetched
+    await flushPromises()
 
     // FUTURE: verify that Draft Date (for directors) was restored
     // (should be '2018-07-15')
@@ -988,10 +913,9 @@ describe('Annual Report - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    // button.trigger('click')
-    // await flushPromises()
-    // work-around because click trigger isn't working
-    await vm.onClickFilePay()
+    await vm.$el.querySelector('#ar-file-pay-btn').click()
+    // wait for save to complete and everything to update
+    await flushPromises()
 
     // verify redirection
     const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
@@ -1058,10 +982,9 @@ describe('Annual Report - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    // button.trigger('click')
-    // await flushPromises()
-    // work-around because click trigger isn't working
-    await vm.onClickFilePay()
+    await vm.$el.querySelector('#ar-file-pay-btn').click()
+    // wait for save to complete and everything to update
+    await flushPromises()
 
     // verify routing back to Dashboard URL
     expect(vm.$route.name).toBe('dashboard')
@@ -1290,10 +1213,9 @@ describe('Annual Report - Part 4 - Saving', () => {
     }
 
     // click the Save button
-    // wrapper.find('#ar-save-btn').trigger('click')
-    // await flushPromises()
-    // work-around because click trigger isn't working
-    await vm.onClickSave()
+    await vm.$el.querySelector('#ar-save-btn').click()
+    // wait for save to complete and everything to update
+    await flushPromises()
 
     // verify no routing
     expect(vm.$route.name).toBe('annual-report')
@@ -1790,6 +1712,8 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
+    store.state.arMinDate = '2017-01-01'
+    store.state.arMaxDate = '2018-04-30'
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
@@ -1901,7 +1825,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     wrapper.destroy()
   })
 
-  xit('sets the required fields to display errors from the api after a POST call', async () => {
+  it('sets the required fields to display errors from the api after a POST call', async () => {
     // make sure form is validated
     vm.agmDateValid = true
     vm.addressesFormValid = true
@@ -1923,20 +1847,19 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     }
 
     // click the File & Pay button
-    // wrapper.find('#ar-file-pay-btn').trigger('click')
-    // await flushPromises()
-    // work-around because click trigger isn't working
-    await vm.onClickFilePay()
+    await vm.$el.querySelector('#ar-file-pay-btn').click()
+    // wait for save to complete and everything to update
+    await flushPromises()
 
     // verify error dialog
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error).toBe('err msg post')
     expect(vm.saveWarnings.length).toBe(1)
     expect(vm.saveWarnings[0].warning).toBe('warn msg post')
   })
 
-  xit('sets the required fields to display errors from the api after a PUT call', async () => {
+  it('sets the required fields to display errors from the api after a PUT call', async () => {
     // make sure form is validated
     vm.agmDateValid = true
     vm.addressesFormValid = true
@@ -1961,13 +1884,12 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     vm.filingId = 123
 
     // click the File & Pay button
-    // wrapper.find('#ar-file-pay-btn').trigger('click')
-    // await flushPromises()
-    // work-around because click trigger isn't working
-    await vm.onClickFilePay()
+    await vm.$el.querySelector('#ar-file-pay-btn').click()
+    // wait for save to complete and everything to update
+    await flushPromises()
 
     // verify error dialog
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error).toBe('err msg put')
     expect(vm.saveWarnings.length).toBe(1)
@@ -1984,6 +1906,8 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   store.state.ARFilingYear = 2017
   store.state.currentFilingStatus = 'NEW'
   store.state.identifier = 'CP0001191'
+  store.state.arMinDate = '2017-01-01'
+  store.state.arMaxDate = '2018-04-30'
 
   beforeEach(() => {
     const localVue = createLocalVue()
@@ -2046,7 +1970,7 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
     wrapper.destroy()
   })
 
-  xit('prevents saving if a pending task exists', async () => {
+  it('prevents saving if a pending task exists', async () => {
     vm.agmDateValid = true
     vm.addressesFormValid = true
     vm.directorFormValid = true
@@ -2066,7 +1990,7 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
     await flushPromises()
 
     // verify error dialog
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error)
       .toBe('Another draft filing already exists. Please complete it before creating a new filing.')
@@ -2163,7 +2087,7 @@ describe('Annual Report - payment required error', () => {
     wrapper.destroy()
   })
 
-  xit('handles error on File and Save', async () => {
+  it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
@@ -2198,10 +2122,9 @@ describe('Annual Report - payment required error', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    // button.trigger('click')
-    // await flushPromises()
-    // work-around because click trigger isn't working
-    await vm.onClickFilePay()
+    await vm.$el.querySelector('#ar-file-pay-btn').click()
+    // wait for save to complete and everything to update
+    await flushPromises()
 
     // verify an error has been received
     expect(vm.saveErrors).toStrictEqual([{ message: 'payment required' }])

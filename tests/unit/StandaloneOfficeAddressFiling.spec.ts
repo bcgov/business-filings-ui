@@ -64,24 +64,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  xit('renders the Staff Payment sub-component properly', () => {
-    // init store
-    store.state.keycloakRoles = ['staff']
-
-    const $route = { params: { filingId: 0 } } // new filing id
-    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
-
-    // all components should be rendered
-    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
-
-    wrapper.destroy()
-  })
-
   it('enables Validated flag when properties are valid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
@@ -127,49 +109,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
-
-    wrapper.destroy()
-  })
-
-  xit('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { filingId: 0 } } // new filing id
-    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
-    const vm: any = wrapper.vm
-
-    // set properties
-    vm.certifyFormValid = true
-    vm.addressesFormValid = true
-    store.state.filingData = [{}] // dummy data
-
-    // set properties to make only staff payment invalid
-    store.state.keycloakRoles = ['staff']
-    vm.totalFee = 1
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // confirm that form is invalid
-    expect(vm.isPageValid).toEqual(false)
-
-    // toggle keycloak role to make payment valid
-    store.state.keycloakRoles = []
-    expect(vm.isPageValid).toEqual(true)
-    store.state.keycloakRoles = ['staff']
-
-    // toggle total fee to make payment valid
-    vm.totalFee = 0
-    expect(vm.isPageValid).toEqual(true)
-    vm.totalFee = 1
-
-    // toggle staff payment form valid to make payment valid
-    vm.staffPaymentFormValid = true // *** obsolete
-    expect(vm.isPageValid).toEqual(true)
-    vm.staffPaymentFormValid = false // *** obsolete
-
-    // we should be back where we started
-    expect(vm.isPageValid).toEqual(false)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
 
     wrapper.destroy()
   })
@@ -260,7 +199,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  xit('Verify COA Certify contains correct section codes', () => {
+  it('Verify COA Certify contains correct section codes', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -272,7 +211,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       router,
       stubs: {
         OfficeAddresses: true,
-        Certify: true,
+        // Certify: true, // NB: don't stub out as it's needed below!
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -727,7 +666,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -784,7 +723,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     wrapper.destroy()
   })
 
-  xit('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
+  it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -1007,7 +946,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -1064,7 +1003,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     wrapper.destroy()
   })
 
-  xit('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
+  it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
@@ -1716,7 +1655,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     sinon.restore()
   })
 
-  xit('sets the required fields to display errors from the api after a POST call', async () => {
+  it('sets the required fields to display errors from the api after a POST call', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -1756,7 +1695,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     await vm.onClickFilePay()
 
     // verify error dialog values set to what was returned
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error).toBe('err msg post')
     expect(vm.saveWarnings.length).toBe(1)
@@ -1766,7 +1705,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
   }
   )
 
-  xit('sets the required fields to display errors from the api after a PUT call', async () => {
+  it('sets the required fields to display errors from the api after a PUT call', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -1806,7 +1745,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     await vm.onClickFilePay()
 
     // verify error dialog values set to what was returned
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error).toBe('err msg put')
     expect(vm.saveWarnings.length).toBe(1)
@@ -1874,7 +1813,7 @@ describe('Standalone Office Address Filing - payment required error', () => {
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 
-  xit('handles error on File and Save', async () => {
+  it('handles error on File and Save', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
     sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
