@@ -741,7 +741,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Change of Directors. Do you want to exit your filing?',
+      'You have unsaved changes in your Change of Office Addresses. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,

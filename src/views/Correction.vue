@@ -724,7 +724,7 @@ export default class Correction extends Mixins(
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Change of Directors. Do you want to exit your filing?',
+      'You have unsaved changes in your Correction. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
