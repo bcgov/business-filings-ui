@@ -8,7 +8,7 @@
     <FetchErrorDialog
       attach="#annual-report"
       :dialog="fetchErrorDialog"
-      @exit="navigateToDashboard(true)"
+      @exit="goToDashboard(true)"
     />
 
     <PaymentErrorDialog
@@ -23,7 +23,7 @@
     <ResumeErrorDialog
       attach="#annual-report"
       :dialog="resumeErrorDialog"
-      @exit="navigateToDashboard(true)"
+      @exit="goToDashboard(true)"
     />
 
     <SaveErrorDialog
@@ -283,7 +283,7 @@
           id="ar-cancel-btn"
           large
           :disabled="busySaving"
-          @click="navigateToDashboard()"
+          @click="goToDashboard()"
         >
           <span>Cancel</span>
         </v-btn>
@@ -322,7 +322,7 @@
           id="ar-cancel-btn"
           large
           :disabled="busySaving"
-          @click="navigateToDashboard()"
+          @click="goToDashboard()"
         >
           <span>Cancel</span>
         </v-btn>
@@ -546,23 +546,23 @@ export default class AnnualReport extends Mixins(
 
   /** Called when component is mounted. */
   async mounted (): Promise<void> {
-    // if tombstone data isn't set, go back to dashboard
+    // if tombstone data isn't set, go to dashboard
     if (!this.getIdentifier || !this.ARFilingYear || isNaN(this.filingId)) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Entity Inc No, AR Filing Year, or Filing ID!')
-      this.$router.push({ name: Routes.DASHBOARD })
+      this.goToDashboard(true)
       return // don't continue
     }
     if (this.isCoop && (!this.arMinDate || !this.arMaxDate)) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing AR Min Date or AR Max Date!')
-      this.$router.push({ name: Routes.DASHBOARD })
+      this.goToDashboard(true)
       return // don't continue
     }
     if (this.isBComp && !this.nextARDate) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Next AR Date!')
-      this.$router.push({ name: Routes.DASHBOARD })
+      this.goToDashboard(true)
       return // don't continue
     }
 
@@ -606,36 +606,6 @@ export default class AnnualReport extends Mixins(
   destroyed (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
-  }
-
-  beforeRouteLeave (to, from, next): void {
-    if (!this.haveChanges) {
-      // no changes -- resolve promise right away
-      next()
-      return
-    }
-
-    // open confirmation dialog and wait for response
-    this.$refs.confirm.open(
-      'Unsaved Changes',
-      'You have unsaved changes in your Annual Report. Do you want to exit your filing?',
-      {
-        width: '40rem',
-        persistent: true,
-        yes: 'Return to my filing',
-        no: null,
-        cancel: 'Exit without saving'
-      }
-    ).then(async (confirm) => {
-      // if we get here, Yes was clicked
-      if (confirm) {
-        next(false)
-      }
-    }).catch(() => {
-      // if we get here, Cancel was clicked
-      this.haveChanges = false
-      next()
-    })
   }
 
   async fetchDraftFiling (): Promise<void> {
@@ -874,10 +844,8 @@ export default class AnnualReport extends Mixins(
     const filingId = +this.savedFiling?.header?.filingId
     // safety check
     if (filingId > 0) {
-      // changes were saved, so clear flag
-      this.haveChanges = false
-      // go to dashboard
-      this.$router.push({ name: Routes.DASHBOARD })
+      // changes were saved, so go to dashboard
+      this.goToDashboard(true)
     } else {
       // eslint-disable-next-line no-console
       console.log('onClickSaveResumeFinish(): invalid filing ID, filing =', null)
@@ -947,7 +915,7 @@ export default class AnnualReport extends Mixins(
         // otherwise, user will have to retry payment later
         window.location.assign(payUrl)
       } else {
-        // route directly to dashboard
+        // route to dashboard with filing id parameter
         this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })
       }
     } else {
@@ -1107,11 +1075,41 @@ export default class AnnualReport extends Mixins(
     }
   }
 
-  /** Handler for dialog Exit click events. */
-  navigateToDashboard (ignoreChanges: boolean = false): void {
-    if (ignoreChanges) this.haveChanges = false
-    this.$router.push({ name: Routes.DASHBOARD })
-      .catch(() => {}) // ignore error in case navigation was aborted
+  /**
+   * Routes to dashboard if there are no outstanding changes,
+   * else prompts user before routing.
+   */
+  goToDashboard (force: boolean = false): void {
+    // check if there are no data changes
+    if (!this.haveChanges || force) {
+      // route to dashboard
+      this.$router.push({ name: Routes.DASHBOARD })
+        .catch(() => {}) // ignore error in case navigation was aborted
+      return
+    }
+
+    // open confirmation dialog and wait for response
+    this.$refs.confirm.open(
+      'Unsaved Changes',
+      'You have unsaved changes in your Change of Directors. Do you want to exit your filing?',
+      {
+        width: '45rem',
+        persistent: true,
+        yes: 'Return to my filing',
+        no: null,
+        cancel: 'Exit without saving'
+      }
+    ).then(async (confirm) => {
+      // if we get here, Yes was clicked
+      // nothing to do
+    }).catch(() => {
+      // if we get here, Cancel was clicked
+      // ignore changes
+      this.haveChanges = false
+      // route to dashboard
+      this.$router.push({ name: Routes.DASHBOARD })
+        .catch(() => {}) // ignore error in case navigation was aborted
+    })
   }
 
   /**
@@ -1153,7 +1151,7 @@ export default class AnnualReport extends Mixins(
       // close the dialog and go to dashboard --
       // user will have to retry payment from there
       this.paymentErrorDialog = false
-      this.navigateToDashboard(true)
+      this.goToDashboard(true)
     }
   }
 
