@@ -2,8 +2,8 @@
   <div id="dashboard">
     <CoaWarningDialog
       :dialog="coaWarningDialog"
-      @toggle="toggleCoaWarning"
-      @proceed="goToStandaloneAddresses"
+      @toggle="toggleCoaWarning()"
+      @proceed="goToStandaloneAddresses()"
       attach="#dashboard"
     />
 
