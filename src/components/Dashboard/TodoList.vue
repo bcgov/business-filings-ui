@@ -16,14 +16,14 @@
       :dialog="deleteErrorDialog"
       :errors="deleteErrors"
       :warnings="deleteWarnings"
-      @okay="resetErrors"
+      @okay="resetErrors()"
       attach="#todo-list"
     />
 
     <CancelPaymentErrorDialog
       :dialog="cancelPaymentErrorDialog"
       :errors="cancelPaymentErrors"
-      @okay="resetCancelPaymentErrors"
+      @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
     />
 
@@ -1591,11 +1591,5 @@ export default class TodoList extends Mixins(
 
 .pay-error {
   border-top: solid #a94442 3px;
-}
-
-.contact-info-container {
-  width: 50%;
-  margin-top: 0.5rem;
-  display: inline-block;
 }
 </style>

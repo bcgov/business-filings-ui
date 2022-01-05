@@ -107,9 +107,7 @@ export default class CodDate extends Mixins(DateMixin) {
     return date
   }
 
-  /**
-   * Called when component is mounted.
-   */
+  /** Called when component is mounted. */
   private mounted (): void {
     // load initial data
     this.dateFormatted = this.formatDate(this.initialCodDate)

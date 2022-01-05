@@ -30,7 +30,7 @@ describe('Payment Error Dialog', () => {
 
     expect(wrapper.attributes('content-class')).toBe('payment-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')
     expect(wrapper.find('#dialog-text').text()).toContain('This FILING has been')
     expect(wrapper.find('#dialog-text').text()).toContain('PayBC is normally available')
@@ -57,12 +57,8 @@ describe('Payment Error Dialog', () => {
 
     expect(wrapper.attributes('content-class')).toBe('payment-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')
-    expect(wrapper.find('#dialog-text').text()).toContain('This FILING has been')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('PayBC is normally available')
-    expect(wrapper.find('#dialog-text').text()).not.toContain('If this error persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(false)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -84,7 +80,7 @@ describe('Payment Error Dialog', () => {
     const vm: any = wrapper.vm
 
     expect(vm.numErrors).toBe(1)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
     expect(wrapper.find('#dialog-text').text())
       .toContain('We were unable to process your payment due to the following errors:')
@@ -95,6 +91,9 @@ describe('Payment Error Dialog', () => {
   })
 
   it('displays warnings', () => {
+    // init store
+    store.state.keycloakRoles = []
+
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         propsData: {
@@ -107,7 +106,7 @@ describe('Payment Error Dialog', () => {
     const vm: any = wrapper.vm
 
     expect(vm.numWarnings).toBe(1)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
     expect(wrapper.find('#dialog-text').text()).toContain('Please note the following warnings:')
     expect(wrapper.find('#dialog-text').text()).toContain('warning msg')

@@ -6,10 +6,8 @@ import DetailComment from './DetailComment.vue'
 import DetailsList from './DetailsList.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
-import StaffPayment from './StaffPayment.vue'
-import SummaryCertify from './SummaryCertify.vue'
+import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 import SummaryDirectors from './SummaryDirectors.vue'
-import SummaryStaffPayment from './SummaryStaffPayment.vue'
 import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
 
 // NB: importing/exporting Directors gives us weird errors,
@@ -25,8 +23,6 @@ export {
   NameRequestInfo,
   OfficeAddresses,
   StaffPayment,
-  SummaryCertify,
   SummaryDirectors,
-  SummaryStaffPayment,
   SummaryOfficeAddresses
 }

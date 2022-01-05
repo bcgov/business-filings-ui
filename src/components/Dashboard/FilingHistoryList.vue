@@ -333,7 +333,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
-// Components and Dialogs
+// Components and dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
 import CompletedDissolution from './FilingHistoryList/CompletedDissolution.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
@@ -347,7 +347,7 @@ import StaffFiling from './FilingHistoryList/StaffFiling.vue'
 import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
-// Enums, Interfaces and Mixins
+// Enums, interfaces and mixins
 import { AllowableActions, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF } from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'

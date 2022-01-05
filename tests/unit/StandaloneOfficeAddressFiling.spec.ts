@@ -8,7 +8,7 @@ import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
-import { Certify, OfficeAddresses, StaffPayment } from '@/components/common'
+import { Certify, OfficeAddresses } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { configJson } from '@/resources/business-config'
@@ -60,26 +60,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.find(Certify).exists()).toBe(true)
-    expect(wrapper.find(StaffPayment).exists()).toBe(false) // normally not rendered
-
-    wrapper.destroy()
-  })
-
-  it('renders the Staff Payment sub-component properly', () => {
-    // init store
-    store.state.keycloakRoles = ['staff']
-
-    const $route = { params: { filingId: 0 } } // new filing id
-    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
-
-    // all components should be rendered
-    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
-    expect(wrapper.find(StaffPayment).exists()).toBe(true)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
 
     wrapper.destroy()
   })
@@ -90,14 +70,13 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set properties
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
     await flushPromises()
 
     // confirm that flag is set correctly
-    expect(vm.validated).toEqual(true)
+    expect(vm.isPageValid).toEqual(true)
 
     wrapper.destroy()
   })
@@ -108,13 +87,12 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set properties
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.addressesFormValid = false
     store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
-    expect(vm.validated).toEqual(false)
+    expect(vm.isPageValid).toEqual(false)
 
     wrapper.destroy()
   })
@@ -125,56 +103,12 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set properties
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = false
     vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
 
     // confirm that flag is set correctly
-    expect(vm.validated).toEqual(false)
-
-    wrapper.destroy()
-  })
-
-  it('disables Validated flag when Staff Payment data is required but not provided', () => {
-    const $route = { params: { filingId: 0 } } // new filing id
-    const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
-    const vm: any = wrapper.vm
-
-    // set properties
-    vm.certifyFormValid = true
-    vm.addressesFormValid = true
-    store.state.filingData = [{}] // dummy data
-
-    // set properties to make only staff payment invalid
-    store.state.keycloakRoles = ['staff']
-    vm.totalFee = 1
-    vm.staffPaymentFormValid = false
-
-    // confirm that form is invalid
-    expect(vm.validated).toEqual(false)
-
-    // toggle keycloak role to make payment valid
-    store.state.keycloakRoles = []
-    expect(vm.validated).toEqual(true)
-    store.state.keycloakRoles = ['staff']
-
-    // toggle total fee to make payment valid
-    vm.totalFee = 0
-    expect(vm.validated).toEqual(true)
-    vm.totalFee = 1
-
-    // toggle staff payment form valid to make payment valid
-    vm.staffPaymentFormValid = true
-    expect(vm.validated).toEqual(true)
-    vm.staffPaymentFormValid = false
-
-    // we should be back where we started
-    expect(vm.validated).toEqual(false)
-
-    // reset store
-    // NB: this is important for subsequent tests
-    store.state.keycloakRoles = []
+    expect(vm.isPageValid).toEqual(false)
 
     wrapper.destroy()
   })
@@ -185,13 +119,12 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set properties
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.addressesFormValid = true
     store.state.filingData = [] // no data
 
     // confirm that flag is set correctly
-    expect(vm.validated).toEqual(false)
+    expect(vm.isPageValid).toEqual(false)
   })
 
   it('enables File & Pay button when Validated is true', () => {
@@ -207,7 +140,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -220,7 +152,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set all properties truthy
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data
@@ -244,7 +175,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -257,7 +187,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set all properties falsy
-    vm.staffPaymentFormValid = false
     vm.certifyFormValid = false
     vm.addressesFormValid = false
 
@@ -282,8 +211,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       router,
       stubs: {
         OfficeAddresses: true,
-        Certify: true,
-        StaffPayment: true,
+        // Certify: true, // NB: don't stub out as it's needed below!
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -756,7 +684,6 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -770,10 +697,9 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
-    expect(vm.validated).toEqual(true)
+    expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -815,7 +741,6 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -829,10 +754,9 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
-    expect(vm.validated).toEqual(true)
+    expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -1040,7 +964,6 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -1054,10 +977,9 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
-    expect(vm.validated).toEqual(true)
+    expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -1099,7 +1021,6 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -1113,10 +1034,9 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     store.state.filingData = [{}] // dummy data
-    expect(vm.validated).toEqual(true)
+    expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -1227,7 +1147,6 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
       // make sure form is validated
       vm.addressesFormValid = true
-      vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
 
       // sanity check
@@ -1260,7 +1179,6 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
     // click the Save & Resume Later button
@@ -1365,7 +1283,6 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
       // make sure form is validated
       vm.addressesFormValid = true
-      vm.staffPaymentFormValid = true
       vm.certifyFormValid = true
 
       // sanity check
@@ -1398,7 +1315,6 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
     // click the Save & Resume Later button
@@ -1425,7 +1341,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
-    // mock "get tasks" endpoint - needed for hasTasks()
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
       .withArgs('businesses/CP0001191/tasks')
@@ -1473,7 +1389,6 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeModifiedEventHandler(true)
   })
@@ -1515,7 +1430,7 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = 'BEN'
 
-    // mock "get tasks" endpoint - needed for hasTasks()
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
       .stub(axios, 'get')
       .withArgs('businesses/BC0007291/tasks')
@@ -1571,7 +1486,6 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.officeModifiedEventHandler(true)
   })
@@ -1623,7 +1537,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
-    // mock "get tasks" endpoint - needed for hasTasks()
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinonAxiosGet
       .withArgs('businesses/CP0001191/tasks')
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
@@ -1754,7 +1668,6 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -1768,7 +1681,6 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
     // sanity check
@@ -1783,7 +1695,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     await vm.onClickFilePay()
 
     // verify error dialog values set to what was returned
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error).toBe('err msg post')
     expect(vm.saveWarnings.length).toBe(1)
@@ -1806,7 +1718,6 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -1820,7 +1731,6 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
     // make sure form is validated
     vm.addressesFormValid = true
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
 
     // sanity check
@@ -1835,7 +1745,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     await vm.onClickFilePay()
 
     // verify error dialog values set to what was returned
-    expect(vm.saveErrorDialog).toBe(true)
+    expect(vm.saveErrorReason).toBeTruthy()
     expect(vm.saveErrors.length).toBe(1)
     expect(vm.saveErrors[0].error).toBe('err msg put')
     expect(vm.saveWarnings.length).toBe(1)
@@ -1924,7 +1834,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
       stubs: {
         OfficeAddresses: true,
         Certify: true,
-        StaffPayment: true,
         Affix: true,
         SbcFeeSummary: true,
         ConfirmDialog: true,
@@ -1937,7 +1846,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
     const vm: any = wrapper.vm
 
     // set all properties truthy
-    vm.staffPaymentFormValid = true
     vm.certifyFormValid = true
     vm.addressesFormValid = true
     store.state.filingData = [{}] // dummy data

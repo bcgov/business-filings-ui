@@ -12,7 +12,7 @@
     </li>
     <li class="contact-container">
       <v-icon class="contact-icon" size="18px">mdi-email</v-icon>
-      <span class="px-2">BC Registries Email:</span>
+      <span class="px-2">Email:</span>
       <a href="mailto:BCRegistries@gov.bc.ca" class="contact-value">BCRegistries@gov.bc.ca</a>
     </li>
   </ul>

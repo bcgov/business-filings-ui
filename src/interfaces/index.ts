@@ -4,12 +4,12 @@
 import type { CorpInfoIF } from '@bcrs-shared-components/corp-type-module'
 import type { AlterationIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
   NameRequestApplicantIF, ShareStructureIF, CourtOrderIF, IncorporationApplicationIF, IncorporationAddressIf,
-  ShareClassIF, CommentIF, ConfirmDialogType } from '@bcrs-shared-components/interfaces'
+  ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 export type { CorpInfoIF }
 
 export type { AlterationIF, ContactPointIF, NameRequestIF, NameTranslationIF, NameRequestDetailsIF,
   NameRequestApplicantIF, ShareStructureIF, CourtOrderIF, IncorporationApplicationIF, IncorporationAddressIf,
-  ShareClassIF, CommentIF, ConfirmDialogType }
+  ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF }
 
 export * from './action-interface'
 export * from './address-interfaces'
@@ -29,7 +29,6 @@ export * from './form-interface'
 export * from './history-item-interface'
 export * from './officer-interface'
 export * from './payment-error-interface'
-export * from './staff-payment-interface'
 export * from './state-interface'
 export * from './todo-item-interface'
 export * from './parties-interface'

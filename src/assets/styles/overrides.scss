@@ -14,6 +14,13 @@
   }
 }
 
+// blue button: blue on white
+.button-blue {
+  color: $app-blue !important;
+  background-color: transparent !important;
+  border: thin solid $app-blue !important;
+}
+
 // Text Inputs
 .v-text-field--box .v-label--active,
 .v-text-field--full-width .v-label--active,

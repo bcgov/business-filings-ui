@@ -20,6 +20,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
+// FUTURE: implement this
 xdescribe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {
     sessionStorage.clear()
@@ -188,12 +189,15 @@ xdescribe('TodoList - common expansion panel header tests', () => {
   })
 })
 
+// FUTURE: implement this
 xdescribe('TodoList - common actions list tests', () => {
 })
 
+// FUTURE: implement this
 xdescribe('TodoList - common expansion panel content tests', () => {
 })
 
+// FUTURE: implement this
 xdescribe('TodoList - tests specific to Benefit Companies', () => {
   beforeAll(() => {
     sessionStorage.clear()
@@ -211,6 +215,7 @@ xdescribe('TodoList - tests specific to Benefit Companies', () => {
   })
 })
 
+// FUTURE: implement this
 xdescribe('TodoList - tests specific to Incorporation Applications', () => {
   beforeAll(() => {
     sessionStorage.clear()
@@ -222,6 +227,7 @@ xdescribe('TodoList - tests specific to Incorporation Applications', () => {
   //
 })
 
+// FUTURE: implement this
 xdescribe('TodoList - tests specific to Name Requests', () => {
   // this functionality is current disabled in the code
   // FUTURE: implement appropriate unit tests here
