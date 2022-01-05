@@ -893,9 +893,9 @@ export default class AnnualReport extends Mixins(
     // prevent double saving
     if (this.busySaving) return
 
-    // if this is a staff user clicking File and Pay (not Submit) and payment is required
+    // if this is a staff user clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment && this.isPayRequired) {
+    if (this.isRoleStaff && !fromStaffPayment) {
       this.staffPaymentDialog = true
       return
     }
