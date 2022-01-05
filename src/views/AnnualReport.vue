@@ -271,7 +271,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                {{isPayRequired ? "File and Pay" : "File"}}
+                {{isPayRequired ? "File and Pay" : "File Now (no fee)"}}
               </v-btn>
             </div>
           </template>
