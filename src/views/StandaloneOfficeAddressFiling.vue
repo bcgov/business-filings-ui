@@ -246,7 +246,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
   // variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   private filingId: number = null
-  private savedFiling = null // filing during save
+  private savedFiling: any = null // filing during save
   private loadingMessage = ''
   private dataLoaded = false
   private isFetching = false
@@ -266,7 +266,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
   private haveChanges = false
   private saveErrors = []
   private saveWarnings = []
-  private totalFee: 0
+  private totalFee = 0
   private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   /** True if loading container should be shown, else False. */

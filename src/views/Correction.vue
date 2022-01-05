@@ -253,8 +253,8 @@ export default class Correction extends Mixins(
   private dataLoaded = false
   private loadingMessage = ''
   private filingId: number = 0 // id of this correction filing
-  private savedFiling = null // filing during save
-  private correctedFilingId: number = 0 // id of filing to correct
+  private savedFiling: any = null // filing during save
+  private correctedFilingId = 0 // id of filing to correct
   private origFiling = null // copy of original filing
   private saving = false // true only when saving
   private savingResuming = false // true only when saving and resuming

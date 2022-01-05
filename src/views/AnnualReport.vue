@@ -443,7 +443,7 @@ export default class AnnualReport extends Mixins(
   // other variables
   private totalFee = 0
   private filingId: number = null
-  private savedFiling = null // filing during save
+  private savedFiling: any = null // filing during save
   private loadingMessage = ''
   private dataLoaded = false
   private isFetching = false
