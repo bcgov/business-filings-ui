@@ -795,6 +795,12 @@ export default class AnnualReport extends Mixins(
       return error?.response?.data?.filing || null
     })
 
+    const filingId = +this.savedFiling?.header?.filingId || 0
+    if (filingId > 0) {
+      // save filing ID for possible future updates
+      this.filingId = filingId
+    }
+
     // if there was no error, finish save process now
     // otherwise, dialog may finish this later
     if (!this.saveErrorReason) this.onClickSaveFinish()
@@ -803,13 +809,10 @@ export default class AnnualReport extends Mixins(
   }
 
   onClickSaveFinish (): void {
-    const filingId = +this.savedFiling?.header?.filingId
     // safety check
-    if (filingId > 0) {
+    if (this.filingId > 0) {
       // changes were saved, so clear flag
       this.haveChanges = false
-      // save filing ID for future updates
-      this.filingId = filingId
     } else {
       // eslint-disable-next-line no-console
       console.log('onClickSaveFinish(): invalid filing ID, filing =', null)
@@ -833,6 +836,12 @@ export default class AnnualReport extends Mixins(
       return error?.response?.data?.filing || null
     })
 
+    const filingId = +this.savedFiling?.header?.filingId || 0
+    if (filingId > 0) {
+      // save filing ID for possible future updates
+      this.filingId = filingId
+    }
+
     // if there was no error, finish save-resume process now
     // otherwise, dialog may finish this later
     if (!this.saveErrorReason) this.onClickSaveResumeFinish()
@@ -841,9 +850,8 @@ export default class AnnualReport extends Mixins(
   }
 
   onClickSaveResumeFinish (): void {
-    const filingId = +this.savedFiling?.header?.filingId
     // safety check
-    if (filingId > 0) {
+    if (this.filingId > 0) {
       // changes were saved, so go to dashboard
       this.goToDashboard(true)
     } else {
@@ -886,6 +894,12 @@ export default class AnnualReport extends Mixins(
       }
     })
 
+    const filingId = +this.savedFiling?.header?.filingId || 0
+    if (filingId > 0) {
+      // save filing ID for possible future updates
+      this.filingId = filingId
+    }
+
     // if there were no errors, finish file-pay process now
     // otherwise, dialogs may finish this later
     if (!this.paymentErrorDialog && !this.saveErrorReason) this.onClickFilePayFinish()
@@ -894,15 +908,10 @@ export default class AnnualReport extends Mixins(
   }
 
   onClickFilePayFinish (): void {
-    const filingId = +this.savedFiling?.header?.filingId
-
     // safety check
-    if (filingId > 0) {
+    if (this.filingId > 0) {
       // changes were saved, so clear flag
       this.haveChanges = false
-
-      // save filing ID for future updates
-      this.filingId = filingId
 
       const isPaymentActionRequired = Boolean(this.savedFiling.header.isPaymentActionRequired)
 
