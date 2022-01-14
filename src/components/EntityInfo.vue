@@ -31,7 +31,7 @@
               <v-chip class="primary mt-n1 ml-4 pointer-events-none" small label text-color="white">
                 <strong>HISTORICAL</strong>
               </v-chip>
-              <span class="font-14 ml-3">{{reasonText || 'Unknown Reason'}}</span>
+              <span class="font-14 ml-3 mr-3">{{reasonText || 'Unknown Reason'}}</span>
             </span>
 
             <template v-else>
@@ -83,9 +83,10 @@
                   </v-tooltip>
                 </v-btn>
               </span>
+            </template>
 
-              <!-- Download Business Summary -->
-              <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
+            <!-- Download Business Summary -->
+            <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
                 <v-tooltip top content-class="top-tooltip">
                   <template v-slot:activator="{ on }">
                     <v-btn
@@ -101,8 +102,7 @@
                   View and download a summary of information about the {{ entityTitle }}, including office addresses
                   and directors.
                 </v-tooltip>
-              </span>
-            </template>
+            </span>
           </menu>
         </v-col>
 
@@ -176,8 +176,7 @@
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, CorpTypeCd, Routes, FilingNames, NigsMessage } from '@/enums'
-import { BreadcrumbIF } from '@/interfaces'
+import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 
@@ -286,10 +285,9 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     window.location.assign(this.businessProfileUrl) // assume URL is always reachable
   }
 
-  /** Downloads business summary PDF. */
-  private downloadBusinessSummary (): void {
-    // FUTURE
-  }
+  // Pass prompt downloads business summary event to parent. */
+  @Emit('downloadBusinessSummary')
+  private downloadBusinessSummary (): void {}
 
   // Pass confirm dissolution event to parent.
   @Emit('confirmDissolution')

@@ -416,3 +416,43 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     expect(wrapper.emitted().notInGoodStanding).toEqual([['dissolve']])
   })
 })
+
+describe('EntityInfo - Click Tests - Business Summary', () => {
+  // mock the mixin to always return True
+  const AllowableActionsMixin: any = {
+    methods: {
+      isAllowed: () => true
+    }
+  }
+
+  it('displays the Business Summary button', async () => {
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [AllowableActionsMixin]
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#download-summary-button').exists()).toBe(true)
+  })
+
+  it('emits the download business summary event', async () => {
+    const router = mockRouter.mock()
+
+    // mount the component and wait for everything to stabilize
+    const wrapper: any = mount(EntityInfo, {
+      store,
+      vuetify,
+      router,
+      mixins: [AllowableActionsMixin]
+    })
+    await Vue.nextTick()
+
+    wrapper.find('#download-summary-button').trigger('click')
+    await Vue.nextTick()
+
+    // verify emit event
+    expect(wrapper.emitted().downloadBusinessSummary).toEqual([[]])
+  })
+})
