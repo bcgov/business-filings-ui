@@ -12,12 +12,6 @@
     <p>If this issue persists, please contact us.</p>
 
     <ContactInfo class="mt-4" />
-
-    <div class="to-dashboard-container text-center mt-6">
-      <v-btn color="primary" @click.native.stop="returnToDashboard()">
-        <span>Return to Dashboard</span>
-      </v-btn>
-    </div>
   </div>
 </template>
 
@@ -41,15 +35,6 @@ export default class PendingFiling extends Mixins(EnumMixin) {
     if (this.isTypeAlteration(this.filing)) return FilingNames.ALTERATION
     if (this.filing.displayName) return this.filing.displayName
     return 'Filing'
-  }
-
-  /** The Manage Businesses URL string. */
-  private get manageBusinessesUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-  }
-
-  private returnToDashboard (): void {
-    window.location.assign(this.manageBusinessesUrl) // assume URL is always reachable
   }
 }
 </script>

@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "4.3.2",
+  "version": "4.3.3",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@babel/compat-data": "^7.11.0",
-    "@bcrs-shared-components/bread-crumb": "^1.0.1",
+    "@bcrs-shared-components/bread-crumb": "^1.0.2",
     "@bcrs-shared-components/corp-type-module": "1.0.3",
     "@bcrs-shared-components/court-order-poa": "1.0.14",
     "@bcrs-shared-components/enums": "1.0.14",

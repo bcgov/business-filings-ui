@@ -8,6 +8,12 @@
       attach="#app"
     />
 
+    <DownloadErrorDialog
+      :dialog="downloadErrorDialog"
+      @close="downloadErrorDialog=false"
+      attach="#app"
+    />
+
     <BusinessAuthErrorDialog
       :dialog="businessAuthErrorDialog"
       @exit="onClickExit()"
@@ -73,6 +79,7 @@
         <EntityInfo
           @confirmDissolution="confirmDissolutionDialog = true"
           @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
+          @downloadBusinessSummary="downloadBusinessSummary()"
         />
         <router-view />
       </main>
@@ -102,6 +109,7 @@ import {
   BusinessAuthErrorDialog,
   ConfirmDissolution,
   DashboardUnavailableDialog,
+  DownloadErrorDialog,
   NameRequestAuthErrorDialog,
   NameRequestInvalidDialog,
   NotInGoodStandingDialog
@@ -121,7 +129,7 @@ import {
   LegalApiMixin,
   NameRequestMixin
 } from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, TaskTodoIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, TaskTodoIF } from '@/interfaces'
 import {
   CorpTypeCd,
   DissolutionTypes,
@@ -146,6 +154,7 @@ export default {
   data () {
     return {
       confirmDissolutionDialog: false,
+      downloadErrorDialog: false,
       dataLoaded: false,
       dashboardUnavailableDialog: false,
       businessAuthErrorDialog: false,
@@ -178,6 +187,7 @@ export default {
     BreadCrumb,
     ConfirmDissolution,
     DashboardUnavailableDialog,
+    DownloadErrorDialog,
     BusinessAuthErrorDialog,
     NameRequestAuthErrorDialog,
     NameRequestInvalidDialog,
@@ -823,6 +833,23 @@ export default {
         this.nameRequestInvalidDialog = false
         this.fetchData()
       }
+    },
+
+    /** Request and Download Business Summary Document. */
+    async downloadBusinessSummary (): Promise<void> {
+      this.showSpinner = true
+      const summaryDocument: DocumentIF = {
+        title: 'Summary',
+        filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
+        link: `businesses/${this.businessId}/documents/summary`
+      }
+
+      await this.fetchDocument(summaryDocument).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('fetchDocument() error =', error)
+        this.downloadErrorDialog = true
+      })
+      this.showSpinner = false
     }
   },
 

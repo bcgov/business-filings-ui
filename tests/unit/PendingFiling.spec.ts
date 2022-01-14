@@ -33,7 +33,6 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(0).text()).toContain('This Filing is paid')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -59,7 +58,6 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(2).text()).toContain('Pursuant to a Plan of Arrangement')
     expect(paragraphs.at(3).text()).toContain('If this issue persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -81,7 +79,6 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
-    expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()
   })
