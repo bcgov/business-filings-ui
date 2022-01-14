@@ -31,7 +31,7 @@
     "country-list": "^2.2.0",
     "http-status-codes": "^1.4.0",
     "launchdarkly-js-client-sdk": "^2.18.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "provinces": "^1.11.0",
     "regenerator-runtime": "^0.13.7",
     "register-service-worker": "^1.7.1",
