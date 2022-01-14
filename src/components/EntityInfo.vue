@@ -31,7 +31,7 @@
               <v-chip class="primary mt-n1 ml-4 pointer-events-none" small label text-color="white">
                 <strong>HISTORICAL</strong>
               </v-chip>
-              <span class="font-14 ml-3 mr-3">{{reasonText || 'Unknown Reason'}}</span>
+              <span class="font-14 mx-3">{{reasonText || 'Unknown Reason'}}</span>
             </span>
 
             <template v-else>

@@ -840,7 +840,7 @@ export default {
       this.showSpinner = true
       const summaryDocument: DocumentIF = {
         title: 'Summary',
-        filename: `${this.businessId} - Summary - ${this.getCurrentDate}.pdf`,
+        filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
         link: `businesses/${this.businessId}/documents/summary`
       }
 
