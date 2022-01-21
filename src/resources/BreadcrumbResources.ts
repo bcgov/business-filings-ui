@@ -1,8 +1,8 @@
 import { BreadcrumbIF } from '@/interfaces'
 
 export const HomeBreadCrumb: BreadcrumbIF = {
-  text: 'Business Registry Home',
-  href: `${sessionStorage.getItem('BUSINESSES_URL')}`
+  text: 'BC Registries Dashboard',
+  href: `${sessionStorage.getItem('BCROS_HOME_URL')}dashboard`
 }
 
 export const DashboardBreadcrumb: BreadcrumbIF = {
