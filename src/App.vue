@@ -116,7 +116,7 @@ import {
 } from '@/components/dialogs'
 
 // Configuration objects
-import { configJson, DashboardBreadcrumb, HomeBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
+import { configJson, DashboardHomeBreadCrumb, RegistryTableBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
 import {
@@ -268,7 +268,7 @@ export default {
       if (this.isRoleStaff) {
         crumbs.unshift(StaffDashboardBreadcrumb) // If staff, set StaffDashboard as home crumb
       } else {
-        crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb) // For non-staff, set Home and Dashboard crumbs
+        crumbs.unshift(DashboardHomeBreadCrumb, RegistryTableBreadCrumb) // For non-staff, set Home and Dashboard crumbs
       }
 
       return crumbs

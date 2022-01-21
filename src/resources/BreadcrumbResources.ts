@@ -1,11 +1,11 @@
 import { BreadcrumbIF } from '@/interfaces'
 
-export const HomeBreadCrumb: BreadcrumbIF = {
+export const DashboardHomeBreadCrumb: BreadcrumbIF = {
   text: 'BC Registries Dashboard',
   href: `${sessionStorage.getItem('BCROS_HOME_URL')}dashboard`
 }
 
-export const DashboardBreadcrumb: BreadcrumbIF = {
+export const RegistryTableBreadCrumb: BreadcrumbIF = {
   text: 'My Business Registry',
   href: `${sessionStorage.getItem('BUSINESSES_URL')}business`
 }
