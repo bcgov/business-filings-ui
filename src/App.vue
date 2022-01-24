@@ -116,7 +116,12 @@ import {
 } from '@/components/dialogs'
 
 // Configuration objects
-import { configJson, DashboardBreadcrumb, HomeBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
+import {
+  configJson,
+  MyBusinessRegistryBreadcrumb,
+  RegistryDashboardBreadcrumb,
+  StaffDashboardBreadcrumb
+} from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
 import {
@@ -266,9 +271,11 @@ export default {
       // Set base crumbs based on user role
       // Staff don't want the home landing page and they can't access the Manage Business Dashboard
       if (this.isRoleStaff) {
-        crumbs.unshift(StaffDashboardBreadcrumb) // If staff, set StaffDashboard as home crumb
+        // If staff, set StaffDashboard as home crumb
+        crumbs.unshift(StaffDashboardBreadcrumb)
       } else {
-        crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb) // For non-staff, set Home and Dashboard crumbs
+        // For non-staff, set Home and Dashboard crumbs
+        crumbs.unshift(RegistryDashboardBreadcrumb, MyBusinessRegistryBreadcrumb)
       }
 
       return crumbs
