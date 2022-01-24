@@ -40,7 +40,8 @@
             "auth-web",
             "business",
             "business-create",
-            "business-edit"
+            "business-edit",
+            "registry"
         ]
     },
     {
