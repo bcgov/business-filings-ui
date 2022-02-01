@@ -93,7 +93,6 @@
 <script lang="ts">
 // Libraries
 import { mapActions, mapGetters } from 'vuex'
-import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import * as Sentry from '@sentry/browser'
 import { updateLdUser } from '@/utils'
 
@@ -173,9 +172,6 @@ export default {
 
       /** Whether to show the alternate loading spinner. */
       showSpinner: false,
-
-      /** Whether the token refresh service is initialized. */
-      tokenService: false,
 
       /** Currently supported entity types in Filings UI. */
       supportedEntityTypes: [
@@ -298,7 +294,6 @@ export default {
     if (!this.isAuthenticated) return
 
     // ...otherwise proceed
-    await this.startTokenService()
     await this.fetchData()
   },
 
@@ -318,36 +313,6 @@ export default {
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
       'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings',
       'setGoodStanding']),
-
-    /** Starts token service to refresh KC token periodically. */
-    async startTokenService (): Promise<void> {
-      // only initialize once
-      // don't start during Jest tests as it messes up the test JWT
-      if (this.tokenService || this.isJestRunning) return Promise.resolve()
-
-      try {
-        console.info('Starting token refresh service...') // eslint-disable-line no-console
-        await KeycloakService.initializeToken()
-        this.tokenService = true
-      } catch (error) {
-        // happens when the refresh token has expired in session storage
-
-        // eslint-disable-next-line no-console
-        console.log('Error initializing token refresher =', error)
-
-        // clear old session variables and reload page to get new tokens
-        this.clearKeycloakSession()
-        location.reload()
-      }
-    },
-
-    /** Clears Keycloak token information from session storage. */
-    clearKeycloakSession (): void {
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
-      sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
-    },
 
     /** Fetches business data / incorp app data. */
     async fetchData (): Promise<void> {
@@ -828,9 +793,9 @@ export default {
     /** Handles Retry click event from dialogs. */
     onClickRetry (hard = false): void {
       if (hard) {
-        // clear KC session variables and hard-reload the page
+        // clear session variables and hard-reload the page
         // to force new login and try again
-        this.clearKeycloakSession()
+        sessionStorage.clear()
         location.reload()
       } else {
         // try to fetch the data again
@@ -863,10 +828,8 @@ export default {
   watch: {
     async '$route' (): Promise<void> {
       // re-fetch all data when we (re)route to the dashboard
-      // - does not fire on initial dashboard load
-      // - fires after successful signin
+      // (does not fire on initial dashboard load)
       if (this.$route.name === Routes.DASHBOARD) {
-        await this.startTokenService()
         await this.fetchData()
       }
     }

@@ -1,27 +1,17 @@
 <template>
-  <sbc-signin @sync-user-profile-ready="onReady()" />
+  <div />
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Vue } from 'vue-property-decorator'
 
-// Components
-import SbcSignin from 'sbc-common-components/src/components/SbcSignin.vue'
-
-// Enums
-import { Routes } from '@/enums'
-
-@Component({
-  components: {
-    SbcSignin
-  }
-})
+@Component({})
 export default class Signin extends Vue {
-  /** Called when Keycloak session is ready. */
-  private async onReady () {
-    // navigate to dashboard
-    this.$router.push({ name: Routes.DASHBOARD })
+  created () {
+    // redirect to BC Registry login page then return to this app
+    const loginUrl = sessionStorage.getItem('REGISTRY_HOME_URL') + 'login'
+    const returnUrl = encodeURIComponent(sessionStorage.getItem('BASE_URL'))
+    window.location.assign(`${loginUrl}?return=${returnUrl}`)
   }
 }
 </script>
