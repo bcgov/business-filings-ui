@@ -24,7 +24,6 @@ import { Debounce } from 'vue-debounce-decorator'
 export default class DetailComment extends Vue {
   /** Array of validations rules for the textarea. */
   private get rules (): Array<Function> {
-    // exclude whitespace in minimum length check
     // include whitespace in maximum length check
     return [
       val => (val && val.trim().length > 0) || 'Detail is required.',
