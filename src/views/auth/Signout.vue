@@ -1,12 +1,9 @@
 <template>
-  <sbc-signout :redirect-url="bcrosHomeUrl" />
+  <SbcSignout :redirect-url="redirectUrl" />
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Vue } from 'vue-property-decorator'
-
-// Components
 import SbcSignout from 'sbc-common-components/src/components/SbcSignout.vue'
 
 @Component({
@@ -15,9 +12,9 @@ import SbcSignout from 'sbc-common-components/src/components/SbcSignout.vue'
   }
 })
 export default class Signout extends Vue {
-  /** The BCROS Home URL string. */
-  get bcrosHomeUrl (): string {
-    return sessionStorage.getItem('BUSINESSES_URL')
+  get redirectUrl (): string {
+    // after signout, redirect to BC Registries login page
+    return sessionStorage.getItem('REGISTRY_HOME_URL') + 'login'
   }
 }
 </script>

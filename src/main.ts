@@ -59,6 +59,13 @@ async function start () {
   const keycloakConfigPath = sessionStorage.getItem('KEYCLOAK_CONFIG_PATH')
   await KeycloakService.setKeycloakConfigUrl(keycloakConfigPath)
 
+  // initialize token service which will do a check-sso to initiate session
+  // don't start during Jest tests as it messes up the test JWT
+  if (process.env.JEST_WORKER_ID === undefined) {
+    console.info('Starting token refresh service...') // eslint-disable-line no-console
+    await KeycloakService.initializeToken()
+  }
+
   // get Vue objects only after we have config
   const router = getVueRouter()
   const store = getVuexStore()
