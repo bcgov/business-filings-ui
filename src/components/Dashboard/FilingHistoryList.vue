@@ -332,6 +332,7 @@
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { navigate } from '@/utils'
 
 // Components and dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
@@ -665,10 +666,10 @@ export default class FilingHistoryList extends Mixins(
             throw new Error('Invalid API response')
           }
 
-          // redirect to Edit web app to correct this IA
-          // NB: no need to clear spinner on redirect
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction?correction-id=${draftCorrectionId}`
-          window.location.assign(correctionUrl) // assume URL is always reachable
+          // navigate to Edit web app to correct this IA
+          // NB: no need to clear spinner
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
+          navigate(correctionUrl)
         } catch (error) {
           // clear spinner on error
           this.$root.$emit('showSpinner', false)

@@ -525,6 +525,7 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import axios from '@/axios-auth'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
+import { navigate } from '@/utils'
 
 // Dialogs and Components
 import { AddCommentDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
@@ -1164,9 +1165,9 @@ export default class TodoList extends Mixins(
 
       case FilingTypes.CORRECTION:
         if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
-          // redirect to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction?correction-id=${item.filingId}`
-          window.location.assign(correctionUrl) // assume URL is always reachable
+          // navigate to Edit web app to correct this Incorporation Application
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+          navigate(correctionUrl)
         } else {
           // resume this Correction Filing
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
@@ -1177,21 +1178,21 @@ export default class TodoList extends Mixins(
         break
 
       case FilingTypes.INCORPORATION_APPLICATION:
-        // redirect to Create web app to resume this Incorporation Application
+        // navigate to Create web app to resume this Incorporation Application
         const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
-        window.location.assign(incorpAppUrl) // assume URL is always reachable
+        navigate(incorpAppUrl)
         break
 
       case FilingTypes.ALTERATION:
-        // redirect to Edit web app to alter this company
-        const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration?alteration-id=${item.filingId}`
-        window.location.assign(alterationUrl) // assume URL is always reachable
+        // navigate to Edit web app to alter this company
+        const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
+        navigate(alterationUrl)
         break
 
       case FilingTypes.DISSOLUTION:
-        // redirect to Create web app to dissolve this company
-        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
-        window.location.assign(dissolutionUrl) // assume URL is always reachable
+        // navigate to Create web app to dissolve this company
+        const dissolutionUrl = `${this.createUrl}define-dissolution/?id=${this.getIdentifier}`
+        navigate(dissolutionUrl)
         break
 
       default:
@@ -1208,7 +1209,7 @@ export default class TodoList extends Mixins(
     const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + item.filingId)
     const payUrl = this.authWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
-    window.location.assign(payUrl) // assume URL is always reachable
+    navigate(payUrl)
     return true
   }
 
@@ -1259,15 +1260,15 @@ export default class TodoList extends Mixins(
       // if we get here, "Delete" was clicked
       if (confirm) {
         // delete without refreshing the dashboard as it triggers an error loading an IA
-        // a redirect will happen taking the user off this page
+        // a navigation will happen, taking the user off this page
         await this.doDeleteDraft(item, false)
 
         if (this.nameRequest) {
-          // redirect to Manage Businesses page
-          window.location.assign(this.manageBusinessesUrl) // assume URL is always reachable
+          // go to Manage Businesses page
+          navigate(this.manageBusinessesUrl)
         } else {
-          // redirect to BCROS home page
-          window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
+          // go to BCROS home page
+          navigate(this.bcrosHomeUrl)
         }
       } else {
         // do nothing

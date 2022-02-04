@@ -13,7 +13,7 @@ import { getVuexStore } from '@/store'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { configJson } from '@/resources/business-config'
+import { ConfigJson } from '@/resources/business-config'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -149,7 +149,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     store.state.entityType = 'CP'
-    store.state.configObject = configJson.find(x => x.entityType === store.state.entityType)
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
     expect(wrapper.find(Certify).exists()).toBe(true)
     const certify: any = wrapper.find(Certify)
 
@@ -672,8 +672,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     store.state.entityType = 'CP'
 
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -730,7 +730,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -742,8 +742,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     store.state.entityType = 'BEN'
 
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -799,7 +799,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -808,7 +808,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -1556,8 +1556,8 @@ describe('Standalone Directors Filing - payment required error', () => {
 
   it('handles error on File and Save', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')

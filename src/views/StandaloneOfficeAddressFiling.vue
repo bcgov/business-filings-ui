@@ -196,6 +196,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { isEmpty } from 'lodash'
+import { navigate } from '@/utils'
 
 // Components and dialogs
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -609,14 +610,14 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
 
       const isPaymentActionRequired = Boolean(this.savedFiling.header.isPaymentActionRequired)
 
-      // if payment action is required, redirect to Pay URL
+      // if payment action is required, navigate to Pay URL
       if (isPaymentActionRequired) {
         const paymentToken = this.savedFiling.header.paymentToken
         const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + this.filingId)
         const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
-        window.location.assign(payUrl)
+        navigate(payUrl)
       } else {
         // route to dashboard with filing id parameter
         this.$router.push({ name: Routes.DASHBOARD, query: { filing_id: this.filingId.toString() } })

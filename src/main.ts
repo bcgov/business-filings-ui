@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { fetchConfig, initLdClient } from '@/utils'
+import { fetchConfig, initLdClient, navigate } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -104,9 +104,6 @@ start().catch(error => {
     alert('There was an error starting this page. (See console for details.)\n' +
       'Please try again later.')
   }
-  // try to redirect to BCROS home page
-  const bcrosHomeUrl = sessionStorage.getItem('BUSINESSES_URL')
-  if (bcrosHomeUrl) {
-    window.location.assign(bcrosHomeUrl) // assume URL is always reachable
-  }
+  // try to navigate to BCROS home page
+  navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })

@@ -334,7 +334,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
   it('redirects to Edit URL to view/alter business info', async () => {
     // init session storage + store
     sessionStorage.clear()
-    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.identifier = 'BC1234567'
     store.state.goodStanding = true
@@ -349,7 +349,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     await Vue.nextTick()
 
     // verify redirection
-    const editUrl = 'business/edit/BC1234567/alteration'
+    const editUrl = 'https://edit.url/BC1234567/alteration'
     expect(window.location.assign).toHaveBeenCalledWith(editUrl)
 
     wrapper.destroy()

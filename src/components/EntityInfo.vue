@@ -179,6 +179,7 @@ import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixi
 import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
+import { navigate } from '@/utils'
 
 @Component({
   components: { StaffComments }
@@ -258,14 +259,14 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /**
    * Emits an event to display NIGS dialog if company is not in good standing.
-   * Otherwise, redirects user to the Edit UI to view or change their company information.
+   * Otherwise, navigates to the Edit UI to view or change company information.
    */
   private promptChangeCompanyInfo (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
       const url = `${this.editUrl}${this.getIdentifier}/alteration`
-      window.location.assign(url) // assume URL is always reachable
+      navigate(url)
     }
   }
 
@@ -280,9 +281,9 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     this.emitConfirmDissolution()
   }
 
-  /** Redirects the user to the Auth UI to update their business profile. */
+  /** Navigates to the Auth UI to update business profile. */
   private editBusinessProfile (): void {
-    window.location.assign(this.businessProfileUrl) // assume URL is always reachable
+    navigate(this.businessProfileUrl)
   }
 
   // Pass prompt downloads business summary event to parent. */

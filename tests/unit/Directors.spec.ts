@@ -7,7 +7,7 @@ import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import Directors from '@/components/common/Directors.vue'
-import { configJson } from '@/resources/business-config'
+import { ConfigJson } from '@/resources/business-config'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -41,7 +41,7 @@ describe('Directors as a COOP', () => {
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
-    store.state.configObject = configJson.find(x => x.entityType === 'CP')
+    store.state.configObject = ConfigJson.find(x => x.entityType === 'CP')
   })
 
   beforeEach(async () => {
@@ -345,7 +345,7 @@ describe('Directors as a COOP (no sync)', () => {
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
-    store.state.configObject = configJson.find(x => x.entityType === 'CP')
+    store.state.configObject = ConfigJson.find(x => x.entityType === 'CP')
   })
 
   beforeEach(async () => {
@@ -582,7 +582,7 @@ describe('Directors as a BCOMP', () => {
     store.state.identifier = 'BC0007291'
     store.state.entityType = 'BEN'
     store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
-    store.state.configObject = configJson.find(x => x.entityType === 'BEN')
+    store.state.configObject = ConfigJson.find(x => x.entityType === 'BEN')
   })
 
   beforeEach(async () => {
@@ -902,7 +902,7 @@ describe('Appoint New Director tests', () => {
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
-    store.state.configObject = configJson.find(x => x.entityType === 'CP')
+    store.state.configObject = ConfigJson.find(x => x.entityType === 'CP')
   })
 
   beforeEach(async () => {

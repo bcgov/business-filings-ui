@@ -23,7 +23,7 @@ export default class DateMixin extends Vue {
       const { headers, ok, statusText } = await fetch(input, init)
       if (!ok) throw new Error(statusText)
       return new Date(headers.get('Date'))
-    } catch (e) {
+    } catch {
       // eslint-disable-next-line no-console
       console.warn('Unable to get server date - using browser date instead')
       // fall back to local date
@@ -76,14 +76,17 @@ export default class DateMixin extends Vue {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    const dateStr = date.toLocaleDateString('en-CA', {
+    // NB: some versions of Node have only en-US locale
+    // so use that and convert results accordingly
+    const dateStr = date.toLocaleDateString('en-US', {
       timeZone: 'America/Vancouver',
       month: 'numeric', // 12
       day: 'numeric', // 31
       year: 'numeric' // 2020
     })
 
-    return dateStr
+    const [ mm, dd, yyyy ] = dateStr.split('/')
+    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`
   }
 
   /**
@@ -116,7 +119,9 @@ export default class DateMixin extends Vue {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    let dateStr = date.toLocaleDateString('en-CA', {
+    // NB: some versions of Node have only en-US locale
+    // so use that and convert results accordingly
+    let dateStr = date.toLocaleDateString('en-US', {
       timeZone: 'America/Vancouver',
       weekday: showWeekday ? 'long' : undefined, // Thursday or nothing
       month: longMonth ? 'long' : 'short', // December or Dec
@@ -139,15 +144,17 @@ export default class DateMixin extends Vue {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
-    let timeStr = date.toLocaleTimeString('en-CA', {
+    // NB: some versions of Node have only en-US locale
+    // so use that and convert results accordingly
+    let timeStr = date.toLocaleTimeString('en-US', {
       timeZone: 'America/Vancouver',
       hour: 'numeric', // 11
       minute: '2-digit', // 00
-      hour12: true // a.m./p.m.
+      hour12: true // AM/PM
     })
 
-    // replace a.m. with am and p.m. with pm
-    timeStr = timeStr.replace('a.m.', 'am').replace('p.m.', 'pm')
+    // replace AM with am and PM with pm
+    timeStr = timeStr.replace('AM', 'am').replace('PM', 'pm')
 
     return timeStr
   }

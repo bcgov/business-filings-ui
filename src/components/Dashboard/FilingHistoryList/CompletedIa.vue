@@ -17,6 +17,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
+import { navigate } from '@/utils'
 
 @Component({})
 export default class CompletedIa extends Vue {
@@ -24,7 +25,7 @@ export default class CompletedIa extends Vue {
 
   private returnToDashboard (): void {
     const manageBusinessesUrl = sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-    window.location.assign(manageBusinessesUrl) // assume URL is always reachable
+    navigate(manageBusinessesUrl)
   }
 }
 </script>

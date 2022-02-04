@@ -12,7 +12,7 @@ export class Business {
   flows: Array<Flow>
 }
 
-export const configJson = [
+export const ConfigJson = [
   {
     entityType: CorpTypeCd.BENEFIT_COMPANY,
     displayName: 'Benefit Company',

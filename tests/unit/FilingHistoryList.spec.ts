@@ -653,7 +653,7 @@ describe('Filing History List - redirections', () => {
 
   it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
-    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.keycloakRoles = ['staff']
     store.state.identifier = 'BC1234567'
@@ -694,7 +694,7 @@ describe('Filing History List - redirections', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/edit/BC1234567/correction?correction-id=110514'
+    const createUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     sessionStorage.removeItem('BUSINESS_ID')
