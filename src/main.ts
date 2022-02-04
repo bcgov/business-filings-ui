@@ -104,6 +104,6 @@ start().catch(error => {
     alert('There was an error starting this page. (See console for details.)\n' +
       'Please try again later.')
   }
-  // try to navigate to BCROS home page
+  // try to navigate to Business Registry home page
   navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })
