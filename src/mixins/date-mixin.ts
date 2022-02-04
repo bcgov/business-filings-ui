@@ -85,6 +85,8 @@ export default class DateMixin extends Vue {
       year: 'numeric' // 2020
     })
 
+    // convert mm/dd/yyyy to yyyy-mm-dd
+    // and make sure month and day are 2 digits (eg, 03)
     const [ mm, dd, yyyy ] = dateStr.split('/')
     return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`
   }
