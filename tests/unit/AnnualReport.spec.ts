@@ -17,7 +17,7 @@ import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import Directors from '@/components/common/Directors.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
-import { configJson } from '@/resources/business-config'
+import { ConfigJson } from '@/resources/business-config'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -59,7 +59,7 @@ describe('Annual Report - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
     store.state.entityType = 'CP'
-    store.state.configObject = configJson.find(x => x.entityType === store.state.entityType)
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
     expect(wrapper.find(Certify).exists()).toBe(true)
     const certify: any = wrapper.find(Certify)
 
@@ -858,8 +858,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
   it('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -918,7 +918,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -927,7 +927,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
   it('updates an existing filing and routes to the dashboard when this is a draft AR and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -1066,8 +1066,8 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
   it('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -1119,7 +1119,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -2089,8 +2089,8 @@ describe('Annual Report - payment required error', () => {
 
   it('handles error on File and Save', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')

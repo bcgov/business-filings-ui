@@ -343,7 +343,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         this.emitWorkingAddresses()
         this.emitModified()
       }
-    } catch (e) {
+    } catch {
       // emit event to parent to display Fetch Error Dialog
       this.$root.$emit('fetch-error-event')
     }

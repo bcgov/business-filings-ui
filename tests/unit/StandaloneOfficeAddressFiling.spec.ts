@@ -11,7 +11,7 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import { Certify, OfficeAddresses } from '@/components/common'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
-import { configJson } from '@/resources/business-config'
+import { ConfigJson } from '@/resources/business-config'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -223,7 +223,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     })
 
     store.state.entityType = 'BEN'
-    store.state.configObject = configJson.find(x => x.entityType === store.state.entityType)
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
 
     expect(wrapper.find(Certify).exists()).toBe(true)
     const certify: any = wrapper.find(Certify)
@@ -669,8 +669,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -717,7 +717,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -726,7 +726,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -949,8 +949,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -997,7 +997,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     await flushPromises()
 
     // verify redirection
-    const payURL = 'auth/makepayment/321/' + encodeURIComponent('business/?filing_id=123')
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1006,7 +1006,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
   it('updates an existing filing and routes to the dashboard when this is a draft filing and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
 
     // create local Vue and mock router
     const localVue = createLocalVue()
@@ -1815,8 +1815,8 @@ describe('Standalone Office Address Filing - payment required error', () => {
 
   it('handles error on File and Save', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
     const get = sinon.stub(axios, 'get')
 
     get.withArgs('businesses/CP0001191/tasks')

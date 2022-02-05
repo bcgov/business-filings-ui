@@ -11,7 +11,8 @@ xdescribe('Fetch Config', () => {
   delete window.location
   window.location = {
     origin: 'http://localhost',
-    pathname: '/business/CP1234567'
+    pathname: '/business/CP1234567',
+    search: '?accountid=2288'
   } as any
 
   it('fetches and loads the configuration correctly', async () => {
@@ -42,6 +43,7 @@ xdescribe('Fetch Config', () => {
     await fetchConfig()
 
     // verify data
+    expect(sessionStorage.getItem('ACCOUNT_ID')).toBe('2288')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
     expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
     expect(sessionStorage.getItem('BUSINESS_CREATE_URL')).toBe('business create url')

@@ -94,7 +94,7 @@
 // Libraries
 import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
-import { updateLdUser } from '@/utils'
+import { updateLdUser, navigate } from '@/utils'
 
 // Components
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
@@ -116,10 +116,10 @@ import {
 
 // Configuration objects
 import {
-  configJson,
-  MyBusinessRegistryBreadcrumb,
-  RegistryDashboardBreadcrumb,
-  StaffDashboardBreadcrumb
+  ConfigJson,
+  getMyBusinessRegistryBreadcrumb,
+  getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb
 } from '@/resources'
 
 // Mixins, Interfaces, Enums and Constants
@@ -268,10 +268,10 @@ export default {
       // Staff don't want the home landing page and they can't access the Manage Business Dashboard
       if (this.isRoleStaff) {
         // If staff, set StaffDashboard as home crumb
-        crumbs.unshift(StaffDashboardBreadcrumb)
+        crumbs.unshift(getStaffDashboardBreadcrumb())
       } else {
         // For non-staff, set Home and Dashboard crumbs
-        crumbs.unshift(RegistryDashboardBreadcrumb, MyBusinessRegistryBreadcrumb)
+        crumbs.unshift(getRegistryDashboardBreadcrumb(), getMyBusinessRegistryBreadcrumb())
       }
 
       return crumbs
@@ -767,11 +767,11 @@ export default {
 
     /** Stores config object matching the specified entity type. */
     storeConfigObject (entityType: string): void {
-      const configObject = configJson.find(x => x.entityType === entityType)
+      const configObject = ConfigJson.find(x => x.entityType === entityType)
       this.setConfigObject(configObject)
     },
 
-    /** Creates a draft filing and redirects the user to the Create UI to start a company dissolution filing. */
+    /** Creates a draft filing and navigates to the Create UI to file a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
       const draftDissolution = await this.createFiling(this.getIdentifier, dissolutionFiling, true)
@@ -781,13 +781,13 @@ export default {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
-      window.location.assign(url) // assume URL is always reachable
+      const url = `${this.createUrl}define-dissolution/?id=${this.getIdentifier}`
+      navigate(url)
     },
 
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
-      window.location.assign(this.bcrosHomeUrl) // assume URL is always reachable
+      navigate(this.bcrosHomeUrl)
     },
 
     /** Handles Retry click event from dialogs. */

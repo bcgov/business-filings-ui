@@ -853,7 +853,7 @@ export default class Directors extends Mixins(
         this.allDirectors = cloneDeep(this.original)
         this.emitWorkingDirectors()
       }
-    } catch (e) {
+    } catch {
       // emit event to parent to display Fetch Error Dialog
       this.$root.$emit('fetch-error-event')
     }

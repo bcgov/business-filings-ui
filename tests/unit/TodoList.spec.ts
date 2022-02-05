@@ -1709,8 +1709,8 @@ describe('TodoList - Click Tests', () => {
 
   it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     // init store
     store.state.tasks = [
@@ -1752,7 +1752,7 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/654/' + encodeURIComponent('business/?filing_id=456')
+    const payURL = 'https://auth.web.url/makepayment/654/' + encodeURIComponent('https://base.url/?filing_id=456')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1760,8 +1760,8 @@ describe('TodoList - Click Tests', () => {
 
   it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     // init store
     store.state.tasks = [
@@ -1801,7 +1801,7 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/987/' + encodeURIComponent('business/?filing_id=789')
+    const payURL = 'https://auth.web.url/makepayment/987/' + encodeURIComponent('https://base.url/?filing_id=789')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -1809,8 +1809,8 @@ describe('TodoList - Click Tests', () => {
 
   it('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     // init store
     store.state.tasks = [
@@ -1851,7 +1851,7 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/987/' + encodeURIComponent('business/?filing_id=789')
+    const payURL = 'https://auth.web.url/makepayment/987/' + encodeURIComponent('https://base.url/?filing_id=789')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -2065,8 +2065,8 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
   it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     // init store
     store.state.tasks = [
@@ -2108,7 +2108,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/654/' + encodeURIComponent('business/?filing_id=456')
+    const payURL = 'https://auth.web.url/makepayment/654/' + encodeURIComponent('https://base.url/?filing_id=456')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -2116,8 +2116,8 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
   it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // set necessary session variables
-    sessionStorage.setItem('BASE_URL', `${process.env.VUE_APP_PATH}/`)
-    sessionStorage.setItem('AUTH_WEB_URL', 'auth/')
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
 
     // init store
     store.state.tasks = [
@@ -2157,7 +2157,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     await button.click()
 
     // verify redirection
-    const payURL = 'auth/makepayment/987/' + encodeURIComponent('business/?filing_id=789')
+    const payURL = 'https://auth.web.url/makepayment/987/' + encodeURIComponent('https://base.url/?filing_id=789')
     expect(window.location.assign).toHaveBeenCalledWith(payURL)
 
     wrapper.destroy()
@@ -2170,7 +2170,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
   beforeAll(() => {
     // init store
     sessionStorage.clear()
-    sessionStorage.setItem('CREATE_URL', `${process.env.VUE_APP_PATH}/create/`)
+    sessionStorage.setItem('CREATE_URL', 'https://create.url/')
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityName = 'My Business Inc'
     store.state.entityType = 'BEN'
@@ -2228,7 +2228,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/create/?id=T123456789'
+    const createUrl = 'https://create.url/?id=T123456789'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
@@ -2273,7 +2273,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
-    const createUrl = 'business/create/?id=T123456789'
+    const createUrl = 'https://create.url/?id=T123456789'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl)
 
     wrapper.destroy()
@@ -2296,7 +2296,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
   it('redirects to Edit URL to resume a draft IA correction', async () => {
     // init store
     sessionStorage.clear()
-    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.identifier = 'BC1234567'
     // init draft Correction filing task
@@ -2332,7 +2332,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     await Vue.nextTick()
 
     // verify redirection
-    const editUrl = 'business/edit/BC1234567/correction?correction-id=123'
+    const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=123'
     expect(window.location.assign).toHaveBeenCalledWith(editUrl)
 
     wrapper.destroy()
@@ -2355,7 +2355,7 @@ describe('TodoList - Click Tests - Alterations', () => {
   it('redirects to Edit URL to resume a draft alteration', async () => {
     // init store
     sessionStorage.clear()
-    sessionStorage.setItem('EDIT_URL', `${process.env.VUE_APP_PATH}/edit/`)
+    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.identifier = 'BC1234567'
     store.state.goodStanding = true
@@ -2391,7 +2391,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     await Vue.nextTick()
 
     // verify redirection
-    const editUrl = 'business/edit/BC1234567/alteration?alteration-id=123'
+    const editUrl = 'https://edit.url/BC1234567/alteration/?alteration-id=123'
     expect(window.location.assign).toHaveBeenCalledWith(editUrl)
 
     wrapper.destroy()
