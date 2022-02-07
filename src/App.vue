@@ -527,27 +527,37 @@ export default {
       this.setComplianceWarnings(Array.isArray(business.complianceWarnings) ? business.complianceWarnings : [])
       this.setGoodStanding(business.goodStanding)
 
-      if (business.state === EntityState.HISTORICAL && business.stateFiling) {
-        // fetch the filing that changed the business state
-        const stateFiling = await this.fetchFiling(business.stateFiling)
-
-        // parse it (specific to dissolution filing atm)
-        const dissolutionType = stateFiling?.dissolution?.dissolutionType as DissolutionTypes
-        const effectiveDate = stateFiling?.header?.effectiveDate as string
-
-        // create the reason text to display in the info header
-        if (dissolutionType && effectiveDate) {
-          const name = this.dissolutionTypeToName(dissolutionType)
-          const enDash = '–' // ALT + 0150
-          const date: string = this.apiToPacificDateTime(effectiveDate, true)
-          this.setReasonText(`${name} ${enDash} ${date}`)
-        } else {
-          console.log('ERROR - invalid dissolution filing =', stateFiling) // eslint-disable-line no-console
-        }
+      if (business.state === EntityState.HISTORICAL) {
+        await this.parseStateFiling(business.stateFiling) // will throw on error
       }
 
       // store config object based on current entity type
       this.storeConfigObject(business.legalType)
+    },
+
+    /** Fetches and parses the filing that changed the business state. */
+    async parseStateFiling (stateFiling: string): Promise<void> {
+      const filing = stateFiling && await this.fetchFiling(stateFiling)
+      const effectiveDate = filing?.header?.effectiveDate as string
+      const filingType = filing?.header?.name as FilingTypes
+
+      if (!filing || !effectiveDate || !filingType) {
+        throw new Error('Invalid state filing')
+      }
+
+      // create reason text to display in the info header
+      let name: string
+      if (filingType === FilingTypes.DISSOLUTION) {
+        name = this.dissolutionTypeToName(
+          (filing?.dissolution?.dissolutionType as DissolutionTypes) ||
+          DissolutionTypes.UNKNOWN
+        )
+      } else {
+        name = this.filingTypeToName(filingType)
+      }
+      const enDash = '–' // ALT + 0150
+      const date = this.apiToPacificDateTime(effectiveDate, true) as string
+      this.setReasonText(`${name} ${enDash} ${date}`)
     },
 
     /** Verifies and stores an IA's data. */

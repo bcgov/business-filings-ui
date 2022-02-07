@@ -193,11 +193,14 @@ export default class EnumMixin extends Vue {
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER
       case FilingTypes.DISSOLUTION: return FilingNames.DISSOLUTION
+      case FilingTypes.DISSOLVED: return FilingNames.DISSOLVED
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
-      case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-      case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
+      case FilingTypes.INVOLUNTARY_DISSOLUTION: return FilingNames.INVOLUNTARY_DISSOLUTION
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
+      case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
+      case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
+      case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)
@@ -221,7 +224,8 @@ export default class EnumMixin extends Vue {
   dissolutionTypeToName (type: DissolutionTypes): string {
     switch (type) {
       case DissolutionTypes.VOLUNTARY: return DissolutionNames.VOLUNTARY
-      default: return null
     }
+    // fallback for unknown filings
+    return this.camelCaseToWords(type)
   }
 }

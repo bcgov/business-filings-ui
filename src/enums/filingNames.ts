@@ -9,9 +9,12 @@ export enum FilingNames {
   CORRECTION = 'Correction',
   COURT_ORDER = 'Court Order',
   DISSOLUTION = 'Dissolution',
+  DISSOLVED = 'Involuntary Dissolution',
   INCORPORATION_APPLICATION = 'Incorporation Application',
+  INVOLUNTARY_DISSOLUTION = 'Involuntary Dissolution',
+  REGISTRARS_NOTATION = 'Registrar\'s Notation',
+  REGISTRARS_ORDER = 'Registrar\'s Order',
   SPECIAL_RESOLUTION = 'Special Resolution',
   TRANSITION_APPLICATION = 'Transition Application',
-  REGISTRARS_NOTATION = 'Registrar\'s Notation',
-  REGISTRARS_ORDER = 'Registrar\'s Order'
+  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution'
 }

@@ -8,10 +8,14 @@ export enum FilingTypes {
   CORRECTION = 'correction',
   COURT_ORDER = 'courtOrder',
   DISSOLUTION = 'dissolution',
+  DISSOLVED = 'dissolved',
   INCORPORATION_APPLICATION = 'incorporationApplication',
-  SPECIAL_RESOLUTION = 'specialResolution',
-  TRANSITION = 'transition',
+  INVOLUNTARY_DISSOLUTION = 'Involuntary Dissolution',
   REGISTRARS_NOTATION = 'registrarsNotation',
   REGISTRARS_ORDER = 'registrarsOrder',
-  UNKNOWN = 'unknown'
+  SPECIAL_RESOLUTION = 'specialResolution',
+  TRANSITION = 'transition',
+  VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
+
+  UNKNOWN = 'unknown' // for fallback
 }
