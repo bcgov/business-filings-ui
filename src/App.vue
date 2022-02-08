@@ -415,14 +415,7 @@ export default {
       const draft = await this.fetchDraftApp(this.tempRegNumber)
 
       // Handle Draft filings
-      switch (draft.filing?.header?.name) {
-        case FilingTypes.INCORPORATION_APPLICATION:
-          this.storeIncorpApp(draft)
-          break
-        case FilingTypes.REGISTRATION:
-          this.storeIncorpApp(draft)
-          break
-      }
+      this.storeDraftApp(draft)
 
       // if the draft has a NR, load it
       if (this.localNrNumber) {
@@ -571,8 +564,8 @@ export default {
       this.setReasonText(`${name} ${enDash} ${date}`)
     },
 
-    /** Verifies and stores an IA's data. */
-    storeIncorpApp (application: any): void {
+    /** Verifies and stores a draft applications data. */
+    storeDraftApp (application: any): void {
       const filing = application?.filing
       const filingName = filing.header?.name as FilingTypes
       if (!filing || !filing.business || !filing.header || !filingName) {
@@ -620,7 +613,7 @@ export default {
         case FilingStatus.PENDING:
           // this is a draft application
           this.setEntityStatus(EntityStatus.DRAFT_APP)
-          this.storeDraftApp(application)
+          this.storeDraftAppTask(application)
           break
 
         case FilingStatus.COMPLETED:
@@ -636,7 +629,7 @@ export default {
     },
 
     /** Stores draft application as a task in the Todo List. */
-    storeDraftApp (application: any): void {
+    storeDraftAppTask (application: any): void {
       const filing = application.filing as TaskTodoIF
       const taskItem: ApiTaskIF = {
         enabled: true,
@@ -677,19 +670,19 @@ export default {
         businessIdentifier: business.identifier,
         commentsCount: filedApplication.commentsCount,
         commentsLink: filedApplication.commentsLink,
-        displayName: this.filingTypeToName(application),
+        displayName: this.filingTypeToName(header.name),
         documentsLink: filedApplication.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
         filingLink: filedApplication.filingLink,
         isFutureEffective: header.isFutureEffective,
-        name: application as FilingTypes,
+        name: header.name as FilingTypes,
         status: header.status,
         submittedDate: this.apiToUtcString(header.date),
         submitter: header.submitter,
         data: {
           applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
-          legalFilings: [application]
+          legalFilings: [header.name as FilingTypes]
         }
       }
       this.setFilings([filingItem])

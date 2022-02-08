@@ -219,6 +219,7 @@ export default class EnumMixin extends Vue {
    * @returns the converted string
    */
   camelCaseToWords (s: string): string {
+    // console.log(s)
     return s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
   }
 
