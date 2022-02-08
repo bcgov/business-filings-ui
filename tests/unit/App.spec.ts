@@ -1649,7 +1649,8 @@ describe('App as an historical business', () => {
               dissolutionType: 'voluntary'
             },
             header: {
-              effectiveDate: '2021-12-06T20:05:35.168290+00:00'
+              effectiveDate: '2021-12-06T20:05:35.168290+00:00',
+              name: 'dissolution'
             }
           }
         }

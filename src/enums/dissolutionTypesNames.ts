@@ -18,7 +18,9 @@ export enum DissolutionTypes {
   // D2T = 'DISS_2_TRANS',
   // HDT = 'DISS_FAIL_TRANS',
   // HDP = 'DISS_LLP_REG',
-  // HDB = 'DISS_CONVERTED'
+  // HDB = 'DISS_CONVERTED',
+
+  UNKNOWN = 'unknown' // for fallback
 }
 
 export enum DissolutionNames {
