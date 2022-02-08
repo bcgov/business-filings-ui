@@ -913,7 +913,7 @@ describe('App as a Draft IA with approved NR', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
-    expect(vm.$store.getters.isIncorpAppTask).toBe(true)
+    expect(vm.$store.getters.isAppTask).toBe(true)
 
     // verify loaded task
     expect(vm.$store.state.tasks.length).toBe(1)
@@ -1371,7 +1371,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
-    expect(vm.$store.getters.isIncorpAppFiling).toBe(true)
+    expect(vm.$store.getters.isAppFiling).toBe(true)
 
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
@@ -1522,7 +1522,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
     expect(vm.$store.getters.getEntityType).toBe('BEN')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
-    expect(vm.$store.getters.isIncorpAppFiling).toBe(true)
+    expect(vm.$store.getters.isAppFiling).toBe(true)
 
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')

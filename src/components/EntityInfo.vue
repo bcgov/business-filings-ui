@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins } from 'vue-property-decorator'
-import { State, Getter } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
@@ -246,7 +246,11 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The NR description. */
   private get nrDescription (): string {
-    return `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.INCORPORATION_APPLICATION}`
+    const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getEntityType)
+      ? FilingNames.REGISTRATION
+      : FilingNames.INCORPORATION_APPLICATION
+
+    return `${this.getCorpTypeDescription(this.getEntityType)} ${filingName}`
   }
 
   /** The business phone number and optional extension. */

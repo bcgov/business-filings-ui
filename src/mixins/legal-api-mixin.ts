@@ -63,13 +63,13 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
   }
 
   /**
-   * Fetches the Incorp App filing.
+   * Fetches the draft Application filing.
    * This is a unique request using the temp reg number.
    * This assumes a single filing is returned.
    * @param tempRegNumber the temporary registration number
    * @returns a promise to return the filing from the response
    */
-  async fetchIncorpApp (tempRegNumber: string): Promise<any> {
+  async fetchDraftApp (tempRegNumber: string): Promise<any> {
     const url = `businesses/${tempRegNumber}/filings`
     return axios.get(url)
       // workaround because data is at "response.data.data"

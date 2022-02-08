@@ -94,7 +94,7 @@
 // Libraries
 import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
-import { updateLdUser, navigate } from '@/utils'
+import { navigate, updateLdUser } from '@/utils'
 
 // Components
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
@@ -179,7 +179,9 @@ export default {
         CorpTypeCd.BC_COMPANY,
         CorpTypeCd.BC_ULC_COMPANY,
         CorpTypeCd.BC_CCC,
-        CorpTypeCd.COOP
+        CorpTypeCd.COOP,
+        CorpTypeCd.SOLE_PROP,
+        CorpTypeCd.PARTNERSHIP
       ]
     }
   },
@@ -373,10 +375,10 @@ export default {
         }
       }
 
-      // is this a draft incorp app entity?
+      // is this a draft app entity?
       if (this.tempRegNumber) {
         try {
-          await this.fetchIncorpAppData() // throws on error
+          await this.fetchDraftAppData() // throws on error
           this.dataLoaded = true
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
@@ -407,16 +409,25 @@ export default {
     },
 
     /** Fetches and stores the incorp app data. */
-    async fetchIncorpAppData (): Promise<void> {
+    async fetchDraftAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      const ia = await this.fetchIncorpApp(this.tempRegNumber)
-      this.storeIncorpApp(ia)
+      const draft = await this.fetchDraftApp(this.tempRegNumber)
 
-      // if the IA has a NR, load it
+      // Handle Draft filings
+      switch (draft.filing?.header?.name) {
+        case FilingTypes.INCORPORATION_APPLICATION:
+          this.storeIncorpApp(draft)
+          break
+        case FilingTypes.REGISTRATION:
+          this.storeIncorpApp(draft)
+          break
+      }
+
+      // if the draft has a NR, load it
       if (this.localNrNumber) {
         const nr = await this.fetchNameRequest(this.localNrNumber)
-        this.storeNrData(nr, ia)
+        this.storeNrData(nr, draft)
       }
     },
 
@@ -561,36 +572,36 @@ export default {
     },
 
     /** Verifies and stores an IA's data. */
-    storeIncorpApp (ia: any): void {
-      const filing = ia?.filing
-      if (!filing || !filing.business || !filing.header || !filing.incorporationApplication) {
-        throw new Error('Invalid IA filing')
+    storeIncorpApp (application: any): void {
+      const filing = application?.filing
+      const filingName = filing.header?.name as FilingTypes
+      if (!filing || !filing.business || !filing.header || !filingName) {
+        throw new Error(`Invalid ${filingName} filing`)
       }
 
       const identifier = filing.business.identifier as string
       if (!identifier) {
-        throw new Error('Invalid IA filing - business identifier')
+        throw new Error(`Invalid ${filingName} filing - business identifier`)
       }
 
-      const name = filing.header.name as FilingTypes
-      if (name !== FilingTypes.INCORPORATION_APPLICATION) {
-        throw new Error('Invalid IA filing - filing name')
+      if (![FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(filingName)) {
+        throw new Error(`Invalid ${filingName} filing - filing name`)
       }
 
       const status = filing.header.status as FilingStatus
       if (!status) {
-        throw new Error('Invalid IA filing - filing status')
+        throw new Error(`Invalid ${filingName} filing - filing status`)
       }
 
-      const nameRequest = filing.incorporationApplication.nameRequest
+      const nameRequest = filing[filing.header.name].nameRequest
       if (!nameRequest) {
-        throw new Error('Invalid IA filing - Name Request object')
+        throw new Error(`Invalid ${filingName} filing - Name Request object`)
       }
 
       // verify that this is a supported entity type
       const legalType = nameRequest.legalType as CorpTypeCd
       if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
-        throw new Error('Invalid IA filing - legal type')
+        throw new Error(`Invalid ${filingName} filing - legal type`)
       }
 
       // store business info
@@ -607,26 +618,26 @@ export default {
       switch (status) {
         case FilingStatus.DRAFT:
         case FilingStatus.PENDING:
-          // this is a draft IA
-          this.setEntityStatus(EntityStatus.DRAFT_INCORP_APP)
-          this.storeDraftIa(ia)
+          // this is a draft application
+          this.setEntityStatus(EntityStatus.DRAFT_APP)
+          this.storeDraftApp(application)
           break
 
         case FilingStatus.COMPLETED:
         case FilingStatus.PAID:
-          // this is a filed IA
-          this.setEntityStatus(EntityStatus.FILED_INCORP_APP)
-          this.storeFiledIa(ia)
+          // this is a filed application
+          this.setEntityStatus(EntityStatus.FILED_APP)
+          this.storeFiledApp(application)
           break
 
         default:
-          throw new Error('Invalid IA filing - filing status')
+          throw new Error(`Invalid ${filingName} filing - filing status`)
       }
     },
 
-    /** Stores draft IA as a task in the Todo List. */
-    storeDraftIa (ia: any): void {
-      const filing = ia.filing as TaskTodoIF
+    /** Stores draft application as a task in the Todo List. */
+    storeDraftApp (application: any): void {
+      const filing = application.filing as TaskTodoIF
       const taskItem: ApiTaskIF = {
         enabled: true,
         order: 1,
@@ -635,19 +646,19 @@ export default {
       this.setTasks([taskItem])
     },
 
-    /** Stores filed IA as a filing in the Filing History List. */
-    storeFiledIa (ia: any): void {
-      const filing = ia.filing as TaskTodoIF
-      // NB: these were already validated in storeIncorpApp()
+    /** Stores filed application as a filing in the Filing History List. */
+    storeFiledApp (filedApplication: any): void {
+      const filing = filedApplication.filing as TaskTodoIF
+      // NB: these were already validated in storeDraftApp()
       const business = filing.business
       const header = filing.header
-      const incorporationApplication = filing.incorporationApplication
+      const application = filing[filing.header.name]
 
       // set addresses
-      this.storeAddresses({ data: incorporationApplication.offices || [] })
+      this.storeAddresses({ data: application.offices || [] })
 
       // Format party roles from IA
-      incorporationApplication.parties.forEach( // Check each party for roles
+      application.parties.forEach( // Check each party for roles
         party => party.roles?.forEach( // Check each role for roleType
           (role, index) => {
             if (role.roleType) { // If roleType exists, assign it to parent role index
@@ -658,27 +669,27 @@ export default {
       )
 
       // Set parties
-      this.storeParties({ data: { parties: incorporationApplication.parties || [] } })
+      this.storeParties({ data: { parties: application.parties || [] } })
 
       // add this as a filing (for Filing History List)
       const filingItem: ApiFilingIF = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: business.identifier,
-        commentsCount: ia.commentsCount,
-        commentsLink: ia.commentsLink,
-        displayName: this.filingTypeToName(FilingTypes.INCORPORATION_APPLICATION),
-        documentsLink: ia.documentsLink,
+        commentsCount: filedApplication.commentsCount,
+        commentsLink: filedApplication.commentsLink,
+        displayName: this.filingTypeToName(application),
+        documentsLink: filedApplication.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
-        filingLink: ia.filingLink,
+        filingLink: filedApplication.filingLink,
         isFutureEffective: header.isFutureEffective,
-        name: FilingTypes.INCORPORATION_APPLICATION,
+        name: application as FilingTypes,
         status: header.status,
         submittedDate: this.apiToUtcString(header.date),
         submitter: header.submitter,
         data: {
           applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
-          legalFilings: [FilingTypes.INCORPORATION_APPLICATION]
+          legalFilings: [application]
         }
       }
       this.setFilings([filingItem])
