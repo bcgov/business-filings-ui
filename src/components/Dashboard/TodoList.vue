@@ -349,7 +349,7 @@
                       <span v-if="nameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
-                    <template v-if="isTypeRegistrationApplication(item) && item.isEmptyFiling">
+                    <template v-else-if="isTypeRegistrationApplication(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
                     </template>
                     <span v-else>Resume</span>
@@ -1137,7 +1137,7 @@ export default class TodoList extends Mixins(
         ? `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION} - ${this.getEntityName}`
         : `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
 
-      // set subtitle only if DRAFT IA
+      // set subtitle only if DRAFT
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
         if (this.nameRequest) {

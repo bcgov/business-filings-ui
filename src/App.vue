@@ -408,7 +408,7 @@ export default {
       this.storeParties(data[5])
     },
 
-    /** Fetches and stores the incorp app data. */
+    /** Fetches and stores the draft application data. */
     async fetchDraftAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
@@ -586,7 +586,7 @@ export default {
         throw new Error(`Invalid ${filingName} filing - filing status`)
       }
 
-      const nameRequest = filing[filing.header.name].nameRequest
+      const nameRequest = filing[filingName].nameRequest
       if (!nameRequest) {
         throw new Error(`Invalid ${filingName} filing - Name Request object`)
       }
