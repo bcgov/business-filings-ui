@@ -695,7 +695,7 @@ export default {
         throw new Error('Invalid NR data')
       }
 
-      // verify that NR type matches entity type from IA
+      // verify that NR type matches entity type from application
       if (nr.legalType !== this.getEntityType) {
         this.nameRequestInvalidDialog = true
         throw new Error('Invalid NR request type')
