@@ -1865,10 +1865,7 @@ describe('App as a Draft Registration with approved NR', () => {
       localVue,
       router,
       store,
-      vuetify,
-      destroyed () {
-        get()
-      }
+      vuetify
     })
     vm = wrapper.vm
 
@@ -2005,10 +2002,7 @@ describe('App as a COMPLETED Registration Application', () => {
       localVue,
       router,
       store,
-      vuetify,
-      destroyed () {
-        get()
-      }
+      vuetify
     })
     vm = wrapper.vm
 
