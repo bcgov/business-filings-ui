@@ -117,6 +117,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
+  /** Returns True if filing is a Registration Application. */
+  isTypeRegistrationApplication (item: any): boolean {
+    return (item.name === FilingTypes.REGISTRATION)
+  }
+
   /** Returns True if filing is a Transition. */
   isTypeTransition (item: any): boolean {
     return (item.name === FilingTypes.TRANSITION)
@@ -201,6 +206,7 @@ export default class EnumMixin extends Vue {
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
+      case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)

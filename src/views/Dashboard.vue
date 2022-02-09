@@ -89,8 +89,8 @@
               </header>
               <v-card flat>
                 <AddressListSm
-                  :showCompleteYourFilingMessage="isIncorpAppTask"
-                  :showGrayedOut="isIncorpAppFiling"
+                  :showCompleteYourFilingMessage="isAppTask"
+                  :showGrayedOut="isAppFiling"
                 />
               </v-card>
             </section>
@@ -111,8 +111,8 @@
               <div class="scrollable-container" style="max-height: 49rem">
                 <v-card flat>
                   <DirectorListSm
-                    :showCompleteYourFilingMessage="isIncorpAppTask"
-                    :showGrayedOut="isIncorpAppFiling"
+                    :showCompleteYourFilingMessage="isAppTask"
+                    :showGrayedOut="isAppFiling"
                   />
                 </v-card>
               </div>
@@ -173,7 +173,7 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isIncorpAppTask', 'isIncorpAppFiling', 'getCustodians']),
+      'isAppTask', 'isAppFiling', 'getCustodians']),
 
     /** The Business ID string. */
     businessId (): string {

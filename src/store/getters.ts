@@ -112,14 +112,14 @@ export default {
     return (state.complianceWarnings.length > 0)
   },
 
-  /** Is True if this is a Draft Incorporation Application. */
-  isIncorpAppTask (state: StateIF): boolean {
-    return (state.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+  /** Is True if this is a Draft Application. */
+  isAppTask (state: StateIF): boolean {
+    return (state.entityStatus === EntityStatus.DRAFT_APP)
   },
 
-  /** Is True if this is a Paid or Completed Incorporation Application. */
-  isIncorpAppFiling (state: StateIF): boolean {
-    return (state.entityStatus === EntityStatus.FILED_INCORP_APP)
+  /** Is True if this is a Paid or Completed Application. */
+  isAppFiling (state: StateIF): boolean {
+    return (state.entityStatus === EntityStatus.FILED_APP)
   },
 
   /** Is True if business is active. */

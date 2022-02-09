@@ -132,7 +132,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise((resolve) => resolve({ data: IA })))
 
     // call method
-    const ia = await vm.fetchIncorpApp('T1234567')
+    const ia = await vm.fetchDraftApp('T1234567')
 
     // verify data
     expect(ia).toEqual(IA)

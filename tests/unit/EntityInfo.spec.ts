@@ -49,7 +49,7 @@ describe('EntityInfo - data', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
     store.state.entityName = 'My Named Company'
-    store.state.entityStatus = 'DRAFT_INCORP_APP'
+    store.state.entityStatus = 'DRAFT_APP'
     store.state.entityType = 'BEN'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
@@ -71,7 +71,7 @@ describe('EntityInfo - data', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
     store.state.entityName = null
-    store.state.entityStatus = 'DRAFT_INCORP_APP'
+    store.state.entityStatus = 'DRAFT_APP'
     store.state.entityType = 'BEN'
     store.state.nameRequest = null
 
@@ -93,7 +93,7 @@ describe('EntityInfo - data', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
     store.state.entityName = 'My Future Company'
-    store.state.entityStatus = 'FILED_INCORP_APP'
+    store.state.entityStatus = 'FILED_APP'
     store.state.entityType = 'BEN'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
@@ -225,13 +225,13 @@ describe('EntityInfo - company info button and tooltip', () => {
     { // 5
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
-      entityStatus: 'DRAFT_INCORP_APP',
+      entityStatus: 'DRAFT_APP',
       buttonExists: false
     },
     { // 6
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
-      entityStatus: 'FILED_INCORP_APP',
+      entityStatus: 'FILED_APP',
       buttonExists: false
     },
     { // 7

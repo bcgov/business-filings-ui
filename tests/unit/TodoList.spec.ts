@@ -2212,7 +2212,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
       }
     ]
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
-    store.state.entityStatus = 'DRAFT_INCORP_APP'
+    store.state.entityStatus = 'DRAFT_APP'
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
@@ -2257,7 +2257,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
       }
     ]
     store.state.nameRequest = null
-    store.state.entityStatus = 'DRAFT_INCORP_APP'
+    store.state.entityStatus = 'DRAFT_APP'
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
@@ -2565,7 +2565,7 @@ describe('TodoList - Delete Draft', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.identifier = 'T123456789'
     store.state.entityType = 'BEN'
-    store.state.entityStatus = 'DRAFT_INCORP_APP'
+    store.state.entityStatus = 'DRAFT_APP'
     store.state.tasks = [
       {
         'task': {
@@ -2590,7 +2590,7 @@ describe('TodoList - Delete Draft', () => {
     wrapper.find('#menu-activator').trigger('click')
     await flushPromises()
 
-    wrapper.find('#btn-delete-incorporation').trigger('click')
+    wrapper.find('#btn-delete-application').trigger('click')
     await flushPromises()
 
     // verify confirmation popup is showing

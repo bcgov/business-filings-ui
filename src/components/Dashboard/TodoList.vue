@@ -349,6 +349,9 @@
                       <span v-if="nameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
+                    <template v-else-if="isTypeRegistrationApplication(item) && item.isEmptyFiling">
+                      <span>Register using this NR</span>
+                    </template>
                     <span v-else>Resume</span>
                   </v-btn>
                   <!-- dropdown menu -->
@@ -375,11 +378,11 @@
 
                       <v-list-item
                         v-if="tempRegNumber"
-                        id="btn-delete-incorporation"
-                        @click="confirmDeleteIncorporation(item)"
+                        id="btn-delete-application"
+                        @click="confirmDeleteApplication(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete Incorporation Application</v-list-item-title>
+                        <v-list-item-title>Delete {{filingTypeToName(item.name)}}</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -840,6 +843,9 @@ export default class TodoList extends Mixins(
         case FilingTypes.DISSOLUTION:
           await this.loadDissolution(task)
           break
+        case FilingTypes.REGISTRATION:
+          await this.loadRegistration(task)
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in filing header =', header)
@@ -1119,6 +1125,57 @@ export default class TodoList extends Mixins(
     }
   }
 
+  private async loadRegistration (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const business = filing.business
+    const header = filing.header
+    const registration = filing.registration
+
+    // NB: don't check "registration" as it may be empty
+    if (business && header) {
+      const title = this.nameRequest
+        ? `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION} - ${this.getEntityName}`
+        : `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
+
+      // set subtitle only if DRAFT
+      let subtitle: string = null
+      if (this.isStatusDraft(header)) {
+        if (this.nameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+        } else {
+          subtitle = 'DRAFT'
+        }
+      }
+
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+
+      const draft = registration // may be undefined
+      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties || draft?.shareClasses)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.REGISTRATION,
+        filingId: header.filingId,
+        title,
+        subtitle,
+        draftTitle: FilingNames.REGISTRATION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.nameRequest,
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
   /** Files a new filing (todo). */
   private doFileNow (item: TodoItemIF): void {
     switch (item.name) {
@@ -1183,6 +1240,12 @@ export default class TodoList extends Mixins(
         navigate(incorpAppUrl)
         break
 
+      case FilingTypes.REGISTRATION:
+        // navigate to Create web app to resume this registration
+        const registrationAppUrl = `${this.createUrl}define-registration?id=${this.tempRegNumber}`
+        navigate(registrationAppUrl)
+        break
+
       case FilingTypes.ALTERATION:
         // navigate to Edit web app to alter this company
         const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
@@ -1237,7 +1300,7 @@ export default class TodoList extends Mixins(
     })
   }
 
-  private confirmDeleteIncorporation (item: TodoItemIF): void {
+  private confirmDeleteApplication (item: TodoItemIF): void {
     const line1 = `Deleting this ${item.draftTitle} will remove this application and all information ` +
       'associated with this application.'
     const line2 = this.nameRequest
@@ -1246,7 +1309,7 @@ export default class TodoList extends Mixins(
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
-      'Delete Incorporation Application?',
+      `Delete ${this.filingTypeToName(item.name)}?`,
       `${line1}\n\n${line2}`,
       {
         width: '40rem',
