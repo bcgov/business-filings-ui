@@ -9,7 +9,8 @@ declare const window: any
  */
 const defaultFlagSet: LDFlagSet = {
   'download-summary-enabled': false,
-  'supported-dissolution-entities': []
+  'supported-dissolution-entities': [],
+  'supported-business-summary-entities': []
 }
 
 /**

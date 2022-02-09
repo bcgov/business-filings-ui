@@ -90,16 +90,20 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether Download Business Summary is allowed', () => {
     const tests = [
       // no conditions:
-      { businessId: null, flag: false, expected: false },
+      { businessId: null, entityType: null, flag: 'CP BEN', expected: false },
       // only first condition:
-      { businessId: 'CP1234567', flag: false, expected: false },
-      // only second condition:
-      { businessId: null, flag: true, expected: false },
-      // all conditions:
-      { businessId: 'CP1234567', flag: true, expected: true }
+      { businessId: 'CP1234567', entityType: null, flag: 'CP BEN', expected: false },
+      // // only second condition:
+      { businessId: null, entityType: 'CP', flag: 'CP BEN', expected: false },
+      // // all conditions:
+      { businessId: 'CP1234567', entityType: 'CP', flag: 'CP BEN', expected: true },
+      { businessId: 'BC1234567', entityType: 'BEN', flag: 'CP BEN', expected: true },
+      { businessId: 'BC1234567', entityType: 'BC', flag: 'CP BEN', expected: false },
+      { businessId: 'BC1234567', entityType: 'ULC', flag: 'CP BEN', expected: false }
     ]
 
     for (let test of tests) {
+      store.state.entityType = test.entityType
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
       getFeatureFlag.mockReturnValue(test.flag)
