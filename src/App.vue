@@ -676,13 +676,13 @@ export default {
         filingId: header.filingId,
         filingLink: filedApplication.filingLink,
         isFutureEffective: header.isFutureEffective,
-        name: header.name as FilingTypes,
+        name: header.name,
         status: header.status,
         submittedDate: this.apiToUtcString(header.date),
         submitter: header.submitter,
         data: {
           applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
-          legalFilings: [header.name as FilingTypes]
+          legalFilings: [header.name]
         }
       }
       this.setFilings([filingItem])

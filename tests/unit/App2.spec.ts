@@ -1,14 +1,24 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import Vue from 'vue'
-import axios from '@/axios-auth'
-import VueRouter from 'vue-router'
-import mockRouter from './mockRouter'
-import App from '@/App.vue'
-import flushPromises from 'flush-promises'
-import { getVuexStore } from '@/store'
-import sinon from 'sinon'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
+import VueRouter from 'vue-router'
+import sinon from 'sinon'
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
+import flushPromises from 'flush-promises'
+import mockRouter from './mockRouter'
+import axios from '@/axios-auth'
+import { getVuexStore } from '@/store'
+import App from '@/App.vue'
+
+// mock fetch() as it is not defined in Jest
+// NB: it should be `global.fetch` but that doesn't work and this does
+window.fetch = jest.fn().mockImplementation(() => {
+  return {
+    headers: { get: () => new Date() },
+    ok: true,
+    statusTxt: ''
+  }
+})
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
