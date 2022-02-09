@@ -175,6 +175,88 @@ const BCOMP_PARTIES = [
   }
 ]
 
+const FIRM_ADDRESSES = {
+  businessAddress: {
+    deliveryAddress: {
+      streetAddress: 'delivery_address - address line one',
+      addressCity: 'delivery_address city',
+      addressCountry: 'Canada',
+      postalCode: 'H0H0H0',
+      addressRegion: 'BC'
+    },
+    mailingAddress: {
+      streetAddress: 'mailing_address - address line one',
+      addressCity: 'mailing_address city',
+      addressCountry: 'Canada',
+      postalCode: 'H0H0H0',
+      addressRegion: 'BC'
+    }
+  }
+}
+
+const FIRM_PARTIES = [
+  {
+    officer: {
+      id: 1,
+      firstName: 'Joe',
+      lastName: 'Swanson',
+      middleName: 'P',
+      email: 'joe@email.com',
+      organizationName: '',
+      partyType: 'person'
+    },
+    mailingAddress: {
+      streetAddress: 'mailing_address - address line one',
+      addressCity: 'mailing_address city',
+      addressCountry: 'Canada',
+      postalCode: 'H0H0H0',
+      addressRegion: 'BC'
+    },
+    deliveryAddress: {
+      streetAddress: 'delivery_address - address line one',
+      addressCity: 'delivery_address city',
+      addressCountry: 'Canada',
+      postalCode: 'H0H0H0',
+      addressRegion: 'BC'
+    },
+    roles: [
+      {
+        roleTyp: 'Completing Party',
+        appointmentDate: '2022-01-01'
+
+      },
+      {
+        roleType: 'Partner',
+        appointmentDate: '2022-01-01'
+
+      }
+    ]
+  },
+  {
+    officer: {
+      id: 2,
+      firstName: 'Peter',
+      lastName: 'Griffin',
+      middleName: '',
+      partyType: 'person'
+    },
+    mailingAddress: {
+      streetAddress: 'mailing_address - address line one',
+      streetAddressAdditional: '',
+      addressCity: 'mailing_address city',
+      addressCountry: 'CA',
+      postalCode: 'H0H0H0',
+      addressRegion: 'BC'
+    },
+    roles: [
+      {
+        roleType: 'Partner',
+        appointmentDate: '2022-01-01'
+      }
+    ]
+  }
+]
+
 const USER_INFO = {
   username: 'test/username',
   contacts: [
@@ -1694,5 +1776,279 @@ describe('App as an historical business', () => {
     expect(vm.$store.getters.isLiquidation).toBe(false)
     expect(vm.$store.state.reasonText).toContain('Voluntary Dissolution')
     expect(vm.$store.state.reasonText).toContain('December 6, 2021 at 12:05 pm Pacific time')
+  })
+})
+
+describe('App as a Draft Registration with approved NR', () => {
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/T123456789/authorizations')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            roles: ['edit', 'view']
+          }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
+
+    // GET NR data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+            names: [
+              {
+                name: 'My Name Request',
+                state: 'APPROVED',
+                consumptionDate: null
+              }
+            ],
+            nrNumber: 'NR 1234567',
+            legalType: 'SP',
+            state: 'APPROVED'
+          }
+      })))
+
+    // GET IA filing
+    get.withArgs('businesses/T123456789/filings')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'SP'
+            },
+            header: {
+              date: '2020-05-21T00:11:55.887740+00:00',
+              name: 'registration',
+              status: 'DRAFT',
+              filingId: 789
+            },
+            registration: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'SP'
+              }
+            }
+          }
+        }
+      })))
+
+    // create a Local Vue and install router (and store) on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      localVue,
+      router,
+      store,
+      vuetify,
+      destroyed () {
+        get()
+      }
+    })
+    vm = wrapper.vm
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches approved NR data properly', () => {
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+  })
+
+  it('fetches Registration filing properly', () => {
+    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
+    expect(vm.$store.getters.getEntityType).toBe('SP')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.isAppTask).toBe(true)
+
+    // verify loaded task
+    expect(vm.$store.state.tasks.length).toBe(1)
+    expect(vm.$store.state.tasks[0].enabled).toBe(true)
+    expect(vm.$store.state.tasks[0].order).toBe(1)
+    expect(vm.$store.state.tasks[0].task.filing.business.identifier).toBe('T123456789')
+    expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('SP')
+    expect(vm.$store.state.tasks[0].task.filing.header.date).toBe('2020-05-21T00:11:55.887740+00:00')
+    expect(vm.$store.state.tasks[0].task.filing.header.name).toBe('registration')
+    expect(vm.$store.state.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(vm.$store.state.tasks[0].task.filing.header.filingId).toBe(789)
+    expect(vm.$store.state.tasks[0].task.filing.registration.nameRequest.nrNumber).toBe('NR 1234567')
+    expect(vm.$store.state.tasks[0].task.filing.registration.nameRequest.legalType).toBe('SP')
+  })
+})
+
+describe('App as a COMPLETED Registration Application', () => {
+  // Intermediate scenario - While returning from payment completion page
+  let wrapper: Wrapper<Vue>
+  let vm: any
+
+  beforeAll(() => {
+    // clear store
+    store.state.tasks = []
+    store.state.filings = []
+
+    sessionStorage.clear()
+    sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
+    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+  })
+
+  beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET authorizations (role) from Auth API
+    get.withArgs('entities/T123456789/authorizations')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            roles: ['edit', 'view']
+          }
+      })))
+
+    // GET user info from Auth API
+    get.withArgs('users/@me')
+      .returns(new Promise((resolve) => resolve({
+        data: USER_INFO
+      })))
+
+    // GET NR data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(new Promise((resolve) => resolve({
+        data:
+          {
+            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+            names: [
+              {
+                name: 'My Name Request',
+                state: 'APPROVED',
+                consumptionDate: '2099-10-30T00:11:55.887740+00:00'
+              }
+            ],
+            nrNumber: 'NR 1234567',
+            legalType: 'SP',
+            state: 'CONSUMED'
+          }
+      })))
+
+    // GET IA filing
+    get.withArgs('businesses/T123456789/filings')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          filing: {
+            business: {
+              identifier: 'T123456789',
+              legalType: 'SP'
+            },
+            header: {
+              availableOnPaperOnly: false,
+              date: '2020-05-10T11:22:33.444444+00:00',
+              effectiveDate: '2020-05-22T00:00:00.000000+00:00',
+              filingId: 789,
+              isFutureEffective: false,
+              name: 'registration',
+              paymentToken: 987,
+              status: 'COMPLETED',
+              submitter: 'Submitter'
+            },
+            registration: {
+              nameRequest: {
+                nrNumber: 'NR 1234567',
+                legalType: 'SP'
+              },
+              offices: FIRM_ADDRESSES,
+              parties: FIRM_PARTIES
+            }
+          },
+          commentsCount: 0,
+          commentsLink: 'http://comments',
+          documentsLink: 'http://documents',
+          filingLink: 'http://filing'
+        }
+      })))
+
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'dashboard' })
+
+    wrapper = shallowMount(App, {
+      localVue,
+      router,
+      store,
+      vuetify,
+      destroyed () {
+        get()
+      }
+    })
+    vm = wrapper.vm
+
+    // wait for everything to settle
+    await flushPromises()
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('fetches NR data properly', () => {
+    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+  })
+
+  it('fetches Registration filing properly', () => {
+    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
+    expect(vm.$store.getters.getEntityType).toBe('SP')
+    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.isAppFiling).toBe(true)
+
+    // verify loaded filing
+    expect(vm.$store.state.filings.length).toBe(1)
+    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
+    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
+    expect(vm.$store.state.filings[0].commentsCount).toBe(0)
+    expect(vm.$store.state.filings[0].commentsLink).toBe('http://comments')
+    expect(vm.$store.state.filings[0].displayName).toBe('Registration')
+    expect(vm.$store.state.filings[0].documentsLink).toBe('http://documents')
+    expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
+    expect(vm.$store.state.filings[0].filingId).toBe(789)
+    expect(vm.$store.state.filings[0].filingLink).toBe('http://filing')
+    expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
+    expect(vm.$store.state.filings[0].name).toBe('registration')
+    expect(vm.$store.state.filings[0].status).toBe('COMPLETED')
+    expect(vm.$store.state.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
+    expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
+    expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
+    expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['registration'])
   })
 })
