@@ -211,18 +211,20 @@ describe('App as a Draft Registration with approved NR', () => {
         }
       })))
 
-    // create a Local Vue and install router on it
+    // create a Local Vue and install router (and store) on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
-      vuetify
+      vuetify,
+      destroyed () {
+        get()
+      }
     })
     vm = wrapper.vm
 
@@ -356,11 +358,13 @@ describe('App as a COMPLETED Registration Application', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
-      vuetify
+      vuetify,
+      destroyed () {
+        get()
+      }
     })
     vm = wrapper.vm
 
