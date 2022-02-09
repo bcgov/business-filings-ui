@@ -152,7 +152,8 @@
                 </div>
 
                 <!-- draft incorporation -->
-                <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)"
+                <div v-else-if="isStatusDraft(item) &&
+                  (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))"
                   class="todo-subtitle"
                 >
                   <div>{{ item.subtitle }}</div>
@@ -505,7 +506,8 @@
             <PaymentPaid />
           </template>
 
-          <template v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)">
+          <template v-else-if="isStatusDraft(item) &&
+            (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))">
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
         </v-expansion-panel-content>
@@ -1139,7 +1141,9 @@ export default class TodoList extends Mixins(
 
       // set subtitle only if DRAFT
       let subtitle: string = null
+      console.log(header)
       if (this.isStatusDraft(header)) {
+        console.log(this.nameRequest)
         if (this.nameRequest) {
           subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
         } else {
