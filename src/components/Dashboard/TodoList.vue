@@ -152,7 +152,8 @@
                 </div>
 
                 <!-- draft incorporation -->
-                <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)"
+                <div v-else-if="isStatusDraft(item) &&
+                  (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))"
                   class="todo-subtitle"
                 >
                   <div>{{ item.subtitle }}</div>
@@ -505,7 +506,8 @@
             <PaymentPaid />
           </template>
 
-          <template v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)">
+          <template v-else-if="isStatusDraft(item) &&
+            (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))">
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
         </v-expansion-panel-content>
