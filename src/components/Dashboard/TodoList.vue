@@ -1141,9 +1141,7 @@ export default class TodoList extends Mixins(
 
       // set subtitle only if DRAFT
       let subtitle: string = null
-      console.log(header)
       if (this.isStatusDraft(header)) {
-        console.log(this.nameRequest)
         if (this.nameRequest) {
           subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
         } else {
