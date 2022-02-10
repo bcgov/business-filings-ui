@@ -35,7 +35,8 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DOWNLOAD_BUSINESS_SUMMARY: {
-        return (!!businessId && !!getFeatureFlag('download-summary-enabled'))
+        return (!!businessId &&
+          !!getFeatureFlag('supported-business-summary-entities')?.includes(this.getEntityType))
       }
 
       case AllowableActions.EDIT_BUSINESS_PROFILE: {
