@@ -1256,7 +1256,7 @@ export default class TodoList extends Mixins(
 
       case FilingTypes.DISSOLUTION:
         // navigate to Create web app to dissolve this company
-        const dissolutionUrl = `${this.createUrl}define-dissolution/?id=${this.getIdentifier}`
+        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
         break
 
