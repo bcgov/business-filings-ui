@@ -795,7 +795,7 @@ export default {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUrl}define-dissolution/?id=${this.getIdentifier}`
+      const url = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
       navigate(url)
     },
 
