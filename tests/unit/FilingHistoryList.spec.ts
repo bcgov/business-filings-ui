@@ -259,12 +259,16 @@ describe('Filing History List - misc functionality', () => {
         name: 'annualReport',
         status: 'COMPLETED',
         submittedDate: '2019-06-02',
-        submitter: 'Cameron'
+        submitter: 'Cameron',
+        documentsLink: 'http://test'
       }
     ]
 
     const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => (
+      Promise.resolve([])
+    ))
     await Vue.nextTick()
 
     // verify no row is expanded
@@ -1140,7 +1144,8 @@ describe('Filing History List - incorporation applications', () => {
         name: 'incorporationApplication',
         status: 'COMPLETED',
         submittedDate: '2020-04-28 19:14:45 GMT',
-        submitter: 'Cameron'
+        submitter: 'Cameron',
+        documentsLink: 'http://test'
       }
     ]
 
@@ -1168,6 +1173,7 @@ describe('Filing History List - incorporation applications', () => {
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
     expect(button.text()).toContain('View Documents')
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // expand details
     button.trigger('click')
@@ -1271,6 +1277,7 @@ describe('Filing History List - paper only and other filings', () => {
         status: 'COMPLETED',
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
+        documentsLink: 'http://test',
         data: {
           order: {}
         }
@@ -1293,6 +1300,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(spans.at(0).text()).toContain('EFFECTIVE as of Mar 24, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1455,6 +1464,7 @@ describe('Filing History List - paper only and other filings', () => {
         status: 'COMPLETED',
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
+        'documentsLink': 'abc',
         data: {
           alteration: {
             fromLegalType: 'BC',

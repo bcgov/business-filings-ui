@@ -179,7 +179,7 @@
                   <span v-else-if="filing.isTypeStaff" class="app-blue">
                     {{(panel === index) ? "Hide" : "View"}}
                   </span>
-                  <span v-else class="app-blue">
+                  <span v-else-if="filing.documentsLink" class="app-blue">
                     {{(panel === index) ? "Hide Documents" : "View Documents"}}
                   </span>
                 </v-btn>
