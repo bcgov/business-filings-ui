@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
-import { AlertMessageIF } from '@/interfaces'
+import { AlertMessageIF, ObligationsResourceIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
 
 /**
@@ -89,7 +89,7 @@ export default class ResourceLookupMixin extends Vue {
     }
 
     /** The obligations content for the current entity type. */
-    get getObligations (): any {
+    get getObligations (): ObligationsResourceIF {
       return this.configObject?.obligations
     }
 }
