@@ -1083,9 +1083,7 @@ export default class TodoList extends Mixins(
 
     // NB: don't check "incorporationApplication" as it may be empty
     if (header) {
-      const title = this.nameRequest
-        ? `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
-        : `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
+      const title = `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
 
       // set subtitle only if DRAFT IA
       let subtitle: string = null
@@ -1133,9 +1131,7 @@ export default class TodoList extends Mixins(
 
     // NB: don't check "registration" as it may be empty
     if (header) {
-      const title = this.nameRequest
-        ? `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
-        : `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
+      const title = `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
 
       // set subtitle only if DRAFT
       let subtitle: string = null
