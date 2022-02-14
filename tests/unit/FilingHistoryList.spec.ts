@@ -1975,7 +1975,7 @@ describe('Filing History List - detail comments', () => {
 })
 
 describe('Filing History List - documents', () => {
-  const FILING_WITH_DOCUMENTS_LINK = {
+  const FILING_WITHOUT_DOCUMENTS_LINK = {
     availableOnPaperOnly: false,
     businessIdentifier: 'CP0001191',
     commentsCounts: 0,
@@ -1991,7 +1991,7 @@ describe('Filing History List - documents', () => {
 
   it('does not display the view documents button when no documents are present on a filing', async () => {
     // init store
-    store.state.filings = [FILING_WITH_DOCUMENTS_LINK]
+    store.state.filings = [FILING_WITHOUT_DOCUMENTS_LINK]
 
     const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
