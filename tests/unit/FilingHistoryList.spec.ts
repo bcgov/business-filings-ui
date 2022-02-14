@@ -1338,6 +1338,7 @@ describe('Filing History List - paper only and other filings', () => {
         status: 'PAID',
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
+        documentsLink: 'http://test',
         data: {
           alteration: {
             fromLegalType: 'BC',
@@ -1365,6 +1366,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(spans.at(2).text()).toContain('EFFECTIVE as of Dec 31, 2099')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1401,6 +1404,7 @@ describe('Filing History List - paper only and other filings', () => {
         status: 'PAID',
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
+        documentsLink: 'http://test',
         data: {
           alteration: {
             fromLegalType: 'BC',
@@ -1429,6 +1433,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
@@ -1464,7 +1469,7 @@ describe('Filing History List - paper only and other filings', () => {
         status: 'COMPLETED',
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
-        'documentsLink': 'abc',
+        'documentsLink': 'http://test',
         data: {
           alteration: {
             fromLegalType: 'BC',
@@ -1491,6 +1496,8 @@ describe('Filing History List - paper only and other filings', () => {
     expect(spans.at(0).text()).toContain('EFFECTIVE as of Mar 24, 2020')
     expect(vm.panel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1963,6 +1970,35 @@ describe('Filing History List - detail comments', () => {
     expect(wrapper.findAll('.details-list .detail-body').length).toBe(2)
 
     sinon.restore()
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - documents', () => {
+  const FILING_WITH_DOCUMENTS_LINK = {
+    availableOnPaperOnly: false,
+    businessIdentifier: 'CP0001191',
+    commentsCounts: 0,
+    displayName: 'Involuntary Dissolution',
+    effectiveDate: '2019-12-13 00:00:00 GMT',
+    filingId: 111,
+    isFutureEffective: false,
+    name: 'Involuntary Dissolution',
+    status: 'COMPLETED',
+    submittedDate: '2019-04-06 19:22:59.00 GMT',
+    submitter: 'Cameron'
+  }
+
+  it('does not display the view documents button when no documents are present on a filing', async () => {
+    // init store
+    store.state.filings = [FILING_WITH_DOCUMENTS_LINK]
+
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    await Vue.nextTick()
+    console.log(wrapper.find('.expand-btn').html())
+    // verify that View Documents Button is not rendered
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toEqual('')
     wrapper.destroy()
   })
 })

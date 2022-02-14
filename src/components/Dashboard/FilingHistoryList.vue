@@ -172,6 +172,7 @@
                   outlined
                   :ripple=false
                   @click.stop="togglePanel(index, filing)"
+                  v-show="displayAction(filing)"
                 >
                   <span v-if="filing.availableOnPaperOnly" class="app-blue">
                     {{(panel === index) ? "Close" : "Request a Copy"}}
@@ -416,6 +417,11 @@ export default class FilingHistoryList extends Mixins(
   /** The Business ID string. */
   private get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
+  }
+
+  /** Returns whether the action button is visible or not. */
+  private displayAction (filing): string {
+    return filing.availableOnPaperOnly || filing.isTypeStaff || filing.documentsLink
   }
 
   private loadData (): void {
