@@ -415,7 +415,7 @@ export default {
       const draft = await this.fetchDraftApp(this.tempRegNumber)
 
       // Handle Draft filings
-      this.storeDraftApp(draft)
+      this.storeDraftApp(draft, this.tempRegNumber)
 
       // if the draft has a NR, load it
       if (this.localNrNumber) {
@@ -565,16 +565,11 @@ export default {
     },
 
     /** Verifies and stores a draft applications data. */
-    storeDraftApp (application: any): void {
+    storeDraftApp (application: any, identifier: string): void {
       const filing = application?.filing
       const filingName = filing.header?.name as FilingTypes
-      if (!filing || !filing.business || !filing.header || !filingName) {
+      if (!filing || !filing.header || !filingName) {
         throw new Error(`Invalid ${filingName} filing`)
-      }
-
-      const identifier = filing.business.identifier as string
-      if (!identifier) {
-        throw new Error(`Invalid ${filingName} filing - business identifier`)
       }
 
       if (![FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(filingName)) {

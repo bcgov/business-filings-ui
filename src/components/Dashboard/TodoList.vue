@@ -1078,12 +1078,11 @@ export default class TodoList extends Mixins(
 
   private async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
-    const business = filing.business
     const header = filing.header
     const incorporationApplication = filing.incorporationApplication
 
     // NB: don't check "incorporationApplication" as it may be empty
-    if (business && header) {
+    if (header) {
       const title = this.nameRequest
         ? `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application - ${this.getEntityName}`
         : `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
@@ -1129,12 +1128,11 @@ export default class TodoList extends Mixins(
 
   private async loadRegistration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
-    const business = filing.business
     const header = filing.header
     const registration = filing.registration
 
     // NB: don't check "registration" as it may be empty
-    if (business && header) {
+    if (header) {
       const title = this.nameRequest
         ? `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION} - ${this.getEntityName}`
         : `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
