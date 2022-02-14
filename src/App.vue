@@ -568,13 +568,8 @@ export default {
     storeDraftApp (application: any): void {
       const filing = application?.filing
       const filingName = filing.header?.name as FilingTypes
-      if (!filing || !filing.business || !filing.header || !filingName) {
+      if (!filing || !filing.header || !filingName) {
         throw new Error(`Invalid ${filingName} filing`)
-      }
-
-      const identifier = filing.business.identifier as string
-      if (!identifier) {
-        throw new Error(`Invalid ${filingName} filing - business identifier`)
       }
 
       if (![FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(filingName)) {
@@ -598,7 +593,7 @@ export default {
       }
 
       // store business info
-      this.setIdentifier(identifier)
+      this.setIdentifier(this.tempRegNumber)
       this.setEntityType(legalType)
 
       // store NR Number if present
