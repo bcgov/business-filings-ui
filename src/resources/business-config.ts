@@ -1,4 +1,5 @@
 import { CorpTypeCd, FilingCodes } from '@/enums'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/corp-type-module'
 
 export class Flow {
   feeCode: FilingCodes
@@ -47,7 +48,32 @@ export const ConfigJson = [
           }
         }
       }
-    ]
+    ],
+    obligations: {
+      title: 'Legal Obligations:',
+      subtitle: 'The most common updates you are legally responsible to file include:',
+      act: 'Business Corporations Act',
+      obligationStatement: 'to keep the information about your corporation up to date with the Registrar: For ' +
+        'example, you must file annual reports, director changes and address changes.',
+      detailInfoURL: 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/' +
+        'permits-licences/businesses-incorporated-companies/incorporated-companies#manage',
+      includedChanges: [
+        {
+          label: 'Annual Reports',
+          description: 'file an annual report each year within two months after each anniversary of the date on ' +
+            'which the company was recognized. This ensures your company remains in good standing with the Registrar.'
+        },
+        {
+          label: 'Director changes',
+          description: 'update director information within 15 days of any change (appointing, ceasing or updating ' +
+            'an existing director\'s name or address)'
+        },
+        {
+          label: 'Company address changes',
+          description: 'update any changes to a company\'s registered or records office addresses as they occur.'
+        }
+      ]
+    }
   },
   {
     entityType: CorpTypeCd.COOP,
@@ -100,5 +126,117 @@ export const ConfigJson = [
         }
       }
     ]
+  },
+  {
+    entityType: CorpTypeCd.SOLE_PROP,
+    displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
+    flows: [
+      {
+        feeCode: null,
+        displayName: 'Change Of Address',
+        certifyText: ''
+      },
+      {
+        feeCode: null,
+        displayName: 'Annual Report',
+        certifyText: ''
+      },
+      {
+        feeCode: null,
+        displayName: 'Change Of Directors',
+        certifyText: ''
+      }
+    ],
+    obligations: {
+      title: 'Obligations:',
+      subtitle: 'Changes include:',
+      act: 'Partnership Act',
+      obligationStatement: 'to keep the information about your firm up to date with the Registrar. Please update ' +
+        'changes as they occur. ',
+      detailInfoURL: 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/' +
+        'permits-licences/businesses-incorporated-companies/proprietorships-partnerships',
+      includedChanges: [
+        {
+          label: 'Business name changes',
+          description: 'changing the name of your business will also require a new Name Request.'
+        },
+        {
+          label: 'Business address changes',
+          description: 'change the delivery address and mailing address of your business.'
+        },
+        {
+          label: 'Proprietor/Partner address or legal name changes ',
+          description: 'change the legal name or mailing and delivery addresses of an existing Proprietor or Partner.'
+        },
+        {
+          label: 'Membership of Partnership changes ',
+          description: 'change the partners of your General Partnership.'
+        },
+        {
+          label: 'Nature of business changes',
+          description: 'significant changes to the nature of your business.'
+        },
+        {
+          label: 'Dissolving a Sole Proprietorship or Partnership ',
+          description: 'when a business is no longer required it needs to dissolved.'
+        }
+      ]
+    }
+  },
+  {
+    entityType: CorpTypeCd.PARTNERSHIP,
+    displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
+    flows: [
+      {
+        feeCode: null,
+        displayName: 'Change Of Address',
+        certifyText: ''
+      },
+      {
+        feeCode: null,
+        displayName: 'Annual Report',
+        certifyText: ''
+      },
+      {
+        feeCode: null,
+        displayName: 'Change Of Directors',
+        certifyText: ''
+      }
+    ],
+    obligations: {
+      title: 'Obligations:',
+      subtitle: 'Changes include:',
+      act: 'Partnership Act',
+      obligationStatement: 'to keep the information about your firm up to date with the Registrar. Please update ' +
+        'changes as they occur. ',
+      detailInfoURL: 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/' +
+        'permits-licences/businesses-incorporated-companies/proprietorships-partnerships',
+      includedChanges: [
+        {
+          label: 'Business name changes',
+          description: 'changing the name of your business will also require a new Name Request.'
+        },
+        {
+          label: 'Business address changes',
+          description: 'change the delivery address and mailing address of your business.'
+        },
+        {
+          label: 'Proprietor/Partner address or legal name changes ',
+          description: 'change the legal name or mailing and delivery addresses of an existing Proprietor or Partner.'
+        },
+        {
+          label: 'Membership of Partnership changes ',
+          description: 'change the partners of your General Partnership.'
+        },
+        {
+          label: 'Nature of business changes',
+          description: 'significant changes to the nature of your business.'
+        },
+        {
+          label: 'Dissolving a Sole Proprietorship or Partnership ',
+          description: 'when a business is no longer required it needs to dissolved.'
+        }
+      ]
+    }
   }
 ]

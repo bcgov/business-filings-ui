@@ -87,4 +87,9 @@ export default class ResourceLookupMixin extends Vue {
       }
       return null
     }
+
+    /** The obligations content for the current entity type. */
+    get getObligations (): any {
+      return this.configObject?.obligations
+    }
 }
