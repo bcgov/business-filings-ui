@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, StateIF, ApiTaskIF, OfficeAddressIF, PartiesIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, OfficeAddressIF, PartiesIF, StateIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -164,7 +164,7 @@ export default {
       state.tasks.length === 0 &&
       // only the IA filing history item
       state.filings.length === 1 &&
-      state.filings[0].name === FilingTypes.INCORPORATION_APPLICATION
+      [FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(state.filings[0].name)
     )
   },
 

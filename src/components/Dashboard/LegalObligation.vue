@@ -1,43 +1,33 @@
 <template>
-  <div v-if="showLegalObligation && isBComp && isBusinessWithNoMaintenanceFilings && !!businessId"
+  <div v-if="showLegalObligation && !!getObligations && isBusinessWithNoMaintenanceFilings && !!businessId"
     class="legal-obligation-container"
   >
     <v-card flat class="legal-obligation-section">
-      <v-icon color="blue darken-2" class="info-icon">mdi-information-outline</v-icon>
-      <div class="share-structure-check-text">
-        <span class="font-weight-bold">Legal Obligations:</span>
-        You are required by the <em>Business Corporations Act</em> to keep the information about your corporation up
-        to date with the Registrar: For example, you must file annual reports, director changes and address changes.
-        <span class="app-blue cursor-pointer" @click="readMoreFlag = true">
-          <span v-if="!readMoreFlag">Read more about your legal obligations...</span>
+      <v-icon color="primary" class="mr-2">mdi-information-outline</v-icon>
+      <div>
+        <span class="font-weight-bold obligations-title">{{getObligations.title}}</span>
+        <span class="obligations-copy">
+          You are required by the <em>{{getObligations.act}}</em> {{getObligations.obligationStatement}}
         </span>
+        <p class="app-blue cursor-pointer mt-2 mb-0" @click="readMoreFlag = true">
+          <span v-if="!readMoreFlag"><u>Read more about your obligations</u></span>
+        </p>
 
         <div v-if="readMoreFlag">
-          <div class="read-more-line">
-            The most common updates you are legally responsible to file include:
-          </div>
-          <div class="read-more-line">
+          <div class="obligations-copy pt-2">{{getObligations.subtitle}}</div>
+          <div class="pt-2">
             <ul>
-              <li>
-                <span class="font-weight-bold">Annual Reports</span> - file an annual report each year within two
-                months after each anniversary of the date on which the company was recognized. This ensures your
-                company remains in good standing with the Registrar.
-              </li>
-              <li>
-                <span class="font-weight-bold">Director changes</span> - update director information within 15 days of
-                any change (appointing, ceasing or updating an existing director's name or address)
-              </li>
-              <li>
-                <span class="font-weight-bold">Company address changes</span> - update any changes to a company's
-                registered or records office addresses as they occur.
+              <li v-for="(changes, index) in getObligations.includedChanges" :key="index" class="obligations-copy">
+                <span class="font-weight-bold">{{changes.label}}</span> - {{changes.description}}
               </li>
             </ul>
           </div>
-          <div class="read-more-line">
-            <span>Find more detailed information <a :href="detailInfoURL" target="_blank">here</a></span>
+          <div class="pt-2">
+            <a :href="getObligations.detailInfoURL" target="_blank">Find out more detailed information</a>
+            <v-icon color="primary" class="ml-1" small>mdi-open-in-new</v-icon>
           </div>
-          <div class="read-more-line">
-            <span class="app-blue cursor-pointer" @click="readMoreFlag = false">Read less...</span>
+          <div class="pt-2">
+            <span class="app-blue cursor-pointer" @click="readMoreFlag = false"><u>Read less</u></span>
           </div>
         </div>
 
@@ -52,25 +42,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
+import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
 
 @Component({
   computed: {
-    ...mapGetters(['isBComp', 'isBusinessWithNoMaintenanceFilings'])
+    ...mapGetters(['isBusinessWithNoMaintenanceFilings'])
   }
 })
-export default class LegalObligation extends Vue {
+export default class LegalObligation extends Mixins(ResourceLookupMixin) {
   readonly isBusinessWithNoMaintenanceFilings!: boolean
   readonly isBComp!: boolean
   private readMoreFlag: boolean = false
   private showLegalObligation: boolean = true
-
-  private get detailInfoURL () {
-    return 'https://www2.gov.bc.ca/gov/content/employment-business/business/' +
-      'managing-a-business/permits-licences/businesses-incorporated-companies/' +
-      'incorporated-companies#manage'
-  }
 
   /** The Business ID string. */
   private get businessId (): string {
@@ -96,6 +81,14 @@ export default class LegalObligation extends Vue {
     width: 75%;
 }
 
+.obligations-title {
+  color: $gray9;
+}
+
+.obligations-copy {
+  color: $gray7;
+}
+
 ul {
   list-style-type: disc;
 }
@@ -104,16 +97,8 @@ li {
   padding-top: 0.25rem;
 }
 
-.read-more-line {
-  padding-top: 1rem;
-}
-
 .legal-obligation-btn-panel {
   float: right;
   margin-top: 1.5rem;
-}
-
-.info-icon {
-  margin-right: 0.5rem;
 }
 </style>
