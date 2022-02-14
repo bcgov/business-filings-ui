@@ -23,7 +23,7 @@
             </ul>
           </div>
           <div class="pt-2">
-            <a :href="getDetailInfoURL" target="_blank">Find out more detailed information</a>
+            <a :href="getObligations.detailInfoURL" target="_blank">Find out more detailed information</a>
             <v-icon color="primary" class="ml-1" small>mdi-open-in-new</v-icon>
           </div>
           <div class="pt-2">
@@ -56,10 +56,6 @@ export default class LegalObligation extends Mixins(ResourceLookupMixin) {
   readonly isBComp!: boolean
   private readMoreFlag: boolean = false
   private showLegalObligation: boolean = true
-
-  private get getDetailInfoURL () {
-    return this.getObligations.detailInfoURL
-  }
 
   /** The Business ID string. */
   private get businessId (): string {
