@@ -1122,7 +1122,7 @@ export default class TodoList extends Mixins(
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or business in filing =', filing)
+      console.log('ERROR - invalid header in filing =', filing)
     }
   }
 
