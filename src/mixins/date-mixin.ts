@@ -348,6 +348,6 @@ export default class DateMixin extends Vue {
     // calculate difference between "date" and "today"
     // (result should be a whole number)
     const diff = (date.valueOf() - today.valueOf()) / MS_IN_A_DAY
-    return diff
+    return Math.round(diff)
   }
 }
