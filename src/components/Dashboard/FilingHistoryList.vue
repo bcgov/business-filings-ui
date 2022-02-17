@@ -556,6 +556,7 @@ export default class FilingHistoryList extends Mixins(
           this.isEffectiveDatePast(effectiveDate)
         )
 
+        // data is available only for a completed filing
         if (item.isCompletedAlteration) {
           item.courtOrderNumber = filing.data.order?.fileNumber || ''
           item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
