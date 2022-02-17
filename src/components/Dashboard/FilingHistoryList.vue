@@ -556,10 +556,12 @@ export default class FilingHistoryList extends Mixins(
           this.isEffectiveDatePast(effectiveDate)
         )
 
-        item.courtOrderNumber = filing.data.order?.fileNumber || ''
-        item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
-        item.toLegalType = filing.data.alteration?.toLegalType || null
-        item.fromLegalType = filing.data.alteration?.fromLegalType || null
+        if (item.isCompletedAlteration) {
+          item.courtOrderNumber = filing.data.order?.fileNumber || ''
+          item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
+          item.toLegalType = filing.data.alteration?.toLegalType || null
+          item.fromLegalType = filing.data.alteration?.fromLegalType || null
+        }
       }
 
       // add properties for Dissolutions
