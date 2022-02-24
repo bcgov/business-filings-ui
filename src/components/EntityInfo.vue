@@ -269,7 +269,9 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
-      const url = `${this.editUrl}${this.getIdentifier}/alteration`
+      let url = `${this.editUrl}${this.getIdentifier}`
+      // Append appropriate route based on entity type
+      url += (this.isFirm ? '/change' : '/alteration')
       navigate(url)
     }
   }

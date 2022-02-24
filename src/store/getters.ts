@@ -72,6 +72,11 @@ export default {
     return (state.entityType === CorpTypeCd.BC_CORPORATION)
   },
 
+  /** Is True if entity is a Firm. */
+  isFirm (state: StateIF): boolean {
+    return (state.entityType === CorpTypeCd.SOLE_PROP || state.entityType === CorpTypeCd.PARTNERSHIP)
+  },
+
   /** Is True if entity is a BC Company. */
   isBcCompany (state: StateIF): boolean {
     return (state.entityType === CorpTypeCd.BC_COMPANY)
