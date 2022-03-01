@@ -1178,9 +1178,9 @@ export default class TodoList extends Mixins(
   private async loadChangeOfRegistration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
-    const registration = filing.changeOfRegistration
+    const changeOfRegistration = filing.changeOfRegistration
 
-    // NB: don't check "registration" as it may be empty
+    // NB: don't check "changeOfRegistration" as it may be empty
     if (header) {
       const title = `Change to ${this.getCorpTypeDescription(this.getEntityType)} Registration`
 
@@ -1197,7 +1197,7 @@ export default class TodoList extends Mixins(
       const paymentStatusCode = header.paymentStatusCode || null
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
-      const draft = registration // may be undefined
+      const draft = changeOfRegistration // may be undefined
       const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
 
       const item: TodoItemIF = {
