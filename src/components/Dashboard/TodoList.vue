@@ -848,6 +848,9 @@ export default class TodoList extends Mixins(
         case FilingTypes.REGISTRATION:
           await this.loadRegistration(task)
           break
+        case FilingTypes.CHANGE_OF_REGISTRATION:
+          await this.loadChangeOfRegistration(task)
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in filing header =', header)
@@ -1172,6 +1175,54 @@ export default class TodoList extends Mixins(
     }
   }
 
+  private async loadChangeOfRegistration (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const registration = filing.changeOfRegistration
+
+    // NB: don't check "registration" as it may be empty
+    if (header) {
+      const title = `Change to ${this.getCorpTypeDescription(this.getEntityType)} Registration`
+
+      // set subtitle only if DRAFT
+      let subtitle: string = null
+      if (this.isStatusDraft(header)) {
+        if (this.nameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+        } else {
+          subtitle = 'DRAFT'
+        }
+      }
+
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+
+      const draft = registration // may be undefined
+      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CHANGE_OF_REGISTRATION,
+        filingId: header.filingId,
+        title,
+        subtitle,
+        draftTitle: FilingNames.CHANGE_OF_REGISTRATION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.nameRequest,
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
   /** Files a new filing (todo). */
   private doFileNow (item: TodoItemIF): void {
     switch (item.name) {
@@ -1252,6 +1303,12 @@ export default class TodoList extends Mixins(
         // navigate to Create web app to dissolve this company
         const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
+        break
+
+      case FilingTypes.CHANGE_OF_REGISTRATION:
+        // navigate to Edit web app to alter this firm
+        const editUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
+        navigate(editUrl)
         break
 
       default:

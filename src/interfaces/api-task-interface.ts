@@ -34,6 +34,7 @@ export interface TaskTodoIF {
   registrarsOrder?: any
   courtOrder?: any
   registration?: any
+  changeOfRegistration?: any
 }
 
 /** A filing's header object from the API. */

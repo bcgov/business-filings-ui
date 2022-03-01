@@ -17,5 +17,6 @@ export enum FilingNames {
   REGISTRARS_ORDER = 'Registrar\'s Order',
   SPECIAL_RESOLUTION = 'Special Resolution',
   TRANSITION_APPLICATION = 'Transition Application',
-  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution'
+  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
+  CHANGE_OF_REGISTRATION = 'Change of Registration'
 }
