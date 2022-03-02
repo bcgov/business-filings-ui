@@ -638,9 +638,8 @@ export default {
     storeFiledApp (filedApplication: any): void {
       const filing = filedApplication.filing as TaskTodoIF
       // NB: these were already validated in storeDraftApp()
-      const business = filing.business
       const header = filing.header
-      const application = filing[filing.header.name]
+      const application = filing[header.name]
 
       // set addresses
       this.storeAddresses({ data: application.offices || [] })
@@ -662,7 +661,7 @@ export default {
       // add this as a filing (for Filing History List)
       const filingItem: ApiFilingIF = {
         availableOnPaperOnly: header.availableOnPaperOnly,
-        businessIdentifier: business.identifier,
+        businessIdentifier: this.getIdentifier,
         commentsCount: filedApplication.commentsCount,
         commentsLink: filedApplication.commentsLink,
         displayName: this.filingTypeToName(header.name),
