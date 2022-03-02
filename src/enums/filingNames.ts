@@ -5,6 +5,7 @@ export enum FilingNames {
   CHANGE_OF_COMPANY_INFO = 'Change of Company Information', // type of alteration
   CHANGE_OF_DIRECTORS = 'Director Change',
   CHANGE_OF_NAME = 'Legal Name Change',
+  CHANGE_OF_REGISTRATION = 'Change of Registration',
   CONVERSION = 'Conversion',
   CORRECTION = 'Correction',
   COURT_ORDER = 'Court Order',
@@ -17,5 +18,5 @@ export enum FilingNames {
   REGISTRARS_ORDER = 'Registrar\'s Order',
   SPECIAL_RESOLUTION = 'Special Resolution',
   TRANSITION_APPLICATION = 'Transition Application',
-  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution'
+  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
 }

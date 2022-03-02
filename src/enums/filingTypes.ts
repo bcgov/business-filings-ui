@@ -4,6 +4,7 @@ export enum FilingTypes {
   CHANGE_OF_ADDRESS = 'changeOfAddress',
   CHANGE_OF_DIRECTORS = 'changeOfDirectors',
   CHANGE_OF_NAME = 'changeOfName',
+  CHANGE_OF_REGISTRATION = 'changeOfRegistration',
   CONVERSION = 'conversion',
   CORRECTION = 'correction',
   COURT_ORDER = 'courtOrder',
