@@ -1180,7 +1180,6 @@ export default class TodoList extends Mixins(
     const header = filing.header
     const changeOfRegistration = filing.changeOfRegistration
 
-    // NB: don't check "changeOfRegistration" as it may be empty
     if (header) {
       const title = `Change to ${this.getCorpTypeDescription(this.getEntityType)} Registration`
 
