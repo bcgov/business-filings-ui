@@ -1180,7 +1180,7 @@ export default class TodoList extends Mixins(
     const header = filing.header
     const changeOfRegistration = filing.changeOfRegistration
 
-    if (header) {
+    if (header && changeOfRegistration) {
       const title = `Change to ${this.getCorpTypeDescription(this.getEntityType)} Registration`
 
       // set subtitle only if DRAFT
@@ -1196,7 +1196,7 @@ export default class TodoList extends Mixins(
       const paymentStatusCode = header.paymentStatusCode || null
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
-      const draft = changeOfRegistration // may be undefined
+      const draft = changeOfRegistration
       const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
 
       const item: TodoItemIF = {
