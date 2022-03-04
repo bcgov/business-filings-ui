@@ -103,7 +103,7 @@ export async function fetchConfig (): Promise<void> {
   // it should be first token after Base URL in Pathname
   // FUTURE: improve Business ID / Temp Reg Number validation
   const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
-  if (['CP', 'BC', 'FM'].includes(id)) {
+  if (['CP', 'BC', 'FM'].some(type => id.includes(type))) {
     sessionStorage.setItem('BUSINESS_ID', id)
     // ensure we don't already have a Temp Reg Number in scope
     sessionStorage.removeItem('TEMP_REG_NUMBER')
