@@ -749,9 +749,10 @@ export default {
 
     storeParties (response: any): void {
       const parties = response?.data?.parties
+      console.log(parties)
       if (parties) {
-        const directorsList = parties?.filter(party => party.roles?.includes(Roles.DIRECTOR))
-        const custodianList = parties?.filter(party => party.roles?.includes(Roles.CUSTODIAN))
+        const directorsList = parties?.filter(party => party.roles?.some(role => role.roleType === Roles.DIRECTOR))
+        const custodianList = parties?.filter(party => party.roles?.some(role => role.roleType === Roles.CUSTODIAN))
 
         // Directors
         if (directorsList) {
