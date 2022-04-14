@@ -85,7 +85,7 @@ const BCOMP_DIRECTORS = [
       postalCode: 'V8W 2C3',
       addressCountry: 'CA'
     },
-    roles: ['director']
+    roles: [{ roleType: 'Director' }]
   },
   {
     officer: {
@@ -106,7 +106,7 @@ const BCOMP_DIRECTORS = [
       postalCode: 'G1 2FFF',
       addressCountry: 'UK'
     },
-    roles: ['director']
+    roles: [{ roleType: 'Director' }]
   }
 ]
 
@@ -140,11 +140,11 @@ const BCOMP_PARTIES = [
     roles: [
       {
         appointmentDate: '2020-07-06',
-        roleType: 'completing party'
+        roleType: 'Completing party'
       },
       {
         appointmentDate: '2020-07-06',
-        roleType: 'director'
+        roleType: 'Director'
       }
     ]
   },
@@ -169,7 +169,7 @@ const BCOMP_PARTIES = [
     roles: [
       {
         appointmentDate: '2020-07-06',
-        roleType: 'incorporator'
+        roleType: 'Incorporator'
       }
     ]
   }
@@ -512,7 +512,7 @@ describe('App as a COOP', () => {
                 'postalCode': 'V8W 2C3',
                 'addressCountry': 'CA'
               },
-              'roles': ['director']
+              'roles': [{ 'roleType': 'Director' }]
             },
             {
               'officer': {
@@ -526,7 +526,7 @@ describe('App as a COOP', () => {
                 'postalCode': 'G1 2FFF',
                 'addressCountry': 'UK'
               },
-              'roles': ['director']
+              'roles': [{ 'roleType': 'Director' }]
             },
             {
               'officer': {
@@ -540,7 +540,7 @@ describe('App as a COOP', () => {
                 'postalCode': '123 FFF',
                 'addressCountry': 'CA'
               },
-              'roles': ['custodian']
+              'roles': [{ 'roleType': 'Custodian' }]
             }
           ]
         }

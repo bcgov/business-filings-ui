@@ -112,7 +112,7 @@ describe('Legal API Mixin', () => {
     ]
 
     // mock endpoint
-    get.withArgs('businesses/CP1234567/parties?role=director')
+    get.withArgs('businesses/CP1234567/parties?role=Director')
       .returns(new Promise((resolve) => resolve({ data: DIRECTORS })))
 
     // call method

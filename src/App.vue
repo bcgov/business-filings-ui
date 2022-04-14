@@ -644,17 +644,6 @@ export default {
       // set addresses
       this.storeAddresses({ data: application.offices || [] })
 
-      // Format party roles from IA
-      application.parties.forEach( // Check each party for roles
-        party => party.roles?.forEach( // Check each role for roleType
-          (role, index) => {
-            if (role.roleType) { // If roleType exists, assign it to parent role index
-              party.roles[index] = role.roleType.toLowerCase()
-            }
-          }
-        )
-      )
-
       // Set parties
       this.storeParties({ data: { parties: application.parties || [] } })
 
@@ -749,7 +738,6 @@ export default {
 
     storeParties (response: any): void {
       const parties = response?.data?.parties
-      console.log(parties)
       if (parties) {
         const directorsList = parties?.filter(party => party.roles?.some(role => role.roleType === Roles.DIRECTOR))
         const custodianList = parties?.filter(party => party.roles?.some(role => role.roleType === Roles.CUSTODIAN))
