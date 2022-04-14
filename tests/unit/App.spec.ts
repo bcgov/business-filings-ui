@@ -140,7 +140,7 @@ const BCOMP_PARTIES = [
     roles: [
       {
         appointmentDate: '2020-07-06',
-        roleType: 'Completing party'
+        roleType: 'Completing Party'
       },
       {
         appointmentDate: '2020-07-06',
