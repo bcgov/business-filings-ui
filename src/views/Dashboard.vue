@@ -60,7 +60,7 @@
 
             <section>
               <header class="aside-header mb-3">
-                <h2 data-test-id="dashboard-addresses-subtitle">Office Addresses</h2>
+                <h2 data-test-id="dashboard-addresses-subtitle">{{addressHeader}}</h2>
                 <v-scale-transition>
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
@@ -173,7 +173,7 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isAppTask', 'isAppFiling', 'getCustodians']),
+      'isAppTask', 'isAppFiling', 'getCustodians', 'isFirm']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -184,6 +184,10 @@ export default {
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
+    },
+
+    addressHeader (): string {
+      return this.isFirm ? 'Business Addresses' : 'Office Addresses'
     }
   },
 

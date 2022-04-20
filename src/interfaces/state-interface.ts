@@ -43,6 +43,7 @@ export interface StateIF {
   filings: Array<ApiFilingIF> // "filings" data from API
   registeredAddress: OfficeAddressIF
   recordsAddress: OfficeAddressIF
+  businessAddress: OfficeAddressIF
   directors: Array<DirectorIF>
   custodians: Array<PartiesIF>
   nameRequest: any

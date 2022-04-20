@@ -1,15 +1,19 @@
 <template>
   <div id="address-list-sm">
+    <template v-if="isFirm">
+        <firms-address-list
+        :showCompleteYourFilingMessage="showCompleteYourFilingMessage"
+        :showGrayedOut="showGrayedOut" />
+    </template>
     <!-- when "disabled", expand all panels and disable expansion -->
-    <v-expansion-panels accordion multiple :value="expansionValue" :disabled="disabled">
+    <v-expansion-panels accordion multiple :value="expansionValue" :disabled="disabled" v-else>
       <!-- Registered Office -->
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
         :class="{
           'address-overlay': isCoaPending,
           'disabled': disabled
-        }"
-      >
+        }">
         <v-expansion-panel-header id="registered-office-panel-toggle">
           <div class="list-item__title">Registered Office</div>
         </v-expansion-panel-header>
@@ -213,7 +217,15 @@ import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 // Interfaces
 import { OfficeAddressIF } from '@/interfaces'
 
-@Component({})
+// Components
+import FirmsAddressList from './FirmsAddressList.vue'
+
+@Component({
+  components: {
+    // sub-components
+    FirmsAddressList
+  }
+})
 export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false })
@@ -225,6 +237,7 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
 
   @Getter isBComp!: boolean
   @Getter isCorp!: boolean
+  @Getter isFirm!: boolean
   @Getter isCoaPending!: boolean
   @Getter isHistorical!: boolean
   @State registeredAddress!: OfficeAddressIF

@@ -311,7 +311,7 @@ export default {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
-      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setCustodians',
+      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setDirectors', 'setCustodians',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
       'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings',
       'setGoodStanding']),
@@ -729,6 +729,10 @@ export default {
         }
         if (response.data.recordsOffice) {
           this.setRecordsAddress(this.omitProps(response.data.recordsOffice,
+            ['deliveryAddress', 'mailingAddress'], ['addressType']))
+        }
+        if (response.data.businessOffice) {
+          this.setBusinessAddress(this.omitProps(response.data.businessOffice,
             ['deliveryAddress', 'mailingAddress'], ['addressType']))
         }
       } else {
