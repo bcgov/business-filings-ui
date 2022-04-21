@@ -2,7 +2,7 @@
   <div id="address-list-sm">
     <div :disabled="disabled">
       <!-- Business Address -->
-      <div id="business-address-panel" class="align-items-top" :class="{ disabled: disabled }">
+      <div id="business-address-panel" class="align-items-top" :class="{ 'disabled': disabled }">
         <div v-if="showCompleteYourFilingMessage" class="pt-4 pb-4">
           <v-list class="pt-0 pb-0">
             <v-list-item class="delivery-address-list-item">
