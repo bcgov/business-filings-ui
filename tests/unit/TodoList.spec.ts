@@ -30,6 +30,9 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
+// mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
+console.warn = jest.fn()
+
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 

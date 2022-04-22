@@ -1995,7 +1995,7 @@ describe('Filing History List - documents', () => {
 
     const wrapper = mount(FilingHistoryList, { store, vuetify })
     await Vue.nextTick()
-    console.log(wrapper.find('.expand-btn').html())
+
     // verify that View Documents Button is not rendered
     const button = wrapper.find('.expand-btn')
     expect(button.text()).toEqual('')

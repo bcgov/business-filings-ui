@@ -66,24 +66,22 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
-
-// Enums
-import { CorpTypeCd, NameRequestStates } from '@/enums'
-
-// Interfaces
+import { NameRequestStates } from '@/enums'
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
-
-// Mixins
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 @Component({
   filters: { 'VMask': VueMaskFilter }
 })
 export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
+  @Prop() readonly nameRequest: any
+
+  @Getter isSoleProp!: boolean
+
   // Enum for template
   readonly NameRequestStates = NameRequestStates
 
@@ -92,8 +90,6 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   readonly NOT_RECEIVED_STATE= 'Not Received'
   readonly NOT_REQUIRED_STATE = 'Not Required'
   readonly WAIVED_STATE = 'Waived'
-
-  @Prop() readonly nameRequest: any
 
   private parsedNameRequest: NameRequestIF
   private nameRequestDetails: NameRequestDetailsIF
@@ -109,23 +105,27 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   }
 
   /** The entity title  */
-  private entityTypeDescription (): string {
-    return this.getCorpTypeDescription(this.parsedNameRequest.entityType as CorpTypeCd)
+  protected entityTypeDescription (): string {
+    const corpTypeDescription = this.getCorpTypeDescription(this.parsedNameRequest.entityType)
+    if (this.isSoleProp) {
+      return `${corpTypeDescription} or Doing Business As (DBA)`
+    }
+    return corpTypeDescription
   }
 
   /** The request type */
-  private requestType (): string {
+  protected requestType (): string {
     return 'New Business'
   }
 
   /** Return formatted expiration date */
-  private formattedExpirationDate (): string {
+  protected formattedExpirationDate (): string {
     const date = new Date(this.nameRequestDetails.expirationDate)
     return this.dateToPacificDateTime(date)
   }
 
   /** Return condition/consent string */
-  private get conditionConsent (): string {
+  get conditionConsent (): string {
     if (this.nameRequestDetails.status === NameRequestStates.APPROVED) {
       return this.NOT_REQUIRED_STATE
     }
@@ -142,7 +142,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   }
 
   /** Return formatted applicant name */
-  private applicantName (): string {
+  protected applicantName (): string {
     let name = this.nameRequestApplicant.firstName
     if (this.nameRequestApplicant.middleName) {
       name = `${name} ${this.nameRequestApplicant.middleName} ${this.nameRequestApplicant.lastName}`
@@ -153,7 +153,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   }
 
   /** Return formatted address string */
-  private applicantAddress (): string {
+  protected applicantAddress (): string {
     // Get Address info
     const city = this.nameRequestApplicant.city
     const stateProvince = this.nameRequestApplicant.stateProvinceCode
@@ -182,6 +182,10 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 ul {
   list-style-type: none;
 
+  li {
+    display: flex;
+  }
+
   .hdr {
     font-size: $px-16;
     font-weight: bold;
@@ -192,12 +196,14 @@ ul {
     font-size: $px-15;
     font-weight: bold;
     color: $gray9;
+    flex-shrink: 0;
   }
 
   .val {
     padding-left: 4px;
     font-size: $px-15;
     color: $gray7;
+    flex-grow: 1;
   }
 }
 

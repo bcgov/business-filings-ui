@@ -71,7 +71,7 @@
                   @click="promptDissolve()"
                 >
                   <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
-                  <span class="font-13 ml-1">Dissolve this {{ entityDescription }}</span>
+                  <span class="font-13 ml-1">Dissolve this Business</span>
                   <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
                     <template v-slot:activator="{ on }">
                       <span class="pl-1" v-on="on">
@@ -192,60 +192,58 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @State reasonText!: string
 
   @Getter getBusinessNumber!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getIdentifier!: number
   @Getter getEntityName!: string
-  @Getter isRoleStaff!: boolean
-  @Getter isBComp!: boolean
-  @Getter isBcCompany!: boolean
   @Getter isCoop!: boolean
-  @Getter isUlc!: boolean
   @Getter getNrNumber!: string
-  @Getter hasBlocker!: boolean
   @Getter isGoodStanding!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
-  @Getter isHistorical!: boolean
 
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
 
   /** Whether to show the hover style. */
-  private showHoverStyle = false
+  protected showHoverStyle = false
 
   /** The Business ID string. */
-  private get businessId (): string {
+  get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
   /** The Edit URL string. */
-  private get editUrl (): string {
+  get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
   }
 
   /** The entity title to display. */
-  private get entityTitle (): string {
+  get entityTitle (): string {
     return this.isCoop ? 'Cooperative Association' : 'Company'
   }
 
   /** The Business Profile URL string. */
-  private get businessProfileUrl (): string {
+  get businessProfileUrl (): string {
     return sessionStorage.getItem('AUTH_WEB_URL') + 'businessprofile'
   }
 
   /** The Incorporation Application's Temporary Registration Number string. */
-  private get tempRegNumber (): string {
+  get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
   /** The entity description. */
-  private get entityDescription (): string {
-    return this.getCorpTypeDescription(this.getEntityType)
+  get entityDescription (): string {
+    // return this.getCorpTypeDescription(this.getEntityType)
+    const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
+    if (this.isSoleProp) {
+      return `${corpTypeDescription} / Doing Business As (DBA)`
+    }
+    return corpTypeDescription
   }
 
   /** The NR description. */
-  private get nrDescription (): string {
+  get nrDescription (): string {
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getEntityType)
       ? FilingNames.REGISTRATION
       : FilingNames.INCORPORATION_APPLICATION
@@ -254,7 +252,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   }
 
   /** The business phone number and optional extension. */
-  private get fullPhoneNumber (): string {
+  get fullPhoneNumber (): string {
     if (this.businessPhone) {
       return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
     }
@@ -265,13 +263,14 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, navigates to the Edit UI to view or change company information.
    */
-  private promptChangeCompanyInfo (): void {
+  protected promptChangeCompanyInfo (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
+      const isFirm = (this.isSoleProp || this.isPartnership)
       let url = `${this.editUrl}${this.getIdentifier}`
       // Append appropriate route based on entity type
-      url += (this.isFirm ? '/change' : '/alteration')
+      url += (isFirm ? '/change' : '/alteration')
       navigate(url)
     }
   }
@@ -279,7 +278,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   /**
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, emits an event to prompt user to confirm voluntary dissolution. */
-  private promptDissolve (): void {
+  protected promptDissolve (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
       return
@@ -288,7 +287,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   }
 
   /** Navigates to the Auth UI to update business profile. */
-  private editBusinessProfile (): void {
+  protected editBusinessProfile (): void {
     navigate(this.businessProfileUrl)
   }
 

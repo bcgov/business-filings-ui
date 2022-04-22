@@ -576,28 +576,23 @@ export default class TodoList extends Mixins(
   }
 
   // local properties
-  private addCommentDialog = false
-  private todoItems: Array<TodoItemIF> = []
-  private deleteErrors: Array<any> = []
-  private deleteWarnings: Array<any> = []
-  private deleteErrorDialog = false
-  private cancelPaymentErrors: Array<any> = []
-  private cancelPaymentErrorDialog = false
-  private enableCheckbox: Array<any> = []
-  private confirmEnabled = false
-  private currentFiling: TodoItemIF = null
-  private panel: number = null // currently expanded panel
-  private checkTimer: number = null
-  private inProcessFiling: number = null
+  protected addCommentDialog = false
+  protected todoItems: Array<TodoItemIF> = []
+  protected deleteErrors: Array<any> = []
+  protected deleteWarnings: Array<any> = []
+  protected deleteErrorDialog = false
+  protected cancelPaymentErrors: Array<any> = []
+  protected cancelPaymentErrorDialog = false
+  protected enableCheckbox: Array<any> = []
+  protected confirmEnabled = false
+  protected currentFiling: TodoItemIF = null
+  protected panel: number = null // currently expanded panel
+  protected checkTimer: number = null
+  protected inProcessFiling: number = null
 
   @Prop({ default: null }) readonly highlightId: number
 
-  @Getter isBComp!: boolean
-  @Getter isBcCompany!: boolean
   @Getter isCoop!: boolean
-  @Getter isUlc!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter getIdentifier!: string
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter isGoodStanding!: boolean
@@ -615,47 +610,47 @@ export default class TodoList extends Mixins(
   @Action setHasBlockerTask!: ActionBindingIF
 
   /** The Auth Web URL string. */
-  private get authWebUrl (): string {
+  get authWebUrl (): string {
     return sessionStorage.getItem('AUTH_WEB_URL')
   }
 
   /** The Edit URL string. */
-  private get editUrl (): string {
+  get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
   }
 
   /** The Create URL string. */
-  private get createUrl (): string {
+  get createUrl (): string {
     return sessionStorage.getItem('CREATE_URL')
   }
 
   /** The Manage Businesses URL string. */
-  private get manageBusinessesUrl (): string {
+  get manageBusinessesUrl (): string {
     return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
   }
 
   /** The BCROS Home URL string. */
-  private get bcrosHomeUrl (): string {
+  get bcrosHomeUrl (): string {
     return sessionStorage.getItem('BUSINESSES_URL')
   }
 
   /** The Base URL string. */
-  private get baseUrl (): string {
+  get baseUrl (): string {
     return sessionStorage.getItem('BASE_URL')
   }
 
   /** The Business ID string. */
-  private get businessId (): string {
+  get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
   /** The Incorporation Application's Temporary Registration Number string. */
-  private get tempRegNumber (): string {
+  get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
   /** Whether filing an Alteration is required (ie, there is a Todo filing). */
-  private get requiresAlteration (): boolean {
+  get requiresAlteration (): boolean {
     if (this.isBcCompany || this.isUlc) {
       return this.getTasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
     }
@@ -663,12 +658,12 @@ export default class TodoList extends Mixins(
   }
 
   /** Alteration action button label. */
-  private get alterationBtnLabel (): string {
+  get alterationBtnLabel (): string {
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
   /** Whether the File Annual Report button should be disabled. */
-  private isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
+  protected isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
     return (
       !item.enabled ||
       (this.isBComp && !this.enableCheckbox[index]) ||
@@ -724,7 +719,7 @@ export default class TodoList extends Mixins(
    * Checks whether the subject filing is now Completed.
    * Retries after 1 second for up to 10 iterations.
    */
-  checkIfCompleted (id: number, count: number): void {
+  private checkIfCompleted (id: number, count: number): void {
     // stop this cycle after 10 iterations
     if (++count > 10) {
       this.inProcessFiling = null
@@ -873,7 +868,7 @@ export default class TodoList extends Mixins(
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(business.legalType as CorpTypeCd)
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
@@ -912,7 +907,7 @@ export default class TodoList extends Mixins(
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(business.legalType as CorpTypeCd)
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
@@ -1134,7 +1129,10 @@ export default class TodoList extends Mixins(
 
     // NB: don't check "registration" as it may be empty
     if (header) {
-      const title = `${this.getCorpTypeDescription(this.getEntityType)} ${FilingNames.REGISTRATION}`
+      const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
+      const title = this.isSoleProp
+        ? `${corpTypeDescription} / Doing Business As (DBA) ${FilingNames.REGISTRATION}`
+        : `${corpTypeDescription} ${FilingNames.REGISTRATION}`
 
       // set subtitle only if DRAFT
       let subtitle: string = null
@@ -1223,7 +1221,7 @@ export default class TodoList extends Mixins(
   }
 
   /** Files a new filing (todo). */
-  private doFileNow (item: TodoItemIF): void {
+  protected doFileNow (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // file the subject Annual Report
@@ -1242,7 +1240,7 @@ export default class TodoList extends Mixins(
   }
 
   /** Resumes a draft filing. */
-  private doResumeFiling (item: TodoItemIF): void {
+  protected doResumeFiling (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report
@@ -1318,7 +1316,7 @@ export default class TodoList extends Mixins(
   }
 
   // this is called for both Resume Payment and Retry Payment
-  private doResumePayment (item: TodoItemIF): boolean {
+  protected doResumePayment (item: TodoItemIF): boolean {
     const paymentToken = item.paymentToken
 
     const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + item.filingId)
@@ -1328,7 +1326,7 @@ export default class TodoList extends Mixins(
     return true
   }
 
-  private confirmDeleteDraft (item: TodoItemIF): void {
+  protected confirmDeleteDraft (item: TodoItemIF): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Delete Draft?',
@@ -1352,7 +1350,7 @@ export default class TodoList extends Mixins(
     })
   }
 
-  private confirmDeleteApplication (item: TodoItemIF): void {
+  protected confirmDeleteApplication (item: TodoItemIF): void {
     const line1 = `Deleting this ${item.draftTitle} will remove this application and all information ` +
       'associated with this application.'
     const line2 = this.nameRequest
@@ -1419,18 +1417,18 @@ export default class TodoList extends Mixins(
     })
   }
 
-  private resetErrors (): void {
+  protected resetErrors (): void {
     this.deleteErrorDialog = false
     this.deleteErrors = []
     this.deleteWarnings = []
   }
 
-  private resetCancelPaymentErrors (): void {
+  protected resetCancelPaymentErrors (): void {
     this.cancelPaymentErrorDialog = false
     this.cancelPaymentErrors = []
   }
 
-  private confirmCancelPayment (item: TodoItemIF): void {
+  protected confirmCancelPayment (item: TodoItemIF): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Cancel Payment?',
@@ -1474,12 +1472,12 @@ export default class TodoList extends Mixins(
     })
   }
 
-  private showCommentDialog (filing: TodoItemIF): void {
+  protected showCommentDialog (filing: TodoItemIF): void {
     this.currentFiling = filing
     this.addCommentDialog = true
   }
 
-  private hideCommentDialog (needReload: boolean): void {
+  protected hideCommentDialog (needReload: boolean): void {
     this.addCommentDialog = false
     if (needReload) {
       // emit event to reload all data
@@ -1487,7 +1485,7 @@ export default class TodoList extends Mixins(
     }
   }
 
-  private isPayError (item: TodoItemIF): boolean {
+  protected isPayError (item: TodoItemIF): boolean {
     return !!item.payErrorObj
   }
 
@@ -1509,7 +1507,7 @@ export default class TodoList extends Mixins(
   }
 
   /** Closes current panel or opens new panel. */
-  private togglePanel (index: number): void {
+  protected togglePanel (index: number): void {
     this.panel = (this.panel === index) ? null : index
   }
 
