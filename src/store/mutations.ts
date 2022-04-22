@@ -87,6 +87,9 @@ export default {
   recordsAddress (state: StateIF, recordsAddress: OfficeAddressIF) {
     state.recordsAddress = recordsAddress
   },
+  businessAddress (state: StateIF, businessAddress: OfficeAddressIF) {
+    state.businessAddress = businessAddress
+  },
   directors (state: StateIF, directors: Array<DirectorIF>) {
     state.directors = directors
   },

@@ -87,6 +87,9 @@ export default {
   setRecordsAddress ({ commit }, recordsAddress: OfficeAddressIF) {
     commit('recordsAddress', recordsAddress)
   },
+  setBusinessAddress ({ commit }, businessAddress: OfficeAddressIF) {
+    commit('businessAddress', businessAddress)
+  },
   setDirectors ({ commit }, directors: Array<DirectorIF>) {
     commit('directors', directors)
   },
