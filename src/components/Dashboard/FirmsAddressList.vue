@@ -169,8 +169,4 @@ $icon-width: 2.75rem;
   padding: 0;
   list-style-type: none;
 }
-
-.address-overlay {
-  background-color: rgba(255, 235, 59, .1)!important;
-}
 </style>
