@@ -35,7 +35,7 @@ objects:
         ref: ${GIT_REF}
         uri: ${GIT_REPO_URL}
       dockerfile: |
-        FROM docker-remote.artifacts.developer.gov.bc.ca/node:14.17.5 as build-stage
+        FROM docker-remote.artifacts.developer.gov.bc.ca/node:16.14.2 as build-stage
         WORKDIR /app
         COPY ./package*.json ./
         RUN npm install
