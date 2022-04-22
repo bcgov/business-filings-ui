@@ -137,6 +137,7 @@ import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
+import { navigate } from '@/utils'
 
 // Enums and interfaces
 import { FilingStatus, Routes, AllowableActions } from '@/enums'
@@ -173,7 +174,7 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isAppTask', 'isAppFiling', 'getCustodians', 'isFirm']),
+      'isAppTask', 'isAppFiling', 'getCustodians', 'isFirm', 'getIdentifier']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -186,8 +187,14 @@ export default {
       return +this.$route.query.filing_id
     },
 
+    /** Address Header Text */
     addressHeader (): string {
       return this.isFirm ? 'Business Addresses' : 'Office Addresses'
+    },
+
+    /** The Edit URL string. */
+    editUrl (): string {
+      return sessionStorage.getItem('EDIT_URL')
     }
   },
 
@@ -215,7 +222,12 @@ export default {
 
     /** Display COA warning if BCOMP else proceed to COA. */
     proceedCoa () {
-      this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
+      if (this.isFirm) {
+        let url = `${this.editUrl}${this.getIdentifier}/change`
+        navigate(url)
+      } else {
+        this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
+      }
     }
   }
 }
