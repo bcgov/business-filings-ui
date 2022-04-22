@@ -14,9 +14,7 @@
 
         <v-expansion-panel-content>
           <v-list class="pt-0 pb-0">
-            <v-list-item class="delivery-address-list-item"
-                         v-if="custodian.deliveryAddress"
-            >
+            <v-list-item class="delivery-address-list-item" v-if="custodian.deliveryAddress">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
                 <v-list-item-subtitle>
@@ -32,14 +30,12 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item"
-                         v-if="custodian.mailingAddress"
-            >
+            <v-list-item class="mailing-address-list-item" v-if="custodian.mailingAddress">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
                   <div class="same-as-above"
-                       v-if="isSame(custodian.deliveryAddress, custodian.mailingAddress)"
+                       v-if="isSame(custodian.deliveryAddress, custodian.mailingAddress, 'id')"
                   >
                     <span>Same as above</span>
                   </div>
@@ -62,20 +58,17 @@
 </template>
 
 <script lang="ts">
-// Vue Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-
-// Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
-import { PartiesIF } from '@/interfaces'
+import { PartyIF } from '@/interfaces'
 
 @Component({})
 export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   @Prop({ default: () => [] })
-  readonly custodians: Array<PartiesIF>
+  readonly custodians: Array<PartyIF>
 
   /** Return the officer person or org name */
-  private officerName (party: PartiesIF): string {
+  protected officerName (party: PartyIF): string {
     return party.officer.firstName
       ? `${party.officer.firstName} ${party.officer.middleInitial || ''} ${party.officer.lastName}`
       : party.officer.organizationName
@@ -125,7 +118,7 @@ $avatar-width: 2.75rem;
   padding: 0;
 }
 
-.v-list-item:first-of-type {
+.v-list-item:not(last-of-type) {
   padding-bottom: 1rem;
 }
 

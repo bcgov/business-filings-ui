@@ -22,9 +22,7 @@
 
         <v-expansion-panel-content>
           <v-list class="pt-0 pb-0">
-            <v-list-item class="delivery-address-list-item"
-              v-if="director.deliveryAddress"
-            >
+            <v-list-item class="delivery-address-list-item" v-if="director.deliveryAddress">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
                 <v-list-item-subtitle>
@@ -40,14 +38,12 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item"
-              v-if="director.mailingAddress"
-            >
+            <v-list-item class="mailing-address-list-item" v-if="director.mailingAddress">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
                   <div class="same-as-above"
-                    v-if="isSame(director.deliveryAddress, director.mailingAddress)"
+                    v-if="isSame(director.deliveryAddress, director.mailingAddress, 'id')"
                   >
                     <span>Same as above</span>
                   </div>
@@ -70,15 +66,14 @@
 </template>
 
 <script lang="ts">
-// Vue Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { State } from 'vuex-class'
-
-// Mixins
-import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
+import { Getter } from 'vuex-class'
+import { CommonMixin, CountriesProvincesMixin, DirectorMixin } from '@/mixins'
+import { DirectorIF, PartyIF } from '@/interfaces'
+import { Roles } from '@/enums'
 
 @Component({})
-export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
+export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvincesMixin, DirectorMixin) {
   /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false })
   readonly showCompleteYourFilingMessage: boolean
@@ -87,10 +82,23 @@ export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvinc
   @Prop({ default: false })
   readonly showGrayedOut: boolean
 
-  @State directors!: Array<object>
+  @Getter getParties!: PartyIF[]
+
+  /** The directors list. */
+  get directors (): DirectorIF[] {
+    const directors = this.getParties.filter(
+      party => party.roles?.some(role => role.roleType === Roles.DIRECTOR)
+    )
+    const directorsWithProps = directors.map((director: any, i: number) =>
+      ({ ...director, id: i + 1 } as DirectorIF)
+    )
+    return directorsWithProps.sort(
+      this.fieldSorter(['lastName', 'firstName', 'middleName'])
+    )
+  }
 
   /** Whether to appear disabled. */
-  private get disabled (): boolean {
+  protected get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
 }
@@ -142,7 +150,7 @@ $avatar-width: 2.75rem;
   padding: 0;
 }
 
-.v-list-item:first-of-type {
+.v-list-item:not(last-of-type) {
   padding-bottom: 1rem;
 }
 

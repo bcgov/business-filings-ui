@@ -494,7 +494,7 @@ describe('App as a COOP', () => {
         }
       })))
 
-    // GET directors
+    // GET parties
     get.withArgs('businesses/CP0001191/parties')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -617,15 +617,11 @@ describe('App as a COOP', () => {
     expect(vm.$store.state.registeredAddress.addressType).toBeUndefined()
   })
 
-  it('fetches Directors properly', () => {
-    expect(vm.$store.state.directors.length).toBe(2)
-    expect(vm.$store.state.directors[0].officer.lastName).toBe('Griffin')
-    expect(vm.$store.state.directors[1].officer.lastName).toBe('Swanson')
-  })
-
-  it('fetches Custodians properly', () => {
-    expect(vm.$store.state.custodians.length).toBe(1)
-    expect(vm.$store.state.custodians[0].officer.lastName).toBe('Smith')
+  it('fetches Parties properly', () => {
+    expect(vm.$store.state.parties.length).toBe(3)
+    expect(vm.$store.state.parties[0].officer.lastName).toBe('Griffin') // director
+    expect(vm.$store.state.parties[1].officer.lastName).toBe('Swanson') // director
+    expect(vm.$store.state.parties[2].officer.lastName).toBe('Smith') // custodian
   })
 })
 
@@ -792,7 +788,7 @@ describe('App as a BCOMP', () => {
         data: BCOMP_ADDRESSES
       })))
 
-    // GET directors
+    // GET parties
     get.withArgs('businesses/BC0007291/parties')
       .returns(new Promise((resolve) => resolve({
         data:
@@ -879,10 +875,10 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.state.recordsAddress.addressType).toBeUndefined()
   })
 
-  it('fetches Directors properly', () => {
-    expect(vm.$store.state.directors.length).toBe(2)
-    expect(vm.$store.state.directors[0].officer.lastName).toBe('Griffin')
-    expect(vm.$store.state.directors[1].officer.lastName).toBe('Swanson')
+  it('fetches Parties properly', () => {
+    expect(vm.$store.state.parties.length).toBe(2)
+    expect(vm.$store.state.parties[0].officer.lastName).toBe('Griffin')
+    expect(vm.$store.state.parties[1].officer.lastName).toBe('Swanson')
   })
 })
 
@@ -1458,9 +1454,9 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
     expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
-    expect(vm.$store.state.directors[0].officer.firstName).toBe('Griffin')
-    expect(vm.$store.state.directors[0].officer.lastName).toBe('Swanson')
-    expect(vm.$store.state.directors.length).toEqual(1)
+    expect(vm.$store.state.parties.length).toEqual(2)
+    expect(vm.$store.state.parties[0].officer.firstName).toBe('Griffin')
+    expect(vm.$store.state.parties[1].officer.organizationName).toBe('Test Inc')
 
     // verify loaded filing
     expect(vm.$store.state.filings.length).toBe(1)
@@ -1609,9 +1605,9 @@ describe('App as a COMPLETED Incorporation Application', () => {
     // spot check addresses and directors
     expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
     expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
-    expect(vm.$store.state.directors[0].officer.firstName).toBe('Griffin')
-    expect(vm.$store.state.directors[0].officer.lastName).toBe('Swanson')
-    expect(vm.$store.state.directors.length).toEqual(1)
+    expect(vm.$store.state.parties.length).toEqual(2)
+    expect(vm.$store.state.parties[0].officer.firstName).toBe('Griffin')
+    expect(vm.$store.state.parties[1].officer.organizationName).toBe('Test Inc')
 
     // verify loaded filing
     expect(vm.$store.state.filings.length).toBe(1)

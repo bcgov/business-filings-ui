@@ -12,9 +12,9 @@
               <span>{{ getEntityName || getCorpTypeNumberedDescription(getEntityType)}}</span>
             </div>
 
-            <!-- Entity Type -->
-            <div v-if="businessId" id="entity-description">{{ entityDescription }}</div>
-            <div v-if="tempRegNumber" id="nr-subtitle">{{ nrDescription }}</div>
+            <!-- Description -->
+            <div v-if="businessId" id="business-subtitle">{{ businessDescription }}</div>
+            <div v-if="tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
           </header>
 
           <menu class="mt-4 ml-n4">
@@ -232,23 +232,23 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  /** The entity description. */
-  get entityDescription (): string {
-    // return this.getCorpTypeDescription(this.getEntityType)
+  /** The business description. */
+  get businessDescription (): string {
     const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
+
     if (this.isSoleProp) {
       return `${corpTypeDescription} / Doing Business As (DBA)`
     }
     return corpTypeDescription
   }
 
-  /** The NR description. */
-  get nrDescription (): string {
+  /** The incorporation application or registration description. */
+  get iaRegDescription (): string {
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getEntityType)
       ? FilingNames.REGISTRATION
       : FilingNames.INCORPORATION_APPLICATION
 
-    return `${this.getCorpTypeDescription(this.getEntityType)} ${filingName}`
+    return `${this.businessDescription} ${filingName}`
   }
 
   /** The business phone number and optional extension. */
@@ -357,8 +357,8 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   vertical-align: top;
 }
 
-#entity-description,
-#nr-subtitle {
+#business-subtitle,
+#ia-reg-subtitle {
   font-size: $px-14;
   color: $gray7;
 }

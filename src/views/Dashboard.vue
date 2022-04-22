@@ -11,6 +11,7 @@
       <article id="dashboard-article">
         <v-row class="mt-n9">
           <v-col cols="12" md="9">
+            <!-- To Do section-->
             <section v-if="!isHistorical">
               <header>
                 <h2 class="mb-3" data-test-id="dashboard-todo-subtitle">
@@ -24,6 +25,7 @@
               />
             </section>
 
+            <!-- Recent Filing History section -->
             <section>
               <header>
                 <h2 data-test-id="dashboard-filing-history-subtitle">
@@ -45,19 +47,19 @@
           </v-col>
 
           <v-col cols="12" md="3" style="position: relative">
-            <section v-if="isHistorical && getCustodians.length >= 1">
+            <!-- Custodian of Records -->
+            <section v-if="isHistorical && custodians.length > 0">
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-custodians-subtitle">Custodian of Records</h2>
               </header>
               <div class="scrollable-container" style="max-height: 49rem">
                 <v-card flat>
-                  <CustodianListSm
-                    :custodians="getCustodians"
-                  />
+                  <CustodianListSm :custodians="custodians" />
                 </v-card>
               </div>
             </section>
 
+            <!-- Office Addresses -->
             <section>
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-addresses-subtitle">{{addressHeader}}</h2>
@@ -95,7 +97,8 @@
               </v-card>
             </section>
 
-            <section>
+            <!-- Current Directors-->
+            <section v-if="!isSoleProp && !isPartnership">
               <header class="aside-header mb-3">
                 <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
                 <v-btn text small color="primary"
@@ -117,6 +120,33 @@
                 </v-card>
               </div>
             </section>
+
+            <!-- Proprietor / Partners -->
+            <section v-if="isSoleProp || isPartnership">
+              <header class="aside-header mb-3">
+                <h2 v-if="isSoleProp" data-test-id="dashboard-proprietor-subtitle">Proprietor</h2>
+                <h2 v-if="isPartnership" data-test-id="dashboard-partners-subtitle">Partners</h2>
+
+                <v-btn text small color="primary"
+                  id="change-proprietor-partners-button"
+                  class="change-btn"
+                  v-if="!isHistorical"
+                  :disabled="hasBlocker || !isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)"
+                  @click.native.stop="goToChangeFiling()">
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Change</span>
+                </v-btn>
+              </header>
+
+              <div class="scrollable-container" style="max-height: 49rem">
+                <v-card flat>
+                  <ProprietorPartnersListSm
+                    :showCompleteYourFilingMessage="isAppTask"
+                    :showGrayedOut="isAppFiling"
+                  />
+                </v-card>
+              </div>
+            </section>
           </v-col>
         </v-row>
       </article>
@@ -127,6 +157,7 @@
 <script lang="ts">
 // Libraries
 import { mapActions, mapGetters } from 'vuex'
+import { navigate } from '@/utils'
 
 // Components and dialogs
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -134,13 +165,14 @@ import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
+import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
-import { navigate } from '@/utils'
 
 // Enums and interfaces
-import { FilingStatus, Routes, AllowableActions } from '@/enums'
+import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
+import { PartyIF } from '@/interfaces'
 
 // Mixins
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
@@ -156,6 +188,7 @@ export default {
     AddressListSm,
     CustodianListSm,
     DirectorListSm,
+    ProprietorPartnersListSm,
     LegalObligation,
     StaffNotation,
     CoaWarningDialog
@@ -174,7 +207,7 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isAppTask', 'isAppFiling', 'getCustodians', 'isFirm', 'getIdentifier']),
+      'isAppTask', 'isAppFiling', 'getParties', 'isSoleProp', 'isPartnership', 'getIdentifier']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -195,6 +228,10 @@ export default {
     /** The Edit URL string. */
     editUrl (): string {
       return sessionStorage.getItem('EDIT_URL')
+    },
+
+    custodians (): PartyIF[] {
+      return this.getParties.filter(party => party.roles?.some(role => role.roleType === Roles.CUSTODIAN))
     }
   },
 
@@ -204,6 +241,11 @@ export default {
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)
       this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: 0 } }) // 0 means "new COD filing"
+    },
+
+    goToChangeFiling () {
+      const url = `${this.editUrl}${this.getIdentifier}/change`
+      navigate(url)
     },
 
     goToStandaloneAddresses () {

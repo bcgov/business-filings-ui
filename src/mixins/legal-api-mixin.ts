@@ -42,6 +42,7 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
 
   /**
    * Fetches addresses.
+   * See also Directors.fetchDirectors().
    * @param businessId the business identifier (aka entity inc no)
    * @returns a promise to return the addresses from the response
    */
