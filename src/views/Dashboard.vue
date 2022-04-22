@@ -223,7 +223,7 @@ export default {
     /** Display COA warning if BCOMP else proceed to COA. */
     proceedCoa () {
       if (this.isFirm) {
-        let url = `${this.editUrl}${this.getIdentifier}/change`
+        const url = `${this.editUrl}${this.getIdentifier}/change`
         navigate(url)
       } else {
         this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()

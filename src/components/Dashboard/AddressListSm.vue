@@ -1,7 +1,7 @@
 <template>
   <div id="address-list-sm">
     <template v-if="isFirm">
-        <firms-address-list
+        <firmsAddressList
         :showCompleteYourFilingMessage="showCompleteYourFilingMessage"
         :showGrayedOut="showGrayedOut" />
     </template>

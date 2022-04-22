@@ -1,5 +1,5 @@
 <template>
-  <div id="address-list-sm">
+  <div id="firms-address-list">
     <div :disabled="disabled">
       <!-- Business Address -->
       <div id="business-address-panel" class="align-items-top" :class="{ 'disabled': disabled }">
