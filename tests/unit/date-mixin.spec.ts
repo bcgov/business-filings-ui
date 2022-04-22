@@ -99,16 +99,16 @@ describe('Date Mixin', () => {
     // init store
     store.state.currentJsDate = new Date('2022-03-01T12:00:00')
 
-    expect(vm.daysFromToday(new Date(2022, 3-1, 2))).toBe(1) // before time change
-    expect(vm.daysFromToday(new Date(2022, 3-1, 15))).toBe(14) // after time change
+    expect(vm.daysFromToday(new Date(2022, 3 - 1, 2))).toBe(1) // before time change
+    expect(vm.daysFromToday(new Date(2022, 3 - 1, 15))).toBe(14) // after time change
   })
 
   it('returns correct values for DAYLIGHT SAVINGS fall back daysFromToday()', () => {
     // init store
     store.state.currentJsDate = new Date('2022-11-01T12:00:00')
 
-    expect(vm.daysFromToday(new Date(2022, 11-1, 2))).toBe(1) // before time change
-    expect(vm.daysFromToday(new Date(2022, 11-1, 8))).toBe(7) // after time change
+    expect(vm.daysFromToday(new Date(2022, 11 - 1, 2))).toBe(1) // before time change
+    expect(vm.daysFromToday(new Date(2022, 11 - 1, 8))).toBe(7) // after time change
   })
 
   it('returns correct values for yyyyMmDdToDate()', () => {

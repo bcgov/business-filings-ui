@@ -1,5 +1,6 @@
 <template>
-  <div v-if="showLegalObligation && !!getObligations && isBusinessWithNoMaintenanceFilings && !!businessId"
+  <div
+    v-if="showLegalObligation && !!getObligations && isBusinessWithNoMaintenanceFilings && !!businessId"
     class="legal-obligation-container"
   >
     <v-card flat class="legal-obligation-section">
@@ -13,7 +14,7 @@
           <span v-if="!readMoreFlag"><u>Read more about your obligations</u></span>
         </p>
 
-        <div v-if="readMoreFlag">
+        <div v-if="readMoreFlag" class="mb-4">
           <div class="obligations-copy pt-2">{{getObligations.subtitle}}</div>
           <div class="pt-2">
             <ul>
@@ -26,12 +27,12 @@
             <a :href="getObligations.detailInfoURL" target="_blank">Find out more detailed information</a>
             <v-icon color="primary" class="ml-1" small>mdi-open-in-new</v-icon>
           </div>
-          <div class="pt-2">
+          <div class="pt-6">
             <span class="app-blue cursor-pointer" @click="readMoreFlag = false"><u>Read less</u></span>
           </div>
         </div>
 
-        <div class="legal-obligation-btn-panel">
+        <div class="legal-obligation-btn-panel float-right mt-2">
           <v-btn id="dismiss-btn" color="primary" @click="showLegalObligation = false" height="25" width="90">
             <span>Dismiss</span>
           </v-btn>
@@ -43,22 +44,18 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
+import { Getter } from 'vuex-class'
 import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
 
-@Component({
-  computed: {
-    ...mapGetters(['isBusinessWithNoMaintenanceFilings'])
-  }
-})
+@Component({})
 export default class LegalObligation extends Mixins(ResourceLookupMixin) {
-  readonly isBusinessWithNoMaintenanceFilings!: boolean
-  readonly isBComp!: boolean
-  private readMoreFlag: boolean = false
-  private showLegalObligation: boolean = true
+  @Getter isBusinessWithNoMaintenanceFilings!: boolean
+
+  protected readMoreFlag = false
+  protected showLegalObligation = true
 
   /** The Business ID string. */
-  private get businessId (): string {
+  get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 }
@@ -95,10 +92,5 @@ ul {
 
 li {
   padding-top: 0.25rem;
-}
-
-.legal-obligation-btn-panel {
-  float: right;
-  margin-top: 1.5rem;
 }
 </style>
