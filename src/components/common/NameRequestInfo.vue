@@ -182,10 +182,6 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
 ul {
   list-style-type: none;
 
-  li {
-    display: flex;
-  }
-
   .hdr {
     font-size: $px-16;
     font-weight: bold;
@@ -196,14 +192,12 @@ ul {
     font-size: $px-15;
     font-weight: bold;
     color: $gray9;
-    flex-shrink: 0;
   }
 
   .val {
     padding-left: 4px;
     font-size: $px-15;
     color: $gray7;
-    flex-grow: 1;
   }
 }
 
