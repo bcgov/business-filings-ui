@@ -29,8 +29,8 @@
         <div class="font-15 mb-4" v-if="numErrors > 0">
           <p>We were unable to process your payment due to the following errors:</p>
           <ul>
-            <li v-for="(error, index) in errors" :key="index">
-              {{error.message}}
+            <li v-for="(error, index) in errors[0].message.split('<br/>')" :key="index">
+              {{ error }}
             </li>
           </ul>
         </div>
