@@ -203,9 +203,10 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('p').length).toBe(3)
     expect(wrapper.findAll('p').at(0).text()).toContain('We are unable to process your payment')
     expect(wrapper.findAll('p').at(1).text()).toContain('Please note the following warnings')
-    expect(wrapper.findAll('li').length).toBe(2)
-    expect(wrapper.findAll('li').at(0).text()).toBe('Test Warning 1')
-    expect(wrapper.findAll('li').at(1).text()).toBe('Test Warning 2')
+    expect(wrapper.findAll('li').length).toBe(0)
+    expect(wrapper.findAll('span').length).toBe(4)
+    expect(wrapper.findAll('span').at(1).text()).toContain('Test Warning 1')
+    expect(wrapper.findAll('span').at(3).text()).toContain('Test Warning 2')
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
     expect(wrapper.find('#dialog-okay-button').exists()).toBe(false)
 
