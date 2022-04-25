@@ -29,9 +29,7 @@
         <div class="font-15 mb-4" v-if="numErrors > 0">
           <p>We were unable to process your payment due to the following errors:</p>
           <div v-for="(error, index) in errors" :key="index" class="d-flex">
-            <span class="flex-shrink-0 error-bullet">
-              <v-icon class="error-circle">mdi-circle-medium</v-icon>
-            </span>
+            <span class="flex-shrink-0"><v-icon>mdi-circle-medium</v-icon></span>
             <span class="flex-grow-1" v-html="error.message" />
           </div>
         </div>
@@ -40,9 +38,7 @@
         <div class="font-15 mb-4" v-if="numWarnings > 0">
           <p>Please note the following warnings:</p>
           <div v-for="(warning, index) in warnings" :key="index" class="d-flex">
-            <span class="flex-shrink-0 error-bullet">
-              <v-icon class="error-circle">mdi-circle-medium</v-icon>
-            </span>
+            <span class="flex-shrink-0"><v-icon>mdi-circle-medium</v-icon></span>
             <span class="flex-grow-1" v-html="warning.message" />
           </div>
         </div>
@@ -105,14 +101,3 @@ export default class PaymentErrorDialog extends Vue {
   }
 }
 </script>
-
-<style scoped>
-  .error-bullet {
-    padding-left: 1.4px;
-    padding-right: 5px;
-  }
-
-  .error-circle {
-    font-size: 18px;
-  }
-</style>
