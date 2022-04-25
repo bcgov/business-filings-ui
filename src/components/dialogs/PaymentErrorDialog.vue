@@ -28,11 +28,12 @@
         <!-- display errors -->
         <div class="font-15 mb-4" v-if="numErrors > 0">
           <p>We were unable to process your payment due to the following errors:</p>
-          <ul>
-            <li v-for="(error, index) in errors[0].message.split('<br/>')" :key="index">
-              {{ error }}
-            </li>
-          </ul>
+          <div v-for="(error, index) in errors" :key="index" class="d-flex">
+            <span id="error-bullet" class="flex-shrink-0">
+              <v-icon id="error-circle">mdi-circle-medium</v-icon>
+            </span>
+            <span class="flex-grow-1" v-html="error.message" />
+          </div>
         </div>
 
         <!-- display warnings-->
@@ -103,3 +104,14 @@ export default class PaymentErrorDialog extends Vue {
   }
 }
 </script>
+
+<style scoped>
+  #error-bullet {
+    padding-left: 1.4px;
+    padding-right: 5px;
+  }
+
+  #error-circle {
+    font-size: 18px;
+  }
+</style>
