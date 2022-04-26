@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, OfficeAddressIF, PartiesIF, StateIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, OfficeAddressIF, PartyIF, StateIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -203,8 +203,8 @@ export default {
     return state.registeredAddress
   },
 
-  /** The custodians list. */
-  getCustodians (state: StateIF): Array<PartiesIF> {
-    return state.custodians
+  /** The parties list from the API. */
+  getParties (state: StateIF): Array<PartyIF> {
+    return state.parties
   }
 }

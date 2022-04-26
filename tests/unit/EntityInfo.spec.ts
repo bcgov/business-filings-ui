@@ -40,7 +40,7 @@ describe('EntityInfo - data', () => {
     expect(wrapper.find('#entity-incorporation-number').text()).toBe('CP0001191')
     expect(wrapper.find('#entity-business-email span').text()).toBe('business@mail.zzz')
     expect(wrapper.find('#entity-business-phone span').text()).toBe('(111)222-3333 x444')
-    expect(wrapper.find('#nr-subtitle').exists()).toBeFalsy()
+    expect(wrapper.find('#ia-reg-subtitle').exists()).toBeFalsy()
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
 
@@ -62,7 +62,7 @@ describe('EntityInfo - data', () => {
     expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
-    expect(wrapper.find('#nr-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#ia-reg-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
     expect(wrapper.find('#nr-number').text()).toBe('NR 1234567')
   })
 
@@ -84,7 +84,7 @@ describe('EntityInfo - data', () => {
     expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
-    expect(wrapper.find('#nr-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#ia-reg-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
 
@@ -106,7 +106,7 @@ describe('EntityInfo - data', () => {
     expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
-    expect(wrapper.find('#nr-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
+    expect(wrapper.find('#ia-reg-subtitle').text()).toBe('BC Benefit Company Incorporation Application')
     expect(wrapper.find('#nr-number').text()).toBe('NR 1234567')
   })
 
@@ -132,7 +132,7 @@ describe('EntityInfo - data', () => {
     expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
     expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
-    expect(wrapper.find('#nr-subtitle').exists()).toBeFalsy()
+    expect(wrapper.find('#ia-reg-subtitle').exists()).toBeFalsy()
     expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
 })

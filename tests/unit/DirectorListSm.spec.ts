@@ -14,7 +14,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 describe('DirectorListSm', () => {
   it('handles empty data as a COOP', async () => {
     // init store
-    store.state.directors = []
+    store.state.parties = []
     store.state.entityType = 'CP'
 
     const wrapper = mount(DirectorListSm, { store, vuetify })
@@ -28,10 +28,10 @@ describe('DirectorListSm', () => {
     wrapper.destroy()
   })
 
-  it('displays multiple directors as a COOP', async () => {
+  it('displays multiple directors - as a COOP', async () => {
     // init store
     store.state.entityType = 'CP'
-    store.state.directors = [
+    store.state.parties = [
       {
         'officer': {
           'firstName': 'Peter',
@@ -43,7 +43,13 @@ describe('DirectorListSm', () => {
           'addressRegion': 'BC',
           'postalCode': 'V8W 2C3',
           'addressCountry': 'CA'
-        }
+        },
+        roles: [
+          {
+            appointmentDate: '2020-07-06',
+            roleType: 'Director'
+          }
+        ]
       },
       {
         'officer': {
@@ -56,7 +62,13 @@ describe('DirectorListSm', () => {
           'addressRegion': 'Scotland',
           'postalCode': 'G1 2FFF',
           'addressCountry': 'UK'
-        }
+        },
+        roles: [
+          {
+            appointmentDate: '2020-07-06',
+            roleType: 'Director'
+          }
+        ]
       }
     ]
 
@@ -85,7 +97,7 @@ describe('DirectorListSm', () => {
     wrapper.destroy()
   })
 
-  it('displays multiple directors as a BCOMP', async () => {
+  it('displays multiple directors - as a BCOMP', async () => {
     function click (id) {
       const button = vm.$el.querySelector(id)
       const window = button.ownerDocument.defaultView
@@ -95,7 +107,7 @@ describe('DirectorListSm', () => {
 
     // init store
     store.state.entityType = 'BEN'
-    store.state.directors = [
+    store.state.parties = [
       {
         'officer': {
           'firstName': 'Peter',
@@ -114,7 +126,13 @@ describe('DirectorListSm', () => {
           'addressRegion': 'BC',
           'postalCode': 'V8W 2C3',
           'addressCountry': 'CA'
-        }
+        },
+        roles: [
+          {
+            appointmentDate: '2020-07-06',
+            roleType: 'Director'
+          }
+        ]
       },
       {
         'officer': {
@@ -134,7 +152,13 @@ describe('DirectorListSm', () => {
           'addressRegion': 'BC',
           'postalCode': 'V8W 2C3',
           'addressCountry': 'CA'
-        }
+        },
+        roles: [
+          {
+            appointmentDate: '2020-07-06',
+            roleType: 'Director'
+          }
+        ]
       }
     ]
 
@@ -174,18 +198,30 @@ describe('DirectorListSm', () => {
   it('displays "grayed out" mode', async () => {
     // init store
     store.state.entityType = 'BEN'
-    store.state.directors = [
+    store.state.parties = [
       {
         'officer': {
           'firstName': 'Peter',
           'lastName': 'Griffin'
-        }
+        },
+        roles: [
+          {
+            appointmentDate: '2020-07-06',
+            roleType: 'Director'
+          }
+        ]
       },
       {
         'officer': {
           'firstName': 'Joe',
           'lastName': 'Swanson'
-        }
+        },
+        roles: [
+          {
+            appointmentDate: '2020-07-06',
+            roleType: 'Director'
+          }
+        ]
       }
     ]
 
