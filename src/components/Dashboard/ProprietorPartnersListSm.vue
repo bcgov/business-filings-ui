@@ -75,7 +75,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { PartyIF } from '@/interfaces'
-import { IncorporatorTypes, Roles } from '@/enums'
+import { Roles } from '@/enums'
 
 @Component({})
 export default class ProprietorPartnersListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
@@ -99,7 +99,7 @@ export default class ProprietorPartnersListSm extends Mixins(CommonMixin, Countr
     }
     if (this.isPartnership) {
       // return array with all partners
-      return this.getParties.filter(party => party.roles.filter(role => role.roleType === Roles.PARTNER))
+      return this.getParties.filter(party => party.roles.some(role => role.roleType === Roles.PARTNER))
     }
     return []
   }
@@ -111,13 +111,13 @@ export default class ProprietorPartnersListSm extends Mixins(CommonMixin, Countr
 
   /** Returns formatted officer name or organization name. */
   protected officerName (party: PartyIF): string {
-    if (party.officer.partyType === IncorporatorTypes.PERSON) {
+    if (party.officer.firstName) {
       return `${party.officer.firstName} ${party.officer.middleInitial || ''} ${party.officer.lastName}`
     }
-    if (party.officer.partyType === IncorporatorTypes.ORGANIZATION) {
+    if (party.officer.organizationName) {
       return party.officer.organizationName
     }
-    return null
+    return '' // should never happen
   }
 }
 </script>

@@ -1,12 +1,15 @@
 <template>
   <div id="address-list-sm">
     <template v-if="isFirm">
-        <FirmsAddressList
+      <!-- Business Address -->
+      <FirmsAddressList
         :showCompleteYourFilingMessage="showCompleteYourFilingMessage"
-        :showGrayedOut="showGrayedOut" />
+        :showGrayedOut="showGrayedOut"
+      />
     </template>
+
     <!-- when "disabled", expand all panels and disable expansion -->
-    <v-expansion-panels accordion multiple :value="expansionValue" :disabled="disabled" v-else>
+    <v-expansion-panels v-else accordion multiple :value="expansionValue" :disabled="disabled">
       <!-- Registered Office -->
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
@@ -83,7 +86,7 @@
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
                   <div class="same-as-above"
-                    v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress)"
+                    v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress, 'id')"
                   >
                     <span>Same as above</span>
                   </div>
@@ -182,7 +185,7 @@
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
                   <div class="same-as-above"
-                    v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress)"
+                    v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress, 'id')"
                   >
                     <span>Same as above</span>
                   </div>

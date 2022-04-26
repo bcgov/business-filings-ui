@@ -1,10 +1,10 @@
 <template>
   <div id="firms-address-list">
     <div :disabled="disabled">
-      <!-- Business Address -->
       <div id="business-address-panel" class="align-items-top" :class="{ 'disabled': disabled }">
         <div v-if="showCompleteYourFilingMessage" class="pt-4 pb-4">
           <v-list class="pt-0 pb-0">
+            <!-- Delivery Address -->
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-truck</v-icon>
@@ -33,6 +33,7 @@
 
         <div v-else class="pt-4 pb-4">
           <v-list class="pt-0 pb-0" v-if="businessAddress">
+            <!-- Delivery Address -->
             <v-list-item class="delivery-address-list-item" v-if="businessAddress.deliveryAddress">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-truck</v-icon>
@@ -56,6 +57,7 @@
               </v-list-item-content>
             </v-list-item>
 
+            <!-- Mailing Address -->
             <v-list-item class="mailing-address-list-item" v-if="businessAddress.mailingAddress">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-email-outline</v-icon>

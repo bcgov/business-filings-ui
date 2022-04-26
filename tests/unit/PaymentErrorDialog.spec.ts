@@ -160,7 +160,7 @@ describe('Payment Error Dialog', () => {
       .toContain('We were unable to process your payment due to the following errors:')
     expect(wrapper.find('#dialog-text').text()).toContain('error msg')
     expect(wrapper.find('#dialog-ok-button')).toBeDefined()
-    
+
     expect(wrapper.isVisible()).toBe(true)
 
     expect(wrapper.findAll('p').length).toBe(3)
@@ -188,8 +188,8 @@ describe('Payment Error Dialog', () => {
           warnings: [
             { message: 'Test Warning 1' },
             { message: 'Test Warning 2' }
-        ]
-      },
+          ]
+        },
         store,
         vuetify
       })
