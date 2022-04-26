@@ -1,5 +1,5 @@
 <template>
-  <div id="director-list-sm" :class="{ 'disabled': disabled }">
+  <div id="proprietor-partners-list-sm" :class="{ 'disabled': disabled }">
     <div v-if="showCompleteYourFilingMessage">
       <span class="complete-filing">Complete your filing to display</span>
     </div>
@@ -128,7 +128,7 @@ export default class ProprietorPartnersListSm extends Mixins(CommonMixin, Countr
 // Variables
 $avatar-width: 2.75rem;
 
-#director-list-sm.disabled {
+#proprietor-partners-list-sm.disabled {
   opacity: 0.6;
 }
 
