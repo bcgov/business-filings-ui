@@ -139,7 +139,7 @@ describe('Payment Error Dialog', () => {
     wrapper.destroy()
   })
 
-  it('renders PAD error messages correctly when they are present', () => {
+  it('renders error messages correctly when they are present', () => {
     store.state.keycloakRoles = []
 
     const wrapper = shallowMount(PaymentErrorDialog,
@@ -173,13 +173,12 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('span').length).toBe(2)
     expect(wrapper.findAll('span').at(1).text()).toContain('error msg')
 
-    // expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('renders PAD warning messages correctly when they are present', () => {
+  it('renders warning messages correctly when they are present', () => {
     store.state.keycloakRoles = []
 
     const wrapper = shallowMount(PaymentErrorDialog,
@@ -210,7 +209,6 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
     expect(wrapper.find('#dialog-okay-button').exists()).toBe(false)
 
-    // expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
