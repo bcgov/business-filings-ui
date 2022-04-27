@@ -62,7 +62,9 @@
             <!-- Office Addresses -->
             <section>
               <header class="aside-header mb-3">
-                <h2 data-test-id="dashboard-addresses-subtitle">{{addressHeader}}</h2>
+                <h2 data-test-id="dashboard-addresses-subtitle">
+                  {{ isFirm ? 'Business Addresses' : 'Office Addresses' }}
+                </h2>
                 <v-scale-transition>
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
@@ -84,7 +86,7 @@
                   class="change-btn"
                   v-if="!isHistorical"
                   :disabled="!isAllowed(AllowableActions.FILE_ADDRESS_CHANGE)"
-                  @click.native.stop="proceedCoa()">
+                  @click.native.stop="onAddressChangeClick()">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -126,7 +128,6 @@
               <header class="aside-header mb-3">
                 <h2 v-if="isSoleProp" data-test-id="dashboard-proprietor-subtitle">Proprietor</h2>
                 <h2 v-if="isPartnership" data-test-id="dashboard-partners-subtitle">Partners</h2>
-
                 <v-btn text small color="primary"
                   id="change-proprietor-partners-button"
                   class="change-btn"
@@ -137,7 +138,6 @@
                   <span>Change</span>
                 </v-btn>
               </header>
-
               <div class="scrollable-container" style="max-height: 49rem">
                 <v-card flat>
                   <ProprietorPartnersListSm
@@ -207,7 +207,7 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isAppTask', 'isAppFiling', 'getParties', 'isSoleProp', 'isPartnership', 'getIdentifier']),
+      'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -218,11 +218,6 @@ export default {
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
-    },
-
-    /** Address Header Text */
-    addressHeader (): string {
-      return this.isFirm ? 'Business Addresses' : 'Office Addresses'
     },
 
     /** The Edit URL string. */
@@ -262,13 +257,19 @@ export default {
       this.coaWarningDialog = !this.coaWarningDialog
     },
 
-    /** Display COA warning if BCOMP else proceed to COA. */
-    proceedCoa () {
+    /**
+     * If entity is a Firm then navigate to Edit UI.
+     * If entity is a BComp then display COA warning.
+     * Otherwise proceed to COA.
+     */
+    onAddressChangeClick () {
       if (this.isFirm) {
         const url = `${this.editUrl}${this.getIdentifier}/change`
         navigate(url)
+      } else if (this.isBComp) {
+        this.toggleCoaWarning()
       } else {
-        this.isBComp ? this.toggleCoaWarning() : this.goToStandaloneAddresses()
+        this.goToStandaloneAddresses()
       }
     }
   }

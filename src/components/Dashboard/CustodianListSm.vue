@@ -69,9 +69,13 @@ export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvin
 
   /** Return the officer person or org name */
   protected officerName (party: PartyIF): string {
-    return party.officer.firstName
-      ? `${party.officer.firstName} ${party.officer.middleInitial || ''} ${party.officer.lastName}`
-      : party.officer.organizationName
+    if (party.officer.firstName) {
+      return `${party.officer.firstName} ${party.officer.middleInitial || ''} ${party.officer.lastName}`
+    }
+    if (party.officer.organizationName) {
+      return party.officer.organizationName
+    }
+    return '' // should never happen
   }
 }
 </script>
