@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, OfficeAddressIF, PartiesIF, StateIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, OfficeAddressIF, PartyIF, StateIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -72,9 +72,19 @@ export default {
     return (state.entityType === CorpTypeCd.BC_CORPORATION)
   },
 
-  /** Is True if entity is a Firm. */
+  /** Is True if entity is a Sole Proprietorship or General Partnership. */
   isFirm (state: StateIF): boolean {
     return (state.entityType === CorpTypeCd.SOLE_PROP || state.entityType === CorpTypeCd.PARTNERSHIP)
+  },
+
+  /** Is True if entity is a Sole Proprietorship. */
+  isSoleProp (state: StateIF): boolean {
+    return (state.entityType === CorpTypeCd.SOLE_PROP)
+  },
+
+  /** Is True if entity is a General Partnership. */
+  isPartnership (state: StateIF): boolean {
+    return (state.entityType === CorpTypeCd.PARTNERSHIP)
   },
 
   /** Is True if entity is a BC Company. */
@@ -193,8 +203,8 @@ export default {
     return state.registeredAddress
   },
 
-  /** The custodians list. */
-  getCustodians (state: StateIF): Array<PartiesIF> {
-    return state.custodians
+  /** The parties list from the API. */
+  getParties (state: StateIF): Array<PartyIF> {
+    return state.parties
   }
 }

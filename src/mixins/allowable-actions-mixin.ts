@@ -12,7 +12,8 @@ export default class AllowableActionsMixin extends Vue {
   @Getter isUlc!: boolean
   @Getter isHistorical!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter isFirm!: boolean
+  @Getter isSoleProp!: boolean
+  @Getter isPartnership!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -65,7 +66,10 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.VIEW_CHANGE_COMPANY_INFO: {
-        return (!this.isHistorical && !!businessId && (this.isBComp || this.isBcCompany || this.isUlc || this.isFirm))
+        return (!this.isHistorical &&
+          !!businessId &&
+          (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership)
+        )
       }
 
       default: return null

@@ -334,7 +334,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
@@ -350,9 +350,9 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
 
 // Mixins, enums and interfaces
 import { CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
-import { CorpTypeCd, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
+import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
-import { ActionBindingIF, ConfirmDialogType, DirectorIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -383,28 +383,20 @@ export default class AnnualReport extends Mixins(
   }
 
   @State entityFoundingDate!: Date
-  @State filingData!: Array<FilingDataIF>
   @State ARFilingYear!: number
   @State arMinDate!: string
   @State arMaxDate!: string
   @State nextARDate!: string
-  @State directors!: Array<DirectorIF>
   @State lastAddressChangeDate!: string
   @State lastDirectorChangeDate!: string
   @State lastAnnualReportDate!: string
 
-  @Getter isBComp!: boolean
   @Getter isCoop!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isCurrentFilingEditable!: boolean
   @Getter getReportState!: string
   @Getter getCurrentYear!: number
-  @Getter getCurrentDate!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getEntityName!: string
-  @Getter getIdentifier!: string
-
-  @Action setFilingData!: ActionBindingIF
 
   // variables for AgmDate component
   private newAgmDate = null // for resuming draft

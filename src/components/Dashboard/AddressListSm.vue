@@ -1,15 +1,22 @@
 <template>
   <div id="address-list-sm">
+    <template v-if="isFirm">
+      <!-- Business Address -->
+      <FirmsAddressList
+        :showCompleteYourFilingMessage="showCompleteYourFilingMessage"
+        :showGrayedOut="showGrayedOut"
+      />
+    </template>
+
     <!-- when "disabled", expand all panels and disable expansion -->
-    <v-expansion-panels accordion multiple :value="expansionValue" :disabled="disabled">
+    <v-expansion-panels v-else accordion multiple :value="expansionValue" :disabled="disabled">
       <!-- Registered Office -->
       <v-expansion-panel id="registered-office-panel"
         class="align-items-top"
         :class="{
           'address-overlay': isCoaPending,
           'disabled': disabled
-        }"
-      >
+        }">
         <v-expansion-panel-header id="registered-office-panel-toggle">
           <div class="list-item__title">Registered Office</div>
         </v-expansion-panel-header>
@@ -79,7 +86,7 @@
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
                   <div class="same-as-above"
-                    v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress)"
+                    v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress, 'id')"
                   >
                     <span>Same as above</span>
                   </div>
@@ -178,7 +185,7 @@
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
                   <div class="same-as-above"
-                    v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress)"
+                    v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress, 'id')"
                   >
                     <span>Same as above</span>
                   </div>
@@ -213,7 +220,15 @@ import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 // Interfaces
 import { OfficeAddressIF } from '@/interfaces'
 
-@Component({})
+// Components
+import FirmsAddressList from './FirmsAddressList.vue'
+
+@Component({
+  components: {
+    // sub-components
+    FirmsAddressList
+  }
+})
 export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false })
@@ -225,6 +240,7 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
 
   @Getter isBComp!: boolean
   @Getter isCorp!: boolean
+  @Getter isFirm!: boolean
   @Getter isCoaPending!: boolean
   @Getter isHistorical!: boolean
   @State registeredAddress!: OfficeAddressIF

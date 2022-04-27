@@ -1,4 +1,4 @@
-export enum IncorporatorTypes {
+export enum PartyTypes {
   PERSON = 'person',
   ORGANIZATION = 'organization'
 }

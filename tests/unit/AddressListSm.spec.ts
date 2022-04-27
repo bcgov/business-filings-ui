@@ -365,4 +365,105 @@ describe('AddressListSm', () => {
 
     wrapper.destroy()
   })
+
+  it('displays all addresses when a Firm', async () => {
+    // init store
+    store.state.entityType = 'SP'
+    store.state.businessAddress = {
+      'deliveryAddress':
+      {
+        'streetAddress': '111 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
+      'mailingAddress':
+      {
+        'streetAddress': '222 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
+    }
+
+    const wrapper = mount(AddressListSm, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify business addresses
+    expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .address-subtitle')
+      .textContent).toContain('111 Buchanan St')
+    expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .same-as-above'))
+      .toBeNull()
+    expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .address-subtitle')
+      .textContent).toContain('222 Buchanan St')
+
+    wrapper.destroy()
+  })
+
+  it('displays "same as above" when a Firm', async () => {
+    // init store
+    store.state.entityType = 'SP'
+    store.state.businessAddress = {
+      'deliveryAddress':
+      {
+        'streetAddress': '220 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      },
+      'mailingAddress':
+      {
+        'streetAddress': '220 Buchanan St',
+        'addressCity': 'Glasgow',
+        'addressRegion': 'Scotland',
+        'postalCode': 'G1 2FFF',
+        'addressCountry': 'CA'
+      }
+    }
+
+    const wrapper = mount(AddressListSm, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // verify registered addresses
+    expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .address-subtitle')
+      .textContent).toContain('220 Buchanan St')
+    expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .same-as-above')
+      .textContent).toContain('Same as above')
+    expect(vm.$el.querySelector('#business-address-panell .mailing-address-list-item .address-subtitle'))
+      .toBeNull()
+
+    wrapper.destroy()
+  })
+
+  it('displays "complete your filing" message for firm registration', async () => {
+    // init store
+    store.state.entityType = 'SP'
+
+    const wrapper = mount(AddressListSm,
+      {
+        store,
+        vuetify,
+        propsData: {
+          showCompleteYourFilingMessage: true
+        }
+      })
+    await Vue.nextTick()
+
+    const expectedMessage = 'Complete your filing to display'
+    expect(wrapper.find('#business-address-panel .delivery-address-list-item .complete-filing').text())
+      .toBe(expectedMessage)
+    expect(wrapper.find('#business-address-panel .mailing-address-list-item .complete-filing').text())
+      .toBe(expectedMessage)
+    expect(wrapper.find('#business-address-panel .delivery-address-list-item .complete-filing').text())
+      .toBe(expectedMessage)
+    expect(wrapper.find('#business-address-panel .mailing-address-list-item .complete-filing').text())
+      .toBe(expectedMessage)
+
+    wrapper.destroy()
+  })
 })

@@ -794,7 +794,10 @@ export default class Directors extends Mixins(
     }
   }
 
-  /** Fetches the list of directors on As Of Date from the Legal API. */
+  /**
+   * Fetches the list of directors on As Of Date from the Legal API.
+   * See also LegalApiMixin.fetchParties().
+   */
   // FUTURE: this API call should be in the parent component or some mixin/service
   private async fetchDirectors (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {

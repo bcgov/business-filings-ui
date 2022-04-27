@@ -138,4 +138,79 @@ describe('Payment Error Dialog', () => {
 
     wrapper.destroy()
   })
+
+  it('renders error messages correctly when they are present', () => {
+    store.state.keycloakRoles = []
+
+    const wrapper = shallowMount(PaymentErrorDialog,
+      {
+        propsData: {
+          dialog: true,
+          errors: [{ message: 'error msg' }]
+        },
+        store,
+        vuetify
+      })
+    const vm: any = wrapper.vm
+
+    expect(vm.numErrors).toBe(1)
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
+    expect(wrapper.find('#dialog-text').text()).toContain('This Filing has been')
+    expect(wrapper.find('#dialog-text').text())
+      .toContain('We were unable to process your payment due to the following errors:')
+    expect(wrapper.find('#dialog-text').text()).toContain('error msg')
+    expect(wrapper.find('#dialog-ok-button')).toBeDefined()
+
+    expect(wrapper.isVisible()).toBe(true)
+
+    expect(wrapper.findAll('p').length).toBe(3)
+    expect(wrapper.findAll('p').at(0).text()).toContain('We are unable to process your payment')
+    expect(wrapper.findAll('p').at(1).text()).toContain(
+      'We were unable to process your payment due to the following errors:'
+    )
+    expect(wrapper.findAll('p').at(2).text()).toContain('If this error persists')
+    expect(wrapper.findAll('li').length).toBe(0)
+    expect(wrapper.findAll('span').length).toBe(2)
+    expect(wrapper.findAll('span').at(1).text()).toContain('error msg')
+
+    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('renders warning messages correctly when they are present', () => {
+    store.state.keycloakRoles = []
+
+    const wrapper = shallowMount(PaymentErrorDialog,
+      {
+        propsData: {
+          dialog: true,
+          warnings: [
+            { message: 'Test Warning 1' },
+            { message: 'Test Warning 2' }
+          ]
+        },
+        store,
+        vuetify
+      })
+    const vm: any = wrapper.vm
+
+    expect(vm.numWarnings).toBe(2)
+
+    expect(wrapper.isVisible()).toBe(true)
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
+    expect(wrapper.findAll('p').length).toBe(3)
+    expect(wrapper.findAll('p').at(0).text()).toContain('We are unable to process your payment')
+    expect(wrapper.findAll('p').at(1).text()).toContain('Please note the following warnings')
+    expect(wrapper.findAll('li').length).toBe(0)
+    expect(wrapper.findAll('span').length).toBe(4)
+    expect(wrapper.findAll('span').at(1).text()).toContain('Test Warning 1')
+    expect(wrapper.findAll('span').at(3).text()).toContain('Test Warning 2')
+    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.find('#dialog-okay-button').exists()).toBe(false)
+
+    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
 })

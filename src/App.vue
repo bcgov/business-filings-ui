@@ -133,7 +133,16 @@ import {
   LegalApiMixin,
   NameRequestMixin
 } from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, TaskTodoIF } from '@/interfaces'
+import {
+  ApiFilingIF,
+  ApiTaskIF,
+  BreadcrumbIF,
+  BusinessIF,
+  DirectorIF,
+  DocumentIF,
+  PartyIF,
+  TaskTodoIF
+} from '@/interfaces'
 import {
   CorpTypeCd,
   DissolutionTypes,
@@ -143,7 +152,6 @@ import {
   FilingTypes,
   NameRequestStates,
   NigsMessage,
-  Roles,
   Routes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -311,7 +319,7 @@ export default {
     ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
       'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
-      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setDirectors', 'setCustodians',
+      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
       'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setComplianceWarnings',
       'setGoodStanding']),
@@ -731,32 +739,19 @@ export default {
           this.setRecordsAddress(this.omitProps(response.data.recordsOffice,
             ['deliveryAddress', 'mailingAddress'], ['addressType']))
         }
+        if (response.data.businessOffice) {
+          this.setBusinessAddress(this.omitProps(response.data.businessOffice,
+            ['deliveryAddress', 'mailingAddress'], ['addressType']))
+        }
       } else {
         throw new Error('invalid office addresses')
       }
     },
 
     storeParties (response: any): void {
-      const parties = response?.data?.parties
+      const parties = response?.data?.parties as PartyIF[]
       if (parties) {
-        const directorsList = parties?.filter(party => party.roles?.some(role => role.roleType === Roles.DIRECTOR))
-        const custodianList = parties?.filter(party => party.roles?.some(role => role.roleType === Roles.CUSTODIAN))
-
-        // Directors
-        if (directorsList) {
-          const directorsListSorted = directorsList.sort(this.fieldSorter(['lastName', 'firstName', 'middleName']))
-          for (var i = 0; i < directorsListSorted.length; i++) {
-            directorsListSorted[i].id = i + 1
-            directorsListSorted[i].isNew = false
-            directorsListSorted[i].isDirectorActive = true
-          }
-          this.setDirectors(directorsListSorted)
-        }
-
-        // Custodians
-        if (custodianList) {
-          this.setCustodians(custodianList)
-        }
+        this.setParties(parties)
       } else {
         throw new Error('Invalid parties')
       }
