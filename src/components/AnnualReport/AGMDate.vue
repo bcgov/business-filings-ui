@@ -33,8 +33,7 @@
             <v-date-picker
               data-test-id="agm-date-picker"
               v-model="datePicker"
-              :min=arMinDate
-              :max=arMaxDate
+              :min=localMaxDate
               no-title
               @input="menu=false"
               @change="onDatePickerChanged($event)"
@@ -147,8 +146,15 @@ export default class AgmDate extends Mixins(DateMixin) {
   @Prop({ default: true })
   readonly allowCod: boolean
 
+  /** last address change date */
+  @Prop({ default: '' })
+  readonly lastACD: string
+
+  /** last director change date */
+  @Prop({ default: '' })
+  readonly lastDCD: string
+
   @State ARFilingYear!: number
-  @State arMinDate!: string
   @State arMaxDate!: string
   @Getter isCoop!: boolean
   @Getter getCurrentDate!: string
@@ -160,6 +166,7 @@ export default class AgmDate extends Mixins(DateMixin) {
   private agmExtension = false // whether checkbox is checked
   private noAgm = false // whether checkbox is checked
   private backupDate = '' // for toggling No AGM
+  private localMaxDate = '' // last date of coa, cod and arMaxDate
 
   /** The array of validations rule(s) for the AGM Date text field. */
   private get agmDateRules (): Array<Function> {
@@ -204,6 +211,8 @@ export default class AgmDate extends Mixins(DateMixin) {
   /** Called when component is mounted. */
   private mounted (): void {
     // set date picker but not text field
+    let lastEffectiveDate = this.latestYyyyMmDd(this.lastACD, this.lastDCD)
+    this.localMaxDate = this.latestYyyyMmDd(this.arMaxDate, lastEffectiveDate)
     this.datePicker = this.newAgmDate || this.arMaxDate
   }
 

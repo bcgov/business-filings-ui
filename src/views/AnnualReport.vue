@@ -98,6 +98,8 @@
                   :newNoAgm="newNoAgm"
                   :allowCoa="allowChange('coa')"
                   :allowCod="allowChange('cod')"
+                  :lastACD="lastAddressChangeDate"
+                  :lastDCD="lastDirectorChangeDate"
                   @agmDate="onAgmDateChange($event)"
                   @agmExtension="onAgmExtensionChange($event)"
                   @noAgm="onNoAgmChange($event)"
