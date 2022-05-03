@@ -213,7 +213,7 @@ export default class AgmDate extends Mixins(DateMixin) {
     // set date picker but not text field
     let lastEffectiveDate = this.latestYyyyMmDd(this.lastACD, this.lastDCD)
     this.localMaxDate = this.latestYyyyMmDd(this.arMaxDate, lastEffectiveDate)
-    this.datePicker = this.newAgmDate || this.arMaxDate
+    this.datePicker = this.newAgmDate || this.localMaxDate
   }
 
   /** Called when prop changes (ie, due to resuming a draft). */
