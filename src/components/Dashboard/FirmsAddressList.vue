@@ -34,14 +34,14 @@
         <div v-else class="pt-4 pb-4">
           <v-list class="pt-0 pb-0" v-if="businessAddress">
             <!-- Delivery Address -->
-            <v-list-item class="delivery-address-list-item" v-if="businessAddress.deliveryAddress">
+            <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-truck</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <ul class="address-subtitle pre-line">
+                  <ul class="address-subtitle pre-line" v-if="businessAddress.deliveryAddress">
                     <li class="address-line1">{{ businessAddress.deliveryAddress.streetAddress }}</li>
                     <li class="address-line2">{{ businessAddress.deliveryAddress.streetAddressAdditional }}</li>
                     <li class="address-line3">
@@ -53,35 +53,41 @@
                       <span>{{ getCountryName(businessAddress.deliveryAddress.addressCountry) }}</span>
                     </li>
                   </ul>
+                  <ul class="address-subtitle pre-line" v-else>
+                    <li class="address-line1">Not Entered</li>
+                  </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
             <!-- Mailing Address -->
-            <v-list-item class="mailing-address-list-item" v-if="businessAddress.mailingAddress">
+            <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
                 <v-icon color="primary">mdi-email-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div
-                    class="same-as-above"
-                    v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])">
-                    <span>Same as above</span>
+                  <div class="same-as-above" v-if="businessAddress.mailingAddress">
+                    <span v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])">
+                      Same as above
+                    </span>
+                    <ul v-else class="address-subtitle pre-line">
+                      <li class="address-line1">{{ businessAddress.mailingAddress.streetAddress }}</li>
+                      <li class="address-line2">{{ businessAddress.mailingAddress.streetAddressAdditional }}</li>
+                      <li class="address-line3">
+                        {{ businessAddress.mailingAddress.addressCity }}
+                        {{ businessAddress.mailingAddress.addressRegion }}
+                        {{ businessAddress.mailingAddress.postalCode }}
+                      </li>
+                      <li class="address-line4">
+                        <span>{{ getCountryName(businessAddress.mailingAddress.addressCountry) }}</span>
+                      </li>
+                    </ul>
                   </div>
-                  <ul v-else class="address-subtitle pre-line">
-                    <li class="address-line1">{{ businessAddress.mailingAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ businessAddress.mailingAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">
-                      {{ businessAddress.mailingAddress.addressCity }}
-                      {{ businessAddress.mailingAddress.addressRegion }}
-                      {{ businessAddress.mailingAddress.postalCode }}
-                    </li>
-                    <li class="address-line4">
-                      <span>{{ getCountryName(businessAddress.mailingAddress.addressCountry) }}</span>
-                    </li>
-                  </ul>
+                  <div class="same-as-above" v-else>
+                    <span>Not Entered</span>
+                  </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
