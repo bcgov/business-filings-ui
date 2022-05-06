@@ -480,11 +480,11 @@ describe('AddressListSm', () => {
     await Vue.nextTick()
 
     // Verify delivery address 'Not Entered'
-    expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .address-subtitle\
-      .delivery-address-not-entered').textContent).toContain('Not Entered')
+    expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .delivery-address-not-entered')
+      .textContent).toContain('Not Entered')
     expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .address-line1'))
       .toBeNull()
-    
+
     // verify mailing address 'Not Entered'
     expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .mailing-address-not-entered')
       .textContent).toContain('Not Entered')

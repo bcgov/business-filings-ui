@@ -191,7 +191,7 @@ describe('ProprietorPartnersListSm', () => {
             roleType: 'Partner'
           }
         ]
-      }, 
+      },
       {
         officer: {
           organizationName: 'Donut House',
@@ -209,7 +209,7 @@ describe('ProprietorPartnersListSm', () => {
       }
     ]
 
-    const wrapper = mount(ProprietorPartnersListSm, 
+    const wrapper = mount(ProprietorPartnersListSm,
       {
         store,
         vuetify,
