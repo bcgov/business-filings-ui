@@ -466,4 +466,33 @@ describe('AddressListSm', () => {
 
     wrapper.destroy()
   })
+
+  it('displays "not entered" message for firm registration', async () => {
+    // init store
+    store.state.entityType = 'SP'
+    store.state.businessAddress = {
+      'deliveryAddress': null,
+      'mailingAddress': null
+    }
+
+    const wrapper = mount(AddressListSm, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // Verify delivery address 'Not Entered'
+    expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .address-subtitle\
+      .delivery-address-not-entered').textContent).toContain('Not Entered')
+    expect(vm.$el.querySelector('#business-address-panel .delivery-address-list-item .address-line1'))
+      .toBeNull()
+    
+    // verify mailing address 'Not Entered'
+    expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .mailing-address-not-entered')
+      .textContent).toContain('Not Entered')
+    expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .same-as-above'))
+      .toBeNull()
+    expect(vm.$el.querySelector('#business-address-panel .mailing-address-list-item .address-subtitle .address-line1'))
+      .toBeNull()
+
+    wrapper.destroy()
+  })
 })

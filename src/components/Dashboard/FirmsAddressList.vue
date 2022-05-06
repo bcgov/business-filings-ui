@@ -54,7 +54,7 @@
                     </li>
                   </ul>
                   <ul class="address-subtitle pre-line" v-else>
-                    <li class="address-line1">Not Entered</li>
+                    <li class="delivery-address-not-entered">Not Entered</li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -68,8 +68,9 @@
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above" v-if="businessAddress.mailingAddress">
-                    <span v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])">
+                  <div v-if="businessAddress.mailingAddress">
+                    <span class="same-as-above"
+                      v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])">
                       Same as above
                     </span>
                     <ul v-else class="address-subtitle pre-line">
@@ -85,7 +86,7 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="same-as-above" v-else>
+                  <div class="mailing-address-not-entered" v-else>
                     <span>Not Entered</span>
                   </div>
                 </v-list-item-subtitle>

@@ -23,7 +23,9 @@
             <v-list-item class="email-address-list-item">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Email Address</v-list-item-title>
-                <v-list-item-subtitle>{{ party.officer.email || 'Not Entered'}}</v-list-item-subtitle>
+                <v-list-item-subtitle class="email-address-text">
+                  {{ party.officer.email || 'Not Entered'}}
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
@@ -40,7 +42,7 @@
                     <li class="address-line4">{{ getCountryName(party.deliveryAddress.addressCountry) }}</li>
                   </ul>
                   <ul class="address-subtitle pre-line" v-else>
-                    <li class="address-line1">Not Entered</li>
+                    <li class="delivery-address-not-entered">Not Entered</li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -50,8 +52,9 @@
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above" v-if="party.mailingAddress">
-                    <span v-if="isSame(party.deliveryAddress, party.mailingAddress, 'id')">
+                  <div v-if="party.mailingAddress">
+                    <span class="same-as-above"
+                      v-if="isSame(party.deliveryAddress, party.mailingAddress, 'id')">
                       Same as above
                     </span>
                     <ul v-else class="address-subtitle pre-line">
@@ -63,7 +66,7 @@
                       <li class="address-line4">{{ getCountryName(party.mailingAddress.addressCountry) }}</li>
                     </ul>
                   </div>
-                  <div class="same-as-above" v-else>
+                  <div class="mailing-address-not-entered" v-else>
                     <span>Not Entered</span>
                   </div>
                 </v-list-item-subtitle>

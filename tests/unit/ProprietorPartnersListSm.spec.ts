@@ -172,4 +172,78 @@ describe('ProprietorPartnersListSm', () => {
 
     wrapper.destroy()
   })
+
+  it('displays "not entered" message for firm registration', async () => {
+    // init store
+    store.state.entityType = 'GP'
+    store.state.parties = [
+      {
+        officer: {
+          organizationName: 'Bacon House',
+          taxId: '222222222',
+          email: null
+        },
+        deliveryAddress: null,
+        mailingAddress: null,
+        roles: [
+          {
+            appointmentDate: '2022-04-01',
+            roleType: 'Partner'
+          }
+        ]
+      }, 
+      {
+        officer: {
+          organizationName: 'Donut House',
+          taxId: '444444444',
+          email: null
+        },
+        deliveryAddress: null,
+        mailingAddress: null,
+        roles: [
+          {
+            appointmentDate: '2022-04-01',
+            roleType: 'Partner'
+          }
+        ]
+      }
+    ]
+
+    const wrapper = mount(ProprietorPartnersListSm, 
+      {
+        store,
+        vuetify,
+        propsData: {
+          showCompleteYourFilingMessage: false
+        }
+      }
+    )
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // Verify to organization names
+    expect(vm.getParties.length).toEqual(2)
+    expect(vm.proprietorPartners.length).toEqual(2)
+    expect(wrapper.findAll('.list-item__title').at(0).text()).toBe('Bacon House')
+    expect(wrapper.findAll('.list-item__title').at(1).text()).toBe('Donut House')
+
+    // const item = vm.$el.querySelector('.v-expansion-panel-header.address-panel-toggle')
+    // const items = vm.$el.querySelector('.align-items-top address-panel')
+    const buttons = vm.$el.querySelectorAll('.v-expansion-panel-header.address-panel-toggle')
+    await buttons[0].click()
+    await buttons[1].click()
+
+    // Verify delivery addresses 'Not Entered'
+    expect(wrapper.findAll('.email-address-text').at(0).text()).toBe('Not Entered')
+    expect(wrapper.findAll('.email-address-text').at(1).text()).toBe('Not Entered')
+
+    // Verify mailing addresses 'Not Entered'
+    expect(wrapper.findAll('.delivery-address-not-entered').at(0).text()).toBe('Not Entered')
+    expect(wrapper.findAll('.delivery-address-not-entered').at(1).text()).toBe('Not Entered')
+
+    // // Verify mailing addresses 'Not Entered'
+    expect(wrapper.findAll('.mailing-address-not-entered').at(0).text()).toBe('Not Entered')
+    expect(wrapper.findAll('.mailing-address-not-entered').at(1).text()).toBe('Not Entered')
+    wrapper.destroy()
+  })
 })
