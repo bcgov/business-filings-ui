@@ -1,6 +1,26 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
-    <v-card>
+    <v-card v-if="displayName==='Firm Record Conversion'">
+      <v-card-title id="dialog-title">Add a {{displayName}}</v-card-title>
+      <v-card-text>
+        <div id="notation-text" class="mb-4 mt-2">
+          Firm record conversion is only applicable for sole proprietorship, "Doing Business As" name (DBA),
+          or general partnership business types.
+        </div>
+      </v-card-text>
+      <v-divider class="mb-4"></v-divider>
+      <v-card-actions class="pt-0">
+        <v-spacer></v-spacer>
+        <div class="form__btns">
+          <v-btn text color="primary"
+            id="dialog-cancel-button"
+            :disabled="saving"
+            @click.native="emitClose(false)"
+          >Cancel</v-btn>
+        </div>
+      </v-card-actions>
+    </v-card>
+    <v-card v-else>
       <v-card-title id="dialog-title">Add a {{displayName}}</v-card-title>
       <v-card-text>
         <div id="notation-text" class="mb-4 mt-2">

@@ -25,6 +25,14 @@
       courtOrderNumberRequired="true"
     />
 
+    <AddStaffNotationDialog
+      :dialog="isAddingRecordConversion"
+      @close="hideRecordConversionDialog($event)"
+      attach="#staff-notation"
+      displayName="Firm Record Conversion"
+      name="recordConversion"
+    />
+
     <div class="filing-item__actions">
       <v-menu offset-y left transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
@@ -66,6 +74,11 @@
                 <span class="app-blue">Add Court Order</span>
               </v-list-item-title>
             </v-list-item>
+            <v-list-item @click="onAddressChangeClick()" :disabled="disabled">
+              <v-list-item-title>
+                <span class="app-blue">Add Firm Record Conversion</span>
+              </v-list-item-title>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -75,7 +88,8 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-
+import { Getter } from 'vuex-class'
+import { navigate } from '@/utils'
 // Dialog
 import { AddStaffNotationDialog } from '@/components/dialogs'
 
@@ -86,6 +100,7 @@ export default class StaffNotation extends Vue {
   private isAddingRegistrarsNotation = false
   private isAddingRegistrarsOrder = false
   private isAddingCourtOrder = false
+  private isAddingRecordConversion = false
   private expand = false
 
   /** Prop for the scrollbar offset to be added. */
@@ -121,9 +136,40 @@ export default class StaffNotation extends Vue {
     this.close(needReload)
   }
 
+  showRecordConversionDialog (): void {
+    this.isAddingRecordConversion = true
+  }
+
+  hideRecordConversionDialog (needReload: boolean): void {
+    this.isAddingRecordConversion = false
+    this.close(needReload)
+  }
+
   @Emit('close')
   private close (needReload: boolean): void {
     // Intentionally empty
+  }
+
+  /**
+   * If entity is a Firm then navigate to Edit UI.
+   * Else display message that this is not a firm.
+   */
+  @Getter isFirm!: boolean
+  @Getter getIdentifier: string
+  @Getter isBComp: boolean
+
+  /** The Edit URL string. */
+  get editUrl (): string {
+    return sessionStorage.getItem('EDIT_URL')
+  }
+
+  goToChangeFiling ():void {
+    const url = `${this.editUrl}${this.getIdentifier}/change`
+    navigate(url)
+  }
+
+  onAddressChangeClick () {
+    this.isFirm ? this.goToChangeFiling() : this.showRecordConversionDialog()
   }
 }
 </script>
