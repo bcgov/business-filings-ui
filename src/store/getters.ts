@@ -206,5 +206,11 @@ export default {
   /** The parties list from the API. */
   getParties (state: StateIF): Array<PartyIF> {
     return state.parties
+  },
+
+  /** The entity busness address. */
+  gettBusinessAddress (state: StateIF): OfficeAddressIF {
+    return state.businessAddress
   }
+
 }

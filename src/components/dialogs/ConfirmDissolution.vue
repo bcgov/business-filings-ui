@@ -10,7 +10,7 @@
 
       <v-card-text>
         <p class="warning-title">
-         Voluntary Dissolution
+        {{getModalTitle}}
         </p>
         <p class="warning-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
@@ -46,6 +46,7 @@
 </template>
 
 <script lang="ts">
+import { CorpTypeCd } from '@/enums'
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
@@ -56,21 +57,26 @@ export default class ConfirmDissolution extends Vue {
 
   // Global getters
   @Getter getEntityName!: string
-  @Getter isCoop!: boolean
+  @Getter getEntityType!: string
 
   /** The entity title to display. */
   private get entityTitle (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Company'
+    return this.getEntityDetails().entityTitle
   }
 
   /** The entity title to display. */
   private get subEntityTitle (): string {
-    return this.isCoop ? 'cooperative' : 'company'
+    return this.getEntityDetails().subTitle
   }
 
   /** The entity title to display. */
   private get entityAct (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Business Corporations'
+    return this.getEntityDetails().act
+  }
+
+  /** The entity title to display. */
+  private get getModalTitle (): string {
+    return this.getEntityDetails().title
   }
 
   // Pass click event to parent.
@@ -78,6 +84,37 @@ export default class ConfirmDissolution extends Vue {
 
   // Pass click event to parent.
   @Emit() private proceed () { }
+
+  // returning  title subtitle, and act by entityType
+  private getEntityDetails (): any {
+    let entityTitle, subTitle, act, title
+
+    switch (this.getEntityType) {
+      case CorpTypeCd.COOP:
+        entityTitle = 'Cooperative Association'
+        subTitle = 'cooperative'
+        act = 'Cooperative Association'
+        break
+      case CorpTypeCd.SOLE_PROP:
+        entityTitle = 'Sole Proprietorship'
+        subTitle = 'registered business'
+        act = 'Partnership'
+        title = 'Dissolution'
+        break
+      case CorpTypeCd.PARTNERSHIP:
+        entityTitle = 'Partnership'
+        subTitle = 'registered business'
+        act = 'Partnership'
+        title = 'Dissolution'
+        break
+      default:
+        entityTitle = 'CompanyCompany'
+        subTitle = 'company'
+        act = 'Business Corporations'
+        title = 'Voluntary Dissolution'
+    }
+    return { entityTitle, subTitle, act, title }
+  }
 }
 </script>
 
