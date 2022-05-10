@@ -81,7 +81,7 @@ export const ConfigJson = [
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution'
     },
-    TodoList: {
+    todoList: {
       title: 'Voluntary Dissolution'
     }
   },
@@ -143,7 +143,7 @@ export const ConfigJson = [
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution'
     },
-    TodoList: {
+    todoList: {
       title: 'Voluntary Dissolution'
     }
   },
@@ -209,7 +209,7 @@ export const ConfigJson = [
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution'
     },
-    TodoList: {
+    todoList: {
       title: 'Dissolution'
     }
   },
@@ -275,7 +275,7 @@ export const ConfigJson = [
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution'
     },
-    TodoList: {
+    todoList: {
       title: 'Dissolution'
     }
   }

@@ -219,7 +219,7 @@ export default {
   },
   /** The entity TodoList resources. */
   getTodoListResource (state: StateIF): TodoListResourceIF {
-    return state.configObject?.TodoList
+    return state.configObject?.todoList
   }
 
 }
