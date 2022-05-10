@@ -19,7 +19,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
   @Getter getIdentifier!: string
   @Getter getEntityFoundingDate!: Date
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
-  @Getter gettBusinessAddress!: OfficeAddressIF
+  @Getter getBusinessAddress!: OfficeAddressIF
 
   /**
    * Flattens and sorts an array of comments.
@@ -145,7 +145,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP:
         dissolutionFiling.dissolution = { ...dissolutionFiling.dissolution,
-          custodialOffice: this.gettBusinessAddress || null
+          custodialOffice: this.getBusinessAddress || null
 
         }
         break

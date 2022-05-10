@@ -36,7 +36,7 @@
             color="primary"
             @click="proceed()"
           >
-            Continue with Voluntary Dissolution
+            {{getConfirmButtonText}}
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-row>
@@ -46,7 +46,8 @@
 </template>
 
 <script lang="ts">
-import { CorpTypeCd } from '@/enums'
+
+import { DissolutionConfirmationResourceIF } from '@/interfaces'
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
@@ -58,25 +59,31 @@ export default class ConfirmDissolution extends Vue {
   // Global getters
   @Getter getEntityName!: string
   @Getter getEntityType!: string
+  @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** The entity title to display. */
   private get entityTitle (): string {
-    return this.getEntityDetails().entityTitle
+    return this.getDissolutionConfirmationResource?.entityTitle
   }
 
   /** The entity title to display. */
   private get subEntityTitle (): string {
-    return this.getEntityDetails().subTitle
+    return this.getDissolutionConfirmationResource?.subTitle
   }
 
   /** The entity title to display. */
   private get entityAct (): string {
-    return this.getEntityDetails().act
+    return this.getDissolutionConfirmationResource?.act
   }
 
   /** The entity title to display. */
   private get getModalTitle (): string {
-    return this.getEntityDetails().title
+    return this.getDissolutionConfirmationResource?.modalTitle
+  }
+
+  /** The confirm button text to display. */
+  private get getConfirmButtonText (): string {
+    return this.getDissolutionConfirmationResource?.confirmButtonText
   }
 
   // Pass click event to parent.
@@ -84,37 +91,6 @@ export default class ConfirmDissolution extends Vue {
 
   // Pass click event to parent.
   @Emit() private proceed () { }
-
-  // returning  title subtitle, and act by entityType
-  private getEntityDetails (): any {
-    let entityTitle, subTitle, act, title
-
-    switch (this.getEntityType) {
-      case CorpTypeCd.COOP:
-        entityTitle = 'Cooperative Association'
-        subTitle = 'cooperative'
-        act = 'Cooperative Association'
-        break
-      case CorpTypeCd.SOLE_PROP:
-        entityTitle = 'Sole Proprietorship'
-        subTitle = 'registered business'
-        act = 'Partnership'
-        title = 'Dissolution'
-        break
-      case CorpTypeCd.PARTNERSHIP:
-        entityTitle = 'Partnership'
-        subTitle = 'registered business'
-        act = 'Partnership'
-        title = 'Dissolution'
-        break
-      default:
-        entityTitle = 'CompanyCompany'
-        subTitle = 'company'
-        act = 'Business Corporations'
-        title = 'Voluntary Dissolution'
-    }
-    return { entityTitle, subTitle, act, title }
-  }
 }
 </script>
 

@@ -598,6 +598,7 @@ export default class TodoList extends Mixins(
   @Getter isGoodStanding!: boolean
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
+  @Getter isFirm!: boolean
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -877,7 +878,7 @@ export default class TodoList extends Mixins(
         name: FilingTypes.DISSOLUTION,
         filingId: header.filingId,
         legalType: corpTypeDescription,
-        title: 'Voluntary Dissolution',
+        title: this.isFirm ? 'Dissolution' : 'Voluntary Dissolution',
         draftTitle: this.filingTypeToName(FilingTypes.DISSOLUTION),
         status: header.status,
         enabled: task.enabled,
