@@ -32,7 +32,7 @@
         </div>
 
         <div v-else class="pt-4 pb-4">
-          <v-list class="pt-0 pb-0" v-if="businessAddress">
+          <v-list class="pt-0 pb-0">
             <!-- Delivery Address -->
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
@@ -40,7 +40,7 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
-                <v-list-item-subtitle>
+                <v-list-item-subtitle v-if="businessAddress">
                   <ul class="address-subtitle pre-line" v-if="businessAddress.deliveryAddress">
                     <li class="address-line1">{{ businessAddress.deliveryAddress.streetAddress }}</li>
                     <li class="address-line2">{{ businessAddress.deliveryAddress.streetAddressAdditional }}</li>
@@ -57,6 +57,11 @@
                     <li class="delivery-address-not-entered">Not Entered</li>
                   </ul>
                 </v-list-item-subtitle>
+                <v-list-item-subtitle v-else>
+                  <ul class="address-subtitle pre-line">
+                    <li class="delivery-address-not-entered">Not Entered</li>
+                  </ul>
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
@@ -67,7 +72,7 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
-                <v-list-item-subtitle>
+                <v-list-item-subtitle v-if="businessAddress">
                   <div v-if="businessAddress.mailingAddress">
                     <span class="same-as-above"
                       v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])">
@@ -87,6 +92,11 @@
                     </ul>
                   </div>
                   <div class="mailing-address-not-entered" v-else>
+                    <span>Not Entered</span>
+                  </div>
+                </v-list-item-subtitle>
+                <v-list-item-subtitle v-else>
+                  <div class="mailing-address-not-entered">
                     <span>Not Entered</span>
                   </div>
                 </v-list-item-subtitle>
