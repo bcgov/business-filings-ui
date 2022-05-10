@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
     <v-card v-if="displayName==='Firm Record Conversion'">
-      <v-card-title id="dialog-title">Add a {{displayName}}</v-card-title>
+      <v-card-title id="conversion-title">Add a {{displayName}}</v-card-title>
       <v-card-text>
-        <div id="notation-text" class="mb-4 mt-2">
+        <div id="notation-text" class="mb-4 mt-2" ref="notationFormRef">
           Firm record conversion is only applicable for sole proprietorship, "Doing Business As" name (DBA),
           or general partnership business types.
         </div>
@@ -14,7 +14,6 @@
         <div class="form__btns">
           <v-btn text color="primary"
             id="dialog-cancel-button"
-            :disabled="saving"
             @click.native="emitClose(false)"
           >Cancel</v-btn>
         </div>
@@ -157,7 +156,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   @Watch('dialog')
   private async onDialogChanged (val: boolean): Promise<void> {
     // when dialog is shown, reset notation and validation
-    if (val) {
+    if (val && this.name !== 'conversion') {
       this.notation = ''
       await Vue.nextTick()
       this.$refs.notationFormRef.resetValidation()

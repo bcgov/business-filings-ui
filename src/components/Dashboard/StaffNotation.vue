@@ -30,7 +30,7 @@
       @close="hideRecordConversionDialog($event)"
       attach="#staff-notation"
       displayName="Firm Record Conversion"
-      name="recordConversion"
+      name="conversion"
     />
 
     <div class="filing-item__actions">
@@ -74,7 +74,7 @@
                 <span class="app-blue">Add Court Order</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="onAddressChangeClick()" :disabled="disabled">
+            <v-list-item @click="showRecordConversionDialog()" :disabled="disabled">
               <v-list-item-title>
                 <span class="app-blue">Add Firm Record Conversion</span>
               </v-list-item-title>
@@ -109,6 +109,9 @@ export default class StaffNotation extends Vue {
   /** Prop for disabling the menu items. */
   @Prop({ default: false }) readonly disabled: boolean
 
+  @Getter isFirm!: boolean
+  @Getter getIdentifier: string
+
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
   }
@@ -136,8 +139,10 @@ export default class StaffNotation extends Vue {
     this.close(needReload)
   }
 
+  /** If entity is a Firm then navigate to Edit UI,
+    * Else display message that this is not a firm. */
   showRecordConversionDialog (): void {
-    this.isAddingRecordConversion = true
+    this.isFirm ? this.goToChangeFiling() : this.isAddingRecordConversion = true
   }
 
   hideRecordConversionDialog (needReload: boolean): void {
@@ -150,14 +155,6 @@ export default class StaffNotation extends Vue {
     // Intentionally empty
   }
 
-  /**
-   * If entity is a Firm then navigate to Edit UI.
-   * Else display message that this is not a firm.
-   */
-  @Getter isFirm!: boolean
-  @Getter getIdentifier: string
-  @Getter isBComp: boolean
-
   /** The Edit URL string. */
   get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
@@ -166,10 +163,6 @@ export default class StaffNotation extends Vue {
   goToChangeFiling ():void {
     const url = `${this.editUrl}${this.getIdentifier}/change`
     navigate(url)
-  }
-
-  onAddressChangeClick () {
-    this.isFirm ? this.goToChangeFiling() : this.showRecordConversionDialog()
   }
 }
 </script>
