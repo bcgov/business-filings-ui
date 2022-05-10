@@ -80,6 +80,9 @@ export const ConfigJson = [
       act: 'Business Corporations',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution'
+    },
+    TodoList: {
+      title: 'Voluntary Dissolution'
     }
   },
   {
@@ -139,6 +142,9 @@ export const ConfigJson = [
       act: 'Cooperative Association',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution'
+    },
+    TodoList: {
+      title: 'Voluntary Dissolution'
     }
   },
   {
@@ -202,6 +208,9 @@ export const ConfigJson = [
       act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution'
+    },
+    TodoList: {
+      title: 'Dissolution'
     }
   },
   {
@@ -265,6 +274,9 @@ export const ConfigJson = [
       act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution'
+    },
+    TodoList: {
+      title: 'Dissolution'
     }
   }
 ]

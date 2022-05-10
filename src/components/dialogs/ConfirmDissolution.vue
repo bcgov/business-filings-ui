@@ -9,10 +9,10 @@
       </v-card-subtitle>
 
       <v-card-text>
-        <p class="warning-title">
+        <p class="warning-title" id="dialog-title">
         {{getModalTitle}}
         </p>
-        <p class="warning-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
+        <p class="warning-text" id="dialog-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be an incorporated {{ subEntityTitle }} under the
           {{ entityAct }} Act.
