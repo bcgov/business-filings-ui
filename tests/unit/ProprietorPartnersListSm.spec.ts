@@ -246,4 +246,30 @@ describe('ProprietorPartnersListSm', () => {
     expect(wrapper.findAll('.mailing-address-not-entered').at(1).text()).toBe('Not Entered')
     wrapper.destroy()
   })
+
+  it('displays "Complete your filing..." for no parties', async () => {
+    // init store
+    store.state.entityType = 'GP'
+    store.state.parties = []
+
+    const wrapper = mount(ProprietorPartnersListSm,
+      {
+        store,
+        vuetify,
+        propsData: {
+          showCompleteYourFilingMessage: false
+        }
+      }
+    )
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // Verify to organization names
+    expect(vm.getParties.length).toEqual(0)
+    expect(vm.proprietorPartners.length).toEqual(0)
+    expect(wrapper.find('.align-items-top.address-panel .complete-filing').text())
+      .toBe('Complete your filing to display')
+
+    wrapper.destroy()
+  })
 })

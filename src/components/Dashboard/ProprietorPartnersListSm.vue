@@ -5,8 +5,11 @@
     </div>
 
     <v-expansion-panels v-else accordion multiple>
+      <v-expansion-panel class="align-items-top address-panel" v-if="proprietorPartners.length===0">
+        <span class="complete-filing">Complete your filing to display</span>
+      </v-expansion-panel>
       <!-- when grayed out, disable expansion -->
-      <v-expansion-panel class="align-items-top address-panel"
+      <v-expansion-panel class="align-items-top address-panel" v-else
         v-for="(party, index) in proprietorPartners"
         :key="index"
         :disabled="disabled"
