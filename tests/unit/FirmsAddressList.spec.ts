@@ -12,7 +12,6 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 describe('FirmsAddressList', () => {
-  
   it('displays title and icons for delivery/mailing address', async () => {
     // init store
     store.state.businessAddress = null
@@ -34,7 +33,7 @@ describe('FirmsAddressList', () => {
     // Veryfi delivery/mailing icons
     expect(wrapper.find('.address-icon .v-icon.mdi-truck').exists()).toBeTruthy()
     expect(wrapper.find('.address-icon .v-icon.mdi-email-outline').exists()).toBeTruthy()
-  
+
     wrapper.destroy()
   })
 
@@ -128,7 +127,7 @@ describe('FirmsAddressList', () => {
       postalCode: 'V3V 3V3',
       addressCountry: 'CA'
     }
-    let mailingAddress = {...deliveryAddress, streetAddress: '444 Fish Rd'}
+    let mailingAddress = { ...deliveryAddress, streetAddress: '444 Fish Rd' }
     // init store
     store.state.businessAddress = {
       deliveryAddress: deliveryAddress,
@@ -163,5 +162,4 @@ describe('FirmsAddressList', () => {
 
     wrapper.destroy()
   })
-
 })
