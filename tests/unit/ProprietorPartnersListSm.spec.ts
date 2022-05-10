@@ -267,8 +267,7 @@ describe('ProprietorPartnersListSm', () => {
     // Verify to organization names
     expect(vm.getParties.length).toEqual(0)
     expect(vm.proprietorPartners.length).toEqual(0)
-    expect(wrapper.find('.align-items-top.address-panel .complete-filing').text())
-      .toBe('Complete your filing to display')
+    expect(wrapper.find('.align-items-top.address-panel .complete-filing').text()).toBe('Not Entered')
 
     wrapper.destroy()
   })

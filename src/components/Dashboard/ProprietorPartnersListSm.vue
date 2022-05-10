@@ -6,10 +6,10 @@
 
     <v-expansion-panels v-else accordion multiple>
       <v-expansion-panel class="align-items-top address-panel" v-if="proprietorPartners.length===0">
-        <span class="complete-filing">Complete your filing to display</span>
+        <span class="complete-filing">Not Entered</span>
       </v-expansion-panel>
       <!-- when grayed out, disable expansion -->
-      <v-expansion-panel class="align-items-top address-panel" v-else
+      <v-expansion-panel class="align-items-top address-panel"
         v-for="(party, index) in proprietorPartners"
         :key="index"
         :disabled="disabled"
