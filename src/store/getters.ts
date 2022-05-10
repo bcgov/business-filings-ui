@@ -1,5 +1,6 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF, StateIF, TodoListResourceIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
+  StateIF, TodoListResourceIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
