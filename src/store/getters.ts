@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, OfficeAddressIF, PartyIF, StateIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF, StateIF, TodoListResourceIF } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -206,5 +206,20 @@ export default {
   /** The parties list from the API. */
   getParties (state: StateIF): Array<PartyIF> {
     return state.parties
+  },
+
+  /** The entity busness address. */
+  getBusinessAddress (state: StateIF): OfficeAddressIF {
+    return state.businessAddress
+  },
+
+  /** The entity resource text for confirmation modal. */
+  getDissolutionConfirmationResource (state: StateIF): DissolutionConfirmationResourceIF {
+    return state.configObject?.dissolutionConfirmation
+  },
+  /** The entity TodoList resources. */
+  getTodoListResource (state: StateIF): TodoListResourceIF {
+    return state.configObject?.todoList
   }
+
 }

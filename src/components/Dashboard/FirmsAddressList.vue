@@ -95,7 +95,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { State } from 'vuex-class'
+import { Getter } from 'vuex-class'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
@@ -113,7 +113,12 @@ export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvi
   @Prop({ default: false })
   readonly showGrayedOut: boolean
 
-  @State businessAddress!: OfficeAddressIF
+  @Getter getBusinessAddress!: OfficeAddressIF
+
+  // Business
+  get businessAddress (): OfficeAddressIF {
+    return this.getBusinessAddress
+  }
 
   /** Whether to appear disabled. */
   private get disabled (): boolean {

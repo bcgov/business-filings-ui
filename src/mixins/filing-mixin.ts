@@ -19,6 +19,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
   @Getter getIdentifier!: string
   @Getter getEntityFoundingDate!: Date
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
+  @Getter getBusinessAddress!: OfficeAddressIF
 
   /**
    * Flattens and sorts an array of comments.
@@ -137,6 +138,17 @@ export default class FilingMixin extends Mixins(DateMixin) {
         custodialOffice: this.getRegisteredOfficeAddress,
         dissolutionType: DissolutionTypes.VOLUNTARY // FUTURE: apply dynamically when we have dissolution variations
       }
+    }
+
+    // Conditionally add the entity-specific sections.
+    switch (this.getEntityType) {
+      case CorpTypeCd.SOLE_PROP:
+      case CorpTypeCd.PARTNERSHIP:
+        dissolutionFiling.dissolution = { ...dissolutionFiling.dissolution,
+          custodialOffice: this.getBusinessAddress || null
+
+        }
+        break
     }
 
     return dissolutionFiling

@@ -544,7 +544,7 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 // Mixins, Enums and Interfaces
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF } from '@/interfaces'
+import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -598,6 +598,7 @@ export default class TodoList extends Mixins(
   @Getter isGoodStanding!: boolean
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
+  @Getter getTodoListResource!: TodoListResourceIF
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -877,7 +878,7 @@ export default class TodoList extends Mixins(
         name: FilingTypes.DISSOLUTION,
         filingId: header.filingId,
         legalType: corpTypeDescription,
-        title: 'Voluntary Dissolution',
+        title: this.getTodoListResource?.title,
         draftTitle: this.filingTypeToName(FilingTypes.DISSOLUTION),
         status: header.status,
         enabled: task.enabled,

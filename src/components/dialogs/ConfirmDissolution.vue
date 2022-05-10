@@ -9,10 +9,10 @@
       </v-card-subtitle>
 
       <v-card-text>
-        <p class="warning-title">
-         Voluntary Dissolution
+        <p class="warning-title" id="dialog-title">
+        {{getModalTitle}}
         </p>
-        <p class="warning-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
+        <p class="warning-text" id="dialog-text">You are about to voluntarily dissolve <strong>{{ getEntityName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be an incorporated {{ subEntityTitle }} under the
           {{ entityAct }} Act.
@@ -36,7 +36,7 @@
             color="primary"
             @click="proceed()"
           >
-            Continue with Voluntary Dissolution
+            {{getConfirmButtonText}}
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-row>
@@ -46,6 +46,8 @@
 </template>
 
 <script lang="ts">
+
+import { DissolutionConfirmationResourceIF } from '@/interfaces'
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
@@ -56,21 +58,32 @@ export default class ConfirmDissolution extends Vue {
 
   // Global getters
   @Getter getEntityName!: string
-  @Getter isCoop!: boolean
+  @Getter getEntityType!: string
+  @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** The entity title to display. */
   private get entityTitle (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Company'
+    return this.getDissolutionConfirmationResource?.entityTitle
   }
 
   /** The entity title to display. */
   private get subEntityTitle (): string {
-    return this.isCoop ? 'cooperative' : 'company'
+    return this.getDissolutionConfirmationResource?.subTitle
   }
 
   /** The entity title to display. */
   private get entityAct (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Business Corporations'
+    return this.getDissolutionConfirmationResource?.act
+  }
+
+  /** The entity title to display. */
+  private get getModalTitle (): string {
+    return this.getDissolutionConfirmationResource?.modalTitle
+  }
+
+  /** The confirm button text to display. */
+  private get getConfirmButtonText (): string {
+    return this.getDissolutionConfirmationResource?.confirmButtonText
   }
 
   // Pass click event to parent.

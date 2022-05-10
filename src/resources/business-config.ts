@@ -73,6 +73,16 @@ export const ConfigJson = [
           description: 'update any changes to a company\'s registered or records office addresses as they occur.'
         }
       ]
+    },
+    dissolutionConfirmation: {
+      entityTitle: 'Company',
+      subTitle: 'company',
+      act: 'Business Corporations',
+      modalTitle: 'Voluntary Dissolution',
+      confirmButtonText: 'Continue with Voluntary Dissolution'
+    },
+    todoList: {
+      title: 'Voluntary Dissolution'
     }
   },
   {
@@ -125,7 +135,17 @@ export const ConfigJson = [
           }
         }
       }
-    ]
+    ],
+    dissolutionConfirmation: {
+      entityTitle: 'Cooperative Association',
+      subTitle: 'cooperative',
+      act: 'Cooperative Association',
+      modalTitle: 'Voluntary Dissolution',
+      confirmButtonText: 'Continue with Voluntary Dissolution'
+    },
+    todoList: {
+      title: 'Voluntary Dissolution'
+    }
   },
   {
     entityType: CorpTypeCd.SOLE_PROP,
@@ -181,6 +201,16 @@ export const ConfigJson = [
           description: 'when a business is no longer required it needs to dissolved.'
         }
       ]
+    },
+    dissolutionConfirmation: {
+      entityTitle: 'Sole Proprietorship',
+      subTitle: 'registered business',
+      act: 'Partnership',
+      modalTitle: 'Dissolution',
+      confirmButtonText: 'Continue with Dissolution'
+    },
+    todoList: {
+      title: 'Dissolution'
     }
   },
   {
@@ -237,6 +267,16 @@ export const ConfigJson = [
           description: 'when a business is no longer required it needs to dissolved.'
         }
       ]
+    },
+    dissolutionConfirmation: {
+      entityTitle: 'Partnership',
+      subTitle: 'registered business',
+      act: 'Partnership',
+      modalTitle: 'Dissolution',
+      confirmButtonText: 'Continue with Dissolution'
+    },
+    todoList: {
+      title: 'Dissolution'
     }
   }
 ]
