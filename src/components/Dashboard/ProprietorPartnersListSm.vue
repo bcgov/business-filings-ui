@@ -5,6 +5,9 @@
     </div>
 
     <v-expansion-panels v-else accordion multiple>
+      <v-expansion-panel class="align-items-top address-panel" v-if="proprietorPartners.length===0">
+        <span class="complete-filing">Not Entered</span>
+      </v-expansion-panel>
       <!-- when grayed out, disable expansion -->
       <v-expansion-panel class="align-items-top address-panel"
         v-for="(party, index) in proprietorPartners"
@@ -20,18 +23,20 @@
 
         <v-expansion-panel-content>
           <v-list class="pt-0 pb-0">
-            <v-list-item class="email-address-list-item" v-if="party.officer.email">
+            <v-list-item class="email-address-list-item">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Email Address</v-list-item-title>
-                <v-list-item-subtitle>{{ party.officer.email }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="email-address-text">
+                  {{ party.officer.email || 'Not Entered'}}
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="delivery-address-list-item" v-if="party.deliveryAddress">
+            <v-list-item class="delivery-address-list-item">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <ul class="address-subtitle pre-line">
+                  <ul class="address-subtitle pre-line" v-if="party.deliveryAddress">
                     <li class="address-line1">{{ party.deliveryAddress.streetAddress }}</li>
                     <li class="address-line2">{{ party.deliveryAddress.streetAddressAdditional }}</li>
                     <li class="address-line3">{{ party.deliveryAddress.addressCity }}
@@ -39,27 +44,34 @@
                                               {{ party.deliveryAddress.postalCode }}</li>
                     <li class="address-line4">{{ getCountryName(party.deliveryAddress.addressCountry) }}</li>
                   </ul>
+                  <ul class="address-subtitle pre-line" v-else>
+                    <li class="delivery-address-not-entered">Not Entered</li>
+                  </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item" v-if="party.mailingAddress">
+            <v-list-item class="mailing-address-list-item">
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above"
-                    v-if="isSame(party.deliveryAddress, party.mailingAddress, 'id')"
-                  >
-                    <span>Same as above</span>
+                  <div v-if="party.mailingAddress">
+                    <span class="same-as-above"
+                      v-if="isSame(party.deliveryAddress, party.mailingAddress, 'id')">
+                      Same as above
+                    </span>
+                    <ul v-else class="address-subtitle pre-line">
+                      <li class="address-line1">{{ party.mailingAddress.streetAddress }}</li>
+                      <li class="address-line2">{{ party.mailingAddress.streetAddressAdditional }}</li>
+                      <li class="address-line3">{{ party.mailingAddress.addressCity }}
+                                                {{ party.mailingAddress.addressRegion }}
+                                                {{ party.mailingAddress.postalCode }}</li>
+                      <li class="address-line4">{{ getCountryName(party.mailingAddress.addressCountry) }}</li>
+                    </ul>
                   </div>
-                  <ul v-else class="address-subtitle pre-line">
-                    <li class="address-line1">{{ party.mailingAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ party.mailingAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ party.mailingAddress.addressCity }}
-                                              {{ party.mailingAddress.addressRegion }}
-                                              {{ party.mailingAddress.postalCode }}</li>
-                    <li class="address-line4">{{ getCountryName(party.mailingAddress.addressCountry) }}</li>
-                  </ul>
+                  <div class="mailing-address-not-entered" v-else>
+                    <span>Not Entered</span>
+                  </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
