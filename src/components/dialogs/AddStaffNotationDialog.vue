@@ -1,10 +1,10 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
-    <v-card v-if="displayName==='Firm Record Conversion'">
-      <v-card-title id="conversion-title">Add a {{displayName}}</v-card-title>
+    <v-card v-if="name==='conversion'">
+      <v-card-title id="conversion-title">{{displayName}}</v-card-title>
       <v-card-text>
         <div id="notation-text" class="mb-4 mt-2" ref="notationFormRef">
-          Firm record conversion is only applicable for sole proprietorship, "Doing Business As" name (DBA),
+          Record conversion is only applicable for sole proprietorship, "Doing Business As" name (DBA),
           or general partnership business types.
         </div>
       </v-card-text>

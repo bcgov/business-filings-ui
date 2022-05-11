@@ -54,12 +54,12 @@
                     </li>
                   </ul>
                   <ul class="address-subtitle pre-line" v-else>
-                    <li class="delivery-address-not-entered">Not Entered</li>
+                    <li class="delivery-address-not-entered">(Not Entered)</li>
                   </ul>
                 </v-list-item-subtitle>
                 <v-list-item-subtitle v-else>
                   <ul class="address-subtitle pre-line">
-                    <li class="delivery-address-not-entered">Not Entered</li>
+                    <li class="delivery-address-not-entered">(Not Entered)</li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -92,12 +92,12 @@
                     </ul>
                   </div>
                   <div class="mailing-address-not-entered" v-else>
-                    <span>Not Entered</span>
+                    <span>(Not Entered)</span>
                   </div>
                 </v-list-item-subtitle>
                 <v-list-item-subtitle v-else>
                   <div class="mailing-address-not-entered">
-                    <span>Not Entered</span>
+                    <span>(Not Entered)</span>
                   </div>
                 </v-list-item-subtitle>
               </v-list-item-content>

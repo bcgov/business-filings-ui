@@ -29,7 +29,7 @@
       :dialog="isAddingRecordConversion"
       @close="hideRecordConversionDialog($event)"
       attach="#staff-notation"
-      displayName="Firm Record Conversion"
+      displayName="Record Conversion"
       name="conversion"
     />
 
@@ -76,7 +76,7 @@
             </v-list-item>
             <v-list-item @click="showRecordConversionDialog()" :disabled="disabled">
               <v-list-item-title>
-                <span class="app-blue">Add Firm Record Conversion</span>
+                <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
             </v-list-item>
           </v-list-item-group>
@@ -142,7 +142,7 @@ export default class StaffNotation extends Vue {
   /** If entity is a Firm then navigate to Edit UI,
     * Else display message that this is not a firm. */
   showRecordConversionDialog (): void {
-    this.isFirm ? this.goToChangeFiling() : this.isAddingRecordConversion = true
+    this.isFirm ? this.goToConversionFiling() : this.isAddingRecordConversion = true
   }
 
   hideRecordConversionDialog (needReload: boolean): void {
@@ -160,8 +160,8 @@ export default class StaffNotation extends Vue {
     return sessionStorage.getItem('EDIT_URL')
   }
 
-  goToChangeFiling ():void {
-    const url = `${this.editUrl}${this.getIdentifier}/change`
+  goToConversionFiling ():void {
+    const url = `${this.editUrl}${this.getIdentifier}/conversion`
     navigate(url)
   }
 }

@@ -37,7 +37,7 @@ describe('StaffNotation', () => {
     expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Notation')
     expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Order')
     expect(wrapper.find('.v-list').text()).toContain('Add Court Order')
-    expect(wrapper.find('.v-list').text()).toContain('Add Firm Record Conversion')
+    expect(wrapper.find('.v-list').text()).toContain('Record Conversion')
 
     wrapper.destroy()
   })
@@ -118,7 +118,7 @@ describe('StaffNotation', () => {
     expect(wrapper.vm.$data.isAddingRecordConversion).toBeTruthy()
 
     // Verify the modal title
-    expect(wrapper.find('#conversion-title').text()).toContain('Add a Firm Record Conversion')
+    expect(wrapper.find('#conversion-title').text()).toContain('Record Conversion')
     expect(wrapper.find('#notation-text').text()).toContain('sole proprietorship')
 
     // click the Cancel button

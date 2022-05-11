@@ -6,7 +6,7 @@
 
     <v-expansion-panels v-else accordion multiple>
       <v-expansion-panel class="align-items-top address-panel" v-if="proprietorPartners.length===0">
-        <span class="complete-filing">Not Entered</span>
+        <span class="complete-filing">(Not Entered)</span>
       </v-expansion-panel>
       <!-- when grayed out, disable expansion -->
       <v-expansion-panel class="align-items-top address-panel"
@@ -27,7 +27,7 @@
               <v-list-item-content>
                 <v-list-item-title class="mb-2 address-title">Email Address</v-list-item-title>
                 <v-list-item-subtitle class="email-address-text">
-                  {{ party.officer.email || 'Not Entered'}}
+                  {{ party.officer.email || '(Not Entered)'}}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -45,7 +45,7 @@
                     <li class="address-line4">{{ getCountryName(party.deliveryAddress.addressCountry) }}</li>
                   </ul>
                   <ul class="address-subtitle pre-line" v-else>
-                    <li class="delivery-address-not-entered">Not Entered</li>
+                    <li class="delivery-address-not-entered">(Not Entered)</li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -70,7 +70,7 @@
                     </ul>
                   </div>
                   <div class="mailing-address-not-entered" v-else>
-                    <span>Not Entered</span>
+                    <span>(Not Entered)</span>
                   </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
