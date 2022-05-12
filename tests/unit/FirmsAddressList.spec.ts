@@ -163,11 +163,15 @@ describe('FirmsAddressList', () => {
     wrapper.destroy()
   })
 
-  it('displays "Not Enter" for null address', async () => {
+  it('displays "(Not Entered)" for null address', async () => {
     // init store
     store.state.businessAddress = {
       deliveryAddress: null,
       mailingAddress: null
+    }
+    store.state.getBusinessAddress = {
+      deliveryAddress: {},
+      mailingAddress: {}
     }
 
     const wrapper = mount(FirmsAddressList, {

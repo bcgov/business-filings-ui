@@ -133,7 +133,10 @@ export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvi
   @Getter getBusinessAddress!: OfficeAddressIF
 
   // Business
-  get businessAddress (): OfficeAddressIF {
+  get businessAddress (): OfficeAddressIF|null {
+    if (this.getBusinessAddress && this.getBusinessAddress.deliveryAddress &&
+        Object.values(this.getBusinessAddress.deliveryAddress).length === 0) return null
+    if (this.getBusinessAddress && this.getBusinessAddress.deliveryAddress === null) return null
     return this.getBusinessAddress
   }
 
