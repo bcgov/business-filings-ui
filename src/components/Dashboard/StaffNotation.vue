@@ -25,14 +25,6 @@
       courtOrderNumberRequired="true"
     />
 
-    <AddStaffNotationDialog
-      :dialog="isAddingRecordConversion"
-      @close="hideRecordConversionDialog($event)"
-      attach="#staff-notation"
-      displayName="Record Conversion"
-      name="conversion"
-    />
-
     <div class="filing-item__actions">
       <v-menu offset-y left transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
@@ -74,7 +66,7 @@
                 <span class="app-blue">Add Court Order</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="showRecordConversionDialog()" :disabled="disabled">
+            <v-list-item @click="goToConversionFiling()" :disabled="!isFirm">
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
@@ -100,7 +92,6 @@ export default class StaffNotation extends Vue {
   private isAddingRegistrarsNotation = false
   private isAddingRegistrarsOrder = false
   private isAddingCourtOrder = false
-  private isAddingRecordConversion = false
   private expand = false
 
   /** Prop for the scrollbar offset to be added. */
@@ -111,6 +102,11 @@ export default class StaffNotation extends Vue {
 
   @Getter isFirm!: boolean
   @Getter getIdentifier: string
+
+  /** The Edit URL string. */
+  get editUrl (): string {
+    return sessionStorage.getItem('EDIT_URL')
+  }
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
@@ -139,25 +135,9 @@ export default class StaffNotation extends Vue {
     this.close(needReload)
   }
 
-  /** If entity is a Firm then navigate to Edit UI,
-    * Else display message that this is not a firm. */
-  showRecordConversionDialog (): void {
-    this.isFirm ? this.goToConversionFiling() : this.isAddingRecordConversion = true
-  }
-
-  hideRecordConversionDialog (needReload: boolean): void {
-    this.isAddingRecordConversion = false
-    this.close(needReload)
-  }
-
   @Emit('close')
   private close (needReload: boolean): void {
     // Intentionally empty
-  }
-
-  /** The Edit URL string. */
-  get editUrl (): string {
-    return sessionStorage.getItem('EDIT_URL')
   }
 
   goToConversionFiling ():void {
