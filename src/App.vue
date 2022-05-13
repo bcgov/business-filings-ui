@@ -372,7 +372,7 @@ export default {
       if (this.businessId) {
         try {
           await this.fetchBusinessData() // throws on error
-          await this.fetchAddressData() // business address
+          await this.fetchStoreAddressData() // business address
           this.dataLoaded = true
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
@@ -415,7 +415,7 @@ export default {
       this.storeParties(data[4])
     },
 
-    async fetchAddressData ():Promise<void> {
+    async fetchStoreAddressData ():Promise<void> {
       let hasBAError = false
       const data = await Promise.resolve(
         this.fetchAddresses(this.businessId)
@@ -425,10 +425,13 @@ export default {
           error.response.data.message.includes('address not found')) hasBAError = true
       })
 
-      let badAddress = { data: { businessOffice: null } }
-      if (!data && hasBAError) this.storeAddresses(badAddress) // if 404 and business address not found
-      if (!data && !hasBAError) throw new Error('Incomplete business data')
-      if (data) this.storeAddresses(data)
+      if (data) {
+        this.storeAddresses(data)
+      } else if (hasBAError) { // if 404 and business address not found
+        this.storeAddresses({ data: { businessOffice: null } })
+      } else {
+        throw new Error('Incomplete business data')
+      }
     },
 
     /** Fetches and stores the draft application data. */

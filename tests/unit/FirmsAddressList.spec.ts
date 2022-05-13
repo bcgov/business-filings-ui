@@ -163,12 +163,34 @@ describe('FirmsAddressList', () => {
     wrapper.destroy()
   })
 
-  it('displays "(Not Entered)" for null address', async () => {
+  it('displays "(Not Entered)" for invalid businessAddress', async () => {
     // init store
     store.state.businessAddress = {
       deliveryAddress: null,
       mailingAddress: null
     }
+
+    const wrapper = mount(FirmsAddressList, {
+      store,
+      vuetify,
+      propsData: {
+        showCompleteYourFilingMessage: false,
+        showGrayedOut: false
+      }
+    })
+    await Vue.nextTick()
+
+    // Verify (Not Entered) for delivery/mailing address
+    expect(wrapper.find('.delivery-address-list-item .delivery-address-not-entered').text())
+      .toBe('(Not Entered)')
+    expect(wrapper.find('.mailing-address-list-item .mailing-address-not-entered').text())
+      .toBe('(Not Entered)')
+
+    wrapper.destroy()
+  })
+
+  it('displays "(Not Entered)" for invalid getBusinessAddress', async () => {
+    // init store
     store.state.getBusinessAddress = {
       deliveryAddress: {},
       mailingAddress: {}
