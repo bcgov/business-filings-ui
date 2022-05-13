@@ -113,6 +113,7 @@
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
+import { isEmpty } from 'lodash'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
@@ -134,10 +135,7 @@ export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvi
 
   // Business
   get businessAddress (): OfficeAddressIF|null {
-    let deliveryAddress = this.getBusinessAddress?.deliveryAddress
-    if (this.getBusinessAddress === null) return null
-    if (deliveryAddress === null) return null
-    if (Object.values(deliveryAddress).length === 0) return null
+    if (isEmpty(this.getBusinessAddress?.deliveryAddress)) return null
     return this.getBusinessAddress
   }
 
