@@ -189,9 +189,9 @@ describe('FirmsAddressList', () => {
     wrapper.destroy()
   })
 
-  it('displays "(Not Entered)" for invalid getBusinessAddress', async () => {
+  it('displays "(Not Entered)" for getter getBusinessAddress', async () => {
     // init store
-    store.state.getBusinessAddress = {
+    store.state.businessAddress = {
       deliveryAddress: {},
       mailingAddress: {}
     }
