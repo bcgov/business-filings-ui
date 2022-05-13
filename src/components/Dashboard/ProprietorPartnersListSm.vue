@@ -107,6 +107,7 @@ export default class ProprietorPartnersListSm extends Mixins(CommonMixin, Countr
   get proprietorPartners (): PartyIF[] {
     if (this.isSoleProp) {
       // return array with the proprietor
+      if (this.getParties.length === 0) return []
       return [ this.getParties.find(party => party.roles.some(role => role.roleType === Roles.PROPRIETOR)) ]
     }
     if (this.isPartnership) {
