@@ -28,7 +28,7 @@ describe('StaffNotation', () => {
   // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
   document.body.setAttribute('data-app', 'true')
   document.body.setAttribute('id', 'staff-notation')
-  store.state.isFirm = true
+  store.state.entityType = 'SP'
   it('renders the page contents correctly', () => {
     const wrapper = mount(StaffNotation, { store })
 

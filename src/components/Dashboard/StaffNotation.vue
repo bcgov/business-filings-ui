@@ -66,7 +66,7 @@
                 <span class="app-blue">Add Court Order</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="goToConversionFiling()" :disabled="!isFirm">
+            <v-list-item @click="goToConversionFiling()" :disabled="disabled || !isFirm">
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
