@@ -30,7 +30,7 @@ describe('StaffNotation', () => {
   document.body.setAttribute('id', 'staff-notation')
   store.state.isFirm = true
   it('renders the page contents correctly', () => {
-    const wrapper = mount(StaffNotation, {store})
+    const wrapper = mount(StaffNotation, { store })
 
     expect(wrapper.vm.$data.expand).toBe(false)
     expect(wrapper.find('#add-staff-filing-label').text()).toBe('Add Staff Filing')
@@ -85,7 +85,6 @@ describe('StaffNotation', () => {
   })
 
   for (const test of staffFilingTypes) {
-    
     it(`renders the modal correctly for ${test.name}`, async () => {
       const wrapper = mount(StaffNotation, {
         vuetify,
@@ -105,15 +104,15 @@ describe('StaffNotation', () => {
       switch (test.type) {
         case 'registrarsNotation':
           expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeTruthy()
-          break;
+          break
         case 'registrarsOrder':
           expect(wrapper.vm.$data.isAddingRegistrarsOrder).toBeTruthy()
-          break;
+          break
         case 'courtOrder':
           expect(wrapper.vm.$data.isAddingCourtOrder).toBeTruthy()
-          break;
+          break
         default:
-          break;
+          break
       }
 
       // Verify the modal title
