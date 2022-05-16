@@ -1,4 +1,5 @@
 import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingTypes } from '@/enums'
+import { ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific } from '@/interfaces'
 
 /**
  * A list item from the API "filings" call (ie, API object).
@@ -11,13 +12,13 @@ export interface ApiFilingIF {
   commentsLink: string // URL to fetch this filing's comments
   displayName: string
   documentsLink: string // URL to fetch this filing's documents
-  effectiveDate: string // formatted date-time in UTC format
+  effectiveDate: FormattedDateTimeGmt
   filingId: number
   filingLink: string // URL to fetch this filing
   isFutureEffective: boolean
   name: FilingTypes
   status: FilingStatus
-  submittedDate: string // formatted date-time in UTC format
+  submittedDate: FormattedDateTimeGmt
   submitter: string
 
   // correction filings only
@@ -30,7 +31,7 @@ export interface ApiFilingIF {
 
   // filing-specific data
   data: {
-    applicationDate: string
+    applicationDate: ApiDateTimeUtc
     legalFilings: Array<string>
 
     // alteration filings only
@@ -41,8 +42,9 @@ export interface ApiFilingIF {
 
     // AR filings only
     annualReport?: {
-      annualGeneralMeetingDate: string
-      annualReportDate: string
+      annualGeneralMeetingDate: IsoDatePacific
+      annualReportDate: IsoDatePacific
+      annualReportFilingYear?: number
     }
 
     // COA filings only
@@ -58,7 +60,7 @@ export interface ApiFilingIF {
     order?: {
       effectOfOrder: EffectOfOrderTypes
       fileNumber: string
-      orderDate?: string
+      orderDate?: string // FUTURE: use date type here
       orderDetails: string
     }
 

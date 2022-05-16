@@ -11,6 +11,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 describe('AnnualReport - UI', () => {
   beforeAll(() => {
     // init store
+    store.state.currentJsDate = new Date('2019-07-15T12:00:00')
     store.state.currentDate = '2019-07-15'
     store.state.nextARDate = '2020-09-18'
     store.state.entityType = 'BEN'
