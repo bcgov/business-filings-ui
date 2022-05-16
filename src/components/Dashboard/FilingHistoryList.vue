@@ -380,9 +380,6 @@ export default class FilingHistoryList extends Mixins(
 ) {
   @Prop({ default: null }) readonly highlightId: number
 
-  @Getter isBComp!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter getIdentifier!: string
   @Getter getFilings!: Array<ApiFilingIF>
 
   @Action setIsCoaPending!: ActionBindingIF
@@ -468,6 +465,8 @@ export default class FilingHistoryList extends Mixins(
   /** Loads a filing into the historyItems list. */
   private loadFiling (filing: ApiFilingIF): void {
     try {
+      // NB: these `new Date()` are safe because the date strings are in GMT (ie, UTC)
+      //     so the conversion to JS Date ignores the browser's local timezone
       const effectiveDate = new Date(filing.effectiveDate)
       const submittedDate = new Date(filing.submittedDate)
 
@@ -601,14 +600,12 @@ export default class FilingHistoryList extends Mixins(
 
   /** Whether the subject effective date/time is in the past. */
   isEffectiveDatePast (effectiveDate: Date): boolean {
-    // FUTURE: stop assuming local date is correct
-    return (effectiveDate <= new Date())
+    return (effectiveDate <= this.getCurrentJsDate)
   }
 
   /** Whether the subject effective date/time is in the future. */
   isEffectiveDateFuture (effectiveDate: Date): boolean {
-    // FUTURE: stop assuming local date is correct
-    return (effectiveDate > new Date())
+    return (effectiveDate > this.getCurrentJsDate)
   }
 
   /** Expands the panel of the specified filing ID. */

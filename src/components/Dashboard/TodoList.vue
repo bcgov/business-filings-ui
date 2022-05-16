@@ -765,7 +765,7 @@ export default class TodoList extends Mixins(
   }
 
   private expiresText (nameRequest: any): string {
-    const date = new Date(nameRequest.expirationDate)
+    const date = this.apiToDate(nameRequest.expirationDate)
     const expireDays = this.daysFromToday(date)
     // NB: 0 means NR expires today
     if (isNaN(expireDays) || expireDays < 0) {

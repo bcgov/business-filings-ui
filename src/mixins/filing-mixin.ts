@@ -31,6 +31,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
       // first use map to change comment.comment to comment
       const temp: Array<any> = comments.map(c => c.comment)
       // then sort newest to oldest
+      // NB: these `new Date()` are safe because we're comparing like units
       temp.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
       return temp
     }

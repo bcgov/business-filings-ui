@@ -1,10 +1,5 @@
 import { EntityState, CorpTypeCd } from '@/enums'
-
-/** YYYY-MM-DD in Pacific timezone. */
-type isoDatePacific = string
-
-/** YYYY-MM-DDTHH:MM:SS[.MMMMMM]+00.00 in UTC. */
-type apiDateTimeUtc = string
+import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
 /** The Compliance Warning object. */
 export interface ComplianceWarning {
@@ -16,24 +11,24 @@ export interface ComplianceWarning {
 /** The Business object from the API. */
 export interface BusinessIF {
   adminFreeze: boolean
-  arMaxDate: isoDatePacific // not used
-  arMinDate: isoDatePacific // not used
-  dissolutionDate: apiDateTimeUtc // not used
+  arMaxDate: IsoDatePacific // not used
+  arMinDate: IsoDatePacific // not used
+  dissolutionDate: ApiDateTimeUtc // not used
   complianceWarnings?: Array<ComplianceWarning>
-  fiscalYearEndDate: isoDatePacific // not used
-  foundingDate: apiDateTimeUtc
+  fiscalYearEndDate: IsoDatePacific // not used
+  foundingDate: ApiDateTimeUtc
   goodStanding: boolean
   hasRestrictions: boolean // FUTURE: is this obsolete???
   identifier: string
-  lastAddressChangeDate: isoDatePacific
-  lastAnnualGeneralMeetingDate: isoDatePacific // not used
-  lastAnnualReportDate: isoDatePacific
-  lastDirectorChangeDate: isoDatePacific
-  lastLedgerTimestamp: apiDateTimeUtc // not used
-  lastModified: apiDateTimeUtc // not used
+  lastAddressChangeDate: IsoDatePacific
+  lastAnnualGeneralMeetingDate: IsoDatePacific // not used
+  lastAnnualReportDate: IsoDatePacific
+  lastDirectorChangeDate: IsoDatePacific
+  lastLedgerTimestamp: ApiDateTimeUtc // not used
+  lastModified: ApiDateTimeUtc // not used
   legalName: string
   legalType: CorpTypeCd
-  nextAnnualReport: apiDateTimeUtc // used for BCOMP only
+  nextAnnualReport: ApiDateTimeUtc // used for BCOMP only
   taxId?: string // aka Business Number // may be undefined
   state: EntityState
   stateFiling?: string
