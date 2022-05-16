@@ -18,7 +18,7 @@
             <span class="key">Expiry Date:</span>
             <span class="val">{{ formattedExpirationDate() }}</span>
           </li>
-          <li>
+          <li id="status">
             <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED ||
                           nameRequestDetails.status === NameRequestStates.CONDITIONAL"
               color="green" class="nr-status-icon">mdi-check</v-icon>
