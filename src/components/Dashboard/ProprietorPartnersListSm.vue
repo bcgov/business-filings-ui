@@ -6,7 +6,7 @@
 
     <v-expansion-panels v-else accordion multiple>
       <v-expansion-panel class="align-items-top address-panel" v-if="proprietorPartners.length===0">
-        <span class="complete-filing">(Not Entered)</span>
+        <span class="complete-filing not-entered">(Not Entered)</span>
       </v-expansion-panel>
       <!-- when grayed out, disable expansion -->
       <v-expansion-panel class="align-items-top address-panel"
@@ -152,6 +152,10 @@ $avatar-width: 2.75rem;
   font-size: $px-14;
   white-space: pre-wrap;
   display: inline-block;
+}
+
+.complete-filing.not-entered {
+  color: $gray9;
 }
 
 // Expansion Panel Customization
