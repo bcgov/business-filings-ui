@@ -107,7 +107,7 @@ describe('NameRequestInfo component', () => {
     expect(vals.at(3).text()).toBe('APPROVED')
     expect(vals.at(4).text()).toBe('Not Required')
 
-    expect(firstCol.find('#status .nr-status-icon.mdi-check').exists()).toBe(true)
+    expect(firstCol.find('#status .nr-status-icon.mdi-check').exists()).toBe(false)
     expect(firstCol.find('#condition-consent .nr-status-icon.mdi-check').exists()).toBe(true)
     expect(firstCol.find('#condition-consent .nr-status-icon.mdi-close').exists()).toBe(false)
 
