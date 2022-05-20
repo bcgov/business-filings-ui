@@ -223,7 +223,7 @@ export const ConfigJson = [
       title: 'Dissolution'
     },
     filingHistoryList: {
-      title: 'Dissolution'
+      title: 'Statement of Dissolution'
     }
   },
   {
@@ -294,7 +294,7 @@ export const ConfigJson = [
       title: 'Dissolution'
     },
     filingHistoryList: {
-      title: 'Dissolution'
+      title: 'Statement of Dissolution'
     }
   }
 ]
