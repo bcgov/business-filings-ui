@@ -372,7 +372,7 @@
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title>Delete Voluntary Dissolution</v-list-item-title>
+                          <v-list-item-title>Delete Dissolution</v-list-item-title>
                         </template>
                         <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
