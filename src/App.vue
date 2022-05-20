@@ -210,7 +210,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff']),
+    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff', 'isFirm']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
@@ -580,7 +580,7 @@ export default {
       if (filingType === FilingTypes.DISSOLUTION) {
         name = this.dissolutionTypeToName(
           (filing?.dissolution?.dissolutionType as DissolutionTypes) ||
-          DissolutionTypes.UNKNOWN
+          DissolutionTypes.UNKNOWN, this.isFirm
         )
       } else {
         name = this.filingTypeToName(filingType)

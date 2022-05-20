@@ -1,6 +1,6 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
+  StateIF, TodoListResourceIF, FilingHistoryListResourceIF, IsoDatePacific } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -228,6 +228,10 @@ export default {
   /** The entity TodoList resources. */
   getTodoListResource (state: StateIF): TodoListResourceIF {
     return state.configObject?.todoList
+  },
+  /** The entity FilingHistoryList resources. */
+  getFilingHistoryListResource (state: StateIF): FilingHistoryListResourceIF {
+    return state.configObject?.filingHistoryList
   }
 
 }
