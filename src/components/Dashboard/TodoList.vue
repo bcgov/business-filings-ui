@@ -153,7 +153,7 @@
 
                 <!-- draft incorporation -->
                 <div v-else-if="isStatusDraft(item) &&
-                  (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))"
+                  (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
                   class="todo-subtitle"
                 >
                   <div>{{ item.subtitle }}</div>
@@ -350,7 +350,7 @@
                       <span v-if="nameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
-                    <template v-else-if="isTypeRegistrationApplication(item) && item.isEmptyFiling">
+                    <template v-else-if="isTypeRegistration(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
                     </template>
                     <span v-else>Resume</span>
@@ -507,7 +507,7 @@
           </template>
 
           <template v-else-if="isStatusDraft(item) &&
-            (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))">
+            (isTypeIncorporationApplication(item) || isTypeRegistration(item))">
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
         </v-expansion-panel-content>
@@ -846,6 +846,9 @@ export default class TodoList extends Mixins(
           break
         case FilingTypes.CHANGE_OF_REGISTRATION:
           await this.loadChangeOfRegistration(task)
+          break
+        case FilingTypes.CONVERSION:
+          await this.loadConversion(task)
           break
         default:
           // eslint-disable-next-line no-console
@@ -1196,6 +1199,7 @@ export default class TodoList extends Mixins(
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
       const draft = changeOfRegistration
+      // FUTURE: verify that this checks for all possible data:
       const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
 
       const item: TodoItemIF = {
@@ -1221,7 +1225,42 @@ export default class TodoList extends Mixins(
     }
   }
 
-  /** Files a new filing (todo). */
+  private async loadConversion (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const conversion = filing.conversion
+
+    if (header && conversion) {
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+
+      const draft = conversion
+      // FUTURE: verify that this checks for all possible data:
+      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CONVERSION,
+        filingId: header.filingId,
+        title: FilingNames.CONVERSION, // FUTURE: enhance title (and subtitle?) if needed
+        draftTitle: FilingNames.CONVERSION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.nameRequest,
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  /** Files a new filing (todo item). */
   protected doFileNow (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
@@ -1244,7 +1283,7 @@ export default class TodoList extends Mixins(
   protected doResumeFiling (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
-        // resume this Annual Report
+        // resume this Annual Report locally
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
@@ -1254,59 +1293,65 @@ export default class TodoList extends Mixins(
         break
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
-        // resume this Change Of Directors
+        // resume this Change Of Directors locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CHANGE_OF_ADDRESS:
-        // resume this Change Of Address
+        // resume this Change Of Address locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CORRECTION:
-        if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
-          // navigate to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-          navigate(correctionUrl)
-        } else {
-          // resume this Correction Filing
+        if (item.correctedFilingType !== FilingNames.INCORPORATION_APPLICATION) {
+          // resume this Correction locally
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.CORRECTION,
             params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
           })
+        } else {
+          // navigate to Edit UI to resume this correction
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+          navigate(correctionUrl)
         }
         break
 
       case FilingTypes.INCORPORATION_APPLICATION:
-        // navigate to Create web app to resume this Incorporation Application
+        // navigate to Create UI to resume this Incorporation Application
         const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
         navigate(incorpAppUrl)
         break
 
       case FilingTypes.REGISTRATION:
-        // navigate to Create web app to resume this registration
+        // navigate to Create UI to resume this registration
         const registrationAppUrl = `${this.createUrl}define-registration?id=${this.tempRegNumber}`
         navigate(registrationAppUrl)
         break
 
       case FilingTypes.ALTERATION:
-        // navigate to Edit web app to alter this company
+        // navigate to Edit UI to resume this alteration
         const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
         navigate(alterationUrl)
         break
 
       case FilingTypes.DISSOLUTION:
-        // navigate to Create web app to dissolve this company
+        // navigate to Create UI to resume this dissolution
         const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
         break
 
       case FilingTypes.CHANGE_OF_REGISTRATION:
-        // navigate to Edit web app to alter this firm
-        const editUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
-        navigate(editUrl)
+        // navigate to Edit UI to resume this change of registration
+        const changeUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
+        navigate(changeUrl)
+        break
+
+      case FilingTypes.CONVERSION:
+        // navigate to Edit UI to resume this conversion
+        const conversionUrl = `${this.editUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
+        navigate(conversionUrl)
         break
 
       default:
