@@ -601,6 +601,7 @@ export default class TodoList extends Mixins(
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
   @Getter getTodoListResource!: TodoListResourceIF
+  @Getter isNotInCompliance!: boolean
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -663,6 +664,11 @@ export default class TodoList extends Mixins(
   /** Alteration action button label. */
   get alterationBtnLabel (): string {
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
+  }
+
+  /** show action required only for SP/GP with compains warning. */
+  get isStaffActionRequired (): boolean {
+    return this.isFirm && this.isNotInCompliance
   }
 
   /** Whether the File Annual Report button should be disabled. */
