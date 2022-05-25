@@ -83,6 +83,9 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Voluntary Dissolution'
+    },
+    completedDissolution: {
+      text2: 'dissolved'
     }
   },
   {
@@ -145,6 +148,9 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Voluntary Dissolution'
+    },
+    completedDissolution: {
+      text2: 'dissolved'
     }
   },
   {
@@ -211,6 +217,11 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Dissolution'
+    },
+    completedDissolution: {
+      text1: 'The statement of dissolution for',
+      text2: 'submitted',
+      text3: 'with dissolution date of'
     }
   },
   {
@@ -271,12 +282,17 @@ export const ConfigJson = [
     dissolutionConfirmation: {
       entityTitle: 'Partnership',
       subTitle: 'registered business',
-      act: 'Partnership',
+      act: 'General Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution'
     },
     todoList: {
       title: 'Dissolution'
+    },
+    completedDissolution: {
+      text1: 'The statement of dissolution for',
+      text2: 'submitted',
+      text3: 'with dissolution date of'
     }
   }
 ]

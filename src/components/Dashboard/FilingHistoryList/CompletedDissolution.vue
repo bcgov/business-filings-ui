@@ -3,10 +3,10 @@
     <h4>Dissolution Complete</h4>
 
     <p>
-      The {{entityTitle}} {{getEntityName || ''}} was successfully
-      <strong>dissolved on {{dissolutionDateTime}}</strong>.
+      The {{text1}} {{entityTitle}} {{getEntityName || ''}} was successfully
+      {{text2}} on <strong>{{dissolutionDateTime}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
-      and ceased to be an incorporated {{entityTitle.toLowerCase()}}
+      and ceased to be an incorporated company
       under the {{actTitle}}.
     </p>
 
@@ -31,15 +31,33 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
 
   @Getter isCoop!: boolean
   @Getter getEntityName!: string
+  @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
+  @Getter getDissolutionCompletedResource!: DissolutionCompletedResourceIF
 
   /** The entity title to display. */
   get entityTitle (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Company'
+    return this.getDissolutionConfirmationResource?.entityTitle
   }
 
   /** The dissolution date-time to display. */
   get dissolutionDateTime (): string {
     return (this.dateToPacificDateTime(this.filing?.effectiveDate) || 'Unknown')
+  }
+
+  get dissolutionSubmitted (): string {
+    return (this.dateToPacificDateTime(this.filing?.submittedDate) || 'Unknown')
+  }
+
+  get text1 (): string {
+    return this.getDissolutionCompletedResource?.text1
+  }
+
+  get text2 (): string {
+    return this.getDissolutionCompletedResource?.text2
+  }
+
+  get text3 (): string {
+    return this.getDissolutionCompletedResource?.text3
   }
 
   /** The act title to display. */

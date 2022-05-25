@@ -219,7 +219,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The entity title to display. */
   get entityTitle (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Company'
+    return this.isCoop ? 'Cooperative Association' : 'business'
   }
 
   /** The Business Profile URL string. */
