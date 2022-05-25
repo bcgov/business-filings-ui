@@ -4,6 +4,6 @@ export interface DissolutionConfirmationResourceIF {
   act: string
   modalTitle: string
   confirmButtonText:string
-  additionalLabel: string
+  additionalLabel?: string
   dissolutionType: string
 }

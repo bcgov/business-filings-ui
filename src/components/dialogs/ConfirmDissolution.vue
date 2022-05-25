@@ -18,7 +18,7 @@
           struck from the register and dissolved, ceasing to be an incorporated {{ subEntityTitle }} under the
           {{ entityAct }} Act.
         </p>
-        <p class="warning-text" id="dialog-text">
+        <p v-if=additionalLabel class="warning-text" id="dialog-text">
           <strong>{{ additionalLabel }}</strong>
         </p>
       </v-card-text>
