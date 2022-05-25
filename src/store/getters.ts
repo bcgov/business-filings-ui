@@ -38,6 +38,7 @@ export default {
   /** Is True if there are any pending tasks or filings. */
   hasBlocker (state: StateIF, getters): boolean {
     let blocker = (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+    // check for complaints warnings for SP and GP
     blocker = getters.isFirm && getters.isNotInCompliance ? getters.isNotInCompliance : blocker
     return blocker
   },
