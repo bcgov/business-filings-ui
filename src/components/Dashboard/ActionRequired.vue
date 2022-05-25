@@ -30,7 +30,7 @@ import { ContactInfo } from '@/components/common'
     ContactInfo
   }
 })
-export default class LegalObligation extends Vue {
+export default class ActionRequired extends Vue {
   public panel: number = 1;
 
   public togglePanel (): void {
