@@ -26,7 +26,7 @@
       @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
     />
-
+    <ActionRequired v-if="isStaffActionRequired"/>
     <v-expansion-panels v-if="todoItems && todoItems.length > 0" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
@@ -540,6 +540,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
+import ActionRequired from '@/components/Dashboard/ActionRequired.vue'
 
 // Mixins, Enums and Interfaces
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
@@ -561,7 +562,8 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF, 
     PaymentPaid,
     PaymentPending,
     PaymentPendingOnlineBanking,
-    PaymentUnsuccessful
+    PaymentUnsuccessful,
+    ActionRequired
   },
   mixins: [
     Vue2Filters.mixin
