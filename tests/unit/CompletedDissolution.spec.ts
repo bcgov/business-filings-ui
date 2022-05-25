@@ -33,7 +33,8 @@ describe('Dissolution Filing', () => {
       vuetify,
       propsData: {
         filing: {
-          effectiveDate: new Date('2021-01-01 08:00:00 GMT')
+          effectiveDate: new Date('2021-01-02 08:00:00 GMT'),
+          submittedDate: new Date('2021-01-01 08:00:00 GMT')
         }
       }
     })
@@ -42,10 +43,10 @@ describe('Dissolution Filing', () => {
     expect(wrapper.find('h4').text()).toBe('Dissolution Complete')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('The Cooperative Association MY COMPANY was successfully')
-    expect(paragraphs.at(0).text()).toContain('dissolved on January 1, 2021 at 12:00 am Pacific time')
-    expect(paragraphs.at(0).text()).toContain('The Cooperative Association has been struck')
-    expect(paragraphs.at(0).text()).toContain('and ceased to be an incorporated cooperative association')
+    expect(paragraphs.at(0).text()).toContain('The statement of dissolution for')
+    expect(paragraphs.at(0).text()).toContain('on January 1, 2021 at 12:00 am Pacific time')
+    expect(paragraphs.at(0).text()).toContain('with dissolution date of January 2, 2021 at 12:00 am Pacific time')
+    expect(paragraphs.at(0).text()).toContain('has been struck from the register and dissolved,')
     expect(paragraphs.at(0).text()).toContain('under the Cooperative Association Act.')
     expect(paragraphs.at(1).text()).toContain('You are required to retain a copy of all')
 
@@ -62,7 +63,8 @@ describe('Dissolution Filing', () => {
       vuetify,
       propsData: {
         filing: {
-          effectiveDate: new Date('2021-01-01 08:00:00 GMT')
+          effectiveDate: new Date('2021-01-02 08:00:00 GMT'),
+          submittedDate: new Date('2021-01-01 08:00:00 GMT')
         }
       }
     })
@@ -71,10 +73,10 @@ describe('Dissolution Filing', () => {
     expect(wrapper.find('h4').text()).toBe('Dissolution Complete')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
-    expect(paragraphs.at(0).text()).toContain('The Company MY COMPANY was successfully')
-    expect(paragraphs.at(0).text()).toContain('dissolved on January 1, 2021 at 12:00 am Pacific time')
-    expect(paragraphs.at(0).text()).toContain('The Company has been struck')
-    expect(paragraphs.at(0).text()).toContain('and ceased to be an incorporated company')
+    expect(paragraphs.at(0).text()).toContain('The statement of dissolution for')
+    expect(paragraphs.at(0).text()).toContain('on January 1, 2021 at 12:00 am Pacific time')
+    expect(paragraphs.at(0).text()).toContain('with dissolution date of January 2, 2021 at 12:00 am Pacific time')
+    expect(paragraphs.at(0).text()).toContain('has been struck from the register and dissolved,')
     expect(paragraphs.at(0).text()).toContain('under the Business Corporations Act.')
     expect(paragraphs.at(1).text()).toContain('You are required to retain a copy of all')
 

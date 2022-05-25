@@ -3,10 +3,11 @@
     <h4>Dissolution Complete</h4>
 
     <p>
-      The {{text1}} {{entityTitle}} {{getEntityName || ''}} was successfully
-      {{text2}} on <strong>{{dissolutionDateTime}}</strong>.
+      The statement of dissolution for {{entityTitle}} {{getEntityName || ''}} was successfully
+      submitted on <strong>{{dissolutionDateSubmitted}}</strong>
+      with dissolution date of <strong>{{dissolutionDateTime}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
-      and ceased to be an incorporated company
+      and ceased to be a registered {{ entityTitle }}
       under the {{actTitle}}.
     </p>
 
@@ -21,7 +22,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
-import { HistoryItemIF } from '@/interfaces'
+import { HistoryItemIF, DissolutionConfirmationResourceIF } from '@/interfaces'
 
 @Component({})
 export default class CompletedDissolution extends Mixins(DateMixin) {
@@ -32,7 +33,6 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
   @Getter isCoop!: boolean
   @Getter getEntityName!: string
   @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
-  @Getter getDissolutionCompletedResource!: DissolutionCompletedResourceIF
 
   /** The entity title to display. */
   get entityTitle (): string {
@@ -44,20 +44,9 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
     return (this.dateToPacificDateTime(this.filing?.effectiveDate) || 'Unknown')
   }
 
-  get dissolutionSubmitted (): string {
+  /** The dissolution date-time submitted to display. */
+  get dissolutionDateSubmitted (): string {
     return (this.dateToPacificDateTime(this.filing?.submittedDate) || 'Unknown')
-  }
-
-  get text1 (): string {
-    return this.getDissolutionCompletedResource?.text1
-  }
-
-  get text2 (): string {
-    return this.getDissolutionCompletedResource?.text2
-  }
-
-  get text3 (): string {
-    return this.getDissolutionCompletedResource?.text3
   }
 
   /** The act title to display. */

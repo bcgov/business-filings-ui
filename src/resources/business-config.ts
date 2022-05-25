@@ -83,9 +83,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Voluntary Dissolution'
-    },
-    completedDissolution: {
-      text2: 'dissolved'
     }
   },
   {
@@ -148,9 +145,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Voluntary Dissolution'
-    },
-    completedDissolution: {
-      text2: 'dissolved'
     }
   },
   {
@@ -217,11 +211,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Dissolution'
-    },
-    completedDissolution: {
-      text1: 'The statement of dissolution for',
-      text2: 'submitted',
-      text3: 'with dissolution date of'
     }
   },
   {
@@ -288,11 +277,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Dissolution'
-    },
-    completedDissolution: {
-      text1: 'The statement of dissolution for',
-      text2: 'submitted',
-      text3: 'with dissolution date of'
     }
   }
 ]
