@@ -1,7 +1,6 @@
 /* eslint max-len: 0 */
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
 import ActionRequired from '@/components/Dashboard/ActionRequired.vue'
 import { ContactInfo } from '@/components/common'
@@ -9,13 +8,11 @@ import { ContactInfo } from '@/components/common'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
 
 describe('ActionRequired', () => {
   it('Displays ActionRequired', () => {
     const wrapper = mount(ActionRequired, {
-      vuetify,
-      store
+      vuetify
 
     })
 
@@ -29,11 +26,8 @@ describe('ActionRequired', () => {
   })
 
   it('Displays contact information on button click', async () => {
-    store.state.entityName = 'My Incorporation'
-
     const wrapper = mount(ActionRequired, {
-      vuetify,
-      store
+      vuetify
 
     })
     const paragraphs1 = wrapper.findAll('p')
