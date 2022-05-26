@@ -766,6 +766,8 @@ export default class TodoList extends Mixins(
         case FilingTypes.ANNUAL_REPORT:
           this.loadAnnualReportTodo(task)
           break
+        case FilingTypes.CONVERSION:
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in todo header =', header)
