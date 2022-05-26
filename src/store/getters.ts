@@ -36,8 +36,13 @@ export default {
   },
 
   /** Is True if there are any pending tasks or filings. */
-  hasBlocker (state: StateIF): boolean {
-    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+  hasBlocker (state: StateIF, getters): boolean {
+    let blocker = (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+    // check for complaints warnings for SP and GP
+    if (getters.isFirm && getters.isNotInCompliance && !getters.isRoleStaff) {
+      blocker = getters.isNotInCompliance
+    }
+    return blocker
   },
 
   /** Is True if a COA filing is pending. */

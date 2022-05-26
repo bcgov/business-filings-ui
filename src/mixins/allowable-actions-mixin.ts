@@ -14,6 +14,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter isSoleProp!: boolean
   @Getter isPartnership!: boolean
+  @Getter isFirm!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -32,8 +33,14 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DISSOLVE_COMPANY: {
-        return (!this.isHistorical && !this.hasBlocker && !!businessId &&
+        const isDissolveAllowed = (!this.isHistorical && !!businessId &&
           !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType))
+        // if its not SP/GP , then consider hasBlocker flag (existing)
+        if (!this.isFirm) {
+          return isDissolveAllowed && !this.hasBlocker
+        }
+
+        return isDissolveAllowed
       }
 
       case AllowableActions.DOWNLOAD_BUSINESS_SUMMARY: {
