@@ -2,12 +2,20 @@
   <div v-if="filing" class="completed-dissolution-details body-2">
     <h4>Dissolution Complete</h4>
 
-    <p>
+    <p v-if="isFirm">
       The statement of dissolution for {{entityTitle}} {{getEntityName || ''}} was successfully
       submitted on <strong>{{dissolutionDateSubmitted}}</strong>
       with dissolution date of <strong>{{dissolutionDateTime}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
       and ceased to be a registered {{ entityTitle }}
+      under the {{actTitle}}.
+    </p>
+
+    <p v-if="!isFirm">
+      The {{entityTitle}} {{getEntityName || ''}} was successfully
+      <strong>dissolved on {{dissolutionDateTime}}</strong>.
+      The {{entityTitle}} has been struck from the register and dissolved,
+      and ceased to be an incorporated {{entityTitle.toLowerCase()}}
       under the {{actTitle}}.
     </p>
 
@@ -31,6 +39,7 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
   readonly filing: HistoryItemIF
 
   @Getter isCoop!: boolean
+  @Getter isFirm!: boolean
   @Getter getEntityName!: string
   @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
