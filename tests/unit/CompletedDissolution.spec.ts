@@ -41,7 +41,6 @@ describe('Dissolution Filing', () => {
     })
 
     // verify content
-    console.log(wrapper.html())
     expect(wrapper.find('h4').text()).toBe('Dissolution Complete')
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)

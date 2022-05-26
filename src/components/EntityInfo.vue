@@ -222,7 +222,9 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     switch (this.getEntityType) {
       case CorpTypeCd.COOP:
         return 'Cooperative Association'
-      case CorpTypeCd.SOLE_PROP || CorpTypeCd.PARTNERSHIP:
+      case CorpTypeCd.SOLE_PROP:
+        return 'business'
+      case CorpTypeCd.PARTNERSHIP:
         return 'business'
       default:
         return 'Company'
