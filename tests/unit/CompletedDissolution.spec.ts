@@ -3,6 +3,7 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import CompletedDissolution from '@/components/Dashboard/FilingHistoryList/CompletedDissolution.vue'
+import { ConfigJson } from '@/resources'
 
 Vue.use(Vuetify)
 
@@ -27,13 +28,14 @@ describe('Dissolution Filing', () => {
     // init store
     store.state.entityName = 'MY COMPANY'
     store.state.entityType = 'CP'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
 
     const wrapper = mount(CompletedDissolution, {
       store,
       vuetify,
       propsData: {
         filing: {
-          effectiveDate: new Date('2021-01-01 08:00:00 GMT')
+          effectiveDate: new Date('2021-01-02 08:00:00 GMT')
         }
       }
     })
@@ -43,7 +45,7 @@ describe('Dissolution Filing', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('The Cooperative Association MY COMPANY was successfully')
-    expect(paragraphs.at(0).text()).toContain('dissolved on January 1, 2021 at 12:00 am Pacific time')
+    expect(paragraphs.at(0).text()).toContain('dissolved on January 2, 2021 at 12:00 am Pacific time')
     expect(paragraphs.at(0).text()).toContain('The Cooperative Association has been struck')
     expect(paragraphs.at(0).text()).toContain('and ceased to be an incorporated cooperative association')
     expect(paragraphs.at(0).text()).toContain('under the Cooperative Association Act.')
@@ -56,13 +58,14 @@ describe('Dissolution Filing', () => {
     // init store
     store.state.entityName = 'MY COMPANY'
     store.state.entityType = 'BEN'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
 
     const wrapper = mount(CompletedDissolution, {
       store,
       vuetify,
       propsData: {
         filing: {
-          effectiveDate: new Date('2021-01-01 08:00:00 GMT')
+          effectiveDate: new Date('2021-01-02 08:00:00 GMT')
         }
       }
     })
@@ -72,7 +75,7 @@ describe('Dissolution Filing', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('The Company MY COMPANY was successfully')
-    expect(paragraphs.at(0).text()).toContain('dissolved on January 1, 2021 at 12:00 am Pacific time')
+    expect(paragraphs.at(0).text()).toContain('dissolved on January 2, 2021 at 12:00 am Pacific time')
     expect(paragraphs.at(0).text()).toContain('The Company has been struck')
     expect(paragraphs.at(0).text()).toContain('and ceased to be an incorporated company')
     expect(paragraphs.at(0).text()).toContain('under the Business Corporations Act.')
