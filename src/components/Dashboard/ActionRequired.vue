@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panels v-model="panel">
-    <v-expansion-panel class="action-required-container">
+    <v-expansion-panel class="action-required-container d-flex justify-center mb-6">
       <v-card flat class="px-6 py-5">
         <h3>Action Required</h3>
         <p class="mt-1">
@@ -40,17 +40,8 @@ export default class ActionRequired extends Vue {
 </script>
 
 <style lang="scss">
+@import "@/assets/styles/theme.scss";
 .action-required-contact-info .v-expansion-panel-content__wrap {
   padding: 0 0 16px !important;
-}
-</style>
-
-<style lang="scss" scoped>
-@import "@/assets/styles/theme.scss";
-
-.action-required-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
 }
 </style>
