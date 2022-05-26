@@ -4,10 +4,10 @@
       <v-card flat class="px-6 py-5">
         <h3>Action Required</h3>
         <p class="mt-1">
-          BC Registries is missing information about your business (e.g.. business start date, nature of business,
+          BC Registries is missing information about your business (e.g., business start date, nature of business,
           business address etc.). Please contact BC Registries to input any missing business information. Missing
-          information must be entered before toy can file changes or dissolve this business.
-          <v-btn class="details-btn" color="primary" text :ripple="false" @click.stop="togglePanel" id="view-hide-btn">
+          information must be entered before you can file changes or dissolve this business.
+          <v-btn class="details-btn" color="primary" text :ripple="false" @click.stop="togglePanel">
             <v-icon left color="primary">mdi-information-outline</v-icon>
             <span color="primary">{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
           </v-btn>

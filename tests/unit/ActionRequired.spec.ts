@@ -34,7 +34,7 @@ describe('ActionRequired', () => {
     expect(paragraphs1.length).toBe(1)
     expect(wrapper.find(ContactInfo).exists()).toBe(false)
     // click the view button
-    wrapper.find('#view-hide-btn').trigger('click')
+    wrapper.find('.details-btn').trigger('click')
     await Vue.nextTick()
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
