@@ -39,7 +39,9 @@ export default {
   hasBlocker (state: StateIF, getters): boolean {
     let blocker = (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
     // check for complaints warnings for SP and GP
-    blocker = getters.isFirm && getters.isNotInCompliance ? getters.isNotInCompliance : blocker
+    if (getters.isFirm && getters.isNotInCompliance && !getters.isRoleStaff) {
+      blocker = getters.isNotInCompliance
+    }
     return blocker
   },
 

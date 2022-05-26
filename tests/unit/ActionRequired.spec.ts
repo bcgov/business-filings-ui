@@ -34,8 +34,8 @@ describe('ActionRequired', () => {
     expect(paragraphs1.length).toBe(1)
     expect(wrapper.find(ContactInfo).exists()).toBe(false)
     // click the view button
-    wrapper.find('.details-btn').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('.details-btn').trigger('click')
+    // await Vue.nextTick()
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(1).text()).toContain('BC Registries Contact Information')

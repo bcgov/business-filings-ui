@@ -27,7 +27,7 @@
       attach="#todo-list"
     />
     <ActionRequired v-if="isStaffActionRequired"/>
-    <v-expansion-panels v-if="todoItems && todoItems.length > 0" accordion  v-model="panel">
+    <v-expansion-panels v-if="showTodoPanel" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
         v-for="(item, index) in orderBy(todoItems, 'order')"
@@ -515,7 +515,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-else>
+    <v-card class="no-results" flat v-if="!showTodoPanel && !isStaffActionRequired">
       <v-card-text>
         <div class="no-results__title">You don't have anything to do yet</div>
         <div class="no-results__subtitle">Filings that require your attention will appear here</div>
@@ -666,9 +666,12 @@ export default class TodoList extends Mixins(
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
-  /** show action required only for SP/GP with compains warning. */
+  /** show action required only for SP/GP with compaince warning. */
   get isStaffActionRequired (): boolean {
-    return this.isFirm && this.isNotInCompliance
+    return this.isFirm && this.isNotInCompliance && !this.isRoleStaff
+  }
+  get showTodoPanel () {
+    return this.todoItems && this.todoItems.length > 0
   }
 
   /** Whether the File Annual Report button should be disabled. */
@@ -695,8 +698,10 @@ export default class TodoList extends Mixins(
       }
     }
 
+    // Add todo items count +1 when SP/GP with compaince warning
+    const todoLength = this.isStaffActionRequired ? this.todoItems.length + 1 : this.todoItems.length
     // report number of items back to parent (dashboard)
-    this.$emit('todo-count', this.todoItems.length)
+    this.$emit('todo-count', todoLength)
 
     // Check if there is a draft/pending/error/paid/correction/alteration task.
     // This is a blocker because it needs to be completed first.
