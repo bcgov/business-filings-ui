@@ -108,6 +108,20 @@
 
         <v-col cols="12" md="3">
           <dl>
+
+            <!-- Registration Date -->
+            <template v-if="businessId && isFirm">
+              <dt class="mr-2">Registration Date:</dt>
+              <dd id="entity-business-registration-date">
+                {{ this.dateToPacificDate(getEntityFoundingDate) || 'Not Available' }}</dd>
+            </template>
+
+            <!-- Registration Number -->$
+            <template v-if="businessId && isFirm">
+              <dt class="mr-2">Registration Number:</dt>
+              <dd id="entity-business-registration-number">{{ getIdentifier || 'Not Available' }}</dd>
+            </template>
+
             <!-- Business Number -->
             <template v-if="businessId">
               <dt class="mr-2">Business Number:</dt>
@@ -115,7 +129,7 @@
             </template>
 
             <!-- Incorporation Number -->
-            <template v-if="businessId">
+            <template v-if="businessId && !isFirm">
               <dt class="mr-2">Incorporation Number:</dt>
               <dd id="entity-incorporation-number">{{ getIdentifier || 'Not Available' }}</dd>
             </template>
@@ -199,6 +213,8 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Getter isGoodStanding!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
+  @Getter isFirm!: boolean
+  @Getter getEntityFoundingDate!: Date
 
   // enums for template
   readonly axios = axios
