@@ -36,10 +36,15 @@ export default {
   },
 
   /** Is True if there are any pending tasks or filings. */
-  hasBlocker (state: StateIF, getters): boolean {
-    let blocker = (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+  hasBlockerExceptStaffApproval (state: StateIF): boolean {
+    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+  },
+
+  /** Is True if there are any pending tasks or filings. */
+  hasBlocker (_state: StateIF, getters): boolean {
+    let blocker = getters.hasBlockerExceptStaffApproval
     // check for complaints warnings for SP and GP
-    if (getters.isFirm && getters.isNotInCompliance && !getters.isRoleStaff) {
+    if (getters.isFirm && getters.isNotInCompliance) {
       blocker = getters.isNotInCompliance
     }
     return blocker

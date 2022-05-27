@@ -15,6 +15,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter isSoleProp!: boolean
   @Getter isPartnership!: boolean
   @Getter isFirm!: boolean
+  @Getter hasBlockerExceptStaffApproval!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -69,7 +70,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.FILE_STAFF_NOTATION: {
-        return (!this.isHistorical && !this.hasBlocker && !!businessId && this.isRoleStaff)
+        return (!this.isHistorical && !this.hasBlockerExceptStaffApproval && !!businessId && this.isRoleStaff)
       }
 
       case AllowableActions.VIEW_CHANGE_COMPANY_INFO: {
