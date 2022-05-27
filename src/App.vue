@@ -210,7 +210,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff', 'isFirm']),
+    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff']),
 
     /** The BCROS Home URL string. */
     bcrosHomeUrl (): string {
