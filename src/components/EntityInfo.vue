@@ -64,18 +64,18 @@
 
               <!-- Dissolve Company -->
               <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
-                    <template v-slot:activator="{ on }">
-                <v-btn
-                  small text color="primary"
-                  id="dissolution-button"
-                  :disabled="hasBlocker"
-                  @click="promptDissolve()"
-                   v-on="on"
-                >
-                  <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
-                  <span class="font-13 ml-1">Dissolve this Business</span>
-                </v-btn>
+                <v-tooltip top content-class="top-tooltip">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    small text color="primary"
+                    id="dissolution-button"
+                    :disabled="hasBlocker"
+                    @click="promptDissolve()"
+                    v-on="on"
+                  >
+                    <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
+                    <span class="font-13 ml-1">Dissolve this Business</span>
+                  </v-btn>
                  </template>
                     Dissolving the business will make this business historical
                     and it will be struck from the corporate registry.
