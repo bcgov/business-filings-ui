@@ -580,7 +580,7 @@ export default {
       if (filingType === FilingTypes.DISSOLUTION) {
         name = this.dissolutionTypeToName(
           (filing?.dissolution?.dissolutionType as DissolutionTypes) ||
-          DissolutionTypes.UNKNOWN, this.isFirm
+          DissolutionTypes.UNKNOWN
         )
       } else {
         name = this.filingTypeToName(filingType)

@@ -13,6 +13,7 @@ import {
   GetCorpInfoObject,
   GetCorpNumberedDescription
 } from '@bcrs-shared-components/corp-type-module'
+import { Getter } from 'vuex-class'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -22,6 +23,7 @@ export default class EnumMixin extends Vue {
   //
   // Filing Status helpers
   //
+  @Getter isFirm!: boolean
 
   /** Returns True if item status is Cancelled. */
   isStatusCancelled (item: any): boolean {
@@ -237,10 +239,10 @@ export default class EnumMixin extends Vue {
    * @param type the dissolution type to convert
    * @returns the dissolution name
    */
-  dissolutionTypeToName (type: DissolutionTypes, isFirm: boolean = false): string {
+  dissolutionTypeToName (type: DissolutionTypes): string {
     switch (type) {
       case DissolutionTypes.VOLUNTARY:
-        return isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
+        return this.isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)
