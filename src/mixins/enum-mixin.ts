@@ -230,7 +230,7 @@ export default class EnumMixin extends Vue {
   dissolutionTypeToName (type: DissolutionTypes, isFirm: boolean = false): string {
     switch (type) {
       case DissolutionTypes.VOLUNTARY:
-        return isFirm ? DissolutionNames.FIRM : DissolutionNames.VOLUNTARY
+        return isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)
