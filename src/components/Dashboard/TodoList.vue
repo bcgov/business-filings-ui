@@ -666,7 +666,7 @@ export default class TodoList extends Mixins(
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
-  /** show action required only for SP/GP with compaince warning. */
+  /** Show action required only for SP/GP with Compliance warning. */
   get isStaffActionRequired (): boolean {
     return this.isFirm && this.isNotInCompliance
   }
