@@ -44,7 +44,7 @@
                   @click="promptChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                  <span class="font-13 ml-1">View and Change Company Information</span>
+                  <span class="font-13 ml-1">View and Change Business Information</span>
                 </v-btn>
 
                 <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
@@ -54,34 +54,32 @@
                     </span>
                   </template>
                   <template v-if="isPendingDissolution">
-                    You cannot view or change company information while the company is pending dissolution.
+                    You cannot view or change business information while the business is pending dissolution.
                   </template>
                   <template v-if="isNotInCompliance">
-                    You cannot view or change company information while the company is not in compliance.
+                    You cannot view or change business information while the business is not in compliance.
                   </template>
                 </v-tooltip>
               </span>
 
               <!-- Dissolve Company -->
               <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
+                    <template v-slot:activator="{ on }">
                 <v-btn
                   small text color="primary"
                   id="dissolution-button"
                   :disabled="hasBlocker"
                   @click="promptDissolve()"
+                   v-on="on"
                 >
                   <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
                   <span class="font-13 ml-1">Dissolve this Business</span>
-                  <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
-                    <template v-slot:activator="{ on }">
-                      <span class="pl-1" v-on="on">
-                        <v-icon size="1rem">mdi-information-outline</v-icon>
-                      </span>
-                    </template>
-                    Dissolving the {{ entityTitle }} will make this {{ entityTitle }} historical
+                </v-btn>
+                 </template>
+                    Dissolving the business will make this business historical
                     and it will be struck from the corporate registry.
                   </v-tooltip>
-                </v-btn>
               </span>
             </template>
 
@@ -99,7 +97,7 @@
                       <span class="font-13 ml-1">Business Summary</span>
                     </v-btn>
                   </template>
-                  View and download a summary of information about the {{ entityTitle }}, including office addresses
+                  View and download a summary of information about the business, including office addresses
                   and directors.
                 </v-tooltip>
             </span>
@@ -215,20 +213,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   /** The Edit URL string. */
   get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
-  }
-
-  /** The entity title to display. */
-  get entityTitle (): string {
-    switch (this.getEntityType) {
-      case CorpTypeCd.COOP:
-        return 'Cooperative Association'
-      case CorpTypeCd.SOLE_PROP:
-        return 'business'
-      case CorpTypeCd.PARTNERSHIP:
-        return 'business'
-      default:
-        return 'Company'
-    }
   }
 
   /** The Business Profile URL string. */

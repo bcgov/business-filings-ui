@@ -668,7 +668,7 @@ export default class TodoList extends Mixins(
 
   /** show action required only for SP/GP with compaince warning. */
   get isStaffActionRequired (): boolean {
-    return this.isFirm && this.isNotInCompliance && !this.isRoleStaff
+    return this.isFirm && this.isNotInCompliance
   }
   get showTodoPanel () {
     return this.todoItems && this.todoItems.length > 0
