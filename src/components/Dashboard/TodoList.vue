@@ -26,7 +26,7 @@
       @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
     />
-    <ActionRequired v-if="isStaffActionRequired"/>
+    <ActionRequired v-if="isActionRequired"/>
     <v-expansion-panels v-if="showTodoPanel" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
@@ -515,7 +515,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="!showTodoPanel && !isStaffActionRequired">
+    <v-card class="no-results" flat v-if="!showTodoPanel && !isActionRequired">
       <v-card-text>
         <div class="no-results__title">You don't have anything to do yet</div>
         <div class="no-results__subtitle">Filings that require your attention will appear here</div>
@@ -667,7 +667,7 @@ export default class TodoList extends Mixins(
   }
 
   /** Show action required only for SP/GP with Compliance warning. */
-  get isStaffActionRequired (): boolean {
+  get isActionRequired (): boolean {
     return this.isFirm && this.isNotInCompliance
   }
   get showTodoPanel () {
@@ -699,7 +699,7 @@ export default class TodoList extends Mixins(
     }
 
     // Add todo items count +1 when SP/GP with compaince warning
-    const todoLength = this.isStaffActionRequired ? this.todoItems.length + 1 : this.todoItems.length
+    const todoLength = this.isActionRequired ? this.todoItems.length + 1 : this.todoItems.length
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', todoLength)
 
