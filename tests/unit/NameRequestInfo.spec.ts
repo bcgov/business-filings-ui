@@ -10,8 +10,8 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 const localVue = createLocalVue()
-localVue.filter("VMask", data => data) // mock filter
-localVue.filter("capitalize", data => data) // mock filter
+localVue.filter('VMask', data => data) // mock filter
+localVue.filter('capitalize', data => data) // mock filter
 
 const approvedCpNamerequest = {
   nrNum: 'NR 1234567',
@@ -32,7 +32,7 @@ const approvedCpNamerequest = {
     // name info
     firstName: 'First',
     middleName: 'Middle',
-    lastName: 'Last',
+    lastName: 'Last'
   },
   names: [
     {
@@ -42,7 +42,7 @@ const approvedCpNamerequest = {
   ],
   consentFlag: null,
   expirationDate: '2022-07-05T06:59:00+00:00',
-  state: 'APPROVED'  
+  state: 'APPROVED'
 }
 
 const conditionalSpNamerequest = {
@@ -64,7 +64,7 @@ const conditionalSpNamerequest = {
     // name info
     firstName: 'First',
     middleName: 'Middle',
-    lastName: 'Last',
+    lastName: 'Last'
   },
   names: [
     {

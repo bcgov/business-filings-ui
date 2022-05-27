@@ -271,7 +271,7 @@ export const ConfigJson = [
     dissolutionConfirmation: {
       entityTitle: 'Partnership',
       subTitle: 'registered business',
-      act: 'Partnership',
+      act: 'General Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution'
     },
