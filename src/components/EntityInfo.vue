@@ -135,7 +135,7 @@
             </template>
 
             <!-- NR Number -->
-            <template v-if="getNrNumber">
+            <template v-if="getNrNumber && !isFirm">
               <dt class="mr-2">Name Request Number:</dt>
               <dd id="nr-number">{{ getNrNumber }}</dd>
             </template>
