@@ -102,6 +102,16 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.CHANGE_OF_NAME)
   }
 
+  /** Returns True if filing is a Change of Registration. */
+  isTypeChangeOfRegistration (item: any): boolean {
+    return (item.name === FilingTypes.CHANGE_OF_REGISTRATION)
+  }
+
+  /** Returns True if filing is a Conversion. */
+  isTypeConversion (item: any): boolean {
+    return (item.name === FilingTypes.CONVERSION)
+  }
+
   /** Returns True if filing is a Correction. */
   isTypeCorrection (item: any): boolean {
     return (item.name === FilingTypes.CORRECTION)
@@ -117,8 +127,8 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
-  /** Returns True if filing is a Registration Application. */
-  isTypeRegistrationApplication (item: any): boolean {
+  /** Returns True if filing is a Registration. */
+  isTypeRegistration (item: any): boolean {
     return (item.name === FilingTypes.REGISTRATION)
   }
 
@@ -203,10 +213,10 @@ export default class EnumMixin extends Vue {
       case FilingTypes.INVOLUNTARY_DISSOLUTION: return FilingNames.INVOLUNTARY_DISSOLUTION
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
+      case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-      case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)
