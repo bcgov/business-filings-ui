@@ -698,7 +698,7 @@ export default class TodoList extends Mixins(
       }
     }
 
-    // Add todo items count +1 when SP/GP with compaince warning
+    // Add todo items count +1 when SP/GP with compliance warning
     const todoLength = this.isActionRequired ? this.todoItems.length + 1 : this.todoItems.length
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', todoLength)
