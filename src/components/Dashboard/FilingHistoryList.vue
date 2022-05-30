@@ -351,8 +351,7 @@ import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/c
 
 // Enums, interfaces and mixins
 import { AllowableActions, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF,
-  FilingHistoryListResourceIF } from '@/interfaces'
+import { ActionBindingIF, ApiFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF } from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 
 @Component({
@@ -382,7 +381,6 @@ export default class FilingHistoryList extends Mixins(
   @Prop({ default: null }) readonly highlightId: number
 
   @Getter getFilings!: Array<ApiFilingIF>
-  @Getter getFilingHistoryListResource!: FilingHistoryListResourceIF
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
