@@ -297,10 +297,4 @@ section header {
   max-width: 16.5rem;
 }
 
-#dashboard {
-  & .theme--light.v-btn.v-btn--disabled.v-btn--text, .theme--light.v-btn.v-btn--disabled .v-icon {
-  opacity: 0.4 !important;
-  color: $app-blue !important;
-}
-}
 </style>
