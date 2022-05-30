@@ -49,8 +49,7 @@ export default class ActionRequired extends Vue {
 <style lang="scss" scoped>
 
 .details-btn {
-  margin-bottom: 0.25rem;
-  height: inherit !important;
   border: none;
+  margin-top: -6px;
 }
 </style>
