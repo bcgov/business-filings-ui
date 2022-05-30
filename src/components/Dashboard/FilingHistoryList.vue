@@ -476,7 +476,7 @@ export default class FilingHistoryList extends Mixins(
       const item: HistoryItemIF = {
         availableOnPaperOnly: filing.availableOnPaperOnly,
         commentsCount: filing.commentsCount,
-        displayName: this.isTypeDissolution(filing) ? this.getFilingHistoryListResource?.title : filing.displayName,
+        displayName: filing.displayName,
         effectiveDate,
         filingId: filing.filingId,
         isFutureEffective: filing.isFutureEffective,

@@ -139,11 +139,7 @@ filings.forEach((filing: any, index: number) => {
     it('title', () => {
       expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
-      if (item.name === 'dissolution') {
-        expect(wrapper.find('.item-header__title').text()).toBe('')
-      } else {
-        expect(wrapper.find('.item-header__title').text()).toBe(filing.displayName)
-      }
+      expect(wrapper.find('.item-header__title').text()).toBe(filing.displayName)
     })
 
     it('subtitle', () => {

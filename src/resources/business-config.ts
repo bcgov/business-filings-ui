@@ -84,9 +84,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Voluntary Dissolution'
-    },
-    filingHistoryList: {
-      title: 'Voluntary Dissolution'
     }
   },
   {
@@ -149,9 +146,6 @@ export const ConfigJson = [
       dissolutionType: 'voluntarily dissolve'
     },
     todoList: {
-      title: 'Voluntary Dissolution'
-    },
-    filingHistoryList: {
       title: 'Voluntary Dissolution'
     }
   },
@@ -221,9 +215,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Dissolution'
-    },
-    filingHistoryList: {
-      title: 'Statement of Dissolution'
     }
   },
   {
@@ -292,9 +283,6 @@ export const ConfigJson = [
     },
     todoList: {
       title: 'Dissolution'
-    },
-    filingHistoryList: {
-      title: 'Statement of Dissolution'
     }
   }
 ]
