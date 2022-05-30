@@ -173,7 +173,7 @@ describe('ProprietorPartnersListSm', () => {
     wrapper.destroy()
   })
 
-  it('displays "(Not Entered)" message for firm registration', async () => {
+  it('displays "(Not entered)" message for firm registration', async () => {
     // init store
     store.state.entityType = 'GP'
     store.state.parties = [
@@ -233,17 +233,17 @@ describe('ProprietorPartnersListSm', () => {
     await buttons[0].click()
     await buttons[1].click()
 
-    // Verify delivery addresses '(Not Entered)'
-    expect(wrapper.findAll('.email-address-text').at(0).text()).toBe('(Not Entered)')
-    expect(wrapper.findAll('.email-address-text').at(1).text()).toBe('(Not Entered)')
+    // Verify delivery addresses '(Not entered)'
+    expect(wrapper.findAll('.email-address-text').at(0).text()).toBe('(Not entered)')
+    expect(wrapper.findAll('.email-address-text').at(1).text()).toBe('(Not entered)')
 
-    // Verify mailing addresses '(Not Entered)'
-    expect(wrapper.findAll('.delivery-address-not-entered').at(0).text()).toBe('(Not Entered)')
-    expect(wrapper.findAll('.delivery-address-not-entered').at(1).text()).toBe('(Not Entered)')
+    // Verify mailing addresses '(Not entered)'
+    expect(wrapper.findAll('.delivery-address-not-entered').at(0).text()).toBe('(Not entered)')
+    expect(wrapper.findAll('.delivery-address-not-entered').at(1).text()).toBe('(Not entered)')
 
-    // // Verify mailing addresses '(Not Entered)'
-    expect(wrapper.findAll('.mailing-address-not-entered').at(0).text()).toBe('(Not Entered)')
-    expect(wrapper.findAll('.mailing-address-not-entered').at(1).text()).toBe('(Not Entered)')
+    // // Verify mailing addresses '(Not entered)'
+    expect(wrapper.findAll('.mailing-address-not-entered').at(0).text()).toBe('(Not entered)')
+    expect(wrapper.findAll('.mailing-address-not-entered').at(1).text()).toBe('(Not entered)')
     wrapper.destroy()
   })
 
@@ -267,7 +267,7 @@ describe('ProprietorPartnersListSm', () => {
     // Verify to organization names
     expect(vm.getParties.length).toEqual(0)
     expect(vm.proprietorPartners.length).toEqual(0)
-    expect(wrapper.find('.align-items-top.address-panel .complete-filing').text()).toBe('(Not Entered)')
+    expect(wrapper.find('.align-items-top.address-panel .complete-filing').text()).toBe('(Not entered)')
 
     wrapper.destroy()
   })

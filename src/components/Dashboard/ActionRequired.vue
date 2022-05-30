@@ -7,9 +7,9 @@
           BC Registries is missing information about your business (e.g., business start date, nature of business,
           business address etc.). Please contact BC Registries to input any missing business information. Missing
           information must be entered before you can file changes or dissolve this business.
-          <v-btn class="details-btn" color="primary" text :ripple="false" @click.stop="togglePanel">
-            <v-icon left color="primary">mdi-information-outline</v-icon>
-            <span color="primary">{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
+          <v-btn class="details-btn pl-1" outlined color="primary"  :ripple="false" @click.stop="togglePanel">
+            <v-icon left color="primary" class="mr-0">mdi-information-outline</v-icon>
+            <span color="primary" >{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
           </v-btn>
         </p>
         <v-expansion-panel-content class="action-required-contact-info">
@@ -43,5 +43,14 @@ export default class ActionRequired extends Vue {
 @import "@/assets/styles/theme.scss";
 .action-required-contact-info .v-expansion-panel-content__wrap {
   padding: 0 0 16px !important;
+}
+</style>
+
+<style lang="scss" scoped>
+
+.details-btn {
+  margin-bottom: 0.25rem;
+  height: inherit !important;
+  border: none;
 }
 </style>

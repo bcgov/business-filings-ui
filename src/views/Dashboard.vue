@@ -276,7 +276,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
+@import "@/assets/styles/theme.scss";
 section header {
   display: flex;
   flex-direction: row;
@@ -294,5 +295,12 @@ section header {
 
 .pending-tooltip {
   max-width: 16.5rem;
+}
+
+#dashboard {
+  & .theme--light.v-btn.v-btn--disabled.v-btn--text, .theme--light.v-btn.v-btn--disabled .v-icon {
+  opacity: 0.4 !important;
+  color: $app-blue !important;
+}
 }
 </style>
