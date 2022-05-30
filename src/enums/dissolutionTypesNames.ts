@@ -28,6 +28,7 @@ export enum DissolutionNames {
   // COURT_ORDER_LIQUIDATION = 'Court Ordered Liquidation',
   // INVOLUNTARY = 'Involuntary Dissolution',
   VOLUNTARY = 'Voluntary Dissolution',
+  FIRM_DISSOLUTION = 'Dissolution',
   // VOLUNTARY_LIQUIDATION = 'Voluntary Liquidation',
 
   // DISS_1_FILE = 'Dissolution 1 - Fail to file',
