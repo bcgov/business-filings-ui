@@ -87,6 +87,34 @@ describe('Allowable Actions Mixin', () => {
     }
   })
 
+  it('identifies whether Dissolve Company fo SP is allowed', () => {
+    store.state.entityType = 'SP'
+
+    const tests = [
+      // no conditions:
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, flag: [], expected: false },
+      // only first condition:
+      { entityState: 'ACTIVE', hasBlocker: true, businessId: null, flag: [], expected: false },
+      // only second condition:
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: null, flag: [], expected: false },
+      // only thirdcondition:
+      { entityState: 'HISTORICAL', hasBlocker: false, businessId: 'SP1234567', flag: [], expected: false },
+      // only fourth condition:
+      { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, flag: ['SP'], expected: false },
+      // all conditions:
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'SP1234567', flag: ['SP'], expected: true }
+    ]
+
+    for (let test of tests) {
+      store.state.entityState = test.entityState
+      jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
+      if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
+      else sessionStorage.removeItem('BUSINESS_ID')
+      getFeatureFlag.mockReturnValue(test.flag)
+      expect(vm.isAllowed('dissolveCompany')).toBe(test.expected)
+    }
+  })
+
   it('identifies whether Download Business Summary is allowed', () => {
     const tests = [
       // no conditions:
@@ -229,7 +257,9 @@ describe('Allowable Actions Mixin', () => {
       // only fourth condition:
       { entityState: 'HISTORICAL', hasBlocker: true, businessId: null, roles: ['staff'], expected: false },
       // all conditions:
-      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true }
+      { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true },
+      // For SP/GP conditions:
+      { entityState: 'ACTIVE', hasBlockerExceptStaffApproval: false, businessId: 'SP1234567', roles: ['staff'], expected: true }
     ]
 
     for (let test of tests) {

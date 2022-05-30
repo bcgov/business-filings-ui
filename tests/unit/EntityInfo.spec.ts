@@ -366,13 +366,12 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
 
   it('displays the Dissolve this Company button', async () => {
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(EntityInfo, {
+    const wrapper = mount(EntityInfo, {
       store,
       vuetify,
       mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
-
     expect(wrapper.find('#dissolution-button').exists()).toBe(true)
   })
 
