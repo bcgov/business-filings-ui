@@ -9,7 +9,7 @@
           information must be entered before you can file changes or dissolve this business.
           <v-btn class="details-btn pl-1" outlined color="primary"  :ripple="false" @click.stop="togglePanel">
             <v-icon left color="primary" class="mr-0">mdi-information-outline</v-icon>
-            <span color="primary" >{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
+            <span color="primary">{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
           </v-btn>
         </p>
         <v-expansion-panel-content class="action-required-contact-info">
