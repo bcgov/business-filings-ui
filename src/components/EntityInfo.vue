@@ -114,7 +114,7 @@
                 {{ this.dateToPacificDate(getEntityFoundingDate) || 'Not Available' }}</dd>
             </template>
 
-            <!-- Registration Number -->$
+            <!-- Registration Number -->
             <template v-if="businessId && isFirm">
               <dt class="mr-2">Registration Number:</dt>
               <dd id="entity-business-registration-number">{{ getIdentifier || 'Not Available' }}</dd>
