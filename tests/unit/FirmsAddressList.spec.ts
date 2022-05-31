@@ -51,7 +51,7 @@ describe('FirmsAddressList', () => {
     })
     await Vue.nextTick()
 
-    // Verify (Not Entered) Texts
+    // Verify (Not entered) Texts
     expect(wrapper.find('.delivery-address-list-item .complete-filing').text())
       .toBe('Complete your filing to display')
     expect(wrapper.find('.mailing-address-list-item .complete-filing').text())
@@ -60,7 +60,7 @@ describe('FirmsAddressList', () => {
     wrapper.destroy()
   })
 
-  it('displays "(Not Entered)" for delivery/mailing address', async () => {
+  it('displays "(Not entered)" for delivery/mailing address', async () => {
     // init store
     store.state.businessAddress = null
 
@@ -74,9 +74,9 @@ describe('FirmsAddressList', () => {
     })
     await Vue.nextTick()
 
-    // Verify (Not Entered) Texts
-    expect(wrapper.find('.delivery-address-not-entered').text()).toBe('(Not Entered)')
-    expect(wrapper.find('.mailing-address-not-entered').text()).toBe('(Not Entered)')
+    // Verify (Not entered) Texts
+    expect(wrapper.find('.delivery-address-not-entered').text()).toBe('(Not entered)')
+    expect(wrapper.find('.mailing-address-not-entered').text()).toBe('(Not entered)')
 
     wrapper.destroy()
   })
@@ -163,7 +163,7 @@ describe('FirmsAddressList', () => {
     wrapper.destroy()
   })
 
-  it('displays "(Not Entered)" for invalid businessAddress', async () => {
+  it('displays "(Not entered)" for invalid businessAddress', async () => {
     // init store
     store.state.businessAddress = {
       deliveryAddress: null,
@@ -180,16 +180,16 @@ describe('FirmsAddressList', () => {
     })
     await Vue.nextTick()
 
-    // Verify (Not Entered) for delivery/mailing address
+    // Verify (Not entered) for delivery/mailing address
     expect(wrapper.find('.delivery-address-list-item .delivery-address-not-entered').text())
-      .toBe('(Not Entered)')
+      .toBe('(Not entered)')
     expect(wrapper.find('.mailing-address-list-item .mailing-address-not-entered').text())
-      .toBe('(Not Entered)')
+      .toBe('(Not entered)')
 
     wrapper.destroy()
   })
 
-  it('displays "(Not Entered)" for getter getBusinessAddress', async () => {
+  it('displays "(Not entered)" for getter getBusinessAddress', async () => {
     // init store
     store.state.businessAddress = {
       deliveryAddress: {},
@@ -206,11 +206,11 @@ describe('FirmsAddressList', () => {
     })
     await Vue.nextTick()
 
-    // Verify (Not Entered) for delivery/mailing address
+    // Verify (Not entered) for delivery/mailing address
     expect(wrapper.find('.delivery-address-list-item .delivery-address-not-entered').text())
-      .toBe('(Not Entered)')
+      .toBe('(Not entered)')
     expect(wrapper.find('.mailing-address-list-item .mailing-address-not-entered').text())
-      .toBe('(Not Entered)')
+      .toBe('(Not entered)')
 
     wrapper.destroy()
   })
