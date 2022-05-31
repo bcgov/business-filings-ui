@@ -26,7 +26,7 @@
       @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
     />
-    <ActionRequired v-if="isStaffActionRequired"/>
+    <ActionRequired v-if="isActionRequired"/>
     <v-expansion-panels v-if="showTodoPanel" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
@@ -372,7 +372,7 @@
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title>Delete Voluntary Dissolution</v-list-item-title>
+                          <v-list-item-title>Delete {{ toDoListTitle }} </v-list-item-title>
                         </template>
                         <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
@@ -515,7 +515,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="!showTodoPanel && !isStaffActionRequired">
+    <v-card class="no-results" flat v-if="!showTodoPanel && !isActionRequired">
       <v-card-text>
         <div class="no-results__title">You don't have anything to do yet</div>
         <div class="no-results__subtitle">Filings that require your attention will appear here</div>
@@ -666,9 +666,9 @@ export default class TodoList extends Mixins(
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
-  /** show action required only for SP/GP with compaince warning. */
-  get isStaffActionRequired (): boolean {
-    return this.isFirm && this.isNotInCompliance && !this.isRoleStaff
+  /** Show action required only for SP/GP with Compliance warning. */
+  get isActionRequired (): boolean {
+    return this.isFirm && this.isNotInCompliance
   }
   get showTodoPanel () {
     return this.todoItems && this.todoItems.length > 0
@@ -698,8 +698,8 @@ export default class TodoList extends Mixins(
       }
     }
 
-    // Add todo items count +1 when SP/GP with compaince warning
-    const todoLength = this.isStaffActionRequired ? this.todoItems.length + 1 : this.todoItems.length
+    // Add todo items count +1 when SP/GP with compliance warning
+    const todoLength = this.isActionRequired ? this.todoItems.length + 1 : this.todoItems.length
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', todoLength)
 
@@ -1609,6 +1609,11 @@ export default class TodoList extends Mixins(
       // for current ARs, max date is today
       return this.getCurrentDate
     }
+  }
+
+  /** The toDoList title to display. */
+  private get toDoListTitle (): string {
+    return this.getTodoListResource?.title
   }
 
   @Watch('getTasks', { immediate: true })
