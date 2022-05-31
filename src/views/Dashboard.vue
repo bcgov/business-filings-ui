@@ -276,8 +276,7 @@ export default {
 }
 </script>
 
-<style lang="scss" >
-@import "@/assets/styles/theme.scss";
+<style lang="scss" scoped>
 section header {
   display: flex;
   flex-direction: row;
@@ -296,5 +295,4 @@ section header {
 .pending-tooltip {
   max-width: 16.5rem;
 }
-
 </style>
