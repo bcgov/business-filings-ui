@@ -1,17 +1,26 @@
 <template>
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
     <v-card>
-      <v-card-title id="dialog-title">Add a {{displayName}}</v-card-title>
+      <v-card-title id="dialog-title">
+        <span v-if="administrativeDissolution" id="dialog-title"><strong>{{displayName}}</strong></span>
+        <span v-else-if="putBackOn" id="dialog-title"><strong>Correction - {{displayName}}</strong></span>
+        <span v-else id="dialog-title"><strong>Add a {{displayName}}</strong> </span>
+      </v-card-title>
       <v-card-text>
+        <div id="dialog-text" class='dialog-text'>
+          <p v-if="administrativeDissolution || putBackOn"> You are about to put <strong>{{getEntityName}},
+          {{getIdentifier}}</strong> back on the register.</p>
+        </div>
         <div id="notation-text" class="mb-4 mt-2">
-          Enter a {{displayName}} that will appear on the ledger for this entity
+          Enter a {{administrativeDissolution || putBackOn? 'Detail' : displayName}}
+          that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
           <v-textarea
             v-model="notation"
             class="text-input-field mb-2"
             filled
-            :label="displayName"
+            :label="administrativeDissolution || putBackOn? 'Add Detail' : displayName"
             id="notation"
             rows="5"
             :no-resize="true"
@@ -92,6 +101,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 
   @Getter getIdentifier!: string
   @Getter getCurrentDate!: string
+  @Getter getEntityName!: string
+  @Getter getBusinessNumber!: string
 
   /** The notation text. */
   private notation: string = ''
@@ -116,6 +127,14 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 
   /** Flag to enable validation in this component */
   private enableValidation = false
+
+  private get administrativeDissolution (): boolean {
+    return this.name === 'administrativeDissolution'
+  }
+
+  private get putBackOn (): boolean {
+    return this.name === 'putBackOn'
+  }
 
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
@@ -234,5 +253,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   font-weight: normal;
   color: $gray7;
   font-size: $px-16;
+}
+.dialog-text {
+  padding-bottom: 10px;
 }
 </style>

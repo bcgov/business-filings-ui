@@ -18,6 +18,8 @@ export enum FilingTypes {
   SPECIAL_RESOLUTION = 'specialResolution',
   TRANSITION = 'transition',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
+  ADMINISTRATIVE_DISSOLUTION = 'administrativeDissolution',
+  PUT_BACK_ON = 'putBackOn',
 
   UNKNOWN = 'unknown' // for fallback
 }
