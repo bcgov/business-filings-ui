@@ -102,7 +102,7 @@ export default class ConfirmDissolution extends Vue {
 
   /** The incorporation text to display. */
   private get incorporationText (): string {
-    return this.getDissolutionConfirmationResource?.incorporationText
+    return this.getDissolutionConfirmationResource.incorporationText
   }
 
   // Pass click event to parent.
