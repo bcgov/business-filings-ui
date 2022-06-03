@@ -1596,6 +1596,7 @@ describe('TodoList - Click Tests', () => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
 
@@ -1933,6 +1934,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     store.state.identifier = 'BC0007291'
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
 
     // mock the window.location.assign function
     delete window.location
@@ -2175,6 +2177,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     sessionStorage.clear()
     sessionStorage.setItem('CREATE_URL', 'https://create.url/')
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
     store.state.entityName = 'My Business Inc'
     store.state.entityType = 'BEN'
 
@@ -2301,6 +2304,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
     store.state.identifier = 'BC1234567'
     // init draft Correction filing task
     store.state.tasks = [
@@ -2360,6 +2364,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
     store.state.identifier = 'BC1234567'
     store.state.goodStanding = true
     store.state.entityType = 'BEN'

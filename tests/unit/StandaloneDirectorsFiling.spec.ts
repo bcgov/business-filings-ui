@@ -674,6 +674,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -744,6 +745,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {

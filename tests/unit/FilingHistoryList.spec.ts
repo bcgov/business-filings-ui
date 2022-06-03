@@ -659,6 +659,7 @@ describe('Filing History List - redirections', () => {
     // init data
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
     store.state.keycloakRoles = ['staff']
     store.state.identifier = 'BC1234567'
     store.state.filings = [

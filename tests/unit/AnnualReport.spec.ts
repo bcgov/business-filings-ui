@@ -861,6 +861,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -1069,6 +1070,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
 
     // create local Vue and mock router
     const localVue = createLocalVue()

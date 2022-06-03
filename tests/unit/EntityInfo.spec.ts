@@ -336,6 +336,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
     store.state.identifier = 'BC1234567'
     store.state.goodStanding = true
     store.state.entityType = 'BEN'

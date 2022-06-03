@@ -317,6 +317,7 @@ describe('App as a COOP', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_STAFF)
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
   })
 
   beforeEach(async () => {
