@@ -2,7 +2,7 @@ import { BreadcrumbIF } from '@/interfaces'
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
-  const accountId = sessionStorage.getItem('ACCOUNT_ID')
+  const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT')).id
   return accountId ? `?accountid=${accountId}` : ''
 }
 

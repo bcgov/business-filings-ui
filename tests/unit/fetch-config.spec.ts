@@ -43,7 +43,6 @@ xdescribe('Fetch Config', () => {
     await fetchConfig()
 
     // verify data
-    expect(sessionStorage.getItem('ACCOUNT_ID')).toBe('2288')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
     expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
     expect(sessionStorage.getItem('BUSINESS_CREATE_URL')).toBe('business create url')
