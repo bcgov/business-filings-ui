@@ -9,7 +9,8 @@
       <v-card-text>
         <div id="dialog-text" class='dialog-text'>
           <p v-if="administrativeDissolution || putBackOn"> You are about to put
-          <strong>{{getEntityName.toUpperCase()}}, {{getIdentifier}}</strong> back on the register.</p>
+          <strong><span class="entity-name">{{getEntityName}}</span>, {{getIdentifier}}</strong>
+          back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2">
           Enter a {{administrativeDissolution || putBackOn? 'Detail' : displayName}}
@@ -256,5 +257,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 }
 .dialog-text {
   padding-bottom: 10px;
+}
+.entity-name {
+  text-transform: uppercase;
 }
 </style>
