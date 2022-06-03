@@ -44,7 +44,7 @@
                   @click="promptChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                  <span class="font-13 ml-1">View and Change Company Information</span>
+                  <span class="font-13 ml-1">View and Change Business Information</span>
                 </v-btn>
 
                 <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
@@ -54,34 +54,32 @@
                     </span>
                   </template>
                   <template v-if="isPendingDissolution">
-                    You cannot view or change company information while the company is pending dissolution.
+                    You cannot view or change business information while the business is pending dissolution.
                   </template>
                   <template v-if="isNotInCompliance">
-                    You cannot view or change company information while the company is not in compliance.
+                    You cannot view or change business information while the business is not in compliance.
                   </template>
                 </v-tooltip>
               </span>
 
               <!-- Dissolve Company -->
               <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
-                <v-btn
-                  small text color="primary"
-                  id="dissolution-button"
-                  :disabled="hasBlocker"
-                  @click="promptDissolve()"
-                >
-                  <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
-                  <span class="font-13 ml-1">Dissolve this Business</span>
-                  <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="7">
-                    <template v-slot:activator="{ on }">
-                      <span class="pl-1" v-on="on">
-                        <v-icon size="1rem">mdi-information-outline</v-icon>
-                      </span>
-                    </template>
-                    Dissolving the {{ entityTitle }} will make this {{ entityTitle }} historical
+                <v-tooltip top content-class="top-tooltip">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    small text color="primary"
+                    id="dissolution-button"
+                    :disabled="hasBlocker"
+                    @click="promptDissolve()"
+                    v-on="on"
+                  >
+                    <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
+                    <span class="font-13 ml-1">Dissolve this Business</span>
+                  </v-btn>
+                 </template>
+                    Dissolving the business will make this business historical
                     and it will be struck from the corporate registry.
                   </v-tooltip>
-                </v-btn>
               </span>
             </template>
 
@@ -99,7 +97,7 @@
                       <span class="font-13 ml-1">Business Summary</span>
                     </v-btn>
                   </template>
-                  View and download a summary of information about the {{ entityTitle }}, including office addresses
+                  View and download a summary of information about the business, including office addresses
                   and directors.
                 </v-tooltip>
             </span>
@@ -108,6 +106,20 @@
 
         <v-col cols="12" md="3">
           <dl>
+
+            <!-- Registration Date -->
+            <template v-if="businessId && isFirm">
+              <dt class="mr-2">Registration Date:</dt>
+              <dd id="entity-business-registration-date">
+                {{ this.dateToPacificDate(getEntityFoundingDate) || 'Not Available' }}</dd>
+            </template>
+
+            <!-- Registration Number -->
+            <template v-if="businessId && isFirm">
+              <dt class="mr-2">Registration Number:</dt>
+              <dd id="entity-business-registration-number">{{ getIdentifier || 'Not Available' }}</dd>
+            </template>
+
             <!-- Business Number -->
             <template v-if="businessId">
               <dt class="mr-2">Business Number:</dt>
@@ -115,7 +127,7 @@
             </template>
 
             <!-- Incorporation Number -->
-            <template v-if="businessId">
+            <template v-if="businessId && !isFirm">
               <dt class="mr-2">Incorporation Number:</dt>
               <dd id="entity-incorporation-number">{{ getIdentifier || 'Not Available' }}</dd>
             </template>
@@ -199,6 +211,8 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Getter isGoodStanding!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
+  @Getter isFirm!: boolean
+  @Getter getEntityFoundingDate!: Date
 
   // enums for template
   readonly axios = axios
@@ -215,11 +229,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   /** The Edit URL string. */
   get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
-  }
-
-  /** The entity title to display. */
-  get entityTitle (): string {
-    return this.isCoop ? 'Cooperative Association' : 'Company'
   }
 
   /** The Business Profile URL string. */

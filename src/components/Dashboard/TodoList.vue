@@ -26,8 +26,8 @@
       @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
     />
-
-    <v-expansion-panels v-if="todoItems && todoItems.length > 0" accordion  v-model="panel">
+    <ActionRequired v-if="isActionRequired"/>
+    <v-expansion-panels v-if="showTodoPanel" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
         v-for="(item, index) in orderBy(todoItems, 'order')"
@@ -153,7 +153,7 @@
 
                 <!-- draft incorporation -->
                 <div v-else-if="isStatusDraft(item) &&
-                  (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))"
+                  (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
                   class="todo-subtitle"
                 >
                   <div>{{ item.subtitle }}</div>
@@ -350,7 +350,7 @@
                       <span v-if="nameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
-                    <template v-else-if="isTypeRegistrationApplication(item) && item.isEmptyFiling">
+                    <template v-else-if="isTypeRegistration(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
                     </template>
                     <span v-else>Resume</span>
@@ -372,7 +372,7 @@
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title>Delete Voluntary Dissolution</v-list-item-title>
+                          <v-list-item-title>Delete {{ toDoListTitle }} </v-list-item-title>
                         </template>
                         <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
@@ -507,7 +507,7 @@
           </template>
 
           <template v-else-if="isStatusDraft(item) &&
-            (isTypeIncorporationApplication(item) || isTypeRegistrationApplication(item))">
+            (isTypeIncorporationApplication(item) || isTypeRegistration(item))">
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
         </v-expansion-panel-content>
@@ -515,7 +515,7 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-else>
+    <v-card class="no-results" flat v-if="!showTodoPanel && !isActionRequired">
       <v-card-text>
         <div class="no-results__title">You don't have anything to do yet</div>
         <div class="no-results__subtitle">Filings that require your attention will appear here</div>
@@ -540,6 +540,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
+import ActionRequired from '@/components/Dashboard/ActionRequired.vue'
 
 // Mixins, Enums and Interfaces
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
@@ -561,7 +562,8 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF, 
     PaymentPaid,
     PaymentPending,
     PaymentPendingOnlineBanking,
-    PaymentUnsuccessful
+    PaymentUnsuccessful,
+    ActionRequired
   },
   mixins: [
     Vue2Filters.mixin
@@ -599,6 +601,7 @@ export default class TodoList extends Mixins(
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
   @Getter getTodoListResource!: TodoListResourceIF
+  @Getter isNotInCompliance!: boolean
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -663,6 +666,14 @@ export default class TodoList extends Mixins(
     return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
+  /** Show action required only for SP/GP with Compliance warning. */
+  get isActionRequired (): boolean {
+    return this.isFirm && this.isNotInCompliance
+  }
+  get showTodoPanel () {
+    return this.todoItems && this.todoItems.length > 0
+  }
+
   /** Whether the File Annual Report button should be disabled. */
   protected isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
     return (
@@ -687,8 +698,10 @@ export default class TodoList extends Mixins(
       }
     }
 
+    // Add todo items count +1 when SP/GP with compliance warning
+    const todoLength = this.isActionRequired ? this.todoItems.length + 1 : this.todoItems.length
     // report number of items back to parent (dashboard)
-    this.$emit('todo-count', this.todoItems.length)
+    this.$emit('todo-count', todoLength)
 
     // Check if there is a draft/pending/error/paid/correction/alteration task.
     // This is a blocker because it needs to be completed first.
@@ -753,6 +766,8 @@ export default class TodoList extends Mixins(
         case FilingTypes.ANNUAL_REPORT:
           this.loadAnnualReportTodo(task)
           break
+        case FilingTypes.CONVERSION:
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in todo header =', header)
@@ -765,7 +780,7 @@ export default class TodoList extends Mixins(
   }
 
   private expiresText (nameRequest: any): string {
-    const date = new Date(nameRequest.expirationDate)
+    const date = this.apiToDate(nameRequest.expirationDate)
     const expireDays = this.daysFromToday(date)
     // NB: 0 means NR expires today
     if (isNaN(expireDays) || expireDays < 0) {
@@ -846,6 +861,9 @@ export default class TodoList extends Mixins(
           break
         case FilingTypes.CHANGE_OF_REGISTRATION:
           await this.loadChangeOfRegistration(task)
+          break
+        case FilingTypes.CONVERSION:
+          await this.loadConversion(task)
           break
         default:
           // eslint-disable-next-line no-console
@@ -1196,6 +1214,7 @@ export default class TodoList extends Mixins(
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
       const draft = changeOfRegistration
+      // FUTURE: verify that this checks for all possible data:
       const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
 
       const item: TodoItemIF = {
@@ -1221,7 +1240,42 @@ export default class TodoList extends Mixins(
     }
   }
 
-  /** Files a new filing (todo). */
+  private async loadConversion (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const conversion = filing.conversion
+
+    if (header && conversion) {
+      const paymentStatusCode = header.paymentStatusCode || null
+      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+
+      const draft = conversion
+      // FUTURE: verify that this checks for all possible data:
+      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CONVERSION,
+        filingId: header.filingId,
+        title: FilingNames.CONVERSION, // FUTURE: enhance title (and subtitle?) if needed
+        draftTitle: FilingNames.CONVERSION,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        isEmptyFiling: !haveData,
+        nameRequest: this.nameRequest,
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  /** Files a new filing (todo item). */
   protected doFileNow (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
@@ -1244,7 +1298,7 @@ export default class TodoList extends Mixins(
   protected doResumeFiling (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
-        // resume this Annual Report
+        // resume this Annual Report locally
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
@@ -1254,59 +1308,65 @@ export default class TodoList extends Mixins(
         break
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
-        // resume this Change Of Directors
+        // resume this Change Of Directors locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CHANGE_OF_ADDRESS:
-        // resume this Change Of Address
+        // resume this Change Of Address locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CORRECTION:
-        if (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) {
-          // navigate to Edit web app to correct this Incorporation Application
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-          navigate(correctionUrl)
-        } else {
-          // resume this Correction Filing
+        if (item.correctedFilingType !== FilingNames.INCORPORATION_APPLICATION) {
+          // resume this Correction locally
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.CORRECTION,
             params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
           })
+        } else {
+          // navigate to Edit UI to resume this correction
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+          navigate(correctionUrl)
         }
         break
 
       case FilingTypes.INCORPORATION_APPLICATION:
-        // navigate to Create web app to resume this Incorporation Application
+        // navigate to Create UI to resume this Incorporation Application
         const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
         navigate(incorpAppUrl)
         break
 
       case FilingTypes.REGISTRATION:
-        // navigate to Create web app to resume this registration
+        // navigate to Create UI to resume this registration
         const registrationAppUrl = `${this.createUrl}define-registration?id=${this.tempRegNumber}`
         navigate(registrationAppUrl)
         break
 
       case FilingTypes.ALTERATION:
-        // navigate to Edit web app to alter this company
+        // navigate to Edit UI to resume this alteration
         const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
         navigate(alterationUrl)
         break
 
       case FilingTypes.DISSOLUTION:
-        // navigate to Create web app to dissolve this company
+        // navigate to Create UI to resume this dissolution
         const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
         break
 
       case FilingTypes.CHANGE_OF_REGISTRATION:
-        // navigate to Edit web app to alter this firm
-        const editUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
-        navigate(editUrl)
+        // navigate to Edit UI to resume this change of registration
+        const changeUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
+        navigate(changeUrl)
+        break
+
+      case FilingTypes.CONVERSION:
+        // navigate to Edit UI to resume this conversion
+        const conversionUrl = `${this.editUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
+        navigate(conversionUrl)
         break
 
       default:
@@ -1549,6 +1609,11 @@ export default class TodoList extends Mixins(
       // for current ARs, max date is today
       return this.getCurrentDate
     }
+  }
+
+  /** The toDoList title to display. */
+  private get toDoListTitle (): string {
+    return this.getTodoListResource?.title
   }
 
   @Watch('getTasks', { immediate: true })

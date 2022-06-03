@@ -124,3 +124,12 @@
   border-left: 10px solid transparent !important;
   border-top: 8px solid RGBA(73,80,87,0.95) !important;
 }
+
+.theme--light.v-btn.v-btn--disabled.v-btn--text {
+  opacity: 0.4 !important;
+  color: $app-blue !important;
+
+  .v-icon {
+    color: $app-blue !important;
+  }
+}

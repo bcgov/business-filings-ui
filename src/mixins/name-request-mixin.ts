@@ -67,20 +67,20 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       entityType: nr.legalType,
       filingId: filingId,
       applicant: {
-        // Address Information
+        // address information
         addressLine1: nr.applicants.addrLine1,
         addressLine2: nr.applicants.addrLine2,
         addressLine3: nr.applicants.addrLine3,
         city: nr.applicants.city,
-        countryTypeCode: nr.applicants.countryTypeCd,
-        postalCode: nr.applicants.postalCd,
         stateProvinceCode: nr.applicants.stateProvinceCd,
+        postalCode: nr.applicants.postalCd,
+        countryTypeCode: nr.applicants.countryTypeCd,
 
-        // Application contact information
+        // applicant contact information
         emailAddress: nr.applicants.emailAddress,
         phoneNumber: nr.applicants.phoneNumber,
 
-        // Application name information
+        // applicant name information
         firstName: nr.applicants.firstName,
         middleName: nr.applicants.middleName,
         lastName: nr.applicants.lastName

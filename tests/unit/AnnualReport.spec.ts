@@ -71,6 +71,7 @@ describe('Annual Report - Part 1 - UI', () => {
 
   it('initializes the store variables properly', () => {
     // set current date in store
+    store.state.currentJsDate = new Date('2019-03T12:00:00')
     store.state.currentDate = '2019-03-03'
 
     const $route = { params: { filingId: '0' } } // new filing id
@@ -1496,6 +1497,7 @@ describe('Annual Report - Part 5 - Data', () => {
 
   it('includes the AR Date for the current filing year', async () => {
     // set current date in store, since it's normally set in a different component
+    store.state.currentJsDate = new Date('2019-03T12:00:00')
     store.state.currentDate = '2019-03-03'
 
     // click the Save button
@@ -1516,6 +1518,7 @@ describe('Annual Report - Part 5 - Data', () => {
 
   it('sets the AGM Date and AR Date correctly for "No AGM" filing', async () => {
     // set current date in store, since it's normally set in a different component
+    store.state.currentJsDate = new Date('2019-03T12:00:00')
     store.state.currentDate = '2019-03-03'
 
     // set No AGM

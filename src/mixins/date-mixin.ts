@@ -1,6 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { isDate } from 'lodash'
+import { ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 
 const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
@@ -22,11 +23,13 @@ export default class DateMixin extends Vue {
     try {
       const { headers, ok, statusText } = await fetch(input, init)
       if (!ok) throw new Error(statusText)
+      // NB: this `new Date()` is safe because the header date string is in GMT (ie, UTC)
+      //     so the conversion to JS Date ignores the browser's local timezone
       return new Date(headers.get('Date'))
     } catch {
       // eslint-disable-next-line no-console
       console.warn('Unable to get server date - using browser date instead')
-      // fall back to local date
+      // fall back to local date (which depends on user's PC/browser config)
       // NB: new filings may contain invalid date/time
       return new Date()
     }
@@ -54,7 +57,7 @@ export default class DateMixin extends Vue {
    * Converts a date string (YYYY-MM-DD) to a Date object at 12:00:00 am Pacific time.
    * @example 2021-11-22 -> 2021-11-22T08:00:00.00Z
    */
-  yyyyMmDdToDate (dateStr: string): Date {
+  yyyyMmDdToDate (dateStr: IsoDatePacific): Date {
     // safety checks
     if (!dateStr) return null
     if (dateStr.length !== 10) return null
@@ -72,7 +75,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
    * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
    */
-  dateToYyyyMmDd (date: Date): string {
+  dateToYyyyMmDd (date: Date): IsoDatePacific {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
@@ -95,7 +98,7 @@ export default class DateMixin extends Vue {
    * Converts a date string (YYYY-MM-DD) to a formatted date string (Month Day, Year).
    * @example "2020-01-01" -> "Jan 1, 2020"
    */
-  formatYyyyMmDd (dateStr: string): string {
+  formatYyyyMmDd (dateStr: IsoDatePacific): string {
     // safety checks
     if (!dateStr) return null
     if (dateStr.length !== 10) return null
@@ -103,7 +106,7 @@ export default class DateMixin extends Vue {
     // create a Date object
     // then split into its components (in "absolute" time)
     // eg, "2020-01-01" -> "Wed, 01 Jan 2020 00:00:00 GMT"
-    const date = new Date(dateStr)
+    const date = this.yyyyMmDdToDate(dateStr)
     const [weekday, day, month, year, time, tz] = date.toUTCString().split(' ')
 
     // convert day to number so that "01" -> "1"
@@ -181,7 +184,7 @@ export default class DateMixin extends Vue {
    * Converts a Date object to an API datetime string.
    * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
    */
-  dateToApi (date: Date): string {
+  dateToApi (date: Date): ApiDateTimeUtc {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
@@ -193,12 +196,15 @@ export default class DateMixin extends Vue {
    * Converts an API datetime string (in UTC) to a Date object.
    * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
-  apiToDate (dateTimeString: string): Date {
+  apiToDate (dateTimeString: ApiDateTimeUtc): Date {
     if (!dateTimeString) return null // safety check
 
     // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
+    // eg, 2020-08-28T21:53:58Z
     dateTimeString = dateTimeString.slice(0, 19) + 'Z'
 
+    // NB: this `new Date()` is safe because the string is already UTC format
+    //     so the conversion to JS Date ignores the browser's local timezone
     return new Date(dateTimeString)
   }
 
@@ -207,7 +213,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020" (PST example)
    * @example "2021-07-01T00:00:00.000000+00:00" -> "Jun 30, 2021" (PDT example)
    */
-  apiToPacificDate (dateTimeString: string): string {
+  apiToPacificDate (dateTimeString: ApiDateTimeUtc): string {
     if (!dateTimeString) return null // safety check
 
     const date = this.apiToDate(dateTimeString)
@@ -221,7 +227,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020 at 04:00 pm Pacific time" (PST example)
    * @example "2021-07-01T00:00:00.000000+00:00" -> "Jun 30, 2021 at 05:00 pm Pacific time" (PDT example)
    */
-  apiToPacificDateTime (dateTimeString: string, longMonth = false): string {
+  apiToPacificDateTime (dateTimeString: ApiDateTimeUtc, longMonth = false): string {
     if (!dateTimeString) return null // safety check
 
     const date = this.apiToDate(dateTimeString)
@@ -235,7 +241,7 @@ export default class DateMixin extends Vue {
    * Converts an API datetime string (in UTC) to a UTC string.
    * @example "2021-10-01T19:26:24.530803+00:00" -> "Fri, 01 Oct 2021 19:26:24 GMT"
    */
-  apiToUtcString (dateTimeString: string): string {
+  apiToUtcString (dateTimeString: ApiDateTimeUtc): string {
     if (!dateTimeString) return null // safety check
 
     const date = this.apiToDate(dateTimeString)
@@ -246,7 +252,7 @@ export default class DateMixin extends Vue {
    * Converts an API datetime string (in UTC) to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-11-17T08:00:00+00:00" -> "2021-11-17"
    */
-  apiToYyyyMmDd (dateTimeString: string): string {
+  apiToYyyyMmDd (dateTimeString: ApiDateTimeUtc): IsoDatePacific {
     const date = this.apiToDate(dateTimeString)
     return this.dateToYyyyMmDd(date)
   }
@@ -256,7 +262,7 @@ export default class DateMixin extends Vue {
    * @example "2021-01-01" -> 2021-01-01T08:00:00+00:00" // PST
    * @example "2021-07-01" -> 2021-07-01T07:00:00+00:00" // PDT
    */
-  yyyyMmDdToApi (date: string): string {
+  yyyyMmDdToApi (date: IsoDatePacific): ApiDateTimeUtc {
     // safety check
     if (date?.length !== 10) return null
 
@@ -265,16 +271,13 @@ export default class DateMixin extends Vue {
       date = date.replace('/', '-')
     }
 
-    // create date using local timezone
-    // eg, if `date` is "2020-08-26" and the local timezone is PDT
-    // then `iso` will be "2020-08-26T07:00:00.000Z"
-    const iso = new Date(date + 'T00:00:00').toISOString()
+    // first convert string to a JS Date
+    // eg, "2020-08-26" ->  "2020-08-26T07:00:00.000Z"
+    const jsDate = this.yyyyMmDdToDate(date)
 
-    // convert to API format
+    // then convert JS Date to API
     // eg "2020-08-26T07:00:00.000Z" -> "2020-08-26T07:00:00+00:00"
-    const api = iso.replace('.000Z', '+00:00')
-
-    return api
+    return this.dateToApi(jsDate)
   }
 
   /**
@@ -284,7 +287,7 @@ export default class DateMixin extends Vue {
    * @param operator the operator to use for comparison
    * @returns the result of the comparison (true or false)
    */
-  compareYyyyMmDd (date1: string, date2: string, operator: string): boolean {
+  compareYyyyMmDd (date1: ApiDateTimeUtc, date2: ApiDateTimeUtc, operator: string): boolean {
     // safety check
     if (!date1 || !date2 || !operator) return true
 
@@ -300,7 +303,7 @@ export default class DateMixin extends Vue {
    * @param date1 first date
    * @param date2 second date
    */
-  earliestYyyyMmDd (date1: string, date2: string): string {
+  earliestYyyyMmDd (date1: ApiDateTimeUtc, date2: ApiDateTimeUtc): string {
     // safety check
     if (!date1 && !date2) return null
 
@@ -316,7 +319,7 @@ export default class DateMixin extends Vue {
    * @param date1 first date
    * @param date2 second date
    */
-  latestYyyyMmDd (date1: string, date2: string): string {
+  latestYyyyMmDd (date1: ApiDateTimeUtc, date2: ApiDateTimeUtc): string {
     // safety check
     if (!date1 && !date2) return null
 

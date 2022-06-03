@@ -25,6 +25,7 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
+store.state.currentJsDate = new Date('2019-07-15T12:00:00')
 store.state.currentDate = '2019-07-15'
 
 const sampleDeliveryAddress = {
@@ -1771,7 +1772,6 @@ describe('Standalone Office Address Filing - payment required error', () => {
 
   beforeEach(() => {
     // init store
-    store.state.currentDate = '2019-07-15'
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
     store.state.entityName = 'Legal Name - CP0001191'

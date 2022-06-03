@@ -54,12 +54,12 @@
                     </li>
                   </ul>
                   <ul class="address-subtitle pre-line" v-else>
-                    <li class="delivery-address-not-entered">Not Entered</li>
+                    <li class="delivery-address-not-entered">(Not entered)</li>
                   </ul>
                 </v-list-item-subtitle>
                 <v-list-item-subtitle v-else>
                   <ul class="address-subtitle pre-line">
-                    <li class="delivery-address-not-entered">Not Entered</li>
+                    <li class="delivery-address-not-entered">(Not entered)</li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -92,12 +92,12 @@
                     </ul>
                   </div>
                   <div class="mailing-address-not-entered" v-else>
-                    <span>Not Entered</span>
+                    <span>(Not entered)</span>
                   </div>
                 </v-list-item-subtitle>
                 <v-list-item-subtitle v-else>
                   <div class="mailing-address-not-entered">
-                    <span>Not Entered</span>
+                    <span>(Not entered)</span>
                   </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -113,6 +113,7 @@
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
+import { isEmpty } from 'lodash'
 
 // Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
@@ -133,7 +134,8 @@ export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvi
   @Getter getBusinessAddress!: OfficeAddressIF
 
   // Business
-  get businessAddress (): OfficeAddressIF {
+  get businessAddress (): OfficeAddressIF|null {
+    if (isEmpty(this.getBusinessAddress?.deliveryAddress)) return null
     return this.getBusinessAddress
   }
 

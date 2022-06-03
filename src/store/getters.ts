@@ -1,6 +1,6 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF } from '@/interfaces'
+  StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -13,13 +13,20 @@ export default {
     return state.tasks
   },
 
-  /** The current JS Date object, which was refreshed when the dashload loaded. */
+  /**
+   * The current JS Date object, which was refreshed when the dashload loaded.
+   * NB: internally this is stored as UTC
+   * NB: use date mixins to display this
+   */
   getCurrentJsDate (state: StateIF): Date {
     return state.currentJsDate
   },
 
-  /** The current date (YYYY-MM-DD), which was refreshed when the dashload loaded. */
-  getCurrentDate (state: StateIF): string {
+  /**
+   * The current date (YYYY-MM-DD), which was refreshed when the dashload loaded,
+   * in Pacific timezone.
+   */
+  getCurrentDate (state: StateIF): IsoDatePacific {
     return state.currentDate
   },
 
@@ -29,8 +36,18 @@ export default {
   },
 
   /** Is True if there are any pending tasks or filings. */
-  hasBlocker (state: StateIF): boolean {
+  hasBlockerExceptStaffApproval (state: StateIF): boolean {
     return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+  },
+
+  /** Is True if there are any pending tasks or filings. */
+  hasBlocker (_state: StateIF, getters): boolean {
+    let blocker = getters.hasBlockerExceptStaffApproval
+    // check for complaints warnings for SP and GP
+    if (getters.isFirm && getters.isNotInCompliance) {
+      blocker = getters.isNotInCompliance
+    }
+    return blocker
   },
 
   /** Is True if a COA filing is pending. */

@@ -68,6 +68,9 @@ describe('Date Mixin', () => {
   })
 
   it('returns correct values for formatYyyyMmDd()', () => {
+    // init store
+    store.state.currentJsDate = new Date('2020-01-01T08:00:00')
+
     expect(vm.formatYyyyMmDd(null)).toBeNull()
     expect(vm.formatYyyyMmDd('123456789')).toBeNull()
     expect(vm.formatYyyyMmDd('2020-01-01')).toBe('Jan 1, 2020')

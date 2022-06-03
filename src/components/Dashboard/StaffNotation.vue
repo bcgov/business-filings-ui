@@ -66,6 +66,11 @@
                 <span class="app-blue">Add Court Order</span>
               </v-list-item-title>
             </v-list-item>
+            <v-list-item @click="goToConversionFiling()" :disabled="disabled || !isFirm">
+              <v-list-item-title>
+                <span class="app-blue">Record Conversion</span>
+              </v-list-item-title>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -75,7 +80,8 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-
+import { Getter } from 'vuex-class'
+import { navigate } from '@/utils'
 // Dialog
 import { AddStaffNotationDialog } from '@/components/dialogs'
 
@@ -93,6 +99,14 @@ export default class StaffNotation extends Vue {
 
   /** Prop for disabling the menu items. */
   @Prop({ default: false }) readonly disabled: boolean
+
+  @Getter isFirm!: boolean
+  @Getter getIdentifier: string
+
+  /** The Edit URL string. */
+  get editUrl (): string {
+    return sessionStorage.getItem('EDIT_URL')
+  }
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
@@ -124,6 +138,11 @@ export default class StaffNotation extends Vue {
   @Emit('close')
   private close (needReload: boolean): void {
     // Intentionally empty
+  }
+
+  goToConversionFiling ():void {
+    const url = `${this.editUrl}${this.getIdentifier}/conversion`
+    navigate(url)
   }
 }
 </script>

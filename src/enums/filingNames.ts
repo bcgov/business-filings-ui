@@ -6,7 +6,7 @@ export enum FilingNames {
   CHANGE_OF_DIRECTORS = 'Director Change',
   CHANGE_OF_NAME = 'Legal Name Change',
   CHANGE_OF_REGISTRATION = 'Change of Registration',
-  CONVERSION = 'Conversion',
+  CONVERSION = 'Record Conversion',
   CORRECTION = 'Correction',
   COURT_ORDER = 'Court Order',
   DISSOLUTION = 'Dissolution',

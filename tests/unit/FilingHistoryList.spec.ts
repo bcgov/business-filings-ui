@@ -331,9 +331,9 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    const now = new Date()
-    const past = new Date(now.getTime() - 60 * 1000) // minus 1 minute
-    const future = new Date(now.getTime() + 60 * 1000) // plus 1 minute
+    store.state.currentJsDate = new Date()
+    const past = new Date(store.state.currentJsDate.getTime() - 60 * 1000) // minus 1 minute
+    const future = new Date(store.state.currentJsDate.getTime() + 60 * 1000) // plus 1 minute
 
     expect(vm.isEffectiveDatePast(past)).toBe(true)
     expect(vm.isEffectiveDatePast(future)).toBe(false)
