@@ -15,7 +15,7 @@
         <p class="warning-text" id="dialog-text">
           You are about to {{ dissolutionType }} <strong>{{ getEntityName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
-          struck from the register and dissolved, ceasing to be {{incorporationText}} {{ subEntityTitle }} under the
+          struck from the register and dissolved, ceasing to be {{ subEntityTitle }} under the
           {{ entityAct }} Act.
         </p>
         <p v-if=additionalLabel class="warning-text" id="dialog-text">
@@ -58,7 +58,7 @@ import { Getter } from 'vuex-class'
 @Component({})
 export default class ConfirmDissolution extends Vue {
   // Prop to display the dialog.
-  @Prop() private dialog: boolean
+  @Prop() private readonly dialog: boolean
 
   // Global getters
   @Getter getEntityName!: string
@@ -66,43 +66,38 @@ export default class ConfirmDissolution extends Vue {
   @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** The entity title to display. */
-  private get entityTitle (): string {
+  get entityTitle (): string {
     return this.getDissolutionConfirmationResource?.entityTitle
   }
 
   /** The entity title to display. */
-  private get subEntityTitle (): string {
-    return this.getDissolutionConfirmationResource?.subTitle
+  get subEntityTitle (): string {
+    return this.getDissolutionConfirmationResource.subTitle
   }
 
   /** The entity title to display. */
-  private get entityAct (): string {
+  get entityAct (): string {
     return this.getDissolutionConfirmationResource?.act
   }
 
   /** The entity title to display. */
-  private get getModalTitle (): string {
+  get getModalTitle (): string {
     return this.getDissolutionConfirmationResource?.modalTitle
   }
 
   /** The confirm button text to display. */
-  private get getConfirmButtonText (): string {
+  get getConfirmButtonText (): string {
     return this.getDissolutionConfirmationResource?.confirmButtonText
   }
 
   /** The additional label to display. */
-  private get additionalLabel (): string {
+  get additionalLabel (): string {
     return this.getDissolutionConfirmationResource?.additionalLabel
   }
 
   /** The dissolution type to display. */
-  private get dissolutionType (): string {
+  get dissolutionType (): string {
     return this.getDissolutionConfirmationResource?.dissolutionType
-  }
-
-  /** The incorporation text to display. */
-  private get incorporationText (): string {
-    return this.getDissolutionConfirmationResource.incorporationText
   }
 
   // Pass click event to parent.

@@ -76,12 +76,11 @@ export const ConfigJson = [
     },
     dissolutionConfirmation: {
       entityTitle: 'Company',
-      subTitle: 'company',
+      subTitle: 'an incorporated company',
       act: 'Business Corporations',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution',
-      dissolutionType: 'voluntarily dissolve',
-      incorporationText: 'an incorporated'
+      dissolutionType: 'voluntarily dissolve'
     },
     todoList: {
       title: 'Voluntary Dissolution'
@@ -140,12 +139,11 @@ export const ConfigJson = [
     ],
     dissolutionConfirmation: {
       entityTitle: 'Cooperative Association',
-      subTitle: 'cooperative',
+      subTitle: 'an incorporated cooperative',
       act: 'Cooperative Association',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution',
-      dissolutionType: 'voluntarily dissolve',
-      incorporationText: 'an incorporated'
+      dissolutionType: 'voluntarily dissolve'
     },
     todoList: {
       title: 'Voluntary Dissolution'
@@ -208,13 +206,12 @@ export const ConfigJson = [
     },
     dissolutionConfirmation: {
       entityTitle: 'Sole Proprietorship',
-      subTitle: 'registered business',
+      subTitle: 'a registered business',
       act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution',
       additionalLabel: 'Make sure your business information is up to date before dissolving.',
-      dissolutionType: 'dissolve',
-      incorporationText: 'a'
+      dissolutionType: 'dissolve'
     },
     todoList: {
       title: 'Dissolution'
@@ -277,13 +274,12 @@ export const ConfigJson = [
     },
     dissolutionConfirmation: {
       entityTitle: 'General Partnership',
-      subTitle: 'registered business',
+      subTitle: 'a registered business',
       act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution',
       additionalLabel: 'Make sure your business information is up to date before dissolving.',
-      dissolutionType: 'dissolve',
-      incorporationText: 'an incorporated'
+      dissolutionType: 'dissolve'
     },
     todoList: {
       title: 'Dissolution'
