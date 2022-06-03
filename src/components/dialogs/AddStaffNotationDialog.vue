@@ -129,11 +129,11 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   private enableValidation = false
 
   private get administrativeDissolution (): boolean {
-    return this.name === 'administrativeDissolution'
+    return this.name === FilingTypes.ADMINISTRATIVE_DISSOLUTION
   }
 
   private get putBackOn (): boolean {
-    return this.name === 'putBackOn'
+    return this.name === FilingTypes.PUT_BACK_ON
   }
 
   private get notationRules (): Array<Function> {
