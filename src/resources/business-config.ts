@@ -80,7 +80,8 @@ export const ConfigJson = [
       act: 'Business Corporations',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution',
-      dissolutionType: 'voluntarily dissolve'
+      dissolutionType: 'voluntarily dissolve',
+      incorporationText: 'an incorporated'
     },
     todoList: {
       title: 'Voluntary Dissolution'
@@ -143,7 +144,8 @@ export const ConfigJson = [
       act: 'Cooperative Association',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution',
-      dissolutionType: 'voluntarily dissolve'
+      dissolutionType: 'voluntarily dissolve',
+      incorporationText: 'an incorporated'
     },
     todoList: {
       title: 'Voluntary Dissolution'
@@ -211,7 +213,8 @@ export const ConfigJson = [
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution',
       additionalLabel: 'Make sure your business information is up to date before dissolving.',
-      dissolutionType: 'dissolve'
+      dissolutionType: 'dissolve',
+      incorporationText: 'a'
     },
     todoList: {
       title: 'Dissolution'
@@ -273,13 +276,14 @@ export const ConfigJson = [
       ]
     },
     dissolutionConfirmation: {
-      entityTitle: 'Partnership',
+      entityTitle: 'General Partnership',
       subTitle: 'registered business',
-      act: 'General Partnership',
+      act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution',
       additionalLabel: 'Make sure your business information is up to date before dissolving.',
-      dissolutionType: 'dissolve'
+      dissolutionType: 'dissolve',
+      incorporationText: 'an incorporated'
     },
     todoList: {
       title: 'Dissolution'

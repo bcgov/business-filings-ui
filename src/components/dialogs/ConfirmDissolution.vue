@@ -15,7 +15,7 @@
         <p class="warning-text" id="dialog-text">
           You are about to {{ dissolutionType }} <strong>{{ getEntityName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
-          struck from the register and dissolved, ceasing to be an incorporated {{ subEntityTitle }} under the
+          struck from the register and dissolved, ceasing to be {{incorporationText}} {{ subEntityTitle }} under the
           {{ entityAct }} Act.
         </p>
         <p v-if=additionalLabel class="warning-text" id="dialog-text">
@@ -98,6 +98,11 @@ export default class ConfirmDissolution extends Vue {
   /** The dissolution type to display. */
   private get dissolutionType (): string {
     return this.getDissolutionConfirmationResource?.dissolutionType
+  }
+
+  /** The incorporation text to display. */
+  private get incorporationText (): string {
+    return this.getDissolutionConfirmationResource?.incorporationText
   }
 
   // Pass click event to parent.
