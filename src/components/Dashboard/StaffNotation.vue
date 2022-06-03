@@ -87,7 +87,7 @@
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item v-if="isFirm && isHistorical" @click="showPutBackOnDialog()" :disabled="disabled">
+            <v-list-item v-if="isFirm && isHistorical" @click="showPutBackOnDialog()" :disabled="!isHistorical">
               <v-list-item-title>
                 <span class="app-blue">Put Back On</span>
               </v-list-item-title>

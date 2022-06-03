@@ -8,8 +8,8 @@
       </v-card-title>
       <v-card-text>
         <div id="dialog-text" class='dialog-text'>
-          <p v-if="administrativeDissolution || putBackOn"> You are about to put <strong>{{getEntityName}},
-          {{getIdentifier}}</strong> back on the register.</p>
+          <p v-if="administrativeDissolution || putBackOn"> You are about to put
+          <strong>{{getEntityName.toUpperCase()}}, {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2">
           Enter a {{administrativeDissolution || putBackOn? 'Detail' : displayName}}
