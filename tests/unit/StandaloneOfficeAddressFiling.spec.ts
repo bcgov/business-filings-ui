@@ -672,7 +672,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -719,8 +719,9 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     await flushPromises()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -953,7 +954,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -1000,8 +1001,9 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     await flushPromises()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })

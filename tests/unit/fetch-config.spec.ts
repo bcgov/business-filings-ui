@@ -36,7 +36,7 @@ xdescribe('Fetch Config', () => {
         ADDRESS_COMPLETE_KEY: 'address complete key',
         BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
         SENTRY_ENABLE: 'sentry enable',
-        SENTRY_DSN: 'sentry dsn'
+        CURRENT_ACCOUNT: '{"id": "2288"}'
       }))
 
     // call method
@@ -60,5 +60,6 @@ xdescribe('Fetch Config', () => {
     expect(sessionStorage.getItem('BUSINESS_ID')).toBe('CP1234567')
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost:8080/business/CP1234567/')
+    expect(sessionStorage.getItem('CURRENT_ACCOUNT')).toBe('{"id": "2288"}')
   })
 })

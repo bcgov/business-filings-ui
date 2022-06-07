@@ -336,7 +336,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.identifier = 'BC1234567'
     store.state.goodStanding = true
     store.state.entityType = 'BEN'
@@ -350,8 +350,9 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     await Vue.nextTick()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const editUrl = 'https://edit.url/BC1234567/alteration'
-    expect(window.location.assign).toHaveBeenCalledWith(editUrl)
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '?accountid=' + accountId)
 
     wrapper.destroy()
   })

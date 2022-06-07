@@ -674,7 +674,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -731,8 +731,9 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -745,7 +746,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
     sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "" }')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -801,8 +802,9 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // expect(tooltipText).toContain('There is no opportunity to change information beyond this point.')
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
