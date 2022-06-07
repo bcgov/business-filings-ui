@@ -259,6 +259,7 @@ describe('Allowable Actions Mixin', () => {
       // all conditions:
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true },
       // For SP/GP conditions:
+      // eslint-disable-next-line max-len
       { entityState: 'ACTIVE', hasBlockerExceptStaffApproval: false, businessId: 'SP1234567', roles: ['staff'], expected: true }
     ]
 

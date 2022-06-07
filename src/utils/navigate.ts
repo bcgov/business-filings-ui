@@ -5,7 +5,7 @@
 export function navigate (url: string): boolean {
   try {
     // get account id and set in params
-    const accountId = sessionStorage.getItem('ACCOUNT_ID')
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     if (accountId) {
       if (url.includes('?')) {
         url += `&accountid=${accountId}`

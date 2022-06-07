@@ -659,6 +659,7 @@ describe('Filing History List - redirections', () => {
     // init data
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.keycloakRoles = ['staff']
     store.state.identifier = 'BC1234567'
     store.state.filings = [
@@ -698,8 +699,9 @@ describe('Filing History List - redirections', () => {
     await flushPromises()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const createUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
-    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
