@@ -1596,6 +1596,7 @@ describe('TodoList - Click Tests', () => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
 
@@ -1755,8 +1756,9 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/654/' + encodeURIComponent('https://base.url/?filing_id=456')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -1804,8 +1806,9 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/987/' + encodeURIComponent('https://base.url/?filing_id=789')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -1854,8 +1857,9 @@ describe('TodoList - Click Tests', () => {
     await button.click()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/987/' + encodeURIComponent('https://base.url/?filing_id=789')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -1933,6 +1937,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
     store.state.identifier = 'BC0007291'
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     // mock the window.location.assign function
     delete window.location
@@ -2111,8 +2116,9 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     await button.click()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/654/' + encodeURIComponent('https://base.url/?filing_id=456')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -2160,8 +2166,9 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     await button.click()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/987/' + encodeURIComponent('https://base.url/?filing_id=789')
-    expect(window.location.assign).toHaveBeenCalledWith(payURL)
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -2175,6 +2182,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     sessionStorage.clear()
     sessionStorage.setItem('CREATE_URL', 'https://create.url/')
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.entityName = 'My Business Inc'
     store.state.entityType = 'BEN'
 
@@ -2231,8 +2239,9 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const createUrl = 'https://create.url/?id=T123456789'
-    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -2276,8 +2285,9 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     await flushPromises()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const createUrl = 'https://create.url/?id=T123456789'
-    expect(window.location.assign).toHaveBeenCalledWith(createUrl)
+    expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -2301,6 +2311,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.identifier = 'BC1234567'
     // init draft Correction filing task
     store.state.tasks = [
@@ -2335,8 +2346,9 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     await Vue.nextTick()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=123'
-    expect(window.location.assign).toHaveBeenCalledWith(editUrl)
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
 
     wrapper.destroy()
   })
@@ -2360,6 +2372,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.identifier = 'BC1234567'
     store.state.goodStanding = true
     store.state.entityType = 'BEN'
@@ -2394,8 +2407,9 @@ describe('TodoList - Click Tests - Alterations', () => {
     await Vue.nextTick()
 
     // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const editUrl = 'https://edit.url/BC1234567/alteration/?alteration-id=123'
-    expect(window.location.assign).toHaveBeenCalledWith(editUrl)
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
 
     wrapper.destroy()
   })
