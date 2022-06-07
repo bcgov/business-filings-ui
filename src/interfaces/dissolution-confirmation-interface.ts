@@ -6,4 +6,5 @@ export interface DissolutionConfirmationResourceIF {
   confirmButtonText:string
   additionalLabel?: string
   dissolutionType: string
+  incorporationText: string
 }
