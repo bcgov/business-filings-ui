@@ -72,7 +72,7 @@ export default class ConfirmDissolution extends Vue {
 
   /** The entity title to display. */
   get subEntityTitle (): string {
-    return this.getDissolutionConfirmationResource.subTitle
+    return this.getDissolutionConfirmationResource?.subTitle
   }
 
   /** The entity title to display. */
