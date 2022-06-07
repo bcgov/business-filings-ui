@@ -76,7 +76,7 @@ export const ConfigJson = [
     },
     dissolutionConfirmation: {
       entityTitle: 'Company',
-      subTitle: 'company',
+      subTitle: 'an incorporated company',
       act: 'Business Corporations',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution',
@@ -139,7 +139,7 @@ export const ConfigJson = [
     ],
     dissolutionConfirmation: {
       entityTitle: 'Cooperative Association',
-      subTitle: 'cooperative',
+      subTitle: 'an incorporated cooperative',
       act: 'Cooperative Association',
       modalTitle: 'Voluntary Dissolution',
       confirmButtonText: 'Continue with Voluntary Dissolution',
@@ -206,7 +206,7 @@ export const ConfigJson = [
     },
     dissolutionConfirmation: {
       entityTitle: 'Sole Proprietorship',
-      subTitle: 'registered business',
+      subTitle: 'a registered business',
       act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution',
@@ -273,9 +273,9 @@ export const ConfigJson = [
       ]
     },
     dissolutionConfirmation: {
-      entityTitle: 'Partnership',
-      subTitle: 'registered business',
-      act: 'General Partnership',
+      entityTitle: 'General Partnership',
+      subTitle: 'a registered business',
+      act: 'Partnership',
       modalTitle: 'Dissolution',
       confirmButtonText: 'Continue with Dissolution',
       additionalLabel: 'Make sure your business information is up to date before dissolving.',
