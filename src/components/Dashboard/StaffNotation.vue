@@ -87,17 +87,19 @@
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item v-if="isFirm && isHistorical" @click="showPutBackOnDialog()" :disabled="!isHistorical">
+            <template v-if='isFirm'>
+            <v-list-item v-if="isHistorical" @click="showPutBackOnDialog()" :disabled="!isHistorical">
               <v-list-item-title>
                 <span class="app-blue">Put Back On</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item v-if="isFirm && !isHistorical"
+            <v-list-item v-if="!isHistorical"
             @click="showAdministrativeDissolutionDialog()" :disabled="disabled">
               <v-list-item-title>
                 <span class="app-blue">Administrative Dissolution</span>
               </v-list-item-title>
             </v-list-item>
+            </template>
           </v-list-item-group>
         </v-list>
       </v-menu>

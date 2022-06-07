@@ -7,13 +7,14 @@
         <span v-else id="dialog-title"><strong>Add a {{displayName}}</strong> </span>
       </v-card-title>
       <v-card-text>
-        <div id="dialog-text" class='dialog-text'>
-          <p v-if="administrativeDissolution || putBackOn"> You are about to put
-          <strong><span class="entity-name">{{getEntityName}}</span>, {{getIdentifier}}</strong>
-          back on the register.</p>
+        <div id="dialog-text" class="dialog-text">
+          <p v-if="administrativeDissolution"> You are about to dissolve
+          <strong><span class="text-uppercase">{{getEntityName}}</span>, {{getIdentifier}}</strong> . </p>
+          <p v-if="putBackOn"> You are about to put <strong><span class="text-uppercase">{{getEntityName}}</span>,
+          {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2">
-          Enter a {{administrativeDissolution || putBackOn? 'Detail' : displayName}}
+          Enter a {{(administrativeDissolution || putBackOn) ? 'Detail' : displayName}}
           that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -246,6 +247,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
     margin-top: 0.5rem;
     padding-top: 0;
   }
+  #notation-text {
+    padding-top: 15px;
+  }
 }
 .save-btn {
   font-weight: bold;
@@ -254,11 +258,5 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   font-weight: normal;
   color: $gray7;
   font-size: $px-16;
-}
-.dialog-text {
-  padding-bottom: 10px;
-}
-.entity-name {
-  text-transform: uppercase;
 }
 </style>
