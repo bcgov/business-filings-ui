@@ -2,19 +2,20 @@
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
     <v-card>
       <v-card-title id="dialog-title">
-        <span v-if="administrativeDissolution" id="dialog-title"><strong>{{displayName}}</strong></span>
-        <span v-else-if="putBackOn" id="dialog-title"><strong>Correction - {{displayName}}</strong></span>
+        <span v-if="isTypeAdministrativeDissolution({ name: this.name })"
+        id="dialog-title"><strong>{{displayName}}</strong></span>
+        <span v-else-if="isTypePutBackOn({ name: this.name })" id="dialog-title"><strong>Correction - {{displayName}}</strong></span>
         <span v-else id="dialog-title"><strong>Add a {{displayName}}</strong> </span>
       </v-card-title>
       <v-card-text>
         <div id="dialog-text" class="dialog-text">
-          <p v-if="administrativeDissolution"> You are about to dissolve
+          <p v-if="isTypeAdministrativeDissolution({ name: this.name })"> You are about to dissolve
           <strong><span class="text-uppercase">{{getEntityName}}</span>, {{getIdentifier}}</strong> . </p>
           <p v-if="putBackOn"> You are about to put <strong><span class="text-uppercase">{{getEntityName}}</span>,
           {{getIdentifier}}</strong> back on the register.</p>
         </div>
-        <div id="notation-text" class="mb-4 mt-2">
-          Enter a {{(administrativeDissolution || putBackOn) ? 'Detail' : displayName}}
+        <div id="notation-text" class="mb-4 mt-2 pt-4">
+          Enter a {{(isTypeAdministrativeDissolution({ name: this.name }) || isTypePutBackOn({ name: this.name })) ? 'Detail' : displayName}}
           that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -69,7 +70,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DateMixin } from '@/mixins'
+import { DateMixin, EnumMixin } from '@/mixins'
 import axios from '@/axios-auth'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { FormIF } from '@/interfaces'
@@ -80,7 +81,7 @@ import { EffectOfOrderTypes, FilingTypes } from '@/enums'
     CourtOrderPoa
   }
 })
-export default class AddStaffNotationDialog extends Mixins(DateMixin) {
+export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin) {
   $refs!: Vue['$refs'] & {
     courtOrderPoaRef: FormIF,
     notationFormRef: FormIF
@@ -129,14 +130,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 
   /** Flag to enable validation in this component */
   private enableValidation = false
-
-  private get administrativeDissolution (): boolean {
-    return this.name === FilingTypes.ADMINISTRATIVE_DISSOLUTION
-  }
-
-  private get putBackOn (): boolean {
-    return this.name === FilingTypes.PUT_BACK_ON
-  }
 
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
@@ -246,9 +239,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   #court-order .v-input--checkbox {
     margin-top: 0.5rem;
     padding-top: 0;
-  }
-  #notation-text {
-    padding-top: 15px;
   }
 }
 .save-btn {
