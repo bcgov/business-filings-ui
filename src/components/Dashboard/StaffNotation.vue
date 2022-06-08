@@ -93,8 +93,7 @@
                   <span class="app-blue">Put Back On</span>
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item v-if="!isHistorical"
-              @click="showAdministrativeDissolutionDialog()" :disabled="disabled">
+              <v-list-item v-if="!isHistorical" @click="showAdministrativeDissolutionDialog()" :disabled="disabled">
                 <v-list-item-title>
                   <span class="app-blue">Administrative Dissolution</span>
                 </v-list-item-title>
