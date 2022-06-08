@@ -45,7 +45,7 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
 
   /** The entity title to display. */
   get entityTitle (): string {
-    return this.getDissolutionConfirmationResource.entityTitle
+    return this.getDissolutionConfirmationResource?.entityTitle || 'Unknown Entity'
   }
 
   /** The dissolution date-time to display. */
