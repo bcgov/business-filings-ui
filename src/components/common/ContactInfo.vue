@@ -8,7 +8,7 @@
     <li class="contact-container">
       <v-icon class="contact-icon" size="18px">mdi-phone</v-icon>
       <span class="px-2">Victoria Office:</span>
-      <a href="tel:+1-250-952-0568" class="contact-value">250-952-0568</a>
+      <a href="tel:+1-250-387-7848" class="contact-value">250-387-7848</a>
     </li>
     <li class="contact-container">
       <v-icon class="contact-icon" size="18px">mdi-email</v-icon>
