@@ -139,12 +139,24 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.TRANSITION)
   }
 
+  /** Returns True if filing is an Administrative Dissolution. */
+  isTypeAdministrativeDissolution (item: any): boolean {
+    return (item.name === FilingTypes.ADMINISTRATIVE_DISSOLUTION)
+  }
+
+  /** Returns True if filing is a Put Back On. */
+  isTypePutBackOn (item: any): boolean {
+    return (item.name === FilingTypes.PUT_BACK_ON)
+  }
+
   /** Returns True if filing is a Staff Only filing. */
   isTypeStaff (item: any): boolean {
     return [
       FilingTypes.REGISTRARS_NOTATION,
       FilingTypes.REGISTRARS_ORDER,
-      FilingTypes.COURT_ORDER
+      FilingTypes.COURT_ORDER,
+      FilingTypes.ADMINISTRATIVE_DISSOLUTION,
+      FilingTypes.PUT_BACK_ON
     ].includes(item.name)
   }
 
@@ -219,6 +231,8 @@ export default class EnumMixin extends Vue {
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
+      case FilingTypes.ADMINISTRATIVE_DISSOLUTION: return FilingNames.ADMINISTRATIVE_DISSOLUTION
+      case FilingTypes.PUT_BACK_ON: return FilingNames.PUT_BACK_ON
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)

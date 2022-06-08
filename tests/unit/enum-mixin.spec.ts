@@ -45,10 +45,14 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeIncorporationApplication({ name: 'incorporationApplication' })).toBe(true)
     expect(vm.isTypeRegistration({ name: 'registration' })).toBe(true)
     expect(vm.isTypeTransition({ name: 'transition' })).toBe(true)
+    expect(vm.isTypeAdministrativeDissolution({ name: 'administrativeDissolution' })).toBe(true)
+    expect(vm.isTypePutBackOn({ name: 'putBackOn' })).toBe(true)
 
     expect(vm.isTypeStaff({ name: 'registrarsNotation' })).toBe(true)
     expect(vm.isTypeStaff({ name: 'registrarsOrder' })).toBe(true)
     expect(vm.isTypeStaff({ name: 'courtOrder' })).toBe(true)
+    expect(vm.isTypeStaff({ name: 'administrativeDissolution' })).toBe(true)
+    expect(vm.isTypeStaff({ name: 'putBackOn' })).toBe(true)
   })
 
   it('returns correct values for payment method helpers', () => {
@@ -78,6 +82,8 @@ describe('Enum Mixin', () => {
     expect(vm.filingTypeToName('specialResolution')).toBe('Special Resolution')
     expect(vm.filingTypeToName('transition')).toBe('Transition Application')
     expect(vm.filingTypeToName('voluntaryDissolution')).toBe('Voluntary Dissolution')
+    expect(vm.filingTypeToName('administrativeDissolution')).toBe('Administrative Dissolution')
+    expect(vm.filingTypeToName('putBackOn')).toBe('Put Back On')
     expect(vm.filingTypeToName('unknown')).toBe('Unknown')
   })
 

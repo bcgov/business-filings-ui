@@ -19,4 +19,6 @@ export enum FilingNames {
   SPECIAL_RESOLUTION = 'Special Resolution',
   TRANSITION_APPLICATION = 'Transition Application',
   VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
+  ADMINISTRATIVE_DISSOLUTION = 'Administrative Dissolution',
+  PUT_BACK_ON = 'Put Back On'
 }

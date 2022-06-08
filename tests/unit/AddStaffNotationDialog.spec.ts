@@ -17,12 +17,13 @@ describe('AddStaffNotationDialog', () => {
   // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
   document.body.setAttribute('data-app', 'true')
 
-  it('renders the page contents correctly', () => {
+  it('renders the page contents correctly for standard filing', () => {
     const wrapper = shallowMount(AddStaffNotationDialog,
       {
         propsData: {
           dialog: true,
           displayName: 'Test',
+          name: 'registrarsNotation',
           attach: '#parent-page'
         },
         store
@@ -30,6 +31,52 @@ describe('AddStaffNotationDialog', () => {
     const vm: any = wrapper.vm
 
     expect(wrapper.find('#dialog-title').text()).toBe('Add a Test')
+    expect(wrapper.find(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.find('#dialog-save-button')).toBeDefined()
+    expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
+
+    expect(vm.notationMaxLength).toBe(2000)
+
+    wrapper.destroy()
+  })
+
+  it('renders the page contents correctly for Administrative Dissolution', () => {
+    const wrapper = shallowMount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Administrative Dissolution',
+          name: 'administrativeDissolution',
+          attach: '#parent-page'
+        },
+        store
+      })
+    const vm: any = wrapper.vm
+
+    expect(wrapper.find('#dialog-title').text()).toBe('Administrative Dissolution')
+    expect(wrapper.find(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.find('#dialog-save-button')).toBeDefined()
+    expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
+
+    expect(vm.notationMaxLength).toBe(2000)
+
+    wrapper.destroy()
+  })
+
+  it('renders the page contents correctly for Put Back On', () => {
+    const wrapper = shallowMount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Put Back On',
+          name: 'putBackOn',
+          attach: '#parent-page'
+        },
+        store
+      })
+    const vm: any = wrapper.vm
+
+    expect(wrapper.find('#dialog-title').text()).toBe('Correction - Put Back On')
     expect(wrapper.find(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()

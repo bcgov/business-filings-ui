@@ -25,6 +25,22 @@
       courtOrderNumberRequired="true"
     />
 
+    <AddStaffNotationDialog
+      :dialog="isAddingPutBackOn"
+      @close="hidePutBackOnDialog($event)"
+      attach="#staff-notation"
+      displayName="Put Back On"
+      name="putBackOn"
+    />
+
+    <AddStaffNotationDialog
+      :dialog="isAddingAdministrativeDissolution"
+      @close="hideAdministrativeDissolutionDialog($event)"
+      attach="#staff-notation"
+      displayName="Adminstrative Dissolution"
+      name="administrativeDissolution"
+    />
+
     <div class="filing-item__actions">
       <v-menu offset-y left transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
@@ -71,6 +87,18 @@
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
             </v-list-item>
+            <template v-if="isFirm">
+              <v-list-item v-if="isHistorical" @click="showPutBackOnDialog()" :disabled="!isHistorical">
+                <v-list-item-title>
+                  <span class="app-blue">Put Back On</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item v-if="!isHistorical" @click="showAdministrativeDissolutionDialog()" :disabled="disabled">
+                <v-list-item-title>
+                  <span class="app-blue">Administrative Dissolution</span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -92,6 +120,8 @@ export default class StaffNotation extends Vue {
   private isAddingRegistrarsNotation = false
   private isAddingRegistrarsOrder = false
   private isAddingCourtOrder = false
+  private isAddingPutBackOn = false
+  private isAddingAdministrativeDissolution = false
   private expand = false
 
   /** Prop for the scrollbar offset to be added. */
@@ -102,6 +132,7 @@ export default class StaffNotation extends Vue {
 
   @Getter isFirm!: boolean
   @Getter getIdentifier: string
+  @Getter isHistorical!: boolean
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -132,6 +163,24 @@ export default class StaffNotation extends Vue {
 
   hideCourtOrderDialog (needReload: boolean): void {
     this.isAddingCourtOrder = false
+    this.close(needReload)
+  }
+
+  showPutBackOnDialog (): void {
+    this.isAddingPutBackOn = true
+  }
+
+  hidePutBackOnDialog (needReload: boolean): void {
+    this.isAddingPutBackOn = false
+    this.close(needReload)
+  }
+
+  showAdministrativeDissolutionDialog (): void {
+    this.isAddingAdministrativeDissolution = true
+  }
+
+  hideAdministrativeDissolutionDialog (needReload: boolean): void {
+    this.isAddingAdministrativeDissolution = false
     this.close(needReload)
   }
 

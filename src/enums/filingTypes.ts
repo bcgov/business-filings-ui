@@ -1,4 +1,5 @@
 export enum FilingTypes {
+  ADMINISTRATIVE_DISSOLUTION = 'administrativeDissolution',
   ALTERATION = 'alteration',
   ANNUAL_REPORT = 'annualReport',
   CHANGE_OF_ADDRESS = 'changeOfAddress',
@@ -12,6 +13,7 @@ export enum FilingTypes {
   DISSOLVED = 'dissolved',
   INCORPORATION_APPLICATION = 'incorporationApplication',
   INVOLUNTARY_DISSOLUTION = 'involuntaryDissolution',
+  PUT_BACK_ON = 'putBackOn',
   REGISTRATION = 'registration',
   REGISTRARS_NOTATION = 'registrarsNotation',
   REGISTRARS_ORDER = 'registrarsOrder',
