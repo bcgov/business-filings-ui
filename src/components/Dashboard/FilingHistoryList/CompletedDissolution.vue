@@ -5,10 +5,10 @@
     <p v-if="isFirm">
       The statement of dissolution for {{entityTitle}} {{getEntityName || ''}} was successfully
       submitted on <strong>{{dissolutionDateSubmitted}}</strong>
-      with dissolution date of <strong>{{dissolutionDateTime}}</strong>.
+      with dissolution date of <strong>{{dissolutionDate}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
       and ceased to be a registered {{ entityTitle }}
-      under the {{actTitle}}.
+      under the {{actTitle}} Act.
     </p>
 
     <p v-if="!isFirm">
@@ -16,7 +16,7 @@
       <strong>dissolved on {{dissolutionDateTime}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
       and ceased to be an incorporated {{entityTitle.toLowerCase()}}
-      under the {{actTitle}}.
+      under the {{actTitle}} Act.
     </p>
 
     <p>
@@ -48,6 +48,11 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
     return this.getDissolutionConfirmationResource?.entityTitle || 'Unknown Entity'
   }
 
+  /** The dissolution date to display. */
+  get dissolutionDate (): string {
+    return (this.dateToPacificDate(this.filing?.effectiveDate, true) || 'Unknown')
+  }
+
   /** The dissolution date-time to display. */
   get dissolutionDateTime (): string {
     return (this.dateToPacificDateTime(this.filing?.effectiveDate) || 'Unknown')
@@ -60,7 +65,7 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
 
   /** The act title to display. */
   get actTitle (): string {
-    return this.isCoop ? 'Cooperative Association Act' : 'Business Corporations Act'
+    return this.getDissolutionConfirmationResource?.act || 'Unknown'
   }
 }
 </script>
