@@ -65,7 +65,7 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
 
   /** The act title to display. */
   get actTitle (): string {
-    return this.getDissolutionConfirmationResource?.act
+    return this.getDissolutionConfirmationResource?.act || 'Unknown'
   }
 }
 </script>
