@@ -2,20 +2,20 @@
   <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
     <v-card>
       <v-card-title id="dialog-title">
-        <span v-if="isTypeAdministrativeDissolution({ name: this.name })"
+        <span v-if="administrativeDissolution"
         id="dialog-title"><strong>{{displayName}}</strong></span>
-        <span v-else-if="isTypePutBackOn({ name: this.name })" id="dialog-title"><strong>Correction - {{displayName}}</strong></span>
+        <span v-else-if="putBackOn" id="dialog-title"><strong>Correction - {{displayName}}</strong></span>
         <span v-else id="dialog-title"><strong>Add a {{displayName}}</strong> </span>
       </v-card-title>
       <v-card-text>
         <div id="dialog-text" class="dialog-text">
-          <p v-if="isTypeAdministrativeDissolution({ name: this.name })"> You are about to dissolve
+          <p v-if="administrativeDissolution"> You are about to dissolve
           <strong><span class="text-uppercase">{{getEntityName}}</span>, {{getIdentifier}}</strong> . </p>
           <p v-if="putBackOn"> You are about to put <strong><span class="text-uppercase">{{getEntityName}}</span>,
           {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2 pt-4">
-          Enter a {{(isTypeAdministrativeDissolution({ name: this.name }) || isTypePutBackOn({ name: this.name })) ? 'Detail' : displayName}}
+          Enter a {{(administrativeDissolution || putBackOn) ? 'Detail' : displayName}}
           that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -130,6 +130,16 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
   /** Flag to enable validation in this component */
   private enableValidation = false
+
+  /** Whether this filing is an administrative dissolution */
+  private administrativeDissolution (): boolean {
+    return isTypeAdministrativeDissolution({ name: this.name })
+  }
+
+  /** Whether this filing is a put back on */
+  private putBackOn (): boolean {
+    return isTypePutBackOn({ name: this.name })
+  }
 
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
