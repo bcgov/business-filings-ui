@@ -351,7 +351,8 @@ import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/c
 
 // Enums, interfaces and mixins
 import { AllowableActions, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF } from '@/interfaces'
+import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
+  from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
 
 @Component({
@@ -652,27 +653,32 @@ export default class FilingHistoryList extends Mixins(
         break
 
       case FilingTypes.INCORPORATION_APPLICATION:
+      case FilingTypes.CHANGE_OF_REGISTRATION:
+      case FilingTypes.REGISTRATION:
         try {
           // show spinner since the network calls below can take a few seconds
           this.$root.$emit('showSpinner', true)
 
-          // fetch original IA
-          const iaFiling = item.filingLink && await this.fetchFiling(item.filingLink)
-
-          if (!iaFiling) {
+          // fetch original filing
+          const origFiling = item.filingLink && await this.fetchFiling(item.filingLink)
+          if (!origFiling) {
             throw new Error('Invalid API response')
           }
 
-          // create draft IA Correction filing
-          const correctionIaFiling = this.buildIaCorrectionFiling(iaFiling)
-          const draftCorrection = await this.createFiling(this.getIdentifier, correctionIaFiling, true)
+          // build correction filing
+          let correctionFiling: CorrectionFilingIF
+          if (this.isBComp) correctionFiling = this.buildIaCorrectionFiling(origFiling)
+          if (this.isFirm) correctionFiling = this.buildFmCorrectionFiling(origFiling)
+          if (!correctionFiling) throw new Error('Invalid filing type')
+
+          // save draft filing
+          const draftCorrection = await this.createFiling(this.getIdentifier, correctionFiling, true)
           const draftCorrectionId = +draftCorrection?.header?.filingId
-
-          if (!draftCorrection || isNaN(draftCorrectionId) || !draftCorrectionId) {
+          if (isNaN(draftCorrectionId)) {
             throw new Error('Invalid API response')
           }
 
-          // navigate to Edit web app to correct this IA
+          // navigate to Edit web app to complete this correction
           // NB: no need to clear spinner
           const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
           navigate(correctionUrl)
@@ -865,8 +871,10 @@ export default class FilingHistoryList extends Mixins(
       this.isTypeAlteration(item) ||
       this.isTypeCorrection(item) ||
       this.isTypeTransition(item) ||
-      // at the moment, only BEN IA corrections are supported:
-      (this.isTypeIncorporationApplication(item) && !this.isBComp)
+      // the following corrections are supported:
+      (this.isTypeIncorporationApplication(item) && !this.isBComp) ||
+      (this.isTypeChangeOfRegistration(item) && !this.isFirm) ||
+      (this.isTypeRegistration(item) && !this.isFirm)
     )
   }
 
