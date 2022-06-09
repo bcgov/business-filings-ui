@@ -119,6 +119,38 @@ export default class FilingMixin extends Mixins(DateMixin) {
   }
 
   /**
+   * Builds a Firm Correction filing body from a Change of Registration filing
+   * or Registration filing. Used when creating a Firm Correction.
+   * @returns the Firm Correction filing body
+   */
+  buildFmCorrectionFiling (regFiling: any): CorrectionFilingIF {
+    const correctionFiling: CorrectionFilingIF = {
+      header: {
+        name: FilingTypes.CORRECTION,
+        certifiedBy: regFiling.header.certifiedBy,
+        date: this.getCurrentDate
+      },
+      business: {
+        legalType: regFiling.business.legalType,
+        identifier: regFiling.business.identifier,
+        legalName: regFiling.business.legalName
+      },
+      correction: {
+        correctedFilingId: regFiling.header.filingId,
+        correctedFilingType: FilingTypes.REGISTRATION,
+        correctedFilingDate: regFiling.header.date,
+        comment: ''
+      },
+      // FUTURE: update this when schema and API are updated
+      // changeOfRegistration: regFiling.changeOfRegistration ? regFiling : undefined, // uncomment this
+      // registration: regFiling.registration ? regFiling : undefined, // uncomment this
+      incorporationApplication: {} // remove this
+    }
+
+    return correctionFiling
+  }
+
+  /**
    * Builds an Dissolution filing body to intialize a draft.
    * Used when creating a draft Dissolution filing.
    * @returns the Dissolution filing body

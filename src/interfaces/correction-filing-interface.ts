@@ -23,5 +23,7 @@ export interface CorrectionFilingIF {
     correctedFilingDate: string
     comment: string
   },
-  incorporationApplication?: {}
+  incorporationApplication?: {},
+  changeOfRegistration?: {},
+  registration?: {}
 }
