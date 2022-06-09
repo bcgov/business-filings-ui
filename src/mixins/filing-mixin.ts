@@ -92,27 +92,28 @@ export default class FilingMixin extends Mixins(DateMixin) {
   /**
    * Builds an Incorporation Application Correction filing body from IA filing.
    * Used when creating an IA Correction.
+   * @param correctedFiling the IA filing to correct
    * @returns the IA Correction filing body
    */
-  buildIaCorrectionFiling (iaFiling: any): CorrectionFilingIF {
+  buildIaCorrectionFiling (correctedFiling: any): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: iaFiling.header.certifiedBy,
+        certifiedBy: correctedFiling.header.certifiedBy,
         date: this.getCurrentDate
       },
       business: {
-        legalType: iaFiling.business.legalType,
-        identifier: iaFiling.business.identifier,
-        legalName: iaFiling.business.legalName
+        legalType: correctedFiling.business.legalType,
+        identifier: correctedFiling.business.identifier,
+        legalName: correctedFiling.business.legalName
       },
       correction: {
-        correctedFilingId: iaFiling.header.filingId,
+        correctedFilingId: correctedFiling.header.filingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
-        correctedFilingDate: iaFiling.header.date,
+        correctedFilingDate: correctedFiling.header.date,
         comment: ''
       },
-      incorporationApplication: iaFiling.incorporationApplication
+      incorporationApplication: correctedFiling.incorporationApplication
     }
 
     return correctionFiling
@@ -121,30 +122,30 @@ export default class FilingMixin extends Mixins(DateMixin) {
   /**
    * Builds a Firm Correction filing body from a Change of Registration filing
    * or Registration filing. Used when creating a Firm Correction.
+   * @param correctedFiling the Change of Registration or Registration filing to correct
    * @returns the Firm Correction filing body
    */
-  buildFmCorrectionFiling (regFiling: any): CorrectionFilingIF {
+  // FUTURE: set a type for correctFiling
+  buildFmCorrectionFiling (correctedFiling: any): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: regFiling.header.certifiedBy,
+        certifiedBy: correctedFiling.header.certifiedBy,
         date: this.getCurrentDate
       },
       business: {
-        legalType: regFiling.business.legalType,
-        identifier: regFiling.business.identifier,
-        legalName: regFiling.business.legalName
+        legalType: correctedFiling.business.legalType,
+        identifier: correctedFiling.business.identifier,
+        legalName: correctedFiling.business.legalName
       },
       correction: {
-        correctedFilingId: regFiling.header.filingId,
+        correctedFilingId: correctedFiling.header.filingId,
         correctedFilingType: FilingTypes.REGISTRATION,
-        correctedFilingDate: regFiling.header.date,
+        correctedFilingDate: correctedFiling.header.date,
         comment: ''
       },
-      // FUTURE: update this when schema and API are updated
-      // changeOfRegistration: regFiling.changeOfRegistration ? regFiling : undefined, // uncomment this
-      // registration: regFiling.registration ? regFiling : undefined, // uncomment this
-      incorporationApplication: {} // remove this
+      changeOfRegistration: correctedFiling.changeOfRegistration ? correctedFiling : undefined,
+      registration: correctedFiling.registration ? correctedFiling : undefined
     }
 
     return correctionFiling
