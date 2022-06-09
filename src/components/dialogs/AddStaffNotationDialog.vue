@@ -14,7 +14,7 @@
           {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2 pt-4">
-          Enter a {{(administrativeDissolution || putBackOn) ? 'Detail' : displayName}}
+          Enter a {{isAdministrativeDissoltionOrPutBackOn ? 'Detail' : displayName}}
           that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -22,7 +22,7 @@
             v-model="notation"
             class="text-input-field mb-2"
             filled
-            :label="(administrativeDissolution || putBackOn) ? 'Add Detail' : displayName"
+            :label="isAdministrativeDissoltionOrPutBackOn ? 'Add Detail' : displayName"
             id="notation"
             rows="5"
             :no-resize="true"
@@ -49,7 +49,13 @@
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <div class="form__btns">
-          <v-btn text color="primary"
+          <v-btn v-if="isAdministrativeDissoltionOrPutBackOn" text color="primary"
+            id="dialog-save-button"
+            :loading="saving"
+            @click.native="save()"
+            class="save-btn"
+          >File</v-btn>
+          <v-btn v-else text color="primary"
             id="dialog-save-button"
             :loading="saving"
             @click.native="save()"
@@ -138,6 +144,11 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   /** Whether this filing is a put back on */
   private get putBackOn (): boolean {
     return this.isTypePutBackOn({ name: this.name })
+  }
+
+  /** Return true if this filing is an administrative dissolution or put back on */
+  private get isAdministrativeDissoltionOrPutBackOn (): boolean {
+    return (this.isTypeAdministrativeDissolution({ name: this.name }) || this.isTypePutBackOn({ name: this.name }))
   }
 
   private get notationRules (): Array<Function> {
