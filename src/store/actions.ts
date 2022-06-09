@@ -1,5 +1,5 @@
 import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
-import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, Warning, PartyIF }
+import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, BusinessWarningIF, PartyIF }
   from '@/interfaces'
 
 export default {
@@ -39,7 +39,7 @@ export default {
   setBusinessNumber ({ commit }, businessNumber: string) {
     commit('businessNumber', businessNumber)
   },
-  setWarnings ({ commit }, warnings: Array<Warning>) {
+  setWarnings ({ commit }, warnings: Array<BusinessWarningIF>) {
     commit('warnings', warnings)
   },
   setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {

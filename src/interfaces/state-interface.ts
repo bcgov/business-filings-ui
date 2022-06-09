@@ -1,5 +1,5 @@
 import { EntityState, CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, Warning, FilingDataIF, OfficeAddressIF, PartyIF }
+import { ApiFilingIF, ApiTaskIF, BusinessWarningIF, FilingDataIF, OfficeAddressIF, PartyIF }
   from '@/interfaces'
 
 /** The state model interface. */
@@ -20,7 +20,7 @@ export interface StateIF {
   adminFreeze: boolean
   identifier: string
   businessNumber: string
-  warnings: Array<Warning>
+  warnings: Array<BusinessWarningIF>
   entityFoundingDate: Date
   entityName: string
   entityState: EntityState
