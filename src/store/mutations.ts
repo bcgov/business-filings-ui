@@ -1,5 +1,5 @@
 import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
-import { FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, ComplianceWarning, PartyIF }
+import { FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, BusinessWarningIF, PartyIF }
   from '@/interfaces'
 
 export default {
@@ -39,8 +39,8 @@ export default {
   businessNumber (state: StateIF, businessNumber: string) {
     state.businessNumber = businessNumber
   },
-  complianceWarnings (state: StateIF, complianceWarnings: Array<ComplianceWarning>) {
-    state.complianceWarnings = complianceWarnings
+  businessWarnings (state: StateIF, warnings: Array<BusinessWarningIF>) {
+    state.businessWarnings = warnings
   },
   entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
     state.entityFoundingDate = entityFoundingDate

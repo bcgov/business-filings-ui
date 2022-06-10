@@ -1320,16 +1320,20 @@ export default class TodoList extends Mixins(
         break
 
       case FilingTypes.CORRECTION:
-        if (item.correctedFilingType !== FilingNames.INCORPORATION_APPLICATION) {
+        if (
+          (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) ||
+          (item.correctedFilingType === FilingNames.CHANGE_OF_REGISTRATION) ||
+          (item.correctedFilingType === FilingNames.REGISTRATION)
+        ) {
+          // navigate to Edit UI to resume this correction
+          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+          navigate(correctionUrl)
+        } else {
           // resume this Correction locally
           this.setCurrentFilingStatus(FilingStatus.DRAFT)
           this.$router.push({ name: Routes.CORRECTION,
             params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
           })
-        } else {
-          // navigate to Edit UI to resume this correction
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-          navigate(correctionUrl)
         }
         break
 

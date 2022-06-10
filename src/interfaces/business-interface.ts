@@ -1,10 +1,11 @@
 import { EntityState, CorpTypeCd } from '@/enums'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
-/** The Compliance Warning object. */
-export interface ComplianceWarning {
+/** The Business Warning object. */
+export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
   message: string
+  warningType: string
   filing: string
 }
 
@@ -14,7 +15,7 @@ export interface BusinessIF {
   arMaxDate: IsoDatePacific // not used
   arMinDate: IsoDatePacific // not used
   dissolutionDate: ApiDateTimeUtc // not used
-  complianceWarnings?: Array<ComplianceWarning>
+  warnings?: Array<BusinessWarningIF>
   fiscalYearEndDate: IsoDatePacific // not used
   foundingDate: ApiDateTimeUtc
   goodStanding: boolean
