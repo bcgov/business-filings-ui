@@ -14,7 +14,7 @@ export const state: StateIF = {
   adminFreeze: null,
   identifier: null,
   businessNumber: null,
-  complianceWarnings: [],
+  businessWarnings: [],
   entityName: null,
   entityType: null,
   entityState: null,

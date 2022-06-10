@@ -142,7 +142,7 @@ export default {
 
   /** Is True if business is not in compliance. */
   isNotInCompliance (state: StateIF): boolean {
-    return (state.complianceWarnings.length > 0)
+    return (state.businessWarnings.length > 0)
   },
 
   /** Is True if this is a Draft Application. */
