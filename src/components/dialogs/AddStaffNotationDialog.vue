@@ -14,7 +14,7 @@
           {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2 pt-4">
-          Enter a {{isAdministrativeDissoltionOrPutBackOn ? 'Detail' : displayName}}
+          Enter a {{isAdministrativeDissolutionOrPutBackOn ? 'Detail' : displayName}}
           that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -22,7 +22,7 @@
             v-model="notation"
             class="text-input-field mb-2"
             filled
-            :label="isAdministrativeDissoltionOrPutBackOn ? 'Add Detail' : displayName"
+            :label="isAdministrativeDissolutionOrPutBackOn ? 'Add Detail' : displayName"
             id="notation"
             rows="5"
             :no-resize="true"
@@ -49,7 +49,7 @@
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <div class="form__btns">
-          <v-btn v-if="isAdministrativeDissoltionOrPutBackOn" text color="primary"
+          <v-btn v-if="isAdministrativeDissolutionOrPutBackOn" text color="primary"
             id="dialog-save-button"
             :loading="saving"
             @click.native="save()"
@@ -111,6 +111,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   @Getter getCurrentDate!: string
   @Getter getEntityName!: string
   @Getter getBusinessNumber!: string
+  @Getter getEntityType!: string
+  @Getter getEntityFoundingDate!: Date
 
   /** The notation text. */
   private notation: string = ''
@@ -147,7 +149,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   }
 
   /** Return true if this filing is an administrative dissolution or put back on */
-  private get isAdministrativeDissoltionOrPutBackOn (): boolean {
+  private get isAdministrativeDissolutionOrPutBackOn (): boolean {
     return (this.isTypeAdministrativeDissolution({ name: this.name }) || this.isTypePutBackOn({ name: this.name }))
   }
 
@@ -205,8 +207,27 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       this.saving = false
       return
     }
-
-    const data = {
+    const data = this.isAdministrativeDissolutionOrPutBackOn ? {
+      filing: {
+        header: {
+          name: this.name,
+          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
+          certifiedBy: ''
+        },
+        business: {
+          legalType: this.getEntityType,
+          identifier: this.getIdentifier,
+          legalName: this.getEntityName,
+          foundingDate: this.getEntityFoundingDate
+        },
+        [this.name]: {
+          details: this.notation,
+          courtOrder: {
+            effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
+            fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
+          }
+        }
+      } } : {
       filing: {
         header: {
           name: this.name,
