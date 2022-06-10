@@ -254,7 +254,7 @@ describe('EntityInfo - company info button and tooltip', () => {
 
       store.state.entityType = _.entityType
       store.state.goodStanding = _.goodStanding || false
-      store.state.warnings = _.warnings || []
+      store.state.businessWarnings = _.warnings || []
       store.state.entityStatus = _.entityStatus || null
 
       const wrapper = shallowMount(EntityInfo, { store, vuetify })

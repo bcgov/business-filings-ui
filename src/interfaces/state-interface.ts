@@ -20,7 +20,7 @@ export interface StateIF {
   adminFreeze: boolean
   identifier: string
   businessNumber: string
-  warnings: Array<BusinessWarningIF>
+  businessWarnings: Array<BusinessWarningIF>
   entityFoundingDate: Date
   entityName: string
   entityState: EntityState

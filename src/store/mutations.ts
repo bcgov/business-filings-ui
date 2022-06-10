@@ -39,8 +39,8 @@ export default {
   businessNumber (state: StateIF, businessNumber: string) {
     state.businessNumber = businessNumber
   },
-  warnings (state: StateIF, warnings: Array<BusinessWarningIF>) {
-    state.warnings = warnings
+  businessWarnings (state: StateIF, warnings: Array<BusinessWarningIF>) {
+    state.businessWarnings = warnings
   },
   entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
     state.entityFoundingDate = entityFoundingDate
