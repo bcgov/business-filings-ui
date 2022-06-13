@@ -54,7 +54,7 @@
             :loading="saving"
             @click.native="save()"
             class="save-btn"
-          >Save</v-btn>
+          > {{(administrativeDissolution || putBackOn) ? 'File' : 'Save'}} </v-btn>
           <v-btn text color="primary"
             id="dialog-cancel-button"
             :disabled="saving"
@@ -105,6 +105,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   @Getter getCurrentDate!: string
   @Getter getEntityName!: string
   @Getter getBusinessNumber!: string
+  @Getter getEntityType!: string
+  @Getter getEntityFoundingDate!: Date
 
   /** The notation text. */
   private notation: string = ''
@@ -194,8 +196,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       this.saving = false
       return
     }
-
-    const data = {
+    const data : any = {
       filing: {
         header: {
           name: this.name,
@@ -206,10 +207,30 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
           identifier: this.getIdentifier
         },
         [this.name]: {
-          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
-          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
-          orderDetails: this.notation
         }
+      }
+    }
+
+    if (this.administrativeDissolution || this.putBackOn) {
+      data.filing.business = { ...data.filing.business,
+        legalType: this.getEntityType,
+        legalName: this.getEntityName,
+        foundingDate: this.getEntityFoundingDate
+      }
+      data.filing[this.name] = { ...data.filing[this.name],
+        details: this.notation,
+        courtOrder: {
+          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
+          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
+        }
+      }
+    } else {
+      data.filing[this.name] = { ...data.filing[this.name],
+        fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
+        effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '')
+      }
+      data.filing[this.name] = { ...data.filing[this.name],
+        orderDetails: this.notation
       }
     }
 
