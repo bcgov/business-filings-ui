@@ -196,29 +196,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       this.saving = false
       return
     }
-    const dataSpGp = {
-      filing: {
-        header: {
-          name: this.name,
-          date: this.getCurrentDate, // NB: API will reassign this date according to its clock
-          certifiedBy: ''
-        },
-        business: {
-          legalType: this.getEntityType,
-          identifier: this.getIdentifier,
-          legalName: this.getEntityName,
-          foundingDate: this.getEntityFoundingDate
-        },
-        [this.name]: {
-          details: this.notation,
-          courtOrder: {
-            effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
-            fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
-          }
-        }
-      }
-    }
-    const data = {
+    const data : any = {
       filing: {
         header: {
           name: this.name,
@@ -229,16 +207,36 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
           identifier: this.getIdentifier
         },
         [this.name]: {
-          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
-          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
-          orderDetails: this.notation
         }
+      }
+    }
+
+    if (this.administrativeDissolution || this.putBackOn) {
+      data.filing.business = { ...data.filing.business,
+        legalType: this.getEntityType,
+        legalName: this.getEntityName,
+        foundingDate: this.getEntityFoundingDate
+      }
+      data.filing[this.name] = { ...data.filing[this.name],
+        details: this.notation,
+        courtOrder: {
+          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
+          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
+        }
+      }
+    } else {
+      data.filing[this.name] = { ...data.filing[this.name],
+        fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
+        effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '')
+      }
+      data.filing[this.name] = { ...data.filing[this.name],
+        orderDetails: this.notation
       }
     }
 
     const url = `businesses/${this.getIdentifier}/filings`
     let success = false
-    await axios.post(url, (this.administrativeDissolution || this.putBackOn) ? dataSpGp : data).then(res => {
+    await axios.post(url, data).then(res => {
       success = true
     }).catch(error => {
       // eslint-disable-next-line no-console
