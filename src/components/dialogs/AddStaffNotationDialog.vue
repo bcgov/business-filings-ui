@@ -14,7 +14,7 @@
           {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2 pt-4">
-          Enter a {{isAdministrativeDissolutionOrPutBackOn ? 'Detail' : displayName}}
+          Enter a {{(administrativeDissolution || putBackOn) ? 'Detail' : displayName}}
           that will appear on the ledger for this entity
         </div>
         <v-form ref="notationFormRef" v-model="notationFormValid" id="notation-form">
@@ -22,7 +22,7 @@
             v-model="notation"
             class="text-input-field mb-2"
             filled
-            :label="isAdministrativeDissolutionOrPutBackOn ? 'Add Detail' : displayName"
+            :label="(administrativeDissolution || putBackOn) ? 'Add Detail' : displayName"
             id="notation"
             rows="5"
             :no-resize="true"
@@ -49,18 +49,12 @@
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <div class="form__btns">
-          <v-btn v-if="isAdministrativeDissolutionOrPutBackOn" text color="primary"
+          <v-btn text color="primary"
             id="dialog-save-button"
             :loading="saving"
             @click.native="save()"
             class="save-btn"
-          >File</v-btn>
-          <v-btn v-else text color="primary"
-            id="dialog-save-button"
-            :loading="saving"
-            @click.native="save()"
-            class="save-btn"
-          >Save</v-btn>
+          > {{(administrativeDissolution || putBackOn) ? 'File' : 'Save'}} </v-btn>
           <v-btn text color="primary"
             id="dialog-cancel-button"
             :disabled="saving"
@@ -148,11 +142,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     return this.isTypePutBackOn({ name: this.name })
   }
 
-  /** Return true if this filing is an administrative dissolution or put back on */
-  private get isAdministrativeDissolutionOrPutBackOn (): boolean {
-    return (this.isTypeAdministrativeDissolution({ name: this.name }) || this.isTypePutBackOn({ name: this.name }))
-  }
-
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
       return [
@@ -207,7 +196,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       this.saving = false
       return
     }
-    const data = this.isAdministrativeDissolutionOrPutBackOn ? {
+    const dataSpGp = {
       filing: {
         header: {
           name: this.name,
@@ -227,7 +216,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
             fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
           }
         }
-      } } : {
+      }
+    }
+    const data = {
       filing: {
         header: {
           name: this.name,
@@ -247,7 +238,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
     const url = `businesses/${this.getIdentifier}/filings`
     let success = false
-    await axios.post(url, data).then(res => {
+    await axios.post(url, (this.administrativeDissolution || this.putBackOn) ? dataSpGp : data).then(res => {
       success = true
     }).catch(error => {
       // eslint-disable-next-line no-console
