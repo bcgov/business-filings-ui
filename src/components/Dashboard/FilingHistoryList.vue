@@ -46,7 +46,9 @@
 
                 <!-- is this a Staff Only filing? -->
                 <div v-if="filing.isTypeStaff" class="item-header__subtitle">
-                  <FiledLabel :filing="filing" />
+                  <span v-if="filing.name === 'putBackOn' ||
+                  filing.name === 'administrativeDissolution'">FILED<FiledLabel :filing="filing" /></span>
+                  <span v-else><FiledLabel :filing="filing" /></span>
                 </div>
 
                 <!-- is this a FE BCOMP COA pending (not yet completed)? -->
