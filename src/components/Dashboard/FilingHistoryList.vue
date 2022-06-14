@@ -46,8 +46,8 @@
 
                 <!-- is this a Staff Only filing? -->
                 <div v-if="filing.isTypeStaff" class="item-header__subtitle">
-                  <span v-if="filing.displayName === 'Correction - Put Back On' ||
-                  filing.displayName === 'Administrative Dissolution'">FILED<FiledLabel :filing="filing" /></span>
+                  <span v-if="filing.name === 'putBackOn' ||
+                  filing.name === 'administrativeDissolution'">FILED<FiledLabel :filing="filing" /></span>
                   <span v-else><FiledLabel :filing="filing" /></span>
                 </div>
 

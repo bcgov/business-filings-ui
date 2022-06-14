@@ -31,8 +31,7 @@ export default class FiledLabel extends Vue {
   readonly filing: HistoryItemIF
 
   private get putBackOnOrAdminDissolution (): boolean {
-    return this.filing.displayName === 'Correction - Put Back On' ||
-    this.filing.displayName === 'Administrative Dissolution'
+    return this.filing.name === 'putBackOn' || this.filing.name === 'administrativeDissolution'
   }
 }
 </script>
