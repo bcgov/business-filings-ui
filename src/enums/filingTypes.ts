@@ -1,5 +1,4 @@
 export enum FilingTypes {
-  ADMINISTRATIVE_DISSOLUTION = 'administrativeDissolution',
   ALTERATION = 'alteration',
   ANNUAL_REPORT = 'annualReport',
   CHANGE_OF_ADDRESS = 'changeOfAddress',

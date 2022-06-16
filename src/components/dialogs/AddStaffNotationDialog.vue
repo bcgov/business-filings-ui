@@ -73,7 +73,7 @@ import { DateMixin, EnumMixin } from '@/mixins'
 import axios from '@/axios-auth'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { FormIF } from '@/interfaces'
-import { EffectOfOrderTypes, FilingTypes } from '@/enums'
+import { EffectOfOrderTypes, FilingTypes, DissolutionTypes } from '@/enums'
 
 @Component({
   components: {
@@ -91,6 +91,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
   /** Prop for the item's name (filing type). */
   @Prop() readonly name: FilingTypes
+
+  /** Prop for the item's dissolution type. */
+  @Prop() readonly dissolutionType?: DissolutionTypes
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog: boolean
@@ -134,7 +137,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
   /** Whether this filing is an administrative dissolution */
   private get administrativeDissolution (): boolean {
-    return this.isTypeAdministrativeDissolution({ name: this.name })
+    return this.isTypeAdministrativeDissolution({ name: this.name, dissolutionType: this.dissolutionType })
   }
 
   /** Whether this filing is a put back on */
@@ -211,7 +214,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       }
     }
 
-    if (this.administrativeDissolution || this.putBackOn) {
+    if (this.putBackOn) {
       data.filing.business = { ...data.filing.business,
         legalType: this.getEntityType,
         legalName: this.getEntityName,
@@ -224,11 +227,21 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
           fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
         }
       }
-    } else {
-      data.filing[this.name] = { ...data.filing[this.name],
-        fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
-        effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '')
+    } else if (this.administrativeDissolution) {
+      data.filing.business = { ...data.filing.business,
+        legalType: this.getEntityType,
+        legalName: this.getEntityName,
+        foundingDate: this.getEntityFoundingDate
       }
+      data.filing[this.name] = { ...data.filing[this.name],
+        dissolutionType: 'administrative',
+        dissolutionDate: this.getCurrentDate,
+        courtOrder: {
+          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
+          orderDetails: this.notation
+        }
+      }
+    } else {
       data.filing[this.name] = { ...data.filing[this.name],
         orderDetails: this.notation
       }

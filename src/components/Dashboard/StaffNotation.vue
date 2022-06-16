@@ -38,7 +38,8 @@
       @close="hideAdministrativeDissolutionDialog($event)"
       attach="#staff-notation"
       displayName="Adminstrative Dissolution"
-      name="administrativeDissolution"
+      name="dissolution"
+      dissolutionType="administrative"
     />
 
     <div class="filing-item__actions">
