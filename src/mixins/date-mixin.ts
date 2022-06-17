@@ -42,13 +42,15 @@ export default class DateMixin extends Vue {
    * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z"
    */
   createUtcDate (year: number, month: number, day: number, hours: number = 0, minutes: number = 0): Date {
-    // use date from server to create a new date in Pacific timezone
-    // (this sets the correct tz offset in the new date)
-    const date = new Date(this.getCurrentJsDate.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
-
-    // update all date and time fields
-    date.setFullYear(year, month, day)
-    date.setHours(hours, minutes, 0, 0) // zero out seconds and milliseconds
+    // 1. create the new date in UTC
+    // 2. compute the offset between UTC and Pacific timezone
+    // 3. add the offset to convert the date to Pacific timezone
+    // Ref: https://stackoverflow.com/questions/15141762/
+    const date = new Date(Date.UTC(year, month, day, hours, minutes))
+    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
+    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
+    const offset = utcDate.getTime() - tzDate.getTime()
+    date.setTime(date.getTime() + offset)
 
     return date
   }
@@ -90,7 +92,7 @@ export default class DateMixin extends Vue {
 
     // convert mm/dd/yyyy to yyyy-mm-dd
     // and make sure month and day are 2 digits (eg, 03)
-    const [ mm, dd, yyyy ] = dateStr.split('/')
+    const [mm, dd, yyyy] = dateStr.split('/')
     return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`
   }
 
