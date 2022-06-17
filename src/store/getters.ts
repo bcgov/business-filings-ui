@@ -145,7 +145,7 @@ export default {
   /** Is True if business is not in compliance. */
   isNotInCompliance (state: StateIF): boolean {
     const warnings = state.businessWarnings
-    return (warnings.length > 0 && warnings.some(item => item.warningType.includes('COMPLIANCE')))
+    return (warnings.length > 0 && warnings.some(item => item.warningType?.includes('COMPLIANCE')))
   },
 
   /** Is True if this is a Draft Application. */
