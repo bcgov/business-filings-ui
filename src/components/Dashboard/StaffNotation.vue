@@ -4,24 +4,24 @@
       :dialog="isAddingRegistrarsNotation"
       @close="hideRegistrarsNotationDialog($event)"
       attach="#staff-notation"
-      displayName="Registrar's Notation"
-      name="registrarsNotation"
+      :displayName="FilingNames.REGISTRARS_NOTATION"
+      :name="FilingTypes.REGISTRARS_NOTATION"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingRegistrarsOrder"
       @close="hideRegistrarsOrderDialog($event)"
       attach="#staff-notation"
-      displayName="Registrar's Order"
-      name="registrarsOrder"
+      :displayName="FilingNames.REGISTRARS_ORDER"
+      :name="FilingTypes.REGISTRARS_ORDER"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingCourtOrder"
       @close="hideCourtOrderDialog($event)"
       attach="#staff-notation"
-      displayName="Court Order"
-      name="courtOrder"
+      :displayName="FilingNames.COURT_ORDER"
+      :name="FilingTypes.COURT_ORDER"
       courtOrderNumberRequired="true"
     />
 
@@ -29,17 +29,17 @@
       :dialog="isAddingPutBackOn"
       @close="hidePutBackOnDialog($event)"
       attach="#staff-notation"
-      displayName="Put Back On"
-      name="putBackOn"
+      :displayName="FilingNames.PUT_BACK_ON"
+      :name="FilingTypes.PUT_BACK_ON"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingAdministrativeDissolution"
       @close="hideAdministrativeDissolutionDialog($event)"
       attach="#staff-notation"
-      displayName="Adminstrative Dissolution"
-      name="dissolution"
-      dissolutionType="administrative"
+      :displayName="DissolutionNames.ADMINISTRATIVE"
+      :name="FilingTypes.DISSOLUTION"
+      :dissolutionType="DissolutionTypes.ADMINISTRATIVE"
     />
 
     <div class="filing-item__actions">
@@ -111,6 +111,7 @@
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { navigate } from '@/utils'
+import { DissolutionTypes, DissolutionNames, FilingTypes, FilingNames } from '@/enums'
 // Dialog
 import { AddStaffNotationDialog } from '@/components/dialogs'
 
@@ -124,6 +125,12 @@ export default class StaffNotation extends Vue {
   private isAddingPutBackOn = false
   private isAddingAdministrativeDissolution = false
   private expand = false
+
+  // enum for template
+  readonly FilingTypes = FilingTypes
+  readonly FilingNames = FilingNames
+  readonly DissolutionTypes = DissolutionTypes
+  readonly DissolutionNames = DissolutionNames
 
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset: string

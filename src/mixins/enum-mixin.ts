@@ -141,7 +141,7 @@ export default class EnumMixin extends Vue {
 
   /** Returns True if filing is an Administrative Dissolution. */
   isTypeAdministrativeDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.ADMIN)
+    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
   }
 
   /** Returns True if filing is a Put Back On. */
@@ -158,7 +158,7 @@ export default class EnumMixin extends Vue {
       FilingTypes.PUT_BACK_ON
     ].includes(item.name)
     const adminDissolution = [
-      DissolutionTypes.ADMIN
+      DissolutionTypes.ADMINISTRATIVE
     ].includes(item?.data?.dissolution?.dissolutionType)
     return staffType || adminDissolution
   }
@@ -259,8 +259,8 @@ export default class EnumMixin extends Vue {
     switch (type) {
       case DissolutionTypes.VOLUNTARY:
         return this.isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
-      case DissolutionTypes.ADMIN:
-        return DissolutionNames.ADMIN
+      case DissolutionTypes.ADMINISTRATIVE:
+        return DissolutionNames.ADMINISTRATIVE
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)

@@ -323,7 +323,9 @@
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112751/comments",
       "data": {
         "applicationDate": "2018-04-01",
-        "dissolution": {},
+        "dissolution": {
+          "dissolutionType": "voluntary"
+        },
         "legalFilings": [
           "dissolution"
         ]
@@ -519,6 +521,33 @@
       "status": "COMPLETED",
       "submittedDate": "Sun, 01 Oct 2017 00:02:26 GMT",
       "submitter": "Registry Staff"
+    },
+    {
+      "availableOnPaperOnly": false,
+      "businessIdentifier": "CP0000840",
+      "commentsCount": 0,
+      "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/comments",
+      "data": {
+        "applicationDate": "2018-04-01",
+        "dissolution": {
+          "dissolutionType": "administrative"
+        },
+        "legalFilings": [
+          "dissolution"
+        ]
+      },
+      "displayName": "Administrative Dissolution",
+      "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/documents",
+      "effectiveDate": "Sun, 01 Apr 2018 00:02:26 GMT",
+      "filingId": 112751,
+      "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756",
+      "isFutureEffective": false,
+      "name": "dissolution",
+      "paymentStatusCode": null,
+      "status": "COMPLETED",
+      "submittedDate": "Sun, 01 Apr 2018 00:02:26 GMT",
+      "submitter": "Registry Staff"
     }
+    
   ]
 }
