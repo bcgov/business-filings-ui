@@ -46,7 +46,8 @@ describe('AddStaffNotationDialog', () => {
         propsData: {
           dialog: true,
           displayName: 'Administrative Dissolution',
-          name: 'administrativeDissolution',
+          name: 'dissolution',
+          dissolutionType: 'administrative',
           attach: '#parent-page'
         },
         store

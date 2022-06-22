@@ -591,7 +591,8 @@ export default class FilingHistoryList extends Mixins(
         item.isTypeStaff = true
         item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
-        item.putBackOnOrAdminDissolution = filing.name === 'putBackOn' || filing.displayName === 'Administrative Dissolution'
+        item.putBackOnOrAdminDissolution = filing.name === 'putBackOn' ||
+        filing.displayName === 'Administrative Dissolution'
       }
 
       this.historyItems.push(item)

@@ -151,15 +151,16 @@ export default class EnumMixin extends Vue {
 
   /** Returns True if filing is a Staff Only filing. */
   isTypeStaff (item: any): boolean {
-    return [
+    const staffType = [
       FilingTypes.REGISTRARS_NOTATION,
       FilingTypes.REGISTRARS_ORDER,
       FilingTypes.COURT_ORDER,
       FilingTypes.PUT_BACK_ON
-    ].includes(item.name) ||
-    [
+    ].includes(item.name)
+    const adminDissolution = [
       DissolutionTypes.ADMIN
-    ].includes(item.data.dissolution.dissolutionType)
+    ].includes(item?.data?.dissolution?.dissolutionType)
+    return staffType || adminDissolution
   }
 
   //

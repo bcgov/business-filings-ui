@@ -62,7 +62,8 @@ filings.forEach((filing: any, index: number) => {
 
       // mount the component
       const $route = { query: {} }
-      wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+      wrapper = mount(FilingHistoryList, {
+        store, mocks: { $route }, propsData: { dissolutionType: 'administrative' }, vuetify })
       vm = wrapper.vm
     })
 

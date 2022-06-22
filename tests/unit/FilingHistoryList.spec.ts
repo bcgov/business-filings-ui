@@ -67,7 +67,7 @@ describe('Filing History List - misc functionality', () => {
     store.state.identifier = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { dissolutionType: 'administrative' }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
