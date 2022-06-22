@@ -254,7 +254,15 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     }).catch(error => {
       // eslint-disable-next-line no-console
       console.log('save() error =', error)
-      alert('Could not save your notation. Please try again or cancel.')
+      let fileType
+      if (this.putBackOn) {
+        fileType = 'put back on filing'
+      } else if (this.administrativeDissolution) {
+        fileType = 'administrative dissolution filing'
+      } else {
+        fileType = 'notation'
+      }
+      alert('Could not save your ' + fileType + '. Please try again or cancel.')
       this.saving = false
     })
 
