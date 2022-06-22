@@ -218,7 +218,7 @@ describe('EntityInfo - company info button and tooltip', () => {
     { // 4
       businessId: 'BC1234567',
       entityType: 'BEN',
-      warnings: [{}, {}],
+      warnings: [{ warningType: 'COMPLIANCE' }, { warningType: 'COMPLIANCE' }],
       buttonExists: true,
       tooltip: 'not in compliance'
     },
@@ -265,8 +265,9 @@ describe('EntityInfo - company info button and tooltip', () => {
       expect(companyInformationButton.exists()).toBe(_.buttonExists)
 
       // verify tooltip
+      // expect index = 4 to display compliance warning
       const vTooltipStub = wrapper.find('v-tooltip-stub')
-      expect(vTooltipStub.exists()).toBe(!!_.tooltip)
+      expect(vTooltipStub.exists()).toBe(index === 4 ? !!_.tooltip : false)
       if (_.tooltip) expect(vTooltipStub.text()).toContain(_.tooltip)
     })
   })

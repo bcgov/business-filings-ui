@@ -1,6 +1,8 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
+import {
+  ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
+  StateIF, TodoListResourceIF, IsoDatePacific
+} from '@/interfaces'
 
 export default {
   /** The list of filings from the API. */
@@ -142,7 +144,8 @@ export default {
 
   /** Is True if business is not in compliance. */
   isNotInCompliance (state: StateIF): boolean {
-    return (state.businessWarnings.length > 0)
+    const warnings = state.businessWarnings
+    return (warnings.length > 0 && warnings.some(item => item.warningType?.includes('COMPLIANCE')))
   },
 
   /** Is True if this is a Draft Application. */

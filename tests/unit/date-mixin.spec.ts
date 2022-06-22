@@ -120,7 +120,7 @@ describe('Date Mixin', () => {
 
     expect(vm.yyyyMmDdToDate(null)).toBeNull()
     expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
-    expect(vm.yyyyMmDdToDate('2021-01-01')).toEqual(new Date(2021, 0, 1)) // PST
-    expect(vm.yyyyMmDdToDate('2021-07-01')).toEqual(new Date(2021, 6, 1)) // PDT
+    expect(vm.yyyyMmDdToDate('2021-01-01').toISOString()).toEqual('2021-01-01T08:00:00.000Z') // PST
+    expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
   })
 })
