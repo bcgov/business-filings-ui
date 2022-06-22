@@ -1,6 +1,6 @@
 // FUTURE: update these as designs evolve
 export enum DissolutionTypes {
-  // ADMINISTRATIVE = 'administrative',
+  ADMINISTRATIVE = 'administrative',
   // COURT_ORDER_LIQUIDATION = 'courtOrderedLiquidation',
   // INVOLUNTARY = 'involuntary',
   VOLUNTARY = 'voluntary',
@@ -24,7 +24,7 @@ export enum DissolutionTypes {
 }
 
 export enum DissolutionNames {
-  // ADMINISTRATIVE = 'Administrative Dissolution',
+  ADMINISTRATIVE = 'Administrative Dissolution',
   // COURT_ORDER_LIQUIDATION = 'Court Ordered Liquidation',
   // INVOLUNTARY = 'Involuntary Dissolution',
   VOLUNTARY = 'Voluntary Dissolution',

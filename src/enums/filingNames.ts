@@ -13,12 +13,11 @@ export enum FilingNames {
   DISSOLVED = 'Involuntary Dissolution',
   INCORPORATION_APPLICATION = 'Incorporation Application',
   INVOLUNTARY_DISSOLUTION = 'Involuntary Dissolution',
+  PUT_BACK_ON = 'Put Back On',
   REGISTRATION = 'Registration',
   REGISTRARS_NOTATION = 'Registrar\'s Notation',
   REGISTRARS_ORDER = 'Registrar\'s Order',
   SPECIAL_RESOLUTION = 'Special Resolution',
   TRANSITION_APPLICATION = 'Transition Application',
-  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
-  ADMINISTRATIVE_DISSOLUTION = 'Administrative Dissolution',
-  PUT_BACK_ON = 'Put Back On'
+  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution'
 }

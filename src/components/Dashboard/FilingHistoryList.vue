@@ -46,9 +46,8 @@
 
                 <!-- is this a Staff Only filing? -->
                 <div v-if="filing.isTypeStaff" class="item-header__subtitle">
-                  <span v-if="filing.name === 'putBackOn' ||
-                  filing.name === 'administrativeDissolution'">FILED<FiledLabel :filing="filing" /></span>
-                  <span v-else><FiledLabel :filing="filing" /></span>
+                  <span v-if="filing.putBackOnOrAdminDissolution">FILED<FiledLabel :filing="filing" /></span>
+                  <span v-else><FiledLabel :filing="filing"/></span>
                 </div>
 
                 <!-- is this a FE BCOMP COA pending (not yet completed)? -->
@@ -592,6 +591,9 @@ export default class FilingHistoryList extends Mixins(
         item.isTypeStaff = true
         item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
+        item.putBackOnOrAdminDissolution = this.isTypePutBackOn({ name: filing.name }) ||
+          this.isTypeAdministrativeDissolution({ name: filing.name,
+            dissolutionType: filing?.data?.dissolution?.dissolutionType })
       }
 
       this.historyItems.push(item)

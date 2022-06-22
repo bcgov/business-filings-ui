@@ -59,4 +59,5 @@ export interface HistoryItemIF {
   isTypeStaff?: boolean
   notationOrOrder?: string
   planOfArrangement?: string
+  putBackOnOrAdminDissolution?: boolean
 }
