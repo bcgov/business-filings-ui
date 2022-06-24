@@ -885,9 +885,9 @@ export default class FilingHistoryList extends Mixins(
   /** Check whether to supprese notice of articles. */
   private suppressNOA (displayName:string, prop: string): boolean {
     // Only suppress NOA when it meets the following conditions
-    let type = this.getEntityType === CorpTypeCd.COOP
-    let name = displayName === 'Correction - Annual Report'
-    let isNOA = prop === 'noticeOfArticles'
+    const type = this.getEntityType === CorpTypeCd.COOP
+    const name = displayName === 'Correction - Annual Report'
+    const isNOA = prop === 'noticeOfArticles'
     return type && name && isNOA
   }
 
