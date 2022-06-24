@@ -31,12 +31,12 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { DocumentIF, HistoryItemIF } from '@/interfaces'
+import { DocumentIF } from '@/interfaces'
 
 @Component({})
 export default class DocumentsList extends Vue {
   /** The filing containing documents. */
-  @Prop({ required: true }) readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing: any
 
   /** Whether one document is currently loading. */
   @Prop({ default: false }) readonly loadingOne: boolean
