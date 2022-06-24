@@ -3,6 +3,7 @@
     <v-list class="py-0">
       <v-list-item v-for="(document, index) in filing.documents" :key="index">
         <v-btn text color="primary"
+          v-if="document.title !== 'Notice of Articles'"
           class="download-one-btn"
           @click="downloadOne(document, index)"
           :disabled="loadingOne || loadingAll"
@@ -31,12 +32,12 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { DocumentIF } from '@/interfaces'
+import { DocumentIF, HistoryItemIF } from '@/interfaces'
 
 @Component({})
 export default class DocumentsList extends Vue {
   /** The filing containing documents. */
-  @Prop({ required: true }) readonly filing: any
+  @Prop({ required: true }) readonly filing: HistoryItemIF
 
   /** Whether one document is currently loading. */
   @Prop({ default: false }) readonly loadingOne: boolean
