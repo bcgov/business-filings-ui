@@ -3,7 +3,6 @@
     <v-list class="py-0">
       <v-list-item v-for="(document, index) in filing.documents" :key="index">
         <v-btn text color="primary"
-          v-if="document.title !== 'Notice of Articles'"
           class="download-one-btn"
           @click="downloadOne(document, index)"
           :disabled="loadingOne || loadingAll"

@@ -66,27 +66,6 @@ describe('Documents List', () => {
     wrapper.destroy()
   })
 
-  it('does not display Notice of Articles in the list correctly', async () => {
-    const filing = {
-      ...SAMPLE_FILING,
-      documents: [
-        { title: 'Notice of Articles' }
-      ]
-    }
-
-    const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
-    await Vue.nextTick()
-
-    // verify the number of document buttons
-    const documentBtns = wrapper.findAll('.download-one-btn')
-    expect(documentBtns.length).toBe(0)
-
-    // verify that there is no Download All button
-    expect(wrapper.find('.download-all-btn').exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
   it('displays multiple documents in the list correctly', async () => {
     const filing = {
       ...SAMPLE_FILING,

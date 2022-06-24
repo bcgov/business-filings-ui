@@ -351,7 +351,7 @@ import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums, interfaces and mixins
-import { AllowableActions, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
@@ -812,7 +812,7 @@ export default class FilingHistoryList extends Mixins(
               pushDocument(title, filename, link)
             }
           }
-        } else {
+        } else if (!this.suppressNOA(item.displayName, prop)) {
           // this is a submission level output
           const title = this.camelCaseToWords(prop)
           const date = this.dateToYyyyMmDd(item.submittedDate)
@@ -880,6 +880,15 @@ export default class FilingHistoryList extends Mixins(
       (this.isTypeChangeOfRegistration(item) && !this.isFirm) ||
       (this.isTypeRegistration(item) && !this.isFirm)
     )
+  }
+
+  /** Check whether to supprese notice of articles. */
+  private suppressNOA (displayName:string, prop: string): boolean {
+    // Only suppress NOA when it meets the following conditions
+    let type = this.getEntityType === CorpTypeCd.COOP
+    let name = displayName === 'Correction - Annual Report'
+    let isNOA = prop === 'noticeOfArticles'
+    return type && name && isNOA
   }
 
   @Watch('getFilings', { immediate: true })
