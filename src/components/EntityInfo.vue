@@ -97,8 +97,7 @@
                       <span class="font-13 ml-1">Business Summary</span>
                     </v-btn>
                   </template>
-                  View and download a summary of information about the business, including office addresses
-                  and directors.
+                  View and download a summary of information about the business.
                 </v-tooltip>
             </span>
           </menu>
@@ -111,7 +110,7 @@
             <template v-if="businessId && isFirm">
               <dt class="mr-2">Registration Date:</dt>
               <dd id="entity-business-registration-date">
-                {{ this.dateToPacificDate(getEntityFoundingDate) || 'Not Available' }}</dd>
+                {{ this.dateToPacificDate(getEntityFoundingDate, true) || 'Not Available' }}</dd>
             </template>
 
             <!-- Registration Number -->
@@ -243,12 +242,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The business description. */
   get businessDescription (): string {
-    const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
-
-    if (this.isSoleProp) {
-      return `${corpTypeDescription} / Doing Business As (DBA)`
-    }
-    return corpTypeDescription
+    return this.getCorpTypeDescription(this.getEntityType)
   }
 
   /** The incorporation application or registration description. */
