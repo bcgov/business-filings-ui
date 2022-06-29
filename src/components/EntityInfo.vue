@@ -17,7 +17,7 @@
             <div v-if="tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
           </header>
 
-          <menu class="mt-4 ml-n4">
+          <menu class="mt-11 ml-n4">
             <!-- Staff Comments -->
             <span v-if="businessId && isAllowed(AllowableActions.ADD_STAFF_COMMENT)">
               <StaffComments
