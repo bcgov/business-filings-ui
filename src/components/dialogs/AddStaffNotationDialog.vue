@@ -110,6 +110,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: string
   @Getter getEntityFoundingDate!: Date
+  @Getter isFirm!: boolean
 
   /** The notation text. */
   private notation: string = ''
@@ -195,10 +196,19 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     await this.$nextTick()
     const isNotationFormRefValid = this.$refs.notationFormRef.validate()
     const isCourtOrderPoaFormRefValid = this.$refs.courtOrderPoaRef.validate()
-    if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
-      this.saving = false
-      return
+
+    if (this.isFirm && (this.putBackOn || this.administrativeDissolution)) {
+      if (!isNotationFormRefValid) {
+        this.saving = false
+        return
+      }
+    } else {
+      if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
+        this.saving = false
+        return
+      }
     }
+
     const data : any = {
       filing: {
         header: {
@@ -222,10 +232,10 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       }
       data.filing[this.name] = { ...data.filing[this.name],
         details: this.notation,
-        courtOrder: {
+        ...(this.courtOrderNumber && { courtOrder: {
           effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
           fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
-        }
+        } })
       }
     } else if (this.administrativeDissolution) {
       data.filing.business = { ...data.filing.business,
@@ -236,10 +246,12 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       data.filing[this.name] = { ...data.filing[this.name],
         dissolutionType: 'administrative',
         dissolutionDate: this.getCurrentDate,
-        courtOrder: {
+        details: this.notation,
+        ...(this.courtOrderNumber && { courtOrder: {
+          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
           fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
           orderDetails: this.notation
-        }
+        } })
       }
     } else {
       data.filing[this.name] = { ...data.filing[this.name],
