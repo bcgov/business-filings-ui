@@ -1,8 +1,8 @@
 <template>
-  <div id="entity-info" :class="{ 'staff': isRoleStaff, 'hover': showHoverStyle }">
+  <div id="entity-info" :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }">
     <v-container class="pt-0 pb-0">
       <v-row no-gutters class="pt-3 pb-4">
-        <v-col cols="12" md="9">
+        <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
           <header>
             <!-- Entity Name / IA Title -->
             <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
@@ -97,8 +97,7 @@
                       <span class="font-13 ml-1">Business Summary</span>
                     </v-btn>
                   </template>
-                  View and download a summary of information about the business, including office addresses
-                  and directors.
+                  View and download a summary of information about the business.
                 </v-tooltip>
             </span>
           </menu>
@@ -111,7 +110,7 @@
             <template v-if="businessId && isFirm">
               <dt class="mr-2">Registration Date:</dt>
               <dd id="entity-business-registration-date">
-                {{ this.dateToPacificDate(getEntityFoundingDate) || 'Not Available' }}</dd>
+                {{ this.dateToPacificDate(getEntityFoundingDate, true) || 'Not Available' }}</dd>
             </template>
 
             <!-- Registration Number -->
@@ -243,12 +242,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The business description. */
   get businessDescription (): string {
-    const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
-
-    if (this.isSoleProp) {
-      return `${corpTypeDescription} / Doing Business As (DBA)`
-    }
-    return corpTypeDescription
+    return this.getCorpTypeDescription(this.getEntityType)
   }
 
   /** The incorporation application or registration description. */

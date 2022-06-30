@@ -366,13 +366,14 @@
                     </template>
                     <v-list class="actions__more-actions">
                       <v-list-item
+                        class="dissolution-drop-down"
                         v-if="businessId"
                         id="btn-delete-draft"
                         @click="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title>Delete {{ toDoListTitle }} </v-list-item-title>
+                          <v-list-item-title>Delete {{ toDoListTitle }}</v-list-item-title>
                         </template>
                         <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
@@ -1726,7 +1727,7 @@ export default class TodoList extends Mixins(
 }
 
 .actions__more-actions {
-  padding: 0;
+  padding: 1;
 
   .v-list-item {
     min-width: 140px;
@@ -1735,6 +1736,10 @@ export default class TodoList extends Mixins(
   .v-list-item__title {
     font-size: $px-14;
     color: $app-blue;
+  }
+
+  .dissolution-drop-down:hover {
+    background-color: $gray1;
   }
 }
 
