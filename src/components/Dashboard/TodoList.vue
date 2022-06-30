@@ -1739,7 +1739,7 @@ export default class TodoList extends Mixins(
   }
 
   .dissolution-drop-down:hover {
-    background-color: #F1F3F5;
+    background-color: $gray1;
   }
 }
 
