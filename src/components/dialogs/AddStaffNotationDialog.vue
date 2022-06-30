@@ -73,7 +73,7 @@ import { DateMixin, EnumMixin } from '@/mixins'
 import axios from '@/axios-auth'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { FormIF } from '@/interfaces'
-import { EffectOfOrderTypes, FilingTypes } from '@/enums'
+import { EffectOfOrderTypes, FilingTypes, DissolutionTypes } from '@/enums'
 
 @Component({
   components: {
@@ -92,6 +92,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   /** Prop for the item's name (filing type). */
   @Prop() readonly name: FilingTypes
 
+  /** Prop for the item's dissolution type. */
+  @Prop() readonly dissolutionType?: DissolutionTypes
+
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog: boolean
 
@@ -107,6 +110,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: string
   @Getter getEntityFoundingDate!: Date
+  @Getter isFirm!: boolean
 
   /** The notation text. */
   private notation: string = ''
@@ -134,7 +138,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
   /** Whether this filing is an administrative dissolution */
   private get administrativeDissolution (): boolean {
-    return this.isTypeAdministrativeDissolution({ name: this.name })
+    return this.isTypeAdministrativeDissolution({ name: this.name, dissolutionType: this.dissolutionType })
   }
 
   /** Whether this filing is a put back on */
@@ -192,10 +196,19 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     await this.$nextTick()
     const isNotationFormRefValid = this.$refs.notationFormRef.validate()
     const isCourtOrderPoaFormRefValid = this.$refs.courtOrderPoaRef.validate()
-    if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
-      this.saving = false
-      return
+
+    if (this.isFirm && (this.putBackOn || this.administrativeDissolution)) {
+      if (!isNotationFormRefValid) {
+        this.saving = false
+        return
+      }
+    } else {
+      if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
+        this.saving = false
+        return
+      }
     }
+
     const data : any = {
       filing: {
         header: {
@@ -211,24 +224,44 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       }
     }
 
-    if (this.administrativeDissolution || this.putBackOn) {
+    if (this.putBackOn) {
       data.filing.business = { ...data.filing.business,
         legalType: this.getEntityType,
         legalName: this.getEntityName,
         foundingDate: this.getEntityFoundingDate
       }
       data.filing[this.name] = { ...data.filing[this.name],
-        details: this.notation,
-        courtOrder: {
-          effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
-          fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
+        details: this.notation
+      }
+      if (this.courtOrderNumber) {
+        data.filing[this.name] = { ...data.filing[this.name],
+          courtOrder: {
+            effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
+            fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : '')
+          }
+        }
+      }
+    } else if (this.administrativeDissolution) {
+      data.filing.business = { ...data.filing.business,
+        legalType: this.getEntityType,
+        legalName: this.getEntityName,
+        foundingDate: this.getEntityFoundingDate
+      }
+      data.filing[this.name] = { ...data.filing[this.name],
+        dissolutionType: 'administrative',
+        dissolutionDate: this.getCurrentDate,
+        details: this.notation
+      }
+      if (this.courtOrderNumber) {
+        data.filing[this.name] = { ...data.filing[this.name],
+          courtOrder: {
+            effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
+            fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
+            orderDetails: this.notation
+          }
         }
       }
     } else {
-      data.filing[this.name] = { ...data.filing[this.name],
-        fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
-        effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '')
-      }
       data.filing[this.name] = { ...data.filing[this.name],
         orderDetails: this.notation
       }
@@ -241,7 +274,15 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     }).catch(error => {
       // eslint-disable-next-line no-console
       console.log('save() error =', error)
-      alert('Could not save your notation. Please try again or cancel.')
+      let fileType
+      if (this.putBackOn) {
+        fileType = 'put back on filing'
+      } else if (this.administrativeDissolution) {
+        fileType = 'administrative dissolution filing'
+      } else {
+        fileType = 'notation'
+      }
+      alert('Could not save your ' + fileType + '. Please try again or cancel.')
       this.saving = false
     })
 

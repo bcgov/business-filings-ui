@@ -1,7 +1,7 @@
 <template>
   <div v-if="filing" class="filed-label d-inline">
     <template v-if="filing.isTypeStaff">
-      <template v-if="putBackOnOrAdminDissolution">
+      <template v-if="filing.putBackOnOrAdminDissolution">
        <span> (filed by {{filing.submitter}} on
         <DateTooltip :date="filing.submittedDate" />)</span>
         <span class="vert-pipe" />
@@ -29,9 +29,5 @@ import { HistoryItemIF } from '@/interfaces'
 export default class FiledLabel extends Vue {
   @Prop({ required: true })
   readonly filing: HistoryItemIF
-
-  private get putBackOnOrAdminDissolution (): boolean {
-    return this.filing.name === 'putBackOn' || this.filing.name === 'administrativeDissolution'
-  }
 }
 </script>

@@ -36,7 +36,9 @@ const isAlteration = (filing) => (filing.name === 'alteration')
 const isStaff = (filing) => (
   filing.name === 'registrarsNotation' ||
   filing.name === 'registrarsOrder' ||
-  filing.name === 'courtOrder'
+  filing.name === 'courtOrder' ||
+  filing.name === 'putBackOn' ||
+  (filing.name === 'dissolution' && filing.displayName === 'Administrative Dissolution')
 )
 
 // Iterate over sample filings
@@ -60,7 +62,8 @@ filings.forEach((filing: any, index: number) => {
 
       // mount the component
       const $route = { query: {} }
-      wrapper = mount(FilingHistoryList, { store, mocks: { $route }, vuetify })
+      wrapper = mount(FilingHistoryList, {
+        store, mocks: { $route }, propsData: { dissolutionType: filing?.data?.dissolution?.dissolutionType }, vuetify })
       vm = wrapper.vm
     })
 
@@ -147,7 +150,13 @@ filings.forEach((filing: any, index: number) => {
       const item = vm.historyItems[0]
 
       if (item.isTypeStaff) {
-        expect(wrapper.find('.item-header__subtitle').text()).toContain('Filed by Registry Staff on')
+        if (item.putBackOnOrAdminDissolution) {
+          expect(wrapper.find('.item-header__subtitle').text()).toContain('FILED')
+          expect(wrapper.find('.item-header__subtitle').text()).toContain('(filed by Registry Staff on')
+          expect(wrapper.find('.item-header__subtitle').text()).toContain('EFFECTIVE as of')
+        } else {
+          expect(wrapper.find('.item-header__subtitle').text()).toContain('Filed by Registry Staff on')
+        }
       } else if (item.isFutureEffectiveBcompCoaPending) {
         expect(wrapper.find('.item-header__subtitle').text()).toContain('FILED AND PENDING')
         expect(wrapper.find('.item-header__subtitle').text()).not.toContain('PAID')
@@ -181,6 +190,10 @@ filings.forEach((filing: any, index: number) => {
       } else if (item.status === 'PAID') {
         expect(wrapper.find('.item-header__subtitle').text()).toContain('FILED AND PENDING')
         expect(wrapper.find('.item-header__subtitle').text()).toContain('PAID')
+        expect(wrapper.find('.item-header__subtitle').text()).toContain('(filed by Registry Staff on')
+        expect(wrapper.find('.item-header__subtitle').text()).toContain('EFFECTIVE as of')
+      } else if (item.putBackOnOrAdminDissolution) {
+        expect(wrapper.find('.item-header__subtitle').text()).toContain('FILED')
         expect(wrapper.find('.item-header__subtitle').text()).toContain('(filed by Registry Staff on')
         expect(wrapper.find('.item-header__subtitle').text()).toContain('EFFECTIVE as of')
       } else {
