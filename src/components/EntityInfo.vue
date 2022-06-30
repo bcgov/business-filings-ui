@@ -1,8 +1,8 @@
 <template>
-  <div id="entity-info" :class="{ 'staff': isRoleStaff, 'hover': showHoverStyle }">
+  <div id="entity-info" :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }">
     <v-container class="pt-0 pb-0">
       <v-row no-gutters class="pt-3 pb-4">
-        <v-col cols="12" md="9">
+        <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
           <header>
             <!-- Entity Name / IA Title -->
             <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
@@ -17,7 +17,7 @@
             <div v-if="tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
           </header>
 
-          <menu class="mt-11 ml-n4">
+          <menu class="mt-4 ml-n4">
             <!-- Staff Comments -->
             <span v-if="businessId && isAllowed(AllowableActions.ADD_STAFF_COMMENT)">
               <StaffComments
