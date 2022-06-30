@@ -367,17 +367,13 @@
                     <v-list class="actions__more-actions">
                       <v-list-item
                         class="dissolution-drop-down"
-                        @mouseenter="hover = true"
-                        @mouseleave="hover = false"
-                        :class="{ 'dissolution-drop-down-hover': hover }"
                         v-if="businessId"
                         id="btn-delete-draft"
                         @click="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title
-                          >Delete {{ toDoListTitle }}</v-list-item-title>
+                          <v-list-item-title>Delete {{ toDoListTitle }}</v-list-item-title>
                         </template>
                         <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
@@ -1636,12 +1632,6 @@ export default class TodoList extends Mixins(
     // cancel the check timer if it is running
     clearTimeout(this.checkTimer)
   }
-
-  data () {
-    return {
-      hover: false
-    }
-  }
 }
 </script>
 
@@ -1748,8 +1738,8 @@ export default class TodoList extends Mixins(
     color: $app-blue;
   }
 
-  .dissolution-drop-down-hover {
-    background-color: #D8D2D0;
+  .dissolution-drop-down:hover {
+    background-color: #F1F3F5;
   }
 }
 
