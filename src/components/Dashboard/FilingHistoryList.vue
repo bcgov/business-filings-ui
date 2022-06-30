@@ -19,6 +19,13 @@
       attach="#filing-history-list"
     />
 
+    <FileCorrectionDialog
+      :dialog="fileCorrectionDialog"
+      @exit="fileCorrectionDialog=false"
+      @start="startCorrection($event)"
+      attach="#filing-history-list"
+    />
+
     <!-- Alternate Loading Spinner -->
     <v-fade-transition>
       <div class="loading-container grayed-out" v-show="isBusy">
@@ -355,10 +362,10 @@ import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import StaffFiling from './FilingHistoryList/StaffFiling.vue'
 import { DetailsList } from '@/components/common'
-import { AddCommentDialog, DownloadErrorDialog, LoadCorrectionDialog } from '@/components/dialogs'
+import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums, interfaces and mixins
-import { AllowableActions, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, FilingTypes, FilingNames, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
@@ -382,6 +389,7 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
     // dialogs
     AddCommentDialog,
     DownloadErrorDialog,
+    FileCorrectionDialog,
     LoadCorrectionDialog
   }
 })
@@ -399,6 +407,7 @@ export default class FilingHistoryList extends Mixins(
   // local properties
   private addCommentDialog = false
   private downloadErrorDialog = false
+  private fileCorrectionDialog = false
   private loadCorrectionDialog = false
   private panel: number = null // currently expanded panel
   private historyItems: Array<HistoryItemIF> = []
@@ -407,9 +416,11 @@ export default class FilingHistoryList extends Mixins(
   private currentFiling: HistoryItemIF = null
   private loadingOneIndex = -1
   private isBusy = false
+  private correctionFiling: HistoryItemIF = null
 
   // enum for template
   readonly AllowableActions = AllowableActions
+  readonly FilingNames = FilingNames
 
   /** The Edit URL string. */
   private get editUrl (): string {
@@ -676,41 +687,8 @@ export default class FilingHistoryList extends Mixins(
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.REGISTRATION:
-        try {
-          // show spinner since the network calls below can take a few seconds
-          this.$root.$emit('showSpinner', true)
-
-          // fetch original filing
-          const origFiling = item.filingLink && await this.fetchFiling(item.filingLink)
-          if (!origFiling) {
-            throw new Error('Invalid API response')
-          }
-
-          // build correction filing
-          let correctionFiling: CorrectionFilingIF
-          if (this.isBComp) correctionFiling = this.buildIaCorrectionFiling(origFiling)
-          if (this.isFirm) correctionFiling = this.buildFmCorrectionFiling(origFiling)
-          if (!correctionFiling) throw new Error('Invalid filing type')
-
-          // save draft filing
-          const draftCorrection = await this.createFiling(this.getIdentifier, correctionFiling, true)
-          const draftCorrectionId = +draftCorrection?.header?.filingId
-          if (isNaN(draftCorrectionId)) {
-            throw new Error('Invalid API response')
-          }
-
-          // navigate to Edit web app to complete this correction
-          // NB: no need to clear spinner
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
-          navigate(correctionUrl)
-        } catch (error) {
-          // clear spinner on error
-          this.$root.$emit('showSpinner', false)
-
-          // eslint-disable-next-line no-console
-          console.log('Error creating correction =', error)
-          this.loadCorrectionDialog = true
-        }
+        this.fileCorrectionDialog = true
+        this.correctionFiling = item
         break
 
       case FilingTypes.CORRECTION:
@@ -890,7 +868,7 @@ export default class FilingHistoryList extends Mixins(
       item.isFutureEffective ||
       this.isStatusCorrected(item) ||
       this.isTypeAlteration(item) ||
-      this.isTypeCorrection(item) ||
+      // this.isTypeCorrection(item) ||
       this.isTypeTransition(item) ||
       this.isTypeIncorporationApplication(item) || // *** temporary
       // the following corrections are supported:
@@ -898,6 +876,45 @@ export default class FilingHistoryList extends Mixins(
       (this.isTypeChangeOfRegistration(item) && !this.isFirm) ||
       (this.isTypeRegistration(item) && !this.isFirm)
     )
+  }
+
+  private async startCorrection (startCorrection: boolean): Promise<void> {
+    this.fileCorrectionDialog = false
+    try {
+      // show spinner since the network calls below can take a few seconds
+      this.$root.$emit('showSpinner', true)
+
+      // fetch original filing
+      const origFiling = this.correctionFiling.filingLink && await this.fetchFiling(this.correctionFiling.filingLink)
+      if (!origFiling) {
+        throw new Error('Invalid API response')
+      }
+
+      // build correction filing
+      let correctionFiling: CorrectionFilingIF
+      if (this.isBComp) correctionFiling = this.buildIaCorrectionFiling(origFiling)
+      if (this.isFirm) correctionFiling = this.buildFmCorrectionFiling(origFiling)
+      if (!correctionFiling) throw new Error('Invalid filing type')
+
+      // save draft filing
+      const draftCorrection = await this.createFiling(this.getIdentifier, correctionFiling, true)
+      const draftCorrectionId = +draftCorrection?.header?.filingId
+      if (isNaN(draftCorrectionId)) {
+        throw new Error('Invalid API response')
+      }
+
+      // navigate to Edit web app to complete this correction
+      // NB: no need to clear spinner
+      const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
+      navigate(correctionUrl)
+    } catch (error) {
+      // clear spinner on error
+      this.$root.$emit('showSpinner', false)
+
+      // eslint-disable-next-line no-console
+      console.log('Error creating correction =', error)
+      this.loadCorrectionDialog = true
+    }
   }
 
   @Watch('getFilings', { immediate: true })
