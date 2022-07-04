@@ -1,4 +1,4 @@
-import { FilingTypes, PaymentMethod } from '@/enums'
+import { FilingTypes, PaymentMethod, CorrectionTypes } from '@/enums'
 import { PaymentErrorIF } from '@/interfaces'
 
 /**
@@ -40,6 +40,7 @@ export interface TodoItemIF {
   // corrections only
   correctedFilingId?: number
   correctedFilingType?: string
+  type?: CorrectionTypes
 
   // IAs only
   isEmptyFiling?: boolean

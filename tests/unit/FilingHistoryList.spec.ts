@@ -699,7 +699,26 @@ describe('Filing History List - redirections', () => {
     fileCorrectionItem.trigger('click')
     await flushPromises()
 
+    // verify to display the correction dialog modal
+    const fileCorrectionDialog = wrapper.find('#correction-filing-dialog')
+    expect(fileCorrectionDialog).toBeDefined()
+
+    // verify radio buttons for client and staff
+    const clientRadioBtn = wrapper.find('#correct-client-radio')
+    expect(clientRadioBtn).toBeDefined()
+
+    // click the staff radio button
+    const staffRadioBtn = wrapper.find('#correct-staff-radio')
+    expect(staffRadioBtn).toBeDefined()
+    staffRadioBtn.trigger('click')
+    await flushPromises()
+
     // verify redirection
+    const startCorrectionBtn = wrapper.find('#dialog-start-button')
+    expect(startCorrectionBtn).toBeDefined()
+    startCorrectionBtn.trigger('click')
+    await flushPromises()
+
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const createUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)

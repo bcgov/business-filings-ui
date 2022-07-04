@@ -191,7 +191,7 @@ import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDia
 
 // Mixins, enums and interfaces
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
-import { CorpTypeCd, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
+import { CorpTypeCd, CorrectionTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ActionBindingIF, ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 
@@ -263,6 +263,7 @@ export default class Correction extends Mixins(
   private haveChanges = false
   private saveErrors = []
   private saveWarnings = []
+  private correctionType: CorrectionTypes
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -363,6 +364,8 @@ export default class Correction extends Mixins(
     // this is the id of the original filing to correct
     this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
 
+    // this is the correction type of either client or staff
+    // this.correctionType = this.$route.params.correctionUserType
     // if required data isn't set, go back to dashboard
     if (!this.getIdentifier || isNaN(this.correctedFilingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
@@ -692,14 +695,14 @@ export default class Correction extends Mixins(
         correctedFilingId: this.correctedFilingId,
         correctedFilingType: this.origFiling.header.name,
         correctedFilingDate: this.dateToYyyyMmDd(this.apiToDate(this.origFiling.header.date)),
-        comment: `${this.defaultComment}\n${this.detailComment}`
+        comment: `${this.defaultComment}\n${this.detailComment}`,
+        type: this.correctionType
       }
     }
 
     // build filing data
     // NB: a correction to a correction is applied to the original data
     const data = Object.assign({}, header, business, correction)
-
     try {
       let ret
       if (this.filingId > 0) {

@@ -146,7 +146,7 @@
                     :ripple=false
                     @click.stop="togglePanel(index)"
                   >
-                    <v-icon left>mdi-information-outline</v-icon>
+                    <v-icon>mdi-information-outline</v-icon>
                     <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                   </v-btn>
                 </div>
@@ -1075,6 +1075,7 @@ export default class TodoList extends Mixins(
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
         correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes),
+        type: correction.type,
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
           this.filingTypeToName(correction.correctedFilingType as FilingTypes)),
         draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),

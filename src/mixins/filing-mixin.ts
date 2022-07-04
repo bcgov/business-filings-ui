@@ -141,6 +141,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
         correctedFilingId: correctedFiling.header.filingId,
         correctedFilingType: correctedFiling.header.name,
         correctedFilingDate: correctedFiling.header.date,
+        type: correctedFiling.correction.type,
         comment: ''
         // type: ... // *** FUTURE: implement this
       }
