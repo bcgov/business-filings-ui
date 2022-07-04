@@ -1,3 +1,4 @@
+import { CorrectionTypes } from '@/enums'
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface CorrectionFilingIF {
   header: {
@@ -21,6 +22,7 @@ export interface CorrectionFilingIF {
     correctedFilingId: string
     correctedFilingType: string
     correctedFilingDate: string
+    type?: CorrectionTypes
     comment: string
   },
   incorporationApplication?: {},

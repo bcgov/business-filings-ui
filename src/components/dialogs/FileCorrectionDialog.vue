@@ -1,14 +1,14 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach">
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="file-correction-dialog">
     <v-card>
       <v-card-title class="pt-8">Correction Filing</v-card-title>
 
       <v-card-text class="font-15">
         <p>Select who caused the correction. If client, completing party information and certification
           will be required. If staff, completing party information and certification will not be required.</p>
-        <v-radio-group v-model="correctionOption">
-          <v-radio id="fas-radio" class="mb-0 pt-2" label="Client Error" :value="correctionOptions.CLIENT" />
-          <v-radio id="bcol-radio" class="mb-0 pt-2" label="Staff Error" :value="correctionOptions.STAFF" />
+        <v-radio-group v-model="correctionType">
+          <v-radio id="correct-client-radio" class="mb-0 pt-2" label="Client Error" :value="CorrectionTypes.CLIENT" />
+          <v-radio id="correct-staff-radio" class="mb-0 pt-2" label="Staff Error" :value="CorrectionTypes.STAFF" />
         </v-radio-group>
         <template v-if="!hasChosenCorrection">
           <p class="font-15 option-error">Choose one option to proceed</p>
@@ -34,28 +34,19 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
 import { ContactInfo } from '@/components/common'
+import { CorrectionTypes } from '@/enums'
 
 @Component({
-  computed: {
-    // Property definition for runtime environment.
-    ...mapGetters(['isRoleStaff'])
-  },
   components: { ContactInfo }
 })
 export default class FileCorrectionDialog extends Vue {
-  // Initialize hasChosenCorrection.
+  // enums for template
+  readonly CorrectionTypes = CorrectionTypes
+
+  // local variables
   private hasChosenCorrection = true
-
-  /** Radio group model property. */
-  private correctionOptions = {
-    NONE: 0,
-    CLIENT: 1,
-    STAFF: 2
-  }
-
-  private correctionOption = this.correctionOptions.NONE
+  protected correctionType = null as CorrectionTypes
 
   // Prop to display the dialog.
   @Prop() readonly dialog: boolean
@@ -63,31 +54,25 @@ export default class FileCorrectionDialog extends Vue {
   // Prop to provide attachment selector.
   @Prop() readonly attach: string
 
-  // Pass click event to parent.
-  @Emit() private exit () {
-    this.hasChosenCorrection = true
-    this.correctionOption = this.correctionOptions.NONE
-  }
-
   private checkToStart () {
-    if (this.correctionOption === this.correctionOptions.NONE) {
+    if (this.correctionType === null) {
       this.hasChosenCorrection = false
     } else {
       this.hasChosenCorrection = true
-      this.emitStart(true)
+      this.emitRedirect(this.correctionType)
     }
   }
 
   /** Called when payment option (radio group item) has changed. */
-  @Watch('correctionOption')
-  private onCorrectionOptionChanged (val: number): void {
+  @Watch('correctionType')
+  private onCorrectionTypeChanged (val: string): void {
     switch (val) {
-      case this.correctionOptions.CLIENT:
-        this.correctionOption = this.correctionOptions.CLIENT
+      case CorrectionTypes.CLIENT:
+        this.correctionType = CorrectionTypes.CLIENT
         this.hasChosenCorrection = true
         break
-      case this.correctionOptions.STAFF:
-        this.correctionOption = this.correctionOptions.STAFF
+      case CorrectionTypes.STAFF:
+        this.correctionType = CorrectionTypes.STAFF
         this.hasChosenCorrection = true
         break
       default:
@@ -95,12 +80,18 @@ export default class FileCorrectionDialog extends Vue {
     }
   }
 
+  // Pass click event to parent.
+  @Emit() private exit () {
+    this.hasChosenCorrection = true
+    this.correctionType = null
+  }
+
   /**
    * Emits event to Edit UI for correction.
-   * @param startCorrection Whether to redirect to start correction.
+   * Redirect to start correction.
    */
-  @Emit('start')
-  private emitStart (startCorrection: boolean): void { }
+  @Emit('redirect')
+  private emitRedirect (correctionType: CorrectionTypes): void { }
 }
 </script>
 
