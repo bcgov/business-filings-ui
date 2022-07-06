@@ -242,7 +242,12 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   /** The business description. */
   get businessDescription (): string {
-    return this.getCorpTypeDescription(this.getEntityType)
+    const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
+    if (this.isSoleProp && this.tempRegNumber) {
+      return `${corpTypeDescription} / Doing Business As (DBA)`
+    } else {
+      return corpTypeDescription
+    }
   }
 
   /** The incorporation application or registration description. */
