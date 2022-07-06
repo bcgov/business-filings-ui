@@ -76,6 +76,12 @@ export async function fetchConfig (): Promise<void> {
   sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
   console.info('Set KeyCloak Config Path to: ' + keycloakConfigPath)
 
+  const siteminderLogoutUrl: string = response.data['SITEMINDER_LOGOUT_URL']
+  if (siteminderLogoutUrl) {
+    sessionStorage.setItem('SITEMINDER_LOGOUT_URL', siteminderLogoutUrl)
+    console.info('Set Siteminder Logout Url to: ' + siteminderLogoutUrl)
+  }
+
   const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY']
   window['addressCompleteKey'] = addressCompleteKey
   addressCompleteKey && console.info('Set Address Complete Key.')

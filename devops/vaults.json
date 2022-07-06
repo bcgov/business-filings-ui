@@ -41,7 +41,8 @@
             "business",
             "business-create",
             "business-edit",
-            "registry"
+            "registry",
+            "siteminder"
         ]
     },
     {

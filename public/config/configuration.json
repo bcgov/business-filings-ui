@@ -14,6 +14,7 @@
   "LEGAL_API_VERSION_2": "/api/v2",
   "PAY_API_URL": "https://pay-api-dev.apps.silver.devops.gov.bc.ca",
   "PAY_API_VERSION": "/api/v1",
+  "SITEMINDER_LOGOUT_URL": "https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi",
   "SENTRY_ENABLE": "false",
   "SENTRY_DSN": "",
   "STATUS_API_URL": "https://status-api-dev.apps.silver.devops.gov.bc.ca",
