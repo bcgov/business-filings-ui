@@ -364,7 +364,7 @@
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
                     </template>
-                    <v-list class="actions__more-actions pb-2 pt-2">
+                    <v-list class="actions__more-actions py-2">
                       <v-list-item
                         class="dissolution-drop-down"
                         v-if="businessId"
@@ -1727,7 +1727,6 @@ export default class TodoList extends Mixins(
 }
 
 .actions__more-actions {
-  padding: 0;
 
   .v-list-item {
     min-width: 140px;
