@@ -37,6 +37,9 @@ export interface HistoryItemIF {
   isFutureEffectiveIa?: boolean
   isFutureEffectiveIaPending?: boolean
 
+  // Registrations only
+  isCompletedRegistration?: boolean
+
   // BCOMP COAs only
   isFutureEffectiveBcompCoaPending?: boolean
 
