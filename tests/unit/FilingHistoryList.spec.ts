@@ -941,7 +941,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  it('displays a Paid IA (incorp app mode)', async () => {
+  it('displays a Paid IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
@@ -1005,7 +1005,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  it('displays a Completed IA (incorp app mode)', async () => {
+  it('displays a Completed IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.entityType = 'BEN'

@@ -528,20 +528,20 @@ export default class FilingHistoryList extends Mixins(
 
       // add properties for IAs
       if (this.isTypeIncorporationApplication(filing)) {
-        // is this a completed IA? (incorp app mode only)
+        // is this a completed IA? (temp reg number mode only)
         item.isCompletedIa = (
           !!this.tempRegNumber &&
           this.isStatusCompleted(filing)
         )
 
-        // is this a Future Effective IA (not yet completed)? (incorp app mode only)
+        // is this a Future Effective IA (not yet completed)? (temp reg number mode only)
         item.isFutureEffectiveIa = (
           !!this.tempRegNumber &&
           filing.isFutureEffective &&
           this.isStatusPaid(filing)
         )
 
-        // is this a Future Effective IA pending (overdue)? (incorp app mode only)
+        // is this a Future Effective IA pending (overdue)? (temp reg number mode only)
         item.isFutureEffectiveIaPending = (
           item.isFutureEffectiveIa &&
           this.isEffectiveDatePast(effectiveDate)
@@ -594,7 +594,7 @@ export default class FilingHistoryList extends Mixins(
 
       // add properties for Registrations
       if (this.isTypeRegistration(filing)) {
-        // is this a completed registration? (incorp app mode only)
+        // is this a completed registration? (temp reg number mode only)
         item.isCompletedRegistration = (
           !!this.tempRegNumber &&
           this.isStatusCompleted(filing)
