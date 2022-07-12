@@ -68,8 +68,9 @@
                 <!-- is this a completed IA? -->
                 <!-- or a completed Alteration? -->
                 <!-- or a completed Dissolution? -->
-                <div v-else-if="filing.isCompletedIa || filing.isCompletedAlteration || filing.isCompletedDissolution"
-                  class="item-header__subtitle"
+                <!-- or a completed Registration? -->
+                <div v-else-if="filing.isCompletedIa || filing.isCompletedAlteration || filing.isCompletedDissolution ||
+                  filing.isCompletedRegistration" class="item-header__subtitle"
                 >
                   <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
                   <v-btn
@@ -253,6 +254,11 @@
               <CompletedDissolution :filing="filing" class="mt-6" />
             </template>
 
+            <!-- is this a completed registration? -->
+            <template v-else-if="filing.isCompletedRegistration">
+              <CompletedRegistration class="mt-6" />
+            </template>
+
             <!-- is this a FE IA pending (overdue)? -->
             <!-- or a FE Alteration pending (overdue)? -->
             <!-- or a FE Dissolution pending (overdue)? -->
@@ -340,6 +346,7 @@ import { navigate } from '@/utils'
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
 import CompletedDissolution from './FilingHistoryList/CompletedDissolution.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
+import CompletedRegistration from './FilingHistoryList/CompletedRegistration.vue'
 import DocumentsList from './FilingHistoryList/DocumentsList.vue'
 import FiledLabel from './FilingHistoryList/FiledLabel.vue'
 import FutureEffective from './FilingHistoryList/FutureEffective.vue'
@@ -362,6 +369,7 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
     CompletedAlteration,
     CompletedDissolution,
     CompletedIa,
+    CompletedRegistration,
     DocumentsList,
     FiledLabel,
     FutureEffective,
@@ -520,20 +528,20 @@ export default class FilingHistoryList extends Mixins(
 
       // add properties for IAs
       if (this.isTypeIncorporationApplication(filing)) {
-        // is this a completed IA? (incorp app mode only)
+        // is this a completed IA? (temp reg number mode only)
         item.isCompletedIa = (
           !!this.tempRegNumber &&
           this.isStatusCompleted(filing)
         )
 
-        // is this a Future Effective IA (not yet completed)? (incorp app mode only)
+        // is this a Future Effective IA (not yet completed)? (temp reg number mode only)
         item.isFutureEffectiveIa = (
           !!this.tempRegNumber &&
           filing.isFutureEffective &&
           this.isStatusPaid(filing)
         )
 
-        // is this a Future Effective IA pending (overdue)? (incorp app mode only)
+        // is this a Future Effective IA pending (overdue)? (temp reg number mode only)
         item.isFutureEffectiveIaPending = (
           item.isFutureEffectiveIa &&
           this.isEffectiveDatePast(effectiveDate)
@@ -581,6 +589,15 @@ export default class FilingHistoryList extends Mixins(
         item.isFutureEffectiveDissolutionPending = (
           item.isFutureEffectiveDissolution &&
           this.isEffectiveDatePast(effectiveDate)
+        )
+      }
+
+      // add properties for Registrations
+      if (this.isTypeRegistration(filing)) {
+        // is this a completed registration? (temp reg number mode only)
+        item.isCompletedRegistration = (
+          !!this.tempRegNumber &&
+          this.isStatusCompleted(filing)
         )
       }
 
