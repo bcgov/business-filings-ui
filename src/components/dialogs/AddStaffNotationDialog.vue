@@ -149,7 +149,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
       return [
-        (v: string) => !!v || `Enter a ${this.displayName}`,
+        (v: string) => !!v || ((this.administrativeDissolution || this.putBackOn) ? 'Enter a detailed comment'
+          : `Enter a ${this.displayName}`),
         (v: string) => v.length <= this.notationMaxLength || 'Maximum characters exceeded.'
       ]
     } else return []
