@@ -198,16 +198,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     const isNotationFormRefValid = this.$refs.notationFormRef.validate()
     const isCourtOrderPoaFormRefValid = this.$refs.courtOrderPoaRef.validate()
 
-    if (this.isFirm && (this.putBackOn || this.administrativeDissolution)) {
-      if (!isNotationFormRefValid) {
-        this.saving = false
-        return
-      }
-    } else {
-      if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
-        this.saving = false
-        return
-      }
+    if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
+      this.saving = false
+      return
     }
 
     const data : any = {
