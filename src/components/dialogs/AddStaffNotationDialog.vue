@@ -149,7 +149,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   private get notationRules (): Array<Function> {
     if (this.enableValidation) {
       return [
-        (v: string) => !!v || `Enter a ${this.displayName}`,
+        (v: string) => !!v || ((this.administrativeDissolution || this.putBackOn) ? 'Enter a detailed comment'
+          : `Enter a ${this.displayName}`),
         (v: string) => v.length <= this.notationMaxLength || 'Maximum characters exceeded.'
       ]
     } else return []
@@ -197,16 +198,9 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     const isNotationFormRefValid = this.$refs.notationFormRef.validate()
     const isCourtOrderPoaFormRefValid = this.$refs.courtOrderPoaRef.validate()
 
-    if (this.isFirm && (this.putBackOn || this.administrativeDissolution)) {
-      if (!isNotationFormRefValid) {
-        this.saving = false
-        return
-      }
-    } else {
-      if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
-        this.saving = false
-        return
-      }
+    if (!isNotationFormRefValid || !isCourtOrderPoaFormRefValid) {
+      this.saving = false
+      return
     }
 
     const data : any = {

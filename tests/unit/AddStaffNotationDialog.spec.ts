@@ -108,13 +108,14 @@ describe('AddStaffNotationDialog', () => {
     wrapper.destroy()
   })
 
-  it('validates notation is not empty', async () => {
+  it('validates notation is not empty for standard filing', async () => {
     const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
           dialog: true,
           displayName: 'Test',
-          courtOrderNumberRequired: true
+          courtOrderNumberRequired: true,
+          name: 'registrarsNotation'
         },
         store,
         vuetify,
@@ -128,6 +129,57 @@ describe('AddStaffNotationDialog', () => {
     wrapper.find('#dialog-save-button').trigger('click')
     await flushPromises()
     expect(wrapper.find('#notation-form').text()).toContain('Enter a Test')
+
+    wrapper.destroy()
+  })
+
+  it('validates notation is not empty for Put Back On Filing', async () => {
+    const wrapper = mount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Test',
+          courtOrderNumberRequired: true,
+          name: 'putBackOn'
+        },
+        store,
+        vuetify,
+        sync: false
+      })
+
+    // Should not start with validation
+    expect(wrapper.find('#notation-form').text()).not.toContain('Enter a detailed comment')
+
+    // Should validate after clicking on 'Save'
+    wrapper.find('#dialog-save-button').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('#notation-form').text()).toContain('Enter a detailed comment')
+
+    wrapper.destroy()
+  })
+
+  it('validates notation is not empty for Administrative Dissolution Filing', async () => {
+    const wrapper = mount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Test',
+          courtOrderNumberRequired: true,
+          name: 'dissolution',
+          dissolutionType: 'administrative'
+        },
+        store,
+        vuetify,
+        sync: false
+      })
+
+    // Should not start with validation
+    expect(wrapper.find('#notation-form').text()).not.toContain('Enter a detailed comment')
+
+    // Should validate after clicking on 'Save'
+    wrapper.find('#dialog-save-button').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('#notation-form').text()).toContain('Enter a detailed comment')
 
     wrapper.destroy()
   })
