@@ -94,6 +94,8 @@
                   <span class="app-blue">Put Back On</span>
                 </v-list-item-title>
               </v-list-item>
+            </template>
+            <template v-if="isFirm || isCoop || isBComp">
               <v-list-item v-if="!isHistorical" @click="showAdministrativeDissolutionDialog()" :disabled="disabled">
                 <v-list-item-title>
                   <span class="app-blue">Administrative Dissolution</span>
@@ -139,6 +141,8 @@ export default class StaffNotation extends Vue {
   @Prop({ default: false }) readonly disabled: boolean
 
   @Getter isFirm!: boolean
+  @Getter isBComp!: boolean
+  @Getter isCoop!: boolean
   @Getter getIdentifier: string
   @Getter isHistorical!: boolean
 
