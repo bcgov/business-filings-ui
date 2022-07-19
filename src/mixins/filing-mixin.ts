@@ -120,12 +120,11 @@ export default class FilingMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds a Firm Correction filing body from a Change of Registration filing
-   * or Registration filing. Used when creating a Firm Correction.
+   * Builds a Firm Correction filing body from a Registration or Change of Registration filing.
+   * Used when creating a Firm Correction.
    * @param correctedFiling the Change of Registration or Registration filing to correct
    * @returns the Firm Correction filing body
    */
-  // FUTURE: set a type for correctFiling
   buildFmCorrectionFiling (correctedFiling: any): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
@@ -140,12 +139,21 @@ export default class FilingMixin extends Mixins(DateMixin) {
       },
       correction: {
         correctedFilingId: correctedFiling.header.filingId,
-        correctedFilingType: FilingTypes.REGISTRATION,
+        correctedFilingType: correctedFiling.header.name,
         correctedFilingDate: correctedFiling.header.date,
         comment: ''
-      },
-      changeOfRegistration: correctedFiling.changeOfRegistration ? correctedFiling : undefined,
-      registration: correctedFiling.registration ? correctedFiling : undefined
+        // type: ... // *** FUTURE: implement this
+      }
+    }
+
+    // add in original Change of Registration filing
+    if (correctedFiling.changeOfRegistration) {
+      correctionFiling.changeOfRegistration = correctedFiling.changeOfRegistration
+    }
+
+    // add in original Registration filing
+    if (correctedFiling.registration) {
+      correctionFiling.registration = correctedFiling.registration
     }
 
     return correctionFiling

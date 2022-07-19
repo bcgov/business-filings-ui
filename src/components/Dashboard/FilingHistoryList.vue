@@ -892,8 +892,9 @@ export default class FilingHistoryList extends Mixins(
       this.isTypeAlteration(item) ||
       this.isTypeCorrection(item) ||
       this.isTypeTransition(item) ||
+      this.isTypeIncorporationApplication(item) || // *** temporary
       // the following corrections are supported:
-      (this.isTypeIncorporationApplication(item) && !this.isBComp) ||
+      // (this.isTypeIncorporationApplication(item) && !this.isBComp) || // *** temporary
       (this.isTypeChangeOfRegistration(item) && !this.isFirm) ||
       (this.isTypeRegistration(item) && !this.isFirm)
     )
