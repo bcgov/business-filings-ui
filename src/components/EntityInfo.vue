@@ -278,7 +278,13 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
       const isFirm = (this.isSoleProp || this.isPartnership)
       let url = `${this.editUrl}${this.getIdentifier}`
       // Append appropriate route based on entity type
-      url += (isFirm ? '/change' : '/alteration')
+      if (isFirm) {
+        url += '/change'
+      } else if (this.isCoop) {
+        url += '/special-resolution'
+      } else {
+        url += '/alteration'
+      }
       navigate(url)
     }
   }
