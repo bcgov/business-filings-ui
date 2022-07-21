@@ -64,7 +64,7 @@
 
               <!-- Dissolve Company -->
               <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
-                <v-tooltip top content-class="top-tooltip">
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     small text color="primary"
@@ -85,7 +85,7 @@
 
             <!-- Download Business Summary -->
             <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
-                <v-tooltip top content-class="top-tooltip">
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                   <template v-slot:activator="{ on }">
                     <v-btn
                       small text color="primary"
