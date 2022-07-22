@@ -75,9 +75,10 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.VIEW_CHANGE_COMPANY_INFO: {
+        const isCoopAllowed = (!!getFeatureFlag('special-resolution-ui-enabled') && this.isCoop)
         return (!this.isHistorical &&
           !!businessId &&
-          (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership || this.isCoop)
+          (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership || isCoopAllowed)
         )
       }
 
