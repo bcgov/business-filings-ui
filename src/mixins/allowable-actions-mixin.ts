@@ -15,6 +15,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter isSoleProp!: boolean
   @Getter isPartnership!: boolean
   @Getter isFirm!: boolean
+  @Getter isCoop!: boolean
   @Getter hasBlockerExceptStaffApproval!: boolean
 
   /**
@@ -74,9 +75,10 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.VIEW_CHANGE_COMPANY_INFO: {
+        const isCoopAllowed = (!!getFeatureFlag('special-resolution-ui-enabled') && this.isCoop)
         return (!this.isHistorical &&
           !!businessId &&
-          (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership)
+          (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership || isCoopAllowed)
         )
       }
 
