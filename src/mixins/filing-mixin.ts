@@ -99,7 +99,6 @@ export default class FilingMixin extends Mixins(DateMixin) {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: correctedFiling.header.certifiedBy,
         date: this.getCurrentDate
       },
       business: {
@@ -129,7 +128,6 @@ export default class FilingMixin extends Mixins(DateMixin) {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: correctedFiling.header.certifiedBy,
         date: this.getCurrentDate
       },
       business: {
