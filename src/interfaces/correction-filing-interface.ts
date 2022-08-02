@@ -2,7 +2,7 @@
 export interface CorrectionFilingIF {
   header: {
     name: string
-    certifiedBy: string
+    certifiedBy?: string
     date: string
     routingSlipNumber?: string
     folioNumber?: string
