@@ -1,5 +1,6 @@
 export * from './actions'
 export * from './allowableActions'
+export * from './correctionTypes'
 export * from './dissolutionTypesNames'
 export * from './effectOfOrderTypes'
 export * from './entityState'

@@ -146,7 +146,7 @@
                     :ripple=false
                     @click.stop="togglePanel(index)"
                   >
-                    <v-icon left>mdi-information-outline</v-icon>
+                    <v-icon>mdi-information-outline</v-icon>
                     <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                   </v-btn>
                 </div>
@@ -595,7 +595,6 @@ export default class TodoList extends Mixins(
 
   @Prop({ default: null }) readonly highlightId: number
 
-  @Getter isCoop!: boolean
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter isGoodStanding!: boolean

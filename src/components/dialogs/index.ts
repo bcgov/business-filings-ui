@@ -9,6 +9,7 @@ import DashboardUnavailableDialog from './DashboardUnavailableDialog.vue'
 import DeleteErrorDialog from './DeleteErrorDialog.vue'
 import DownloadErrorDialog from './DownloadErrorDialog.vue'
 import FetchErrorDialog from './FetchErrorDialog.vue'
+import FileCorrectionDialog from './FileCorrectionDialog.vue'
 import LoadCorrectionDialog from './LoadCorrectionDialog.vue'
 import NameRequestAuthErrorDialog from './NameRequestAuthErrorDialog.vue'
 import NameRequestInvalidDialog from './NameRequestInvalidDialog.vue'
@@ -31,6 +32,7 @@ export {
   DeleteErrorDialog,
   DownloadErrorDialog,
   FetchErrorDialog,
+  FileCorrectionDialog,
   LoadCorrectionDialog,
   NameRequestAuthErrorDialog,
   NameRequestInvalidDialog,
