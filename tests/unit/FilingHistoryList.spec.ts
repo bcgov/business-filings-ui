@@ -711,6 +711,7 @@ describe('Filing History List - redirections', () => {
     const staffRadioBtn = wrapper.find('#correct-staff-radio')
     expect(staffRadioBtn).toBeDefined()
     staffRadioBtn.trigger('click')
+    await flushPromises()
 
     // verify redirection
     const startCorrectionBtn = wrapper.find('#dialog-start-button')
