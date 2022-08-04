@@ -191,7 +191,7 @@ import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDia
 
 // Mixins, enums and interfaces
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
-import { CorpTypeCd, CorrectionTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
+import { CorpTypeCd, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ActionBindingIF, ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 
@@ -263,7 +263,6 @@ export default class Correction extends Mixins(
   private haveChanges = false
   private saveErrors = []
   private saveWarnings = []
-  private correctionType: CorrectionTypes
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -695,8 +694,7 @@ export default class Correction extends Mixins(
         correctedFilingId: this.correctedFilingId,
         correctedFilingType: this.origFiling.header.name,
         correctedFilingDate: this.dateToYyyyMmDd(this.apiToDate(this.origFiling.header.date)),
-        comment: `${this.defaultComment}\n${this.detailComment}`,
-        type: this.correctionType
+        comment: `${this.defaultComment}\n${this.detailComment}`
       }
     }
 

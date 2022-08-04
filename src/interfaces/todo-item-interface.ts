@@ -1,4 +1,4 @@
-import { FilingTypes, PaymentMethod, CorrectionTypes } from '@/enums'
+import { FilingTypes, PaymentMethod } from '@/enums'
 import { PaymentErrorIF } from '@/interfaces'
 
 /**

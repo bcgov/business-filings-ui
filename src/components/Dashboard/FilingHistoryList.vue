@@ -416,7 +416,6 @@ export default class FilingHistoryList extends Mixins(
   private currentFiling: HistoryItemIF = null
   private loadingOneIndex = -1
   private isBusy = false
-  private correctionFiling: HistoryItemIF = null
 
   // enum for template
   readonly AllowableActions = AllowableActions
@@ -647,12 +646,12 @@ export default class FilingHistoryList extends Mixins(
   }
 
   private startCorrectionDialog (item: HistoryItemIF): void {
-    this.correctionFiling = item
+    this.currentFiling = item
     this.fileCorrectionDialog = true
   }
 
   private async redirectThisFiling (correctionType: CorrectionTypes): Promise<void> {
-    const item = this.correctionFiling
+    const item = this.currentFiling
 
     try {
       // show spinner since the network calls below can take a few seconds
@@ -739,10 +738,7 @@ export default class FilingHistoryList extends Mixins(
         // FUTURE: allow a correction to a correction?
         // this.$router.push({ name: Routes.CORRECTION,
         //   params: { correctedFilingId } })
-        this.$router.push({
-          name: Routes.CORRECTION,
-          params: { correctedFilingId }
-        })
+        alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
         break
 
       case FilingTypes.ALTERATION:
