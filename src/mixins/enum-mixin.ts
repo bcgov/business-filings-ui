@@ -221,6 +221,7 @@ export default class EnumMixin extends Vue {
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
       case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
       case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
+      case FilingTypes.CHANGE_OF_REGISTRATION: return FilingNames.CHANGE_OF_REGISTRATION
       case FilingTypes.CONVERSION: return FilingNames.CONVERSION
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER

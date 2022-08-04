@@ -40,7 +40,6 @@ export interface TodoItemIF {
   // corrections only
   correctedFilingId?: number
   correctedFilingType?: string
-  type?: CorrectionTypes
 
   // IAs only
   isEmptyFiling?: boolean

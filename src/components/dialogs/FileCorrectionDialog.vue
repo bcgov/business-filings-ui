@@ -21,7 +21,7 @@
           color="primary"
           id="dialog-exit-button"
           @click="exit()"
-        > Cancel </v-btn>
+          >Cancel</v-btn>
         <v-btn depressed large
           color="primary"
           id="dialog-start-button"
@@ -34,12 +34,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
-import { ContactInfo } from '@/components/common'
 import { CorrectionTypes } from '@/enums'
 
-@Component({
-  components: { ContactInfo }
-})
+@Component({})
 export default class FileCorrectionDialog extends Vue {
   // enums for template
   readonly CorrectionTypes = CorrectionTypes
@@ -54,7 +51,8 @@ export default class FileCorrectionDialog extends Vue {
   // Prop to provide attachment selector.
   @Prop() readonly attach: string
 
-  private checkToStart () {
+  /** Check off buttons to confirm correction type */
+  protected checkToStart () {
     if (this.correctionType === null) {
       this.hasChosenCorrection = false
     } else {
@@ -81,7 +79,7 @@ export default class FileCorrectionDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit() private exit () {
+  @Emit() protected exit () {
     this.hasChosenCorrection = true
     this.correctionType = null
   }
@@ -102,7 +100,7 @@ export default class FileCorrectionDialog extends Vue {
   .v-card {
     .v-card__title {
       color: black;
-      background: #ffff;
+      background: white;
       font-weight: bold;
     }
     .v-card__actions {

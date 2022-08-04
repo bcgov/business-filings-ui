@@ -2,7 +2,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { Action, State, Getter } from 'vuex-class'
 import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
-import { CorpTypeCd, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
+import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -95,7 +95,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
    * @param correctedFiling the IA filing to correct
    * @returns the IA Correction filing body
    */
-  buildIaCorrectionFiling (correctedFiling: any): CorrectionFilingIF {
+  buildIaCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
@@ -110,7 +110,8 @@ export default class FilingMixin extends Mixins(DateMixin) {
         correctedFilingId: correctedFiling.header.filingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: correctedFiling.header.date,
-        comment: ''
+        comment: '',
+        type: correctionType
       },
       incorporationApplication: correctedFiling.incorporationApplication
     }
@@ -124,7 +125,7 @@ export default class FilingMixin extends Mixins(DateMixin) {
    * @param correctedFiling the Change of Registration or Registration filing to correct
    * @returns the Firm Correction filing body
    */
-  buildFmCorrectionFiling (correctedFiling: any): CorrectionFilingIF {
+  buildFmCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
@@ -139,9 +140,8 @@ export default class FilingMixin extends Mixins(DateMixin) {
         correctedFilingId: correctedFiling.header.filingId,
         correctedFilingType: correctedFiling.header.name,
         correctedFilingDate: correctedFiling.header.date,
-        type: correctedFiling.correction.type,
-        comment: ''
-        // type: ... // *** FUTURE: implement this
+        comment: '',
+        type: correctionType
       }
     }
 

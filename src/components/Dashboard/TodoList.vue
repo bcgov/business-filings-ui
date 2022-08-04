@@ -595,7 +595,6 @@ export default class TodoList extends Mixins(
 
   @Prop({ default: null }) readonly highlightId: number
 
-  @Getter isCoop!: boolean
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter isGoodStanding!: boolean
@@ -1075,7 +1074,6 @@ export default class TodoList extends Mixins(
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
         correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes),
-        type: correction.type,
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
           this.filingTypeToName(correction.correctedFilingType as FilingTypes)),
         draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
@@ -1298,6 +1296,8 @@ export default class TodoList extends Mixins(
 
   /** Resumes a draft filing. */
   protected doResumeFiling (item: TodoItemIF): void {
+    console.info('item.name: ', item.name)
+    console.info('item: ', item)
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
@@ -1322,6 +1322,7 @@ export default class TodoList extends Mixins(
         break
 
       case FilingTypes.CORRECTION:
+        console.info('item.correctedFilingType: ', item.correctedFilingType === FilingNames.CHANGE_OF_REGISTRATION)
         if (
           (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) ||
           (item.correctedFilingType === FilingNames.CHANGE_OF_REGISTRATION) ||
