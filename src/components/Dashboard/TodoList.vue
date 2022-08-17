@@ -966,9 +966,7 @@ export default class TodoList extends Mixins(
     const header = filing.header
 
     if (annualReport && business && header) {
-      // FUTURE: delete fallback when all draft ARs contain ARFilingYear
-      const ARFilingYear = header.ARFilingYear || this.getArFilingYear(annualReport)
-
+      const ARFilingYear = header.ARFilingYear
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
 
@@ -978,9 +976,8 @@ export default class TodoList extends Mixins(
         title: `File ${ARFilingYear} Annual Report`,
         draftTitle: `${ARFilingYear} Annual Report`,
         ARFilingYear,
-        // FUTURE: delete fallbacks when all draft ARs contain arMinDate and arMaxDate
-        arMinDate: header.arMinDate || this.getArMinDate(ARFilingYear), // COOP only
-        arMaxDate: header.arMaxDate || this.getArMaxDate(ARFilingYear), // COOP only
+        arMinDate: header.arMinDate, // COOP only
+        arMaxDate: header.arMaxDate, // COOP only
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
@@ -1574,45 +1571,6 @@ export default class TodoList extends Mixins(
   /** Closes current panel or opens new panel. */
   protected togglePanel (index: number): void {
     this.panel = (this.panel === index) ? null : index
-  }
-
-  /**
-   * Returns AR Filing Year in case a draft filing doesn't contain it.
-   * FUTURE: Delete this when all draft ARs contain new ARFilingYear.
-   */
-  getArFilingYear (annualReport: any): number {
-    return +annualReport.annualReportDate?.substring(0, 4)
-  }
-
-  /**
-   * Returns AR Min Date in case a draft filing doesn't contain it.
-   * FUTURE: Delete this when all draft ARs contain new arMinDate.
-   * @returns date as "YYYY-MM-DD"
-   */
-  private getArMinDate (ARFilingYear: number): string {
-    // min date is the AR year on Jan 1
-    // or the date of the previous AR (in case of 2 ARs held in the same year)
-    // whichever is latest
-    return this.latestYyyyMmDd(`${ARFilingYear}-01-01`, this.lastAnnualReportDate)
-  }
-
-  /**
-   * Returns AR Max Date in case a draft filing doesn't contain it.
-   * FUTURE: Delete this when all draft ARs contain new arMaxDate.
-   * @returns date as "YYYY-MM-DD"
-   */
-  private getArMaxDate (ARFilingYear: number): string {
-    if (ARFilingYear === 2020) {
-      // special case for 2020 ARs!
-      // max date is _today_ or Oct 31, 2021, whichever is earliest
-      return this.earliestYyyyMmDd(this.getCurrentDate, '2021-10-31')
-    } else if (ARFilingYear < this.getCurrentYear) {
-      // for past ARs, max date is the following year on Apr 30
-      return `${ARFilingYear + 1}-04-30`
-    } else {
-      // for current ARs, max date is today
-      return this.getCurrentDate
-    }
   }
 
   /** The toDoList title to display. */
