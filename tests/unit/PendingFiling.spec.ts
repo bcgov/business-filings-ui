@@ -31,6 +31,7 @@ describe('Pending Filing', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('This Filing is paid')
+    expect(paragraphs.at(1).text()).toContain('Refresh this screen')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
@@ -56,6 +57,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(0).text()).toContain('This Alteration is paid')
     expect(paragraphs.at(1).text()).toContain('Court Order Number: NUMBER')
     expect(paragraphs.at(2).text()).toContain('Pursuant to a Plan of Arrangement')
+    expect(paragraphs.at(3).text()).toContain('Refresh this screen')
     expect(paragraphs.at(3).text()).toContain('If this issue persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 
@@ -77,6 +79,7 @@ describe('Pending Filing', () => {
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
+    expect(paragraphs.at(1).text()).toContain('Refresh this screen')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
     expect(wrapper.find(ContactInfo).exists()).toBe(true)
 

@@ -405,38 +405,38 @@ export default class FilingHistoryList extends Mixins(
   @Action setHasBlockerFiling!: ActionBindingIF
 
   // local properties
-  private addCommentDialog = false
-  private downloadErrorDialog = false
-  private fileCorrectionDialog = false
-  private loadCorrectionDialog = false
-  private panel: number = null // currently expanded panel
-  private historyItems: Array<HistoryItemIF> = []
-  private loadingOne = false
-  private loadingAll = false
-  private currentFiling: HistoryItemIF = null
-  private loadingOneIndex = -1
-  private isBusy = false
+  protected addCommentDialog = false
+  protected downloadErrorDialog = false
+  protected fileCorrectionDialog = false
+  protected loadCorrectionDialog = false
+  protected panel = null as number // currently expanded panel
+  protected historyItems: Array<HistoryItemIF> = []
+  protected loadingOne = false
+  protected loadingAll = false
+  protected currentFiling = null as HistoryItemIF
+  protected loadingOneIndex = -1
+  protected isBusy = false
 
   // enum for template
   readonly AllowableActions = AllowableActions
 
   /** The Edit URL string. */
-  private get editUrl (): string {
+  get editUrl (): string {
     return sessionStorage.getItem('EDIT_URL')
   }
 
   /** The IA's Temporary Registration Number string. */
-  private get tempRegNumber (): string {
+  get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
   /** The Business ID string. */
-  private get businessId (): string {
+  get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
   /** Returns whether the action button is visible or not. */
-  private displayAction (filing): string {
+  protected displayAction (filing): string {
     return filing.availableOnPaperOnly || filing.isTypeStaff || filing.documentsLink
   }
 
@@ -630,12 +630,12 @@ export default class FilingHistoryList extends Mixins(
   }
 
   /** Whether the subject effective date/time is in the past. */
-  isEffectiveDatePast (effectiveDate: Date): boolean {
+  private isEffectiveDatePast (effectiveDate: Date): boolean {
     return (effectiveDate <= this.getCurrentJsDate)
   }
 
   /** Whether the subject effective date/time is in the future. */
-  isEffectiveDateFuture (effectiveDate: Date): boolean {
+  private isEffectiveDateFuture (effectiveDate: Date): boolean {
     return (effectiveDate > this.getCurrentJsDate)
   }
 
@@ -650,7 +650,7 @@ export default class FilingHistoryList extends Mixins(
     this.fileCorrectionDialog = true
   }
 
-  private async redirectThisFiling (correctionType: CorrectionTypes): Promise<void> {
+  protected async redirectThisFiling (correctionType: CorrectionTypes): Promise<void> {
     const item = this.currentFiling
 
     try {
@@ -691,7 +691,7 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
-  private async correctThisFiling (item: HistoryItemIF): Promise<void> {
+  protected async correctThisFiling (item: HistoryItemIF): Promise<void> {
     const correctedFilingId = item.filingId?.toString()
 
     switch (item?.name) {
@@ -758,7 +758,7 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
-  private async downloadOne (document: DocumentIF, index: number): Promise<void> {
+  protected async downloadOne (document: DocumentIF, index: number): Promise<void> {
     if (document && index >= 0) { // safety check
       this.loadingOne = true
       this.loadingOneIndex = index
@@ -774,7 +774,7 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
-  private async downloadAll (item: HistoryItemIF): Promise<void> {
+  protected async downloadAll (item: HistoryItemIF): Promise<void> {
     if (item?.documents) { // safety check
       this.loadingAll = true
 
@@ -790,12 +790,12 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
-  private showCommentDialog (filing: HistoryItemIF): void {
+  protected showCommentDialog (filing: HistoryItemIF): void {
     this.currentFiling = filing
     this.addCommentDialog = true
   }
 
-  private async hideCommentDialog (needReload: boolean): Promise<void> {
+  protected async hideCommentDialog (needReload: boolean): Promise<void> {
     this.addCommentDialog = false
     // if needed, reload comments for this filing
     if (needReload) {
@@ -878,7 +878,7 @@ export default class FilingHistoryList extends Mixins(
   }
 
   /** Closes current panel or opens new panel. */
-  private async togglePanel (index: number, item: HistoryItemIF): Promise<void> {
+  protected async togglePanel (index: number, item: HistoryItemIF): Promise<void> {
     const isCurrentPanel = (this.panel === index)
 
     // check if we're opening a new panel
@@ -903,7 +903,7 @@ export default class FilingHistoryList extends Mixins(
   }
 
   /** Whether to disable correction for this history item. */
-  private disableCorrection (item: HistoryItemIF): boolean {
+  protected disableCorrection (item: HistoryItemIF): boolean {
     return (
       !this.isAllowed(AllowableActions.FILE_CORRECTION) ||
       item.availableOnPaperOnly ||

@@ -4,11 +4,11 @@
 
     <p>{{getEntityName || 'A Numbered Benefit Company'}} has been successfully incorporated.</p>
 
-    <p>Return to your Manage Businesses dashboard to access your business and file changes.</p>
+    <p>Return to My Business Registry to access your business and file changes.</p>
 
     <div class="to-dashboard-container text-center mt-6">
-      <v-btn color="primary" @click.native.stop="returnToDashboard()">
-        <span>Return to Dashboard</span>
+      <v-btn color="primary" @click.native.stop="returnToMyBusinessRegistry()">
+        <span>Return to My Business Registry</span>
       </v-btn>
     </div>
   </div>
@@ -21,11 +21,11 @@ import { navigate } from '@/utils'
 
 @Component({})
 export default class CompletedIa extends Vue {
-  @Getter getEntityName!: string
+  @Getter readonly getEntityName!: string
 
-  private returnToDashboard (): void {
-    const manageBusinessesUrl = sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-    navigate(manageBusinessesUrl)
+  protected returnToMyBusinessRegistry (): void {
+    const myBusinessRegistryUrl = sessionStorage.getItem('AUTH_WEB_URL') + 'business'
+    navigate(myBusinessRegistryUrl)
   }
 }
 </script>

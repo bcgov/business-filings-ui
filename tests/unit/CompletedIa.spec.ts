@@ -22,7 +22,7 @@ describe('Complete Filing', () => {
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('My Business has been successfully incorporated.')
     expect(paragraphs.at(1).text())
-      .toContain('Return to your Manage Businesses dashboard to access your business and file changes.')
+      .toContain('Return to My Business Registry to access your business and file changes.')
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()
@@ -40,7 +40,7 @@ describe('Complete Filing', () => {
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('A Numbered Benefit Company has been successfully incorporated.')
     expect(paragraphs.at(1).text())
-      .toContain('Return to your Manage Businesses dashboard to access your business and file changes.')
+      .toContain('Return to My Business Registry to access your business and file changes.')
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()

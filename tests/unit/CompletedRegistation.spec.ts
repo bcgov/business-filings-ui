@@ -21,7 +21,7 @@ describe('Complete Filing', () => {
     expect(paragraphs.length).toBe(2)
     expect(paragraphs.at(0).text()).toContain('My Firm has been successfully registered.')
     expect(paragraphs.at(1).text())
-      .toContain('Return to your Manage Businesses dashboard to access your business and file changes.')
+      .toContain('Return to My Business Registry to access your business and file changes.')
     expect(wrapper.find('.to-dashboard-container').exists()).toBe(true)
 
     wrapper.destroy()

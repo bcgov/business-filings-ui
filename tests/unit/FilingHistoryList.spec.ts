@@ -1714,7 +1714,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 })
 
-describe('Filing History List - documents', () => {
+describe('Filing History List - with documents', () => {
   const FILING_WITH_DOCUMENTS_LINK = {
     availableOnPaperOnly: false,
     businessIdentifier: 'CP0001191',
@@ -1996,7 +1996,7 @@ describe('Filing History List - detail comments', () => {
   })
 })
 
-describe('Filing History List - documents', () => {
+describe('Filing History List - without documents', () => {
   const FILING_WITHOUT_DOCUMENTS_LINK = {
     availableOnPaperOnly: false,
     businessIdentifier: 'CP0001191',
