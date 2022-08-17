@@ -9,7 +9,8 @@
 
     <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
 
-    <p>If this issue persists, please contact us.</p>
+    <p>Refresh this screen in a few minutes or you can come back later to check on the progress.
+      If this issue persists, please contact us.</p>
 
     <ContactInfo class="mt-4" />
   </div>

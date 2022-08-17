@@ -628,8 +628,8 @@ export default class TodoList extends Mixins(
     return sessionStorage.getItem('CREATE_URL')
   }
 
-  /** The Manage Businesses URL string. */
-  get manageBusinessesUrl (): string {
+  /** The My Business Registry URL string. */
+  get myBusinessRegistryUrl (): string {
     return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
   }
 
@@ -1439,8 +1439,8 @@ export default class TodoList extends Mixins(
         await this.doDeleteDraft(item, false)
 
         if (this.nameRequest) {
-          // go to Manage Businesses page
-          navigate(this.manageBusinessesUrl)
+          // go to My Business Registry page
+          navigate(this.myBusinessRegistryUrl)
         } else {
           // go to BCROS home page
           navigate(this.bcrosHomeUrl)
