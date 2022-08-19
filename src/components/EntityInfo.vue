@@ -335,7 +335,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Emit('notInGoodStanding')
   private emitNotInGoodStanding (message: NigsMessage): void {}
 
-  // Pass event to . */
+  // Pass prompt to view / add digital credentials event to parent. */
   @Emit('viewAddDigitalCredentials')
   private viewAddDigitalCredentials (): void {}
 }
