@@ -10,4 +10,5 @@ export enum AllowableActions {
   FILE_DIRECTOR_CHANGE = 'fileDirectorChange',
   FILE_STAFF_NOTATION = 'fileStaffNotation',
   VIEW_CHANGE_COMPANY_INFO = 'viewChangeCompanyInfo',
+  VIEW_ADD_DIGITAL_CREDENTIALS = 'viewAddDigitalCredentials'
 }

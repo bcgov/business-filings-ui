@@ -80,6 +80,7 @@
           @confirmDissolution="confirmDissolutionDialog = true"
           @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
           @downloadBusinessSummary="downloadBusinessSummary()"
+          @viewAddDigitalCredentials="viewAddDigitalCredentials()"
         />
         <router-view />
       </main>
@@ -832,6 +833,11 @@ export default {
         this.downloadErrorDialog = true
       })
       this.showSpinner = false
+    },
+
+    /** Direct to Digital Credentials. **/
+    viewAddDigitalCredentials (): void {
+      this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
     }
   },
 

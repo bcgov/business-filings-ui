@@ -1,4 +1,5 @@
 import { BreadcrumbIF } from '@/interfaces'
+import { Routes } from '@/enums'
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
@@ -24,5 +25,13 @@ export function getStaffDashboardBreadcrumb (): BreadcrumbIF {
   return {
     text: 'Staff Dashboard',
     href: `${sessionStorage.getItem('BUSINESSES_URL')}staff/${getParams()}`
+  }
+}
+
+/** Default Crumb for Digital Credentials Pilot. **/
+export function getDigitalCredentialBreadcrumb (): BreadcrumbIF {
+  return {
+    text: 'Business Digital Credentials',
+    to: { name: Routes.DIGITAL_CREDENTIALS }
   }
 }
