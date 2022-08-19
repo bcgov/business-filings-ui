@@ -376,15 +376,18 @@ describe('Filing History List - misc functionality', () => {
     // corrected filing:
     expect(vm.disableCorrection({ ...item, status: 'CORRECTED' })).toBe(false)
 
-    // IA as a BEN
+    // correction filing:
+    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+
+    // IA as a BEN:
     store.state.entityType = 'BEN'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
 
-    // Change of Registration as a firm
+    // Change of Registration as a firm:
     store.state.entityType = 'SP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
 
-    // Registration as a firm
+    // Registration as a firm:
     store.state.entityType = 'SP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
 
@@ -406,20 +409,17 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.disableCorrection({ ...item, name: 'alteration' })).toBe(true)
 
     // only sixth condition:
-    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
-
-    // only seventh condition:
     expect(vm.disableCorrection({ ...item, name: 'transition' })).toBe(true)
 
-    // only eighth condition (as not a BEN):
+    // only seventh condition (as not a BEN):
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
-    // only ninth condition (as not a firm):
+    // only eighth condition (as not a firm):
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
-    // only tenth condition (as not a firm):
+    // only ninth condition (as not a firm):
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
   })

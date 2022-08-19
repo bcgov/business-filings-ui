@@ -910,7 +910,6 @@ export default class FilingHistoryList extends Mixins(
       item.isTypeStaff ||
       item.isFutureEffective ||
       this.isTypeAlteration(item) ||
-      this.isTypeCorrection(item) ||
       this.isTypeTransition(item) ||
       // the following corrections are supported:
       (this.isTypeIncorporationApplication(item) && !this.isBComp) ||
