@@ -1,9 +1,8 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 import {
   ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific, StepsIF
+  StateIF, TodoListResourceIF, IsoDatePacific
 } from '@/interfaces'
-import { ChooseCredentials, DigitalWalletDownload, ScanCredentials } from '@/components/DigitalCredentials'
 
 export default {
   /** The list of filings from the API. */
