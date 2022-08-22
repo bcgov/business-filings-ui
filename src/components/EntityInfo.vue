@@ -85,20 +85,38 @@
 
             <!-- Download Business Summary -->
             <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      small text color="primary"
-                      id="download-summary-button"
-                      @click="downloadBusinessSummary()"
-                      v-on="on"
-                    >
-                      <img src="@/assets/images/business_summary_icon.svg" alt="" class="pa-1">
-                      <span class="font-13 ml-1">Business Summary</span>
-                    </v-btn>
-                  </template>
-                  View and download a summary of information about the business.
-                </v-tooltip>
+              <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    small text color="primary"
+                    id="download-summary-button"
+                    @click="downloadBusinessSummary()"
+                    v-on="on"
+                  >
+                    <img src="@/assets/images/business_summary_icon.svg" alt="" class="pa-1">
+                    <span class="font-13 ml-1">Business Summary</span>
+                  </v-btn>
+                </template>
+                View and download a summary of information about the business.
+              </v-tooltip>
+            </span>
+
+            <!-- View Add Digital Credentials -->
+            <span v-if="isAllowed(AllowableActions.VIEW_ADD_DIGITAL_CREDENTIALS)">
+              <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    small text color="primary"
+                    id="view-add-digital-credentials-button"
+                    @click="viewAddDigitalCredentials()"
+                    v-on="on"
+                  >
+                    <v-icon medium>mdi-file-certificate-outline</v-icon>
+                    <span class="font-13 ml-1">Business Digital Credentials</span>
+                  </v-btn>
+                </template>
+                Manage the digital credentials generated for the business.
+              </v-tooltip>
             </span>
           </menu>
         </v-col>
@@ -316,6 +334,10 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   // Pass not in good standing event to parent.
   @Emit('notInGoodStanding')
   private emitNotInGoodStanding (message: NigsMessage): void {}
+
+  // Pass prompt to view / add digital credentials event to parent. */
+  @Emit('viewAddDigitalCredentials')
+  private viewAddDigitalCredentials (): void {}
 }
 </script>
 

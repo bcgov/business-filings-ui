@@ -6,6 +6,7 @@ import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling
 import Correction from '@/views/Correction.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
+import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
 
 // Constants
 import { Routes } from '@/enums'
@@ -102,6 +103,7 @@ export default [
       requiresAuth: false
     }
   },
+  DigitalCredentialRoutes, // Routes for Digital Credential Pilot
   // {
   //   path: '/about',
   //   name: 'about',

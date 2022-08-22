@@ -242,5 +242,4 @@ export default {
   getTodoListResource (state: StateIF): TodoListResourceIF {
     return state.configObject?.todoList
   }
-
 }

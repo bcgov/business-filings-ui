@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
+import mockRouter from './mockRouter'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -13,12 +14,13 @@ const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Common Mixin', () => {
   let vm: any
+  const router = mockRouter.mock()
 
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it,
     // but the component must import the subject mixin)
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     vm = wrapper.vm
     await Vue.nextTick()
   })

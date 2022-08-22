@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd, EntityState } from '@/enums'
+import { AllowableActions, CorpTypeCd, Routes } from '@/enums'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -17,6 +17,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter isFirm!: boolean
   @Getter isCoop!: boolean
   @Getter hasBlockerExceptStaffApproval!: boolean
+  @Getter isGoodStanding!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -80,6 +81,14 @@ export default class AllowableActionsMixin extends Vue {
           !!businessId &&
           (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership || isCoopAllowed)
         )
+      }
+
+      case AllowableActions.VIEW_ADD_DIGITAL_CREDENTIALS: {
+        // Pilot is targeting specific Benefit Companies: Handled on LD Server Side
+        const isFeatureEnabled = !!getFeatureFlag('enable-digital-credentials')
+        const isNotaDcRoute = !(this.$route.matched.some(route => route.name === Routes.DIGITAL_CREDENTIALS))
+
+        return (isFeatureEnabled && isNotaDcRoute && this.isGoodStanding && this.isBComp && !this.isRoleStaff)
       }
 
       default: return null

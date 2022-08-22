@@ -15,6 +15,8 @@ const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 describe('EntityInfo - data', () => {
+  const router = mockRouter.mock()
+
   it('displays Business entity info properly', async () => {
     // session storage must be set before mounting component
     sessionStorage.clear()
@@ -31,7 +33,7 @@ describe('EntityInfo - data', () => {
     store.state.businessPhoneExtension = '444'
 
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     // verify displayed text
@@ -53,7 +55,7 @@ describe('EntityInfo - data', () => {
     store.state.entityType = 'BEN'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#incorp-app-title').text()).toBe('My Named Company')
@@ -75,7 +77,7 @@ describe('EntityInfo - data', () => {
     store.state.entityType = 'BEN'
     store.state.nameRequest = null
 
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#incorp-app-title').text()).toBe('Numbered Benefit Company')
@@ -97,7 +99,7 @@ describe('EntityInfo - data', () => {
     store.state.entityType = 'BEN'
     store.state.nameRequest = { nrNumber: 'NR 1234567' }
 
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#incorp-app-title').text()).toBe('My Future Company')
@@ -123,7 +125,7 @@ describe('EntityInfo - data', () => {
     store.state.businessPhoneExtension = null
     store.state.nameRequest = null
 
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#entity-legal-name').exists()).toBeFalsy()
@@ -138,13 +140,14 @@ describe('EntityInfo - data', () => {
 })
 
 describe('EntityInfo - Staff Comments', () => {
+  const router = mockRouter.mock()
+
   it('does not display Staff Comments component when there is no business id', async () => {
     // init session storage + store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', null)
     store.state.keycloakRoles = []
 
-    const router = mockRouter.mock()
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
@@ -159,7 +162,6 @@ describe('EntityInfo - Staff Comments', () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.keycloakRoles = []
 
-    const router = mockRouter.mock()
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
@@ -174,7 +176,6 @@ describe('EntityInfo - Staff Comments', () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     store.state.keycloakRoles = ['staff']
 
-    const router = mockRouter.mock()
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
@@ -186,6 +187,8 @@ describe('EntityInfo - Staff Comments', () => {
 })
 
 describe('EntityInfo - company info button and tooltip', () => {
+  const router = mockRouter.mock()
+
   const variations = [
     { // 0
       businessId: 'CP1234567',
@@ -257,7 +260,7 @@ describe('EntityInfo - company info button and tooltip', () => {
       store.state.businessWarnings = _.warnings || []
       store.state.entityStatus = _.entityStatus || null
 
-      const wrapper = shallowMount(EntityInfo, { store, vuetify })
+      const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
       await Vue.nextTick()
 
       // verify button
@@ -274,6 +277,8 @@ describe('EntityInfo - company info button and tooltip', () => {
 })
 
 describe('EntityInfo - Historical badge', () => {
+  const router = mockRouter.mock()
+
   const variations = [
     { // 0
       state: 'ACTIVE',
@@ -301,7 +306,6 @@ describe('EntityInfo - Historical badge', () => {
       store.state.entityState = _.state
       store.state.reasonText = _.text
 
-      const router = mockRouter.mock()
       const wrapper = mount(EntityInfo, { vuetify, store, router })
       await Vue.nextTick()
 
@@ -320,6 +324,8 @@ describe('EntityInfo - Historical badge', () => {
 })
 
 describe('EntityInfo - Click Tests - Alterations', () => {
+  const router = mockRouter.mock()
+
   const { assign } = window.location
 
   beforeAll(() => {
@@ -343,7 +349,6 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     store.state.entityType = 'BEN'
     // store.state.entityType = 'LTD' // FUTURE: uncomment this
 
-    const router = mockRouter.mock()
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
@@ -360,6 +365,8 @@ describe('EntityInfo - Click Tests - Alterations', () => {
 })
 
 describe('EntityInfo - Click Tests - Dissolutions', () => {
+  const router = mockRouter.mock()
+
   // mock the mixin to always return True
   const AllowableActionsMixin: any = {
     methods: {
@@ -372,6 +379,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     const wrapper = mount(EntityInfo, {
       store,
       vuetify,
+      router,
       mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
@@ -380,7 +388,6 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
 
   it('prompts the Confirm Dissolution dialog if in good standing', async () => {
     store.state.goodStanding = true
-    const router = mockRouter.mock()
 
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
@@ -400,7 +407,6 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
 
   it('prompts the Not In Good Standing dialog', async () => {
     store.state.goodStanding = false
-    const router = mockRouter.mock()
 
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
@@ -420,6 +426,8 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
 })
 
 describe('EntityInfo - Click Tests - Business Summary', () => {
+  const router = mockRouter.mock()
+
   // mock the mixin to always return True
   const AllowableActionsMixin: any = {
     methods: {
@@ -432,6 +440,7 @@ describe('EntityInfo - Click Tests - Business Summary', () => {
     const wrapper = mount(EntityInfo, {
       store,
       vuetify,
+      router,
       mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
@@ -440,8 +449,6 @@ describe('EntityInfo - Click Tests - Business Summary', () => {
   })
 
   it('emits the download business summary event', async () => {
-    const router = mockRouter.mock()
-
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
       store,
