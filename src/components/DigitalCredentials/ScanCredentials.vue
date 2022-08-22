@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">SCAN PLACEHOLDER</div>
+  <div id="scan-credentials" class="mt-8">SCAN PLACEHOLDER</div>
 </template>
 
 <script lang="ts">

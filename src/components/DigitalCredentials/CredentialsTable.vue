@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">I'M A FANCY DIGITAL CREDENTIALS TABLE</div>
+  <div id="credentials-table" class="mt-8">I'M A FANCY DIGITAL CREDENTIALS TABLE</div>
 </template>
 
 <script lang="ts">

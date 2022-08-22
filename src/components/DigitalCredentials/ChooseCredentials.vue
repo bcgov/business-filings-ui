@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">CHOOSE PLACEHOLDER</div>
+  <div id="choose-credentials" class="mt-8">CHOOSE PLACEHOLDER</div>
 </template>
 
 <script lang="ts">

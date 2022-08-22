@@ -1,6 +1,6 @@
 <template>
   <!-- Digital Credentials Landing -->
-  <section id="digital-credentials-landing">
+  <section id="credentials-landing">
 
     <!-- Credentials Header -->
     <article id="digital-credentials-header">

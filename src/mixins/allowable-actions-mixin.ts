@@ -88,7 +88,7 @@ export default class AllowableActionsMixin extends Vue {
         const isFeatureEnabled = !!getFeatureFlag('enable-digital-credentials')
         const isNotaDcRoute = !(this.$route.matched.some(route => route.name === Routes.DIGITAL_CREDENTIALS))
 
-        return isFeatureEnabled && isNotaDcRoute && this.isGoodStanding && this.isBComp && !this.isRoleStaff
+        return (isFeatureEnabled && isNotaDcRoute && this.isGoodStanding && this.isBComp && !this.isRoleStaff)
       }
 
       default: return null

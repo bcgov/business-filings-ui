@@ -242,36 +242,5 @@ export default {
   /** The entity TodoList resources. */
   getTodoListResource (state: StateIF): TodoListResourceIF {
     return state.configObject?.todoList
-  },
-
-  /** The Digital Credential Steps for BBDC Pilot. **/
-  getDigitalCredentialSteps (): Array<StepsIF> {
-    return [
-      {
-        id: 'step-1-btn',
-        step: 1,
-        icon: 'mdi-domain',
-        text: 'Download\n Digital Wallet',
-        to: `/digital-credentials/download-wallet`,
-        component: DigitalWalletDownload
-      },
-      {
-        id: 'step-2-btn',
-        step: 2,
-        icon: 'mdi-domain',
-        text: 'Choose\n Digital Credentials',
-        to: `/digital-credentials/choose-credentials`,
-        component: ChooseCredentials
-      },
-      {
-        id: 'step-3-btn',
-        step: 3,
-        icon: 'mdi-domain',
-        text: 'Scan with\n Digital Wallet',
-        to: `/digital-credentials/scan-credentials`,
-        component: ScanCredentials
-      }
-    ]
   }
-
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">DOWNLOAD DIGITAL WALLET PLACEHOLDER</div>
+  <div id="digital-wallet-download" class="mt-8">DOWNLOAD DIGITAL WALLET PLACEHOLDER</div>
 </template>
 
 <script lang="ts">
