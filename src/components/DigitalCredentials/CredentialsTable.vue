@@ -1,6 +1,6 @@
 <template>
   <div id="credentials-table" class="mt-8">
-    <header class="review-header">
+    <header class="credentials-table-header">
       <label class="font-weight-bold pl-2">Your Digital Credentials</label>
     </header>
 
@@ -58,6 +58,7 @@ export default class CredentialsTable extends Vue {
   }
 
   // Mocked Data: To be retrieved from LEAR business record once created
+  // There is no schema to-date, this is just a representation of the designs
   get credentialRecords (): Array<any> {
     return [
       {
@@ -81,11 +82,13 @@ export default class CredentialsTable extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-.review-header {
+.credentials-table-header {
   background-color: $BCgovBlue5O;
   padding: 1.25rem;
   color: $gray9;
 }
+
+// Vuetify overrides for Table Headers and Cells
 ::v-deep {
   .v-data-table > .v-data-table__wrapper > table > thead > tr > th, td {
     color: $gray7;

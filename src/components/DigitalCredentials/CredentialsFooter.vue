@@ -3,7 +3,7 @@
     <div class="buttons-right">
       <v-btn
         v-if="currentStepIndex > 0"
-        id="cod-file-pay-btn"
+        id="back-btn"
         color="primary"
         large
         outlined
@@ -14,7 +14,7 @@
       </v-btn>
 
       <v-btn
-        id="cod-file-pay-btn"
+        id="next-btn"
         class="font-weight-bold"
         color="primary"
         large
@@ -25,7 +25,7 @@
       </v-btn>
 
       <v-btn
-        id="cod-cancel-btn"
+        id="cancel-btn"
         large
         outlined
         color="primary"
@@ -74,7 +74,7 @@ export default class CredentialsFooter extends Vue {
     margin-left: 0.5rem;
   }
 
-  #cod-cancel-btn {
+  #cancel-btn {
     margin-left: 0.5rem;
   }
 }
