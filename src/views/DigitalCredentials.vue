@@ -1,14 +1,14 @@
 <template>
-  <v-container id="digital-credentials" class="mt-8 py-0">
+  <v-container id="digital-credentials">
 
     <!-- Digital Credentials Landing -->
-    <CredentialsLanding v-if="isDigitalCredentialHome" @addCredentials="addCredentials()" />
+    <CredentialsLanding v-if="isDigitalCredentialHome" class="py-8" @addCredentials="addCredentials()" />
 
     <!-- Add Credentials -->
     <section v-else id="add-digital-credentials">
 
       <!-- Add Credentials Header -->
-      <article id="add-digital-credentials-header">
+      <article id="add-digital-credentials-header" class="pt-8">
         <v-row no-gutters>
           <v-col cols="12" lg="11">
             <h1>Generate Business Digital Credentials</h1>

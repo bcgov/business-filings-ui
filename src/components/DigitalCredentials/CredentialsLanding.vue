@@ -22,12 +22,9 @@
         <v-col cols="12" lg="11">
 
           <!-- Important Message: To verify BCSC -->
-          <v-card outlined id="important-message" class="rounded-md my-3">
-            <p class="pa-0 ma-4">
-              <strong>Important:</strong>
-              You must be logged in with BC Services Card to generate a Business Digital Credentials.
-            </p>
-          </v-card>
+          <ImportantMessage
+            :message="'You must be logged in with BC Services Card to generate a Business Digital Credentials.'"
+          />
 
           <v-btn
             id="add-credential-btn"
@@ -55,10 +52,12 @@
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
+import { ImportantMessage } from '@/components/common'
 
 @Component({
   components: {
-    CredentialsTable
+    CredentialsTable,
+    ImportantMessage
   }
 })
 export default class CredentialsLanding extends Vue {
@@ -70,13 +69,4 @@ export default class CredentialsLanding extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-#important-message {
-  background-color: $BCgovGold0 !important;
-  border-color: $BCgovGold5 !important;
-
-  p {
-    font-size: $px-14;
-    color: $gray7;
-  }
-}
 </style>
