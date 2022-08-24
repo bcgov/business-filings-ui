@@ -645,28 +645,17 @@ export default class FilingHistoryList extends Mixins(
     if (index >= 0) this.togglePanel(index, this.historyItems[index])
   }
 
-  private startCorrectionDialog (item: HistoryItemIF): void {
-    this.currentFiling = item
-    this.fileCorrectionDialog = true
-  }
-
+  /** Called by File Correction Dialog to create a draft correction and redirect to Edit UI. */
   protected async redirectThisFiling (correctionType: CorrectionTypes): Promise<void> {
-    const item = this.currentFiling
-
     try {
       // show spinner since the network calls below can take a few seconds
       this.$root.$emit('showSpinner', true)
 
-      // fetch original filing
-      const origFiling = item.filingLink && await this.fetchFiling(item.filingLink)
-      if (!origFiling) {
-        throw new Error('Invalid API response')
-      }
-
       // build correction filing
       let correctionFiling: CorrectionFilingIF
-      if (this.isBComp) correctionFiling = this.buildIaCorrectionFiling(origFiling, correctionType)
-      if (this.isFirm) correctionFiling = this.buildFmCorrectionFiling(origFiling, correctionType)
+      if (this.isBComp || this.isFirm) {
+        correctionFiling = this.buildCorrectionFiling(this.currentFiling, correctionType)
+      }
 
       if (!correctionFiling) throw new Error('Invalid filing type')
 
@@ -677,9 +666,10 @@ export default class FilingHistoryList extends Mixins(
         throw new Error('Invalid API response')
       }
 
-      // navigate to Edit web app to complete this correction
+      // navigate to Edit UI to complete this correction
       // NB: no need to clear spinner
-      const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
+      const correctionUrl =
+        `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
       navigate(correctionUrl)
     } catch (error) {
       // clear spinner on error
@@ -691,15 +681,12 @@ export default class FilingHistoryList extends Mixins(
     }
   }
 
+  /** Called by File a Correction button to correct the subject filing. */
   protected async correctThisFiling (item: HistoryItemIF): Promise<void> {
     const correctedFilingId = item.filingId?.toString()
 
     switch (item?.name) {
       case FilingTypes.ANNUAL_REPORT:
-        // FUTURE:
-        // this.$router.push({ name: Routes.ANNUAL_REPORT,
-        //   params: { filingId: filing.filingId, isCorrection: true } })
-        // FOR NOW:
         this.$router.push({
           name: Routes.CORRECTION,
           params: { correctedFilingId }
@@ -707,10 +694,6 @@ export default class FilingHistoryList extends Mixins(
         break
 
       case FilingTypes.CHANGE_OF_DIRECTORS:
-        // FUTURE:
-        // this.$router.push({ name: Routes.STANDALONE_DIRECTORS,
-        //   params: { filingId: filing.filingId, isCorrection: true } })
-        // FOR NOW:
         this.$router.push({
           name: Routes.CORRECTION,
           params: { correctedFilingId }
@@ -718,10 +701,6 @@ export default class FilingHistoryList extends Mixins(
         break
 
       case FilingTypes.CHANGE_OF_ADDRESS:
-        // FUTURE:
-        // this.$router.push({ name: Routes.STANDALONE_ADDRESSES,
-        //   params: { filingId: filing.filingId, isCorrection: true } })
-        // FOR NOW:
         this.$router.push({
           name: Routes.CORRECTION,
           params: { correctedFilingId }
@@ -731,20 +710,15 @@ export default class FilingHistoryList extends Mixins(
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.REGISTRATION:
-        this.startCorrectionDialog(item)
+        this.currentFiling = item
+        this.fileCorrectionDialog = true
         break
 
       case FilingTypes.CORRECTION:
-        // FUTURE: allow a correction to a correction?
-        // this.$router.push({ name: Routes.CORRECTION,
-        //   params: { correctedFilingId } })
         alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
         break
 
       case FilingTypes.ALTERATION:
-        // FUTURE: allow a correction to an alteration?
-        // this.$router.push({ name: Routes.CORRECTION,
-        //   params: { correctedFilingId } })
         alert('At this time, you cannot correct an alteration. Please contact Ops if needed.')
         break
 

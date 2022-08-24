@@ -11,4 +11,7 @@ export default class DigitalWalletDownload extends Vue {}
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+#digital-wallet-download {
+  min-height: 250px
+}
 </style>

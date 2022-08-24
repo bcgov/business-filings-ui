@@ -11,4 +11,7 @@ export default class ScanCredentials extends Vue {}
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+#scan-credentials {
+  min-height: 250px
+}
 </style>

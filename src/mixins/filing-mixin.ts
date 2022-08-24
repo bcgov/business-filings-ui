@@ -90,90 +90,49 @@ export default class FilingMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds an Incorporation Application Correction filing body from IA filing.
-   * Used when creating an IA Correction.
-   * @param correctedFiling the IA filing to correct
-   * @returns the IA Correction filing body
+   * Builds a Correction filing body.
+   * @param correctedFiling the filing to correct
+   * @param correctedType the correction type
+   * @returns the filing body
    */
-  buildIaCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
+  buildCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
     const correctionFiling: CorrectionFilingIF = {
       header: {
-        name: FilingTypes.CORRECTION,
-        date: this.getCurrentDate
+        date: this.getCurrentDate,
+        name: FilingTypes.CORRECTION
       },
       business: {
-        legalType: correctedFiling.business.legalType,
-        identifier: correctedFiling.business.identifier,
-        legalName: correctedFiling.business.legalName
+        identifier: this.getIdentifier,
+        legalName: this.entityName, // may be undefined
+        legalType: this.getEntityType
       },
       correction: {
-        correctedFilingId: correctedFiling.header.filingId,
-        correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
-        correctedFilingDate: correctedFiling.header.date,
         comment: '',
-        type: correctionType
-      },
-      incorporationApplication: correctedFiling.incorporationApplication
-    }
-
-    return correctionFiling
-  }
-
-  /**
-   * Builds a Firm Correction filing body from a Registration or Change of Registration filing.
-   * Used when creating a Firm Correction.
-   * @param correctedFiling the Change of Registration or Registration filing to correct
-   * @returns the Firm Correction filing body
-   */
-  buildFmCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
-    const correctionFiling: CorrectionFilingIF = {
-      header: {
-        name: FilingTypes.CORRECTION,
-        date: this.getCurrentDate
-      },
-      business: {
-        legalType: correctedFiling.business.legalType,
-        identifier: correctedFiling.business.identifier,
-        legalName: correctedFiling.business.legalName
-      },
-      correction: {
-        correctedFilingId: correctedFiling.header.filingId,
-        correctedFilingType: correctedFiling.header.name,
-        correctedFilingDate: correctedFiling.header.date,
-        comment: '',
+        correctedFilingDate: correctedFiling.submittedDate,
+        correctedFilingId: correctedFiling.filingId,
+        correctedFilingType: correctedFiling.name,
         type: correctionType
       }
     }
 
-    // add in original Change of Registration filing
-    if (correctedFiling.changeOfRegistration) {
-      correctionFiling.changeOfRegistration = correctedFiling.changeOfRegistration
-    }
-
-    // add in original Registration filing
-    if (correctedFiling.registration) {
-      correctionFiling.registration = correctedFiling.registration
-    }
-
     return correctionFiling
   }
 
   /**
-   * Builds an Dissolution filing body to intialize a draft.
-   * Used when creating a draft Dissolution filing.
-   * @returns the Dissolution filing body
+   * Builds a Dissolution filing body. Used when creating a draft Dissolution filing.
+   * @returns the filing body
    */
   buildDissolutionFiling (): DissolutionFilingIF {
     const dissolutionFiling: DissolutionFilingIF = {
       header: {
-        name: FilingTypes.DISSOLUTION,
-        date: this.getCurrentDate
+        date: this.getCurrentDate,
+        name: FilingTypes.DISSOLUTION
       },
       business: {
-        legalType: this.getEntityType,
+        foundingDate: this.dateToApi(this.getEntityFoundingDate),
         identifier: this.getIdentifier,
         legalName: this.entityName,
-        foundingDate: this.dateToApi(this.getEntityFoundingDate)
+        legalType: this.getEntityType
       },
       dissolution: {
         custodialOffice: this.getRegisteredOfficeAddress,
@@ -185,9 +144,9 @@ export default class FilingMixin extends Mixins(DateMixin) {
     switch (this.getEntityType) {
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP:
-        dissolutionFiling.dissolution = { ...dissolutionFiling.dissolution,
+        dissolutionFiling.dissolution = {
+          ...dissolutionFiling.dissolution,
           custodialOffice: this.getBusinessAddress || null
-
         }
         break
     }

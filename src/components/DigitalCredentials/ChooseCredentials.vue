@@ -11,4 +11,7 @@ export default class ChooseCredentials extends Vue {}
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+#choose-credentials {
+  min-height: 250px
+}
 </style>
