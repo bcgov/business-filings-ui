@@ -1,5 +1,5 @@
 <template>
-  <v-container id="credentials-footer" class="list-item px-0">
+  <v-container id="credentials-footer" class="list-item px-0 pb-1">
     <div class="buttons-right">
       <v-btn
         v-if="currentStepIndex > 0"
