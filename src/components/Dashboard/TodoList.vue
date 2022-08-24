@@ -375,6 +375,9 @@
                         <template v-if="isTypeDissolution(item)">
                           <v-list-item-title>Delete {{ toDoListTitle }}</v-list-item-title>
                         </template>
+                        <template v-else-if="isTypeSpecialResolution(item)">
+                          <v-list-item-title>Delete Special Resolution</v-list-item-title>
+                        </template>
                         <v-list-item-title v-else>Delete Draft</v-list-item-title>
                       </v-list-item>
 
@@ -865,6 +868,9 @@ export default class TodoList extends Mixins(
         case FilingTypes.CONVERSION:
           await this.loadConversion(task)
           break
+        case FilingTypes.SPECIAL_RESOLUTION:
+          await this.loadSpecialResolution(task)
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in filing header =', header)
@@ -1272,6 +1278,45 @@ export default class TodoList extends Mixins(
     }
   }
 
+  private async loadSpecialResolution (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const business = filing.business
+    const specialResolution = filing.specialResolution
+
+    if (header && specialResolution) {
+      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+        task.enabled = false
+      }
+
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+
+      const item: TodoItemIF = {
+        name: FilingTypes.SPECIAL_RESOLUTION,
+        filingId: header.filingId,
+        legalType: corpTypeDescription,
+        title: this.specialResolutionTitle(header.priority),
+        draftTitle: this.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION),
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        goodStanding: this.isGoodStanding,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        comments: this.flattenAndSortComments(header.comments),
+        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or specialResolution or business in task =', task)
+    }
+  }
+
   /** Files a new filing (todo item). */
   protected doFileNow (item: TodoItemIF): void {
     switch (item.name) {
@@ -1368,6 +1413,13 @@ export default class TodoList extends Mixins(
         // navigate to Edit UI to resume this conversion
         const conversionUrl = `${this.editUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
         navigate(conversionUrl)
+        break
+
+      case FilingTypes.SPECIAL_RESOLUTION:
+        // navigate to Edit UI to resume this special resolution
+        // const specialResolutionUrl = `${this.editUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
+        const specialResolutionUrl = `http://localhost:8081/basePath/${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
+        navigate(specialResolutionUrl)
         break
 
       default:
@@ -1565,6 +1617,12 @@ export default class TodoList extends Mixins(
   private priorityCorrectionTitle (priority: boolean): string {
     let title = priority ? 'Priority ' : ''
     title += this.filingTypeToName(FilingTypes.CORRECTION)
+    return title
+  }
+
+  private specialResolutionTitle (priority: boolean): string {
+    let title = priority ? 'Priority ' : ''
+    title += this.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION)
     return title
   }
 

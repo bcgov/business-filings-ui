@@ -1,5 +1,5 @@
 import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingTypes } from '@/enums'
-import { ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific } from '@/interfaces'
+import { ApiDateTimeUtc, ChangeOfNameIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF } from '@/interfaces'
 
 /**
  * A list item from the API "filings" call (ie, API object).
@@ -53,6 +53,8 @@ export interface ApiFilingIF {
     // COD filings only
     changeOfDirectors?: any // some object
 
+    changeOfName?: ChangeOfNameIF
+
     // conversion filings only
     conversion?: any // some object
 
@@ -77,7 +79,7 @@ export interface ApiFilingIF {
     registrarsOrder?: any // some object
 
     // special resolution filings only
-    specialResolution?: any // some object
+    specialResolution?: SpecialResolutionIF
 
     // transition filings only
     transition?: any // some object
