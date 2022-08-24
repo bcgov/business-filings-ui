@@ -49,7 +49,7 @@
                   <!-- App Store Downloads -->
                   <v-row no-gutters class="my-3 ml-n4">
                     <v-col cols="6" lg="3">
-                      <a href="https://apps.apple.com/" target="_blank">
+                      <a href="https://apps.apple.com/" target="_blank" rel="noopener">
                         <v-img
                           contain
                           height="44"
@@ -60,7 +60,7 @@
                       </a>
                     </v-col>
                     <v-col cols="6" lg="3" class="ml-n2">
-                      <a href="https://play.google.com/store/" target="_blank">
+                      <a href="https://play.google.com/store/" target="_blank" rel="noopener">
                         <v-img
                           contain
                           height="44"
@@ -76,7 +76,7 @@
                   <p>3. Tap on Network and select "Sovrin Staging"</p>
                 </v-col>
 
-                <!-- Wallet Download QR Code -->
+                <!-- Download Wallet QR Code -->
                 <v-col cols="12" lg="4">
                   <v-img
                     class="float-lg-right"
@@ -91,8 +91,8 @@
           </v-card>
         </v-col>
       </v-row>
-
     </article>
+
   </section>
 </template>
 
