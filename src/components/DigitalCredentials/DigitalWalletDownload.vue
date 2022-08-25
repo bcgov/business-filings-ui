@@ -84,6 +84,7 @@
                     max-width="200"
                     alt="Trinsic Wallet QR Code"
                     :src="qrCodeUrl"
+                    :content="metaContent"
                   />
                 </v-col>
               </v-row>
@@ -106,19 +107,28 @@ import { ImportantMessage } from '@/components/common'
   }
 })
 export default class DigitalWalletDownload extends Vue {
-  // Current designs call for 1 QR code but we have no way of knowing what device a user has.
-  // Future design considerations required
+  // Current designs call for 1 QR code, but we have no way of knowing what device a user has.
+  // Further design required here.
   readonly appleUrl = 'https://apps.apple.com/us/app/trinsic-wallet/id1475160728'
   readonly googleUrl = 'https://play.google.com/store/apps/details?id=id.streetcred.apps.mobile&hl=en_US'
   readonly qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chl=' + this.appleUrl + '&chs=300x300&chld=L|1'
+
+  // This is required in order to meet Browser Content Security policies
+  readonly metaContent = 'default-src *; script-src \'self\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\';' +
+    'media-src *; img-src \'self\' data:'
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-.app-download-image {
-  &:hover {
-    cursor: pointer;
+#digital-wallet-download {
+  p {
+    color: $gray9;
+  }
+  .app-download-image {
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 </style>
