@@ -29,7 +29,13 @@
       <article id="digital-credentials-component-view">
         <v-row no-gutters>
           <v-col cols="12" lg="9">
-            <router-view />
+            <router-view
+              :hasBusinessCred="!!businessCredential"
+              :hasBusinessRelationshipCred="!!businessRelationshipCredential"
+              @back="back()"
+              @addCredential="businessCredential = $event"
+              @addRelationshipCredential="businessRelationshipCredential = $event"
+            />
           </v-col>
         </v-row>
       </article>
@@ -69,6 +75,9 @@ import { StepsIF } from '@/interfaces'
   }
 })
 export default class DigitalCredentials extends Vue {
+  private businessCredential = false
+  private businessRelationshipCredential = false
+
   /** The steps for Business Digital Credentials. **/
   get digitalCredentialSteps (): Array<StepsIF> {
     return [

@@ -33,7 +33,7 @@
                 </v-col>
               </v-row>
               <v-row no-gutters class="pt-3">
-                <v-col cols="12" lg="8">
+                <v-col cols="12" lg="9">
                   <p>1.  Scan the QR code on your phone or select the appropriate app store icon below for your phone.
                     Depending on your phone model, you may need to
                     <v-tooltip top content-class="top-tooltip" transition="fade-transition">
@@ -47,8 +47,8 @@
                   </p>
 
                   <!-- App Store Downloads -->
-                  <v-row no-gutters class="my-3 ml-n4">
-                    <v-col cols="6" lg="3">
+                  <v-row no-gutters class="my-3">
+                    <v-col cols="6" lg="3" class="ml-n6">
                       <a href="https://apps.apple.com/" target="_blank" rel="noopener">
                         <v-img
                           contain
@@ -59,7 +59,7 @@
                         />
                       </a>
                     </v-col>
-                    <v-col cols="6" lg="3" class="ml-n2">
+                    <v-col cols="6" lg="3" class="ml-n6">
                       <a href="https://play.google.com/store/" target="_blank" rel="noopener">
                         <v-img
                           contain
@@ -77,14 +77,11 @@
                 </v-col>
 
                 <!-- Download Wallet QR Code -->
-                <v-col cols="12" lg="4">
-                  <v-img
+                <v-col cols="12" lg="3">
+                  <QrcodeVue
                     class="float-lg-right"
-                    max-height="200"
-                    max-width="200"
-                    alt="Trinsic Wallet QR Code"
-                    :src="qrCodeUrl"
-                    :content="metaContent"
+                    size="160"
+                    :value="appleUrl"
                   />
                 </v-col>
               </v-row>
@@ -100,22 +97,18 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { ImportantMessage } from '@/components/common'
+import QrcodeVue from 'qrcode.vue'
 
 @Component({
   components: {
-    ImportantMessage
+    ImportantMessage,
+    QrcodeVue
   }
 })
 export default class DigitalWalletDownload extends Vue {
-  // Current designs call for 1 QR code, but we have no way of knowing what device a user has.
-  // Further design required here.
+  // Further design required in order to display both QR codes
   readonly appleUrl = 'https://apps.apple.com/us/app/trinsic-wallet/id1475160728'
   readonly googleUrl = 'https://play.google.com/store/apps/details?id=id.streetcred.apps.mobile&hl=en_US'
-  readonly qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chl=' + this.appleUrl + '&chs=300x300&chld=L|1'
-
-  // This is required in order to meet Browser Content Security policies
-  readonly metaContent = 'default-src *; script-src \'self\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\';' +
-    'media-src *; img-src \'self\' data:'
 }
 </script>
 
