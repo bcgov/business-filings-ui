@@ -30,6 +30,9 @@
         <v-row no-gutters>
           <v-col cols="12" lg="9">
             <router-view
+              :hasBusinessCred="!!businessCredential"
+              :hasBusinessRelationshipCred="!!businessRelationshipCredential"
+              @back="back()"
               @addCredential="businessCredential = $event"
               @addRelationshipCredential="businessRelationshipCredential = $event"
             />
