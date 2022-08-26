@@ -44,12 +44,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Emit, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class ChooseCredentials extends Vue {
   private businessCredential = false
   private businessRelationshipCredential = false
+
+  @Emit('addCredential')
+  @Watch('businessCredential')
+  private addCredential (val: boolean): boolean { return val }
+
+  @Emit('addRelationshipCredential')
+  @Watch('businessRelationshipCredential')
+  private addRelationshipCredential (val: boolean): boolean { return val }
 }
 </script>
 
