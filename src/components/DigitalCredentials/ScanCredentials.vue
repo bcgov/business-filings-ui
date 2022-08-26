@@ -20,7 +20,7 @@
               <!-- Placeholder Url -->
               <QrcodeVue
                 size="160"
-                :value="appleUrl"
+                :value="invitationUrl"
               />
             </v-col>
 
@@ -103,7 +103,8 @@ export default class ScanCredentials extends Vue {
   @Prop({ default: false })
   readonly hasBusinessRelationshipCred: boolean
 
-  readonly appleUrl = 'https://apps.apple.com/us/app/trinsic-wallet/id1475160728'
+  // Placeholder URL. To be generated dynamically from Credentials Agent
+  readonly invitationUrl = 'https://apps.apple.com/us/app/trinsic-wallet/id1475160728'
 
   @Emit() back (): void {}
 }
