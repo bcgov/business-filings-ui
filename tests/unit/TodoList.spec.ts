@@ -163,6 +163,13 @@ describe('TodoList - UI', () => {
             specialResolution: {}
           }
         }
+      },
+      {
+        'enabled': true,
+        'order': 1,
+        'task': {
+          'filing': { }
+        }
       }
     ]
 
