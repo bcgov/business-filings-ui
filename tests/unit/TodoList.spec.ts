@@ -145,6 +145,36 @@ describe('TodoList - UI', () => {
     wrapper.destroy()
   })
 
+  it('displays DRAFT \'Special Resolution\' task', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        'enabled': true,
+        'order': 1,
+        'task': {
+          'filing': {
+            header: {
+              'name': 'specialResolution',
+              'status': 'DRAFT',
+              'filingId': 1,
+              'comments': []
+            },
+            business: {},
+            specialResolution: {}
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(TodoList, { store, vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
+    expect(vm.$el.querySelector('.no-results')).toBeNull()
+    wrapper.destroy()
+  })
+
   it('displays a NEW \'Annual Report\' task', async () => {
     // init store
     store.state.tasks = [
