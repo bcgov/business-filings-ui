@@ -1417,8 +1417,8 @@ export default class TodoList extends Mixins(
 
       case FilingTypes.SPECIAL_RESOLUTION:
         // navigate to Edit UI to resume this special resolution
-        // const specialResolutionUrl = `${this.editUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
-        const specialResolutionUrl = `http://localhost:8081/basePath/${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
+        let specialResolutionUrl = `${this.editUrl}${this.getIdentifier}/special-resolution/`
+        specialResolutionUrl += `?special-resolution-id=${item.filingId}`
         navigate(specialResolutionUrl)
         break
 
