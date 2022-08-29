@@ -1313,7 +1313,7 @@ export default class TodoList extends Mixins(
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or specialResolution or business in task =', task)
+      console.log('ERROR - invalid header or specialResolution in task =', task)
     }
   }
 
