@@ -1,4 +1,4 @@
-import { AlterationIF, BusinessIF } from '@/interfaces'
+import { AlterationIF, BusinessIF, ChangeOfNameIF, SpecialResolutionIF } from '@/interfaces'
 import { FilingStatus, FilingTypes } from '@/enums'
 
 /**
@@ -36,6 +36,8 @@ export interface TaskTodoIF {
   registration?: any
   changeOfRegistration?: any
   conversion?: any
+  specialResolution?: SpecialResolutionIF
+  changeOfName?: ChangeOfNameIF
 }
 
 /** A filing's header object from the API. */
