@@ -19,4 +19,4 @@ export * from './saveErrorReasons'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
-export { ActionTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
+export { StaffPaymentOptions } from '@bcrs-shared-components/enums'
