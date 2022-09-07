@@ -127,7 +127,7 @@ export default class AgmDate extends Mixins(DateMixin) {
     form: FormIF
   }
 
-  /** New AGM Date (from a resumed draft). */
+  /** New AGM Date (from a resumed draft). Test */
   @Prop({ default: null })
   readonly newAgmDate: string
 
