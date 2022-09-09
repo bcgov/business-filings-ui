@@ -30,11 +30,11 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-// mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
-console.warn = jest.fn()
-
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
+
+// Prevent the warning "[Vuetify] Unable to locate target #staff-notation"
+document.body.setAttribute('id', 'todo-list')
 
 describe('TodoList - UI', () => {
   beforeAll(() => {
@@ -162,13 +162,6 @@ describe('TodoList - UI', () => {
             business: {},
             specialResolution: {}
           }
-        }
-      },
-      {
-        'enabled': true,
-        'order': 1,
-        'task': {
-          'filing': { }
         }
       }
     ]
@@ -525,8 +518,7 @@ describe('TodoList - UI', () => {
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // click the View Details button
-    const button = item.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
-    await button.click()
+    await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
       .toContain('This filing is in review and has been saved as a draft.')
@@ -642,8 +634,7 @@ describe('TodoList - UI', () => {
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // click the View Details button
-    const button = item.querySelector('.list-item__subtitle .todo-subtitle .expand-btn')
-    await button.click()
+    await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
       .toContain('This filing is pending review by Registry Staff.')
@@ -700,8 +691,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
 
     // click the View Details button
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
 
     // validate that child component exists
     expect(wrapper.find(PaymentPending).exists()).toBe(true)
@@ -756,8 +746,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT UNSUCCESSFUL')
 
     // click the View Details button
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
 
     // validate that child component exists
     expect(wrapper.find(PaymentUnsuccessful).exists()).toBe(true)
@@ -813,8 +802,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('ONLINE BANKING PAYMENT PENDING')
 
     // click the View Details button
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
 
     // validate that child component exists
     expect(wrapper.find(PaymentPendingOnlineBanking).exists()).toBe(true)
@@ -862,8 +850,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAID')
 
     // click the View Details button
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
 
     // validate that child component exists
     expect(wrapper.find(PaymentPaid).exists()).toBe(true)
@@ -1057,7 +1044,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(item3.querySelector('.todo-list-checkbox')).toBeDefined()
 
     // Simulate Checkbox being selected to enable first File Now button
-    wrapper.find('#enable-checkbox').trigger('click')
+    await wrapper.find('#enable-checkbox').trigger('click')
 
     // check action buttons
     expect(item1.querySelector('.list-item__actions .v-btn').disabled).toBe(false)
@@ -1104,7 +1091,7 @@ describe('TodoList - UI - BCOMPs', () => {
       .toContain('Verify your Office Address and Current Directors before filing your Annual Report.')
 
     // Simulate Checkbox being selected to enable File Now Button
-    wrapper.find('#enable-checkbox').trigger('click')
+    await wrapper.find('#enable-checkbox').trigger('click')
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -1154,7 +1141,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(wrapper.find('#enable-checkbox').attributes('disabled')).toBe('disabled')
 
     // Simulate the attempt to enable the File Annual Report btn
-    wrapper.find('#enable-checkbox').trigger('click')
+    await wrapper.find('#enable-checkbox').trigger('click')
 
     // Verify File Annual Report btn is disabled
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -1679,11 +1666,9 @@ describe('TodoList - Click Tests', () => {
 
     expect(vm.todoItems.length).toEqual(1)
 
-    const item = vm.$el.querySelector('.list-item')
-    const button = item.querySelector('.list-item__actions .v-btn')
-    expect(button.textContent).toContain('File Annual Report')
-
-    await button.click()
+    const button = wrapper.find('.list-item .list-item__actions .v-btn')
+    expect(button.text()).toContain('File Annual Report')
+    await button.trigger('click')
 
     // verify that filing status was set
     expect(vm.$store.state.currentFilingStatus).toBe('NEW')
@@ -1732,11 +1717,14 @@ describe('TodoList - Click Tests', () => {
 
     expect(vm.todoItems.length).toEqual(1)
 
-    const item = vm.$el.querySelector('.list-item')
-    const button = item.querySelector('.list-item__actions .v-btn')
-    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
+    // const item = vm.$el.querySelector('.list-item')
+    // const button = item.querySelector('.list-item__actions .v-btn')
+    // expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
 
-    await button.click()
+    // await button.click()
+    const button = wrapper.find('.list-item .list-item__actions .v-btn')
+    expect(button.text()).toContain('Resume')
+    await button.trigger('click')
 
     // verify that filing status was set
     expect(vm.$store.state.currentFilingStatus).toBe('DRAFT')
@@ -1785,12 +1773,10 @@ describe('TodoList - Click Tests', () => {
 
     expect(vm.todoItems.length).toEqual(1)
 
-    const item = vm.$el.querySelector('.list-item')
-    const button = item.querySelector('.list-item__actions .v-btn')
-    expect(button.getAttribute('disabled')).toBeNull()
-    expect(button.querySelector('.v-btn__content').textContent).toContain('Resume Payment')
-
-    await button.click()
+    const button = wrapper.find('.list-item .list-item__actions .v-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(button.text()).toContain('Resume Payment')
+    await button.trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -1839,7 +1825,6 @@ describe('TodoList - Click Tests', () => {
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.getAttribute('disabled')).toBeNull()
     expect(button.querySelector('.v-btn__content').textContent).toContain('Retry Payment')
-
     await button.click()
 
     // verify redirection
@@ -1890,7 +1875,6 @@ describe('TodoList - Click Tests', () => {
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.getAttribute('disabled')).toBeNull()
     expect(button.querySelector('.v-btn__content').textContent).toContain('Change Payment Type')
-
     await button.click()
 
     // verify redirection
@@ -1951,8 +1935,8 @@ describe('TodoList - Click Tests', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('PAYMENT INCOMPLETE')
 
     // click the View Details button
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
+    await flushPromises() // need to wait longer here
 
     // validate that child component exists
     expect(wrapper.find(PaymentIncomplete).exists()).toBe(true)
@@ -2149,7 +2133,6 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.getAttribute('disabled')).toBeNull()
     expect(button.querySelector('.v-btn__content').textContent).toContain('Resume Payment')
-
     await button.click()
 
     // verify redirection
@@ -2199,7 +2182,6 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.getAttribute('disabled')).toBeNull()
     expect(button.querySelector('.v-btn__content').textContent).toContain('Retry Payment')
-
     await button.click()
 
     // verify redirection
@@ -2271,9 +2253,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     const button = wrapper.find('.list-item__actions .v-btn')
     expect(button.attributes('disabled')).toBeUndefined()
     expect(button.find('.v-btn__content').text()).toContain('Incorporate using this NR')
-
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -2317,9 +2297,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     const button = wrapper.find('.list-item__actions .v-btn')
     expect(button.attributes('disabled')).toBeUndefined()
     expect(button.find('.v-btn__content').text()).toContain('Incorporate a Numbered Company')
-
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -2379,8 +2357,8 @@ describe('TodoList - Click Tests - IA Corrections', () => {
 
     expect(vm.todoItems.length).toEqual(1)
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
-    wrapper.find('.btn-corr-draft-resume').trigger('click')
-    await Vue.nextTick()
+
+    await wrapper.find('.btn-corr-draft-resume').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -2440,8 +2418,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     expect(vm.todoItems.length).toEqual(1)
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
 
-    wrapper.find('.btn-corr-draft-resume').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('.btn-corr-draft-resume').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -2505,11 +2482,9 @@ describe('TodoList - Delete Draft', () => {
     const wrapper = mount(TodoList, { store, vuetify })
     await Vue.nextTick()
 
-    wrapper.find('#menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-delete-draft').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Delete button
+    await wrapper.find('#menu-activator').trigger('click')
+    await wrapper.find('#btn-delete-draft').trigger('click')
 
     // verify confirmation popup is showing
     expect(wrapper.vm.$refs.confirm).toBeTruthy()
@@ -2547,11 +2522,9 @@ describe('TodoList - Delete Draft', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    wrapper.find('#menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-delete-draft').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Delete button
+    await wrapper.find('#menu-activator').trigger('click')
+    await wrapper.find('#btn-delete-draft').trigger('click')
 
     // verify confirmation popup is showing
     expect(vm.$refs.confirm.dialog).toBeTruthy()
@@ -2595,11 +2568,9 @@ describe('TodoList - Delete Draft', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    wrapper.find('#menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-delete-draft').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Delete button
+    await wrapper.find('#menu-activator').trigger('click')
+    await wrapper.find('#btn-delete-draft').trigger('click')
 
     // verify confirmation popup is showing
     expect(vm.$refs.confirm.dialog).toBeTruthy()
@@ -2641,11 +2612,9 @@ describe('TodoList - Delete Draft', () => {
     const wrapper = mount(TodoList, { store, vuetify })
     await Vue.nextTick()
 
-    wrapper.find('#menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-delete-application').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Delete button
+    await wrapper.find('#menu-activator').trigger('click')
+    await wrapper.find('#btn-delete-application').trigger('click')
 
     // verify confirmation popup is showing
     expect(wrapper.vm.$refs.confirm).toBeTruthy()
@@ -2706,11 +2675,9 @@ describe('TodoList - Cancel Payment', () => {
     const wrapper = mount(TodoList, { store, vuetify })
     await Vue.nextTick()
 
-    wrapper.find('#pending-item-menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-cancel-payment').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Cancel button
+    await wrapper.find('#pending-item-menu-activator').trigger('click')
+    await wrapper.find('#btn-cancel-payment').trigger('click')
 
     // verify confirmation popup is showing
     expect(wrapper.vm.$refs.confirm).toBeTruthy()
@@ -2749,11 +2716,9 @@ describe('TodoList - Cancel Payment', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    wrapper.find('#pending-item-menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-cancel-payment').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Cancel button
+    await wrapper.find('#pending-item-menu-activator').trigger('click')
+    await wrapper.find('#btn-cancel-payment').trigger('click')
 
     // verify confirmation popup is showing
     expect(vm.$refs.confirm.dialog).toBeTruthy()
@@ -2798,11 +2763,9 @@ describe('TodoList - Cancel Payment', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    wrapper.find('#pending-item-menu-activator').trigger('click')
-    await flushPromises()
-
-    wrapper.find('#btn-cancel-payment').trigger('click')
-    await flushPromises()
+    // open dropdown menu and click Cancel button
+    await wrapper.find('#pending-item-menu-activator').trigger('click')
+    await wrapper.find('#btn-cancel-payment').trigger('click')
 
     // verify confirmation popup is showing
     expect(vm.$refs.confirm.dialog).toBeTruthy()

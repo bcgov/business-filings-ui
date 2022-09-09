@@ -721,8 +721,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button and wait for async methods to finish
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify v-tooltip text
     // FUTURE: Tool tip is outside the wrapper. Have yet to find out how to get hold of that.
@@ -792,8 +792,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button and wait for async methods to finish
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     // verify v-tooltip text
     // FUTURE: Tool tip is outside the wrapper. Have yet to find out how to get hold of that.
@@ -864,8 +863,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button and wait for async methods to finish
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify v-tooltip text - To find out how to get the tool tip text outside the wrapper
     // const tooltipText = wrapper.find('#cod-file-pay-btn + span').text()
@@ -1071,8 +1070,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       expect(button.attributes('disabled')).toBeUndefined()
 
       // click the Save button and wait for async methods to finish
-      // button.trigger('click')
-      // await flushPromises()
+      // await button.trigger('click')
       // work-around because click trigger isn't working
       await vm.onClickSave()
 
@@ -1113,8 +1111,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the Save & Resume Later button and wait for async methods to finish
-    // button.trigger('click')
-    // await flushPromises()
+    // await button.trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
@@ -1242,8 +1239,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
 
   it('Includes complete list of directors in the filing data', async () => {
     // click the Save button
-    // wrapper.find('#cod-save-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#cod-save-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1261,8 +1257,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
 
   it('Includes certification data in the header', async () => {
     // click the Save button
-    // wrapper.find('#cod-save-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#cod-save-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1612,8 +1607,7 @@ describe('Standalone Directors Filing - payment required error', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    // button.trigger('click')
-    // await flushPromises()
+    // await button.trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 

@@ -47,14 +47,14 @@ import { HistoryItemIF, TodoItemIF } from '@/interfaces'
 })
 export default class AddCommentDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop() readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog: boolean
+
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   /** The filing to add a comment to. */
   @Prop({ default: null })
   readonly filing: HistoryItemIF | TodoItemIF
-
-  /** Prop to provide attachment selector. */
-  @Prop() readonly attach: string
 
   /** The comment text. */
   private comment: string = ''

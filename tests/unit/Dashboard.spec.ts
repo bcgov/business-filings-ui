@@ -204,8 +204,7 @@ describe('Dashboard - Click Tests', () => {
 
     const button = wrapper.find('#standalone-addresses-button')
     expect(button.text()).toContain('Change')
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     // verify routing to Standalone Office Address Filing page with id=0
     expect(vm.$route.name).toBe('standalone-addresses')
@@ -233,8 +232,7 @@ describe('Dashboard - Click Tests', () => {
 
     const button = wrapper.find('#standalone-addresses-button')
     expect(button.text()).toContain('Change')
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     expect(vm.coaWarningDialog).toBe(true)
     expect(wrapper.find('#dialog-toggle-button')).toBeDefined()
@@ -264,8 +262,7 @@ describe('Dashboard - Click Tests', () => {
 
     const button = wrapper.find('#standalone-directors-button')
     expect(button.text()).toContain('Change')
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     // verify routing to Standalone Directors Filing page with id=0
     expect(vm.$route.name).toBe('standalone-directors')

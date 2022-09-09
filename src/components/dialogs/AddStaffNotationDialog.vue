@@ -86,6 +86,12 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     notationFormRef: FormIF
   }
 
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog: boolean
+
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
+
   /** Prop for the item's display name. */
   @Prop() readonly displayName: string
 
@@ -94,12 +100,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
   /** Prop for the item's dissolution type. */
   @Prop() readonly dissolutionType?: DissolutionTypes
-
-  /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
-
-  /** Prop to provide attachment selector. */
-  @Prop() readonly attach: string
 
   /** Prop to require court order number regardless the plan of arrangement. */
   @Prop({ default: false }) readonly courtOrderNumberRequired: boolean
@@ -110,7 +110,6 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: string
   @Getter getEntityFoundingDate!: Date
-  @Getter isFirm!: boolean
 
   /** The notation text. */
   private notation: string = ''

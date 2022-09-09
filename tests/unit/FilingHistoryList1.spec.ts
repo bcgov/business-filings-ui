@@ -25,10 +25,11 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-// Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
-const app: HTMLDivElement = document.createElement('div')
-app.setAttribute('data-app', 'true')
-document.body.append(app)
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
+// Prevent the warning "[Vuetify] Unable to locate target #filing-history-list"
+document.body.setAttribute('id', 'filing-history-list')
 
 describe('Filing History List - misc functionality', () => {
   const SAMPLE_FILINGS = [
@@ -224,8 +225,8 @@ describe('Filing History List - misc functionality', () => {
     expect(button.text()).toContain('Request a Copy')
 
     // expand details
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Close')
@@ -279,8 +280,8 @@ describe('Filing History List - misc functionality', () => {
     expect(button.text()).toContain('View Documents')
 
     // expand details
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
@@ -706,35 +707,32 @@ describe('Filing History List - redirections', () => {
     // find and click the drop-down menu button
     const menuButton = wrapper.find('.menu-btn')
     expect(menuButton).toBeDefined()
-    menuButton.trigger('click')
-    await flushPromises()
+    await menuButton.trigger('click')
 
     // find and click the "File a Correction" menu item
     const fileCorrectionItem = wrapper.find('.file-correction-item')
-    expect(fileCorrectionItem).toBeDefined()
-    fileCorrectionItem.trigger('click')
-    await flushPromises()
+    expect(fileCorrectionItem.exists()).toBe(true)
+    await fileCorrectionItem.trigger('click')
 
     // verify to display the correction dialog modal
-    const fileCorrectionDialog = wrapper.find('#correction-filing-dialog')
-    expect(fileCorrectionDialog).toBeDefined()
+    const fileCorrectionDialog = wrapper.find('.file-correction-dialog')
+    expect(fileCorrectionDialog.exists()).toBe(true)
 
     // verify radio buttons for client and staff
     const clientRadioBtn = wrapper.find('#correct-client-radio')
-    expect(clientRadioBtn).toBeDefined()
+    expect(clientRadioBtn.exists()).toBe(true)
 
     // click the staff radio button
     const staffRadioBtn = wrapper.find('#correct-staff-radio')
-    expect(staffRadioBtn).toBeDefined()
-    staffRadioBtn.trigger('click')
-    await flushPromises()
+    expect(staffRadioBtn.exists()).toBe(true)
+    await staffRadioBtn.trigger('click')
 
     // verify redirection
     const startCorrectionBtn = wrapper.find('#dialog-start-button')
-    expect(startCorrectionBtn).toBeDefined()
-    startCorrectionBtn.trigger('click')
-    await flushPromises()
+    expect(startCorrectionBtn.exists()).toBe(true)
+    await startCorrectionBtn.trigger('click')
 
+    await flushPromises()
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const createUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
@@ -891,8 +889,7 @@ describe('Filing History List - incorporation applications', () => {
     // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -955,8 +952,7 @@ describe('Filing History List - incorporation applications', () => {
     // verify View Details button and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1019,8 +1015,7 @@ describe('Filing History List - incorporation applications', () => {
     // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1081,8 +1076,7 @@ describe('Filing History List - incorporation applications', () => {
     // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1145,8 +1139,7 @@ describe('Filing History List - incorporation applications', () => {
     // verify View Details button and and toggle panel
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1214,8 +1207,8 @@ describe('Filing History List - incorporation applications', () => {
     jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // expand details
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
@@ -1283,8 +1276,7 @@ describe('Filing History List - paper only and other filings', () => {
     // verify expand button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('Request a Copy')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify updated expand button
     expect(wrapper.find('.expand-btn').text()).toContain('Close')
@@ -1344,8 +1336,8 @@ describe('Filing History List - paper only and other filings', () => {
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
@@ -1410,8 +1402,8 @@ describe('Filing History List - paper only and other filings', () => {
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
@@ -1475,8 +1467,8 @@ describe('Filing History List - paper only and other filings', () => {
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
@@ -1540,8 +1532,8 @@ describe('Filing History List - paper only and other filings', () => {
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
@@ -1598,8 +1590,7 @@ describe('Filing History List - paper only and other filings', () => {
     // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
@@ -1655,8 +1646,7 @@ describe('Filing History List - paper only and other filings', () => {
     // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
@@ -1712,8 +1702,7 @@ describe('Filing History List - paper only and other filings', () => {
     // verify Request a Copy button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View')
-    detailsBtn.trigger('click')
-    await flushPromises()
+    await detailsBtn.trigger('click')
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
@@ -1769,8 +1758,7 @@ describe('Filing History List - with documents', () => {
     expect(button.text()).toContain('View Documents')
 
     // expand details
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
 
     // verify that Documents List component is not displayed after the item is expanded
     expect(wrapper.find(DocumentsList).exists()).toBe(false)
@@ -1807,8 +1795,8 @@ describe('Filing History List - with documents', () => {
     expect(button.text()).toContain('View Documents')
 
     // expand details
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify that Documents List component is displayed after the item is expanded
     expect(wrapper.find(DocumentsList).exists()).toBe(true)
@@ -1843,8 +1831,8 @@ describe('Filing History List - with documents', () => {
     await Vue.nextTick()
 
     // expand details
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify that Documents List component is displayed after the item is expanded
     expect(wrapper.find(DocumentsList).exists()).toBe(true)
@@ -1952,8 +1940,7 @@ describe('Filing History List - detail comments', () => {
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // expand the panel
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
 
     // verify that Details List component is not displayed after the item is expanded
     expect(wrapper.find(DetailsList).exists()).toBe(false)
@@ -1998,8 +1985,8 @@ describe('Filing History List - detail comments', () => {
     expect(wrapper.find(DetailsList).exists()).toBe(false)
 
     // expand the panel
-    wrapper.find('.expand-btn').trigger('click')
-    await flushPromises()
+    await wrapper.find('.expand-btn').trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify that Details List component is displayed after the item is expanded
     expect(wrapper.find(DetailsList).exists()).toBe(true)

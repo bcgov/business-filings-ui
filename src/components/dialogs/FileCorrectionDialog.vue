@@ -38,18 +38,18 @@ import { CorrectionTypes } from '@/enums'
 
 @Component({})
 export default class FileCorrectionDialog extends Vue {
-  // enums for template
+  // enum for template
   readonly CorrectionTypes = CorrectionTypes
 
   // local variables
-  private hasChosenCorrection = true
+  protected hasChosenCorrection = true
   protected correctionType = null as CorrectionTypes
 
-  // Prop to display the dialog.
-  @Prop() readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog: boolean
 
-  // Prop to provide attachment selector.
-  @Prop() readonly attach: string
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   /** Check off buttons to confirm correction type */
   protected checkToStart () {

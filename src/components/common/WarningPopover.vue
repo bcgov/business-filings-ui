@@ -23,13 +23,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { AlertMessageIF } from '@/interfaces'
 
 @Component({})
 export default class WarningPopover extends Vue {
-  @Prop({ default: null })
-  readonly dialogObj: AlertMessageIF
+  @Prop({ default: null }) readonly dialogObj: AlertMessageIF
 }
 </script>
 
@@ -45,6 +44,5 @@ export default class WarningPopover extends Vue {
     vertical-align: bottom !important;
     color: $BCgovIconBlue !important;
   }
-
 }
 </style>

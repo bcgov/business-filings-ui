@@ -11,6 +11,7 @@ import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 import Stepper from '@/components/common/Stepper.vue'
 import SummaryDirectors from './SummaryDirectors.vue'
 import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
+import WarningPopover from './WarningPopover.vue'
 
 // NB: importing/exporting Directors gives us weird errors,
 // possibly due to some circular dependency, so don't do it
@@ -28,5 +29,6 @@ export {
   StaffPayment,
   Stepper,
   SummaryDirectors,
-  SummaryOfficeAddresses
+  SummaryOfficeAddresses,
+  WarningPopover
 }

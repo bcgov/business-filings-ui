@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent>
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach">
     <v-card class="pa-5">
       <v-card-subtitle class="pt-5" align="center">
         <v-icon color="error" large>mdi-information-outline</v-icon>
@@ -57,8 +57,11 @@ import { Getter } from 'vuex-class'
 
 @Component({})
 export default class ConfirmDissolution extends Vue {
-  // Prop to display the dialog.
-  @Prop() private readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog: boolean
+
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   // Global getters
   @Getter getEntityName!: string

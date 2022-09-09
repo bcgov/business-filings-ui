@@ -57,17 +57,17 @@ export default class DeleteErrorDialog extends Vue {
   // Getter definition for static type checking.
   readonly isRoleStaff!: boolean
 
-  // Prop to display the dialog.
-  @Prop() readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog: boolean
 
-  // Prop to provide attachment selector.
-  @Prop() readonly attach: string
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   // Prop containing error messages.
-  @Prop() readonly errors: any[]
+  @Prop({ default: () => [] }) readonly errors: any[]
 
   // Prop containing warning messages.
-  @Prop() readonly warnings: any[]
+  @Prop({ default: () => [] }) readonly warnings: any[]
 
   // Pass click event to parent.
   @Emit() private okay () { }

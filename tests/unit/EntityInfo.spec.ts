@@ -352,8 +352,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
-    wrapper.find('#company-information-button').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#company-information-button').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -398,8 +397,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     })
     await Vue.nextTick()
 
-    wrapper.find('#dissolution-button').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#dissolution-button').trigger('click')
 
     // verify emit event
     expect(wrapper.emitted().confirmDissolution).toEqual([[]])
@@ -417,8 +415,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     })
     await Vue.nextTick()
 
-    wrapper.find('#dissolution-button').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#dissolution-button').trigger('click')
 
     // verify emit event
     expect(wrapper.emitted().notInGoodStanding).toEqual([['dissolve']])
@@ -458,8 +455,7 @@ describe('EntityInfo - Click Tests - Business Summary', () => {
     })
     await Vue.nextTick()
 
-    wrapper.find('#download-summary-button').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#download-summary-button').trigger('click')
 
     // verify emit event
     expect(wrapper.emitted().downloadBusinessSummary).toEqual([[]])

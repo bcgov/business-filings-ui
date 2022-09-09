@@ -36,7 +36,7 @@
               </v-btn>
             </v-col>
             <v-col cols="5">
-              <warning-popover :dialogObj="complianceMsg" />
+              <WarningPopover :dialogObj="complianceMsg" />
             </v-col>
           </v-row>
         </v-container>
@@ -542,7 +542,7 @@ import { cloneDeep, isEqual } from 'lodash'
 
 // Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { WarningPopover } from '@/components/dialogs'
+import { WarningPopover } from '@/components/common/'
 
 // Mixins
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'

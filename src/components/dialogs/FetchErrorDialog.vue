@@ -41,11 +41,11 @@ export default class FetchErrorDialog extends Vue {
   // Getter definition for static type checking.
   readonly isRoleStaff!: boolean
 
-  // Prop to display the dialog.
+  /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog: boolean
 
-  // Prop to provide attachment selector.
-  @Prop({ default: null }) readonly attach: string
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   // Pass click event to parent.
   @Emit() private exit () { }
