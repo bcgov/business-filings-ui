@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent content-class="not-in-good-standing-dialog">
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="not-in-good-standing-dialog">
     <v-card class="pa-5">
       <v-card-subtitle class="pt-5" align="center">
         <v-icon color="error" large>mdi-information-outline</v-icon>
@@ -74,8 +74,11 @@ import { NigsMessage } from '@/enums'
   components: { ContactInfo }
 })
 export default class NotInGoodStandingDialog extends Vue {
-  // Prop to display the dialog.
-  @Prop() readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog: boolean
+
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   // Prop to select display message.
   @Prop() readonly message: NigsMessage

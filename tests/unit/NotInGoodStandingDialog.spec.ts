@@ -81,8 +81,8 @@ describe('Not In Good Standing Dialog', () => {
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-close-button')
     expect(exitButton.text()).toBe('OK')
-    exitButton.trigger('click')
-    await Vue.nextTick()
+    await exitButton.trigger('click')
+    await Vue.nextTick() // need to wait longer here
 
     expect(wrapper.emitted('close').length).toBe(1)
 

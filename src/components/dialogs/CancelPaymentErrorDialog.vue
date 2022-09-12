@@ -48,11 +48,11 @@ import { ContactInfo } from '@/components/common'
 export default class CancelPaymentErrorDialog extends Vue {
   readonly isRoleStaff!: boolean
 
-  // Prop to display the dialog.
-  @Prop() readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog: boolean
 
-  // Prop to provide attachment selector.
-  @Prop() readonly attach: string
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach: string
 
   // Prop containing error messages.
   @Prop({ default: () => [] })

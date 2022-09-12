@@ -155,8 +155,7 @@ describe('AddressListSm', () => {
     await Vue.nextTick()
 
     // Click the records office tab to display the addresses
-    const button = vm.$el.querySelector('#records-office-panel-toggle')
-    await button.click()
+    await wrapper.find('#records-office-panel-toggle').trigger('click')
 
     expect(vm.registeredAddress).toBeDefined()
     expect(vm.recordsAddress).toBeDefined()
@@ -246,8 +245,7 @@ describe('AddressListSm', () => {
     await Vue.nextTick()
 
     // Click the records office tab to display the addresses
-    const button = vm.$el.querySelector('#records-office-panel-toggle')
-    await button.click()
+    await wrapper.find('#records-office-panel-toggle').trigger('click')
 
     expect(vm.registeredAddress).toBeDefined()
     expect(vm.recordsAddress).toBeDefined()
@@ -286,8 +284,7 @@ describe('AddressListSm', () => {
     await Vue.nextTick()
 
     // click the records office tab to display the addresses
-    const button = wrapper.find('#records-office-panel-toggle')
-    button.trigger('click')
+    await wrapper.find('#records-office-panel-toggle').trigger('click')
 
     const expectedMessage = 'Complete your filing to display'
     expect(wrapper.find('#registered-office-panel .delivery-address-list-item .complete-filing').text())

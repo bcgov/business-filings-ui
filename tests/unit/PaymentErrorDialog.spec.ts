@@ -131,8 +131,8 @@ describe('Payment Error Dialog', () => {
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-exit-button')
     expect(exitButton.text()).toBe('Back to My Dashboard')
-    exitButton.trigger('click')
-    await Vue.nextTick()
+    await exitButton.trigger('click')
+    await Vue.nextTick() // need to wait longer here
 
     expect(wrapper.emitted('exit').length).toBe(1)
 

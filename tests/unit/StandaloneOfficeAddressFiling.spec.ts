@@ -715,8 +715,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -773,8 +773,8 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify v-tooltip text
     // FUTURE: How to get the tool tip rendered outside the wrapper?
@@ -997,8 +997,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -1055,8 +1055,8 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    button.trigger('click')
-    await flushPromises()
+    await button.trigger('click')
+    await flushPromises() // need to wait longer here
 
     // verify v-tooltip text
     // FUTURE: How to get the tool tip rendered outside the wrapper?
@@ -1160,8 +1160,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       // FUTURE: verify that new filing was created
 
       // click the Save button
-      // wrapper.find('#coa-save-btn').trigger('click')
-      // await flushPromises()
+      // await wrapper.find('#coa-save-btn').trigger('click')
       // work-around because click trigger isn't working
       await vm.onClickSave()
 
@@ -1187,8 +1186,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     vm.certifyFormValid = true
 
     // click the Save & Resume Later button
-    // wrapper.find('#coa-save-resume-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#coa-save-resume-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
@@ -1296,8 +1294,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       // FUTURE: verify that new filing was created
 
       // click the Save button
-      // wrapper.find('#coa-save-btn').trigger('click')
-      // await flushPromises()
+      // await wrapper.find('#coa-save-btn').trigger('click')
       // work-around because click trigger isn't working
       await vm.onClickSave()
 
@@ -1323,8 +1320,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     vm.certifyFormValid = true
 
     // click the Save & Resume Later button
-    // wrapper.find('#coa-save-resume-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#coa-save-resume-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSaveResume()
 
@@ -1405,8 +1401,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
   it('includes certification data in the header', async () => {
     // click the Save button
-    // wrapper.find('#coa-save-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#coa-save-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1502,8 +1497,7 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
   it('includes certification data in the header', async () => {
     // click the Save button
-    // wrapper.find('#coa-save-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#coa-save-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickSave()
 
@@ -1694,8 +1688,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // FUTURE: verify that new filing was created
 
     // click the File & Pay button
-    // wrapper.find('#coa-file-pay-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#coa-file-pay-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 
@@ -1744,8 +1737,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // FUTURE: verify that new filing was created
 
     // click the File & Pay button
-    // wrapper.find('#coa-file-pay-btn').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#coa-file-pay-btn').trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 
@@ -1872,8 +1864,7 @@ describe('Standalone Office Address Filing - payment required error', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
-    // button.trigger('click')
-    // await flushPromises()
+    // await button.trigger('click')
     // work-around because click trigger isn't working
     await vm.onClickFilePay()
 

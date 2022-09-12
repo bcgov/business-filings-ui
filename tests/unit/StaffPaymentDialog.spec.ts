@@ -59,8 +59,7 @@ describe('StaffPaymentDialog', () => {
     wrapper.setData({ staffPaymentFormValid: true })
 
     // click the Exit button
-    const button = document.querySelector('#dialog-close-button') as any
-    await button.click()
+    await wrapper.find('#dialog-close-button').trigger('click')
 
     // verify emitted event
     expect(wrapper.emitted('exit').pop()).toEqual([])
@@ -88,8 +87,7 @@ describe('StaffPaymentDialog', () => {
     wrapper.setData({ staffPaymentFormValid: true })
 
     // click the Submit button
-    const button = document.querySelector('#dialog-submit-button') as any
-    await button.click()
+    await wrapper.find('#dialog-submit-button').trigger('click')
 
     // wait for validation
     await Vue.nextTick()

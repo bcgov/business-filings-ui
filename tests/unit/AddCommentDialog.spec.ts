@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
@@ -55,8 +54,7 @@ describe('AddCommentDialog', () => {
       })
 
     // click the Cancel button
-    wrapper.find('#dialog-cancel-button').trigger('click')
-    await flushPromises()
+    await wrapper.find('#dialog-cancel-button').trigger('click')
 
     // verify Close event
     expect(wrapper.emitted('close').pop()).toEqual([false])
@@ -86,8 +84,8 @@ describe('AddCommentDialog', () => {
     const vm: any = wrapper.vm
 
     // click the Save button
-    // wrapper.find('#dialog-save-button').trigger('click')
-    // await flushPromises()
+    // await wrapper.find('#dialog-save-button').trigger('click')
+
     // work-around because click trigger isn't working
     await vm.save()
 

@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import flushPromises from 'flush-promises'
 import { ConfigJson } from '@/resources'
 import { CorpTypeCd } from '@/enums'
 
@@ -123,12 +122,6 @@ const obligationTestCases = [
   }
 ]
 
-async function waitForUpdate () {
-  await Vue.nextTick()
-  await flushPromises()
-  await Vue.nextTick()
-}
-
 for (const test of obligationTestCases) {
   describe(`Legal Obligation for ${test.entityType}`, () => {
     beforeAll(() => {
@@ -149,7 +142,7 @@ for (const test of obligationTestCases) {
       store.state.filings = []
 
       const wrapper = mount(LegalObligation, { store, vuetify })
-      await waitForUpdate()
+      await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
 
@@ -161,7 +154,7 @@ for (const test of obligationTestCases) {
 
       const wrapper = mount(LegalObligation, { store, vuetify })
       const vm = wrapper.vm as any
-      await waitForUpdate()
+      await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(test.displaysObligations)
 
@@ -172,7 +165,7 @@ for (const test of obligationTestCases) {
       store.state.filings = businessWithMaintenanceFiling
 
       const wrapper = mount(LegalObligation, { store, vuetify })
-      await waitForUpdate()
+      await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
 
@@ -183,12 +176,12 @@ for (const test of obligationTestCases) {
       store.state.filings = test.filingBody
 
       const wrapper = mount(LegalObligation, { store, vuetify })
-      await waitForUpdate()
+      await Vue.nextTick()
+
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(test.displaysObligations)
 
       if (test.displaysObligations) {
-        wrapper.find('#dismiss-btn').trigger('click')
-        await waitForUpdate()
+        await wrapper.find('#dismiss-btn').trigger('click')
         expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
       }
 
@@ -200,7 +193,7 @@ for (const test of obligationTestCases) {
       store.state.tasks = taskList
 
       const wrapper = mount(LegalObligation, { store, vuetify })
-      await waitForUpdate()
+      await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
 
@@ -215,7 +208,7 @@ describe('Legal Obligation - temp reg number', () => {
     store.state.filings = newIncorporationFiling
 
     const wrapper = mount(LegalObligation, { store, vuetify })
-    await waitForUpdate()
+    await Vue.nextTick()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
 

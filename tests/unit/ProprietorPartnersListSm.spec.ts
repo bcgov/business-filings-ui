@@ -227,11 +227,10 @@ describe('ProprietorPartnersListSm', () => {
     expect(wrapper.findAll('.list-item__title').at(0).text()).toBe('Bacon House')
     expect(wrapper.findAll('.list-item__title').at(1).text()).toBe('Donut House')
 
-    // const item = vm.$el.querySelector('.v-expansion-panel-header.address-panel-toggle')
-    // const items = vm.$el.querySelector('.align-items-top address-panel')
-    const buttons = vm.$el.querySelectorAll('.v-expansion-panel-header.address-panel-toggle')
-    await buttons[0].click()
-    await buttons[1].click()
+    // Expand both panels
+    const buttons = wrapper.findAll('.v-expansion-panel-header.address-panel-toggle')
+    await buttons.at(0).trigger('click')
+    await buttons.at(1).trigger('click')
 
     // Verify delivery addresses '(Not entered)'
     expect(wrapper.findAll('.email-address-text').at(0).text()).toBe('(Not entered)')

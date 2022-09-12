@@ -218,8 +218,8 @@ filings.forEach((filing: any, index: number) => {
       }
 
       // click button and verify updated label
-      expandBtn.trigger('click')
-      await flushPromises()
+      await expandBtn.trigger('click')
+      await flushPromises() // need to wait longer here
       if (isPaperOnly(filing)) {
         expect(expandBtn.text()).toContain('Close')
       } else if (isStaff(filing)) {

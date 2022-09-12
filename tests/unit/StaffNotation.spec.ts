@@ -24,10 +24,14 @@ const staffFilingTypes = [
     type: 'courtOrder'
   }
 ]
+
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
+// Prevent the warning "[Vuetify] Unable to locate target #staff-notation"
+document.body.setAttribute('id', 'staff-notation')
+
 describe('StaffNotation', () => {
-  // Boilerplate to prevent the complaint "[Vuetify] Unable to locate target [data-app]"
-  document.body.setAttribute('data-app', 'true')
-  document.body.setAttribute('id', 'staff-notation')
   store.state.entityType = 'SP'
   it('renders the page contents correctly', () => {
     const wrapper = mount(StaffNotation, { store })
@@ -45,10 +49,9 @@ describe('StaffNotation', () => {
     })
 
     // Open menu
-    wrapper.find('.menu-btn').trigger('click')
+    await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
-    await Vue.nextTick()
     expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Notation')
     expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Order')
     expect(wrapper.find('.v-list').text()).toContain('Add Court Order')
@@ -65,18 +68,17 @@ describe('StaffNotation', () => {
     })
 
     // Open menu
-    wrapper.find('.menu-btn').trigger('click')
+    await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
-    await Vue.nextTick()
 
     // Click on first item
-    wrapper.find('.v-list .v-item-group .v-list-item').trigger('click')
-    await flushPromises()
+    await wrapper.find('.v-list .v-item-group .v-list-item').trigger('click')
+    await flushPromises() // need to wait longer here
+
     expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeTruthy()
 
     // click the Cancel button
-    wrapper.find('#dialog-cancel-button').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#dialog-cancel-button').trigger('click')
     expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
 
     // verify Close event
@@ -93,14 +95,13 @@ describe('StaffNotation', () => {
       })
 
       // Open menu
-      wrapper.find('.menu-btn').trigger('click')
+      await wrapper.find('.menu-btn').trigger('click')
       expect(wrapper.vm.$data.expand).toBe(true)
-      await Vue.nextTick()
 
       // Click on first item
       let index = staffFilingTypes.indexOf(test)
-      wrapper.findAll('.v-list .v-item-group .v-list-item').at(index).trigger('click')
-      await flushPromises()
+      await wrapper.findAll('.v-list .v-item-group .v-list-item').at(index).trigger('click')
+
       switch (test.type) {
         case 'registrarsNotation':
           expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeTruthy()
@@ -120,8 +121,8 @@ describe('StaffNotation', () => {
       expect(wrapper.find('#notation-form .text-input-field .v-label').text()).toContain(test.name)
 
       // click the Cancel button
-      wrapper.find('#dialog-cancel-button').trigger('click')
-      await Vue.nextTick()
+      await wrapper.find('#dialog-cancel-button').trigger('click')
+      await Vue.nextTick() // need to wait longer here
       expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
 
       // verify Close event

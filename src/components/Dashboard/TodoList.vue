@@ -600,7 +600,6 @@ export default class TodoList extends Mixins(
 
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
-  @Getter isGoodStanding!: boolean
   @Getter getEntityName!: string
   @Getter isCoaPending!: boolean
   @Getter getTodoListResource!: TodoListResourceIF

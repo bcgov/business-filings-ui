@@ -269,7 +269,9 @@ describe('Correction - UI', () => {
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the Save button
-    button.trigger('click')
+    await button.trigger('click')
+
+    // wait for save to complete and everything to update
     await flushPromises()
 
     // verify new Filing ID

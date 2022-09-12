@@ -471,7 +471,7 @@ describe('Directors as a COOP (no sync)', () => {
     expect(vm.allDirectors[0].officer.firstName).toBe('Steve')
 
     // Cancel Director edit and verify the name is back to its base name
-    await vm.$el.querySelectorAll('.cancel-edit-btn')[0].click()
+    await wrapper.findAll('.cancel-edit-btn').at(0).trigger('click')
     expect(vm.allDirectors[0].officer.firstName).toBe('Gary')
 
     // Verify the edit form is closed.
@@ -506,7 +506,7 @@ describe('Directors as a COOP (no sync)', () => {
     expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(true)
 
     // Click Done btn and update the directors name
-    await vm.$el.querySelectorAll('.done-edit-btn')[0].click()
+    await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
 
     // Re Open the edit director
     await vm.editDirectorName(0)
@@ -534,7 +534,7 @@ describe('Directors as a COOP (no sync)', () => {
     expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(true)
 
     // Click Done btn and update the directors name
-    await vm.$el.querySelectorAll('.done-edit-btn')[0].click()
+    await wrapper.findAll('.done-edit-btn').at(0).trigger('click')
 
     // Verify Updated Data in the directors list
     expect(vm.allDirectors[0].officer.firstName).toEqual('Steve')
@@ -549,7 +549,7 @@ describe('Directors as a COOP (no sync)', () => {
     expect(vm.$el.querySelectorAll('.reset-name-btn')[0].disabled).toBe(false)
 
     // Click the reset btn
-    await vm.$el.querySelectorAll('.reset-name-btn')[0].click()
+    await wrapper.findAll('.reset-name-btn').at(0).trigger('click')
 
     // Verify reset Data in the directors list
     expect(vm.allDirectors[0].officer.firstName).toEqual('Gary')

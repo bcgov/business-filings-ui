@@ -18,7 +18,6 @@ import PaymentErrorDialog from './PaymentErrorDialog.vue'
 import ResumeErrorDialog from './ResumeErrorDialog.vue'
 import SaveErrorDialog from './SaveErrorDialog.vue'
 import StaffPaymentDialog from './StaffPaymentDialog.vue'
-import WarningPopover from './WarningPopover.vue'
 
 export {
   AddCommentDialog,
@@ -40,6 +39,5 @@ export {
   PaymentErrorDialog,
   ResumeErrorDialog,
   SaveErrorDialog,
-  StaffPaymentDialog,
-  WarningPopover
+  StaffPaymentDialog
 }
