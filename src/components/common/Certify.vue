@@ -58,7 +58,7 @@ export default class Certify extends Vue {
   readonly entityDisplay: string
 
   /** Called when component is created. */
-  created (): void {
+  protected created (): void {
     // inform parent of initial validity
     this.emitValid(!!this.trimmedCertifiedBy && this.isCertified)
   }

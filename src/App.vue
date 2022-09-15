@@ -308,7 +308,8 @@ export default {
     await this.fetchData()
   },
 
-  destroyed (): void {
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
     // stop listening for reload data events
     this.$root.$off('reloadData')
 

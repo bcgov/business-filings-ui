@@ -440,6 +440,7 @@ export default class FilingHistoryList extends Mixins(
     return filing.availableOnPaperOnly || filing.isTypeStaff || filing.documentsLink
   }
 
+  /** Loads list of filings from the API into History Items array. */
   private loadData (): void {
     this.historyItems = []
 
@@ -481,7 +482,7 @@ export default class FilingHistoryList extends Mixins(
     if (this.highlightId) this.highlightFiling(this.highlightId)
   }
 
-  /** Loads a filing into the historyItems list. */
+  /** Loads a filing into the History Items array. */
   private loadFiling (filing: ApiFilingIF): void {
     try {
       // NB: these `new Date()` are safe because the date strings are in GMT (ie, UTC)

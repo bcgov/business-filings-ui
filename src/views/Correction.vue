@@ -179,7 +179,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { navigate } from '@/utils'
 
@@ -191,9 +191,9 @@ import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDia
 
 // Mixins, enums and interfaces
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
-import { CorpTypeCd, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
+import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
-import { ActionBindingIF, ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -217,15 +217,9 @@ export default class Correction extends Mixins(
   }
 
   @State entityFoundingDate!: Date
-  @State filingData!: Array<FilingDataIF>
 
   @Getter isRoleStaff!: boolean
-  @Getter getCurrentDate!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getEntityName!: string
-  @Getter getIdentifier!: string
-
-  @Action setFilingData!: ActionBindingIF
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -342,7 +336,7 @@ export default class Correction extends Mixins(
   }
 
   /** Called when component is created. */
-  created (): void {
+  protected created (): void {
     // init
     this.setFilingData([])
 
