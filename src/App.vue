@@ -36,7 +36,7 @@
       attach="#app"
     />
 
-    <ConfirmDissolution
+    <ConfirmDissolutionDialog
       :dialog="confirmDissolutionDialog"
       @close="confirmDissolutionDialog = false"
       @proceed="dissolveCompany()"
@@ -107,7 +107,7 @@ import EntityInfo from '@/components/EntityInfo.vue'
 // Dialogs
 import {
   BusinessAuthErrorDialog,
-  ConfirmDissolution,
+  ConfirmDissolutionDialog,
   DashboardUnavailableDialog,
   DownloadErrorDialog,
   NameRequestAuthErrorDialog,
@@ -197,7 +197,7 @@ export default {
 
   components: {
     BreadCrumb,
-    ConfirmDissolution,
+    ConfirmDissolutionDialog,
     DashboardUnavailableDialog,
     DownloadErrorDialog,
     BusinessAuthErrorDialog,

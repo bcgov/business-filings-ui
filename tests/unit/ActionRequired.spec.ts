@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import ActionRequired from '@/components/Dashboard/ActionRequired.vue'
+import ActionRequired from '@/components/Dashboard/TodoList/ActionRequired.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)

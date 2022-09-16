@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { getVuexStore } from '@/store'
 import { shallowMount } from '@vue/test-utils'
-import { DetailsList } from '@/components/common'
+import DetailsList from '@/components/Dashboard/FilingHistoryList/DetailsList.vue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -128,26 +128,7 @@ describe('Details List', () => {
 
     const wrapper = shallowMount(DetailsList, {
       store,
-      propsData: {
-        filing: mockFilingOneComment,
-        isTask: false
-      }
-    })
-
-    expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
-
-    wrapper.destroy()
-  })
-
-  it('Does NOT display the add detail btn when the item is a task', () => {
-    store.state.keycloakRoles = ['staff']
-
-    const wrapper = shallowMount(DetailsList, {
-      store,
-      propsData: {
-        filing: mockFilingOneComment,
-        isTask: true
-      }
+      propsData: { filing: mockFilingOneComment }
     })
 
     expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
@@ -160,10 +141,7 @@ describe('Details List', () => {
 
     const wrapper = shallowMount(DetailsList, {
       store,
-      propsData: {
-        filing: mockFilingOneComment,
-        isTask: false
-      }
+      propsData: { filing: mockFilingOneComment }
     })
 
     expect(wrapper.find('.title-bar').text()).toContain('Add Detail')
@@ -176,10 +154,7 @@ describe('Details List', () => {
 
     const wrapper = shallowMount(DetailsList, {
       store,
-      propsData: {
-        filing: mockFilingOneComment,
-        isTask: false
-      }
+      propsData: { filing: mockFilingOneComment }
     })
 
     expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
@@ -197,10 +172,7 @@ describe('Details List', () => {
     const wrapper = shallowMount(DetailsList, {
       store,
       vuetify,
-      propsData: {
-        filing: mockFilingManyComments,
-        isTask: false
-      }
+      propsData: { filing: mockFilingManyComments }
     })
     await Vue.nextTick()
 

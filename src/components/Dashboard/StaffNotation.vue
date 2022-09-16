@@ -234,7 +234,7 @@ export default class StaffNotation extends Vue {
 }
 
 // Fix the transparent added by .add-scrollbar-offset (Firefox only).
-::v-deep .add-notation-dialog {
+::v-deep .add-staff-notation-dialog {
   scrollbar-color: auto;
 }
 

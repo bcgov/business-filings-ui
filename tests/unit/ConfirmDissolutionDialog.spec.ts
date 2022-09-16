@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { ConfirmDissolution } from '@/components/dialogs'
+import { ConfirmDissolutionDialog } from '@/components/dialogs'
 import { ConfigJson } from '@/resources'
 
 Vue.use(Vuetify)
@@ -10,12 +10,12 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-describe('ConfirmDissolution - Displays Confirmation messages', () => {
+describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   it('displays confirmation modal to users for Sole Proprietorship', () => {
     store.state.entityType = 'SP'
     store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
 
-    const wrapper = shallowMount(ConfirmDissolution,
+    const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
         propsData: {
           dialog: true
@@ -44,7 +44,7 @@ describe('ConfirmDissolution - Displays Confirmation messages', () => {
     store.state.entityType = 'GP'
     store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
 
-    const wrapper = shallowMount(ConfirmDissolution,
+    const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
         propsData: {
           dialog: true
@@ -73,7 +73,7 @@ describe('ConfirmDissolution - Displays Confirmation messages', () => {
     store.state.entityType = 'BEN'
     store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
 
-    const wrapper = shallowMount(ConfirmDissolution,
+    const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
         propsData: {
           dialog: true

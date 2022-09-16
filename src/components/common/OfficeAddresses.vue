@@ -43,7 +43,7 @@
                   <br />
                   <v-btn
                     class="reset-btn"
-                    color="red"
+                    color="error"
                     id="reg-off-addr-reset-btn"
                     outlined
                     small
