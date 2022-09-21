@@ -423,7 +423,7 @@ export default class FilingHistoryList extends Mixins(
     return sessionStorage.getItem('EDIT_URL')
   }
 
-  /** The IA's Temporary Registration Number string. */
+  /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }

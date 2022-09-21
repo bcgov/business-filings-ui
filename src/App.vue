@@ -228,7 +228,7 @@ export default {
       return sessionStorage.getItem('CREATE_URL')
     },
 
-    /** The Incorporation Application's Temporary Registration Number string. */
+    /** The Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
     },

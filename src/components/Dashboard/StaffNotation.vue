@@ -42,7 +42,7 @@
       :dissolutionType="DissolutionTypes.ADMINISTRATIVE"
     />
 
-    <div class="filing-item__actions">
+    <div class="staff-notation-container">
       <v-menu offset-y left transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
           <span><!-- This span is needed to fix a positioning issue with the menu -->
@@ -210,6 +210,24 @@ export default class StaffNotation extends Vue {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
+
+.staff-notation-container {
+  display: inline-block;
+
+  .expand-btn {
+    letter-spacing: -0.01rem;
+    font-size: $px-14;
+    font-weight: 700;
+  }
+
+  // make menu button slightly smaller
+  .menu-btn {
+    height: unset !important;
+    min-width: unset !important;
+    padding: 0.25rem !important;
+    color: $app-blue
+  }
+}
 
 #add-staff-filing-label {
   padding-right: 0.725rem;

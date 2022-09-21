@@ -223,12 +223,9 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   @Getter getBusinessNumber!: string
   @Getter getIdentifier!: number
   @Getter getEntityName!: string
-  @Getter isCoop!: boolean
   @Getter getNrNumber!: string
-  @Getter isGoodStanding!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter isNotInCompliance!: boolean
-  @Getter isFirm!: boolean
   @Getter getEntityFoundingDate!: Date
 
   // enums for template
@@ -253,7 +250,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
     return sessionStorage.getItem('AUTH_WEB_URL') + 'businessprofile'
   }
 
-  /** The Incorporation Application's Temporary Registration Number string. */
+  /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
