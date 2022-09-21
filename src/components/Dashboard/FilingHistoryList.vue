@@ -45,7 +45,7 @@
     </v-fade-transition>
 
     <div class="scrollable-container">
-      <v-expansion-panels v-if="historyItems.length > 0" v-model="panel">
+      <v-expansion-panels v-if="showHistoryPanel" v-model="panel">
         <v-expansion-panel
           class="align-items-top filing-history-item px-6 py-5"
           v-for="(filing, index) in historyItems"
@@ -91,11 +91,11 @@
                   <v-btn
                     class="details-btn"
                     outlined
-                    color="blue darken-2"
+                    color="primary"
                     :ripple=false
                     @click.stop="togglePanel(index, filing)"
                   >
-                    <v-icon left>mdi-information-outline</v-icon>
+                    <v-icon>mdi-information-outline</v-icon>
                     <span>{{(panel === index) ? "Hide Details" : "View Details"}}</span>
                   </v-btn>
                 </div>
@@ -116,7 +116,7 @@
                     :ripple=false
                     @click.stop="togglePanel(index, filing)"
                   >
-                    <v-icon left>mdi-alert</v-icon>
+                    <v-icon>mdi-alert</v-icon>
                     <span>{{(panel === index) ? "Hide Details" : "View Details"}}</span>
                   </v-btn>
                 </div>
@@ -135,11 +135,11 @@
                   <v-btn
                     class="details-btn"
                     outlined
-                    color="blue darken-2"
+                    color="primary"
                     :ripple=false
                     @click.stop="togglePanel(index, filing)"
                   >
-                    <v-icon left>mdi-information-outline</v-icon>
+                    <v-icon>mdi-information-outline</v-icon>
                     <span>{{(panel === index) ? "Hide Details" : "View Details"}}</span>
                   </v-btn>
                 </div>
@@ -156,7 +156,7 @@
                     :ripple=false
                     @click.stop="togglePanel(index, filing)"
                   >
-                    <v-icon left>mdi-alert</v-icon>
+                    <v-icon>mdi-alert</v-icon>
                     <span>{{(panel === index) ? "Hide Details" : "View Details"}}</span>
                   </v-btn>
                 </div>
@@ -176,7 +176,7 @@
                     :ripple=false
                     @click.stop="togglePanel(index, filing)"
                   >
-                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
+                    <v-icon small style="padding-top: 2px">mdi-message-reply</v-icon>
                     <span>Detail{{filing.commentsCount > 1 ? "s" : ""}} ({{filing.commentsCount}})</span>
                   </v-btn>
                 </div>
@@ -213,7 +213,7 @@
                     <v-list-item-group color="primary">
                       <v-list-item :disabled="disableCorrection(filing)">
                         <v-list-item-icon>
-                          <v-icon class="app-blue">mdi-file-document-edit-outline</v-icon>
+                          <v-icon color="primary">mdi-file-document-edit-outline</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title
                           class="file-correction-item"
@@ -225,7 +225,7 @@
 
                       <v-list-item :disabled="!isAllowed(AllowableActions.ADD_DETAIL_COMMENT)">
                         <v-list-item-icon>
-                          <v-icon class="app-blue">mdi-comment-plus</v-icon>
+                          <v-icon color="primary">mdi-comment-plus</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title
                           class="add-detail-comment-item"
@@ -325,7 +325,6 @@
               <v-divider class="my-6" />
               <DetailsList
                 :filing=filing
-                :isTask="false"
                 @showCommentDialog="showCommentDialog($event)"
               />
             </template>
@@ -336,7 +335,7 @@
     </div>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="!historyItems.length">
+    <v-card class="no-results" flat v-if="!showHistoryPanel">
       <v-card-text>
         <template v-if="!!tempRegNumber">
           <div class="no-results__subtitle">Complete your filing to display</div>
@@ -362,6 +361,7 @@ import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
 import CompletedDissolution from './FilingHistoryList/CompletedDissolution.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
 import CompletedRegistration from './FilingHistoryList/CompletedRegistration.vue'
+import DetailsList from './FilingHistoryList/DetailsList.vue'
 import DocumentsList from './FilingHistoryList/DocumentsList.vue'
 import FiledLabel from './FilingHistoryList/FiledLabel.vue'
 import FutureEffective from './FilingHistoryList/FutureEffective.vue'
@@ -369,7 +369,6 @@ import FutureEffectivePending from './FilingHistoryList/FutureEffectivePending.v
 import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import StaffFiling from './FilingHistoryList/StaffFiling.vue'
-import { DetailsList } from '@/components/common'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums, interfaces and mixins
@@ -385,6 +384,7 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
     CompletedDissolution,
     CompletedIa,
     CompletedRegistration,
+    DetailsList,
     DocumentsList,
     FiledLabel,
     FutureEffective,
@@ -392,8 +392,6 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
     PaperFiling,
     PendingFiling,
     StaffFiling,
-    // common
-    DetailsList,
     // dialogs
     AddCommentDialog,
     DownloadErrorDialog,
@@ -434,7 +432,7 @@ export default class FilingHistoryList extends Mixins(
     return sessionStorage.getItem('EDIT_URL')
   }
 
-  /** The IA's Temporary Registration Number string. */
+  /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
@@ -444,11 +442,17 @@ export default class FilingHistoryList extends Mixins(
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
+  /** Whether to show the history panel. */
+  get showHistoryPanel () {
+    return (this.historyItems.length > 0)
+  }
+
   /** Returns whether the action button is visible or not. */
   protected displayAction (filing): string {
     return filing.availableOnPaperOnly || filing.isTypeStaff || filing.documentsLink
   }
 
+  /** Loads list of filings from the API into History Items array. */
   private loadData (): void {
     this.historyItems = []
 
@@ -490,7 +494,7 @@ export default class FilingHistoryList extends Mixins(
     if (this.highlightId) this.highlightFiling(this.highlightId)
   }
 
-  /** Loads a filing into the historyItems list. */
+  /** Loads a filing into the History Items array. */
   private loadFiling (filing: ApiFilingIF): void {
     try {
       // NB: these `new Date()` are safe because the date strings are in GMT (ie, UTC)

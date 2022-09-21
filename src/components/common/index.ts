@@ -3,7 +3,6 @@ import Certify from './Certify.vue'
 import ContactInfo from './ContactInfo.vue'
 import DateTooltip from './DateTooltip.vue'
 import DetailComment from './DetailComment.vue'
-import DetailsList from './DetailsList.vue'
 import ImportantMessage from './ImportantMessage.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
@@ -22,7 +21,6 @@ export {
   ContactInfo,
   DateTooltip,
   DetailComment,
-  DetailsList,
   ImportantMessage,
   NameRequestInfo,
   OfficeAddresses,

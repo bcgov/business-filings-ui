@@ -517,7 +517,7 @@ export default class AnnualReport extends Mixins(
   }
 
   /** Called when component is created. */
-  created (): void {
+  protected created (): void {
     // init
     this.setFilingData([])
 
@@ -596,7 +596,8 @@ export default class AnnualReport extends Mixins(
     }
   }
 
-  destroyed (): void {
+  /** Called just before this component is destroyed. */
+  protected beforeDestroy (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
   }

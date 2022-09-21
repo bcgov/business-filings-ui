@@ -207,7 +207,7 @@ xdescribe('TodoList - tests specific to Benefit Companies', () => {
 
   it('displays new AR header/checkbox', async () => {
     // verify title
-    // verify bcorps-ar-subtitle
+    // verify bcomp ar subtitle
     // verify no subtitle
     // verify enable-checkbox
     // verify no details expand-btn

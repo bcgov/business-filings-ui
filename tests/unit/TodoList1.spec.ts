@@ -11,12 +11,12 @@ import { getVuexStore } from '@/store'
 import flushPromises from 'flush-promises'
 
 // Components
-import { DetailsList } from '@/components/common'
 import TodoList from '@/components/Dashboard/TodoList.vue'
-import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
-import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
+import CorrectionComment from '@/components/Dashboard/TodoList/CorrectionComment.vue'
 import PaymentIncomplete from '@/components/Dashboard/TodoList/PaymentIncomplete.vue'
 import PaymentPaid from '@/components/Dashboard/TodoList/PaymentPaid.vue'
+import PaymentPending from '@/components/Dashboard/TodoList/PaymentPending.vue'
+import PaymentPendingOnlineBanking from '@/components/Dashboard/TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsuccessful.vue'
 
 // suppress "Avoid mutating a prop directly" warnings
@@ -512,10 +512,10 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
 
     expect(item.querySelector('.list-item__subtitle .todo-subtitle').textContent)
-      .toContain('Detail (1)')
+      .toContain('View Details')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(CorrectionComment).exists()).toBe(false)
 
     // click the View Details button
     await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
@@ -527,7 +527,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
 
     // Validate the child component exists on the parent after opening the dropdown
-    expect(wrapper.find(DetailsList).exists()).toBe(true)
+    expect(wrapper.find(CorrectionComment).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -628,10 +628,10 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
 
     expect(item.querySelector('.list-item__subtitle .todo-subtitle').textContent)
-      .toContain('Detail (1)')
+      .toContain('View Details')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.find(CorrectionComment).exists()).toBe(false)
 
     // click the View Details button
     await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
@@ -643,7 +643,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
 
     // Validate the child component exists on the parent after opening the dropdown
-    expect(wrapper.find(DetailsList).exists()).toBe(true)
+    expect(wrapper.find(CorrectionComment).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -1087,7 +1087,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
-    expect(item.querySelector('.bcorps-ar-subtitle').textContent)
+    expect(item.querySelector('.list-item__subtitle').textContent)
       .toContain('Verify your Office Address and Current Directors before filing your Annual Report.')
 
     // Simulate Checkbox being selected to enable File Now Button
@@ -1134,7 +1134,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
-    expect(item.querySelector('.bcorps-ar-subtitle').textContent)
+    expect(item.querySelector('.list-item__subtitle').textContent)
       .toContain('Verify your Office Address and Current Directors before filing your Annual Report.')
 
     // Verify checkbox is disabled
@@ -1185,7 +1185,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File 2019 Annual Report')
-    expect(item.querySelector('.bcorps-ar-subtitle').textContent)
+    expect(item.querySelector('.list-item__subtitle').textContent)
       .toContain('Verify your Office Address and Current Directors before filing your Annual Report.')
 
     const button = item.querySelector('.list-item__actions .v-btn')
@@ -2007,7 +2007,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
     // verify checkbox content
     const firstTodoItem = vm.$el.querySelectorAll('.todo-item')[0]
-    const htmlDivElement = firstTodoItem.querySelector('.bcorps-ar-subtitle .todo-list-checkbox')
+    const htmlDivElement = firstTodoItem.querySelector('.list-item__subtitle .todo-list-checkbox')
     expect(htmlDivElement.textContent)
       .toContain('All information about the Office Addresses and Current Directors is correct.')
 
@@ -2356,7 +2356,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
-    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+    expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
 
     await wrapper.find('.btn-corr-draft-resume').trigger('click')
 

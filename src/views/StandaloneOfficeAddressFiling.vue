@@ -193,7 +193,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
@@ -206,8 +206,8 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
 
 // Mixins, enums and interfaces
 import { CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
-import { CorpTypeCd, FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
-import { ActionBindingIF, ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -232,17 +232,10 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
   }
 
   @State entityFoundingDate!: Date
-  @State filingData!: Array<FilingDataIF>
 
-  @Getter isBComp!: boolean
   @Getter isCoop!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter getCurrentDate!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getEntityName!: string
-  @Getter getIdentifier!: string
-
-  @Action setFilingData!: ActionBindingIF
 
   // variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
@@ -322,7 +315,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
   }
 
   /** Called when component is created. */
-  created (): void {
+  protected created (): void {
     // init
     this.setFilingData([])
 
@@ -383,7 +376,8 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
     this.dataLoaded = true
   }
 
-  destroyed (): void {
+  /** Called just before this component is destroyed. */
+  protected beforeDestroy (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
   }

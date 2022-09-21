@@ -1,12 +1,5 @@
 <template>
   <div id="todo-list">
-    <AddCommentDialog
-      :dialog="addCommentDialog"
-      :filing="currentFiling"
-      @close="hideCommentDialog($event)"
-      attach="#todo-list"
-    />
-
     <ConfirmDialog
       ref="confirm"
       attach="#todo-list"
@@ -26,7 +19,9 @@
       @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
     />
+
     <ActionRequired v-if="isActionRequired"/>
+
     <v-expansion-panels v-if="showTodoPanel" accordion  v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
@@ -44,21 +39,11 @@
           <div class="list-item">
             <div class="todo-label">
               <!-- title -->
-              <h3 class="list-item__title">{{item.title}}
-                <v-btn v-if="isStatusDraft(item) && isTypeCorrection(item)"
-                  class="expand-btn ml-0"
-                  outlined
-                  color="red"
-                  :ripple=false
-                >
-                  <v-icon left>mdi-information-outline</v-icon>
-                  <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                </v-btn>
-              </h3>
+              <h3 class="list-item__title">{{ item.title }}</h3>
 
               <!-- BCOMP AR special case -->
               <div v-if="businessId && isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)"
-                class="bcorps-ar-subtitle"
+                class="list-item__subtitle pt-4"
               >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
@@ -102,70 +87,55 @@
                 <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBComp && !isCoop"
                   class="todo-subtitle my-4"
                 >
-                  <span>
-                    Your business is ready to alter from a {{ item.legalType }} to a BC
-                    Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
-                    any other changes to your business until the alteration is complete.
-                  </span>
-                  <v-btn
-                    v-if="item.comments.length > 0"
-                    class="expand-btn"
-                    outlined
-                    color="primary"
-                    :ripple=false
-                  >
-                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                    <span>{{item.comments.length > 1 ? "Details" : "Detail"}} ({{item.comments.length}})</span>
-                  </v-btn>
+                  <span>Your business is ready to alter from a {{ item.legalType }} to a BC
+                  Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
+                  any other changes to your business until the alteration is complete.</span>
                 </div>
 
                 <!-- draft correction or alteration -->
                 <div v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeAlteration(item))"
                   class="todo-subtitle"
                 >
-                  <div>DRAFT</div>
-                  <v-btn
-                    v-if="item.comments.length > 0"
+                  <span>DRAFT</span>
+                  <v-btn v-if="isTypeCorrection(item)"
                     class="expand-btn"
                     outlined
-                    color="primary"
+                    color="error"
                     :ripple=false
-                  >
-                    <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                    <span>{{item.comments.length > 1 ? "Details" : "Detail"}} ({{item.comments.length}})</span>
-                  </v-btn>
-                </div>
-
-                <!-- draft with pay error -->
-                <div v-else-if="isStatusDraft(item) && isPayError(item)" class="todo-subtitle">
-                  <div>PAYMENT INCOMPLETE</div>
-                  <v-btn
-                    class="expand-btn"
-                    outlined
-                    color="red darken-4"
-                    :ripple=false
-                    @click.stop="togglePanel(index)"
                   >
                     <v-icon>mdi-information-outline</v-icon>
                     <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                   </v-btn>
                 </div>
 
-                <!-- draft incorporation -->
+                <!-- draft with pay error -->
+                <div v-else-if="isStatusDraft(item) && isPayError(item)" class="todo-subtitle">
+                  <span>PAYMENT INCOMPLETE</span>
+                  <v-btn
+                    class="expand-btn"
+                    outlined
+                    color="error"
+                    :ripple=false
+                  >
+                    <v-icon>mdi-information-outline</v-icon>
+                    <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                  </v-btn>
+                </div>
+
+                <!-- draft incorporation or registration -->
                 <div v-else-if="isStatusDraft(item) &&
                   (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
                   class="todo-subtitle"
                 >
-                  <div>{{ item.subtitle }}</div>
+                  <span>{{ item.subtitle }}</span>
                   <div v-if="item.nameRequest" class="payment-status">
                     <v-btn
                       class="expand-btn"
                       outlined
-                      color="blue darken-2"
+                      color="primary"
                       :ripple=false
-                      @click.stop="togglePanel(index)"
                     >
-                      <v-icon left>mdi-information-outline</v-icon>
+                      <v-icon>mdi-information-outline</v-icon>
                       <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
                   </div>
@@ -173,90 +143,78 @@
 
                 <!-- draft other -->
                 <div v-else-if="isStatusDraft(item)" class="todo-subtitle">
-                  <div>DRAFT</div>
+                  <span>DRAFT</span>
                 </div>
 
                 <!-- pending filing - correction or alteration, or payment incomplete -->
                 <div v-else-if="isStatusPending(item)" class="todo-subtitle">
                   <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
-                    <div>FILING PENDING</div>
-                    <v-btn
-                      v-if="item.comments.length > 0"
-                      class="expand-btn"
-                      outlined
-                      color="primary"
-                      :ripple=false
-                    >
-                      <v-icon small left style="padding-top: 2px">mdi-message-reply</v-icon>
-                      <span>{{item.comments.length > 1 ? "Details" : "Detail"}} ({{item.comments.length}})</span>
-                    </v-btn>
+                    <span>FILING PENDING</span>
                   </template>
 
                   <template v-else>
-                    <div>FILING PENDING</div>
-                    <div class="vert-pipe"></div>
-                    <div class="payment-status" v-if="inProcessFiling === item.filingId">
+                    <span>FILING PENDING</span>
+                    <span class="vert-pipe"></span>
+                    <span class="payment-status" v-if="inProcessFiling === item.filingId">
                       PROCESSING...
-                    </div>
-                    <div class="payment-status" v-else>
+                    </span>
+                    <span class="payment-status" v-else>
                       <span v-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
                       <span v-else>PAYMENT INCOMPLETE</span>
-                      <v-btn
-                        class="expand-btn"
-                        outlined
-                        color="blue darken-2"
-                        :ripple=false
-                        @click.stop="togglePanel(index)"
-                      >
-                        <v-icon left>mdi-information-outline</v-icon>
-                        <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                      </v-btn>
-                    </div>
+                    </span>
                   </template>
+
+                  <v-btn
+                    class="expand-btn"
+                    outlined
+                    color="primary"
+                    :ripple=false
+                  >
+                    <v-icon>mdi-information-outline</v-icon>
+                    <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                  </v-btn>
                 </div>
 
                 <!-- pending filing - payment unsuccessful -->
                 <div v-else-if="isStatusError(item)" class="todo-subtitle">
-                  <div>FILING PENDING</div>
-                  <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === item.filingId">
+                  <span>FILING PENDING</span>
+                  <span class="vert-pipe"></span>
+                  <span class="payment-status" v-if="inProcessFiling === item.filingId">
                     PROCESSING...
-                  </div>
-                  <div class="payment-status" v-else>
+                  </span>
+                  <span class="payment-status" v-else>
                     <span>PAYMENT UNSUCCESSFUL</span>
                     <v-btn
                       class="expand-btn"
                       outlined
-                      color="red darken-4"
+                      color="error"
                       :ripple=false
-                      @click.stop="togglePanel(index)"
                     >
-                      <v-icon left>mdi-information-outline</v-icon>
+                      <v-icon>mdi-information-outline</v-icon>
                       <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
-                  </div>
+                  </span>
                 </div>
 
                 <!-- pending filing - paid -->
                 <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
-                  <div>FILING PENDING</div>
-                  <div class="vert-pipe"></div>
-                  <div class="payment-status" v-if="inProcessFiling === item.filingId">
+                  <span>FILING PENDING</span>
+                  <span class="vert-pipe"></span>
+                  <span class="payment-status" v-if="inProcessFiling === item.filingId">
                     PROCESSING...
-                  </div>
-                  <div class="payment-status" v-else>
+                  </span>
+                  <span class="payment-status" v-else>
                     <span>PAID</span>
                     <v-btn
                       class="expand-btn"
                       outlined
-                      color="red darken-4"
+                      color="error"
                       :ripple=false
-                      @click.stop="togglePanel(index)"
                     >
-                      <v-icon left>mdi-information-outline</v-icon>
+                      <v-icon>mdi-information-outline</v-icon>
                       <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
-                  </div>
+                  </span>
                 </div>
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
@@ -312,26 +270,31 @@
 
                 <!-- Alteration Actions -->
                 <template v-else-if="isTypeAlteration(item) && isStatusDraft(item)">
-                  <v-btn class="btn-alt-draft-resume"
-                         color="primary"
-                         :disabled="!item.enabled"
-                         @click.native.stop="doResumeFiling(item)"
+                  <v-btn
+                    class="btn-alt-draft-resume"
+                    color="primary"
+                    :disabled="!item.enabled"
+                    @click.native.stop="doResumeFiling(item)"
                   >
                     <span>{{alterationBtnLabel}}</span>
                   </v-btn>
                   <v-menu v-if="!requiresAlteration" offset-y left>
                     <template v-slot:activator="{ on }">
-                      <v-btn color="primary" class="actions__more-actions__btn px-0"
-                             v-on="on" id="menu-activator-alt" :disabled="!item.enabled"
+                      <v-btn
+                        id="menu-activator-alt"
+                        class="actions__more-actions__btn px-0"
+                        color="primary"
+                        v-on="on"
+                        :disabled="!item.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
                     </template>
                     <v-list class="actions__more-actions">
                       <v-list-item
-                              v-if="businessId"
-                              id="btn-delete-draft-alt"
-                              @click="confirmDeleteDraft(item)"
+                        v-if="businessId"
+                        id="btn-delete-draft-alt"
+                        @click="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <v-list-item-title>Delete changes to company information</v-list-item-title>
@@ -341,7 +304,8 @@
                 </template>
 
                 <template v-else-if="isStatusDraft(item)">
-                  <v-btn class="btn-draft-resume"
+                  <v-btn
+                    class="btn-draft-resume"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
@@ -358,8 +322,12 @@
                   <!-- dropdown menu -->
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
-                      <v-btn color="primary" class="actions__more-actions__btn px-0"
-                        v-on="on" id="menu-activator" :disabled="!item.enabled"
+                      <v-btn
+                        id="menu-activator"
+                        class="actions__more-actions__btn px-0"
+                        color="primary"
+                        v-on="on"
+                        :disabled="!item.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -373,7 +341,7 @@
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title>Delete {{ toDoListTitle }}</v-list-item-title>
+                          <v-list-item-title>Delete {{ todoListTitle }}</v-list-item-title>
                         </template>
                         <template v-else-if="isTypeSpecialResolution(item)">
                           <v-list-item-title>Delete Special Resolution</v-list-item-title>
@@ -413,10 +381,12 @@
                   <!-- dropdown menu -->
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
-                      <v-btn color="primary"
-                        v-on="on" id="pending-item-menu-activator"
-                        :disabled="!item.enabled"
+                      <v-btn
+                        id="pending-item-menu-activator"
                         class="actions__more-actions__btn px-0"
+                        color="primary"
+                        v-on="on"
+                        :disabled="!item.enabled"
                         data-test-id="btn-pending-filing-menu"
                         @click.native.stop
                       >
@@ -435,7 +405,8 @@
                 </template>
 
                 <template v-else-if="isStatusError(item)">
-                  <v-btn class="btn-retry-payment"
+                  <v-btn
+                    class="btn-retry-payment"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -449,7 +420,8 @@
                 </template>
 
                 <template v-else-if="isStatusNew(item) && isTypeAnnualReport(item)">
-                  <v-btn class="btn-file-now"
+                  <v-btn
+                    class="btn-file-now"
                     color="primary"
                     :disabled="isFileAnnualReportDisabled(item, index)"
                     @click.native.stop="doFileNow(item)"
@@ -465,54 +437,56 @@
         <v-expansion-panel-content>
           <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-          <template v-if="isStatusDraft(item) && isPayError(item)">
-            <PaymentIncomplete :filing=item />
-          </template>
-
-          <template v-else-if="isTypeCorrection(item)">
-            <div v-if="isStatusDraft(item)" data-test-class="correction-draft" class="todo-list-detail body-2">
+          <!-- is this a correction in draft status? -->
+          <template v-if="isTypeCorrection(item) && isStatusDraft(item)">
+            <div data-test-class="correction-draft" class="todo-list-detail body-2">
               <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
               <v-divider class="my-6"></v-divider>
-              <!-- the detail comments section -->
-              <DetailsList
-                :filing=item
-                :isTask="true"
-                @showCommentDialog="showCommentDialog($event)"
-              />
+              <!-- the correction comment -->
+              <CorrectionComment :comment="item.comment" />
             </div>
+          </template>
 
-            <div v-else data-test-class="correction-pending" class="todo-list-detail body-2">
+          <!-- is this a correction in any other status? -->
+          <template v-else-if="isTypeCorrection(item)">
+            <div data-test-class="correction-pending" class="todo-list-detail body-2">
               <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
               <v-divider class="my-6"></v-divider>
-              <!-- the detail comments section -->
-              <DetailsList
-                :filing=item
-                :isTask="true"
-                @showCommentDialog="showCommentDialog($event)"
-              />
+              <!-- the correction comment -->
+              <CorrectionComment :comment="item.comment" />
             </div>
           </template>
 
+          <!-- does this item have an incomplete payment? -->
+          <template v-else-if="isStatusDraft(item) && isPayError(item)">
+            <PaymentIncomplete :filing=item />
+          </template>
+
+          <!-- is this a draft IA or Registration? -->
+          <template v-else-if="isStatusDraft(item) &&
+            (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
+          >
+            <NameRequestInfo :nameRequest="item.nameRequest" />
+          </template>
+
+          <!-- does this item have a pending payment? -->
           <template v-else-if="isStatusPending(item)">
             <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(item)" :filing=item class="mb-6" />
             <PaymentPending v-else />
           </template>
 
+          <!-- does this item have an unsuccessful payment? -->
           <template v-else-if="isStatusError(item)">
             <PaymentUnsuccessful />
           </template>
 
+          <!-- does this item have a paid payment? -->
           <template v-else-if="isStatusPaid(item)">
             <PaymentPaid />
-          </template>
-
-          <template v-else-if="isStatusDraft(item) &&
-            (isTypeIncorporationApplication(item) || isTypeRegistration(item))">
-            <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -537,37 +511,37 @@ import Vue2Filters from 'vue2-filters' // needed for orderBy
 import { navigate } from '@/utils'
 
 // Dialogs and Components
-import { AddCommentDialog, CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
-import { DetailsList, NameRequestInfo, ContactInfo } from '@/components/common'
+import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
+import { NameRequestInfo, ContactInfo } from '@/components/common'
+import ActionRequired from './TodoList/ActionRequired.vue'
+import CorrectionComment from './TodoList/CorrectionComment.vue'
 import PaymentIncomplete from './TodoList/PaymentIncomplete.vue'
 import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import ActionRequired from '@/components/Dashboard/ActionRequired.vue'
 
 // Mixins, Enums and Interfaces
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF } from '@/interfaces'
 
 @Component({
   components: {
     // dialogs
-    AddCommentDialog,
     CancelPaymentErrorDialog,
     ConfirmDialog,
     DeleteErrorDialog,
     // components
-    DetailsList,
+    ActionRequired,
+    CorrectionComment,
     NameRequestInfo,
     ContactInfo,
     PaymentIncomplete,
     PaymentPaid,
     PaymentPending,
     PaymentPendingOnlineBanking,
-    PaymentUnsuccessful,
-    ActionRequired
+    PaymentUnsuccessful
   },
   mixins: [
     Vue2Filters.mixin
@@ -582,7 +556,6 @@ export default class TodoList extends Mixins(
   }
 
   // local properties
-  protected addCommentDialog = false
   protected todoItems: Array<TodoItemIF> = []
   protected deleteErrors: Array<any> = []
   protected deleteWarnings: Array<any> = []
@@ -591,7 +564,6 @@ export default class TodoList extends Mixins(
   protected cancelPaymentErrorDialog = false
   protected enableCheckbox: Array<any> = []
   protected confirmEnabled = false
-  protected currentFiling: TodoItemIF = null
   protected panel: number = null // currently expanded panel
   protected checkTimer: number = null
   protected inProcessFiling: number = null
@@ -672,8 +644,15 @@ export default class TodoList extends Mixins(
   get isActionRequired (): boolean {
     return this.isFirm && this.isNotInCompliance
   }
+
+  /** Whether to show the todo panel. */
   get showTodoPanel () {
-    return this.todoItems && this.todoItems.length > 0
+    return (this.todoItems.length > 0)
+  }
+
+  /** The Todo List title. */
+  get todoListTitle (): string {
+    return this.getTodoListResource?.title
   }
 
   /** Whether the File Annual Report button should be disabled. */
@@ -685,6 +664,7 @@ export default class TodoList extends Mixins(
     )
   }
 
+  /** Loads list of tasks from the API into Todo Items array. */
   private async loadData (): Promise<void> {
     this.todoItems = []
 
@@ -702,16 +682,21 @@ export default class TodoList extends Mixins(
 
     // Add todo items count +1 when SP/GP with compliance warning
     const todoLength = this.isActionRequired ? this.todoItems.length + 1 : this.todoItems.length
+
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', todoLength)
 
     // Check if there is a draft/pending/error/paid/correction/alteration task.
     // This is a blocker because it needs to be completed first.
-    const blockerTask = this.todoItems.find(task => {
-      return (this.isStatusDraft(task) || this.isStatusPending(task) || this.isStatusError(task) ||
-        this.isStatusPaid(task) || this.isTypeCorrection(task) || this.isTypeAlteration(task))
-    })
-    this.setHasBlockerTask(!!blockerTask)
+    const hasBlockerTask = this.todoItems.some(task => (
+      this.isStatusDraft(task) ||
+      this.isStatusPending(task) ||
+      this.isStatusError(task) ||
+      this.isStatusPaid(task) ||
+      this.isTypeCorrection(task) ||
+      this.isTypeAlteration(task)
+    ))
+    this.setHasBlockerTask(hasBlockerTask)
 
     // if needed, highlight a specific task
     if (this.highlightId) this.highlightTask(this.highlightId)
@@ -759,8 +744,9 @@ export default class TodoList extends Mixins(
     })
   }
 
+  /** Loads a todo item into the Todo Items array. */
   private loadTodoItem (task: ApiTaskIF): void {
-    const todo = task.task.todo
+    const todo = task.task.todo // already checked for not falsey in loadData()
     const header = todo.header
 
     if (header) {
@@ -769,6 +755,7 @@ export default class TodoList extends Mixins(
           this.loadAnnualReportTodo(task)
           break
         case FilingTypes.CONVERSION:
+          // see https://app.zenhub.com/workspace/o/bcgov/entity/issues/13565
           break
         default:
           // eslint-disable-next-line no-console
@@ -778,21 +765,6 @@ export default class TodoList extends Mixins(
     } else {
       // eslint-disable-next-line no-console
       console.log('ERROR - invalid header in todo =', todo)
-    }
-  }
-
-  private expiresText (nameRequest: any): string {
-    const date = this.apiToDate(nameRequest.expirationDate)
-    const expireDays = this.daysFromToday(date)
-    // NB: 0 means NR expires today
-    if (isNaN(expireDays) || expireDays < 0) {
-      return 'Expired'
-    } else if (expireDays < 1) {
-      return 'Expires today'
-    } else if (expireDays < 2) {
-      return 'Expires tomorrow'
-    } else {
-      return `Expires in ${expireDays} days`
     }
   }
 
@@ -821,8 +793,7 @@ export default class TodoList extends Mixins(
         enabled: task.enabled,
         order: task.order,
         nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BCOMP only
-        arDueDate: this.formatYyyyMmDd(header.arMaxDate),
-        commentsLink: null // cannot add comments to Todo item
+        arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)
     } else {
@@ -831,8 +802,9 @@ export default class TodoList extends Mixins(
     }
   }
 
+  /** Loads a filing item into the Todo Items array. */
   private async loadFilingItem (task: ApiTaskIF): Promise<void> {
-    const filing = task.task.filing
+    const filing = task.task.filing // already checked for not falsey in loadData()
     const header = filing.header
 
     if (header) {
@@ -909,9 +881,7 @@ export default class TodoList extends Mixins(
         goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj,
-        comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        payErrorObj
       }
       this.todoItems.push(item)
     } else {
@@ -948,10 +918,7 @@ export default class TodoList extends Mixins(
         goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj,
-        comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
-
+        payErrorObj
       }
       this.todoItems.push(item)
     } else {
@@ -988,8 +955,7 @@ export default class TodoList extends Mixins(
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        payErrorObj
       }
       this.todoItems.push(item)
     } else {
@@ -1019,8 +985,7 @@ export default class TodoList extends Mixins(
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        payErrorObj
       }
       this.todoItems.push(item)
     } else {
@@ -1049,8 +1014,7 @@ export default class TodoList extends Mixins(
         order: task.order,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        payErrorObj
       }
       this.todoItems.push(item)
     } else {
@@ -1085,8 +1049,7 @@ export default class TodoList extends Mixins(
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        comment: correction.comment
       }
       this.todoItems.push(item)
     } else {
@@ -1133,8 +1096,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        nameRequest: this.nameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1184,8 +1146,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        nameRequest: this.nameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1232,8 +1193,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        nameRequest: this.nameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1267,8 +1227,7 @@ export default class TodoList extends Mixins(
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest,
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        nameRequest: this.nameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1305,14 +1264,27 @@ export default class TodoList extends Mixins(
         goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
-        payErrorObj,
-        comments: this.flattenAndSortComments(header.comments),
-        commentsLink: `businesses/${this.getIdentifier}/filings/${header.filingId}/comments`
+        payErrorObj
       }
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
       console.log('ERROR - invalid header or specialResolution in task =', task)
+    }
+  }
+
+  private expiresText (nameRequest: any): string {
+    const date = this.apiToDate(nameRequest.expirationDate)
+    const expireDays = this.daysFromToday(date)
+    // NB: 0 means NR expires today
+    if (isNaN(expireDays) || expireDays < 0) {
+      return 'Expired'
+    } else if (expireDays < 1) {
+      return 'Expires today'
+    } else if (expireDays < 2) {
+      return 'Expires tomorrow'
+    } else {
+      return `Expires in ${expireDays} days`
     }
   }
 
@@ -1378,48 +1350,55 @@ export default class TodoList extends Mixins(
         }
         break
 
-      case FilingTypes.INCORPORATION_APPLICATION:
+      case FilingTypes.INCORPORATION_APPLICATION: {
         // navigate to Create UI to resume this Incorporation Application
         const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
         navigate(incorpAppUrl)
         break
+      }
 
-      case FilingTypes.REGISTRATION:
-        // navigate to Create UI to resume this registration
+      case FilingTypes.REGISTRATION: {
+        // navigate to Create UI to resume this Registration
         const registrationAppUrl = `${this.createUrl}define-registration?id=${this.tempRegNumber}`
         navigate(registrationAppUrl)
         break
+      }
 
-      case FilingTypes.ALTERATION:
-        // navigate to Edit UI to resume this alteration
+      case FilingTypes.ALTERATION: {
+        // navigate to Edit UI to resume this Alteration
         const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
         navigate(alterationUrl)
         break
+      }
 
-      case FilingTypes.DISSOLUTION:
-        // navigate to Create UI to resume this dissolution
+      case FilingTypes.DISSOLUTION: {
+        // navigate to Create UI to resume this Dissolution
         const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
         break
+      }
 
-      case FilingTypes.CHANGE_OF_REGISTRATION:
-        // navigate to Edit UI to resume this change of registration
+      case FilingTypes.CHANGE_OF_REGISTRATION: {
+        // navigate to Edit UI to resume this Change of Registration
         const changeUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
         navigate(changeUrl)
         break
+      }
 
-      case FilingTypes.CONVERSION:
-        // navigate to Edit UI to resume this conversion
+      case FilingTypes.CONVERSION: {
+        // navigate to Edit UI to resume this Conversion
         const conversionUrl = `${this.editUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
         navigate(conversionUrl)
         break
+      }
 
-      case FilingTypes.SPECIAL_RESOLUTION:
-        // navigate to Edit UI to resume this special resolution
-        let specialResolutionUrl = `${this.editUrl}${this.getIdentifier}/special-resolution/`
-        specialResolutionUrl += `?special-resolution-id=${item.filingId}`
+      case FilingTypes.SPECIAL_RESOLUTION: {
+        // navigate to Edit UI to resume this Special Resolution
+        const specialResolutionUrl =
+          `${this.editUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
         navigate(specialResolutionUrl)
         break
+      }
 
       default:
         // eslint-disable-next-line no-console
@@ -1585,19 +1564,6 @@ export default class TodoList extends Mixins(
     })
   }
 
-  protected showCommentDialog (filing: TodoItemIF): void {
-    this.currentFiling = filing
-    this.addCommentDialog = true
-  }
-
-  protected hideCommentDialog (needReload: boolean): void {
-    this.addCommentDialog = false
-    if (needReload) {
-      // emit event to reload all data
-      this.$root.$emit('reloadData')
-    }
-  }
-
   protected isPayError (item: TodoItemIF): boolean {
     return !!item.payErrorObj
   }
@@ -1625,24 +1591,14 @@ export default class TodoList extends Mixins(
     return title
   }
 
-  /** Closes current panel or opens new panel. */
-  protected togglePanel (index: number): void {
-    this.panel = (this.panel === index) ? null : index
-  }
-
-  /** The toDoList title to display. */
-  private get toDoListTitle (): string {
-    return this.getTodoListResource?.title
-  }
-
   @Watch('getTasks', { immediate: true })
   private async onTasksChanged (): Promise<void> {
     // load data initially and when tasks list changes
     await this.loadData()
   }
 
-  /** Called when this component is destroyed */
-  destroyed (): void {
+  /** Called just before this component is destroyed. */
+  protected beforeDestroy (): void {
     // cancel the check timer if it is running
     clearTimeout(this.checkTimer)
   }
@@ -1686,10 +1642,6 @@ export default class TodoList extends Mixins(
   padding: 0;
   justify-content: space-evenly;
   align-items: flex-start;
-
-  .bcorps-ar-subtitle {
-    padding: 1rem 0 .5rem 0;
-  }
 }
 
 .todo-item .list-item .list-item__actions {

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-notation-dialog">
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-staff-notation-dialog">
     <v-card>
       <v-card-title id="dialog-title">
         <span v-if="administrativeDissolution" id="dialog-title"><strong>{{displayName}}</strong></span>
