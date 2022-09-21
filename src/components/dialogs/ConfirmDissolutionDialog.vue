@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach">
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="confirm-dissolution-dialog">
     <v-card class="pa-5">
       <v-card-subtitle class="pt-5" align="center">
         <v-icon color="error" large>mdi-information-outline</v-icon>
@@ -10,7 +10,7 @@
 
       <v-card-text>
         <p class="warning-title" id="dialog-title">
-        {{getModalTitle}}
+          {{getModalTitle}}
         </p>
         <p class="warning-text" id="dialog-text">
           You are about to {{ dissolutionType }} <strong>{{ getEntityName }}</strong>;
@@ -32,7 +32,7 @@
             outlined
             @click="close()"
           >
-            Cancel
+            <span>Cancel</span>
           </v-btn>
           <v-btn
             id="dialog-proceed-button"
@@ -40,7 +40,7 @@
             color="primary"
             @click="proceed()"
           >
-            {{getConfirmButtonText}}
+            <span>{{getConfirmButtonText}}</span>
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-row>
@@ -56,7 +56,7 @@ import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
 @Component({})
-export default class ConfirmDissolution extends Vue {
+export default class ConfirmDissolutionDialog extends Vue {
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog: boolean
 

@@ -96,7 +96,7 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   private nameRequestApplicant: NameRequestApplicantIF
 
   /** Called when component is created. */
-  created (): void {
+  protected created (): void {
     if (!this.nameRequest) return // safety check
 
     this.parsedNameRequest = this.parseNameRequest(this.nameRequest, null)

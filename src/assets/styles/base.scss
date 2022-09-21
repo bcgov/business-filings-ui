@@ -310,24 +310,6 @@ ul.list {
   border-left: 3px solid $app-red;
 }
 
-.filing-item__actions {
-  display: inline-block;
-
-  .expand-btn {
-    letter-spacing: -0.01rem;
-    @extend .font-14;
-    font-weight: 700;
-  }
-
-  // make menu button slightly smaller
-  .menu-btn {
-    height: unset !important;
-    min-width: unset !important;
-    padding: 0.25rem !important;
-    color: $app-blue
-  }
-}
-
 // vertical pipe for separating strings
 .vert-pipe {
   margin-top: 0.1rem;

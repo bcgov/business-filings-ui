@@ -13,7 +13,7 @@ export interface TodoItemIF {
   order: number
   status: string
   title: string
-  commentsLink: string
+  comments?: Array<any> // always [] and never used
 
   // Todo ARs and Draft IAs only
   subtitle?: string
@@ -22,9 +22,6 @@ export interface TodoItemIF {
   paymentMethod?: PaymentMethod
   paymentToken?: number
   payErrorObj?: PaymentErrorIF
-
-  // alterations and corrections only
-  comments?: Array<any>
 
   // ARs only
   ARFilingYear?: number // YYYY
@@ -38,6 +35,7 @@ export interface TodoItemIF {
   arDueDate?: string // eg, "Apr 9, 2021"
 
   // corrections only
+  comment?: string
   correctedFilingId?: number
   correctedFilingType?: string
 

@@ -53,7 +53,7 @@ export default class DetailComment extends Vue {
   readonly autofocus: boolean
 
   /** Called when component is created. */
-  created (): void {
+  protected created (): void {
     // inform parent of initial validity
     this.emitValid(this.value)
   }

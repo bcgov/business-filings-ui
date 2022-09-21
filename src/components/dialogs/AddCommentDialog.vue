@@ -4,7 +4,7 @@
       <v-card-title id="dialog-title">Add Detail</v-card-title>
 
       <v-card-text>
-        <detail-comment
+        <DetailComment
           ref="detailComment"
           v-model="comment"
           autofocus
@@ -38,7 +38,7 @@
 import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
-import { HistoryItemIF, TodoItemIF } from '@/interfaces'
+import { HistoryItemIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -54,16 +54,16 @@ export default class AddCommentDialog extends Vue {
 
   /** The filing to add a comment to. */
   @Prop({ default: null })
-  readonly filing: HistoryItemIF | TodoItemIF
+  readonly filing: HistoryItemIF
 
   /** The comment text. */
-  private comment: string = ''
+  protected comment = ''
 
   /** Whether the detail component is valid. */
-  private detailCommentValid: boolean = false
+  protected detailCommentValid = false
 
   /** Whether this component is currently saving. */
-  private saving: boolean = false
+  protected saving = false
 
   /** Called when prop changes (ie, dialog is shown/hidden). */
   @Watch('dialog')
@@ -83,10 +83,10 @@ export default class AddCommentDialog extends Vue {
    * @param needReload Whether the dashboard needs to be reloaded.
    */
   @Emit('close')
-  private emitClose (needReload: boolean): void { }
+  protected emitClose (needReload: boolean): void { }
 
   /** Saves the current comment. */
-  private async save (): Promise<void> {
+  protected async save (): Promise<void> {
     // prevent double saving
     if (this.saving) return
 

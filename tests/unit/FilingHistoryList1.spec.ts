@@ -11,13 +11,13 @@ import sinon from 'sinon'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import CompletedAlteration from '@/components/Dashboard/FilingHistoryList/CompletedAlteration.vue'
 import CompletedIa from '@/components/Dashboard/FilingHistoryList/CompletedIa.vue'
+import DetailsList from '@/components/Dashboard/FilingHistoryList/DetailsList.vue'
 import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
 import FutureEffective from '@/components/Dashboard/FilingHistoryList/FutureEffective.vue'
 import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/FutureEffectivePending.vue'
 import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vue'
 import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/StaffFiling.vue'
-import { DetailsList } from '@/components/common'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

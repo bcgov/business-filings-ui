@@ -36,7 +36,7 @@
       attach="#app"
     />
 
-    <ConfirmDissolution
+    <ConfirmDissolutionDialog
       :dialog="confirmDissolutionDialog"
       @close="confirmDissolutionDialog = false"
       @proceed="dissolveCompany()"
@@ -107,7 +107,7 @@ import EntityInfo from '@/components/EntityInfo.vue'
 // Dialogs
 import {
   BusinessAuthErrorDialog,
-  ConfirmDissolution,
+  ConfirmDissolutionDialog,
   DashboardUnavailableDialog,
   DownloadErrorDialog,
   NameRequestAuthErrorDialog,
@@ -197,7 +197,7 @@ export default {
 
   components: {
     BreadCrumb,
-    ConfirmDissolution,
+    ConfirmDissolutionDialog,
     DashboardUnavailableDialog,
     DownloadErrorDialog,
     BusinessAuthErrorDialog,
@@ -228,7 +228,7 @@ export default {
       return sessionStorage.getItem('CREATE_URL')
     },
 
-    /** The Incorporation Application's Temporary Registration Number string. */
+    /** The Temporary Registration Number string. */
     tempRegNumber (): string {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
     },
@@ -308,7 +308,8 @@ export default {
     await this.fetchData()
   },
 
-  destroyed (): void {
+  /** Called just before this component is destroyed. */
+  beforeDestroy (): void {
     // stop listening for reload data events
     this.$root.$off('reloadData')
 

@@ -4,7 +4,7 @@ import BusinessAuthErrorDialog from './BusinessAuthErrorDialog.vue'
 import CancelPaymentErrorDialog from './CancelPaymentErrorDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
 import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
-import ConfirmDissolution from './ConfirmDissolution.vue'
+import ConfirmDissolutionDialog from './ConfirmDissolutionDialog.vue'
 import DashboardUnavailableDialog from './DashboardUnavailableDialog.vue'
 import DeleteErrorDialog from './DeleteErrorDialog.vue'
 import DownloadErrorDialog from './DownloadErrorDialog.vue'
@@ -26,7 +26,7 @@ export {
   CancelPaymentErrorDialog,
   CoaWarningDialog,
   ConfirmDialog,
-  ConfirmDissolution,
+  ConfirmDissolutionDialog,
   DashboardUnavailableDialog,
   DeleteErrorDialog,
   DownloadErrorDialog,
