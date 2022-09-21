@@ -27,7 +27,6 @@ import { HistoryItemIF } from '@/interfaces'
   components: { DateTooltip }
 })
 export default class FiledLabel extends Vue {
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 }
 </script>

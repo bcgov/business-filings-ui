@@ -23,7 +23,7 @@ import { Debounce } from 'vue-debounce-decorator'
 @Component({})
 export default class DetailComment extends Vue {
   /** Array of validations rules for the textarea. */
-  private get rules (): Array<Function> {
+  get rules (): Array<Function> {
     // include whitespace in maximum length check
     return [
       val => (val && val.trim().length > 0) || 'Detail is required.',
@@ -37,20 +37,16 @@ export default class DetailComment extends Vue {
   }
 
   /** Comment (v-model) passed into this component (required). */
-  @Prop({ default: '' })
-  readonly value: string
+  @Prop({ default: '' }) readonly value!: string
 
   /** Placeholder passed into this component (optional). */
-  @Prop({ default: '' })
-  readonly placeholder: string
+  @Prop({ default: '' }) readonly placeholder!: string
 
   /** Max Length passed into this component (optional). */
-  @Prop({ default: 4096 })
-  readonly maxLength: number
+  @Prop({ default: 4096 }) readonly maxLength!: number
 
   /** Autofocus passed into this component (optional). */
-  @Prop({ default: false })
-  readonly autofocus: boolean
+  @Prop({ default: false }) readonly autofocus!: boolean
 
   /** Called when component is created. */
   protected created (): void {
@@ -70,7 +66,7 @@ export default class DetailComment extends Vue {
 
   /** Emits an event with the changed comment (ie, updated v-model). */
   @Emit('input')
-  private emitInput (val: string): void { }
+  private emitInput (val: string): void {}
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')

@@ -360,20 +360,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   // }
 }
 
-.v-breadcrumbs li {
-  font-size: $px-12;
-}
-
-::v-deep {
-  .v-breadcrumbs a {
-    color: $gray8 !important;
-  }
-
-  .v-breadcrumbs a:hover {
-    color: $BCgovABlue3 !important;
-  }
-}
-
 #entity-legal-name,
 #incorp-app-title {
   display: inline-block;
@@ -438,12 +424,12 @@ dd:not(:hover) > button {
 }
 
 // Disable btn and tooltip overrides
-::v-deep .v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon {
+:deep(.v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon) {
   opacity: 0.4 !important;
   color: $app-blue !important;
 }
 
-::v-deep #staff-comments .v-btn {
+:deep(#staff-comments .v-btn) {
   margin-top: -4px; // for vertical alignment
 }
 
@@ -453,7 +439,7 @@ dd:not(:hover) > button {
   margin-top: -4px; // for vertical alignment
 }
 
-::v-deep .v-chip__content {
+:deep(.v-chip__content) {
   letter-spacing: 0.5px;
 }
 </style>

@@ -135,10 +135,10 @@ export default class StaffNotation extends Vue {
   readonly DissolutionNames = DissolutionNames
 
   /** Prop for the scrollbar offset to be added. */
-  @Prop() readonly addScrollbarOffset: string
+  @Prop() readonly addScrollbarOffset!: string
 
   /** Prop for disabling the menu items. */
-  @Prop({ default: false }) readonly disabled: boolean
+  @Prop({ default: false }) readonly disabled!: boolean
 
   @Getter isFirm!: boolean
   @Getter isBComp!: boolean
@@ -252,7 +252,7 @@ export default class StaffNotation extends Vue {
 }
 
 // Fix the transparent added by .add-scrollbar-offset (Firefox only).
-::v-deep .add-staff-notation-dialog {
+:deep(.add-staff-notation-dialog) {
   scrollbar-color: auto;
 }
 
@@ -270,7 +270,7 @@ export default class StaffNotation extends Vue {
   transform: rotate(-180deg);
 }
 
-::v-deep .theme--light.v-list-item--disabled {
+:deep(.theme--light.v-list-item--disabled) {
   opacity: 0.38 !important;
 }
 </style>

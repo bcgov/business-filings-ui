@@ -61,22 +61,22 @@ export default class StaffPaymentDialog extends Vue {
   }
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   // Prop to provide staff payment data.
-  @Prop({ required: true }) readonly staffPaymentData: StaffPaymentIF
+  @Prop({ required: true }) readonly staffPaymentData!: StaffPaymentIF
 
   // Prop to display loading indicators and to disable buttons.
-  @Prop({ default: false }) readonly loading: boolean
+  @Prop({ default: false }) readonly loading!: boolean
 
-  private validate = false
-  private staffPaymentFormValid = false
+  protected validate = false
+  protected staffPaymentFormValid = false
 
   /** Called when user clicks Submit button. */
-  private async submit (): Promise<void> {
+  protected async submit (): Promise<void> {
     // enable validation
     this.validate = true
 
@@ -95,7 +95,7 @@ export default class StaffPaymentDialog extends Vue {
   }
 
   /** Called when user clicks Exit button. */
-  private exit (): void {
+  protected exit (): void {
     // reset validation (for next time)
     this.validate = false
 
@@ -105,7 +105,7 @@ export default class StaffPaymentDialog extends Vue {
 
   // Pass updated staff payment data to parent.
   @Emit('update:staffPaymentData')
-  private emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
+  protected emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
 }
 </script>
 
@@ -147,7 +147,7 @@ export default class StaffPaymentDialog extends Vue {
 }
 
 // StaffPayment shared component overrides
-::v-deep #staff-payment-container {
+:deep(#staff-payment-container) {
   margin: 0 !important;
   padding: 0 !important;
 }

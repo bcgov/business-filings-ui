@@ -1763,7 +1763,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1799,7 +1799,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
 
     const localVue = createLocalVue()
@@ -2065,7 +2065,7 @@ describe('Annual Report - payment required error', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     const localVue = createLocalVue()

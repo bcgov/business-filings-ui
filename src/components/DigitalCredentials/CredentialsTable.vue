@@ -82,7 +82,7 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 }
 
 // Vuetify overrides for Table Headers and Cells
-::v-deep {
+:deep() {
   .v-data-table > .v-data-table__wrapper > table > thead > tr > th, td {
     color: $gray7;
     font-size: .875rem;

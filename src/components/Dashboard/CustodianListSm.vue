@@ -64,8 +64,7 @@ import { PartyIF } from '@/interfaces'
 
 @Component({})
 export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
-  @Prop({ default: () => [] })
-  readonly custodians: Array<PartyIF>
+  @Prop({ default: () => [] }) readonly custodians!: Array<PartyIF>
 
   /** Return the officer person or org name */
   protected officerName (party: PartyIF): string {
@@ -105,7 +104,7 @@ $avatar-width: 2.75rem;
   width: $avatar-width;
 }
 
-::v-deep .v-expansion-panel-content__wrap {
+:deep(.v-expansion-panel-content__wrap) {
   padding-right: 1rem;
   padding-left: 1rem;
   padding-bottom: 1rem;

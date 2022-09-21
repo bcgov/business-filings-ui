@@ -838,7 +838,7 @@ export default class StandaloneDirectorsFiling extends Mixins(
    * Routes to dashboard if there are no outstanding changes,
    * else prompts user before routing.
    */
-  goToDashboard (force: boolean = false): void {
+  goToDashboard (force = false): void {
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard

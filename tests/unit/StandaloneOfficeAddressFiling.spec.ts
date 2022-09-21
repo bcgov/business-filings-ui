@@ -1609,7 +1609,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
         }
       }
     })
-    p1.catch(() => { })
+    p1.catch(() => {})
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1646,7 +1646,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
         }
       }
     })
-    p2.catch(() => { })
+    p2.catch(() => {})
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
   })
 
@@ -1805,7 +1805,7 @@ describe('Standalone Office Address Filing - payment required error', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 

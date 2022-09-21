@@ -47,14 +47,13 @@ import { HistoryItemIF } from '@/interfaces'
 })
 export default class AddCommentDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   /** The filing to add a comment to. */
-  @Prop({ default: null })
-  readonly filing: HistoryItemIF
+  @Prop({ default: null }) readonly filing!: HistoryItemIF
 
   /** The comment text. */
   protected comment = ''
@@ -83,7 +82,7 @@ export default class AddCommentDialog extends Vue {
    * @param needReload Whether the dashboard needs to be reloaded.
    */
   @Emit('close')
-  protected emitClose (needReload: boolean): void { }
+  protected emitClose (needReload: boolean): void {}
 
   /** Saves the current comment. */
   protected async save (): Promise<void> {

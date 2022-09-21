@@ -75,13 +75,13 @@ import { NigsMessage } from '@/enums'
 })
 export default class NotInGoodStandingDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   // Prop to select display message.
-  @Prop() readonly message: NigsMessage
+  @Prop() readonly message!: NigsMessage
 
   get isDissolveMessage (): boolean {
     return (this.message === NigsMessage.DISSOLVE)
@@ -92,7 +92,7 @@ export default class NotInGoodStandingDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit() private close () { }
+  @Emit() protected close () {}
 }
 </script>
 
@@ -125,7 +125,7 @@ export default class NotInGoodStandingDialog extends Vue {
 }
 
 // Vuetify overrides
-::v-deep .v-dialog .v-card .v-card__text {
+:deep(.v-dialog .v-card .v-card__text) {
   padding-top: 0 !important;
 }
 </style>

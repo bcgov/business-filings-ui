@@ -17,6 +17,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component({})
 export default class CorrectionComment extends Vue {
   /** The correction detail comment. */
-  @Prop({ default: null }) readonly comment: string
+  @Prop({ default: null }) readonly comment!: string
 }
 </script>

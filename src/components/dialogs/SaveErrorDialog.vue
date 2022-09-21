@@ -80,35 +80,35 @@ export default class SaveErrorDialog extends Vue {
   readonly isRoleStaff!: boolean
 
   /** Prop containing filing name. */
-  @Prop({ default: 'Filing' }) readonly filingName: string
+  @Prop({ default: 'Filing' }) readonly filingName!: string
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   /** Prop to disable the Retry button. */
-  @Prop({ default: false }) readonly disableRetry: boolean
+  @Prop({ default: false }) readonly disableRetry!: boolean
 
   /** Prop containing error messages. */
-  @Prop({ default: () => [] }) readonly errors: any[]
+  @Prop({ default: () => [] }) readonly errors!: any[]
 
   /** Prop containing warning messages. */
-  @Prop({ default: () => [] }) readonly warnings: any[]
+  @Prop({ default: () => [] }) readonly warnings!: any[]
 
   // Pass click events to parent.
-  @Emit() private exit () { }
-  @Emit() private retry () { }
-  @Emit() private okay () { }
+  @Emit() protected exit () {}
+  @Emit() protected retry () {}
+  @Emit() protected okay () {}
 
   /** The number of errors in the passed-in array. */
-  private get numErrors (): number {
+  get numErrors (): number {
     return this.errors?.length || 0
   }
 
   /** The number of warnings in the passed-in array. */
-  private get numWarnings (): number {
+  get numWarnings (): number {
     return this.warnings?.length || 0
   }
 }

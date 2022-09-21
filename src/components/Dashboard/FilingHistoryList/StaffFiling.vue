@@ -15,8 +15,7 @@ import { HistoryItemIF } from '@/interfaces'
 @Component({})
 export default class StaffFiling extends Vue {
   /** The subject filing. */
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 }
 </script>
 

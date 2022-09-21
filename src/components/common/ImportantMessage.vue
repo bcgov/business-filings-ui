@@ -9,8 +9,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class ImportantMessage extends Vue {
-  @Prop({ default: '' })
-  readonly message: string
+  @Prop({ default: '' }) readonly message!: string
 }
 </script>
 <style lang="scss" scoped>

@@ -229,15 +229,13 @@ import { Actions } from '@/enums'
 })
 export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Indicates whether this component should be enabled or not. */
-  @Prop({ default: true })
-  readonly componentEnabled: boolean
+  @Prop({ default: true }) readonly componentEnabled!: boolean
 
   /**
    * Addresses object from parent page, used to set our working addresses (4 properties below).
    * As needed, we emit this back to parent (ie, update/sync).
    */
-  @Prop({ default: () => {} })
-  readonly addresses: RegRecAddressesIF
+  @Prop({ default: () => {} }) readonly addresses!: RegRecAddressesIF
 
   @Getter isBComp!: boolean
   @Getter getIdentifier!: string
@@ -255,34 +253,34 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private recMailingAddress = {} as AddressIF
 
   // Validation events from BaseAddress components
-  private deliveryAddressValid: boolean = true
-  private mailingAddressValid: boolean = true
-  private recDeliveryAddressValid: boolean = true
-  private recMailingAddressValid: boolean = true
+  private deliveryAddressValid = true
+  private mailingAddressValid = true
+  private recDeliveryAddressValid = true
+  private recMailingAddressValid = true
 
   /** Whether to show the editable form for an address (true) or the static display address (false). */
-  private showAddressForm: boolean = false
+  private showAddressForm = false
 
   /** V-model for "Registered Mailing Address same as Registered Delivery Address" checkbox. */
-  private inheritDeliveryAddress: boolean = true
+  private inheritDeliveryAddress = true
 
   /** V-model for "Records Mailing Address same as Records Delivery Address" checkbox. */
-  private inheritRecDeliveryAddress: boolean = true
+  private inheritRecDeliveryAddress = true
 
   /** V-model for "Records Addresses same as Registered Addresses" checkbox. */
-  private inheritRegisteredAddress: boolean = true
+  private inheritRegisteredAddress = true
 
   /** The Address schema containing Vuelidate rules. */
   private officeAddressSchema = officeAddressSchema
 
   /** Whether the address form is valid. */
-  private get formValid (): boolean {
+  get formValid (): boolean {
     return ((this.deliveryAddressValid && (this.inheritDeliveryAddress || this.mailingAddressValid)) &&
       (this.recDeliveryAddressValid && (this.inheritRecDeliveryAddress || this.recMailingAddressValid)))
   }
 
   /** Whether any address has been modified from the original. */
-  private get anyModified (): boolean {
+  get anyModified (): boolean {
     return (
       !this.isSame(this.deliveryAddress, this.original?.registeredOffice?.deliveryAddress, ['actions']) ||
       !this.isSame(this.mailingAddress, this.original?.registeredOffice?.mailingAddress, ['actions']) ||

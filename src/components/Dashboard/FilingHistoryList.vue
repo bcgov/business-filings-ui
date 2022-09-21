@@ -404,7 +404,7 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
 export default class FilingHistoryList extends Mixins(
   AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
 ) {
-  @Prop({ default: null }) readonly highlightId: number
+  @Prop({ default: null }) readonly highlightId!: number
 
   @Getter getFilings!: Array<ApiFilingIF>
   @Getter hasCourtOrders!: boolean
@@ -934,11 +934,13 @@ export default class FilingHistoryList extends Mixins(
 
 // specifically enable anchors, buttons, the pending alert icon and tooltips
 // for this page and sub-components
-::v-deep a,
-::v-deep .v-btn,
-::v-deep .pending-alert .v-icon,
-::v-deep .v-tooltip + div {
-  pointer-events: auto;
+:deep() {
+  a,
+  .v-btn,
+  .pending-alert .v-icon,
+  .v-tooltip + div {
+    pointer-events: auto;
+  }
 }
 
 .item-header {
@@ -1003,11 +1005,11 @@ export default class FilingHistoryList extends Mixins(
   margin-bottom: 0.25rem;
 }
 
-::v-deep .v-expansion-panel-content__wrap {
+:deep(.v-expansion-panel-content__wrap) {
   padding: 0;
 }
 
-::v-deep .theme--light.v-list-item--disabled {
+:deep(.theme--light.v-list-item--disabled) {
   opacity: 0.38 !important;
 }
 </style>

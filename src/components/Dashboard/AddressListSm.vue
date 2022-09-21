@@ -231,12 +231,10 @@ import FirmsAddressList from './FirmsAddressList.vue'
 })
 export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the address list. */
-  @Prop({ default: false })
-  readonly showCompleteYourFilingMessage: boolean
+  @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 
   /** Whether to gray out (disable) the director list. */
-  @Prop({ default: false })
-  readonly showGrayedOut: boolean
+  @Prop({ default: false }) readonly showGrayedOut!: boolean
 
   @Getter isBComp!: boolean
   @Getter isCorp!: boolean
@@ -247,12 +245,12 @@ export default class AddressListSm extends Mixins(CommonMixin, CountriesProvince
   @State recordsAddress!: OfficeAddressIF
 
   /** Whether to appear disabled. */
-  private get disabled (): boolean {
+  get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
 
   /** Value indicating open or closed state of accordion. */
-  private get expansionValue (): Array<number> {
+  get expansionValue (): Array<number> {
     const OPEN_PANEL = 0
     const CLOSE_PANEL = 1
 

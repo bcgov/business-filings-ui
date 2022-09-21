@@ -75,12 +75,10 @@ import { Roles } from '@/enums'
 @Component({})
 export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvincesMixin, DirectorMixin) {
   /** Whether to display "complete your filing" instead of the director list. */
-  @Prop({ default: false })
-  readonly showCompleteYourFilingMessage: boolean
+  @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 
   /** Whether to gray out (disable) the director list. */
-  @Prop({ default: false })
-  readonly showGrayedOut: boolean
+  @Prop({ default: false }) readonly showGrayedOut!: boolean
 
   @Getter getParties!: PartyIF[]
 
@@ -133,7 +131,7 @@ $avatar-width: 2.75rem;
   width: $avatar-width;
 }
 
-::v-deep .v-expansion-panel-content__wrap {
+:deep(.v-expansion-panel-content__wrap) {
   padding-right: 1rem;
   padding-left: 1rem;
   padding-bottom: 1rem;

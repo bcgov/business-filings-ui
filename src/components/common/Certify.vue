@@ -42,20 +42,16 @@ export default class Certify extends Vue {
   @Getter getCurrentDate!: string
 
   /** Certified By prop. */
-  @Prop({ default: '' })
-  readonly certifiedBy: string
+  @Prop({ default: '' }) readonly certifiedBy!: string
 
   /** Is Certified prop. */
-  @Prop({ default: false })
-  readonly isCertified: boolean
+  @Prop({ default: false }) readonly isCertified!: boolean
 
   /** Message prop. */
-  @Prop({ default: '' })
-  readonly message: string
+  @Prop({ default: '' }) readonly message!: string
 
   /** Entity Display prop. */
-  @Prop({ default: '' })
-  readonly entityDisplay: string
+  @Prop({ default: '' }) readonly entityDisplay!: string
 
   /** Called when component is created. */
   protected created (): void {
@@ -64,7 +60,7 @@ export default class Certify extends Vue {
   }
 
   /** The trimmed "Certified By" string (may be ''). */
-  private get trimmedCertifiedBy (): string {
+  get trimmedCertifiedBy (): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     return this.certifiedBy && this.certifiedBy.replace(/\s+/g, ' ').trim()
   }
@@ -87,7 +83,7 @@ export default class Certify extends Vue {
 
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
-  private emitValid (valid: boolean): void { }
+  private emitValid (valid: boolean): void {}
 }
 </script>
 

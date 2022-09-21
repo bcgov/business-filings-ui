@@ -69,7 +69,7 @@
       </div>
     </v-fade-transition>
 
-    <SbcHeader />
+    <SbcHeader class="d-flex" />
     <PaySystemAlert />
 
     <div class="app-body">

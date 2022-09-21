@@ -41,13 +41,13 @@ export default class DashboardUnavailableDialog extends Vue {
   readonly isRoleStaff!: boolean
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   // Pass click events to parent.
-  @Emit() private exit () { }
-  @Emit() private retry () { }
+  @Emit() protected exit () {}
+  @Emit() protected retry () {}
 }
 </script>

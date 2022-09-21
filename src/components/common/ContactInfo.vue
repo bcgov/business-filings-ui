@@ -22,7 +22,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class ContactInfo extends Vue { }
+export default class ContactInfo extends Vue {}
 </script>
 
 <style lang="scss" scoped>

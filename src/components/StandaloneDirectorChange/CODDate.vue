@@ -61,8 +61,7 @@ import { DateMixin } from '@/mixins'
 })
 export default class CodDate extends Mixins(DateMixin) {
   // Prop passed into this component.
-  @Prop({ default: '' })
-  readonly initialCodDate: string
+  @Prop({ default: '' }) readonly initialCodDate!: string
 
   @State lastAnnualReportDate!: string
   @State entityFoundingDate!: Date
@@ -71,24 +70,24 @@ export default class CodDate extends Mixins(DateMixin) {
   @Getter getCurrentDate!: string
 
   // Local properties.
-  private date: string = '' // bound to date picker
-  private dateFormatted: string = '' // bound to text field
-  private menu: boolean = false // bound to calendar menu
+  protected date = '' // bound to date picker
+  protected dateFormatted = '' // bound to text field
+  protected menu = false // bound to calendar menu
 
   /** The array of validations rules for the COD Date text field. */
-  private get codDateRules (): Array<Function> {
+  get codDateRules (): Array<Function> {
     return [
       v => isNotNull(v) || 'A Director change date is required.'
     ]
   }
 
   /** The maximum date that can be entered. */
-  private get maxDate (): string {
+  get maxDate (): string {
     return this.getCurrentDate
   }
 
   /** The minimum date that can be entered. */
-  private get minDate (): string {
+  get minDate (): string {
     let date: string = null
 
     if (this.isBComp) {
@@ -181,13 +180,13 @@ export default class CodDate extends Mixins(DateMixin) {
    * Emits an event with the new value of COD Date.
    */
   @Emit('codDate')
-  private emitCodDate (val: string): void { }
+  private emitCodDate (val: string): void {}
 
   /**
    * Emits an event indicating whether or not this component is valid.
    */
   @Emit('valid')
-  private emitValid (val: boolean): void { }
+  private emitValid (val: boolean): void {}
 }
 </script>
 

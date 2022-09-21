@@ -7,7 +7,7 @@ import axios from '@/axios-auth'
  */
 @Component({})
 export default class AuthApiMixin extends Vue {
-  private get authApiUrl (): string {
+  get authApiUrl (): string {
     return sessionStorage.getItem('AUTH_API_URL') || ''
   }
 

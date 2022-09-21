@@ -1379,7 +1379,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1417,7 +1417,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
   })
 
@@ -1549,7 +1549,7 @@ describe('Standalone Directors Filing - payment required error', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 
