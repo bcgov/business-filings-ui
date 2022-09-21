@@ -36,7 +36,7 @@ export async function fetchConfig (): Promise<void> {
 
   const authWebUrl: string = response.data['AUTH_WEB_URL']
   sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)
-  console.log('Set Auth Web URL to: ' + authWebUrl)
+  console.info('Set Auth Web URL to: ' + authWebUrl)
 
   const registryHomeUrl = response.data['REGISTRY_HOME_URL']
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
@@ -57,20 +57,20 @@ export async function fetchConfig (): Promise<void> {
   const legalApiUrl: string = response.data['LEGAL_API_URL'] + response.data['LEGAL_API_VERSION_2'] + '/'
   // set base URL for axios calls
   axios.defaults.baseURL = legalApiUrl
-  console.log('Set Legal API URL to: ' + legalApiUrl)
+  console.info('Set Legal API URL to: ' + legalApiUrl)
 
   const authApiUrl: string = response.data['AUTH_API_URL'] + response.data['AUTH_API_VERSION'] + '/'
   sessionStorage.setItem('AUTH_API_URL', authApiUrl)
-  console.log('Set Auth API URL to: ' + authApiUrl)
+  console.info('Set Auth API URL to: ' + authApiUrl)
 
   const payApiUrl: string = response.data['PAY_API_URL'] + response.data['PAY_API_VERSION'] + '/'
   sessionStorage.setItem('PAY_API_URL', payApiUrl)
-  console.log('Set Pay API URL to: ' + payApiUrl)
+  console.info('Set Pay API URL to: ' + payApiUrl)
 
   // for system alert banner (sbc-common-components)
   const statusApiUrl: string = response.data['STATUS_API_URL'] + response.data['STATUS_API_VERSION']
   sessionStorage.setItem('STATUS_API_URL', statusApiUrl)
-  console.log('Set Status API URL to: ' + statusApiUrl)
+  console.info('Set Status API URL to: ' + statusApiUrl)
 
   const keycloakConfigPath = response.data['KEYCLOAK_CONFIG_PATH']
   sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
@@ -82,26 +82,27 @@ export async function fetchConfig (): Promise<void> {
     console.info('Set Siteminder Logout Url to: ' + siteminderLogoutUrl)
   }
 
-  const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY']
-  window['addressCompleteKey'] = addressCompleteKey
+  const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY'];
+  (<any>window).addressCompleteKey = addressCompleteKey
   addressCompleteKey && console.info('Set Address Complete Key.')
 
-  const ldClientId = response.data['BUSINESS_FILING_LD_CLIENT_ID']
-  window['ldClientId'] = ldClientId
+  const ldClientId = response.data['BUSINESS_FILING_LD_CLIENT_ID'];
+  (<any>window).ldClientId = ldClientId
   ldClientId && console.info('Set Launch Darkly Client ID.')
-
-  const sentryEnable = response.data['SENTRY_ENABLE'];
-  (<any>window).sentryEnable = sentryEnable
 
   const sentryDsn = response.data['SENTRY_DSN'];
   (<any>window).sentryDsn = sentryDsn
   sentryDsn && console.info('Set Sentry DSN.')
 
+  const sentryEnable = response.data['SENTRY_ENABLE'];
+  (<any>window).sentryEnable = sentryEnable
+
   // get Business ID / Temp Reg Number and validate that it looks OK
   // it should be first token after Base URL in Pathname
   // FUTURE: improve Business ID / Temp Reg Number validation
   const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
-  if (['CP', 'BC', 'FM'].some(type => id.includes(type))) {
+  const businessIdRegex = /^(BC|C|CP|FM)\d{7}$/
+  if (businessIdRegex.test(id)) {
     sessionStorage.setItem('BUSINESS_ID', id)
     // ensure we don't already have a Temp Reg Number in scope
     sessionStorage.removeItem('TEMP_REG_NUMBER')
