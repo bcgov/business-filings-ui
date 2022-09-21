@@ -29,106 +29,147 @@
         :key="index"
         :class="{
           'disabled': !item.enabled,
-          'pay-error': isStatusDraft(item) && isPayError(item)
+          'pay-error': isStatusDraft(item) && isPayError(item),
+          'invalid-item': isInvalidItem(item)
         }"
       >
-        <v-expansion-panel-header
-          class="no-dropdown-icon pa-0"
-          :class="{'invalid-section': isTypeAlteration(item) && requiresAlteration && !item.goodStanding}"
-        >
+        <v-expansion-panel-header class="no-dropdown-icon pa-0">
           <div class="list-item">
-            <div class="todo-label">
+            <!-- left side of list item -->
+            <div class="list-item__info">
               <!-- title -->
               <h3 class="list-item__title">{{ item.title }}</h3>
 
-              <!-- BCOMP AR special case -->
-              <div v-if="businessId && isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)"
-                class="list-item__subtitle pt-4"
-              >
-                <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
-                <v-checkbox
-                  id="enable-checkbox"
-                  class="todo-list-checkbox"
-                  label="All information about the Office Addresses and Current Directors is correct."
-                  :disabled="!item.enabled || isCoaPending"
-                  v-model="enableCheckbox[index]"
-                  @click.native.stop
-                />
-              </div>
+              <div class="list-item__subtitle">
+                <!-- NEW status -->
+                <template v-if="isStatusNew(item)">
+                  <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-              <div v-else class="list-item__subtitle">
-                <!-- NB: blocks below are mutually exclusive, and order is important -->
+                  <!-- new BCOMP AR -->
+                  <template v-if="isBComp && item.enabled && isTypeAnnualReport(item)">
+                    <p class="mt-4">
+                      Verify your Office Address and Current Directors before filing your Annual Report.
+                    </p>
+                    <v-checkbox
+                      id="enable-checkbox"
+                      class="todo-list-checkbox pt-0"
+                      label="All information about the Office Addresses and Current Directors is correct."
+                      :disabled="!item.enabled || isCoaPending"
+                      v-model="enableCheckbox[index]"
+                      @click.native.stop
+                    />
+                  </template>
 
-                <!-- new task -->
-                <div v-if="isStatusNew(item) && !!item.subtitle" class="todo-subtitle">
-                  <span>{{ item.subtitle }}</span>
-                </div>
+                  <!-- new alteration (from non-BCOMP to BCOMP) when business is in good standing -->
+                  <div v-else-if="isTypeAlteration(item) && !isBComp && isGoodStanding" class="todo-subtitle my-4">
+                    <span>Your business is ready to alter from a {{ item.legalType }} to a BC Benefit Company.
+                      Select "Alter Now" to begin your alteration. You will not be able to make any other changes
+                      to your business until the alteration is complete.</span>
+                  </div>
 
-                <!-- draft alteration not in good stating -->
-                <div v-else-if="isStatusDraft(item) && isTypeAlteration(item) && !item.goodStanding"
-                  class="todo-list-detail body-2"
-                >
-                  <p class="app-red font-weight-bold">
-                    <v-icon small color="error">mdi-alert</v-icon>
-                    This business is not in good standing.
-                  </p>
+                  <!-- new other -->
+                  <div v-else class="todo-subtitle">
+                    <span v-if="!!item.subtitle">{{ item.subtitle }}</span>
+                  </div>
+                </template>
 
-                  <p>
-                    Before you can alter your business, it must be in good standing with the Business
-                    Registry. There may be several reasons why a business is not in good standing, but
-                    the most common reason is an overdue annual report.
-                  </p>
+                <!-- DRAFT status -->
+                <template v-else-if="isStatusDraft(item)">
+                  <!-- NB: blocks below are mutually exclusive, and order is important -->
 
-                  <p>To resolve this issue, you MUST contact BC Registries staff:</p>
-                  <ContactInfo class="mt-4" />
-                </div>
+                  <!-- draft with pay error -->
+                  <div v-if="isPayError(item)" class="todo-subtitle">
+                    <span>PAYMENT INCOMPLETE</span>
+                    <v-btn
+                      class="expand-btn"
+                      outlined
+                      color="error"
+                      :ripple=false
+                    >
+                      <v-icon>mdi-information-outline</v-icon>
+                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                    </v-btn>
+                  </div>
 
-                <!-- alteration in good standing -->
-                <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBComp && !isCoop"
-                  class="todo-subtitle my-4"
-                >
-                  <span>Your business is ready to alter from a {{ item.legalType }} to a BC
-                  Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
-                  any other changes to your business until the alteration is complete.</span>
-                </div>
+                  <!-- draft alteration when business is not in good standing -->
+                  <div v-else-if="isTypeAlteration(item) && !isGoodStanding" class="todo-list-detail body-2">
+                    <p class="app-red font-weight-bold">
+                      <v-icon small color="error">mdi-alert</v-icon>
+                      This business is not in good standing.
+                    </p>
 
-                <!-- draft correction or alteration -->
-                <div v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeAlteration(item))"
-                  class="todo-subtitle"
-                >
-                  <span>DRAFT</span>
-                  <v-btn v-if="isTypeCorrection(item)"
-                    class="expand-btn"
-                    outlined
-                    color="error"
-                    :ripple=false
-                  >
-                    <v-icon>mdi-information-outline</v-icon>
-                    <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                  </v-btn>
-                </div>
+                    <p>
+                      Before you can alter your business, it must be in good standing with the Business
+                      Registry. There may be several reasons why a business is not in good standing, but
+                      the most common reason is an overdue annual report.
+                    </p>
 
-                <!-- draft with pay error -->
-                <div v-else-if="isStatusDraft(item) && isPayError(item)" class="todo-subtitle">
-                  <span>PAYMENT INCOMPLETE</span>
-                  <v-btn
-                    class="expand-btn"
-                    outlined
-                    color="error"
-                    :ripple=false
-                  >
-                    <v-icon>mdi-information-outline</v-icon>
-                    <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                  </v-btn>
-                </div>
+                    <p>To resolve this issue, you MUST contact BC Registries staff:</p>
+                    <ContactInfo class="mt-4" />
+                  </div>
 
-                <!-- draft incorporation or registration -->
-                <div v-else-if="isStatusDraft(item) &&
-                  (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
-                  class="todo-subtitle"
-                >
-                  <span>{{ item.subtitle }}</span>
-                  <div v-if="item.nameRequest" class="payment-status">
+                  <!-- draft alteration (from non-BCOMP to BCOMP) when business is in good standing -->
+                  <div v-else-if="isTypeAlteration(item) && !isBComp && isGoodStanding" class="todo-subtitle my-4">
+                    <span>Your business is ready to alter from a {{ item.legalType }} to a BC Benefit Company.
+                      Select "Resume" to begin your alteration. You will not be able to make any other changes
+                      to your business until the alteration is complete.</span>
+                  </div>
+
+                  <!-- draft correction or alteration in good standing -->
+                  <div v-else-if="isTypeCorrection(item) || isTypeAlteration(item)" class="todo-subtitle">
+                    <span>DRAFT</span>
+                    <v-btn v-if="isTypeCorrection(item)"
+                      class="expand-btn"
+                      outlined
+                      color="error"
+                      :ripple=false
+                    >
+                      <v-icon>mdi-information-outline</v-icon>
+                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                    </v-btn>
+                  </div>
+
+                  <!-- draft incorporation or registration -->
+                  <div v-else-if="isTypeIncorporationApplication(item) || isTypeRegistration(item)" class="todo-subtitle">
+                    <span>{{ item.subtitle }}</span>
+                    <div v-if="item.nameRequest" class="payment-status">
+                      <v-btn
+                        class="expand-btn"
+                        outlined
+                        color="primary"
+                        :ripple=false
+                      >
+                        <v-icon>mdi-information-outline</v-icon>
+                        <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <!-- draft other -->
+                  <div v-else class="todo-subtitle">
+                    <span>DRAFT</span>
+                  </div>
+                </template>
+
+                <!-- PENDING status -->
+                <template v-else-if="isStatusPending(item)">
+                  <div class="todo-subtitle">
+                    <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
+                      <span>FILING PENDING</span>
+                    </template>
+
+                    <template v-else>
+                      <span>FILING PENDING</span>
+                      <span class="vert-pipe"></span>
+                      <span class="payment-status" v-if="inProcessFiling === item.filingId">
+                        PROCESSING...
+                      </span>
+                      <span class="payment-status" v-else>
+                        <span v-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
+                        <span v-else>PAYMENT INCOMPLETE</span>
+                      </span>
+                    </template>
+
                     <v-btn
                       class="expand-btn"
                       outlined
@@ -139,91 +180,62 @@
                       <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                     </v-btn>
                   </div>
-                </div>
+                </template>
 
-                <!-- draft other -->
-                <div v-else-if="isStatusDraft(item)" class="todo-subtitle">
-                  <span>DRAFT</span>
-                </div>
-
-                <!-- pending filing - correction or alteration, or payment incomplete -->
-                <div v-else-if="isStatusPending(item)" class="todo-subtitle">
-                  <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
-                    <span>FILING PENDING</span>
-                  </template>
-
-                  <template v-else>
+                <!-- ERROR status -->
+                <template v-else-if="isStatusError(item)">
+                  <div class="todo-subtitle">
                     <span>FILING PENDING</span>
                     <span class="vert-pipe"></span>
                     <span class="payment-status" v-if="inProcessFiling === item.filingId">
                       PROCESSING...
                     </span>
                     <span class="payment-status" v-else>
-                      <span v-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
-                      <span v-else>PAYMENT INCOMPLETE</span>
+                      <span>PAYMENT UNSUCCESSFUL</span>
+                      <v-btn
+                        class="expand-btn"
+                        outlined
+                        color="error"
+                        :ripple=false
+                      >
+                        <v-icon>mdi-information-outline</v-icon>
+                        <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                      </v-btn>
                     </span>
-                  </template>
+                  </div>
+                </template>
 
-                  <v-btn
-                    class="expand-btn"
-                    outlined
-                    color="primary"
-                    :ripple=false
-                  >
-                    <v-icon>mdi-information-outline</v-icon>
-                    <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                  </v-btn>
-                </div>
+                <!-- PAID status -->
+                <template v-else-if="isStatusPaid(item)">
+                  <div class="todo-subtitle">
+                    <span>FILING PENDING</span>
+                    <span class="vert-pipe"></span>
+                    <span class="payment-status" v-if="inProcessFiling === item.filingId">
+                      PROCESSING...
+                    </span>
+                    <span class="payment-status" v-else>
+                      <span>PAID</span>
+                      <v-btn
+                        class="expand-btn"
+                        outlined
+                        color="error"
+                        :ripple=false
+                      >
+                        <v-icon>mdi-information-outline</v-icon>
+                        <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
+                      </v-btn>
+                    </span>
+                  </div>
+                </template>
+              </div>
+            </div>
 
-                <!-- pending filing - payment unsuccessful -->
-                <div v-else-if="isStatusError(item)" class="todo-subtitle">
-                  <span>FILING PENDING</span>
-                  <span class="vert-pipe"></span>
-                  <span class="payment-status" v-if="inProcessFiling === item.filingId">
-                    PROCESSING...
-                  </span>
-                  <span class="payment-status" v-else>
-                    <span>PAYMENT UNSUCCESSFUL</span>
-                    <v-btn
-                      class="expand-btn"
-                      outlined
-                      color="error"
-                      :ripple=false
-                    >
-                      <v-icon>mdi-information-outline</v-icon>
-                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                    </v-btn>
-                  </span>
-                </div>
-
-                <!-- pending filing - paid -->
-                <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
-                  <span>FILING PENDING</span>
-                  <span class="vert-pipe"></span>
-                  <span class="payment-status" v-if="inProcessFiling === item.filingId">
-                    PROCESSING...
-                  </span>
-                  <span class="payment-status" v-else>
-                    <span>PAID</span>
-                    <v-btn
-                      class="expand-btn"
-                      outlined
-                      color="error"
-                      :ripple=false
-                    >
-                      <v-icon>mdi-information-outline</v-icon>
-                      <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
-                    </v-btn>
-                  </span>
-                </div>
-              </div> <!-- end of other subtitles -->
-            </div> <!-- end of todo label -->
-
+            <!-- right side of list item -->
             <div class="list-item__actions">
               <div style="width:100%">
-                <!-- BCOMP AR special case -->
-                <template v-if="isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
-                  <p class="date-subtitle">Due: {{item.arDueDate}}</p>
+                <!-- special action subtitle for new BCOMP AR -->
+                <template v-if="isStatusNew(item) && isBComp && item.enabled && isTypeAnnualReport(item)">
+                  <p class="date-subtitle">Due: {{ item.arDueDate }}</p>
                 </template>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
@@ -233,9 +245,26 @@
                   <v-btn text loading disabled />
                 </template>
 
-                <template v-else-if="isRoleStaff && (isTypeCorrection(item) || isTypeAlteration(item)) &&
-                  isStatusDraft(item)"
-                >
+                <!-- NEW status -->
+                <template v-else-if="isStatusNew(item)">
+                  <template v-if="isTypeAnnualReport(item)">
+                    <v-btn
+                      class="btn-file-now"
+                      color="primary"
+                      :disabled="isFileAnnualReportDisabled(item, index)"
+                      @click.native.stop="doFileNow(item)"
+                    >
+                      <span>File Annual Report</span>
+                    </v-btn>
+                  </template>
+
+                  <!-- new other -->
+                  <template v-else>
+                  </template>
+                </template>
+
+                <!-- *** TODO: this case prempts alter now button below -- fix it -->
+                <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeAlteration(item)) && isRoleStaff">
                   <v-btn class="btn-corr-draft-resume"
                      color="primary"
                      :disabled="!item.enabled"
@@ -245,8 +274,12 @@
                   </v-btn>
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
-                      <v-btn color="primary" class="actions__more-actions__btn px-0"
-                        v-on="on" id="menu-activator-staff" :disabled="!item.enabled"
+                      <v-btn
+                        id="menu-activator-staff"
+                        class="actions__more-actions__btn px-0"
+                        color="primary"
+                        v-on="on"
+                        :disabled="!item.enabled"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -258,25 +291,26 @@
                         @click="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete Draft</v-list-item-title>
+                        <v-list-item-title>Delete draft</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
                 </template>
 
                 <template v-else-if="isTypeCorrection(item)">
-                  <!-- no action button in this case -->
+                  <!-- no action button for non-staff user -->
                 </template>
 
                 <!-- Alteration Actions -->
-                <template v-else-if="isTypeAlteration(item) && isStatusDraft(item)">
+                <template v-else-if="isStatusDraft(item) && isTypeAlteration(item) && !isRoleStaff">
                   <v-btn
                     class="btn-alt-draft-resume"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <span>{{alterationBtnLabel}}</span>
+                    <!-- *** regular alteration vs corp type change -->
+                    <span>{{ requiresAlteration ? 'Alter Now' : 'Resume' }}</span>
                   </v-btn>
                   <v-menu v-if="!requiresAlteration" offset-y left>
                     <template v-slot:activator="{ on }">
@@ -297,7 +331,7 @@
                         @click="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete changes to company information</v-list-item-title>
+                        <v-list-item-title>Delete draft changes to company information</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -340,13 +374,15 @@
                         @click="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <template v-if="isTypeDissolution(item)">
-                          <v-list-item-title>Delete {{ todoListTitle }}</v-list-item-title>
-                        </template>
-                        <template v-else-if="isTypeSpecialResolution(item)">
-                          <v-list-item-title>Delete Special Resolution</v-list-item-title>
-                        </template>
-                        <v-list-item-title v-else>Delete Draft</v-list-item-title>
+                        <v-list-item-title v-if="isTypeDissolution(item)">
+                          Delete {{ todoListTitle }}
+                        </v-list-item-title>
+                        <v-list-item-title v-else-if="isTypeSpecialResolution(item)">
+                          Delete Special Resolution
+                        </v-list-item-title>
+                        <v-list-item-title v-else>
+                          Delete draft
+                        </v-list-item-title>
                       </v-list-item>
 
                       <v-list-item
@@ -355,7 +391,7 @@
                         @click="confirmDeleteApplication(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete {{filingTypeToName(item.name)}}</v-list-item-title>
+                        <v-list-item-title>Delete {{ filingTypeToName(item.name) }}</v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -415,23 +451,12 @@
                   </v-btn>
                 </template>
 
-                <template v-else-if="isStatusPaid(item)">
-                  <!-- no action button in this case -->
-                </template>
-
-                <template v-else-if="isStatusNew(item) && isTypeAnnualReport(item)">
-                  <v-btn
-                    class="btn-file-now"
-                    color="primary"
-                    :disabled="isFileAnnualReportDisabled(item, index)"
-                    @click.native.stop="doFileNow(item)"
-                  >
-                    <span>File Annual Report</span>
-                  </v-btn>
+                <template v-else>
+                  <!-- no action button -->
                 </template>
               </div>
-            </div> <!-- end of actions -->
-          </div> <!-- end of list item -->
+            </div>
+          </div>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
@@ -622,22 +647,17 @@ export default class TodoList extends Mixins(
     return sessionStorage.getItem('BUSINESS_ID')
   }
 
-  /** The Incorporation Application's Temporary Registration Number string. */
+  /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  /** Whether filing an Alteration is required (ie, there is a Todo filing). */
+  /** Whether filing an Alteration is required (ie, a BC or ULC is altering to a BEN). */
   get requiresAlteration (): boolean {
     if (this.isBcCompany || this.isUlc) {
       return this.getTasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
     }
     return false
-  }
-
-  /** Alteration action button label. */
-  get alterationBtnLabel (): string {
-    return this.requiresAlteration ? 'Alter Now' : 'Resume'
   }
 
   /** Show action required only for SP/GP with Compliance warning. */
@@ -653,6 +673,13 @@ export default class TodoList extends Mixins(
   /** The Todo List title. */
   get todoListTitle (): string {
     return this.getTodoListResource?.title
+  }
+
+  /** Whether this item should show invalid styling. */
+  protected isInvalidItem (item): boolean {
+    // an alteration is required but business is not in good standing
+    if (this.isTypeAlteration(item) && this.requiresAlteration && !this.isGoodStanding) return true
+    return false
   }
 
   /** Whether the File Annual Report button should be disabled. */
@@ -860,7 +887,8 @@ export default class TodoList extends Mixins(
     const header = filing.header
 
     if (dissolution && business && header) {
-      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+      // disable draft dissolution task if business is not in good standing
+      if (this.isStatusDraft(header) && !this.isGoodStanding) {
         task.enabled = false
       }
 
@@ -878,7 +906,6 @@ export default class TodoList extends Mixins(
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -897,7 +924,8 @@ export default class TodoList extends Mixins(
     const header = filing.header
 
     if (alteration && business && header) {
-      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+      // disable draft alteration task if business is not in good standing
+      if (this.isStatusDraft(header) && !this.isGoodStanding) {
         task.enabled = false
       }
 
@@ -915,7 +943,6 @@ export default class TodoList extends Mixins(
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -1243,7 +1270,8 @@ export default class TodoList extends Mixins(
     const specialResolution = filing.specialResolution
 
     if (header && specialResolution) {
-      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+      // disable draft special resolution task if business is not in good standing
+      if (this.isStatusDraft(header) && !this.isGoodStanding) {
         task.enabled = false
       }
 
@@ -1261,7 +1289,6 @@ export default class TodoList extends Mixins(
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -1650,14 +1677,11 @@ export default class TodoList extends Mixins(
     margin-bottom: 4.5rem;
   }
 
-  .btn-draft-resume {
+  .btn-draft-resume,
+  .btn-corr-draft-resume {
     min-width: 103px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-  }
-
-  .btn-corr-draft-resume {
-    min-width: 103px;
   }
 
   .btn-change-payment-type,
@@ -1745,5 +1769,18 @@ export default class TodoList extends Mixins(
 
 .pay-error {
   border-top: solid #a94442 3px;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.invalid-item {
+  border-left: 3px solid $app-red;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+
+  // align invalid item with other items
+  .list-item__info {
+    margin-left: -3px !important;
+  }
 }
 </style>
