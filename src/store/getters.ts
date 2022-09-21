@@ -72,6 +72,11 @@ export default {
     return state.businessNumber
   },
 
+  /** Is true of the business has a court order filing */
+  hasCourtOrders (state: StateIF): boolean {
+    return state.hasCourtOrders
+  },
+
   /** The entity name. */
   getEntityName (state: StateIF): string {
     return state.entityName

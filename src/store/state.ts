@@ -25,6 +25,7 @@ export const state: StateIF = {
   lastAnnualReportDate: null,
   lastAddressChangeDate: null,
   lastDirectorChangeDate: null,
+  hasCourtOrders: null,
 
   nextARDate: null,
   ARFilingYear: null,

@@ -26,6 +26,14 @@
       attach="#filing-history-list"
     />
 
+    <!-- Display for if a court order(s) have been filed -->
+    <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
+      <v-icon id="has-court-order-icon">mdi-gavel</v-icon>
+      <span>
+        Court order(s) have been filed on this company. Review the filing history for impacts to business informaiton.
+      </span>
+    </v-card>
+
     <!-- Alternate Loading Spinner -->
     <v-fade-transition>
       <div class="loading-container grayed-out" v-show="isBusy">
@@ -399,6 +407,7 @@ export default class FilingHistoryList extends Mixins(
   @Prop({ default: null }) readonly highlightId: number
 
   @Getter getFilings!: Array<ApiFilingIF>
+  @Getter hasCourtOrders!: boolean
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
@@ -902,6 +911,10 @@ export default class FilingHistoryList extends Mixins(
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
+
+#has-court-order-icon {
+  color: $gray9;
+}
 
 .scrollable-container {
   max-height: 60rem;

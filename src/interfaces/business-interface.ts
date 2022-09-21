@@ -34,4 +34,5 @@ export interface BusinessIF {
   state: EntityState
   stateFiling?: string
   submitter: string // not used
+  hasCourtOrders: boolean
 }

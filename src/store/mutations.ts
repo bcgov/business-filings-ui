@@ -60,6 +60,9 @@ export default {
   goodStanding (state: StateIF, goodStanding: boolean) {
     state.goodStanding = goodStanding
   },
+  hasCourtOrders (state: StateIF, hasCourtOrders: boolean) {
+    state.hasCourtOrders = hasCourtOrders
+  },
   reasonText (state: StateIF, text: string) {
     state.reasonText = text
   },

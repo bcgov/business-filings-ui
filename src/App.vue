@@ -323,7 +323,7 @@ export default {
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
       'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setWarnings',
-      'setGoodStanding']),
+      'setGoodStanding', 'setHasCourtOrders']),
 
     /** Fetches business data / incorp app data. */
     async fetchData (): Promise<void> {
@@ -557,6 +557,7 @@ export default {
       this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
       this.setWarnings(Array.isArray(business.warnings) ? business.warnings : [])
       this.setGoodStanding(business.goodStanding)
+      this.setHasCourtOrders(business.hasCourtOrders)
 
       if (business.state === EntityState.HISTORICAL) {
         await this.parseStateFiling(business.stateFiling) // will throw on error

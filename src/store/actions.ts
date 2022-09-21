@@ -60,6 +60,9 @@ export default {
   setGoodStanding ({ commit }, goodStanding: boolean) {
     commit('goodStanding', goodStanding)
   },
+  setHasCourtOrders ({ commit }, setHasCourtOrders: boolean) {
+    commit('hasCourtOrders', setHasCourtOrders)
+  },
   setReasonText ({ commit }, text: string) {
     commit('reasonText', text)
   },
