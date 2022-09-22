@@ -28,7 +28,7 @@
 
     <!-- Display for if a court order(s) have been filed -->
     <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
-      <v-icon id="has-court-order-icon">mdi-gavel</v-icon>
+      <v-icon>mdi-gavel</v-icon>
       <span> Court order(s) have been filed on this company. Review the filing history for impacts to business
         information.</span>
     </v-card>
@@ -915,7 +915,7 @@ export default class FilingHistoryList extends Mixins(
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-#has-court-order-icon {
+.v-icon.mdi-gavel {
   color: $gray9;
 }
 
