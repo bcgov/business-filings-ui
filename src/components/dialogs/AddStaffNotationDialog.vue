@@ -67,7 +67,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin, EnumMixin } from '@/mixins'
 import axios from '@/axios-auth'
@@ -145,7 +146,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     return this.isTypePutBackOn({ name: this.name })
   }
 
-  get notationRules (): Array<Function> {
+  get notationRules (): Array<(v) => boolean | string> {
     if (this.enableValidation) {
       return [
         (v: string) => !!v || ((this.administrativeDissolution || this.putBackOn) ? 'Enter a detailed comment'
@@ -183,6 +184,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
    * @param needReload Whether the dashboard needs to be reloaded.
    */
   @Emit('close')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitClose (needReload: boolean): void {
     this.enableValidation = false
   }
@@ -263,7 +265,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
     const url = `businesses/${this.getIdentifier}/filings`
     let success = false
-    await axios.post(url, data).then(res => {
+    await axios.post(url, data).then(() => {
       success = true
     }).catch(error => {
       // eslint-disable-next-line no-console

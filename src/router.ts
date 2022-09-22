@@ -18,6 +18,7 @@ export function getVueRouter () {
     // set base URL for Vue Router
     base,
     routes,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     scrollBehavior (to, from, savedPosition) {
       // see https://router.vuejs.org/guide/advanced/scroll-behavior.html
       return { x: 0, y: 0 }

@@ -1,45 +1,6 @@
 import { AlterationIF, BusinessIF, ChangeOfNameIF, SpecialResolutionIF } from '@/interfaces'
 import { FilingStatus, FilingTypes } from '@/enums'
 
-/**
- * A list item from the API "tasks" call (ie, API object).
- * See also Todo Item interface.
- */
-export interface ApiTaskIF {
-  enabled: boolean
-  order: number
-  task: {
-    // content is either a filing or a todo object
-    filing?: TaskTodoIF
-    todo?: TaskTodoIF
-  }
-}
-
-/**
- * A task todo (or filing) object from the API.
- * Note that only `business` and `header` are required.
- */
-export interface TaskTodoIF {
-  annualReport?: any
-  business: BusinessIF
-  changeOfAddress?: any
-  changeOfDirectors?: any
-  correction?: any
-  dissolution?: any
-  documents?: Array<any>
-  header: ApiHeaderIF
-  incorporationApplication?: any
-  alteration?: AlterationIF
-  registrarsNotation?: any
-  registrarsOrder?: any
-  courtOrder?: any
-  registration?: any
-  changeOfRegistration?: any
-  conversion?: any
-  specialResolution?: SpecialResolutionIF
-  changeOfName?: ChangeOfNameIF
-}
-
 /** A filing's header object from the API. */
 export interface ApiHeaderIF {
   accountId?: number // NOT USED
@@ -68,4 +29,43 @@ export interface ApiHeaderIF {
   priority?: boolean // alterations and corrections only
   status: FilingStatus
   submitter: string // FUTURE: is this obsolete?
+}
+
+/**
+ * A task todo (or filing) object from the API.
+ * Note that only `business` and `header` are required.
+ */
+export interface TaskTodoIF {
+  annualReport?: any
+  business: BusinessIF
+  changeOfAddress?: any
+  changeOfDirectors?: any
+  correction?: any
+  dissolution?: any
+  documents?: Array<any>
+  header: ApiHeaderIF
+  incorporationApplication?: any
+  alteration?: AlterationIF
+  registrarsNotation?: any
+  registrarsOrder?: any
+  courtOrder?: any
+  registration?: any
+  changeOfRegistration?: any
+  conversion?: any
+  specialResolution?: SpecialResolutionIF
+  changeOfName?: ChangeOfNameIF
+}
+
+/**
+ * A list item from the API "tasks" call (ie, API object).
+ * See also Todo Item interface.
+ */
+export interface ApiTaskIF {
+  enabled: boolean
+  order: number
+  task: {
+    // content is either a filing or a todo object
+    filing?: TaskTodoIF
+    todo?: TaskTodoIF
+  }
 }

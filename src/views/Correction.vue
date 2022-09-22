@@ -180,7 +180,7 @@
 // Libraries
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
-import { PAYMENT_REQUIRED } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 
 // Components and dialogs
@@ -247,7 +247,7 @@ export default class Correction extends Mixins(
   private totalFee = 0
   private dataLoaded = false
   private loadingMessage = ''
-  private filingId: number = 0 // id of this correction filing
+  private filingId = 0 // id of this correction filing
   private savedFiling: any = null // filing during save
   private correctedFilingId = 0 // id of filing to correct
   private origFiling = null // copy of original filing
@@ -570,7 +570,7 @@ export default class Correction extends Mixins(
 
     // save final filing (not draft)
     this.savedFiling = await this.saveFiling(false).catch(error => {
-      if (error?.response?.status === PAYMENT_REQUIRED) {
+      if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
         // changes were saved if a 402 is received, so clear flag
         this.haveChanges = false
         // display payment error dialog
@@ -737,7 +737,7 @@ export default class Correction extends Mixins(
         no: null,
         cancel: 'Exit without saving'
       }
-    ).then(async (confirm) => {
+    ).then(() => {
       // if we get here, Yes was clicked
       // nothing to do
     }).catch(() => {
@@ -808,12 +808,12 @@ export default class Correction extends Mixins(
   }
 
   @Watch('detailCommentValid')
-  onDetailCommentValidChanged (val: boolean): void {
+  onDetailCommentValidChanged (): void {
     this.haveChanges = true
   }
 
   @Watch('certifyFormValid')
-  onCertifyFormValidChanged (val: boolean): void {
+  onCertifyFormValidChanged (): void {
     this.haveChanges = true
   }
 

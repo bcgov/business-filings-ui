@@ -30,7 +30,8 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { DocumentIF } from '@/interfaces'
 
 @Component({})
@@ -49,10 +50,12 @@ export default class DocumentsList extends Vue {
 
   /** Emits an event to download the subject document. */
   @Emit('downloadOne')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected downloadOne (document: DocumentIF, index: number): void {}
 
   /** Emits an event to download all. */
   @Emit('downloadAll')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected downloadAll (filing: any): void {}
 }
 </script>

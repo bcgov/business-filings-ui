@@ -151,28 +151,28 @@ export default class DigitalCredentials extends Mixins(LegalApiMixin) {
     this.$router.push({ path: `/${Routes.DIGITAL_CREDENTIALS}` })
   }
 
-  async getCredentials (): Promise<void> {
+  async private getCredentials (): Promise<void> {
     const { data } = await this.fetchCredentials(this.getIdentifier)
     if (data?.issuedCredentials) {
       this.issuedCredentials = data.issuedCredentials
     }
   }
 
-  async addCredentialInvitation (): Promise<void> {
+  async private addCredentialInvitation (): Promise<void> {
     const { data } = await this.createCredentialInvitation(this.getIdentifier)
     if (data?.invitationUrl) {
       this.credentialInvitationUrl = data.invitationUrl
     }
   }
 
-  async getCredentialsConnection (): Promise<void> {
+  async private getCredentialsConnection (): Promise<void> {
     const connection = await this.fetchCredentialConnection(this.getIdentifier)
     if (connection) {
       this.hasRegisteredWallet = true
     }
   }
 
-  async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
+  async protected issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
     const credentialIssued = await this.issueCredentialOffer(this.getIdentifier, credentialType)
     if (credentialIssued) {
       await this.getCredentials()
@@ -196,7 +196,3 @@ export default class DigitalCredentials extends Mixins(LegalApiMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-</style>

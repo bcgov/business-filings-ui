@@ -178,7 +178,7 @@ import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 
 export default {
-  name: 'Dashboard',
+  name: 'Dashboard', // eslint-disable-line vue/multi-word-component-names
 
   mixins: [AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin],
 

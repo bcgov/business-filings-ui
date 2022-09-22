@@ -14,13 +14,13 @@
         :headers="credentialsTableHeaders"
         no-data-text="All digital credentials associated with this business will appear here."
       >
-        <template v-slot:item.credentialType="{ item }">
+        <template v-slot:[`item.credentialType`]="{ item }">
           {{formatCredentialType(item.credentialType)}}
         </template>
-        <template v-slot:item.isIssued="{ item }">
+        <template v-slot:[`item.isIssued`]="{ item }">
           {{ item.isIssued ? 'Issued' : 'Pending' }}
         </template>
-        <template v-slot:item.dateOfIssue="{ item }">
+        <template v-slot:[`item.dateOfIssue`]="{ item }">
           {{apiToPacificDate(item.dateOfIssue) || '-'}}
         </template>
       </v-data-table>
@@ -75,6 +75,7 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
 .credentials-table-header {
   background-color: $BCgovBlue5O;
   padding: 1.25rem;

@@ -56,6 +56,7 @@ export default class DetailsList extends Mixins(DateMixin) {
 
   /** Emits an event to trigger the comment dialog. */
   @Emit('showCommentDialog')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected showCommentDialog (filing: HistoryItemIF): void {}
 }
 </script>

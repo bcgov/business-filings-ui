@@ -110,6 +110,7 @@ export default class IssueCredentials extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
 #issue-credentials {
   p, span, i {
     color: $gray9;

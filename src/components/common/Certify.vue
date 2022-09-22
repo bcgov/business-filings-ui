@@ -20,7 +20,7 @@
         :value="isCertified"
         @change="emitIsCertified($event)"
       >
-        <template slot="label">
+        <template v-slot:label>
           <div class="certify-stmt">
             I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
             of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
@@ -34,7 +34,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
 @Component({})
@@ -83,6 +84,7 @@ export default class Certify extends Vue {
 
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitValid (valid: boolean): void {}
 }
 </script>

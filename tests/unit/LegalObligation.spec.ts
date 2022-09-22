@@ -153,7 +153,6 @@ for (const test of obligationTestCases) {
       store.state.filings = test.filingBody
 
       const wrapper = mount(LegalObligation, { store, vuetify })
-      const vm = wrapper.vm as any
       await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(test.displaysObligations)

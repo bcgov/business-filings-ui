@@ -17,13 +17,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
 export default class DetailComment extends Vue {
   /** Array of validations rules for the textarea. */
-  get rules (): Array<Function> {
+  get rules (): Array<(val) => boolean | string> {
     // include whitespace in maximum length check
     return [
       val => (val && val.trim().length > 0) || 'Detail is required.',
@@ -66,6 +67,7 @@ export default class DetailComment extends Vue {
 
   /** Emits an event with the changed comment (ie, updated v-model). */
   @Emit('input')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitInput (val: string): void {}
 
   /** Emits an event indicating whether or not this component is valid. */

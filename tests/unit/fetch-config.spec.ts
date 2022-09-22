@@ -6,14 +6,12 @@ import { fetchConfig } from '@/utils'
 console.info = jest.fn()
 
 describe('Fetch Config', () => {
-  let get: any
-
   // init environment variable
   process.env.BASE_URL = '/business/'
 
   beforeEach(() => {
     // stub config endpoint
-    get = sinon.stub(axios, 'get')
+    sinon.stub(axios, 'get')
       .withArgs('http://localhost/business/config/configuration.json')
       .returns(Promise.resolve({
         data: {

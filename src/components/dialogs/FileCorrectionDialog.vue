@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit, Watch } from 'vue-property-decorator'
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
@@ -79,8 +80,7 @@ export default class FileCorrectionDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit()
-  protected exit () {
+  @Emit() protected exit () {
     this.hasChosenCorrection = true
     this.correctionType = null
   }
@@ -90,6 +90,7 @@ export default class FileCorrectionDialog extends Vue {
    * Redirect to start correction.
    */
   @Emit('redirect')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitRedirect (correctionType: CorrectionTypes): void {}
 }
 </script>

@@ -36,6 +36,7 @@ describe('ActionRequired', () => {
 
     // click the view button
     await wrapper.find('.details-btn').trigger('click')
+    await Vue.nextTick()
 
     const paragraphs = wrapper.findAll('p')
     expect(paragraphs.length).toBe(2)

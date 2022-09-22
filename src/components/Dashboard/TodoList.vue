@@ -967,7 +967,6 @@ export default class TodoList extends Mixins(
   private async loadChangeOfDirectors (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const business = filing.business
-    const changeOfDirectors = filing.changeOfDirectors
     const header = filing.header
 
     // NB: don't check "changeOfDirectors" as it may be empty

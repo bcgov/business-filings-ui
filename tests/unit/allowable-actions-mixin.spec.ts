@@ -41,7 +41,7 @@ describe('Allowable Actions Mixin', () => {
       { businessId: 'CP1234567', roles: ['staff'], expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
       store.state.keycloakRoles = test.roles
@@ -77,7 +77,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', flag: ['BC'], expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -105,7 +105,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'SP1234567', flag: ['SP'], expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -130,7 +130,7 @@ describe('Allowable Actions Mixin', () => {
       { businessId: 'BC1234567', entityType: 'ULC', flag: 'CP BEN', expected: false }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityType = test.entityType
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -163,7 +163,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -186,7 +186,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -211,7 +211,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', roles: ['staff'], expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -235,7 +235,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlocker: false, businessId: 'CP1234567', expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -263,7 +263,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', hasBlockerExceptStaffApproval: false, businessId: 'SP1234567', roles: ['staff'], expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -295,7 +295,7 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'ULC', expected: true }
     ]
 
-    for (let test of tests) {
+    for (const test of tests) {
       store.state.entityState = test.entityState
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')

@@ -31,7 +31,7 @@ const isPaperOnly = (filing) => filing.availableOnPaperOnly
 const isCorrection = (filing) => !!filing.correctedFilingId
 const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === 'incorporationApplication')
-const isBcompCoa = (filing) => false // FUTURE: implement BComp tests
+const isBcompCoa = () => false // FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === 'alteration')
 const isStaff = (filing) => (
   filing.name === 'registrarsNotation' ||
@@ -54,11 +54,11 @@ filings.forEach((filing: any, index: number) => {
 
       // mock "get comments"
       get.withArgs(filing.commentsLink)
-        .returns(new Promise((resolve) => resolve({ data: { comments: [] } })))
+        .returns(new Promise(resolve => resolve({ data: { comments: [] } })))
 
       // mock "get documents"
       get.withArgs(filing.documentsLink)
-        .returns(new Promise((resolve) => resolve({ data: { documents: {} } })))
+        .returns(new Promise(resolve => resolve({ data: { documents: {} } })))
 
       // mount the component
       const $route = { query: {} }
@@ -141,7 +141,6 @@ filings.forEach((filing: any, index: number) => {
     //
     it('title', () => {
       expect(vm.historyItems.length).toBe(1) // sanity check
-      const item = vm.historyItems[0]
       expect(wrapper.find('.item-header__title').text()).toBe(filing.displayName)
     })
 
@@ -205,7 +204,6 @@ filings.forEach((filing: any, index: number) => {
 
     it('expand button', async () => {
       expect(vm.historyItems.length).toBe(1) // sanity check
-      const item = vm.historyItems[0]
 
       // verify initial button label
       const expandBtn = wrapper.find('.expand-btn')

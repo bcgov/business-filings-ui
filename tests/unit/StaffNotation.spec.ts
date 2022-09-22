@@ -34,10 +34,11 @@ document.body.setAttribute('id', 'staff-notation')
 describe('StaffNotation', () => {
   store.state.entityType = 'SP'
   it('renders the page contents correctly', () => {
-    const wrapper = mount(StaffNotation, { store })
+    const wrapper = mount(StaffNotation, { store, vuetify })
 
     expect(wrapper.vm.$data.expand).toBe(false)
-    expect(wrapper.find('#add-staff-filing-label').text()).toBe('Add Staff Filing')
+    expect(wrapper.find('.menu-btn').text()).toBe('Add Staff Filing')
+
     wrapper.destroy()
   })
 
@@ -99,7 +100,7 @@ describe('StaffNotation', () => {
       expect(wrapper.vm.$data.expand).toBe(true)
 
       // Click on first item
-      let index = staffFilingTypes.indexOf(test)
+      const index = staffFilingTypes.indexOf(test)
       await wrapper.findAll('.v-list .v-item-group .v-list-item').at(index).trigger('click')
 
       switch (test.type) {

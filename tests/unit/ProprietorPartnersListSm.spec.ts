@@ -231,6 +231,7 @@ describe('ProprietorPartnersListSm', () => {
     const buttons = wrapper.findAll('.v-expansion-panel-header.address-panel-toggle')
     await buttons.at(0).trigger('click')
     await buttons.at(1).trigger('click')
+    await Vue.nextTick()
 
     // Verify delivery addresses '(Not entered)'
     expect(wrapper.findAll('.email-address-text').at(0).text()).toBe('(Not entered)')

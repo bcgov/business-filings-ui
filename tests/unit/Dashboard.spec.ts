@@ -6,7 +6,6 @@ import VueRouter from 'vue-router'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import { getVuexStore } from '@/store'
-import flushPromises from 'flush-promises'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'

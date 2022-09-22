@@ -69,6 +69,7 @@ export default class RegisterWallet extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
 #register-wallet {
   p, span {
     color: $gray9;

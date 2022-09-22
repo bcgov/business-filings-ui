@@ -51,9 +51,10 @@
 
 <script lang="ts">
 
-import { DissolutionConfirmationResourceIF } from '@/interfaces'
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
+import { DissolutionConfirmationResourceIF } from '@/interfaces'
 
 @Component({})
 export default class ConfirmDissolutionDialog extends Vue {

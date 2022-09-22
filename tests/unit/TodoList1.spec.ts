@@ -519,6 +519,7 @@ describe('TodoList - UI', () => {
 
     // click the View Details button
     await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
+    await Vue.nextTick()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
       .toContain('This filing is in review and has been saved as a draft.')
@@ -635,6 +636,7 @@ describe('TodoList - UI', () => {
 
     // click the View Details button
     await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
+    await Vue.nextTick()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
       .toContain('This filing is pending review by Registry Staff.')
@@ -692,6 +694,7 @@ describe('TodoList - UI', () => {
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
+    await Vue.nextTick()
 
     // validate that child component exists
     expect(wrapper.find(PaymentPending).exists()).toBe(true)
@@ -747,6 +750,7 @@ describe('TodoList - UI', () => {
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
+    await Vue.nextTick()
 
     // validate that child component exists
     expect(wrapper.find(PaymentUnsuccessful).exists()).toBe(true)
@@ -803,6 +807,7 @@ describe('TodoList - UI', () => {
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
+    await Vue.nextTick()
 
     // validate that child component exists
     expect(wrapper.find(PaymentPendingOnlineBanking).exists()).toBe(true)
@@ -851,6 +856,7 @@ describe('TodoList - UI', () => {
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
+    await Vue.nextTick()
 
     // validate that child component exists
     expect(wrapper.find(PaymentPaid).exists()).toBe(true)

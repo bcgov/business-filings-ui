@@ -222,8 +222,7 @@ describe('Correction - UI', () => {
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // mock "save draft" endpoint (garbage response data - we aren't testing that)
-    const spy = sinon
-      .stub(axios, 'post')
+    sinon.stub(axios, 'post')
       .withArgs('businesses/CP1234567/filings?draft=true')
       .returns(new Promise(resolve =>
         resolve({

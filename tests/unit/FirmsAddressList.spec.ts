@@ -82,7 +82,7 @@ describe('FirmsAddressList', () => {
   })
 
   it('displays same address for delivery/mailing address', async () => {
-    let sameAddress = {
+    const sameAddress = {
       streetAddress: '333 Cook St',
       addressCity: 'Castlegar',
       addressRegion: 'BC',
@@ -120,14 +120,14 @@ describe('FirmsAddressList', () => {
   })
 
   it('displays different address for delivery/mailing address', async () => {
-    let deliveryAddress = {
+    const deliveryAddress = {
       streetAddress: '333 Cook St',
       addressCity: 'Castlegar',
       addressRegion: 'BC',
       postalCode: 'V3V 3V3',
       addressCountry: 'CA'
     }
-    let mailingAddress = { ...deliveryAddress, streetAddress: '444 Fish Rd' }
+    const mailingAddress = { ...deliveryAddress, streetAddress: '444 Fish Rd' }
     // init store
     store.state.businessAddress = {
       deliveryAddress: deliveryAddress,

@@ -22,7 +22,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 
 @Component({
@@ -31,10 +32,10 @@ import { ContactInfo } from '@/components/common'
   }
 })
 export default class ActionRequired extends Vue {
-  public panel: number = 1;
+  protected panel = 1
 
-  public togglePanel (): void {
-    this.panel = this.panel === 1 ? 0 : 1
+  protected togglePanel (): void {
+    this.panel = (this.panel === 1 ? 0 : 1)
   }
 }
 </script>

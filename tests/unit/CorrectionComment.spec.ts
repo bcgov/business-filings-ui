@@ -12,7 +12,6 @@ describe('DetailComment', () => {
       propsData: {},
       vuetify
     })
-    const vm: any = wrapper.vm
 
     expect(wrapper.find(CorrectionComment).exists()).toBe(true)
     expect(wrapper.find('.correction-comment').exists()).toBe(false)
@@ -25,7 +24,6 @@ describe('DetailComment', () => {
       propsData: { comment: 'A test comment' },
       vuetify
     })
-    const vm: any = wrapper.vm
 
     expect(wrapper.find(CorrectionComment).exists()).toBe(true)
     expect(wrapper.find('h4 span').text()).toBe('Detail')

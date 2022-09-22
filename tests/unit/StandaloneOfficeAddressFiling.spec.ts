@@ -1,4 +1,5 @@
-/* eslint promise/param-names: 0, prefer-promise-reject-errors: 0 */
+/* eslint prefer-promise-reject-errors: "off" */
+
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
@@ -245,7 +246,7 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             changeOfAddress: {
@@ -316,7 +317,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             changeOfAddress: {
@@ -391,7 +392,7 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             changeOfAddress: {
@@ -460,7 +461,7 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/BC0007291/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             changeOfAddress: {
@@ -538,11 +539,11 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     store.state.entityName = 'Legal Name - CP0001191'
     store.state.entityType = 'CP'
 
-    let sinonAxiosGet = sinon.stub(axios, 'get')
+    const sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
     sinonAxiosGet.withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -574,7 +575,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       })))
 
     sinonAxiosGet.withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -596,7 +597,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // mock "save and file" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -630,7 +631,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // mock "update and file" endpoint
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -808,11 +809,11 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     store.state.entityName = 'Legal Name - BC0001191'
     store.state.entityType = 'BEN'
 
-    let sinonAxiosGet = sinon.stub(axios, 'get')
+    const sinonAxiosGet = sinon.stub(axios, 'get')
 
     // mock "fetch a draft filing" endpoint
     sinonAxiosGet.withArgs('businesses/BC0007291/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -848,7 +849,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       })))
 
     sinonAxiosGet.withArgs('businesses/BC0007291/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -870,7 +871,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // mock "save and file" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -908,7 +909,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // mock "update and file" endpoint
     sinon.stub(axios, 'put').withArgs('businesses/BC0007291/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1092,7 +1093,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1119,7 +1120,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       })))
 
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -1218,7 +1219,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1253,7 +1254,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       })))
 
     sinon.stub(axios, 'get').withArgs('businesses/BC0007291/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -1350,7 +1351,7 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
     // mock "save draft" endpoint
     spy = sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1438,7 +1439,7 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
     // mock "save draft" endpoint
     spy = sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1544,7 +1545,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     // mock "fetch a draft filing" endpoint
     sinonAxiosGet
       .withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {

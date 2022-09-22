@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { StaffPaymentDialog } from '@/components/dialogs'
-import { StaffPayment } from '@/components/common'
+import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532

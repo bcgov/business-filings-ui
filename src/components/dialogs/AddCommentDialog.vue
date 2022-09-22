@@ -35,7 +35,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
@@ -82,6 +83,7 @@ export default class AddCommentDialog extends Vue {
    * @param needReload Whether the dashboard needs to be reloaded.
    */
   @Emit('close')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitClose (needReload: boolean): void {}
 
   /** Saves the current comment. */
@@ -107,7 +109,7 @@ export default class AddCommentDialog extends Vue {
 
     const url = this.filing.commentsLink
     let success = false
-    await axios.post(url, data).then(res => {
+    await axios.post(url, data).then(() => {
       success = true
     }).catch(error => {
       // eslint-disable-next-line no-console

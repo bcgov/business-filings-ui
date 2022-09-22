@@ -46,8 +46,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { StaffPayment } from '@/components/common'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
+import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 import { StaffPaymentIF } from '@/interfaces'
 import { StaffPaymentOptions } from '@/enums'
 
@@ -105,6 +106,7 @@ export default class StaffPaymentDialog extends Vue {
 
   // Pass updated staff payment data to parent.
   @Emit('update:staffPaymentData')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
 }
 </script>

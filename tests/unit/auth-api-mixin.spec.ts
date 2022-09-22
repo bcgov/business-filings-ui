@@ -28,7 +28,7 @@ describe('Auth API Mixin', () => {
 
     // mock endpoint
     get.withArgs('entities/CP1234567/authorizations')
-      .returns(new Promise((resolve) => resolve({ data: AUTHORIZATIONS })))
+      .returns(new Promise(resolve => resolve({ data: AUTHORIZATIONS })))
 
     // call method
     const authorizations = await vm.fetchAuthorizations('CP1234567')
@@ -50,7 +50,7 @@ describe('Auth API Mixin', () => {
 
     // mock endpoint
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({ data: USER_INFO })))
+      .returns(new Promise(resolve => resolve({ data: USER_INFO })))
 
     // call method
     const userInfo = await vm.fetchUserInfo()
@@ -72,7 +72,7 @@ describe('Auth API Mixin', () => {
 
     // mock endpoint
     get.withArgs('entities/CP1234567')
-      .returns(new Promise((resolve) => resolve({ data: ENTITY_INFO })))
+      .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
 
     // call method
     const businessInfo = await vm.fetchEntityInfo('CP1234567')

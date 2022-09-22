@@ -36,8 +36,9 @@ describe('COD Date - COOPs', () => {
     wrapper = null
   })
 
-  it('loads variables properly when initial COD Date is set', () => {
+  it('loads variables properly when initial COD Date is set', async () => {
     wrapper.setProps({ initialCodDate: '2019-05-10' })
+    await Vue.nextTick()
 
     // verify local variables
     expect(vm.$data.date).toBe('2019-05-10')
@@ -75,8 +76,10 @@ describe('COD Date - COOPs', () => {
     expect(vm.maxDate).toBe(vm.$store.state.currentDate)
   })
 
-  it('Shows error message when date has invalid length', () => {
+  it('Shows error message when date has invalid length', async () => {
     wrapper.setData({ dateFormatted: '2019/11/6' })
+    await Vue.nextTick()
+
     expect(vm.$data.date).toBe('')
     expect(vm.$el.querySelector('.v-messages').textContent).toContain('A Director change date is required.')
   })

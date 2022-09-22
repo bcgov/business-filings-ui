@@ -44,8 +44,8 @@ export function isValidCodDate (date: string, separator: string): boolean {
   if (!date) return false
   // special handling because Vuelidate doesn't pass in separator
   separator = (typeof separator === 'string') ? separator : '/'
-  var d1 = this.minDate == null ? 0 : this.minDate.split('-').join('')
-  var d2 = this.maxDate.split('-').join('')
-  var c = date.split(separator).join('')
+  const d1 = this.minDate == null ? 0 : this.minDate.split('-').join('')
+  const d2 = this.maxDate.split('-').join('')
+  const c = date.split(separator).join('')
   return c >= d1 && c <= d2
 }

@@ -75,7 +75,7 @@ export default class CodDate extends Mixins(DateMixin) {
   protected menu = false // bound to calendar menu
 
   /** The array of validations rules for the COD Date text field. */
-  get codDateRules (): Array<Function> {
+  get codDateRules (): Array<(v) => boolean | string> {
     return [
       v => isNotNull(v) || 'A Director change date is required.'
     ]
@@ -180,12 +180,14 @@ export default class CodDate extends Mixins(DateMixin) {
    * Emits an event with the new value of COD Date.
    */
   @Emit('codDate')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitCodDate (val: string): void {}
 
   /**
    * Emits an event indicating whether or not this component is valid.
    */
   @Emit('valid')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitValid (val: boolean): void {}
 }
 </script>

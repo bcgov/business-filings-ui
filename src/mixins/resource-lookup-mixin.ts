@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { AlertMessageIF, ObligationsResourceIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
@@ -41,7 +42,7 @@ export default class ResourceLookupMixin extends Vue {
       // FUTURE: Too much code for this. Can be condensed and made more reusable.
       if (directors?.length) {
         const warnings = this.configObject?.flows?.find(x => x.feeCode === filingCode)?.warnings
-        let errors = []
+        const errors = []
         // If this entity has a BC Residency requirement for directors, one of the
         // directors specified needs to have both their mailing and delivery address within British Columbia
         if (warnings?.bcResident) {

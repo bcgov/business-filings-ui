@@ -138,6 +138,7 @@ export default {
   },
 
   /** Is True if business is pending dissolution. */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isPendingDissolution (state: StateIF): boolean {
     return false // FUTURE: implement this
   },

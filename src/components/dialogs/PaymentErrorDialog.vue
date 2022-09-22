@@ -62,7 +62,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ContactInfo } from '@/components/common'
 
@@ -88,7 +89,7 @@ export default class PaymentErrorDialog extends Vue {
   @Prop({ default: () => [] }) readonly warnings!: any[]
 
   /** Pass click event to parent. */
-  @Emit() exit () {}
+  @Emit() protected exit () {}
 
   /** The number of errors in the passed-in array. */
   get numErrors (): number {

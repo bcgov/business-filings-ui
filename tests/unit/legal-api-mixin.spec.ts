@@ -36,7 +36,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567')
-      .returns(new Promise((resolve) => resolve({ data: ENTITY_INFO })))
+      .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
 
     // call method
     const entityInfo = await vm.fetchBusinessInfo('CP1234567')
@@ -54,7 +54,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/tasks')
-      .returns(new Promise((resolve) => resolve({ data: TASKS })))
+      .returns(new Promise(resolve => resolve({ data: TASKS })))
 
     // call method
     const tasks = await vm.fetchTasks('CP1234567')
@@ -72,7 +72,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/filings')
-      .returns(new Promise((resolve) => resolve({ data: FILINGS })))
+      .returns(new Promise(resolve => resolve({ data: FILINGS })))
 
     // call method
     const filings = await vm.fetchFilings('CP1234567')
@@ -95,7 +95,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/addresses')
-      .returns(new Promise((resolve) => resolve({ data: ADDRESSES })))
+      .returns(new Promise(resolve => resolve({ data: ADDRESSES })))
 
     // call method
     const addresses = await vm.fetchAddresses('CP1234567')
@@ -113,7 +113,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/parties?role=Director')
-      .returns(new Promise((resolve) => resolve({ data: DIRECTORS })))
+      .returns(new Promise(resolve => resolve({ data: DIRECTORS })))
 
     // call method
     const directors = await vm.fetchParties('CP1234567', Roles.DIRECTOR)
@@ -129,7 +129,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('businesses/T1234567/filings')
-      .returns(new Promise((resolve) => resolve({ data: IA })))
+      .returns(new Promise(resolve => resolve({ data: IA })))
 
     // call method
     const ia = await vm.fetchDraftApp('T1234567')
@@ -145,7 +145,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('nameRequests/NR1234567')
-      .returns(new Promise((resolve) => resolve({ data: NR })))
+      .returns(new Promise(resolve => resolve({ data: NR })))
 
     // call method
     const nr = await vm.fetchNameRequest('NR1234567')
@@ -162,7 +162,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs(endpoint)
-      .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+      .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
     const filing = await vm.fetchFiling(endpoint)
@@ -178,7 +178,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     post.withArgs('businesses/CP1234567/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+      .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
     const response = await vm.createFiling('CP1234567', FILING, true)
@@ -194,7 +194,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     put.withArgs('businesses/CP1234567/filings/1234?draft=true')
-      .returns(new Promise((resolve) => resolve({ data: { filing: FILING } })))
+      .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
     const response = await vm.updateFiling('CP1234567', FILING, 1234, true)
@@ -212,7 +212,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs('COMMENTS_URL')
-      .returns(new Promise((resolve) => resolve({ data: { comments: COMMENTS } })))
+      .returns(new Promise(resolve => resolve({ data: { comments: COMMENTS } })))
 
     // call method
     const comments = await vm.fetchComments('COMMENTS_URL')
@@ -234,7 +234,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs(URL)
-      .returns(new Promise((resolve) => resolve({ data: { documents: DOCUMENTS } })))
+      .returns(new Promise(resolve => resolve({ data: { documents: DOCUMENTS } })))
 
     // call method
     const comments = await vm.fetchDocuments(URL)
@@ -249,7 +249,7 @@ describe('Legal API Mixin', () => {
 
     // mock endpoint
     get.withArgs(URL)
-      .returns(new Promise((resolve) => resolve({ data: PDF })))
+      .returns(new Promise(resolve => resolve({ data: PDF })))
 
     // build document object
     const document = {

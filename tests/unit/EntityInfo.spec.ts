@@ -6,7 +6,6 @@ import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
-import { min } from 'lodash'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)

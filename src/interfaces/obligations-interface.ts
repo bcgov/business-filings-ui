@@ -1,3 +1,8 @@
+interface ObligationsCopyIF {
+  label: string
+  description: string
+}
+
 export interface ObligationsResourceIF {
   title: string
   subtitle: string
@@ -5,9 +10,4 @@ export interface ObligationsResourceIF {
   obligationStatement: string
   detailInfoURL: string
   includedChanges: Array<ObligationsCopyIF>
-}
-
-interface ObligationsCopyIF {
-  label: string
-  description: string
 }

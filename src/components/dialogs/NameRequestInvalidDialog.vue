@@ -42,7 +42,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 import { ContactInfo } from '@/components/common'
 import { NameRequestStates } from '@/enums'

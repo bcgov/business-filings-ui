@@ -330,6 +330,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   // Pass not in good standing event to parent.
   @Emit('notInGoodStanding')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNotInGoodStanding (message: NigsMessage): void {}
 
   // Pass prompt to view / add digital credentials event to parent. */
