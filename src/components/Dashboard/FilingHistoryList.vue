@@ -29,7 +29,7 @@
     <!-- Display for if a court order(s) have been filed -->
     <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
       <v-icon>mdi-gavel</v-icon>
-      <span> Court order(s) have been filed on this company. Review the filing history for impacts to business
+      <span>Court order(s) have been filed on this company. Review the filing history for impacts to business
         information.</span>
     </v-card>
 
@@ -54,7 +54,8 @@
             <div class="item-header d-flex">
               <!-- the filing label (left side) -->
               <div class="item-header__label">
-                <h3 class="item-header__title">{{filing.displayName}}</h3>
+                <h3 class="item-header__title"><v-icon v-if="filing.displayName==FilingNames.COURT_ORDER">mdi-gavel
+                </v-icon>{{filing.displayName}}</h3>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
@@ -371,7 +372,7 @@ import StaffFiling from './FilingHistoryList/StaffFiling.vue'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog } from '@/components/dialogs'
 
 // Enums, interfaces and mixins
-import { AllowableActions, FilingTypes, Routes, CorrectionTypes } from '@/enums'
+import { AllowableActions, FilingTypes, Routes, CorrectionTypes, FilingNames } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
@@ -425,6 +426,7 @@ export default class FilingHistoryList extends Mixins(
 
   // enum for template
   readonly AllowableActions = AllowableActions
+  readonly FilingNames = FilingNames
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -917,6 +919,7 @@ export default class FilingHistoryList extends Mixins(
 
 .v-icon.mdi-gavel {
   color: $gray9;
+  padding-right: 4px;
 }
 
 .scrollable-container {
