@@ -29,7 +29,7 @@
     <!-- Display for if a court order(s) have been filed -->
     <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
       <v-icon>mdi-gavel</v-icon>
-      <span>Court order(s) have been filed on this company. Review the filing history for impacts to business
+      <span> Court order(s) have been filed on this company. Review the filing history for impacts to business
         information.</span>
     </v-card>
 
@@ -54,8 +54,10 @@
             <div class="item-header d-flex">
               <!-- the filing label (left side) -->
               <div class="item-header__label">
-                <h3 class="item-header__title"><v-icon v-if="filing.displayName==FilingNames.COURT_ORDER">mdi-gavel
-                </v-icon>{{filing.displayName}}</h3>
+                <h3 class="item-header__title">
+                  <v-icon v-if="filing.displayName==FilingNames.COURT_ORDER" class="pr-1">mdi-gavel</v-icon>
+                  <span>{{filing.displayName}}</span>
+                  </h3>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
@@ -919,7 +921,6 @@ export default class FilingHistoryList extends Mixins(
 
 .v-icon.mdi-gavel {
   color: $gray9;
-  padding-right: 4px;
 }
 
 .scrollable-container {
