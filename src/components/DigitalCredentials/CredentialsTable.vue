@@ -11,14 +11,14 @@
         disable-sort
         hide-default-footer
         :items="issuedCredentials"
-        :headers="!!issuedCredentials ? credentialsTableHeaders : []"
+        :headers="credentialsTableHeaders"
         no-data-text="All digital credentials associated with this business will appear here."
       >
         <template v-slot:item.credentialType="{ item }">
           {{formatCredentialType(item.credentialType)}}
         </template>
         <template v-slot:item.isIssued="{ item }">
-          {{formatStatus(item.isIssued)}}
+          {{ item.isIssued ? 'Issued' : 'Pending' }}
         </template>
         <template v-slot:item.dateOfIssue="{ item }">
           {{apiToPacificDate(item.dateOfIssue) || '-'}}
@@ -36,8 +36,7 @@ import { DateMixin } from '@/mixins'
 
 @Component({})
 export default class CredentialsTable extends Mixins(DateMixin) {
-  @Prop({ default: [] })
-  readonly issuedCredentials: Array<DigitalCredentialsIF>
+  @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {
     // Do not display headers if there is table data
@@ -66,12 +65,10 @@ export default class CredentialsTable extends Mixins(DateMixin) {
     ]
   }
 
-  formatCredentialType (credentialType: DigitalCredentialTypes): string {
+  protected formatCredentialType (credentialType: DigitalCredentialTypes): string {
+    // Safety check
+    if (!credentialType) return 'Unknown'
     return credentialType.charAt(0).toUpperCase() + credentialType.slice(1) + ' Credential'
-  }
-
-  formatStatus (isIssued: boolean): string {
-    return isIssued ? 'Issued' : 'Pending'
   }
 }
 </script>
@@ -89,6 +86,9 @@ export default class CredentialsTable extends Mixins(DateMixin) {
   .v-data-table > .v-data-table__wrapper > table > thead > tr > th, td {
     color: $gray7;
     font-size: .875rem;
+  }
+  .column-lg {
+    width: 15rem !important;
   }
 }
 </style>

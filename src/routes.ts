@@ -103,7 +103,7 @@ export default [
       requiresAuth: false
     }
   },
-  DigitalCredentialRoutes, // Routes for Digital Credential Pilot
+  DigitalCredentialRoutes,
   // {
   //   path: '/about',
   //   name: 'about',

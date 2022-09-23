@@ -1,5 +1,5 @@
 <template>
-  <section id="register-wallet" class="py-8">
+  <section id="register-wallet">
 
     <article id="register-wallet-header">
       <v-row no-gutters>
@@ -52,7 +52,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
 
 @Component({
@@ -61,11 +62,8 @@ import QrcodeVue from 'qrcode.vue'
   }
 })
 export default class RegisterWallet extends Vue {
-  @Prop({ default: false })
-  readonly credentialInvitationUrl: boolean
-
-  @Prop({ default: false })
-  readonly hasRegisteredWallet: boolean
+  @Prop({ default: false }) readonly credentialInvitationUrl!: boolean
+  @Prop({ default: false }) readonly hasRegisteredWallet: boolean
 }
 </script>
 
@@ -73,7 +71,7 @@ export default class RegisterWallet extends Vue {
 @import '@/assets/styles/theme.scss';
 #register-wallet {
   p, span {
-    color: $gray9
+    color: $gray9;
   }
 }
 </style>

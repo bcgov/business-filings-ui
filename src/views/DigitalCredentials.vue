@@ -35,6 +35,7 @@
         <v-row no-gutters>
           <v-col cols="12" lg="9">
             <router-view
+              class="py-8"
               :credentialInvitationUrl="credentialInvitationUrl"
               :hasRegisteredWallet="hasRegisteredWallet"
               :issuedCredentials="issuedCredentials"
@@ -131,28 +132,28 @@ export default class DigitalCredentials extends Mixins(LegalApiMixin) {
     return this.digitalCredentialSteps[this.currentStepIndex + 1]?.text || 'Done'
   }
 
-  addCredentials (): void {
+  protected addCredentials (): void {
     this.$router.push({ path: `${Routes.DIGITAL_CREDENTIALS}/${Routes.DOWNLOAD_WALLET}` })
   }
 
-  back (): void {
+  protected back (): void {
     this.$router.push({ path: this.digitalCredentialSteps[this.currentStepIndex - 1].to })
   }
 
-  next (): void {
+  protected next (): void {
     this.$router.push({
       path: this.digitalCredentialSteps[this.currentStepIndex + 1]?.to ||
       `/${Routes.DIGITAL_CREDENTIALS}`
     })
   }
 
-  cancel (): void {
+  protected cancel (): void {
     this.$router.push({ path: `/${Routes.DIGITAL_CREDENTIALS}` })
   }
 
   async getCredentials (): Promise<void> {
     const { data } = await this.fetchCredentials(this.getIdentifier)
-    if (data && data.issuedCredentials) {
+    if (data?.issuedCredentials) {
       this.issuedCredentials = data.issuedCredentials
     }
   }
@@ -181,11 +182,12 @@ export default class DigitalCredentials extends Mixins(LegalApiMixin) {
   // Keep credential data in sync when navigating between routes.
   // This is required due to the nature of external interactions between mobile device and api
   @Watch('$route', { immediate: true })
-  async syncCredentials (): Promise<void> {
+  private async syncCredentials (): Promise<void> {
     await this.getCredentials()
 
-    // Lookup connection on Register Wallet Step
-    if (this.currentStepIndex === 1) { await this.getCredentialsConnection() }
+    // Check for connections on step 2 when there is no registered wallet
+    if (this.issuedCredentials.length > 0) { this.hasRegisteredWallet = true }
+    if (!this.hasRegisteredWallet && this.currentStepIndex === 1) { await this.getCredentialsConnection() }
 
     // Generate an Invitation URL once only if the user has not registered
     if (!this.hasRegisteredWallet && !this.credentialInvitationUrl) {

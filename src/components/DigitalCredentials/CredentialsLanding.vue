@@ -52,7 +52,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
 import { ImportantMessage } from '@/components/common'
 import { DigitalCredentialsIF } from '@/interfaces'
@@ -64,8 +65,7 @@ import { DigitalCredentialsIF } from '@/interfaces'
   }
 })
 export default class CredentialsLanding extends Vue {
-  @Prop({ default: [] })
-  readonly issuedCredentials: Array<DigitalCredentialsIF>
+  @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   // Pass add event to parent.
   @Emit('addCredentials')

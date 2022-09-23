@@ -1,5 +1,5 @@
 <template>
-  <section id="digital-wallet-download" class="py-8">
+  <section id="digital-wallet-download">
 
     <article id="digital-wallet-header">
       <v-row no-gutters>
@@ -107,7 +107,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { ImportantMessage } from '@/components/common'
 import QrcodeVue from 'qrcode.vue'
 

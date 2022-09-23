@@ -1,5 +1,5 @@
 <template>
-  <section id="issue-credentials" class="py-8">
+  <section id="issue-credentials">
 
     <article id="issue-credentials-header">
       <v-row no-gutters>
@@ -43,15 +43,15 @@
                     @click="sendCredentialOffer(DigitalCredentialTypes.BUSINESS)"
                   >Send Credential Offer</v-btn>
 
-                  <span v-else-if="isPendingAcceptedOffer" class="font-weight-bold alert-text">
+                  <div v-else-if="isPendingAcceptedOffer">
                     <v-icon class="pr-2 alert-text">mdi-wallet</v-icon>
-                    Check Digital Wallet for Offer
-                  </span>
+                    <span class="font-weight-bold alert-text">Check Digital Wallet for Offer</span>
+                  </div>
 
-                  <span v-else class="success-text font-weight-bold">
+                  <div v-else>
                     <v-icon color="success" class="pr-2">mdi-check</v-icon>
-                    Credential Successfully Stored
-                  </span>
+                    <span class="success-text font-weight-bold">Credential Successfully Stored</span>
+                  </div>
                 </v-col>
               </v-row>
 
@@ -80,17 +80,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { DigitalCredentialTypes } from '@/enums'
 import { DigitalCredentialsIF } from '@/interfaces'
 
 @Component({})
 export default class IssueCredentials extends Vue {
-  @Prop({ default: false })
-  readonly hasRegisteredWallet: boolean
+  @Prop({ default: false }) readonly hasRegisteredWallet!: boolean
 
-  @Prop({ default: false })
-  readonly issuedCredentials: Array<DigitalCredentialsIF>
+  @Prop({ default: false }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   readonly DigitalCredentialTypes = DigitalCredentialTypes
   private isSendingOffer = false
@@ -99,10 +98,10 @@ export default class IssueCredentials extends Vue {
     return !this.issuedCredentials[0]?.isIssued
   }
 
-  @Emit() back (): void {}
+  @Emit() protected back (): void {}
 
   @Emit('sendCredentialOffer')
-  private sendCredentialOffer (credentialType: DigitalCredentialTypes) {
+  protected sendCredentialOffer (credentialType: DigitalCredentialTypes) {
     this.isSendingOffer = true
     return credentialType
   }
@@ -121,10 +120,10 @@ export default class IssueCredentials extends Vue {
     }
   }
   .alert-text {
-    color: $BCgovGold9
+    color: $BCgovGold9;
   }
   .success-text {
-    color: $app-green
+    color: $app-green;
   }
 }
 </style>
