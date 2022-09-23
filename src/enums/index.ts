@@ -16,6 +16,7 @@ export * from './paymentMethod'
 export * from './roles'
 export * from './routes'
 export * from './saveErrorReasons'
+export * from './digitalCredentialTypes'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'

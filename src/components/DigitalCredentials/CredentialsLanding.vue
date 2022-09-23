@@ -42,7 +42,9 @@
     <article id="digital-credentials-table">
       <v-row no-gutters>
         <v-col cols="12" lg="11">
-          <CredentialsTable />
+          <CredentialsTable
+            :issuedCredentials="issuedCredentials"
+          />
         </v-col>
       </v-row>
     </article>
@@ -50,9 +52,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
 import { ImportantMessage } from '@/components/common'
+import { DigitalCredentialsIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -61,6 +65,8 @@ import { ImportantMessage } from '@/components/common'
   }
 })
 export default class CredentialsLanding extends Vue {
+  @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
+
   // Pass add event to parent.
   @Emit('addCredentials')
   private addCredentials () {}

@@ -10,72 +10,65 @@
         fixed
         disable-sort
         hide-default-footer
-        :items="credentialRecords"
-        :headers="!!credentialRecords ? credentialsTableHeaders : []"
+        :items="issuedCredentials"
+        :headers="credentialsTableHeaders"
         no-data-text="All digital credentials associated with this business will appear here."
       >
+        <template v-slot:item.credentialType="{ item }">
+          {{formatCredentialType(item.credentialType)}}
+        </template>
+        <template v-slot:item.isIssued="{ item }">
+          {{ item.isIssued ? 'Issued' : 'Pending' }}
+        </template>
+        <template v-slot:item.dateOfIssue="{ item }">
+          {{apiToPacificDate(item.dateOfIssue) || '-'}}
+        </template>
       </v-data-table>
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { TableHeaderIF } from '@/interfaces'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { DigitalCredentialsIF, TableHeaderIF } from '@/interfaces'
+import { DigitalCredentialTypes } from '@/enums'
+import { DateMixin } from '@/mixins'
 
 @Component({})
-export default class CredentialsTable extends Vue {
+export default class CredentialsTable extends Mixins(DateMixin) {
+  @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
+
   get credentialsTableHeaders (): Array<TableHeaderIF> {
     // Do not display headers if there is table data
-    if (this.credentialRecords.length === 0) return []
+    if (this.issuedCredentials.length === 0) return []
     return [
       {
-        class: 'column-md',
+        class: 'column-lg',
         text: 'Business Name',
-        value: 'name'
+        value: 'legalName'
       },
       {
-        class: 'column-md',
+        class: 'column-lg',
         text: 'Type',
-        value: 'type'
+        value: 'credentialType'
       },
       {
-        class: 'column-md',
+        class: 'column-lg',
         text: 'Status',
-        value: 'status'
+        value: 'isIssued'
       },
       {
-        class: 'column-md',
+        class: 'column-lg',
         text: 'Date of Issue',
-        value: 'date'
-      },
-      {
-        class: 'column-md',
-        text: 'Credential ID',
-        value: 'credId'
+        value: 'dateOfIssue'
       }
     ]
   }
 
-  // Mocked Data: To be retrieved from LEAR business record once created
-  // There is no schema to-date, this is just a representation of the designs
-  get credentialRecords (): Array<any> {
-    return [
-      {
-        name: '08123123 B.C. LTD',
-        type: 'Business Credential',
-        status: 'Issued',
-        date: 'August 15, 2022',
-        credId: '1234-5678-9809'
-      },
-      {
-        name: '08123123 B.C. LTD',
-        type: 'Business Relationship Credential',
-        status: 'Issued',
-        date: 'August 15, 2022',
-        credId: '1234-5678-9809'
-      }
-    ]
+  protected formatCredentialType (credentialType: DigitalCredentialTypes): string {
+    // Safety check
+    if (!credentialType) return 'Unknown'
+    return credentialType.charAt(0).toUpperCase() + credentialType.slice(1) + ' Credential'
   }
 }
 </script>
@@ -92,8 +85,10 @@ export default class CredentialsTable extends Vue {
 ::v-deep {
   .v-data-table > .v-data-table__wrapper > table > thead > tr > th, td {
     color: $gray7;
-    padding: 1.25rem;
     font-size: .875rem;
+  }
+  .column-lg {
+    width: 15rem !important;
   }
 }
 </style>

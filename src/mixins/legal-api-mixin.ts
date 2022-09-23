@@ -3,7 +3,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { CommonMixin } from '@/mixins'
 import { ApiDocumentsIF, CommentIF, DocumentIF } from '@/interfaces'
-import { FilingStatus, Roles } from '@/enums'
+import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
  * Mixin that provides integration with the Legal API.
@@ -253,5 +253,60 @@ export default class LegalApiMixin extends Mixins(CommonMixin) {
         }
       })
     })
+  }
+
+  /** Business Digital Credential Helpers **/
+
+  /**
+   * Fetches digital credential information.
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns a promise to return the credentials connection data
+   */
+  async fetchCredentials (businessId: string): Promise<any> {
+    const url = `businesses/${businessId}/digitalCredentials`
+    return axios.get(url)
+      .catch(error => {
+        console.log(error.message)
+      })
+  }
+
+  /**
+   * Creates a digital credentials invitation.
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns a promise to return the invitation data
+   */
+  async createCredentialInvitation (businessId: string): Promise<any> {
+    const url = `businesses/${businessId}/digitalCredentials/invitation`
+    return axios.post(url)
+      .catch(error => {
+        console.log(error.message)
+      })
+  }
+
+  /**
+   * Fetches a digital credentials connection information.
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns a promise to return the credentials connection data
+   */
+  async fetchCredentialConnection (businessId: string): Promise<any> {
+    const url = `businesses/${businessId}/digitalCredentials/connection`
+    return axios.get(url)
+      .catch(error => {
+        console.log(error.message)
+      })
+  }
+
+  /**
+   * Issue a digital credentials offer.
+   * @param businessId The business identifier (aka entity inc no)
+   * @param credentialType The credential offer type
+   * @returns a promise to return the credentials connection data
+   */
+  async issueCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes): Promise<any> {
+    const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
+    return axios.post(url)
+      .catch(error => {
+        console.log(error.message)
+      })
   }
 }
