@@ -34,22 +34,41 @@
               </v-row>
               <v-row no-gutters class="pt-3">
                 <v-col cols="12" lg="9">
-                  <p>1.  Scan the QR code on your phone or select the appropriate app store icon below for your phone.
+                  <p>1. Scan the appropriate QR code on your phone or select the app store icon below for your phone.
                     Depending on your phone model, you may need to
                     <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                       <template v-slot:activator="{ on }">
-                        <span v-on="on" class="dotted-underline">download a QR scanner app</span>
+                        <span v-on="on" class="dotted-underline">download a QR scanner app to scan</span>
                       </template>
                       Newer smartphones can use the camera app to scan QR codes. Older smartphones need a separate app
                       to scan QR codes.
                     </v-tooltip>
-                    to scan the QR code.
+                    the QR code.
                   </p>
 
+                  <v-row no-gutters class="text-center mt-4">
+                    <v-col cols="12" lg="5">
+                      <h4>Apple iOS</h4>
+                      <QrcodeVue
+                        class="mt-6"
+                        size="160"
+                        :value="appleUrl"
+                      />
+                    </v-col>
+                    <v-col cols="12" lg="5">
+                      <h4>Android</h4>
+                      <QrcodeVue
+                        class="mt-6"
+                        size="160"
+                        :value="googleUrl"
+                      />
+                    </v-col>
+                  </v-row>
+
                   <!-- App Store Downloads -->
-                  <v-row no-gutters class="my-3">
-                    <v-col cols="6" lg="3" class="ml-n6">
-                      <a href="https://apps.apple.com/" target="_blank" rel="noopener">
+                  <v-row no-gutters class="my-6">
+                    <v-col cols="6" lg="5">
+                      <a :href="appleUrl" target="_blank" rel="noopener">
                         <v-img
                           contain
                           height="44"
@@ -59,11 +78,11 @@
                         />
                       </a>
                     </v-col>
-                    <v-col cols="6" lg="3" class="ml-n6">
-                      <a href="https://play.google.com/store/" target="_blank" rel="noopener">
+                    <v-col cols="6" lg="5">
+                      <a :href="googleUrl" target="_blank" rel="noopener">
                         <v-img
                           contain
-                          height="44"
+                          height="42"
                           class="app-download-image"
                           src="@/assets/images/googleDownload.png"
                           alt="Google Play"
@@ -72,18 +91,11 @@
                     </v-col>
                   </v-row>
 
-                  <p>2. Open the Trinsic Wallet and tap on the menu icon on the top left corner.</p>
+                  <p>2. Open the Trinsic Wallet and tap on the menu icon (<v-icon color="black">mdi-menu</v-icon>) on
+                    the top left corner.</p>
                   <p>3. Tap on Network and select "Sovrin Staging"</p>
                 </v-col>
 
-                <!-- Download Wallet QR Code -->
-                <v-col cols="12" lg="3">
-                  <QrcodeVue
-                    class="float-lg-right"
-                    size="160"
-                    :value="appleUrl"
-                  />
-                </v-col>
               </v-row>
             </v-card-text>
           </v-card>
@@ -106,7 +118,6 @@ import QrcodeVue from 'qrcode.vue'
   }
 })
 export default class DigitalWalletDownload extends Vue {
-  // Further design required in order to display both QR codes
   readonly appleUrl = 'https://apps.apple.com/us/app/trinsic-wallet/id1475160728'
   readonly googleUrl = 'https://play.google.com/store/apps/details?id=id.streetcred.apps.mobile&hl=en_US'
 }

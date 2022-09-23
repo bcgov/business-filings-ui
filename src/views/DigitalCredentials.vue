@@ -2,7 +2,12 @@
   <v-container id="digital-credentials">
 
     <!-- Digital Credentials Landing -->
-    <CredentialsLanding v-if="isDigitalCredentialHome" class="py-8" @addCredentials="addCredentials()" />
+    <CredentialsLanding
+      v-if="isDigitalCredentialHome"
+      class="py-8"
+      :issuedCredentials="issuedCredentials"
+      @addCredentials="addCredentials()"
+    />
 
     <!-- Add Credentials -->
     <section v-else id="add-digital-credentials">
@@ -30,11 +35,11 @@
         <v-row no-gutters>
           <v-col cols="12" lg="9">
             <router-view
-              :hasBusinessCred="!!businessCredential"
-              :hasBusinessRelationshipCred="!!businessRelationshipCredential"
+              :credentialInvitationUrl="credentialInvitationUrl"
+              :hasRegisteredWallet="hasRegisteredWallet"
+              :issuedCredentials="issuedCredentials"
               @back="back()"
-              @addCredential="businessCredential = $event"
-              @addRelationshipCredential="businessRelationshipCredential = $event"
+              @sendCredentialOffer="issueCredential($event)"
             />
           </v-col>
         </v-row>
@@ -55,17 +60,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import {
-  ChooseCredentials,
+  RegisterWallet,
   CredentialsLanding,
   CredentialsFooter,
   DigitalWalletDownload,
-  ScanCredentials
+  IssueCredentials
 } from '@/components/DigitalCredentials'
 import { Stepper } from '@/components/common'
-import { Routes } from '@/enums'
-import { StepsIF } from '@/interfaces'
+import { DigitalCredentialTypes, Routes } from '@/enums'
+import { DigitalCredentialsIF, StepsIF } from '@/interfaces'
+import { LegalApiMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -74,9 +81,12 @@ import { StepsIF } from '@/interfaces'
     Stepper
   }
 })
-export default class DigitalCredentials extends Vue {
-  private businessCredential = false
-  private businessRelationshipCredential = false
+export default class DigitalCredentials extends Mixins(LegalApiMixin) {
+  @Getter getIdentifier!: string
+
+  private issuedCredentials: Array<DigitalCredentialsIF> = []
+  private credentialInvitationUrl = ''
+  private hasRegisteredWallet = false
 
   /** The steps for Business Digital Credentials. **/
   get digitalCredentialSteps (): Array<StepsIF> {
@@ -92,18 +102,18 @@ export default class DigitalCredentials extends Vue {
       {
         id: 'step-2-btn',
         step: 2,
-        icon: 'mdi-file-certificate-outline',
-        text: 'Choose\n Digital Credentials',
-        to: `/digital-credentials/choose-credentials`,
-        component: ChooseCredentials
+        icon: 'mdi-cellphone',
+        text: 'Register\n Digital Wallet',
+        to: `/digital-credentials/register-wallet`,
+        component: RegisterWallet
       },
       {
         id: 'step-3-btn',
         step: 3,
-        icon: 'mdi-cellphone',
-        text: 'Scan with\n Digital Wallet',
-        to: `/digital-credentials/scan-credentials`,
-        component: ScanCredentials
+        icon: 'mdi-file-certificate-outline',
+        text: 'Issue Credential to\n Digital Wallet',
+        to: `/digital-credentials/issue-credentials`,
+        component: IssueCredentials
       }
     ]
   }
@@ -138,6 +148,49 @@ export default class DigitalCredentials extends Vue {
 
   cancel (): void {
     this.$router.push({ path: `/${Routes.DIGITAL_CREDENTIALS}` })
+  }
+
+  async getCredentials (): Promise<void> {
+    const { data } = await this.fetchCredentials(this.getIdentifier)
+    if (data && data.issuedCredentials) {
+      this.issuedCredentials = data.issuedCredentials
+    }
+  }
+
+  async addCredentialInvitation (): Promise<void> {
+    const { data } = await this.createCredentialInvitation(this.getIdentifier)
+    if (data?.invitationUrl) {
+      this.credentialInvitationUrl = data.invitationUrl
+    }
+  }
+
+  async getCredentialsConnection (): Promise<void> {
+    const connection = await this.fetchCredentialConnection(this.getIdentifier)
+    if (connection) {
+      this.hasRegisteredWallet = true
+    }
+  }
+
+  async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
+    const credentialIssued = await this.issueCredentialOffer(this.getIdentifier, credentialType)
+    if (credentialIssued) {
+      await this.getCredentials()
+    }
+  }
+
+  // Keep credential data in sync when navigating between routes.
+  // This is required due to the nature of external interactions between mobile device and api
+  @Watch('$route', { immediate: true })
+  async syncCredentials (): Promise<void> {
+    await this.getCredentials()
+
+    // Lookup connection on Register Wallet Step
+    if (this.currentStepIndex === 1) { await this.getCredentialsConnection() }
+
+    // Generate an Invitation URL once only if the user has not registered
+    if (!this.hasRegisteredWallet && !this.credentialInvitationUrl) {
+      await this.addCredentialInvitation()
+    }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 import { Routes } from '@/enums'
 import DigitalCredentials from '@/views/DigitalCredentials.vue'
 import { getDigitalCredentialBreadcrumb } from '@/resources/BreadcrumbResources'
-import { ChooseCredentials, DigitalWalletDownload, ScanCredentials } from '@/components/DigitalCredentials'
+import { DigitalWalletDownload, IssueCredentials, RegisterWallet } from '@/components/DigitalCredentials'
 
 export const DigitalCredentialRoutes = {
   path: `/${Routes.DIGITAL_CREDENTIALS}`,
@@ -27,29 +27,29 @@ export const DigitalCredentialRoutes = {
       }
     },
     {
-      name: Routes.CHOOSE_CREDENTIALS,
-      path: Routes.CHOOSE_CREDENTIALS,
-      component: ChooseCredentials,
+      name: Routes.REGISTER_WALLET,
+      path: Routes.REGISTER_WALLET,
+      component: RegisterWallet,
       meta: {
         breadcrumb: [
           getDigitalCredentialBreadcrumb(),
           {
-            text: 'Choose Credentials',
-            to: { name: Routes.CHOOSE_CREDENTIALS }
+            text: 'Register Wallet',
+            to: { name: Routes.REGISTER_WALLET }
           }
         ]
       }
     },
     {
-      name: Routes.SCAN_CREDENTIALS,
-      path: Routes.SCAN_CREDENTIALS,
-      component: ScanCredentials,
+      name: Routes.ISSUE_CREDENTIALS,
+      path: Routes.ISSUE_CREDENTIALS,
+      component: IssueCredentials,
       meta: {
         breadcrumb: [
           getDigitalCredentialBreadcrumb(),
           {
-            text: 'Scan Credentials',
-            to: { name: Routes.SCAN_CREDENTIALS }
+            text: 'Issue Credentials',
+            to: { name: Routes.ISSUE_CREDENTIALS }
           }
         ]
       }
