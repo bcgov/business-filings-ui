@@ -259,6 +259,8 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
       }
     } else {
       data.filing[this.name] = { ...data.filing[this.name],
+        effectOfOrder: (this.planOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : ''),
+        fileNumber: (this.courtOrderNumber ? this.courtOrderNumber : ''),
         orderDetails: this.notation
       }
     }
