@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit, Watch } from 'vue-property-decorator'
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
@@ -46,10 +47,10 @@ export default class FileCorrectionDialog extends Vue {
   protected correctionType = null as CorrectionTypes
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   /** Check off buttons to confirm correction type */
   protected checkToStart () {
@@ -89,14 +90,15 @@ export default class FileCorrectionDialog extends Vue {
    * Redirect to start correction.
    */
   @Emit('redirect')
-  private emitRedirect (correctionType: CorrectionTypes): void { }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitRedirect (correctionType: CorrectionTypes): void {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-::v-deep .v-dialog {
+:deep(.v-dialog) {
   .v-card {
     .v-card__title {
       color: black;

@@ -1,5 +1,5 @@
 <template>
-  <div id="staff-notation" class="pr-6" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
+  <div id="staff-notation" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
     <AddStaffNotationDialog
       :dialog="isAddingRegistrarsNotation"
       @close="hideRegistrarsNotationDialog($event)"
@@ -43,29 +43,16 @@
     />
 
     <div class="staff-notation-container">
-      <v-menu offset-y left transition="slide-y-transition" v-model="expand">
+      <v-menu offset-y transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
-          <span><!-- This span is needed to fix a positioning issue with the menu -->
-            <span
-              v-on="on"
-              id="add-staff-filing-label"
-              class="app-blue"
-              @click="expand = !expand"
-            >
-              <v-icon id="add-staff-filing-icon" class="app-blue">mdi-plus</v-icon>
-              <span>Add Staff Filing</span>
-            </span>
-            <v-btn
-              text
-              v-on="on"
-              class="menu-btn"
-              :class="{active: expand}"
-              @click="expand = !expand"
-            >
-              <v-icon>mdi-menu-down</v-icon>
-            </v-btn>
-          </span>
+          <v-btn text color="primary" class="menu-btn pr-3" v-on="on">
+            <v-icon color="primary">mdi-plus</v-icon>
+            <span>Add Staff Filing</span>
+            <v-icon v-if="expand">mdi-menu-up</v-icon>
+            <v-icon v-else>mdi-menu-down</v-icon>
+          </v-btn>
         </template>
+
         <v-list dense>
           <v-list-item-group color="primary">
             <v-list-item @click="showRegistrarsNotationDialog()" :disabled="disabled">
@@ -110,7 +97,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { navigate } from '@/utils'
 import { DissolutionTypes, DissolutionNames, FilingTypes, FilingNames } from '@/enums'
@@ -135,10 +123,10 @@ export default class StaffNotation extends Vue {
   readonly DissolutionNames = DissolutionNames
 
   /** Prop for the scrollbar offset to be added. */
-  @Prop() readonly addScrollbarOffset: string
+  @Prop() readonly addScrollbarOffset!: string
 
   /** Prop for disabling the menu items. */
-  @Prop({ default: false }) readonly disabled: boolean
+  @Prop({ default: false }) readonly disabled!: boolean
 
   @Getter isFirm!: boolean
   @Getter isBComp!: boolean
@@ -197,9 +185,8 @@ export default class StaffNotation extends Vue {
   }
 
   @Emit('close')
-  private close (needReload: boolean): void {
-    // Intentionally empty
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private close (needReload: boolean): void {}
 
   goToConversionFiling ():void {
     const url = `${this.editUrl}${this.getIdentifier}/conversion`
@@ -219,24 +206,6 @@ export default class StaffNotation extends Vue {
     font-size: $px-14;
     font-weight: 700;
   }
-
-  // make menu button slightly smaller
-  .menu-btn {
-    height: unset !important;
-    min-width: unset !important;
-    padding: 0.25rem !important;
-    color: $app-blue
-  }
-}
-
-#add-staff-filing-label {
-  padding-right: 0.725rem;
-  font-size: $px-14;
-  border-right: 1px solid $gray3;
-
-  &:hover {
-    cursor: pointer;
-  }
 }
 
 // This class will be applied when addScrollbarOffset prop is true.
@@ -252,11 +221,11 @@ export default class StaffNotation extends Vue {
 }
 
 // Fix the transparent added by .add-scrollbar-offset (Firefox only).
-::v-deep .add-staff-notation-dialog {
+:deep(.add-staff-notation-dialog) {
   scrollbar-color: auto;
 }
 
-#add-staff-filing-icon {
+.v-icon.mdi-plus {
   font-size: 1.2rem;
   padding: 0.2rem;
   margin-bottom: 0.2rem;
@@ -266,11 +235,11 @@ export default class StaffNotation extends Vue {
   margin: 0.625rem 0 0 0;
 }
 
-.v-btn.active .v-icon {
-  transform: rotate(-180deg);
+:deep(.theme--light.v-list-item--disabled) {
+  opacity: 0.38 !important;
 }
 
-::v-deep .theme--light.v-list-item--disabled {
-  opacity: 0.38 !important;
+.v-icon.mdi-plus {
+  margin-top: 2px;
 }
 </style>

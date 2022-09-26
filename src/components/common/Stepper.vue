@@ -38,20 +38,20 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { StepsIF } from '@/interfaces'
 
 @Component({})
 export default class Stepper extends Vue {
   /** The required steps. */
-  @Prop({ required: true })
-  readonly getSteps!: Array<StepsIF>
+  @Prop({ required: true }) readonly getSteps!: Array<StepsIF>
 
-  private goTo (step) {
+  protected goTo (step) {
     this.$router.push(step.to).catch(() => {})
   }
 
-  private isCurrentStep (step): boolean {
+  protected isCurrentStep (step): boolean {
     return this.$route.fullPath === step.to
   }
 }
@@ -170,11 +170,11 @@ export default class Stepper extends Vue {
 }
 
 // Vuetify Overrides
-::v-deep .v-btn:not(.v-btn--round).v-size--default {
+:deep(.v-btn:not(.v-btn--round).v-size--default) {
   max-width: 64px;
 }
 
-::v-deep .v-card > *:last-child:not(.v-btn):not(.v-chip) {
+:deep(.v-card > *:last-child:not(.v-btn):not(.v-chip)) {
   border-bottom: 3px solid red !important;
   border-bottom-left-radius: 2px !important;
 }

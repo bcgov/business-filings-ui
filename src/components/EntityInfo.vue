@@ -330,6 +330,7 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
 
   // Pass not in good standing event to parent.
   @Emit('notInGoodStanding')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNotInGoodStanding (message: NigsMessage): void {}
 
   // Pass prompt to view / add digital credentials event to parent. */
@@ -358,20 +359,6 @@ export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixi
   //   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='105' height='100'><text x='0' y='105' font-size='30' transform='rotate(-45 10,40)' opacity='0.1'>STAFF</text></svg>");
   //   background-repeat: repeat-x;
   // }
-}
-
-.v-breadcrumbs li {
-  font-size: $px-12;
-}
-
-::v-deep {
-  .v-breadcrumbs a {
-    color: $gray8 !important;
-  }
-
-  .v-breadcrumbs a:hover {
-    color: $BCgovABlue3 !important;
-  }
 }
 
 #entity-legal-name,
@@ -438,12 +425,12 @@ dd:not(:hover) > button {
 }
 
 // Disable btn and tooltip overrides
-::v-deep .v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon {
+:deep(.v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon) {
   opacity: 0.4 !important;
   color: $app-blue !important;
 }
 
-::v-deep #staff-comments .v-btn {
+:deep(#staff-comments .v-btn) {
   margin-top: -4px; // for vertical alignment
 }
 
@@ -453,7 +440,7 @@ dd:not(:hover) > button {
   margin-top: -4px; // for vertical alignment
 }
 
-::v-deep .v-chip__content {
+:deep(.v-chip__content) {
   letter-spacing: 0.5px;
 }
 </style>

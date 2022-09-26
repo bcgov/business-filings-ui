@@ -35,8 +35,7 @@ import { HistoryItemIF, DissolutionConfirmationResourceIF } from '@/interfaces'
 @Component({})
 export default class CompletedDissolution extends Mixins(DateMixin) {
   /** The subject filing. */
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 
   @Getter isCoop!: boolean
   @Getter isFirm!: boolean

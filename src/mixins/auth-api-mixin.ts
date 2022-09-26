@@ -1,5 +1,6 @@
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 
 /**
@@ -7,7 +8,7 @@ import axios from '@/axios-auth'
  */
 @Component({})
 export default class AuthApiMixin extends Vue {
-  private get authApiUrl (): string {
+  get authApiUrl (): string {
     return sessionStorage.getItem('AUTH_API_URL') || ''
   }
 

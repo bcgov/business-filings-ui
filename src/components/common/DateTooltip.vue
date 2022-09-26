@@ -15,8 +15,7 @@ import { DateMixin } from '@/mixins'
 
 @Component({})
 export default class DateTooltip extends Mixins(DateMixin) {
-  @Prop({ default: null })
-  readonly date: Date
+  @Prop({ default: null }) readonly date!: Date
 
   get dateString (): string {
     return (this.dateToPacificDate(this.date) || 'Unknown')

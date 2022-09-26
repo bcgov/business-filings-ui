@@ -18,13 +18,14 @@ import { mount, Wrapper } from '@vue/test-utils'
 import { Certify } from '@/components/common'
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
 
 const store = getVuexStore() as any // remove typings for unit tests
 
 // Input field selectors to test changes to the DOM elements.
-const certifiedBySelector: string = 'input[type=text]'
-const isCertifiedSelector: string = 'input[type=checkbox]'
-const statementSelector: string = '.certify-stmt'
+const certifiedBySelector = 'input[type=text]'
+const isCertifiedSelector = 'input[type=checkbox]'
+const statementSelector = '.certify-stmt'
 
 const trimmedCertifier = 'Some Certifier'
 const whitespaceCertifier = '  Some  Certifier  '
@@ -62,6 +63,7 @@ function createComponent (
   store.state.currentDate = currentDate
 
   return mount(Certify, {
+    vuetify,
     store,
     sync: false,
     propsData: {

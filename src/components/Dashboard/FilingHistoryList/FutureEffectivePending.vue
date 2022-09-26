@@ -34,8 +34,7 @@ export default class FutureEffectivePending extends Mixins(DateMixin) {
   @Getter getEntityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 
   /** Data for the subject filing. */
   get _ (): any {

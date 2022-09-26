@@ -6,7 +6,6 @@ import DetailComment from './DetailComment.vue'
 import ImportantMessage from './ImportantMessage.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
-import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 import Stepper from '@/components/common/Stepper.vue'
 import SummaryDirectors from './SummaryDirectors.vue'
 import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
@@ -24,7 +23,6 @@ export {
   ImportantMessage,
   NameRequestInfo,
   OfficeAddresses,
-  StaffPayment,
   Stepper,
   SummaryDirectors,
   SummaryOfficeAddresses,

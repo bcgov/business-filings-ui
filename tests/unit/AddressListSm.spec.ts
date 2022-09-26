@@ -156,6 +156,7 @@ describe('AddressListSm', () => {
 
     // Click the records office tab to display the addresses
     await wrapper.find('#records-office-panel-toggle').trigger('click')
+    await Vue.nextTick()
 
     expect(vm.registeredAddress).toBeDefined()
     expect(vm.recordsAddress).toBeDefined()
@@ -246,6 +247,7 @@ describe('AddressListSm', () => {
 
     // Click the records office tab to display the addresses
     await wrapper.find('#records-office-panel-toggle').trigger('click')
+    await Vue.nextTick()
 
     expect(vm.registeredAddress).toBeDefined()
     expect(vm.recordsAddress).toBeDefined()

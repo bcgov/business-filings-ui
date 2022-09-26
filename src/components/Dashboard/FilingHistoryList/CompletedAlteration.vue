@@ -28,8 +28,7 @@ export default class CompletedAlteration extends Mixins(EnumMixin) {
   @Getter getEntityName!: string
 
   /** The subject filing. */
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 
   get fromLegalType (): string {
     return this.getCorpTypeDescription(this.filing?.fromLegalType)

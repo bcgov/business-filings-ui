@@ -328,7 +328,7 @@ describe('Filing History List - misc functionality', () => {
     store.state.identifier = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, { store })
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -348,7 +348,7 @@ describe('Filing History List - misc functionality', () => {
     store.state.identifier = 'CP0001191'
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: true } })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: true }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -358,7 +358,7 @@ describe('Filing History List - misc functionality', () => {
   it('returns correct values for disableCorrection()', async () => {
     store.state.filings = []
 
-    const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: false } })
+    const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: false }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -622,7 +622,7 @@ describe('Filing History List - redirections', () => {
 
     // GET original IA
     get.withArgs('businesses/BC1234567/filings/85114')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           filing: {
@@ -642,7 +642,7 @@ describe('Filing History List - redirections', () => {
       })))
 
     post.withArgs('businesses/BC1234567/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
           {
             filing: {
@@ -890,6 +890,7 @@ describe('Filing History List - incorporation applications', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -953,6 +954,7 @@ describe('Filing History List - incorporation applications', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1016,6 +1018,7 @@ describe('Filing History List - incorporation applications', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1077,6 +1080,7 @@ describe('Filing History List - incorporation applications', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1140,6 +1144,7 @@ describe('Filing History List - incorporation applications', () => {
     const detailsBtn = wrapper.find('.details-btn')
     expect(detailsBtn.text()).toContain('View Details')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Hide Details button
     expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
@@ -1277,6 +1282,7 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('Request a Copy')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify updated expand button
     expect(wrapper.find('.expand-btn').text()).toContain('Close')
@@ -1591,6 +1597,7 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
@@ -1647,6 +1654,7 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
@@ -1703,6 +1711,7 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View')
     await detailsBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
@@ -1741,7 +1750,7 @@ describe('Filing History List - with documents', () => {
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           documents: {}
         }
@@ -1773,7 +1782,7 @@ describe('Filing History List - with documents', () => {
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           documents: {
             legalFilings: [
@@ -1814,7 +1823,7 @@ describe('Filing History List - with documents', () => {
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           documents: {
             legalFilings: [
@@ -1927,7 +1936,7 @@ describe('Filing History List - detail comments', () => {
 
     // mock "get comments"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/comments')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           comments: []
         }
@@ -1955,7 +1964,7 @@ describe('Filing History List - detail comments', () => {
 
     // mock "get comments"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/comments')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           comments: [
             {

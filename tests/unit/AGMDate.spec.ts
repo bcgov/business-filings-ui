@@ -98,8 +98,9 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  it('sets AGM Date when AGM Date prop is set to a date', () => {
+  it('sets AGM Date when AGM Date prop is set to a date', async () => {
     wrapper.setProps({ newAgmDate: '2019-05-10' })
+    await Vue.nextTick()
 
     // verify local variables
     expect(vm.$data.dateText).toBe('2019-05-10')

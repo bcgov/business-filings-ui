@@ -1,5 +1,6 @@
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { PaymentErrorIF } from '@/interfaces'
 
@@ -8,7 +9,7 @@ import { PaymentErrorIF } from '@/interfaces'
  */
 @Component({})
 export default class PayApiMixin extends Vue {
-  private get payApiUrl (): string {
+  get payApiUrl (): string {
     return sessionStorage.getItem('PAY_API_URL') || ''
   }
 

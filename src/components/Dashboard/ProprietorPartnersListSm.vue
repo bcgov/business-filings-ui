@@ -92,12 +92,10 @@ import { Roles } from '@/enums'
 @Component({})
 export default class ProprietorPartnersListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the proprietor / partners list. */
-  @Prop({ default: false })
-  readonly showCompleteYourFilingMessage: boolean
+  @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 
   /** Whether to gray out (disable) the proprietor / partners list. */
-  @Prop({ default: false })
-  readonly showGrayedOut: boolean
+  @Prop({ default: false }) readonly showGrayedOut!: boolean
 
   @Getter getParties!: PartyIF[]
   @Getter isSoleProp!: boolean
@@ -164,7 +162,7 @@ $avatar-width: 2.75rem;
   width: $avatar-width;
 }
 
-::v-deep .v-expansion-panel-content__wrap {
+:deep(.v-expansion-panel-content__wrap) {
   padding-right: 1rem;
   padding-left: 1rem;
   padding-bottom: 1rem;

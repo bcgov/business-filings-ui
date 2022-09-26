@@ -7,20 +7,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class PaymentIncomplete extends Vue {
   /** The subject filing. */
-  @Prop({ required: true }) readonly filing: any
+  @Prop({ required: true }) readonly filing!: any
 
   /** The title of the subject filing. */
-  private get title (): string {
+  get title (): string {
     return this.filing?.payErrorObj?.title || ''
   }
 
   /** The detail of the subject filing. */
-  private get detail (): string {
+  get detail (): string {
     return this.filing?.payErrorObj?.detail || ''
   }
 }

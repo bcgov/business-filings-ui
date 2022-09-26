@@ -62,7 +62,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ContactInfo } from '@/components/common'
 
@@ -73,22 +74,22 @@ export default class PaymentErrorDialog extends Vue {
   @Getter isRoleStaff!: boolean
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   /** Prop containing filing name. */
-  @Prop({ default: 'Filing' }) readonly filingName: string
+  @Prop({ default: 'Filing' }) readonly filingName!: string
 
   /** Prop containing error messages. */
-  @Prop({ default: () => [] }) readonly errors: any[]
+  @Prop({ default: () => [] }) readonly errors!: any[]
 
   /** Prop containing warning messages. */
-  @Prop({ default: () => [] }) readonly warnings: any[]
+  @Prop({ default: () => [] }) readonly warnings!: any[]
 
   /** Pass click event to parent. */
-  @Emit() exit () { }
+  @Emit() protected exit () {}
 
   /** The number of errors in the passed-in array. */
   get numErrors (): number {

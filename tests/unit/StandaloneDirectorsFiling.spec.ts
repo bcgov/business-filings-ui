@@ -1,4 +1,5 @@
-/* eslint promise/param-names: 0, prefer-promise-reject-errors: 0 */
+/* eslint prefer-promise-reject-errors: "off" */
+
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
@@ -271,7 +272,7 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           filing: {
@@ -359,7 +360,7 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           filing: {
@@ -451,7 +452,7 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           filing: {
@@ -552,7 +553,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // mock "fetch a draft filing" endpoint
     get.withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -580,7 +581,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // mock "fetch tasks" endpoint
     get.withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'tasks': [
@@ -603,7 +604,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // mock "save and file" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -633,7 +634,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // mock "update and file" endpoint
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -887,7 +888,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
 
     // mock "save and file" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -916,7 +917,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
 
     // mock "fetch tasks" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -995,7 +996,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1023,7 +1024,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
 
     // mock "fetch tasks" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -1144,7 +1145,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
 
     // mock "save draft" endpoint - garbage response data, we aren't testing that
     spy = sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1296,7 +1297,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
     // mock "fetch a draft filing" endpoint
     get.withArgs('businesses/CP0001191/filings/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'filing': {
@@ -1324,7 +1325,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
     // mock "fetch tasks" endpoint
     get.withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           'tasks': [
             {
@@ -1379,7 +1380,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1417,7 +1418,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
   })
 
@@ -1549,7 +1550,7 @@ describe('Standalone Directors Filing - payment required error', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
   })
 

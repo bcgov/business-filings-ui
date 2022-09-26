@@ -48,7 +48,7 @@ describe('Directors as a COOP', () => {
     // mock GET directors
     sinon.stub(axios, 'get')
       .withArgs('businesses/CP0001191/directors?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // NB: this list gets sorted by lastName, firstName, middleName
@@ -352,7 +352,7 @@ describe('Directors as a COOP (no sync)', () => {
     // mock GET directors
     sinon.stub(axios, 'get')
       .withArgs('businesses/CP0001191/directors?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // NB: this list gets sorted by lastName, firstName, middleName
@@ -589,7 +589,7 @@ describe('Directors as a BCOMP', () => {
     // mock GET directors
     sinon.stub(axios, 'get')
       .withArgs('businesses/BC0007291/directors?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // NB: this list gets sorted by lastName, firstName, middleName
@@ -909,7 +909,7 @@ describe('Appoint New Director tests', () => {
     // mock GET directors
     sinon.stub(axios, 'get')
       .withArgs('businesses/CP0001191/directors?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           directors: []

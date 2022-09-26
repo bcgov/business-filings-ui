@@ -568,7 +568,7 @@ export default class TodoList extends Mixins(
   protected checkTimer: number = null
   protected inProcessFiling: number = null
 
-  @Prop({ default: null }) readonly highlightId: number
+  @Prop({ default: null }) readonly highlightId!: number
 
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
@@ -967,7 +967,6 @@ export default class TodoList extends Mixins(
   private async loadChangeOfDirectors (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const business = filing.business
-    const changeOfDirectors = filing.changeOfDirectors
     const header = filing.header
 
     // NB: don't check "changeOfDirectors" as it may be empty
@@ -1483,7 +1482,7 @@ export default class TodoList extends Mixins(
     })
   }
 
-  private async doDeleteDraft (item: TodoItemIF, refreshDashboard: boolean = true): Promise<void> {
+  private async doDeleteDraft (item: TodoItemIF, refreshDashboard = true): Promise<void> {
     const id = this.getIdentifier || this.tempRegNumber
     const url = `businesses/${id}/filings/${item.filingId}`
 
@@ -1739,7 +1738,7 @@ export default class TodoList extends Mixins(
   background-color: white !important;
 }
 
-::v-deep .v-expansion-panel-content__wrap {
+:deep(.v-expansion-panel-content__wrap) {
   padding: 0;
 }
 

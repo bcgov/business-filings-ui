@@ -42,7 +42,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 import { ContactInfo } from '@/components/common'
 
@@ -58,18 +59,18 @@ export default class DeleteErrorDialog extends Vue {
   readonly isRoleStaff!: boolean
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   // Prop containing error messages.
-  @Prop({ default: () => [] }) readonly errors: any[]
+  @Prop({ default: () => [] }) readonly errors!: any[]
 
   // Prop containing warning messages.
-  @Prop({ default: () => [] }) readonly warnings: any[]
+  @Prop({ default: () => [] }) readonly warnings!: any[]
 
   // Pass click event to parent.
-  @Emit() private okay () { }
+  @Emit() protected okay () {}
 }
 </script>

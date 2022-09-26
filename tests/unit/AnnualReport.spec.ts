@@ -1,5 +1,5 @@
-/* eslint promise/param-names: 0, prefer-promise-reject-errors: 0 */
-// Libraries
+/* eslint prefer-promise-reject-errors: "off" */
+
 import Vue from 'vue'
 import sinon from 'sinon'
 import Vuetify from 'vuetify'
@@ -10,8 +10,6 @@ import { getVuexStore } from '@/store'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
 import { shallowMount, createLocalVue, mount, Wrapper } from '@vue/test-utils'
-
-// Components
 import AnnualReport from '@/views/AnnualReport.vue'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import Directors from '@/components/common/Directors.vue'
@@ -1440,7 +1438,7 @@ describe('Annual Report - Part 5 - Data', () => {
     expect(payload.filing.annualReport).toBeDefined()
     expect(payload.filing.annualReport.directors).toBeDefined()
 
-    let names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
+    const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
     expect(names).toContain('Unchanged')
   })
 
@@ -1457,7 +1455,7 @@ describe('Annual Report - Part 5 - Data', () => {
     expect(payload.filing.annualReport).toBeDefined()
     expect(payload.filing.annualReport.directors).toBeDefined()
 
-    let names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
+    const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
     expect(names).toContain('Appointed')
   })
 
@@ -1474,7 +1472,7 @@ describe('Annual Report - Part 5 - Data', () => {
     expect(payload.filing.annualReport).toBeDefined()
     expect(payload.filing.annualReport.directors).toBeDefined()
 
-    let names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
+    const names = payload.filing.annualReport.directors.map(el => el.officer.firstName)
     expect(names).not.toContain('Ceased')
   })
 
@@ -1763,7 +1761,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     // mock "file put" endpoint
@@ -1799,7 +1797,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
         }
       }
     })
-    p2.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p2.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'put').withArgs('businesses/CP0001191/filings/123').returns(p2)
 
     const localVue = createLocalVue()
@@ -2065,7 +2063,7 @@ describe('Annual Report - payment required error', () => {
         }
       }
     })
-    p1.catch(() => { }) // pre-empt "unhandled promise rejection" warning
+    p1.catch(() => {}) // pre-empt "unhandled promise rejection" warning
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings').returns(p1)
 
     const localVue = createLocalVue()

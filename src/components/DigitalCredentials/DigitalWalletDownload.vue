@@ -126,6 +126,7 @@ export default class DigitalWalletDownload extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
 #digital-wallet-download {
   p {
     color: $gray9;

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const RemoveServiceWorkerPlugin = require('webpack-remove-serviceworker-plugin')
 const webpack = require('webpack')
 const fs = require('fs')

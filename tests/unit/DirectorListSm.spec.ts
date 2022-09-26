@@ -98,11 +98,12 @@ describe('DirectorListSm', () => {
   })
 
   it('displays multiple directors - as a BCOMP', async () => {
-    function click (id) {
+    async function click (id) {
       const button = vm.$el.querySelector(id)
       const window = button.ownerDocument.defaultView
       const click = new window.Event('click')
       button.dispatchEvent(click)
+      await Vue.nextTick()
     }
 
     // init store
@@ -166,7 +167,8 @@ describe('DirectorListSm', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    click('.address-panel-toggle')
+    await click('.address-panel-toggle')
+
     expect(vm.directors.length).toEqual(2)
     expect(vm.directors[0].mailingAddress).toBeDefined()
     expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(2)

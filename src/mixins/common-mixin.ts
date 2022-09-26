@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { omit, isEqual } from 'lodash'
 
 /**
@@ -32,7 +33,7 @@ export default class CommonMixin extends Vue {
    * @param props an optional array of properties to omit during the comparison
    * @returns a boolean indicating a match of objects
    */
-  isSame (objA: {}, objB: {}, props: string[] = []): boolean {
+  isSame (objA: object, objB: object, props: string[] = []): boolean {
     return isEqual({ ...omit(objA, props) }, { ...omit(objB, props) })
   }
 }

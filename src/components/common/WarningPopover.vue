@@ -23,12 +23,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { AlertMessageIF } from '@/interfaces'
 
 @Component({})
 export default class WarningPopover extends Vue {
-  @Prop({ default: null }) readonly dialogObj: AlertMessageIF
+  @Prop({ default: null }) readonly dialogObj!: AlertMessageIF
 }
 </script>
 

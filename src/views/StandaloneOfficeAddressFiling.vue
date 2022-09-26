@@ -194,7 +194,7 @@
 // Libraries
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
-import { PAYMENT_REQUIRED } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
 
@@ -569,7 +569,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
 
     // save final filing (not draft)
     this.savedFiling = await this.saveFiling(false).catch(error => {
-      if (error?.response?.status === PAYMENT_REQUIRED) {
+      if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
         // changes were saved if a 402 is received, so clear flag
         this.haveChanges = false
         // display payment error dialog
@@ -733,7 +733,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
    * Routes to dashboard if there are no outstanding changes,
    * else prompts user before routing.
    */
-  goToDashboard (force: boolean = false): void {
+  goToDashboard (force = false): void {
     // check if there are no data changes
     if (!this.haveChanges || force) {
       // route to dashboard
@@ -753,7 +753,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
         no: null,
         cancel: 'Exit without saving'
       }
-    ).then(async (confirm) => {
+    ).then(() => {
       // if we get here, Yes was clicked
       // nothing to do
     }).catch(() => {
@@ -839,13 +839,13 @@ export default class StandaloneOfficeAddressFiling extends Mixins(
   }
 
   @Watch('isCertified')
-  onIsCertifiedChanged (val: boolean): void {
+  onIsCertifiedChanged (): void {
     // only record changes once the initial data is loaded
     this.haveChanges = this.dataLoaded
   }
 
   @Watch('certifiedBy')
-  onCertifiedByChanged (val: string): void {
+  onCertifiedByChanged (): void {
     // only record changes once the initial data is loaded
     this.haveChanges = this.dataLoaded
   }

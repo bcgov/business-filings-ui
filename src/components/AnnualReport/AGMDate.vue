@@ -75,7 +75,7 @@
               hide-details
               @change="onAgmExtensionChanged($event)"
             >
-              <template slot="label">
+              <template v-slot:label>
                 <span class="font-weight-bold">The Cooperative Association extended its Annual General Meeting
                   date and notified its members of this extension (required for this date selection)</span>
               </template>
@@ -113,6 +113,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
@@ -128,24 +129,19 @@ export default class AgmDate extends Mixins(DateMixin) {
   }
 
   /** New AGM Date (from a resumed draft). */
-  @Prop({ default: null })
-  readonly newAgmDate: string
+  @Prop({ default: null }) readonly newAgmDate!: string
 
   /** New AGM Extension flag (from a resumed draft). */
-  @Prop({ default: null })
-  readonly newAgmExtension: boolean
+  @Prop({ default: null }) readonly newAgmExtension!: boolean
 
   /** New No AGM flag (from a resumed draft). */
-  @Prop({ default: null })
-  readonly newNoAgm: boolean
+  @Prop({ default: null }) readonly newNoAgm!: boolean
 
   /** Whether to allow changing the addresses. */
-  @Prop({ default: true })
-  readonly allowCoa: boolean
+  @Prop({ default: true }) readonly allowCoa!: boolean
 
   /** Whether to allow changing the directors. */
-  @Prop({ default: true })
-  readonly allowCod: boolean
+  @Prop({ default: true }) readonly allowCod!: boolean
 
   @State ARFilingYear!: number
   @State arMinDate!: string
@@ -162,19 +158,19 @@ export default class AgmDate extends Mixins(DateMixin) {
   private backupDate = '' // for toggling No AGM
 
   /** The array of validations rule(s) for the AGM Date text field. */
-  private get agmDateRules (): Array<Function> {
+  get agmDateRules (): Array<(v) => boolean | string> {
     return [
       v => this.noAgm || !!v || 'An Annual General Meeting date is required.'
     ]
   }
 
   /** The label for the No AGM checkbox. */
-  private get noAgmLabel (): string {
+  get noAgmLabel (): string {
     return `We did not hold an Annual General Meeting for our ${this.ARFilingYear} Financial Year`
   }
 
   /** Whether to show the AGM Extension checkbox. */
-  private get showAgmExtensionCheckbox (): boolean {
+  get showAgmExtensionCheckbox (): boolean {
     // don't show if No AGM is checked
     // a date must be entered
     // applies only to 2020 ARs
@@ -193,7 +189,7 @@ export default class AgmDate extends Mixins(DateMixin) {
    * @returns False in the next year up to Apr 30
    * @returns True in the next year after Apr 30
    */
-  private get showNoAgmCheckbox (): boolean {
+  get showNoAgmCheckbox (): boolean {
     if (!this.ARFilingYear) return false // safety check
     // only show checkbox if 'today' is past Max AGM Date
     // where Max AGM Date is 'today' in the AR Filing Year
@@ -249,7 +245,7 @@ export default class AgmDate extends Mixins(DateMixin) {
   }
 
   /** Called when AGM Extension checkbox changes. */
-  private onAgmExtensionChanged (val: boolean): void {
+  private onAgmExtensionChanged (): void {
     // update parent
     this.emitAgmExtension()
     this.emitValid()
@@ -364,11 +360,11 @@ export default class AgmDate extends Mixins(DateMixin) {
 }
 
 // reduce date input height when there are no error messages
-::v-deep .v-text-field:not(.error--text) {
+:deep(.v-text-field:not(.error--text)) {
   margin-bottom: -30px;
 }
 
-::v-deep .v-input--checkbox {
+:deep(.v-input--checkbox) {
   padding-top: 0;
 
   .v-label {

@@ -124,12 +124,10 @@ import { OfficeAddressIF } from '@/interfaces'
 @Component({})
 export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the address list. */
-  @Prop({ default: false })
-  readonly showCompleteYourFilingMessage: boolean
+  @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 
   /** Whether to gray out (disable) the director list. */
-  @Prop({ default: false })
-  readonly showGrayedOut: boolean
+  @Prop({ default: false }) readonly showGrayedOut!: boolean
 
   @Getter getBusinessAddress!: OfficeAddressIF
 
@@ -140,7 +138,7 @@ export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvi
   }
 
   /** Whether to appear disabled. */
-  private get disabled (): boolean {
+  get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
 }

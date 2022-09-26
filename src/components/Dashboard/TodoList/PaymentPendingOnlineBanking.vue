@@ -19,15 +19,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
-  @Prop({ required: true }) readonly filing: any
+  @Prop({ required: true }) readonly filing!: any
 
   /** The draft title of the subject filing. */
-  private get draftTitle (): string {
+  get draftTitle (): string {
     return this.filing?.draftTitle || 'filing'
   }
 }

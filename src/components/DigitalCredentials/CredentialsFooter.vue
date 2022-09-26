@@ -43,23 +43,21 @@ import { Component, Emit, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class CredentialsFooter extends Vue {
-  @Prop({ default: 0 })
-  readonly currentStepIndex: number
+  @Prop({ default: 0 }) readonly currentStepIndex!: number
 
-  @Prop({ default: null })
-  readonly lastStepIndex: number
+  @Prop({ default: null }) readonly lastStepIndex!: number
 
-  @Prop({ default: 'Next' })
-  readonly nextStepName: string
+  @Prop({ default: 'Next' }) readonly nextStepName!: string
 
-  @Emit() back (): void {}
-  @Emit() next (): void {}
-  @Emit() cancel (): void {}
+  @Emit() protected back (): void {}
+  @Emit() protected next (): void {}
+  @Emit() protected cancel (): void {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
 #credentials-footer {
   border-top: 1px solid $gray3;
 

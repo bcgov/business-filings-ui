@@ -49,14 +49,15 @@ export default class DetailsList extends Mixins(DateMixin) {
       filingId: null
     })
   })
-  readonly filing: HistoryItemIF
+  readonly filing!: HistoryItemIF
 
   /** Whether current user has staff role. */
   @Getter isRoleStaff!: boolean
 
   /** Emits an event to trigger the comment dialog. */
   @Emit('showCommentDialog')
-  protected showCommentDialog (filing: HistoryItemIF): void { }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected showCommentDialog (filing: HistoryItemIF): void {}
 }
 </script>
 

@@ -78,7 +78,7 @@ import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
   filters: { 'VMask': VueMaskFilter }
 })
 export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
-  @Prop() readonly nameRequest: any
+  @Prop() readonly nameRequest!: any
 
   @Getter isSoleProp!: boolean
 

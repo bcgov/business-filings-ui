@@ -22,20 +22,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class CoaWarningDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
-  // Pass click event to parent.
-  @Emit() private toggle () { }
-
-  // Pass click event to parent.
-  @Emit() private proceed () { }
+  // Pass click events to parent.
+  @Emit() protected toggle () {}
+  @Emit() protected proceed () {}
 }
 </script>

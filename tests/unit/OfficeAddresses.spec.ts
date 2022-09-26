@@ -40,7 +40,7 @@ describe('OfficeAddresses as a COOP', () => {
     // mock GET addresses
     sinonAxiosGet
       .withArgs('businesses/CP0000841/addresses?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
             deliveryAddress: address1,
@@ -118,7 +118,7 @@ describe('OfficeAddresses as a COOP', () => {
     // mock GET addresses
     sinonAxiosGet
       .withArgs('businesses/CP0000841/addresses?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
             deliveryAddress: address1,
@@ -208,7 +208,7 @@ describe('OfficeAddresses as a BCOMP', () => {
     // mock GET addresses
     sinonAxiosGet
       .withArgs('businesses/BC1218881/addresses?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
             deliveryAddress: address1,
@@ -325,7 +325,7 @@ describe('OfficeAddresses as a BCOMP', () => {
     // mock GET addresses
     sinonAxiosGet
       .withArgs('businesses/BC1218881/addresses?date=2020-11-16')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           registeredOffice: {
             deliveryAddress: address1,

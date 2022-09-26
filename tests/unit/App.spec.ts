@@ -325,7 +325,7 @@ describe('App as a COOP', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/CP0001191/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -334,13 +334,13 @@ describe('App as a COOP', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET entity info from Auth API
     get.withArgs('entities/CP0001191')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // Auth API Entity data
@@ -356,7 +356,7 @@ describe('App as a COOP', () => {
 
     // GET business info from Legal API
     get.withArgs('businesses/CP0001191')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // Legal API Business data
@@ -373,7 +373,7 @@ describe('App as a COOP', () => {
 
     // GET tasks
     get.withArgs('businesses/CP0001191/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           'tasks': [
@@ -422,7 +422,7 @@ describe('App as a COOP', () => {
 
     // GET filings
     get.withArgs('businesses/CP0001191/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filings: [
             {
@@ -470,7 +470,7 @@ describe('App as a COOP', () => {
 
     // GET addresses
     get.withArgs('businesses/CP0001191/addresses')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           registeredOffice:
@@ -497,7 +497,7 @@ describe('App as a COOP', () => {
 
     // GET parties
     get.withArgs('businesses/CP0001191/parties')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           parties: [
@@ -641,7 +641,7 @@ describe('App as a BCOMP', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/BC0007291/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -650,13 +650,13 @@ describe('App as a BCOMP', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET entity info from Auth API
     get.withArgs('entities/BC0007291')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           contacts: [
@@ -671,7 +671,7 @@ describe('App as a BCOMP', () => {
 
     // GET business info from Legal API
     get.withArgs('businesses/BC0007291')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // Legal API Business data
@@ -688,7 +688,7 @@ describe('App as a BCOMP', () => {
 
     // GET tasks
     get.withArgs('businesses/BC0007291/tasks')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           tasks: [
@@ -737,7 +737,7 @@ describe('App as a BCOMP', () => {
 
     // GET filings
     get.withArgs('businesses/BC0007291/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filings: [
             {
@@ -785,13 +785,13 @@ describe('App as a BCOMP', () => {
 
     // GET addresses
     get.withArgs('businesses/BC0007291/addresses')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: BCOMP_ADDRESSES
       })))
 
     // GET parties
     get.withArgs('businesses/BC0007291/parties')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           parties: BCOMP_DIRECTORS
@@ -902,7 +902,7 @@ describe('App as a Draft IA with approved NR', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -911,13 +911,13 @@ describe('App as a Draft IA with approved NR', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
@@ -936,7 +936,7 @@ describe('App as a Draft IA with approved NR', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1028,7 +1028,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -1037,13 +1037,13 @@ describe('App as a Draft IA with conditional-not required NR', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           consentFlag: null, // not required
@@ -1063,7 +1063,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1135,7 +1135,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -1144,13 +1144,13 @@ describe('App as a Draft IA with conditional-received NR', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           consentFlag: 'R', // received
@@ -1170,7 +1170,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1242,7 +1242,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -1251,13 +1251,13 @@ describe('App as a Draft IA with conditional-waived NR', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           consentFlag: 'N', // waived
@@ -1277,7 +1277,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1349,7 +1349,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -1358,13 +1358,13 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
@@ -1383,7 +1383,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1500,7 +1500,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -1509,13 +1509,13 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
@@ -1534,7 +1534,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1650,7 +1650,7 @@ describe('App as an historical business', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/BC1234567/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           roles: ['edit', 'view']
@@ -1659,13 +1659,13 @@ describe('App as an historical business', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET entity info from Auth API
     get.withArgs('entities/BC1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // Auth API Entity data
@@ -1681,7 +1681,7 @@ describe('App as an historical business', () => {
 
     // GET business info from Legal API
     get.withArgs('businesses/BC1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
         {
           // Legal API Business data
@@ -1712,15 +1712,15 @@ describe('App as an historical business', () => {
 
     // GET tasks
     get.withArgs('businesses/BC1234567/tasks')
-      .returns(new Promise((resolve) => resolve({ data: { tasks: [] } })))
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // GET filings
     get.withArgs('businesses/BC1234567/filings')
-      .returns(new Promise((resolve) => resolve({ data: { filings: [] } })))
+      .returns(new Promise(resolve => resolve({ data: { filings: [] } })))
 
     // GET state filing
     get.withArgs('businesses/BC1234567/filings/113526')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {},
@@ -1737,11 +1737,11 @@ describe('App as an historical business', () => {
 
     // GET addresses
     get.withArgs('businesses/BC1234567/addresses')
-      .returns(new Promise((resolve) => resolve({ data: {} })))
+      .returns(new Promise(resolve => resolve({ data: {} })))
 
     // GET directors
     get.withArgs('businesses/BC1234567/parties')
-      .returns(new Promise((resolve) => resolve({ data: { parties: [] } })))
+      .returns(new Promise(resolve => resolve({ data: { parties: [] } })))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -1795,7 +1795,7 @@ describe('App as a Draft Registration with approved NR', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
           {
             roles: ['edit', 'view']
@@ -1804,13 +1804,13 @@ describe('App as a Draft Registration with approved NR', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
           {
             expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
@@ -1829,7 +1829,7 @@ describe('App as a Draft Registration with approved NR', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {
@@ -1921,7 +1921,7 @@ describe('App as a COMPLETED Registration Application', () => {
 
     // GET authorizations (role) from Auth API
     get.withArgs('entities/T123456789/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
           {
             roles: ['edit', 'view']
@@ -1930,13 +1930,13 @@ describe('App as a COMPLETED Registration Application', () => {
 
     // GET user info from Auth API
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: USER_INFO
       })))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data:
           {
             expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
@@ -1955,7 +1955,7 @@ describe('App as a COMPLETED Registration Application', () => {
 
     // GET IA filing
     get.withArgs('businesses/T123456789/filings')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: {
           filing: {
             business: {

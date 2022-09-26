@@ -51,17 +51,18 @@
 
 <script lang="ts">
 
-import { DissolutionConfirmationResourceIF } from '@/interfaces'
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
+import { DissolutionConfirmationResourceIF } from '@/interfaces'
 
 @Component({})
 export default class ConfirmDissolutionDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   // Global getters
   @Getter getEntityName!: string
@@ -103,11 +104,9 @@ export default class ConfirmDissolutionDialog extends Vue {
     return this.getDissolutionConfirmationResource?.dissolutionType
   }
 
-  // Pass click event to parent.
-  @Emit() private close () { }
-
-  // Pass click event to parent.
-  @Emit() private proceed () { }
+  // Pass click events to parent.
+  @Emit() protected close () {}
+  @Emit() protected proceed () {}
 }
 </script>
 
@@ -139,7 +138,7 @@ export default class ConfirmDissolutionDialog extends Vue {
 }
 
 // Vuetify overrides
-::v-deep .v-dialog .v-card .v-card__text {
+:deep(.v-dialog .v-card .v-card__text) {
   padding-top: 0 !important;
 }
 </style>

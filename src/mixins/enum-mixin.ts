@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import {
   DissolutionNames,
   DissolutionTypes,
@@ -217,7 +218,7 @@ export default class EnumMixin extends Vue {
    * @param alterationRequired A boolean indicating a required business type change
    * @returns the filing name
    */
-  filingTypeToName (type: FilingTypes, agmYear: string = null, alterationRequired: boolean = false): string {
+  filingTypeToName (type: FilingTypes, agmYear = null as string, alterationRequired = false): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
       case FilingTypes.ALTERATION:

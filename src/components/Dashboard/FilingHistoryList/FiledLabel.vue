@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { DateTooltip } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 
@@ -27,7 +28,6 @@ import { HistoryItemIF } from '@/interfaces'
   components: { DateTooltip }
 })
 export default class FiledLabel extends Vue {
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 }
 </script>

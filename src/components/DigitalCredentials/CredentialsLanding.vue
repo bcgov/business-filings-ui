@@ -1,5 +1,4 @@
 <template>
-  <!-- Digital Credentials Landing -->
   <section id="credentials-landing">
 
     <!-- Credentials Header -->
@@ -72,7 +71,3 @@ export default class CredentialsLanding extends Vue {
   private addCredentials () {}
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-</style>

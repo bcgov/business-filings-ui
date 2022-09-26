@@ -28,11 +28,10 @@ import { EnumMixin } from '@/mixins'
 })
 export default class PendingFiling extends Mixins(EnumMixin) {
   /** The subject filing. */
-  @Prop({ required: true })
-  readonly filing: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: HistoryItemIF
 
   /** The title of the subject filing. */
-  private get title (): string {
+  get title (): string {
     if (this.isTypeAlteration(this.filing)) return FilingNames.ALTERATION
     if (this.filing.displayName) return this.filing.displayName
     return 'Filing'

@@ -30,7 +30,7 @@ describe('Pay API Mixin', () => {
 
     // mock endpoint
     get.withArgs('codes/errors/123')
-      .returns(new Promise((resolve) => resolve({
+      .returns(new Promise(resolve => resolve({
         data: { ...paymentErrorObj }
       })))
 

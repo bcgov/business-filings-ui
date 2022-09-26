@@ -42,7 +42,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 import { ContactInfo } from '@/components/common'
 import { NameRequestStates } from '@/enums'
@@ -62,16 +63,16 @@ export default class NameRequestInvalidDialog extends Vue {
   NameRequestStates = NameRequestStates
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   // Prop to provide message type.
-  @Prop({ default: null }) readonly type: NameRequestStates
+  @Prop({ default: null }) readonly type!: NameRequestStates
 
   // Pass click events to parent.
-  @Emit() private exit () { }
-  @Emit() private retry () { }
+  @Emit() protected exit () {}
+  @Emit() protected retry () {}
 }
 </script>

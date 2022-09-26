@@ -67,7 +67,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin, EnumMixin } from '@/mixins'
 import axios from '@/axios-auth'
@@ -87,22 +88,22 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   }
 
   /** Prop to display the dialog. */
-  @Prop({ default: false }) readonly dialog: boolean
+  @Prop({ default: false }) readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop({ default: '' }) readonly attach: string
+  @Prop({ default: '' }) readonly attach!: string
 
   /** Prop for the item's display name. */
-  @Prop() readonly displayName: string
+  @Prop() readonly displayName!: string
 
   /** Prop for the item's name (filing type). */
-  @Prop() readonly name: FilingTypes
+  @Prop() readonly name!: FilingTypes
 
   /** Prop for the item's dissolution type. */
-  @Prop() readonly dissolutionType?: DissolutionTypes
+  @Prop() readonly dissolutionType!: DissolutionTypes
 
   /** Prop to require court order number regardless the plan of arrangement. */
-  @Prop({ default: false }) readonly courtOrderNumberRequired: boolean
+  @Prop({ default: false }) readonly courtOrderNumberRequired!: boolean
 
   @Getter getIdentifier!: string
   @Getter getCurrentDate!: string
@@ -112,10 +113,10 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   @Getter getEntityFoundingDate!: Date
 
   /** The notation text. */
-  private notation: string = ''
+  private notation = ''
 
   /** Court Order Number */
-  private courtOrderNumber:string = null
+  private courtOrderNumber = null as string
 
   /** Whether filing has plan of arrangement. */
   private planOfArrangement = false
@@ -136,16 +137,16 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
   private enableValidation = false
 
   /** Whether this filing is an administrative dissolution */
-  private get administrativeDissolution (): boolean {
+  get administrativeDissolution (): boolean {
     return this.isTypeAdministrativeDissolution({ name: this.name, dissolutionType: this.dissolutionType })
   }
 
   /** Whether this filing is a put back on */
-  private get putBackOn (): boolean {
+  get putBackOn (): boolean {
     return this.isTypePutBackOn({ name: this.name })
   }
 
-  private get notationRules (): Array<Function> {
+  get notationRules (): Array<(v) => boolean | string> {
     if (this.enableValidation) {
       return [
         (v: string) => !!v || ((this.administrativeDissolution || this.putBackOn) ? 'Enter a detailed comment'
@@ -155,13 +156,14 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
     } else return []
   }
 
-  private setFileNumber (courtOrderNumber: string): void {
+  protected setFileNumber (courtOrderNumber: string): void {
     this.courtOrderNumber = courtOrderNumber
   }
 
-  private setHasPlanOfArrangement (planOfArrangement: boolean):void {
+  protected setHasPlanOfArrangement (planOfArrangement: boolean):void {
     this.planOfArrangement = planOfArrangement
   }
+
   /** Called when prop changes (ie, dialog is shown/hidden). */
   @Watch('dialog')
   private async onDialogChanged (val: boolean): Promise<void> {
@@ -182,12 +184,13 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
    * @param needReload Whether the dashboard needs to be reloaded.
    */
   @Emit('close')
-  private emitClose (needReload: boolean): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected emitClose (needReload: boolean): void {
     this.enableValidation = false
   }
 
   /** Saves the current notation. */
-  private async save (): Promise<void> {
+  protected async save (): Promise<void> {
     // prevent double saving
     if (this.saving) return
     this.saving = true
@@ -262,7 +265,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
     const url = `businesses/${this.getIdentifier}/filings`
     let success = false
-    await axios.post(url, data).then(res => {
+    await axios.post(url, data).then(() => {
       success = true
     }).catch(error => {
       // eslint-disable-next-line no-console
@@ -287,7 +290,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-::v-deep {
+:deep() {
   #court-order div.pl-2 {
     padding-left: 0 !important;
   }

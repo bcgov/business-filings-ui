@@ -534,6 +534,7 @@
 
 <script lang="ts">
 // Libraries
+import Vue from 'vue'
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { Getter, State } from 'vuex-class'
@@ -578,15 +579,13 @@ export default class Directors extends Mixins(
   }
 
   /** Indicates whether this component should be enabled or not. */
-  @Prop({ default: true })
-  readonly componentEnabled: boolean
+  @Prop({ default: true }) readonly componentEnabled!: boolean
 
   /**
    * Directors list from parent page, used to set our working directors list (allDirectors).
    * As needed, we emit this back to parent (ie, update/sync).
    */
-  @Prop({ default: () => [] })
-  readonly directors: DirectorIF[]
+  @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
   @Getter getIdentifier!: string
   @Getter getCurrentDate!: string
@@ -630,7 +629,7 @@ export default class Directors extends Mixins(
    * State of the form checkbox for determining whether or not the mailing address
    * is the same as the delivery address.
    */
-  private inheritDeliveryAddress: boolean = false
+  private inheritDeliveryAddress = false
 
   /**
    * The Address schema containing Vuelidate rules.
@@ -664,7 +663,7 @@ export default class Directors extends Mixins(
   }
 
   /** The relevant alert if a director change causes the business to be out of compliance. */
-  private get complianceMsg (): AlertMessageIF {
+  get complianceMsg (): AlertMessageIF {
     return this.directorWarning(this.allDirectors)
   }
 
@@ -673,7 +672,7 @@ export default class Directors extends Mixins(
    * NB: Do not validate inter word spacing because the Legal db needs to support
    *     such records in order to correctly update COLIN.
    */
-  private readonly directorFirstNameRules: Function[] = [
+  readonly directorFirstNameRules: Array<(v) => boolean | string> = [
     v => !!v || 'A first name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
@@ -684,7 +683,7 @@ export default class Directors extends Mixins(
    * NB: Do not validate inter word spacing because the Legal db needs to support
    *     such records in order to correctly update COLIN.
    */
-  private readonly directorMiddleInitialRules: Function[] = [
+  readonly directorMiddleInitialRules: Array<(v) => boolean | string> = [
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
   ]
@@ -694,7 +693,7 @@ export default class Directors extends Mixins(
    * NB: Do not validate inter word spacing because the Legal db needs to support
    *     such records in order to correctly update COLIN.
    */
-  private readonly directorLastNameRules: Function[] = [
+  readonly directorLastNameRules: Array<(v) => boolean | string> = [
     v => !!v || 'A last name is required',
     v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
@@ -711,8 +710,8 @@ export default class Directors extends Mixins(
   }
 
   /** The array of validation rules for director appointment date. */
-  private get directorAppointmentDateRules (): Function[] {
-    const rules: Function[] = []
+  get directorAppointmentDateRules (): Array<(v) => boolean | string> {
+    const rules = [] as Array<(v) => boolean | string>
     let cessationDate: string = null
 
     rules.push(v => !!v || 'Appointment Date is required')
@@ -736,8 +735,8 @@ export default class Directors extends Mixins(
   }
 
   /** The array of validation rules for director cessation date. */
-  private get directorCessationDateRules (): Function[] {
-    const rules: Function[] = []
+  get directorCessationDateRules (): Array<(v) => boolean | string> {
+    const rules = [] as Array<(v) => boolean | string>
     let appointmentDate: string = null
 
     // set appointment date for comparison based on which form we're in
@@ -764,7 +763,7 @@ export default class Directors extends Mixins(
    * - the last AR filing in filing history
    * If the entity has no filing history then the founding date will be used.
    */
-  private get earliestDateToSet (): string {
+  get earliestDateToSet (): string {
     let date: string = null
 
     if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
@@ -815,6 +814,7 @@ export default class Directors extends Mixins(
             director.actions = []
 
             // if there is no officer middle initial field, add it with blank data
+            // eslint-disable-next-line no-prototype-builtins
             if (!director.officer.hasOwnProperty('middleInitial')) director.officer.middleInitial = ''
 
             // save previous officer name data for COLIN to use when updating record
@@ -1316,7 +1316,8 @@ export default class Directors extends Mixins(
 
   /** Emits an event containing the earliest director change date. */
   @Emit('earliestDateToSet')
-  private emitEarliestDateToSet (val: string): void { }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitEarliestDateToSet (val: string): void {}
 
   /** Emits an event containing this component's paid change state. */
   @Emit('directorsPaidChange')
@@ -1593,7 +1594,7 @@ ul {
   color: rgba(0,0,0,0.87);
 }
 
-::v-deep .v-alert.icon-blue {
+:deep(.v-alert.icon-blue) {
   .v-icon {
     color: $BCgovIconBlue !important;
   }
