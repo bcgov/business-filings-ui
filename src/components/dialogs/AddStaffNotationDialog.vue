@@ -36,13 +36,14 @@
         </div>
         <CourtOrderPoa
           id="court-order"
+          ref="courtOrderPoaRef"
+          class="mt-4"
           @emitCourtNumber="setFileNumber($event)"
           @emitPoa="setHasPlanOfArrangement($event)"
           :displaySideLabels="false"
           :key="courtOrderKey"
           :autoValidation="enableValidation"
           :courtOrderNumberRequired="courtOrderNumberRequired"
-          ref="courtOrderPoaRef"
         />
       </v-card-text>
       <v-divider class="mb-4"></v-divider>
@@ -292,27 +293,11 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin)
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-:deep() {
-  #court-order div.pl-2 {
-    padding-left: 0 !important;
-  }
-  #court-order {
-    padding-right: 0 !important;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-  #court-order .v-input--checkbox .v-input__slot {
-    margin-bottom: 0 !important;
-  }
-  #court-order .v-input--checkbox {
-    margin-top: 0.5rem;
-    padding-top: 0;
-  }
-}
+
 .save-btn {
   font-weight: bold;
 }
+
 .v-card__subtitle, .v-card__text {
   font-weight: normal;
   color: $gray7;

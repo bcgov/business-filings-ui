@@ -147,10 +147,4 @@ export default class StaffPaymentDialog extends Vue {
   background-color: transparent !important;
   border: thin solid $app-blue !important;
 }
-
-// StaffPayment shared component overrides
-:deep(#staff-payment-container) {
-  margin: 0 !important;
-  padding: 0 !important;
-}
 </style>
