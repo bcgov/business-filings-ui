@@ -1,4 +1,4 @@
-import { BreadCrumb } from '@bcrs-shared-components/bread-crumb'
+import { Breadcrumb } from '@bcrs-shared-components/breadcrumb'
 import Certify from './Certify.vue'
 import ContactInfo from './ContactInfo.vue'
 import DateTooltip from './DateTooltip.vue'
@@ -15,7 +15,7 @@ import WarningPopover from './WarningPopover.vue'
 // possibly due to some circular dependency, so don't do it
 
 export {
-  BreadCrumb,
+  Breadcrumb,
   Certify,
   ContactInfo,
   DateTooltip,

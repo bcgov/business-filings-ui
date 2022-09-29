@@ -75,7 +75,7 @@
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
       <main v-if="isSigninRoute || dataLoaded">
-        <BreadCrumb :breadcrumbs="breadcrumbs" />
+        <Breadcrumb :breadcrumbs="breadcrumbs" />
         <EntityInfo
           @confirmDissolution="confirmDissolutionDialog = true"
           @notInGoodStanding="nigsMessage = $event; notInGoodStandingDialog = true"
@@ -101,7 +101,7 @@ import { navigate, updateLdUser } from '@/utils'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
-import { BreadCrumb } from '@/components/common'
+import { Breadcrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
 
 // Dialogs
@@ -195,7 +195,7 @@ export default {
   },
 
   components: {
-    BreadCrumb,
+    Breadcrumb,
     ConfirmDissolutionDialog,
     DashboardUnavailableDialog,
     DownloadErrorDialog,
