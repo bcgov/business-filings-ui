@@ -19,6 +19,7 @@
             <v-col cols="12" lg="3" class="px-2">
               <!-- Placeholder Url -->
               <QrcodeVue
+                render-as="svg"
                 size="160"
                 :value="credentialInvitationUrl"
               />

@@ -93,7 +93,7 @@
 
                   <p>2. Open the Trinsic Wallet and tap on the menu icon (<v-icon color="black">mdi-menu</v-icon>) on
                     the top left corner.</p>
-                  <p>3. Tap on Network and select "Sovrin Staging"</p>
+                  <p>3. Tap on Network and select "BCovrin Test"</p>
                 </v-col>
 
               </v-row>
