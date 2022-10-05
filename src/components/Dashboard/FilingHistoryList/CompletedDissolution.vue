@@ -49,7 +49,8 @@ export default class CompletedDissolution extends Mixins(DateMixin) {
 
   /** The dissolution date to display. */
   get dissolutionDate (): string {
-    return (this.dateToPacificDate(this.filing?.effectiveDate, true) || 'Unknown')
+    const dissolutionDate = this.yyyyMmDdToDate(this.filing?.dissolutionDate)
+    return (this.dateToPacificDate(dissolutionDate, true) || 'Unknown')
   }
 
   /** The dissolution date-time to display. */

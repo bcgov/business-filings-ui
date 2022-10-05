@@ -171,8 +171,8 @@ export default class DateMixin extends Vue {
   /**
    * Converts a Date object to a date and time string (Month Day, Year at HH:MM am/pm
    * Pacific time).
-   * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020 at 11:00 pm Pacific time"
-   * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021 at 12:00 pm Pacific time"
+   * @example "2021-01-01 07:00:00 GMT" -> "December 31, 2020 at 11:00 pm Pacific time"
+   * @example "2021-01-01 08:00:00 GMT" -> "January 1, 2021 at 12:00 pm Pacific time"
    */
   dateToPacificDateTime (date: Date): string {
     // safety check

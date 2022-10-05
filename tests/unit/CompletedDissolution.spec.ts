@@ -96,7 +96,8 @@ describe('Dissolution Filing', () => {
       propsData: {
         filing: {
           submittedDate: new Date('2021-01-02 08:00:00 GMT'),
-          effectiveDate: new Date('2021-01-20 08:00:00 GMT')
+          effectiveDate: new Date('2021-01-20 08:00:00 GMT'),
+          dissolutionDate: '2021-01-20'
         }
       }
     })

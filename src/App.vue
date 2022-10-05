@@ -570,25 +570,32 @@ export default {
     /** Fetches and parses the filing that changed the business state. */
     async parseStateFiling (stateFiling: string): Promise<void> {
       const filing = stateFiling && await this.fetchFiling(stateFiling)
-      const effectiveDate = filing?.header?.effectiveDate as string
       const filingType = filing?.header?.name as FilingTypes
 
-      if (!filing || !effectiveDate || !filingType) {
+      if (!filing || !filingType) {
         throw new Error('Invalid state filing')
       }
 
       // create reason text to display in the info header
       let name: string
+      let date: string
+
       if (filingType === FilingTypes.DISSOLUTION) {
         name = this.dissolutionTypeToName(
           (filing?.dissolution?.dissolutionType as DissolutionTypes) ||
           DissolutionTypes.UNKNOWN
         )
+        const dissolutionDate = this.yyyyMmDdToDate(filing.dissolution?.dissolutionDate)
+        if (!dissolutionDate) throw new Error('Invalid dissolution date')
+        date = this.dateToPacificDate(dissolutionDate, true)
       } else {
         name = this.filingTypeToName(filingType)
+        const effectiveDate = this.apiToDate(filing.header?.effectiveDate)
+        if (!effectiveDate) throw new Error('Invalid effective date')
+        date = this.dateToPacificDateTime(effectiveDate)
       }
+
       const enDash = '–' // ALT + 0150
-      const date = this.apiToPacificDateTime(effectiveDate, true) as string
       this.setReasonText(`${name} ${enDash} ${date}`)
     },
 

@@ -601,6 +601,8 @@ export default class FilingHistoryList extends Mixins(
 
       // add properties for Dissolutions
       if (this.isTypeDissolution(filing)) {
+        item.dissolutionDate = filing.data.dissolution?.dissolutionDate || null
+
         // is this a completed dissolution?
         item.isCompletedDissolution = this.isStatusCompleted(filing)
 
