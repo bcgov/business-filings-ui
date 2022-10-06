@@ -1,6 +1,5 @@
-import Vue from 'vue'
-import VueRouter, { Route } from 'vue-router'
-import routes from '@/routes'
+import { createRouter, createWebHistory, Router, RouteLocationNormalized } from 'vue-router'
+import { routes } from '@/routes'
 import { Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { getFeatureFlag } from '@/utils'
@@ -8,20 +7,17 @@ import { getFeatureFlag } from '@/utils'
 /**
  * Configures and returns Vue Router.
  */
-export function getVueRouter () {
-  Vue.use(VueRouter)
-
+export function getVueRouter (): Router {
   const base = sessionStorage.getItem('VUE_ROUTER_BASE')
 
-  const router = new VueRouter({
-    mode: 'history',
+  const router = createRouter({
+    history: createWebHistory(base),
     // set base URL for Vue Router
-    base,
     routes,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     scrollBehavior (to, from, savedPosition) {
       // see https://router.vuejs.org/guide/advanced/scroll-behavior.html
-      return { x: 0, y: 0 }
+      return { left: 0, top: 0 }
     }
   })
 
@@ -37,7 +33,7 @@ export function getVueRouter () {
   })
 
   /** Returns True if route requires authentication, else False. */
-  function requiresAuth (route: Route): boolean {
+  function requiresAuth (route: RouteLocationNormalized): boolean {
     return route.matched.some(r => r.meta?.requiresAuth)
   }
 
@@ -48,7 +44,7 @@ export function getVueRouter () {
   }
 
   /** Returns True when a digital credential route and the credentials feature flag is off. */
-  function isProtectedCredentialRoute (route: Route): boolean {
+  function isProtectedCredentialRoute (route: RouteLocationNormalized): boolean {
     // Initially this is going to be the case for all but a few select users.
     // User selection is handled in LD with a few stipulations: See VIEW_ADD_DIGITAL_CREDENTIALS in AllowableActions
     return !getFeatureFlag('enable-digital-credentials') &&

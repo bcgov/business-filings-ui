@@ -9,20 +9,12 @@
   </v-card>
 </template>
 
-<script lang="ts">
-// Libraries
-import { Component, Mixins } from 'vue-property-decorator'
-import { State, Getter } from 'vuex-class'
+<script setup lang="ts">
+import { DateComposable, AllowableActionsComposable, FilingComposable } from '@/composables'
 
-// Mixins
-import { DateMixin } from '@/mixins'
-
-@Component({})
-export default class ArDate extends Mixins(DateMixin) {
-  @State nextARDate!: string
-  @Getter isBComp!: boolean
-  @Getter getCurrentDate!: string
-}
+const { formatYyyyMmDd } = DateComposable()
+const { isBComp } = AllowableActionsComposable() // probably can pull from state getters
+const { getCurrentDate } = FilingComposable()
 </script>
 
 <style lang="scss" scoped>

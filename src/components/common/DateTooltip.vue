@@ -9,20 +9,14 @@
   </v-tooltip>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { DateMixin } from '@/mixins'
+<script setup lang="ts">
+import { DateComposable } from '@/composables'
 
-@Component({})
-export default class DateTooltip extends Mixins(DateMixin) {
-  @Prop({ default: null }) readonly date!: Date
+// Composables
+const { dateToPacificDate, dateToPacificDateTime } = DateComposable()
 
-  get dateString (): string {
-    return (this.dateToPacificDate(this.date) || 'Unknown')
-  }
+const prop = defineProps({ date: { type: Date, default: null } })
 
-  get dateTimeString (): string {
-    return (this.dateToPacificDateTime(this.date) || 'Unknown')
-  }
-}
+const dateString = computed(() => dateToPacificDate(props.date) || 'Unknown')
+const dateTimeString = computed(() => dateToPacificDateTime(props.date) || 'Unknown')
 </script>

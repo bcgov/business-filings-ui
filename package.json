@@ -41,11 +41,12 @@
     "v-mask": "^2.3.0",
     "vue": "^2.7.10",
     "vue-affix": "^0.5.2",
-    "vue-router": "^3.6.5",
+    "vue-router": "^4.1.5",
+    "vue-template-compiler": "^2.7.10",
     "vue2-filters": "^0.14.0",
     "vuelidate": "^0.7.7",
     "vuetify": "^2.6.10",
-    "vuex": "^3.6.2",
+    "vuex": "^4.0.2",
     "webpack-remove-serviceworker-plugin": "^1.0.0"
   },
   "devDependencies": {
@@ -71,7 +72,6 @@
     "typescript": "^3.9.10",
     "vue-class-component": "^7.2.6",
     "vue-cli-plugin-vuetify": "^2.5.8",
-    "vue-debounce-decorator": "^1.0.1",
     "vue-plugin-helper-decorator": "^0.0.12",
     "vue-property-decorator": "^9.1.2",
     "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
