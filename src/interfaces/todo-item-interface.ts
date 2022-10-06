@@ -45,5 +45,4 @@ export interface TodoItemIF {
 
   // alterations only
   legalType?: string
-  goodStanding?: boolean
 }
