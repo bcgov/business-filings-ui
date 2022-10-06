@@ -136,7 +136,7 @@ export const FilingComposable = () => {
         name: FilingTypes.DISSOLUTION
       },
       business: {
-        foundingDate: dateToApi(getEntityFoundingDate),
+        foundingDate: dateToApi(getEntityFoundingDate.value),
         identifier: getIdentifier.value,
         legalName: filingComp.entityName,
         legalType: getEntityType.value

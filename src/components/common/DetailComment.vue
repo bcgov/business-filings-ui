@@ -16,67 +16,61 @@
   </v-card>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
-import { Debounce } from 'vue-debounce-decorator'
+<script setup lang="ts">
+import _ from 'lodash'
+import { computed, ref, watch, defineEmits } from 'vue'
 
-@Component({})
-export default class DetailComment extends Vue {
-  /** Array of validations rules for the textarea. */
-  get rules (): Array<(val) => boolean | string> {
-    // include whitespace in maximum length check
-    return [
-      val => (val && val.trim().length > 0) || 'Detail is required.',
-      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
-    ]
-  }
+const textarea = ref('') // This may not work with vuetify
 
-  /** Public method to reset Vuetify validation on textarea. */
-  resetValidation (): void {
-    (this.$refs.textarea as any).resetValidation()
-  }
-
+const props = defineProps({
   /** Comment (v-model) passed into this component (required). */
-  @Prop({ default: '' }) readonly value!: string
-
+  value: { type: string, default: '' },
   /** Placeholder passed into this component (optional). */
-  @Prop({ default: '' }) readonly placeholder!: string
-
+  placeholder: { type: string, default: '' },
   /** Max Length passed into this component (optional). */
-  @Prop({ default: 4096 }) readonly maxLength!: number
-
+  maxLength: { type: number, default: 4096 },
   /** Autofocus passed into this component (optional). */
-  @Prop({ default: false }) readonly autofocus!: boolean
+  autofocus: { type: boolean, default: false }
+})
 
-  /** Called when component is created. */
-  protected created (): void {
-    // inform parent of initial validity
-    this.emitValid(this.value)
-  }
+const emits = defineEmits<{
+  (e: 'input', value: string)
+  (e: 'valid', value: boolean)
+}>
 
-  /**
-   * Called when prop changes (ie, v-model is updated by parent).
-   * This method is debounced to prevent excessive validation.
-   */
-  @Watch('value')
-  @Debounce(300)
-  private onValueChanged (val: string): void {
-    this.emitValid(val)
-  }
+/** Array of validations rules for the textarea. */
+const rules = computed((): Array<(val) => boolean | string> => {
+  // include whitespace in maximum length check
+  return [
+    val => (val && val.trim().length > 0) || 'Detail is required.',
+    val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
+  ]
+})
 
-  /** Emits an event with the changed comment (ie, updated v-model). */
-  @Emit('input')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitInput (val: string): void {}
+watch(props.value, () => onValueChanged)
 
-  /** Emits an event indicating whether or not this component is valid. */
-  @Emit('valid')
-  private emitValid (val: string): boolean {
-    // component is valid if every rule is valid
-    return this.rules.every(rule => rule(val) === true)
-  }
+/** Public method to reset Vuetify validation on textarea. */
+function resetValidation (): void {
+  (textarea as any).resetValidation()
 }
+
+/**
+ * Called when prop changes (ie, v-model is updated by parent).
+ * This method is debounced to prevent excessive validation.
+ */
+const onValueChanged = _.debounce(async (val: string): void => {
+  await emitValid(val)
+}, 300)
+
+function emitInput (val: string): void {}
+
+/** Indicates whether or not this component is valid. */
+function emitValid (val: string): boolean {
+  // component is valid if every rule is valid
+  return rules.every(rule => rule(val) === true)
+}
+
+emitValid(props.value)
 </script>
 
 <style lang="scss" scoped>

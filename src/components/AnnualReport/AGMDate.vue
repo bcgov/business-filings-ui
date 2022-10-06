@@ -32,7 +32,7 @@
             </template>
             <v-date-picker
               data-test-id="agm-date-picker"
-              v-model="datePicker"
+              v-model="agmDateState.datePicker"
               :min=arMinDate
               :max=arMaxDate
               no-title
@@ -112,193 +112,148 @@
   </v-card>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
-import { State, Getter } from 'vuex-class'
-import { DateMixin } from '@/mixins'
+<script setup lang="ts">
+import { reactive } from 'vue'
+import { AllowableActionsComposable, DateComposable } from '@/composables'
 import { FormIF } from '@/interfaces'
+import { state } from '@/store'
 
-@Component({})
-export default class AgmDate extends Mixins(DateMixin) {
-  // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
-  // ref: https://github.com/vuejs/vetur/issues/1414
-  // ref: https://github.com/vuejs/vue-class-component/issues/94
-  $refs!: Vue['$refs'] & {
-    form: FormIF
-  }
+const props = defineProps({
+  newAgmDate: { type: string, default: null }, // New AGM Date (from a resumed draft)
+  newAgmExtension: { type: boolean, default: null }, // New AGM Extension flag (from a resumed draft)
+  newNoAgm: { type: boolean, default: null }, // New No AGM flag (from a resumed draft)
+  allowCoa: { type: boolean, default: true }, // Whether to allow changing the addresses
+  allowCod: { type: boolean, default: true } // Whether to allow changing the directors
+})
 
-  /** New AGM Date (from a resumed draft). */
-  @Prop({ default: null }) readonly newAgmDate!: string
+// Local properties.
+const agmDateState = reactive({
+  dateText: '', // value in text field
+  datePicker: '', // value in date picker
+  menu: false, // whether calendar menu is visible
+  agmExtension: false, // whether checkbox is checked
+  noAgm: false, // whether checkbox is checked
+  backupDate: '' // for toggling No AGM
+})
 
-  /** New AGM Extension flag (from a resumed draft). */
-  @Prop({ default: null }) readonly newAgmExtension!: boolean
+const { getCurrentDate, compareYyyyMmDd } = DateComposable()
+const { isCoop } = AllowableActionsComposable()
 
-  /** New No AGM flag (from a resumed draft). */
-  @Prop({ default: null }) readonly newNoAgm!: boolean
+/** Computed state properties */
+const ARFilingYear = computed(() => state.ARFilingYear)
+const arMinDate = computed(() => state.arMinDate)
+const arMaxDate = computed(() => state.arMaxDate)
 
-  /** Whether to allow changing the addresses. */
-  @Prop({ default: true }) readonly allowCoa!: boolean
+/** The array of validations rule(s) for the AGM Date text field. */
+const agmDateRules = computed({
+  get: (): Array<(v) => boolean | string> => [v => noAgm || !!v || 'An Annual General Meeting date is required.']
+})
 
-  /** Whether to allow changing the directors. */
-  @Prop({ default: true }) readonly allowCod!: boolean
+/** The label for the No AGM checkbox. */
+const noAgmLabel = computed({
+  get: (): string => `We did not hold an Annual General Meeting for our ${ARFilingYear} Financial Year`
+})
 
-  @State ARFilingYear!: number
-  @State arMinDate!: string
-  @State arMaxDate!: string
-  @Getter isCoop!: boolean
-  @Getter getCurrentDate!: string
+/** Whether to show the AGM Extension checkbox. */
+const showAgmExtensionCheckbox = computed({
+  // don't show if No AGM is checked
+  // a date must be entered
+  // applies only to 2020 ARs
+  // show if entered date is past normal max AGM date
+  get: (): boolean => (
+    !noAgm &&
+    !!dateText &&
+    (ARFilingYear === 2020) &&
+    compareYyyyMmDd(dateText, '2021-04-30', '>')
+  )
+})
 
-  // Local properties.
-  private dateText = '' // value in text field
-  private datePicker = '' // value in date picker
-  private menu = false // whether calendar menu is visible
-  private agmExtension = false // whether checkbox is checked
-  private noAgm = false // whether checkbox is checked
-  private backupDate = '' // for toggling No AGM
-
-  /** The array of validations rule(s) for the AGM Date text field. */
-  get agmDateRules (): Array<(v) => boolean | string> {
-    return [
-      v => this.noAgm || !!v || 'An Annual General Meeting date is required.'
-    ]
-  }
-
-  /** The label for the No AGM checkbox. */
-  get noAgmLabel (): string {
-    return `We did not hold an Annual General Meeting for our ${this.ARFilingYear} Financial Year`
-  }
-
-  /** Whether to show the AGM Extension checkbox. */
-  get showAgmExtensionCheckbox (): boolean {
-    // don't show if No AGM is checked
-    // a date must be entered
-    // applies only to 2020 ARs
-    // show if entered date is past normal max AGM date
-    return (
-      !this.noAgm &&
-      !!this.dateText &&
-      (this.ARFilingYear === 2020) &&
-      this.compareYyyyMmDd(this.dateText, '2021-04-30', '>')
-    )
-  }
-
-  /**
-   * Whether to show the No AGM checkbox.
-   * @returns False in the AR Filing Year
-   * @returns False in the next year up to Apr 30
-   * @returns True in the next year after Apr 30
-   */
-  get showNoAgmCheckbox (): boolean {
-    if (!this.ARFilingYear) return false // safety check
+/**
+ * Whether to show the No AGM checkbox.
+ * @returns False in the AR Filing Year
+ * @returns False in the next year up to Apr 30
+ * @returns True in the next year after Apr 30
+ */
+const showNoAgmCheckbox = computed({
+  get: (): boolean => {
+    if (!ARFilingYear) return false // safety check
     // only show checkbox if 'today' is past Max AGM Date
     // where Max AGM Date is 'today' in the AR Filing Year
     // up to Apr 30 in the next year
-    return (this.compareYyyyMmDd(this.getCurrentDate, this.arMaxDate, '>'))
+    return (compareYyyyMmDd(getCurrentDate, arMaxDate, '>'))
   }
+})
 
-  /** Called when component is mounted. */
-  private mounted (): void {
-    // set date picker but not text field
-    this.datePicker = this.newAgmDate || this.arMaxDate
-  }
+onMounted((): void => { agmDateState.datePicker = newAgmDate || arMaxDate })
 
-  /** Called when prop changes (ie, due to resuming a draft). */
-  @Watch('newAgmDate')
-  private onNewAgmDateChanged (val: string): void {
-    // always update text field
-    this.dateText = val
-    // only update date picker if we have a valid date
-    if (val) this.datePicker = val
-    // update parent
-    this.emitAgmDate()
-    this.emitValid()
-  }
+/** Called when prop changes (ie, due to resuming a draft) */
+watch(() => newAgmExtension.value, (val: boolean): void => {
+  // update model value
+  agmExtension.value = val
+  // update parent
+  emitAgmExtension()
+  emitValid()
+})
 
-  /** Called when prop changes (ie, due to resuming a draft) */
-  @Watch('newAgmExtension')
-  private onNewAgmExtension (val: boolean): void {
-    // update model value
-    this.agmExtension = val
-    // update parent
-    this.emitAgmExtension()
-    this.emitValid()
-  }
+/** Called when prop changes (ie, due to resuming a draft) */
+watch(() => newNoAgm.value, (val: boolean): void => {
+  // update model value
+  noAgm.value = val
+  // update parent
+  emitNoAgm()
+  emitValid()
+})
 
-  /** Called when prop changes (ie, due to resuming a draft) */
-  @Watch('newNoAgm')
-  private onNewNoAgmChanged (val: boolean): void {
-    // update model value
-    this.noAgm = val
-    // update parent
-    this.emitNoAgm()
-    this.emitValid()
-  }
-
-  /** Called when date picker changes. */
-  private onDatePickerChanged (val: string): void {
-    // update text field
-    this.dateText = val
-    // update parent
-    this.emitAgmDate()
-    this.emitValid()
-  }
-
-  /** Called when AGM Extension checkbox changes. */
-  private onAgmExtensionChanged (): void {
-    // update parent
-    this.emitAgmExtension()
-    this.emitValid()
-  }
-
-  /** Called when checkbox changes. */
-  private onNoAgmCheckboxChanged (val: boolean): void {
-    if (val) {
-      // save and clear text field
-      this.backupDate = this.dateText
-      this.dateText = ''
-    } else {
-      // restore text field
-      this.dateText = this.backupDate
-    }
-    // trigger validation to display any errors
-    this.$refs.form.validate()
-    // update parent
-    this.emitAgmDate()
-    this.emitNoAgm()
-    this.emitValid()
-  }
-
-  /** Emits an event with the new value of AGM Date (from text field, which may be empty). */
-  @Emit('agmDate')
-  private emitAgmDate (): string {
-    return this.dateText
-  }
-
-  /** Emits an event with the new value of No AGM. */
-  @Emit('agmExtension')
-  private emitAgmExtension (): boolean {
-    return this.agmExtension
-  }
-
-  /** Emits an event with the new value of No AGM. */
-  @Emit('noAgm')
-  private emitNoAgm (): boolean {
-    return this.noAgm
-  }
-
-  /**
-   * Emits an event indicating whether or not this component is valid.
-   * This needs to be called after all changes.
-   */
-  @Emit('valid')
-  private emitValid (): boolean {
-    // valid if checkbox is not applicable, or is checked
-    const validAgmExtension = (!this.showAgmExtensionCheckbox || this.agmExtension)
-    // valid if No AGM was checked, or a date was entered and AGM extension is valid
-    return (this.noAgm || (!!this.dateText && validAgmExtension))
-  }
+/** Called when date picker changes. */
+const onDatePickerChanged = (val: string): void => {
+  // update text field
+  dateText.value = val
+  // update parent
+  emitAgmDate()
+  emitValid()
 }
+
+/** Called when AGM Extension checkbox changes. */
+const onAgmExtensionChanged = (): void => {
+  // update parent
+  emitAgmExtension()
+  emitValid()
+}
+
+/** Called when checkbox changes. */
+const onNoAgmCheckboxChanged = (val: boolean): void => {
+  if (val) {
+    // save and clear text field
+    backupDate = dateText
+    dateText = ''
+  } else {
+    // restore text field
+    dateText = backupDate
+  }
+  // trigger validation to display any errors
+  $refs.form.validate()
+  // update parent
+  emitAgmDate()
+  emitNoAgm()
+  emitValid()
+}
+
+const emit = defineEmits<{
+  (e: 'agmDate', value: string)
+  (e: 'agmExtension', value: boolean)
+  (e: 'noAgm', value: boolean)
+  (e: 'valid', value: boolean)
+}>()
+
+const emitAgmDate = computed((): string => agmDateState.dateText)
+const emitAgmExtension = computed((): boolean => agmDateState.agmExtension)
+const emitNoAgm = computed((): boolean => noAgm)
+const emitValid = computed((): boolean => {
+  // valid if checkbox is not applicable, or is checked
+  const validAgmExtension = (!showAgmExtensionCheckbox || agmExtension)
+  // valid if No AGM was checked, or a date was entered and AGM extension is  valid
+  return (noAgm || (!!dateText && validAgmExtension))
+})
 </script>
 
 <style lang="scss" scoped>

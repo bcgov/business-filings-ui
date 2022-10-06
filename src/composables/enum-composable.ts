@@ -196,7 +196,7 @@ export const EnumComposable = () => {
 
   /** Conversion helpers */
 
-  /** from external module THESE THREE MAY NOT BE NEEDED!!!!*/
+  /** from external module THESE THREE MAY NOT BE NEEDED!!!! */
   const getCorpTypeInfo = GetCorpInfoObject
   const getCorpTypeDescription = GetCorpFullDescription
   const getCorpTypeNumberedDescription = GetCorpNumberedDescription

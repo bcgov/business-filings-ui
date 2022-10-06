@@ -1,17 +1,21 @@
-// Components
-import Dashboard from '@/views/Dashboard.vue'
-import AnnualReport from '@/views/AnnualReport.vue'
-import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
-import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
-import Correction from '@/views/Correction.vue'
-import Signin from '@/views/auth/Signin.vue'
-import Signout from '@/views/auth/Signout.vue'
+// External
+import { RouteRecordRaw } from 'vue-router'
+// Local
+import {
+  Dashboard,
+  AnnualReport,
+  StandaloneDirectorsFiling,
+  StandaloneOfficeAddressFiling,
+  Correction,
+  Signin,
+  Signout
+} from '@/views'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
 
 // Constants
 import { Routes } from '@/enums'
 
-export default [
+export const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: Routes.DASHBOARD,

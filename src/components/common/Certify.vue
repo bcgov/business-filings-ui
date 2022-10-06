@@ -33,60 +33,48 @@
   </v-card>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+<script setup lang="ts">
+import { defineProps } from 'vue'
 
-@Component({})
-export default class Certify extends Vue {
-  @Getter getCurrentDate!: string
-
+const props = defineProps({
   /** Certified By prop. */
-  @Prop({ default: '' }) readonly certifiedBy!: string
-
+  certifiedBy: { type: String, default: '' },
   /** Is Certified prop. */
-  @Prop({ default: false }) readonly isCertified!: boolean
-
+  isCertified: { type: Boolean, default: false },
   /** Message prop. */
-  @Prop({ default: '' }) readonly message!: string
-
+  message: { type: string, default: '' },
   /** Entity Display prop. */
-  @Prop({ default: '' }) readonly entityDisplay!: string
+  entityDisplay: { type: string, default: '' }
+})
 
-  /** Called when component is created. */
-  protected created (): void {
-    // inform parent of initial validity
-    this.emitValid(!!this.trimmedCertifiedBy && this.isCertified)
-  }
+const emits = defineEmits<{
+  (e: 'update:certifiedBy', value: boolean)
+  (e: 'update:iscertified', value: boolean)
+  (e: 'valid', value: boolean)
+}>()
 
-  /** The trimmed "Certified By" string (may be ''). */
-  get trimmedCertifiedBy (): string {
-    // remove repeated inline whitespace, and leading/trailing whitespace
-    return this.certifiedBy && this.certifiedBy.replace(/\s+/g, ' ').trim()
-  }
-
-  /** Emits an event to update the Certified By prop. */
-  @Emit('update:certifiedBy')
-  private emitCertifiedBy (certifiedBy: string): string {
-    // remove repeated inline whitespace, and leading/trailing whitespace
-    certifiedBy = certifiedBy && certifiedBy.replace(/\s+/g, ' ').trim()
-    this.emitValid(!!certifiedBy && this.isCertified)
-    return certifiedBy
-  }
-
-  /** Emits an event to update the Is Certified prop. */
-  @Emit('update:isCertified')
-  private emitIsCertified (isCertified: boolean): boolean {
-    this.emitValid(!!this.trimmedCertifiedBy && isCertified)
-    return isCertified
-  }
-
-  /** Emits an event indicating whether or not the form is valid. */
-  @Emit('valid')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitValid (valid: boolean): void {}
+function emitCertifiedBy (certifiedBy: string): string {
+  // remove repeated inline whitespace, and leading/trailing whitespace
+  certifiedBy = certifiedBy && certifiedBy.replace(/\s+/g, ' ').trim()
+  emitValid(!!certifiedBy && props.isCertified)
+  return certifiedBy
 }
+
+function emitIsCertified (isCertified: boolean): boolean {
+  emitValid(!!props.trimmedCertifiedBy && isCertified)
+  return isCertified
+}
+
+const getCurrentDate = computed(() => store.getters['getCurrentDate'] as string)
+/** The trimmed "Certified By" string (may be ''). */
+const trimmedCertifiedBy = computed(() => props.certifiedBy && props.certifiedBy.replace(/\+/g, ' ').trim())
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function emitValid (valid: boolean): void {}
+
+// the work done by created is now not required in compo api
+// inform parent of initial validity
+emitValid(!!trimmedCertifiedBy && props.isCertified)
 </script>
 
 <style lang="scss" scoped>
