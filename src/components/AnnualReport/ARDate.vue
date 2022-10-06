@@ -10,15 +10,15 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
-
-// Mixins
 import { DateMixin } from '@/mixins'
 
-@Component({})
-export default class ArDate extends Mixins(DateMixin) {
+@Component({
+  mixins: [DateMixin]
+})
+export default class ArDate extends Vue {
   @State nextARDate!: string
   @Getter isBComp!: boolean
   @Getter getCurrentDate!: string

@@ -66,7 +66,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { getName } from 'country-list'
 import { VueMaskFilter } from 'v-mask'
@@ -75,9 +76,14 @@ import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/i
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 @Component({
-  filters: { 'VMask': VueMaskFilter }
+  filters: { 'VMask': VueMaskFilter },
+  mixins: [
+    DateMixin,
+    EnumMixin,
+    NameRequestMixin
+  ]
 })
-export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
+export default class NameRequestInfo extends Vue {
   @Prop() readonly nameRequest!: any
 
   @Getter isSoleProp!: boolean

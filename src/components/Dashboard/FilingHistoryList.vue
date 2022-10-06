@@ -353,12 +353,10 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { navigate } from '@/utils'
-
-// Components and dialogs
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
 import CompletedDissolution from './FilingHistoryList/CompletedDissolution.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
@@ -372,8 +370,6 @@ import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import StaffFiling from './FilingHistoryList/StaffFiling.vue'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog } from '@/components/dialogs'
-
-// Enums, interfaces and mixins
 import { AllowableActions, FilingTypes, Routes, CorrectionTypes, FilingNames } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
@@ -399,11 +395,16 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
     DownloadErrorDialog,
     FileCorrectionDialog,
     LoadCorrectionDialog
-  }
+  },
+  mixins: [
+    AllowableActionsMixin,
+    DateMixin,
+    EnumMixin,
+    FilingMixin,
+    LegalApiMixin
+  ]
 })
-export default class FilingHistoryList extends Mixins(
-  AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
-) {
+export default class FilingHistoryList extends Vue {
   @Prop({ default: null }) readonly highlightId!: number
 
   @Getter getFilings!: Array<ApiFilingIF>

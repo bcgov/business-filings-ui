@@ -29,13 +29,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { DigitalCredentialsIF, TableHeaderIF } from '@/interfaces'
 import { DigitalCredentialTypes } from '@/enums'
 import { DateMixin } from '@/mixins'
 
-@Component({})
-export default class CredentialsTable extends Mixins(DateMixin) {
+@Component({
+  mixins: [DateMixin]
+})
+export default class CredentialsTable extends Vue {
   @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {

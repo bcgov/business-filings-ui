@@ -17,16 +17,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 import { FilingNames } from '@/enums'
 import { EnumMixin } from '@/mixins'
 
 @Component({
-  components: { ContactInfo }
+  components: { ContactInfo },
+  mixins: [EnumMixin]
 })
-export default class PendingFiling extends Mixins(EnumMixin) {
+export default class PendingFiling extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: HistoryItemIF
 

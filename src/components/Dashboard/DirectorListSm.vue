@@ -66,14 +66,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, CountriesProvincesMixin, DirectorMixin } from '@/mixins'
 import { DirectorIF, PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
 
-@Component({})
-export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvincesMixin, DirectorMixin) {
+@Component({
+  mixins: [
+    CommonMixin,
+    CountriesProvincesMixin,
+    DirectorMixin
+  ]
+})
+export default class DirectorListSm extends Vue {
   /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 

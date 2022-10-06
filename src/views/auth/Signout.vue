@@ -8,9 +8,7 @@ import { Component } from 'vue-property-decorator'
 import SbcSignout from 'sbc-common-components/src/components/SbcSignout.vue'
 
 @Component({
-  components: {
-    SbcSignout
-  }
+  components: { SbcSignout }
 })
 export default class Signout extends Vue {
   get redirectUrl (): string {

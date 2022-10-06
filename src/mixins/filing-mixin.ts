@@ -1,4 +1,4 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { Action, State, Getter } from 'vuex-class'
 import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
@@ -8,7 +8,7 @@ import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes
  * Mixin that provides some useful filing utilities.
  */
 @Component({})
-export default class FilingMixin extends Mixins(DateMixin) {
+export default class FilingMixin extends DateMixin {
   @Action setFilingData!: (x: any) => void
 
   @State filingData!: Array<FilingDataIF>

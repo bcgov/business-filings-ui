@@ -61,7 +61,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import {
   RegisterWallet,
@@ -80,9 +81,10 @@ import { LegalApiMixin } from '@/mixins'
     CredentialsLanding,
     CredentialsFooter,
     Stepper
-  }
+  },
+  mixins: [LegalApiMixin]
 })
-export default class DigitalCredentials extends Mixins(LegalApiMixin) {
+export default class DigitalCredentials extends Vue {
   @Getter getIdentifier!: string
 
   private issuedCredentials: Array<DigitalCredentialsIF> = []
@@ -151,28 +153,28 @@ export default class DigitalCredentials extends Mixins(LegalApiMixin) {
     this.$router.push({ path: `/${Routes.DIGITAL_CREDENTIALS}` })
   }
 
-  async private getCredentials (): Promise<void> {
+  private async getCredentials (): Promise<void> {
     const { data } = await this.fetchCredentials(this.getIdentifier)
     if (data?.issuedCredentials) {
       this.issuedCredentials = data.issuedCredentials
     }
   }
 
-  async private addCredentialInvitation (): Promise<void> {
+  private async addCredentialInvitation (): Promise<void> {
     const { data } = await this.createCredentialInvitation(this.getIdentifier)
     if (data?.invitationUrl) {
       this.credentialInvitationUrl = data.invitationUrl
     }
   }
 
-  async private getCredentialsConnection (): Promise<void> {
+  private async getCredentialsConnection (): Promise<void> {
     const connection = await this.fetchCredentialConnection(this.getIdentifier)
     if (connection) {
       this.hasRegisteredWallet = true
     }
   }
 
-  async protected issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
+  protected async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
     const credentialIssued = await this.issueCredentialOffer(this.getIdentifier, credentialType)
     if (credentialIssued) {
       await this.getCredentials()

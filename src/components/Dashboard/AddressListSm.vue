@@ -210,26 +210,21 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
-
-// Mixins
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
-
-// Interfaces
 import { OfficeAddressIF } from '@/interfaces'
-
-// Components
 import FirmsAddressList from './FirmsAddressList.vue'
 
 @Component({
-  components: {
-    // sub-components
-    FirmsAddressList
-  }
+  components: { FirmsAddressList },
+  mixins: [
+    CommonMixin,
+    CountriesProvincesMixin
+  ]
 })
-export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
+export default class AddressListSm extends Vue {
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 

@@ -27,9 +27,7 @@ import { Component } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 
 @Component({
-  components: {
-    ContactInfo
-  }
+  components: { ContactInfo }
 })
 export default class ActionRequired extends Vue {
   protected panel = 1

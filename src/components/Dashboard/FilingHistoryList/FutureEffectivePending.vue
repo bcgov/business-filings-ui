@@ -21,16 +21,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 import { ContactInfo } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 
 @Component({
-  components: { ContactInfo }
+  components: { ContactInfo },
+  mixins: [DateMixin]
 })
-export default class FutureEffectivePending extends Mixins(DateMixin) {
+export default class FutureEffectivePending extends Vue {
   @Getter getEntityName!: string
 
   /** The subject filing. */

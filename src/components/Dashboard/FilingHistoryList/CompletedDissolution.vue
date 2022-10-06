@@ -27,13 +27,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 import { HistoryItemIF, DissolutionConfirmationResourceIF } from '@/interfaces'
 
-@Component({})
-export default class CompletedDissolution extends Mixins(DateMixin) {
+@Component({
+  mixins: [DateMixin]
+})
+export default class CompletedDissolution extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: HistoryItemIF
 

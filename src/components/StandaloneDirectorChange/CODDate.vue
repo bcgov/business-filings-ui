@@ -49,7 +49,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
 import { State, Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
@@ -57,9 +58,10 @@ import { DateMixin } from '@/mixins'
 @Component({
   validations: {
     dateFormatted: { isNotNull, isValidFormat, isValidCodDate }
-  }
+  },
+  mixins: [DateMixin]
 })
-export default class CodDate extends Mixins(DateMixin) {
+export default class CodDate extends Vue {
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialCodDate!: string
 

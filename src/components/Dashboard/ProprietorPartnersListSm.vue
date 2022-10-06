@@ -83,14 +83,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
 
-@Component({})
-export default class ProprietorPartnersListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
+@Component({
+  mixins: [
+    CommonMixin,
+    CountriesProvincesMixin
+  ]
+})
+export default class ProprietorPartnersListSm extends Vue {
   /** Whether to display "complete your filing" instead of the proprietor / partners list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 

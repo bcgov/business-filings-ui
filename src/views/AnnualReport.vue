@@ -332,14 +332,12 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
-
-// Components and dialogs
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
 import Directors from '@/components/common/Directors.vue'
@@ -347,8 +345,6 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
-
-// Mixins, enums and interfaces
 import { CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
@@ -370,11 +366,15 @@ import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
     StaffPaymentDialog,
     SummaryDirectors,
     SummaryOfficeAddresses
-  }
+  },
+  mixins: [
+    CommonMixin,
+    DateMixin,
+    FilingMixin,
+    LegalApiMixin,
+    ResourceLookupMixin]
 })
-export default class AnnualReport extends Mixins(
-  CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin
-) {
+export default class AnnualReport extends Vue {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,

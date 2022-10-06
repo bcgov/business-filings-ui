@@ -92,75 +92,37 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
 import { navigate, updateLdUser } from '@/utils'
-
-// Components
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
-
-// Dialogs
-import {
-  BusinessAuthErrorDialog,
-  ConfirmDissolutionDialog,
-  DashboardUnavailableDialog,
-  DownloadErrorDialog,
-  NameRequestAuthErrorDialog,
-  NameRequestInvalidDialog,
-  NotInGoodStandingDialog
-} from '@/components/dialogs'
-
-// Configuration objects
-import {
-  ConfigJson,
-  getMyBusinessRegistryBreadcrumb,
-  getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb
-} from '@/resources'
-
-// Mixins, Interfaces, Enums and Constants
-import {
-  AuthApiMixin,
-  CommonMixin,
-  DateMixin,
-  DirectorMixin,
-  EnumMixin,
-  FilingMixin,
-  LegalApiMixin,
-  NameRequestMixin
-} from '@/mixins'
-import {
-  ApiFilingIF,
-  ApiTaskIF,
-  BreadcrumbIF,
-  BusinessIF,
-  DocumentIF,
-  PartyIF,
-  TaskTodoIF
-} from '@/interfaces'
-import {
-  CorpTypeCd,
-  DissolutionTypes,
-  EntityState,
-  EntityStatus,
-  FilingStatus,
-  FilingTypes,
-  NameRequestStates,
-  NigsMessage,
-  Routes
-} from '@/enums'
+import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DashboardUnavailableDialog, DownloadErrorDialog,
+  NameRequestAuthErrorDialog, NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
+import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb } from '@/resources'
+import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
+  NameRequestMixin } from '@/mixins'
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, PartyIF, TaskTodoIF } from '@/interfaces'
+import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
+  NigsMessage, Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
   name: 'App',
 
   mixins: [
-    AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin
+    AuthApiMixin,
+    CommonMixin,
+    DateMixin,
+    DirectorMixin,
+    EnumMixin,
+    FilingMixin,
+    LegalApiMixin,
+    NameRequestMixin
   ],
 
   data () {
