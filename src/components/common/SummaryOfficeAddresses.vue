@@ -78,25 +78,20 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Prop, Mixins } from 'vue-property-decorator'
-
-// Components
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-
-// Mixins
 import { CommonMixin } from '@/mixins'
-
-// Interfaces
 import { AddressIF, OfficeAddressIF } from '@/interfaces'
 
 @Component({
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
+export default class SummaryOfficeAddresses extends Vue {
   /**
    * Registered Office address object passed in from the parent which is pulled from store.
    */

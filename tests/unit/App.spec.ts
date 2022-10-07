@@ -1725,7 +1725,8 @@ describe('App as an historical business', () => {
           filing: {
             business: {},
             dissolution: {
-              dissolutionType: 'voluntary'
+              dissolutionType: 'voluntary',
+              dissolutionDate: '2021-12-01'
             },
             header: {
               effectiveDate: '2021-12-06T20:05:35.168290+00:00',
@@ -1771,8 +1772,7 @@ describe('App as an historical business', () => {
     expect(vm.$store.getters.isActive).toBe(false)
     expect(vm.$store.getters.isHistorical).toBe(true)
     expect(vm.$store.getters.isLiquidation).toBe(false)
-    expect(vm.$store.state.reasonText).toContain('Voluntary Dissolution')
-    expect(vm.$store.state.reasonText).toContain('December 6, 2021 at 12:05 pm Pacific time')
+    expect(vm.$store.state.reasonText).toBe('Voluntary Dissolution – December 1, 2021')
   })
 })
 

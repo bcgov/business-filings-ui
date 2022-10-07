@@ -37,15 +37,16 @@ export default {
     return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
   },
 
-  /** Is True if there are any pending tasks or filings. */
+  /** Is True if there are any blockers, eg, pending tasks or filings. */
   hasBlockerExceptStaffApproval (state: StateIF): boolean {
     return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
   },
 
-  /** Is True if there are any pending tasks or filings. */
-  hasBlocker (_state: StateIF, getters): boolean {
+  /** Is True if there is a blocker including firm compliance. */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  hasBlocker (state: StateIF, getters): boolean {
     let blocker = getters.hasBlockerExceptStaffApproval
-    // check for complaints warnings for SP and GP
+    // check for warnings for SP and GP
     if (getters.isFirm && getters.isNotInCompliance) {
       blocker = getters.isNotInCompliance
     }
@@ -151,7 +152,19 @@ export default {
   /** Is True if business is not in compliance. */
   isNotInCompliance (state: StateIF): boolean {
     const warnings = state.businessWarnings
-    return (warnings.length > 0 && warnings.some(item => item.warningType?.includes('COMPLIANCE')))
+    return (
+      warnings.length > 0 &&
+      warnings.some(item => item.warningType?.includes('COMPLIANCE'))
+    )
+  },
+
+  /** Is True if business is missing required business info. */
+  isMissingRequiredBusinessInfo (state: StateIF): boolean {
+    const warnings = state.businessWarnings
+    return (
+      warnings.length > 0 &&
+      warnings.some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
+    )
   },
 
   /** Is True if this is a Draft Application. */

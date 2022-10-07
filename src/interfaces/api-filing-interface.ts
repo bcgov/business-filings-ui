@@ -1,4 +1,4 @@
-import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, DissolutionTypes, EffectOfOrderTypes, FilingStatus, FilingTypes } from '@/enums'
 import { ApiDateTimeUtc, ChangeOfNameIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF } from '@/interfaces'
 
 /**
@@ -67,7 +67,11 @@ export interface ApiFilingIF {
     }
 
     // dissolution filings only
-    dissolution?: any // some object
+    dissolution?: {
+      custodialOffice?: any // FUTURE: use a proper address type here
+      dissolutionDate: IsoDatePacific
+      dissolutionType: DissolutionTypes
+    }
 
     // IA filings only
     incorporationApplication?: any // some object

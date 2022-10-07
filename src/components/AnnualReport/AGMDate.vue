@@ -114,13 +114,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Mixins, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { State, Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
 
-@Component({})
-export default class AgmDate extends Mixins(DateMixin) {
+@Component({
+  mixins: [DateMixin]
+})
+export default class AgmDate extends Vue {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   // ref: https://github.com/vuejs/vue-class-component/issues/94

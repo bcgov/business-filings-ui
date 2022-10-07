@@ -176,28 +176,22 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-
-// Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-
-// Mixins
 import { CommonMixin, DateMixin } from '@/mixins'
-
-// Enums
 import { Actions } from '@/enums'
-
-// Interfaces
 import { DirectorIF } from '@/interfaces'
 
 @Component({
-  components: {
-    BaseAddress
-  }
+  components: { BaseAddress },
+  mixins: [
+    CommonMixin,
+    DateMixin
+  ]
 })
-export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
+export default class SummaryDirectors extends Vue {
   // Directors array passed into this component.
   @Prop({ default: [] }) readonly directors!: Array<DirectorIF>
 

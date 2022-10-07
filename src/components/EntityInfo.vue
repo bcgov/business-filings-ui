@@ -202,7 +202,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
@@ -211,9 +212,15 @@ import axios from '@/axios-auth'
 import { navigate } from '@/utils'
 
 @Component({
-  components: { StaffComments }
+  components: { StaffComments },
+  mixins: [
+    AllowableActionsMixin,
+    CommonMixin,
+    DateMixin,
+    EnumMixin
+  ]
 })
-export default class EntityInfo extends Mixins(AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin) {
+export default class EntityInfo extends Vue {
   @State ARFilingYear!: string
   @State businessEmail!: string
   @State businessPhone!: string

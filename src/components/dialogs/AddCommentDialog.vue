@@ -42,9 +42,7 @@ import { DetailComment } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 
 @Component({
-  components: {
-    DetailComment
-  }
+  components: { DetailComment }
 })
 export default class AddCommentDialog extends Vue {
   /** Prop to display the dialog. */

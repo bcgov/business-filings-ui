@@ -92,75 +92,37 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
 import { navigate, updateLdUser } from '@/utils'
-
-// Components
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
-
-// Dialogs
-import {
-  BusinessAuthErrorDialog,
-  ConfirmDissolutionDialog,
-  DashboardUnavailableDialog,
-  DownloadErrorDialog,
-  NameRequestAuthErrorDialog,
-  NameRequestInvalidDialog,
-  NotInGoodStandingDialog
-} from '@/components/dialogs'
-
-// Configuration objects
-import {
-  ConfigJson,
-  getMyBusinessRegistryBreadcrumb,
-  getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb
-} from '@/resources'
-
-// Mixins, Interfaces, Enums and Constants
-import {
-  AuthApiMixin,
-  CommonMixin,
-  DateMixin,
-  DirectorMixin,
-  EnumMixin,
-  FilingMixin,
-  LegalApiMixin,
-  NameRequestMixin
-} from '@/mixins'
-import {
-  ApiFilingIF,
-  ApiTaskIF,
-  BreadcrumbIF,
-  BusinessIF,
-  DocumentIF,
-  PartyIF,
-  TaskTodoIF
-} from '@/interfaces'
-import {
-  CorpTypeCd,
-  DissolutionTypes,
-  EntityState,
-  EntityStatus,
-  FilingStatus,
-  FilingTypes,
-  NameRequestStates,
-  NigsMessage,
-  Routes
-} from '@/enums'
+import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DashboardUnavailableDialog, DownloadErrorDialog,
+  NameRequestAuthErrorDialog, NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
+import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb } from '@/resources'
+import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
+  NameRequestMixin } from '@/mixins'
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, PartyIF, TaskTodoIF } from '@/interfaces'
+import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
+  NigsMessage, Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 export default {
   name: 'App',
 
   mixins: [
-    AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin, NameRequestMixin
+    AuthApiMixin,
+    CommonMixin,
+    DateMixin,
+    DirectorMixin,
+    EnumMixin,
+    FilingMixin,
+    LegalApiMixin,
+    NameRequestMixin
   ],
 
   data () {
@@ -322,7 +284,7 @@ export default {
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
-      'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setWarnings',
+      'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setBusinessWarnings',
       'setGoodStanding', 'setHasCourtOrders']),
 
     /** Fetches business data / incorp app data. */
@@ -555,7 +517,7 @@ export default {
       this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
       this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
       this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
-      this.setWarnings(Array.isArray(business.warnings) ? business.warnings : [])
+      this.setBusinessWarnings(Array.isArray(business.warnings) ? business.warnings : [])
       this.setGoodStanding(business.goodStanding)
       this.setHasCourtOrders(business.hasCourtOrders)
 
@@ -570,25 +532,32 @@ export default {
     /** Fetches and parses the filing that changed the business state. */
     async parseStateFiling (stateFiling: string): Promise<void> {
       const filing = stateFiling && await this.fetchFiling(stateFiling)
-      const effectiveDate = filing?.header?.effectiveDate as string
       const filingType = filing?.header?.name as FilingTypes
 
-      if (!filing || !effectiveDate || !filingType) {
+      if (!filing || !filingType) {
         throw new Error('Invalid state filing')
       }
 
       // create reason text to display in the info header
       let name: string
+      let date: string
+
       if (filingType === FilingTypes.DISSOLUTION) {
         name = this.dissolutionTypeToName(
           (filing?.dissolution?.dissolutionType as DissolutionTypes) ||
           DissolutionTypes.UNKNOWN
         )
+        const dissolutionDate = this.yyyyMmDdToDate(filing.dissolution?.dissolutionDate)
+        if (!dissolutionDate) throw new Error('Invalid dissolution date')
+        date = this.dateToPacificDate(dissolutionDate, true)
       } else {
         name = this.filingTypeToName(filingType)
+        const effectiveDate = this.apiToDate(filing.header?.effectiveDate)
+        if (!effectiveDate) throw new Error('Invalid effective date')
+        date = this.dateToPacificDateTime(effectiveDate)
       }
+
       const enDash = '–' // ALT + 0150
-      const date = this.apiToPacificDateTime(effectiveDate, true) as string
       this.setReasonText(`${name} ${enDash} ${date}`)
     },
 

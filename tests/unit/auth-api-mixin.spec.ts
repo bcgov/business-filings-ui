@@ -2,7 +2,7 @@ import Vue from 'vue'
 import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
 import axios from '@/axios-auth'
-import MixinTester from './mixin-tester.vue'
+import MixinTester from '@/mixin-tester.vue'
 
 describe('Auth API Mixin', () => {
   let get: any

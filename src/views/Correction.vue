@@ -177,19 +177,15 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
-
-// Components and dialogs
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
-
-// Mixins, enums and interfaces
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
@@ -206,11 +202,17 @@ import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
     SaveErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
-  }
+  },
+  mixins: [
+    CommonMixin,
+    DateMixin,
+    EnumMixin,
+    FilingMixin,
+    LegalApiMixin,
+    ResourceLookupMixin
+  ]
 })
-export default class Correction extends Mixins(
-  CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin
-) {
+export default class Correction extends Vue {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType

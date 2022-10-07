@@ -155,11 +155,8 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { mapActions, mapGetters } from 'vuex'
 import { navigate } from '@/utils'
-
-// Components and dialogs
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
@@ -169,18 +166,19 @@ import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersL
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
-
-// Enums and interfaces
 import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
-
-// Mixins
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 
 export default {
   name: 'Dashboard', // eslint-disable-line vue/multi-word-component-names
 
-  mixins: [AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin],
+  mixins: [
+    AllowableActionsMixin,
+    CommonMixin,
+    DateMixin,
+    EnumMixin
+  ],
 
   components: {
     TodoList,

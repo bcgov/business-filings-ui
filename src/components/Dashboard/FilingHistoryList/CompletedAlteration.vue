@@ -15,16 +15,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateTooltip } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
 import { EnumMixin } from '@/mixins'
 
 @Component({
-  components: { DateTooltip }
+  components: { DateTooltip },
+  mixins: [EnumMixin]
 })
-export default class CompletedAlteration extends Mixins(EnumMixin) {
+export default class CompletedAlteration extends Vue {
   @Getter getEntityName!: string
 
   /** The subject filing. */

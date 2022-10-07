@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin, EnumMixin } from '@/mixins'
 import axios from '@/axios-auth'
@@ -78,11 +78,13 @@ import { FormIF } from '@/interfaces'
 import { EffectOfOrderTypes, FilingTypes, DissolutionTypes } from '@/enums'
 
 @Component({
-  components: {
-    CourtOrderPoa
-  }
+  components: { CourtOrderPoa },
+  mixins: [
+    DateMixin,
+    EnumMixin
+  ]
 })
-export default class AddStaffNotationDialog extends Mixins(DateMixin, EnumMixin) {
+export default class AddStaffNotationDialog extends Vue {
   $refs!: Vue['$refs'] & {
     courtOrderPoaRef: FormIF,
     notationFormRef: FormIF

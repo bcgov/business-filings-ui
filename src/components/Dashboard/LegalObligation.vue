@@ -43,12 +43,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
 
-@Component({})
-export default class LegalObligation extends Mixins(ResourceLookupMixin) {
+@Component({
+  mixins: [ResourceLookupMixin]
+})
+export default class LegalObligation extends Vue {
   @Getter isBusinessWithNoMaintenanceFilings!: boolean
 
   protected readMoreFlag = false

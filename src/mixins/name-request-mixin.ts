@@ -1,16 +1,13 @@
-// Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { NameRequestStates } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
-
-// Mixins
-import { DateMixin } from '@/mixins'
 
 /**
  * Mixin that provides some useful Name Request utilities.
  */
-@Component
-export default class NameRequestMixin extends Mixins(DateMixin) {
+@Component({})
+export default class NameRequestMixin extends Vue {
   /**
    * Returns True if the Name Request data is valid.
    * @param nr the name request response payload

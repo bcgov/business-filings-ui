@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import * as FeatureFlags from '@/utils/feature-flags'
-import MixinTester from './mixin-tester.vue'
+import MixinTester from '@/mixin-tester.vue'
 
 Vue.use(Vuetify)
 

@@ -1,5 +1,5 @@
 // Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { CommonMixin } from '@/mixins'
 import { ApiDocumentsIF, CommentIF, DocumentIF } from '@/interfaces'
@@ -9,7 +9,7 @@ import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
  * Mixin that provides integration with the Legal API.
  */
 @Component({})
-export default class LegalApiMixin extends Mixins(CommonMixin) {
+export default class LegalApiMixin extends CommonMixin {
   /**
    * Fetches business info.
    * @param businessId the business identifier (aka entity inc no)

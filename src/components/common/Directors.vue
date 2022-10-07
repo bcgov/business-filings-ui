@@ -533,36 +533,31 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import Vue from 'vue'
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { Getter, State } from 'vuex-class'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
-
-// Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { WarningPopover } from '@/components/common/'
-
-// Mixins
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
-
-// Enums
 import { Actions } from '@/enums'
-
-// Interfaces
 import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
 
 @Component({
   components: {
     BaseAddress,
     WarningPopover
-  }
+  },
+  mixins: [
+    CommonMixin,
+    DateMixin,
+    DirectorMixin,
+    ResourceLookupMixin
+  ]
 })
-export default class Directors extends Mixins(
-  CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin
-) {
+export default class Directors extends Vue {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   // ref: https://github.com/vuejs/vue-class-component/issues/94

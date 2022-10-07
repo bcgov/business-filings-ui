@@ -1,5 +1,5 @@
 import { CorpTypeCd, FilingTypes } from '@/enums'
-import { CommentIF, DocumentIF } from '@/interfaces'
+import { CommentIF, DocumentIF, IsoDatePacific } from '@/interfaces'
 
 /**
  * A Filing History List item (ie, local object).
@@ -53,6 +53,7 @@ export interface HistoryItemIF {
   fromLegalType?: CorpTypeCd
 
   // dissolutions only
+  dissolutionDate?: IsoDatePacific
   isCompletedDissolution?: boolean
   isFutureEffectiveDissolution?: boolean
   isFutureEffectiveDissolutionPending?: boolean

@@ -35,13 +35,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 import { HistoryItemIF } from '@/interfaces'
 
-@Component({})
-export default class DetailsList extends Mixins(DateMixin) {
+@Component({
+  mixins: [DateMixin]
+})
+export default class DetailsList extends Vue {
   /** The filing containing comments. */
   @Prop({ default: () =>
     ({

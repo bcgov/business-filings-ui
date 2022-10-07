@@ -503,14 +503,12 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import axios from '@/axios-auth'
 import Vue2Filters from 'vue2-filters' // needed for orderBy
 import { navigate } from '@/utils'
-
-// Dialogs and Components
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
 import { NameRequestInfo, ContactInfo } from '@/components/common'
 import ActionRequired from './TodoList/ActionRequired.vue'
@@ -520,8 +518,6 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-
-// Mixins, Enums and Interfaces
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import { AllowableActions, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF } from '@/interfaces'
@@ -544,12 +540,16 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, ConfirmDialogType, TodoItemIF, 
     PaymentUnsuccessful
   },
   mixins: [
+    AllowableActionsMixin,
+    DateMixin,
+    EnumMixin,
+    FilingMixin,
+    LegalApiMixin,
+    PayApiMixin,
     Vue2Filters.mixin
   ]
 })
-export default class TodoList extends Mixins(
-  AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin
-) {
+export default class TodoList extends Vue {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType

@@ -200,34 +200,25 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Emit, Prop, Watch, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { isEmpty } from 'lodash'
 import { Getter } from 'vuex-class'
-
-// Schemas
 import { officeAddressSchema } from '@/schemas'
-
-// Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-
-// Mixins
 import { CommonMixin } from '@/mixins'
-
-// Interfaces
 import { RegRecAddressesIF, AddressIF } from '@/interfaces'
-
-// Enums
 import { Actions } from '@/enums'
 
 @Component({
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class OfficeAddresses extends Mixins(CommonMixin) {
+export default class OfficeAddresses extends Vue {
   /** Indicates whether this component should be enabled or not. */
   @Prop({ default: true }) readonly componentEnabled!: boolean
 

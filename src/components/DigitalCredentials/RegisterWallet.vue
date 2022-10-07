@@ -58,9 +58,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
 
 @Component({
-  components: {
-    QrcodeVue
-  }
+  components: { QrcodeVue }
 })
 export default class RegisterWallet extends Vue {
   @Prop({ default: false }) readonly credentialInvitationUrl!: boolean
