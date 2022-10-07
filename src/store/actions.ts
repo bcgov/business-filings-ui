@@ -39,7 +39,7 @@ export default {
   setBusinessNumber ({ commit }, businessNumber: string) {
     commit('businessNumber', businessNumber)
   },
-  setWarnings ({ commit }, businessWarnings: Array<BusinessWarningIF>) {
+  setBusinessWarnings ({ commit }, businessWarnings: Array<BusinessWarningIF>) {
     commit('businessWarnings', businessWarnings)
   },
   setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {

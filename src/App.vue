@@ -284,7 +284,7 @@ export default {
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
-      'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setWarnings',
+      'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setBusinessWarnings',
       'setGoodStanding', 'setHasCourtOrders']),
 
     /** Fetches business data / incorp app data. */
@@ -517,7 +517,7 @@ export default {
       this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
       this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
       this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
-      this.setWarnings(Array.isArray(business.warnings) ? business.warnings : [])
+      this.setBusinessWarnings(Array.isArray(business.warnings) ? business.warnings : [])
       this.setGoodStanding(business.goodStanding)
       this.setHasCourtOrders(business.hasCourtOrders)
 

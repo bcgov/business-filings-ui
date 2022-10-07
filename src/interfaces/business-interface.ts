@@ -4,9 +4,9 @@ import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfac
 /** The Business Warning object. */
 export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
+  filing?: string // not used
   message: string
-  warningType: string
-  filing: string
+  warningType: string // FUTURE: use an enum
 }
 
 /** The Business object from the API. */
@@ -14,11 +14,11 @@ export interface BusinessIF {
   adminFreeze: boolean
   arMaxDate: IsoDatePacific // not used
   arMinDate: IsoDatePacific // not used
-  dissolutionDate: ApiDateTimeUtc // not used
-  warnings?: Array<BusinessWarningIF>
+  dissolutionDate: IsoDatePacific // not used
   fiscalYearEndDate: IsoDatePacific // not used
   foundingDate: ApiDateTimeUtc
   goodStanding: boolean
+  hasCourtOrders: boolean
   hasRestrictions: boolean // FUTURE: is this obsolete???
   identifier: string
   lastAddressChangeDate: IsoDatePacific
@@ -30,9 +30,10 @@ export interface BusinessIF {
   legalName: string
   legalType: CorpTypeCd
   nextAnnualReport: ApiDateTimeUtc // used for BCOMP only
-  taxId?: string // aka Business Number // may be undefined
+  startDate: IsoDatePacific // not used
   state: EntityState
   stateFiling?: string
   submitter: string // not used
-  hasCourtOrders: boolean
+  taxId?: string // aka Business Number // may be undefined
+  warnings?: Array<BusinessWarningIF>
 }
