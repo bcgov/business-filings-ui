@@ -200,7 +200,7 @@ export const ConfigJson = [
         },
         {
           label: 'Dissolving a Sole Proprietorship or Partnership ',
-          description: 'when a business is no longer required it needs to dissolved.'
+          description: 'when a business is no longer required it needs to be dissolved.'
         }
       ]
     },
@@ -268,7 +268,7 @@ export const ConfigJson = [
         },
         {
           label: 'Dissolving a Sole Proprietorship or Partnership ',
-          description: 'when a business is no longer required it needs to dissolved.'
+          description: 'when a business is no longer required it needs to be dissolved.'
         }
       ]
     },
