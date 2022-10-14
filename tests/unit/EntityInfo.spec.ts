@@ -218,30 +218,22 @@ describe('EntityInfo - company info button and tooltip', () => {
       tooltip: null
     },
     { // 4
-      businessId: 'BC1234567',
-      entityType: 'BEN',
-      warnings: [{ warningType: 'COMPLIANCE' }, { warningType: 'COMPLIANCE' }],
-      buttonExists: true,
-      tooltip: 'not in compliance'
-    },
-    { // 5
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'DRAFT_APP',
       buttonExists: false
     },
-    { // 6
+    { // 5
       tempRegNumber: 'T123456789',
       entityType: 'BEN',
       entityStatus: 'FILED_APP',
       buttonExists: false
     },
-    { // 7
+    { // 6
       businessId: null,
       tempRegNumber: null,
       entityType: null,
       goodStanding: false,
-      warnings: null,
       entityStatus: null,
       buttonExists: false,
       tooltip: null
@@ -256,7 +248,6 @@ describe('EntityInfo - company info button and tooltip', () => {
 
       store.state.entityType = _.entityType
       store.state.goodStanding = _.goodStanding || false
-      store.state.businessWarnings = _.warnings || []
       store.state.entityStatus = _.entityStatus || null
 
       const wrapper = shallowMount(EntityInfo, { store, vuetify, router })

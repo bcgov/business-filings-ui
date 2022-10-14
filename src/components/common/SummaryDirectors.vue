@@ -193,7 +193,7 @@ import { DirectorIF } from '@/interfaces'
 })
 export default class SummaryDirectors extends Vue {
   // Directors array passed into this component.
-  @Prop({ default: [] }) readonly directors!: Array<DirectorIF>
+  @Prop({ default: () => [] }) readonly directors!: Array<DirectorIF>
 
   @Getter isBComp!: boolean
 

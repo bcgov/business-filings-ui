@@ -39,6 +39,9 @@ export interface TodoItemIF {
   correctedFilingId?: number
   correctedFilingType?: string
 
+  // conversions only
+  warnings?: Array<string>
+
   // IAs only
   isEmptyFiling?: boolean
   nameRequest?: any

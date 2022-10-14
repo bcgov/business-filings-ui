@@ -11,10 +11,22 @@
       <article id="dashboard-article">
         <v-row class="mt-n9">
           <v-col cols="12" md="9">
-            <!-- To Do section-->
-            <section v-if="!isHistorical">
+            <!-- Alerts section-->
+            <section v-if="alertCount > 0" id="dashboard-alerts-section">
               <header>
-                <h2 class="mb-3" data-test-id="dashboard-todo-subtitle">
+                <h2 class="mb-3">
+                  <span>Alerts</span>&nbsp;<span class="gray6">({{ alertCount }})</span>
+                </h2>
+              </header>
+              <!-- FUTURE: move these to a new Alerts component and inside one expansion panel -->
+              <MissingInformation v-if="isMissingInformationAlert"/>
+              <NotInGoodStanding v-if="isNotInGoodStandingAlert"/>
+            </section>
+
+            <!-- To Do section-->
+            <section v-if="!isHistorical" id="dashboard-todo-section">
+              <header>
+                <h2 class="mb-3">
                   <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
                 </h2>
               </header>
@@ -26,9 +38,9 @@
             </section>
 
             <!-- Recent Filing History section -->
-            <section>
+            <section id="dashboard-filing-history-section">
               <header>
-                <h2 data-test-id="dashboard-filing-history-subtitle">
+                <h2>
                   <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
                 </h2>
                 <StaffNotation
@@ -86,7 +98,8 @@
                   class="change-btn"
                   v-if="!isHistorical"
                   :disabled="!isAllowed(AllowableActions.FILE_ADDRESS_CHANGE)"
-                  @click.native.stop="onAddressChangeClick()">
+                  @click.native.stop="onAddressChangeClick()"
+                >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -108,7 +121,8 @@
                   class="change-btn"
                   v-if="!isHistorical"
                   :disabled="!isAllowed(AllowableActions.FILE_DIRECTOR_CHANGE)"
-                  @click.native.stop="goToStandaloneDirectors()">
+                  @click.native.stop="goToStandaloneDirectors()"
+                >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -133,7 +147,8 @@
                   class="change-btn"
                   v-if="!isHistorical"
                   :disabled="hasBlocker || !isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)"
-                  @click.native.stop="goToChangeFiling()">
+                  @click.native.stop="goToChangeFiling()"
+                >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -157,15 +172,17 @@
 <script lang="ts">
 import { mapActions, mapGetters } from 'vuex'
 import { navigate } from '@/utils'
-import TodoList from '@/components/Dashboard/TodoList.vue'
-import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
-import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
+import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
+import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
+import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
+import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
+import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
 import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
@@ -181,15 +198,17 @@ export default {
   ],
 
   components: {
-    TodoList,
-    FilingHistoryList,
     AddressListSm,
+    CoaWarningDialog,
     CustodianListSm,
     DirectorListSm,
-    ProprietorPartnersListSm,
+    FilingHistoryList,
     LegalObligation,
+    MissingInformation,
+    NotInGoodStanding,
+    ProprietorPartnersListSm,
     StaffNotation,
-    CoaWarningDialog
+    TodoList
   },
 
   data () {
@@ -205,7 +224,8 @@ export default {
 
   computed: {
     ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier']),
+      'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier',
+      'hasMissingInfoWarning', 'hasComplianceWarning']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -221,6 +241,24 @@ export default {
     /** The Edit URL string. */
     editUrl (): string {
       return sessionStorage.getItem('EDIT_URL')
+    },
+
+    /** Show Missing Information alert only for firm with missing info warning. */
+    isMissingInformationAlert (): boolean {
+      return this.isFirm && this.hasMissingInfoWarning
+    },
+
+    /** Show Not In Good Standing alert only for firm with compliance warning. */
+    isNotInGoodStandingAlert (): boolean {
+      return this.isFirm && this.hasComplianceWarning
+    },
+
+    /** The number of alerts. */
+    alertCount (): number {
+      let count = 0
+      if (this.isMissingInformationAlert) count++
+      if (this.isNotInGoodStandingAlert) count++
+      return count
     },
 
     custodians (): PartyIF[] {

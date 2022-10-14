@@ -2,7 +2,7 @@
   <div class="payment-incomplete-details body-2 pa-4">
     <h4>Payment Incomplete - {{title}}</h4>
 
-    <p v-html="detail" />
+    <p class="pt-3 mb-2" v-html="detail" />
   </div>
 </template>
 
@@ -30,15 +30,7 @@ export default class PaymentIncomplete extends Vue {
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-div {
+.payment-incomplete-details {
   background-color: $app-bg-gray !important;
-}
-
-p:first-of-type {
-  padding-top: 0.75rem;
-}
-
-p {
-  margin-bottom: 0.5rem !important;
 }
 </style>

@@ -64,7 +64,7 @@ import { DigitalCredentialsIF } from '@/interfaces'
   }
 })
 export default class CredentialsLanding extends Vue {
-  @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
+  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   // Pass add event to parent.
   @Emit('addCredentials')
