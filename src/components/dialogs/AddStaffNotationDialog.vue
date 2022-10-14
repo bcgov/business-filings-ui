@@ -6,11 +6,12 @@
         <span v-else-if="putBackOn" id="dialog-title"><strong>Correction - {{displayName}}</strong></span>
         <span v-else id="dialog-title"><strong>Add a {{displayName}}</strong> </span>
       </v-card-title>
+
       <v-card-text>
         <div id="dialog-text" class="dialog-text">
           <p v-if="administrativeDissolution"> You are about to dissolve
           <strong><span class="text-uppercase">{{getEntityName}}</span>, {{getIdentifier}}</strong> . </p>
-          <p v-if="putBackOn"> You are about to put <strong><span class="text-uppercase">{{getEntityName}}</span>,
+          <p v-if="putBackOn">You are about to put <strong><span class="text-uppercase">{{getEntityName}}</span>,
           {{getIdentifier}}</strong> back on the register.</p>
         </div>
         <div id="notation-text" class="mb-4 mt-2 pt-4">
@@ -46,21 +47,27 @@
           :courtOrderNumberRequired="courtOrderNumberRequired"
         />
       </v-card-text>
+
       <v-divider class="mb-4"></v-divider>
+
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <div class="form__btns">
           <v-btn text color="primary"
             id="dialog-save-button"
+            class="font-weight-bold"
             :loading="saving"
             @click.native="save()"
-            class="save-btn"
-          > {{(administrativeDissolution || putBackOn) ? 'File' : 'Save'}} </v-btn>
+          >
+            <span>{{(administrativeDissolution || putBackOn) ? 'File' : 'Save'}}</span>
+          </v-btn>
           <v-btn text color="primary"
             id="dialog-cancel-button"
             :disabled="saving"
             @click.native="emitClose(false)"
-          >Cancel</v-btn>
+          >
+            <span>Cancel</span>
+          </v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -295,10 +302,6 @@ export default class AddStaffNotationDialog extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.save-btn {
-  font-weight: bold;
-}
 
 .v-card__subtitle, .v-card__text {
   font-weight: normal;

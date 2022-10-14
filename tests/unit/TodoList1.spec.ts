@@ -510,15 +510,13 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
     expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('DRAFT')
-
-    expect(item.querySelector('.list-item__subtitle .todo-subtitle').textContent)
-      .toContain('View Details')
+    expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
     expect(wrapper.find(CorrectionComment).exists()).toBe(false)
 
     // click the View Details button
-    await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
+    await wrapper.find('.expand-btn').trigger('click')
     await Vue.nextTick()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
@@ -627,15 +625,13 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__title').textContent).toContain('Correction')
     expect(item.querySelector('.list-item__title').textContent).toContain('Annual Report')
     expect(item.querySelector('.list-item__subtitle').textContent).toContain('FILING PENDING')
-
-    expect(item.querySelector('.list-item__subtitle .todo-subtitle').textContent)
-      .toContain('View Details')
+    expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
     expect(wrapper.find(CorrectionComment).exists()).toBe(false)
 
     // click the View Details button
-    await wrapper.find('.list-item__subtitle .todo-subtitle .expand-btn').trigger('click')
+    await wrapper.find('.expand-btn').trigger('click')
     await Vue.nextTick()
 
     expect(vm.$el.querySelector('#todo-list .todo-list-detail').textContent)
@@ -2364,7 +2360,7 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     expect(vm.todoItems.length).toEqual(1)
     expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
 
-    await wrapper.find('.btn-corr-draft-resume').trigger('click')
+    await wrapper.find('.btn-draft-resume').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -2424,7 +2420,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     expect(vm.todoItems.length).toEqual(1)
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
 
-    await wrapper.find('.btn-corr-draft-resume').trigger('click')
+    await wrapper.find('.btn-draft-resume').trigger('click')
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -2490,7 +2486,7 @@ describe('TodoList - Delete Draft', () => {
 
     // open dropdown menu and click Delete button
     await wrapper.find('#menu-activator').trigger('click')
-    await wrapper.find('#btn-delete-draft').trigger('click')
+    await wrapper.find('#btn-draft-delete').trigger('click')
 
     // verify confirmation popup is showing
     expect(wrapper.vm.$refs.confirm).toBeTruthy()
@@ -2530,7 +2526,7 @@ describe('TodoList - Delete Draft', () => {
 
     // open dropdown menu and click Delete button
     await wrapper.find('#menu-activator').trigger('click')
-    await wrapper.find('#btn-delete-draft').trigger('click')
+    await wrapper.find('#btn-draft-delete').trigger('click')
 
     // verify confirmation popup is showing
     expect(vm.$refs.confirm.dialog).toBeTruthy()
@@ -2576,7 +2572,7 @@ describe('TodoList - Delete Draft', () => {
 
     // open dropdown menu and click Delete button
     await wrapper.find('#menu-activator').trigger('click')
-    await wrapper.find('#btn-delete-draft').trigger('click')
+    await wrapper.find('#btn-draft-delete').trigger('click')
 
     // verify confirmation popup is showing
     expect(vm.$refs.confirm.dialog).toBeTruthy()
@@ -2682,7 +2678,7 @@ describe('TodoList - Cancel Payment', () => {
     await Vue.nextTick()
 
     // open dropdown menu and click Cancel button
-    await wrapper.find('#pending-item-menu-activator').trigger('click')
+    await wrapper.find('#menu-activator').trigger('click')
     await wrapper.find('#btn-cancel-payment').trigger('click')
 
     // verify confirmation popup is showing
@@ -2723,7 +2719,7 @@ describe('TodoList - Cancel Payment', () => {
     await Vue.nextTick()
 
     // open dropdown menu and click Cancel button
-    await wrapper.find('#pending-item-menu-activator').trigger('click')
+    await wrapper.find('#menu-activator').trigger('click')
     await wrapper.find('#btn-cancel-payment').trigger('click')
 
     // verify confirmation popup is showing
@@ -2770,7 +2766,7 @@ describe('TodoList - Cancel Payment', () => {
     await Vue.nextTick()
 
     // open dropdown menu and click Cancel button
-    await wrapper.find('#pending-item-menu-activator').trigger('click')
+    await wrapper.find('#menu-activator').trigger('click')
     await wrapper.find('#btn-cancel-payment').trigger('click')
 
     // verify confirmation popup is showing

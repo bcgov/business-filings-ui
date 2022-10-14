@@ -47,18 +47,11 @@
                   <span class="font-13 ml-1">View and Change Business Information</span>
                 </v-btn>
 
-                <v-tooltip top content-class="pending-tooltip" v-if="isPendingDissolution || isNotInCompliance">
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition" v-if="isPendingDissolution">
                   <template v-slot:activator="{ on }">
-                    <span class="pending-alert pr-2" v-on="on">
-                      <v-icon color="orange darken-2">mdi-alert</v-icon>
-                    </span>
+                    <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
                   </template>
-                  <template v-if="isPendingDissolution">
-                    You cannot view or change business information while the business is pending dissolution.
-                  </template>
-                  <template v-if="isNotInCompliance">
-                    You cannot view or change business information while the business is not in compliance.
-                  </template>
+                  You cannot view or change business information while the business is pending dissolution.
                 </v-tooltip>
               </span>
 
@@ -232,7 +225,6 @@ export default class EntityInfo extends Vue {
   @Getter getEntityName!: string
   @Getter getNrNumber!: string
   @Getter isPendingDissolution!: boolean
-  @Getter isNotInCompliance!: boolean
   @Getter getEntityFoundingDate!: Date
 
   // enums for template
@@ -420,15 +412,6 @@ dd:not(:hover) > button {
   padding: 0.25rem 0.5rem;
   margin-top: -0.125rem;
   margin-left: 0.125rem;
-}
-
-.pending-tooltip {
-  max-width: 16rem;
-}
-
-.pending-alert .v-icon {
-  font-size: 18px; // same as other v-icons
-  padding-left: 0.875rem;
 }
 
 // Disable btn and tooltip overrides

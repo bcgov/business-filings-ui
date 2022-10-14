@@ -189,6 +189,7 @@
                 <v-btn
                   class="expand-btn"
                   outlined
+                  color="primary"
                   :ripple=false
                   @click.stop="togglePanel(index, filing)"
                   v-show="displayAction(filing)"

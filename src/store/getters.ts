@@ -1,7 +1,7 @@
 import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 import {
   ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific
+  StateIF, TodoListResourceIF, IsoDatePacific, BusinessWarningIF
 } from '@/interfaces'
 
 export default {
@@ -44,13 +44,16 @@ export default {
 
   /** Is True if there is a blocker including firm compliance. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hasBlocker (state: StateIF, getters): boolean {
-    let blocker = getters.hasBlockerExceptStaffApproval
-    // check for warnings for SP and GP
-    if (getters.isFirm && getters.isNotInCompliance) {
-      blocker = getters.isNotInCompliance
+  hasBlocker (state: StateIF, getters: any): boolean {
+    // check for firm with compliance warning
+    if (getters.isFirm && getters.hasComplianceWarning) {
+      return true
     }
-    return blocker
+    // check for firm with missing info warning
+    if (getters.isFirm && getters.hasMissingInfoWarning) {
+      return true
+    }
+    return getters.hasBlockerExceptStaffApproval
   },
 
   /** Is True if a COA filing is pending. */
@@ -149,22 +152,21 @@ export default {
     return state.goodStanding
   },
 
-  /** Is True if business is not in compliance. */
-  isNotInCompliance (state: StateIF): boolean {
-    const warnings = state.businessWarnings
-    return (
-      warnings.length > 0 &&
-      warnings.some(item => item.warningType?.includes('COMPLIANCE'))
-    )
+  /** The business warnings. */
+  getBusinessWarnings (state: StateIF): BusinessWarningIF[] {
+    return state.businessWarnings
   },
 
-  /** Is True if business is missing required business info. */
-  isMissingRequiredBusinessInfo (state: StateIF): boolean {
-    const warnings = state.businessWarnings
-    return (
-      warnings.length > 0 &&
-      warnings.some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
-    )
+  /** Is True if business has at least one compliance warning. */
+  hasComplianceWarning (state: StateIF): boolean {
+    return state.businessWarnings
+      .some(item => item.warningType?.includes('COMPLIANCE'))
+  },
+
+  /** Is True if business has at least one missing required business info warning. */
+  hasMissingInfoWarning (state: StateIF): boolean {
+    return state.businessWarnings
+      .some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
   },
 
   /** Is True if this is a Draft Application. */

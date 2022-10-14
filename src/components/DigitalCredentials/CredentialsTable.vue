@@ -39,7 +39,7 @@ import { DateMixin } from '@/mixins'
   mixins: [DateMixin]
 })
 export default class CredentialsTable extends Vue {
-  @Prop({ default: [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
+  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {
     // Do not display headers if there is table data

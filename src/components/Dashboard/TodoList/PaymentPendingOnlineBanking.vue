@@ -2,7 +2,9 @@
   <div class="payment-pending-online-banking-details body-2 pa-4">
     <h4>Online Banking Payment Pending</h4>
 
-    <p>This {{draftTitle}} is pending payment and/or processing at your bank.</p>
+    <p class="pt-3 mb-2">
+      This {{draftTitle}} is pending payment and/or processing at your bank.
+    </p>
 
     <ul>
       <li>If you have not done so, <strong>log in to your online bank account</strong> to pay the
@@ -36,14 +38,6 @@ export default class PaymentPendingOnlineBanking extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-p:first-of-type {
-  padding-top: 0.75rem;
-}
-
-p {
-  margin-bottom: 0.5rem !important;
-}
 
 li {
   font-size: $px-12;
