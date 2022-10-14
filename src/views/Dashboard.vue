@@ -12,7 +12,7 @@
         <v-row class="mt-n9">
           <v-col cols="12" md="9">
             <!-- Alerts section-->
-            <section v-if="alertCount > 0" id="dashboard-alerts-section">
+            <section v-if="alertCount > 0" id="dashboard-alerts-section" class="mb-n6">
               <header>
                 <h2 class="mb-3">
                   <span>Alerts</span>&nbsp;<span class="gray6">({{ alertCount }})</span>
