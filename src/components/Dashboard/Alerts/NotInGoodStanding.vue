@@ -3,7 +3,7 @@
     <v-expansion-panel class="mb-6">
       <v-expansion-panel-header hide-actions class="d-flex justify-space-between px-6 py-5">
         <h3>
-          <v-icon left color="orange darken-2" class="mt-n1">mdi-alert</v-icon>
+          <v-icon left color="orange darken-2">mdi-alert</v-icon>
           <span>This business is not in good standing</span>
         </h3>
         <v-btn text color="primary" class="details-btn my-n1" @click.stop="togglePanel()">
@@ -55,11 +55,12 @@ export default class NotInGoodStanding extends Vue {
 
 h3 {
   .v-icon {
-    font-size: $px-18;
+    margin-top: -2px;
+    font-size: $px-20;
   }
 
   span {
-    font-size: $px-16;
+    font-size: $px-14;
   }
 }
 
@@ -89,7 +90,7 @@ p {
 // override contact info sizes
 :deep(.contact-info .contact-container) {
   .v-icon {
-    font-size: $px-13 !important;
+    font-size: $px-16 !important;
   }
   span {
     font-size: $px-14 !important;
