@@ -24,7 +24,11 @@
         <p class="mb-0 pt-5">
           If further action is required, please contact BC Registries staff:
         </p>
-        <ContactInfo class="pt-5" />
+        <ContactInfo
+          class="pt-5"
+          :hidePhoneTollFree="hidePhoneNumbers"
+          :hidePhoneVictoria="hidePhoneNumbers"
+        />
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
@@ -33,16 +37,25 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { ContactInfo } from '@/components/common'
+import { getFeatureFlag } from '@/utils'
 
 @Component({
   components: { ContactInfo }
 })
 export default class MissingInformation extends Vue {
-  protected panel = 1
+  @Getter isFirm!: boolean
 
-  protected togglePanel (): void {
+  private panel = 1
+
+  private togglePanel (): void {
     this.panel = (this.panel === 1 ? 0 : 1)
+  }
+
+  get hidePhoneNumbers (): boolean {
+    // hide for firms without FF
+    return (this.isFirm && !getFeatureFlag('show-alert-phone-numbers-firm'))
   }
 }
 </script>

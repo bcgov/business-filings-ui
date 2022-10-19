@@ -10,7 +10,8 @@ declare const window: any
 const defaultFlagSet: LDFlagSet = {
   'supported-dissolution-entities': [],
   'supported-business-summary-entities': [],
-  'enable-digital-credentials': false
+  'enable-digital-credentials': false,
+  'show-alert-phone-numbers-firm': false
 }
 
 /**
