@@ -121,7 +121,7 @@ export default class IssueCredentials extends Vue {
     }
   }
   .alert-text {
-    color: $BCgovGold9;
+    color: #F8661A;
   }
   .success-text {
     color: $app-green;
