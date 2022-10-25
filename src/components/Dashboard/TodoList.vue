@@ -1740,8 +1740,8 @@ export default class TodoList extends Vue {
 .todo-subtitle {
   color: $gray7;
   display: flex;
-  align-items: center;
   justify-content: flex-start;
+  flex-direction: column;
 }
 
 .vert-pipe {
