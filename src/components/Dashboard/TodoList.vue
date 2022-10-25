@@ -1737,7 +1737,8 @@ export default class TodoList extends Vue {
   }
 }
 
-.todo-subtitle, .todo-subtitle-warning {
+.todo-subtitle,
+.todo-subtitle-warning {
   color: $gray7;
   display: flex;
   align-items: center;
@@ -1745,7 +1746,7 @@ export default class TodoList extends Vue {
 }
 
 .todo-subtitle-warning {
-  align-items:flex-start;
+  align-items: flex-start;
   flex-direction: column;
 }
 
