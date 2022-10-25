@@ -83,7 +83,7 @@
 
                 <!-- draft alteration not in good standing -->
                 <div v-else-if="isStatusDraft(item) && isTypeAlteration(item) && !item.goodStanding"
-                  class="todo-subtitle"
+                  class="todo-subtitle-warning"
                 >
                   <p class="app-red font-weight-bold">
                     <v-icon small color="error">mdi-alert</v-icon>
@@ -97,7 +97,7 @@
                   </p>
 
                   <p>To resolve this issue, you MUST contact BC Registries staff:</p>
-                  <ContactInfo class="mt-4" />
+                  <ContactInfo class="mt-4 contact-info-warning" />
                 </div>
 
                 <!-- alteration in good standing -->
@@ -1737,11 +1737,21 @@ export default class TodoList extends Vue {
   }
 }
 
-.todo-subtitle {
+.todo-subtitle,
+.todo-subtitle-warning {
   color: $gray7;
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+
+.todo-subtitle-warning {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.contact-info-warning {
+  width: 100%;
 }
 
 .vert-pipe {
