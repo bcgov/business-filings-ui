@@ -117,7 +117,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -197,7 +197,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -243,7 +243,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -285,7 +285,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -327,7 +327,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -381,7 +381,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -437,7 +437,7 @@ describe('TodoList - UI', () => {
     // Only staff may resume drafts
     store.state.keycloakRoles = ['staff']
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -496,7 +496,7 @@ describe('TodoList - UI', () => {
     // Only staff may resume drafts
     store.state.keycloakRoles = ['user']
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -559,7 +559,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -611,7 +611,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -673,7 +673,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -729,7 +729,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -786,7 +786,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -836,7 +836,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1020,7 +1020,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1077,7 +1077,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1124,7 +1124,7 @@ describe('TodoList - UI - BCOMPs', () => {
     ]
     store.state.isCoaPending = true // normally set by FilingHistoryList
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1175,7 +1175,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1223,7 +1223,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1271,7 +1271,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1313,7 +1313,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1441,7 +1441,7 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1490,7 +1490,7 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1538,7 +1538,7 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1588,7 +1588,7 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
     await flushPromises()
 
@@ -1662,7 +1662,7 @@ describe('TodoList - Click Tests', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    const wrapper = mount(TodoList, { localVue, store, router, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1998,7 +1998,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    const wrapper = mount(TodoList, { localVue, store, router, vuetify, propsData: { inProcessFiling: 0 } })
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
