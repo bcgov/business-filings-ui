@@ -40,14 +40,14 @@
               <h3 class="list-item__title">
                 {{ item.title }}
 
-                <!-- blue details button -->
-                <v-btn v-if="showDetailsBtnBlue(item)" class="expand-btn ml-1" text color="primary" :ripple=false>
+                <!-- red details button -->
+                <v-btn v-if="showDetailsBtnRed(item)" class="expand-btn ml-1" text color="error" :ripple=false>
                   <v-icon>mdi-information-outline</v-icon>
                   <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                 </v-btn>
 
-                <!-- red details button -->
-                <v-btn v-if="showDetailsBtnRed(item)" class="expand-btn ml-1" text color="error" :ripple=false>
+                <!-- blue details button -->
+                <v-btn v-else-if="showDetailsBtnBlue(item)" class="expand-btn ml-1" text color="primary" :ripple=false>
                   <v-icon>mdi-information-outline</v-icon>
                   <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                 </v-btn>
