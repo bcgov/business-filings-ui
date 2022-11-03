@@ -678,7 +678,7 @@ export default {
       // verify that NR type matches entity type from application
       if (nr.legalType === 'CCC' && this.getEntityType === CorpTypeCd.BC_CCC) {
         // TEMPORARY FIX:
-        // at the moment, Legal API is passing CCC instead of CC
+        // at the moment, Namex API is passing CCC instead of CC
         // remove this when no longer needed
       } else if (nr.legalType !== this.getEntityType) {
         this.nameRequestInvalidDialog = true
