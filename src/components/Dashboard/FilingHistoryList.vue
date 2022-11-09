@@ -703,50 +703,22 @@ export default class FilingHistoryList extends Vue {
 
   /** Called by File a Correction button to correct the subject filing. */
   protected async correctThisFiling (item: HistoryItemIF): Promise<void> {
-    const correctedFilingId = item.filingId?.toString()
-
     switch (item?.name) {
-      case FilingTypes.ANNUAL_REPORT:
-        this.$router.push({
-          name: Routes.CORRECTION,
-          params: { correctedFilingId }
-        })
-        break
-
-      case FilingTypes.CHANGE_OF_DIRECTORS:
-        this.$router.push({
-          name: Routes.CORRECTION,
-          params: { correctedFilingId }
-        })
-        break
-
-      case FilingTypes.CHANGE_OF_ADDRESS:
-        this.$router.push({
-          name: Routes.CORRECTION,
-          params: { correctedFilingId }
-        })
-        break
-
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
+      case FilingTypes.CONVERSION:
+      case FilingTypes.CORRECTION:
       case FilingTypes.REGISTRATION:
+        // correction via Edit UI
         this.currentFiling = item
         this.fileCorrectionDialog = true
         break
 
-      case FilingTypes.CORRECTION:
-        alert('At this time, you cannot correct a correction. Please contact Ops if needed.')
-        break
-
-      case FilingTypes.ALTERATION:
-        alert('At this time, you cannot correct an alteration. Please contact Ops if needed.')
-        break
-
       default:
-        // fallback for all other filings
+        // local correction for all other filings
         this.$router.push({
           name: Routes.CORRECTION,
-          params: { correctedFilingId }
+          params: { correctedFilingId: item.filingId.toString() }
         })
         break
     }
@@ -898,18 +870,22 @@ export default class FilingHistoryList extends Vue {
 
   /** Whether to disable correction for this history item. */
   protected disableCorrection (item: HistoryItemIF): boolean {
-    return (
-      !this.isAllowed(AllowableActions.FILE_CORRECTION) ||
-      item.availableOnPaperOnly ||
-      item.isTypeStaff ||
-      item.isFutureEffective ||
-      this.isTypeAlteration(item) ||
-      this.isTypeTransition(item) ||
-      // the following corrections are supported:
-      (this.isTypeIncorporationApplication(item) && !this.isBComp) ||
-      (this.isTypeChangeOfRegistration(item) && !this.isFirm) ||
-      (this.isTypeRegistration(item) && !this.isFirm)
-    )
+    const conditions: Array<() => boolean> = []
+
+    // any cases not listed below are allowed (enabled)
+    conditions[0] = () => !this.isAllowed(AllowableActions.FILE_CORRECTION)
+    conditions[1] = () => item.availableOnPaperOnly
+    conditions[2] = () => item.isTypeStaff
+    conditions[3] = () => item.isFutureEffective
+    conditions[4] = () => this.isTypeAlteration(item)
+    conditions[5] = () => this.isTypeTransition(item)
+    conditions[6] = () => (this.isTypeIncorporationApplication(item) && !this.isBComp)
+    conditions[7] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
+    conditions[8] = () => (this.isTypeConversion(item) && !this.isFirm)
+    conditions[9] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBComp)
+    conditions[10] = () => (this.isTypeRegistration(item) && !this.isFirm)
+
+    return conditions.some(condition => condition())
   }
 
   @Watch('getFilings', { immediate: true })
