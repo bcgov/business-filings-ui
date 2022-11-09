@@ -377,9 +377,6 @@ describe('Filing History List - misc functionality', () => {
     // corrected filing:
     expect(vm.disableCorrection({ ...item, status: 'CORRECTED' })).toBe(false)
 
-    // correction filing:
-    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
-
     // IA as a BEN:
     store.state.entityType = 'BEN'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
@@ -388,39 +385,59 @@ describe('Filing History List - misc functionality', () => {
     store.state.entityType = 'SP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
 
+    // Conversion as a firm:
+    store.state.entityType = 'SP'
+    expect(vm.disableCorrection({ ...item, name: 'conversion' })).toBe(false)
+
+    // Correction as a firm:
+    store.state.entityType = 'SP'
+    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+
+    // Correction as a BEN:
+    store.state.entityType = 'BEN'
+    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+
     // Registration as a firm:
     store.state.entityType = 'SP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
 
-    // only first condition:
+    // only conditions[0]:
     jest.spyOn(vm, 'isAllowed').mockReturnValue(false)
     expect(vm.disableCorrection({ ...item })).toBe(true)
     jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
 
-    // only second condition:
+    // only conditions[1]:
     expect(vm.disableCorrection({ ...item, availableOnPaperOnly: true })).toBe(true)
 
-    // only third condition:
+    // only conditions[2]:
     expect(vm.disableCorrection({ ...item, isTypeStaff: true })).toBe(true)
 
-    // only fourth condition:
+    // only conditions[3]:
     expect(vm.disableCorrection({ ...item, isFutureEffective: true })).toBe(true)
 
-    // only fifth condition:
+    // only conditions[4]:
     expect(vm.disableCorrection({ ...item, name: 'alteration' })).toBe(true)
 
-    // only sixth condition:
+    // only conditions[5]:
     expect(vm.disableCorrection({ ...item, name: 'transition' })).toBe(true)
 
-    // only seventh condition (as not a BEN):
+    // only conditions[6] (as not a BEN):
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
-    // only eighth condition (as not a firm):
+    // only conditions[7] (as not a firm):
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
-    // only ninth condition (as not a firm):
+    // only conditions[8] (as not a firm):
+    store.state.entityType = 'CP'
+    expect(vm.disableCorrection({ ...item, name: 'conversion' })).toBe(true)
+
+    // only conditions[9] (as not a firm):
+    store.state.entityType = 'CP'
+    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
+
+    // only conditions[10] (as not a firm):
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
   })

@@ -1367,20 +1367,25 @@ export default class TodoList extends Vue {
         break
 
       case FilingTypes.CORRECTION:
-        if (
-          (item.correctedFilingType === FilingNames.INCORPORATION_APPLICATION) ||
-          (item.correctedFilingType === FilingNames.CHANGE_OF_REGISTRATION) ||
-          (item.correctedFilingType === FilingNames.REGISTRATION)
-        ) {
-          // navigate to Edit UI to resume this correction
-          const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-          navigate(correctionUrl)
-        } else {
-          // resume this Correction locally
-          this.setCurrentFilingStatus(FilingStatus.DRAFT)
-          this.$router.push({ name: Routes.CORRECTION,
-            params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
-          })
+        switch (item.correctedFilingType) {
+          case FilingNames.INCORPORATION_APPLICATION:
+          case FilingNames.CHANGE_OF_REGISTRATION:
+          case FilingNames.CONVERSION:
+          case FilingNames.CORRECTION:
+          case FilingNames.REGISTRATION:
+            // resume correction via Edit UI
+            const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+            navigate(correctionUrl)
+            break
+
+          default:
+            // resume local correction for all other filings
+            this.setCurrentFilingStatus(FilingStatus.DRAFT)
+            this.$router.push({
+              name: Routes.CORRECTION,
+              params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
+            })
+            break
         }
         break
 
