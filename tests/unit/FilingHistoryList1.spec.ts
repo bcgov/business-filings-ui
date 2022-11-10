@@ -226,21 +226,21 @@ describe('Filing History List - misc functionality', () => {
 
     // expand details
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     // verify Close button
     expect(wrapper.find('.expand-btn').text()).toContain('Close')
 
     // verify details
     expect(vm.panel).toBe(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(true)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     wrapper.destroy()
   })
@@ -281,21 +281,21 @@ describe('Filing History List - misc functionality', () => {
 
     // expand details
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toBe(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     wrapper.destroy()
   })
@@ -747,8 +747,8 @@ describe('Filing History List - redirections', () => {
     const startCorrectionBtn = wrapper.find('#dialog-start-button')
     expect(startCorrectionBtn.exists()).toBe(true)
     await startCorrectionBtn.trigger('click')
+    await Vue.nextTick()
 
-    await flushPromises()
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const createUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
     expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
@@ -913,14 +913,14 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(true)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
@@ -977,14 +977,14 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
@@ -1041,14 +1041,14 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(true)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
@@ -1103,14 +1103,14 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(true)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(true)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
@@ -1167,14 +1167,14 @@ describe('Filing History List - incorporation applications', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(true)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('TEMP_REG_NUMBER')
     wrapper.destroy()
@@ -1229,18 +1229,18 @@ describe('Filing History List - incorporation applications', () => {
 
     // expand details
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
@@ -1305,14 +1305,14 @@ describe('Filing History List - paper only and other filings', () => {
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(true)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays an "empty" alteration filing', async () => {
@@ -1359,21 +1359,21 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
     await detailsBtn.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(true)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays a "future effective" alteration filing', async () => {
@@ -1425,21 +1425,21 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
     await detailsBtn.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(true)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays a "future effective pending" alteration filing', async () => {
@@ -1490,21 +1490,21 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
     await detailsBtn.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays a "full" alteration filing', async () => {
@@ -1555,21 +1555,21 @@ describe('Filing History List - paper only and other filings', () => {
     const detailsBtn = wrapper.find('.expand-btn')
     expect(detailsBtn.text()).toContain('View Documents')
     await detailsBtn.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify Hide Documents button
     expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
 
     // verify details
     expect(vm.panel).toEqual(0) // first row is expanded
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(false)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(true)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays a Registrar\'s Notation (staff only) filing', async () => {
@@ -1619,14 +1619,14 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
 
     expect(vm.panel).toBe(0)
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(true)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays a Registrar\'s Order (staff only) filing', async () => {
@@ -1676,14 +1676,14 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
 
     expect(vm.panel).toBe(0)
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(true)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
   it('displays a Court Order (staff only) filing', async () => {
@@ -1733,14 +1733,14 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.find('.expand-btn').text()).toContain('Hide')
 
     expect(vm.panel).toBe(0)
-    expect(wrapper.find(CompletedAlteration).exists()).toBe(false)
-    expect(wrapper.find(CompletedIa).exists()).toBe(false)
-    expect(wrapper.find(FutureEffective).exists()).toBe(false)
-    expect(wrapper.find(FutureEffectivePending).exists()).toBe(false)
-    expect(wrapper.find(PaperFiling).exists()).toBe(false)
-    expect(wrapper.find(PendingFiling).exists()).toBe(false)
-    expect(wrapper.find(StaffFiling).exists()).toBe(true)
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 })
 
@@ -1776,7 +1776,7 @@ describe('Filing History List - with documents', () => {
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
-    expect(wrapper.find(DocumentsList).exists()).toBe(false)
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -1786,7 +1786,7 @@ describe('Filing History List - with documents', () => {
     await button.trigger('click')
 
     // verify that Documents List component is not displayed after the item is expanded
-    expect(wrapper.find(DocumentsList).exists()).toBe(false)
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
 
     sinon.restore()
     wrapper.destroy()
@@ -1813,7 +1813,7 @@ describe('Filing History List - with documents', () => {
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
-    expect(wrapper.find(DocumentsList).exists()).toBe(false)
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -1821,10 +1821,10 @@ describe('Filing History List - with documents', () => {
 
     // expand details
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify that Documents List component is displayed after the item is expanded
-    expect(wrapper.find(DocumentsList).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(true)
 
     // verify the number of documents
     expect(wrapper.findAll('.documents-list .download-one-btn').length).toBe(2)
@@ -1857,10 +1857,10 @@ describe('Filing History List - with documents', () => {
 
     // expand details
     await wrapper.find('.expand-btn').trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify that Documents List component is displayed after the item is expanded
-    expect(wrapper.find(DocumentsList).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(true)
 
     // verify document titles
     const downloadBtns = wrapper.findAll('.documents-list .download-one-btn')
@@ -1962,13 +1962,13 @@ describe('Filing History List - detail comments', () => {
     await Vue.nextTick()
 
     // verify that Details List component does not exist before the item is expanded
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     // expand the panel
     await wrapper.find('.expand-btn').trigger('click')
 
     // verify that Details List component is not displayed after the item is expanded
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     sinon.restore()
     wrapper.destroy()
@@ -2007,14 +2007,14 @@ describe('Filing History List - detail comments', () => {
     await Vue.nextTick()
 
     // verify that Details List component does not exist until the item is expanded
-    expect(wrapper.find(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
 
     // expand the panel
     await wrapper.find('.expand-btn').trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for expansion transition
 
     // verify that Details List component is displayed after the item is expanded
-    expect(wrapper.find(DetailsList).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(true)
 
     // verify the number of comments
     expect(wrapper.findAll('.details-list .detail-body').length).toBe(2)
@@ -2049,6 +2049,7 @@ describe('Filing History List - without documents', () => {
     // verify that View Documents Button is not rendered
     const button = wrapper.find('.expand-btn')
     expect(button.text()).toEqual('')
+
     wrapper.destroy()
   })
 })

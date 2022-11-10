@@ -81,9 +81,9 @@ describe('Correction - UI', () => {
     const wrapper = shallowMount(Correction, { store, mocks: { $route, $router } })
 
     // verify sub-components
-    expect(wrapper.find(DetailComment).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
-    expect(wrapper.find(SbcFeeSummary).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(SbcFeeSummary).exists()).toBe(true)
 
     // verify rendered page
     expect(wrapper.find('#correction-header').text()).toBe('Correction —')
@@ -119,22 +119,27 @@ describe('Correction - UI', () => {
 
     // verify Is Priority = true
     vm.staffPaymentData = { isPriority: true }
+    await flushPromises()
     expect(vm.filingData[0].priority).toBe(true)
 
     // verify Is Priority = false
     vm.staffPaymentData = { isPriority: false }
+    await flushPromises()
     expect(vm.filingData[0].priority).toBe(false)
 
     // verify Is Waive Fees = true
     vm.staffPaymentData = { option: 0 } // NO_FEE
+    await flushPromises()
     expect(vm.filingData[0].waiveFees).toBe(true)
 
     // verify Is Waive Fees = false
     vm.staffPaymentData = { option: 1 } // FAS
+    await flushPromises()
     expect(vm.filingData[0].waiveFees).toBe(false)
 
     // verify Is Waive Fees = false
     vm.staffPaymentData = { option: 2 } // BCOL
+    await flushPromises()
     expect(vm.filingData[0].waiveFees).toBe(false)
 
     wrapper.destroy()

@@ -43,16 +43,16 @@ describe('Dashboard - UI', () => {
   })
 
   it('renders the dashboard sub-components properly', () => {
-    expect(wrapper.find(CoaWarningDialog).exists()).toBe(true)
-    expect(wrapper.find(TodoList).exists()).toBe(true)
-    expect(wrapper.find(FilingHistoryList).exists()).toBe(true)
-    expect(wrapper.find(AddressListSm).exists()).toBe(true)
-    expect(wrapper.find(DirectorListSm).exists()).toBe(true)
+    expect(wrapper.findComponent(CoaWarningDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(TodoList).exists()).toBe(true)
+    expect(wrapper.findComponent(FilingHistoryList).exists()).toBe(true)
+    expect(wrapper.findComponent(AddressListSm).exists()).toBe(true)
+    expect(wrapper.findComponent(DirectorListSm).exists()).toBe(true)
   })
 
   it('updates its counts from sub-component events', () => {
-    wrapper.find(TodoList).vm.$emit('todo-count', 2)
-    wrapper.find(FilingHistoryList).vm.$emit('history-count', 3)
+    wrapper.findComponent(TodoList).vm.$emit('todo-count', 2)
+    wrapper.findComponent(FilingHistoryList).vm.$emit('history-count', 3)
 
     expect(vm.todoCount).toEqual(2)
     expect(vm.historyCount).toEqual(3)
@@ -76,7 +76,7 @@ describe('Dashboard - UI', () => {
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
   })
 
-  it('disables standalone filing buttons when there is a blocker task', () => {
+  it('disables standalone filing buttons when there is a blocker task', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
@@ -85,6 +85,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = true
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
+    await Vue.nextTick()
     expect(localVm.hasBlocker).toEqual(true)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)
@@ -94,7 +95,7 @@ describe('Dashboard - UI', () => {
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables standalone filing buttons when there is a blocker filing', () => {
+  it('disables standalone filing buttons when there is a blocker filing', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
@@ -103,6 +104,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = false
     store.state.hasBlockerFiling = true
     store.state.isCoaPending = false
+    await Vue.nextTick()
     expect(localVm.hasBlocker).toEqual(true)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)
@@ -112,7 +114,7 @@ describe('Dashboard - UI', () => {
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables filing buttons when there is a BCOMP Future Effective COA', () => {
+  it('disables filing buttons when there is a BCOMP Future Effective COA', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
@@ -121,6 +123,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = false
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = true
+    await Vue.nextTick()
     expect(localVm.hasBlocker).toEqual(true)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)
@@ -237,7 +240,7 @@ describe('Dashboard - Click Tests', () => {
     expect(wrapper.find('#dialog-toggle-button')).toBeDefined()
     expect(wrapper.find('#dialog-proceed-button')).toBeDefined()
 
-    wrapper.find(CoaWarningDialog).vm.$emit('proceed', true)
+    wrapper.findComponent(CoaWarningDialog).vm.$emit('proceed', true)
 
     expect(vm.$route.name).toBe('standalone-addresses')
     expect(vm.$route.params.filingId).toBe(0)

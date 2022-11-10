@@ -61,7 +61,7 @@ describe('DetailComment', () => {
 
     // change the value
     // NB: need to wait for debounce
-    wrapper.setProps({ value: 'testing 1 2 3' })
+    await wrapper.setProps({ value: 'testing 1 2 3' })
     await sleep(300)
 
     // verify valid event

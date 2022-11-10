@@ -4,6 +4,7 @@ import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
+import { click } from '../click'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -98,14 +99,6 @@ describe('DirectorListSm', () => {
   })
 
   it('displays multiple directors - as a BCOMP', async () => {
-    async function click (id) {
-      const button = vm.$el.querySelector(id)
-      const window = button.ownerDocument.defaultView
-      const click = new window.Event('click')
-      button.dispatchEvent(click)
-      await Vue.nextTick()
-    }
-
     // init store
     store.state.entityType = 'BEN'
     store.state.parties = [
@@ -167,7 +160,7 @@ describe('DirectorListSm', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    await click('.address-panel-toggle')
+    await click(vm, '.address-panel-toggle')
 
     expect(vm.directors.length).toEqual(2)
     expect(vm.directors[0].mailingAddress).toBeDefined()

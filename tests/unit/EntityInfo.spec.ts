@@ -150,7 +150,7 @@ describe('EntityInfo - Staff Comments', () => {
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
-    expect(wrapper.find(StaffComments).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
 
     wrapper.destroy()
   })
@@ -164,7 +164,7 @@ describe('EntityInfo - Staff Comments', () => {
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
-    expect(wrapper.find(StaffComments).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
 
     wrapper.destroy()
   })
@@ -178,7 +178,7 @@ describe('EntityInfo - Staff Comments', () => {
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
 
-    expect(wrapper.find(StaffComments).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffComments).exists()).toBe(true)
 
     store.state.keycloakRoles = []
     wrapper.destroy()

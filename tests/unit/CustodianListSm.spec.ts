@@ -4,6 +4,7 @@ import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
+import { click } from '../click'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -86,13 +87,6 @@ describe('CustodianListSm', () => {
   })
 
   it('displays multiple custodians as a BCOMP', async () => {
-    function click (id) {
-      const button = vm.$el.querySelector(id)
-      const window = button.ownerDocument.defaultView
-      const click = new window.Event('click')
-      button.dispatchEvent(click)
-    }
-
     // init store
     store.state.entityType = 'BEN'
     const custodians = [
@@ -142,7 +136,7 @@ describe('CustodianListSm', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    click('.address-panel-toggle')
+    await click(vm, '.address-panel-toggle')
     expect(vm.custodians.length).toEqual(2)
     expect(vm.custodians[0].mailingAddress).toBeDefined()
     expect(vm.$el.querySelectorAll('.address-panel').length).toEqual(2)

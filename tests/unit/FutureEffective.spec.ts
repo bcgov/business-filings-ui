@@ -20,7 +20,8 @@ describe('Future Effective IA', () => {
     })
 
     // verify content
-    expect(wrapper.html()).toBeUndefined()
+    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.html()).toBeFalsy()
 
     wrapper.destroy()
   })
@@ -42,7 +43,7 @@ describe('Future Effective IA', () => {
     expect(paragraphs.at(1).text()).toContain('Registries staff to file a withdrawal. Withdrawing this filing will remove')
     expect(paragraphs.at(1).text()).toContain('this filing and all associated information, and will incur a $20.00 fee.')
     expect(wrapper.findAll('h4').at(1).text()).toBe('BC Registries Contact Information:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -70,7 +71,7 @@ describe('Future Effective IA', () => {
     expect(paragraphs.at(1).text()).toContain('Registries staff to file a withdrawal. Withdrawing this Incorporation Application will remove')
     expect(paragraphs.at(1).text()).toContain('this incorporation and all associated information, and will incur a $20.00 fee.')
     expect(wrapper.findAll('h4').at(1).text()).toBe('BC Registries Contact Information:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -98,7 +99,7 @@ describe('Future Effective IA', () => {
     expect(paragraphs.at(1).text()).toContain('Registries staff to file a withdrawal. Withdrawing this Incorporation Application will remove')
     expect(paragraphs.at(1).text()).toContain('this incorporation and all associated information, and will incur a $20.00 fee.')
     expect(wrapper.findAll('h4').at(1).text()).toBe('BC Registries Contact Information:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -130,7 +131,7 @@ describe('Future Effective IA', () => {
     expect(paragraphs.at(3).text()).toContain('Registries staff to file a withdrawal. Withdrawing this Alteration Notice will remove')
     expect(paragraphs.at(3).text()).toContain('this alteration and all associated information, and will incur a $20.00 fee.')
     expect(wrapper.findAll('h4').at(1).text()).toBe('BC Registries Contact Information:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -37,8 +37,7 @@ describe('COD Date - COOPs', () => {
   })
 
   it('loads variables properly when initial COD Date is set', async () => {
-    wrapper.setProps({ initialCodDate: '2019-05-10' })
-    await Vue.nextTick()
+    await wrapper.setProps({ initialCodDate: '2019-05-10' })
 
     // verify local variables
     expect(vm.$data.date).toBe('2019-05-10')
@@ -77,20 +76,19 @@ describe('COD Date - COOPs', () => {
   })
 
   it('Shows error message when date has invalid length', async () => {
-    wrapper.setData({ dateFormatted: '2019/11/6' })
-    await Vue.nextTick()
+    await wrapper.setData({ dateFormatted: '2019/11/6' })
 
     expect(vm.$data.date).toBe('')
     expect(vm.$el.querySelector('.v-messages').textContent).toContain('A Director change date is required.')
   })
 
-  it('sets date picker and emits date changed and valid events when date is changed', () => {
-    wrapper.setData({ dateFormatted: '2019/05/10' })
+  it('sets date picker and emits date changed and valid events when date is changed', async () => {
+    await wrapper.setData({ dateFormatted: '2019/05/10' })
 
     // verify local variables
     expect(vm.$data.date).toBe('2019-05-10')
 
-    wrapper.setData({ dateFormatted: '2019/05/11' })
+    await wrapper.setData({ dateFormatted: '2019/05/11' })
 
     // verify local variables
     expect(vm.$data.date).toBe('2019-05-11')
@@ -112,7 +110,7 @@ describe('COD Date - COOPs', () => {
     expect(valids[1]).toEqual([true])
   })
 
-  it('invalidates the component when entered date is after Max Date', () => {
+  it('invalidates the component when entered date is after Max Date', async () => {
     wrapper = mount(CodDate, {
       store,
       vuetify,
@@ -139,7 +137,7 @@ describe('COD Date - COOPs', () => {
     expect(wrapper.find('.validationErrorInfo').exists()).toBe(false)
 
     // set a date after Max Date
-    wrapper.setData({ date: '2019-05-11' })
+    await wrapper.setData({ date: '2019-05-11' })
 
     // verify validators and error message
     expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(true)
@@ -149,7 +147,7 @@ describe('COD Date - COOPs', () => {
       .toContain('Please enter a day between 2019/05/05 and 2019/05/10.')
   })
 
-  it('invalidates the component when entered date is before Min Date', () => {
+  it('invalidates the component when entered date is before Min Date', async () => {
     wrapper = mount(CodDate, {
       store,
       vuetify,
@@ -173,7 +171,7 @@ describe('COD Date - COOPs', () => {
     expect(wrapper.find('.validationErrorInfo').exists()).toBe(false)
 
     // set a date before Min Date
-    wrapper.setData({ date: '2019-05-04' })
+    await wrapper.setData({ date: '2019-05-04' })
 
     // verify validators and error message
     expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(true)

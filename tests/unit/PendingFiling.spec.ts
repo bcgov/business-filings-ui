@@ -15,7 +15,8 @@ describe('Pending Filing', () => {
     })
 
     // verify content
-    expect(wrapper.html()).toBeUndefined()
+    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.html()).toBeFalsy()
 
     wrapper.destroy()
   })
@@ -33,7 +34,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(0).text()).toContain('This Filing is paid')
     expect(paragraphs.at(1).text()).toContain('Refresh this screen')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -59,7 +60,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(2).text()).toContain('Pursuant to a Plan of Arrangement')
     expect(paragraphs.at(3).text()).toContain('Refresh this screen')
     expect(paragraphs.at(3).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -81,7 +82,7 @@ describe('Pending Filing', () => {
     expect(paragraphs.at(0).text()).toContain('This Incorporation Application is paid')
     expect(paragraphs.at(1).text()).toContain('Refresh this screen')
     expect(paragraphs.at(1).text()).toContain('If this issue persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

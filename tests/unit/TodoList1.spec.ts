@@ -119,7 +119,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
@@ -245,7 +245,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -287,7 +287,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -329,7 +329,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -383,7 +383,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -439,7 +439,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -498,7 +498,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -513,7 +513,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
-    expect(wrapper.find(CorrectionComment).exists()).toBe(false)
+    expect(wrapper.findComponent(CorrectionComment).exists()).toBe(false)
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
@@ -526,7 +526,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
 
     // Validate the child component exists on the parent after opening the dropdown
-    expect(wrapper.find(CorrectionComment).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectionComment).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -561,7 +561,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -613,7 +613,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -628,7 +628,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.expand-btn').textContent).toContain('View Details')
 
     // Validate the child component does NOT exist on the parent before opening the dropdown
-    expect(wrapper.find(CorrectionComment).exists()).toBe(false)
+    expect(wrapper.findComponent(CorrectionComment).exists()).toBe(false)
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
@@ -641,7 +641,7 @@ describe('TodoList - UI', () => {
     expect(item.querySelector('.list-item__actions .v-btn')).toBeNull()
 
     // Validate the child component exists on the parent after opening the dropdown
-    expect(wrapper.find(CorrectionComment).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectionComment).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -675,7 +675,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -693,7 +693,7 @@ describe('TodoList - UI', () => {
     await Vue.nextTick()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentPending).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentPending).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -731,7 +731,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -749,7 +749,7 @@ describe('TodoList - UI', () => {
     await Vue.nextTick()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentUnsuccessful).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentUnsuccessful).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -788,7 +788,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -806,7 +806,7 @@ describe('TodoList - UI', () => {
     await Vue.nextTick()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentPendingOnlineBanking).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentPendingOnlineBanking).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button.disabled).toBe(false)
@@ -838,7 +838,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -855,7 +855,7 @@ describe('TodoList - UI', () => {
     await Vue.nextTick()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentPaid).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentPaid).exists()).toBe(true)
 
     const button = item.querySelector('.list-item__actions .v-btn')
     expect(button).toBeNull()
@@ -886,10 +886,10 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     // set the "in progress" task
-    vm.inProcessFiling = 123
+    await wrapper.setData({ inProcessFiling: 123 })
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
@@ -925,7 +925,7 @@ describe('TodoList - UI', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     // clear the "in progress" task
     vm.inProcessFiling = NaN
@@ -1022,7 +1022,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
@@ -1225,7 +1225,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1273,7 +1273,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1315,7 +1315,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1356,10 +1356,10 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     // set the "in progress" task
-    vm.inProcessFiling = 123
+    await wrapper.setData({ inProcessFiling: 123 })
 
     const item = vm.$el.querySelector('.list-item')
     expect(item.querySelector('.list-item__title').textContent).toContain('File Director Change')
@@ -1395,7 +1395,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     // clear the "in progress" task
     vm.inProcessFiling = NaN
@@ -1443,7 +1443,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1492,7 +1492,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1540,7 +1540,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1590,7 +1590,7 @@ describe('TodoList - UI - Incorp Apps', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -1925,7 +1925,7 @@ describe('TodoList - Click Tests', () => {
 
     const wrapper = mount(TodoList, { store, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await flushPromises() // wait for pay error to finish loading
 
     // validate that todo item exists
     const todoItem = vm.$el.querySelector('.pay-error')
@@ -1938,10 +1938,10 @@ describe('TodoList - Click Tests', () => {
 
     // click the View Details button
     await wrapper.find('.expand-btn').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     // validate that child component exists
-    expect(wrapper.find(PaymentIncomplete).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentIncomplete).exists()).toBe(true)
 
     // confirm the message is visible after expansion panel clicked
     const bcolPanel = vm.$el.querySelector('.payment-incomplete-details')

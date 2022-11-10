@@ -31,7 +31,7 @@ describe('AddStaffNotationDialog', () => {
     const vm: any = wrapper.vm
 
     expect(wrapper.find('#dialog-title').text()).toBe('Add a Test')
-    expect(wrapper.find(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
@@ -55,7 +55,7 @@ describe('AddStaffNotationDialog', () => {
     const vm: any = wrapper.vm
 
     expect(wrapper.find('#dialog-title').text()).toBe('Administrative Dissolution')
-    expect(wrapper.find(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
@@ -78,7 +78,7 @@ describe('AddStaffNotationDialog', () => {
     const vm: any = wrapper.vm
 
     expect(wrapper.find('#dialog-title').text()).toBe('Correction - Put Back On')
-    expect(wrapper.find(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
@@ -94,8 +94,7 @@ describe('AddStaffNotationDialog', () => {
           dialog: true,
           displayName: 'Test'
         },
-        store,
-        sync: false
+        store
       })
 
     // click the Cancel button
@@ -117,8 +116,7 @@ describe('AddStaffNotationDialog', () => {
           name: 'registrarsNotation'
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     // Should not start with validation
@@ -126,7 +124,7 @@ describe('AddStaffNotationDialog', () => {
 
     // Should validate after clicking on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#notation-form').text()).toContain('Enter a Test')
 
@@ -143,8 +141,7 @@ describe('AddStaffNotationDialog', () => {
           name: 'putBackOn'
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     // Should not start with validation
@@ -152,7 +149,7 @@ describe('AddStaffNotationDialog', () => {
 
     // Should validate after clicking on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#notation-form').text()).toContain('Enter a detailed comment')
 
@@ -170,8 +167,7 @@ describe('AddStaffNotationDialog', () => {
           dissolutionType: 'administrative'
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     // Should not start with validation
@@ -179,7 +175,7 @@ describe('AddStaffNotationDialog', () => {
 
     // Should validate after clicking on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#notation-form').text()).toContain('Enter a detailed comment')
 
@@ -195,21 +191,20 @@ describe('AddStaffNotationDialog', () => {
           courtOrderNumberRequired: true
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     // Valid data should be allowed
     await wrapper.find('#notation').setValue('a'.repeat(2000))
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#notation-form').text()).not.toContain('Maximum characters exceeded.')
 
     // Larger than allowed
     await wrapper.find('#notation').setValue('a'.repeat(2001))
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#notation-form').text()).toContain('Maximum characters exceeded.')
 
@@ -224,13 +219,12 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test'
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     // Enables validation
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     // Should not validate if plan of arrangement is not checked
     expect(wrapper.find('#court-order').text()).not.toContain('A Court Order number is required')
@@ -250,8 +244,7 @@ describe('AddStaffNotationDialog', () => {
           courtOrderNumberRequired: true
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     // Should not start with validation
@@ -259,7 +252,7 @@ describe('AddStaffNotationDialog', () => {
 
     // Validates on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#court-order').text()).toContain('A Court Order number is required')
 
@@ -274,23 +267,22 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test'
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
-    // Less than allowed
+    // Less than allowed (min 5)
     wrapper.find('#court-order-number-input').setValue('a'.repeat(4))
     wrapper.find('#dialog-save-button').trigger('click')
     // for some reason, awaiting the 2 statements above doesn't work as expected
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
 
-    // Allowed length
+    // Allowed length (min 5)
     wrapper.find('#court-order-number-input').setValue('a'.repeat(5))
     wrapper.find('#dialog-save-button').trigger('click')
     // for some reason, awaiting the 2 statements above doesn't work as expected
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
 
@@ -305,23 +297,22 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test'
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
-    // Max length is valid
+    // Max length is valid (max 20)
     wrapper.find('#court-order-number-input').setValue('a'.repeat(20))
     wrapper.find('#dialog-save-button').trigger('click')
     // for some reason, awaiting the 2 statements above doesn't work as expected
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
 
-    // Greater than allowed
+    // Greater than allowed (max 20)
     wrapper.find('#court-order-number-input').setValue('a'.repeat(21))
     wrapper.find('#dialog-save-button').trigger('click')
     // for some reason, awaiting the 2 statements above doesn't work as expected
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
 
@@ -349,8 +340,7 @@ describe('AddStaffNotationDialog', () => {
           dialog: true
         },
         store,
-        vuetify,
-        sync: false
+        vuetify
       })
 
     wrapper.find('#notation').setValue('Notation...')
