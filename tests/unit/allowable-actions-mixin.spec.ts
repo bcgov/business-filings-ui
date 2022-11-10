@@ -121,9 +121,9 @@ describe('Allowable Actions Mixin', () => {
       { businessId: null, entityType: null, flag: 'CP BEN', expected: false },
       // only first condition:
       { businessId: 'CP1234567', entityType: null, flag: 'CP BEN', expected: false },
-      // // only second condition:
+      // only second condition:
       { businessId: null, entityType: 'CP', flag: 'CP BEN', expected: false },
-      // // all conditions:
+      // all conditions:
       { businessId: 'CP1234567', entityType: 'CP', flag: 'CP BEN', expected: true },
       { businessId: 'BC1234567', entityType: 'BEN', flag: 'CP BEN', expected: true },
       { businessId: 'BC1234567', entityType: 'BC', flag: 'CP BEN', expected: false },

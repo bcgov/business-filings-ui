@@ -370,74 +370,73 @@ describe('Filing History List - misc functionality', () => {
       name: null
     }
 
-    // no conditions:
+    //
+    // Verify ALLOWED (disabled=false):
+    //
+
+    // no conditions
     jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
     expect(vm.disableCorrection({ ...item })).toBe(false)
 
-    // corrected filing:
-    expect(vm.disableCorrection({ ...item, status: 'CORRECTED' })).toBe(false)
-
-    // IA as a BEN:
+    // conditions[6]: IA as a BEN
     store.state.entityType = 'BEN'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
 
-    // Change of Registration as a firm:
-    store.state.entityType = 'SP'
-    expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
+    // conditions[7]: Change of Registration as a firm
+    for (const entityType of ['SP', 'GP']) {
+      store.state.entityType = entityType
+      expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
+    }
 
-    // Conversion as a firm:
-    store.state.entityType = 'SP'
-    expect(vm.disableCorrection({ ...item, name: 'conversion' })).toBe(false)
+    // conditions[8]: Correction as a firm or BEN
+    for (const entityType of ['SP', 'GP', 'BEN']) {
+      store.state.entityType = entityType
+      expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+    }
 
-    // Correction as a firm:
-    store.state.entityType = 'SP'
-    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+    // conditions[9]: Registration as a firm
+    for (const entityType of ['SP', 'GP']) {
+      store.state.entityType = entityType
+      expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
+    }
 
-    // Correction as a BEN:
-    store.state.entityType = 'BEN'
-    expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
+    //
+    // Verify NOT ALLOWED (disabled=true):
+    //
 
-    // Registration as a firm:
-    store.state.entityType = 'SP'
-    expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
-
-    // only conditions[0]:
+    // only conditions[0]
     jest.spyOn(vm, 'isAllowed').mockReturnValue(false)
     expect(vm.disableCorrection({ ...item })).toBe(true)
     jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
 
-    // only conditions[1]:
+    // only conditions[1]
     expect(vm.disableCorrection({ ...item, availableOnPaperOnly: true })).toBe(true)
 
-    // only conditions[2]:
+    // only conditions[2]
     expect(vm.disableCorrection({ ...item, isTypeStaff: true })).toBe(true)
 
-    // only conditions[3]:
+    // only conditions[3]
     expect(vm.disableCorrection({ ...item, isFutureEffective: true })).toBe(true)
 
-    // only conditions[4]:
+    // only conditions[4]: Alteration
     expect(vm.disableCorrection({ ...item, name: 'alteration' })).toBe(true)
 
-    // only conditions[5]:
-    expect(vm.disableCorrection({ ...item, name: 'transition' })).toBe(true)
+    // only conditions[5]: Conversion
+    expect(vm.disableCorrection({ ...item, name: 'conversion' })).toBe(true)
 
-    // only conditions[6] (as not a BEN):
+    // only conditions[6]: IA as not a BEN
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
-    // only conditions[7] (as not a firm):
+    // only conditions[7]: Change of Registration as not a firm
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
-    // only conditions[8] (as not a firm):
-    store.state.entityType = 'CP'
-    expect(vm.disableCorrection({ ...item, name: 'conversion' })).toBe(true)
-
-    // only conditions[9] (as not a firm):
+    // only conditions[8]: Correction as not a firm nor BEN
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
 
-    // only conditions[10] (as not a firm):
+    // only conditions[9]: Registration as not a firm
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
   })
