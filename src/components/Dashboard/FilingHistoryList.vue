@@ -715,8 +715,10 @@ export default class FilingHistoryList extends Vue {
         break
 
       case FilingTypes.ANNUAL_REPORT:
+      case FilingTypes.ALTERATION:
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
+      case FilingTypes.CONVERSION:
       default:
         // local correction for all other filings
         this.$router.push({
@@ -881,12 +883,10 @@ export default class FilingHistoryList extends Vue {
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
     conditions[3] = () => item.isFutureEffective
-    conditions[4] = () => this.isTypeAlteration(item)
-    conditions[5] = () => this.isTypeConversion(item)
-    conditions[6] = () => (this.isTypeIncorporationApplication(item) && !this.isBComp)
-    conditions[7] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
-    conditions[8] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBComp)
-    conditions[9] = () => (this.isTypeRegistration(item) && !this.isFirm)
+    conditions[4] = () => (this.isTypeIncorporationApplication(item) && !this.isBComp)
+    conditions[5] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
+    conditions[6] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBComp)
+    conditions[7] = () => (this.isTypeRegistration(item) && !this.isFirm)
 
     return conditions.some(condition => condition())
   }

@@ -400,6 +400,12 @@ describe('Filing History List - misc functionality', () => {
       expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
     }
 
+    // Annual Report, Alteration, Change of Address, Change of Directors, Conversion
+    const names = ['annualReport', 'alteration', 'changeOfAddress', 'changeOfDirectors', 'conversion']
+    for (const name of names) {
+      expect(vm.disableCorrection({ ...item, name })).toBe(false)
+    }
+
     //
     // Verify NOT ALLOWED (disabled=true):
     //
@@ -418,25 +424,19 @@ describe('Filing History List - misc functionality', () => {
     // only conditions[3]
     expect(vm.disableCorrection({ ...item, isFutureEffective: true })).toBe(true)
 
-    // only conditions[4]: Alteration
-    expect(vm.disableCorrection({ ...item, name: 'alteration' })).toBe(true)
-
-    // only conditions[5]: Conversion
-    expect(vm.disableCorrection({ ...item, name: 'conversion' })).toBe(true)
-
-    // only conditions[6]: IA as not a BEN
+    // only conditions[4]: IA as not a BEN
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
-    // only conditions[7]: Change of Registration as not a firm
+    // only conditions[5]: Change of Registration as not a firm
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
-    // only conditions[8]: Correction as not a firm nor BEN
+    // only conditions[6]: Correction as not a firm nor BEN
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
 
-    // only conditions[9]: Registration as not a firm
+    // only conditions[7]: Registration as not a firm
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
   })

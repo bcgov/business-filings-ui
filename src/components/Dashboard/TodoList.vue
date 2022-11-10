@@ -1379,8 +1379,10 @@ export default class TodoList extends Vue {
             break
 
           case FilingTypes.ANNUAL_REPORT:
+          case FilingTypes.ALTERATION:
           case FilingTypes.CHANGE_OF_ADDRESS:
           case FilingTypes.CHANGE_OF_DIRECTORS:
+          case FilingTypes.CONVERSION:
           default:
             // resume local correction for all other filings
             this.setCurrentFilingStatus(FilingStatus.DRAFT)
