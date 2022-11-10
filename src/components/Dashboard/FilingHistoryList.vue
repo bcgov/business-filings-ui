@@ -703,10 +703,10 @@ export default class FilingHistoryList extends Vue {
 
   /** Called by File a Correction button to correct the subject filing. */
   protected async correctThisFiling (item: HistoryItemIF): Promise<void> {
+    // see also TodoList.vue:doResumeFiling()
     switch (item?.name) {
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
-      case FilingTypes.CONVERSION:
       case FilingTypes.CORRECTION:
       case FilingTypes.REGISTRATION:
         // correction via Edit UI
@@ -714,6 +714,11 @@ export default class FilingHistoryList extends Vue {
         this.fileCorrectionDialog = true
         break
 
+      case FilingTypes.ANNUAL_REPORT:
+      case FilingTypes.ALTERATION:
+      case FilingTypes.CHANGE_OF_ADDRESS:
+      case FilingTypes.CHANGE_OF_DIRECTORS:
+      case FilingTypes.CONVERSION:
       default:
         // local correction for all other filings
         this.$router.push({
@@ -872,18 +877,16 @@ export default class FilingHistoryList extends Vue {
   protected disableCorrection (item: HistoryItemIF): boolean {
     const conditions: Array<() => boolean> = []
 
-    // any cases not listed below are allowed (enabled)
+    // list of cases to disable correction
+    // (any case not listed below is ALLOWED)
     conditions[0] = () => !this.isAllowed(AllowableActions.FILE_CORRECTION)
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
     conditions[3] = () => item.isFutureEffective
-    conditions[4] = () => this.isTypeAlteration(item)
-    conditions[5] = () => this.isTypeTransition(item)
-    conditions[6] = () => (this.isTypeIncorporationApplication(item) && !this.isBComp)
-    conditions[7] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
-    conditions[8] = () => (this.isTypeConversion(item) && !this.isFirm)
-    conditions[9] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBComp)
-    conditions[10] = () => (this.isTypeRegistration(item) && !this.isFirm)
+    conditions[4] = () => (this.isTypeIncorporationApplication(item) && !this.isBComp)
+    conditions[5] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
+    conditions[6] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBComp)
+    conditions[7] = () => (this.isTypeRegistration(item) && !this.isFirm)
 
     return conditions.some(condition => condition())
   }
