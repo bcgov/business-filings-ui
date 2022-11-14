@@ -85,23 +85,25 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
 
-    expect(wrapper.find(CodDate).exists()).toBe(true)
-    expect(wrapper.find(Directors).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(CodDate).exists()).toBe(true)
+    expect(wrapper.findComponent(Directors).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('enables page valid flags when sub-component flags are valid', () => {
+  it('enables page valid flags when sub-component flags are valid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(true)
@@ -110,16 +112,18 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables page valid flags when COD Date component is invalid', () => {
+  it('disables page valid flags when COD Date component is invalid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.codDateValid = false
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      codDateValid: false,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
@@ -128,16 +132,18 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables page valid flags when Directors component is invalid', () => {
+  it('disables page valid flags when Directors component is invalid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.codDateValid = true
-    vm.directorFormValid = false
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      codDateValid: true,
+      directorFormValid: false,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
@@ -146,30 +152,33 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('Verify COD Certify contains correct section codes', () => {
+  it('Verify COD Certify contains correct section codes', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     store.state.entityType = 'CP'
     store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
-    expect(wrapper.find(Certify).exists()).toBe(true)
-    const certify: any = wrapper.find(Certify)
+    await Vue.nextTick()
 
-    expect(certify.vm.message).toContain('See Section 78 of the Cooperative Association Act.')
-    expect(certify.vm.entityDisplay).toEqual('Cooperative')
+    const certify = wrapper.findComponent(Certify)
+    expect(certify.exists()).toBe(true)
+    expect((certify.vm as any).message).toContain('See Section 78 of the Cooperative Association Act.')
+    expect((certify.vm as any).entityDisplay).toEqual('Cooperative')
 
     wrapper.destroy()
   })
 
-  it('disables page valid flags when Certify component is invalid', () => {
+  it('disables page valid flags when Certify component is invalid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = false
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: false
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(true)
@@ -178,16 +187,18 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables page valid flags when no filing changes were made (ie: nothing to file)', () => {
+  it('disables page valid flags when no filing changes were made (ie: nothing to file)', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [] // no data
+    // set local properties
+    await wrapper.setData({
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', []) // no data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
@@ -196,7 +207,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('enables File & Pay button when page valid flag is true', () => {
+  it('enables File & Pay button when page valid flag is true', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       store,
@@ -216,12 +227,14 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that button is enabled
     expect(wrapper.find('#cod-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -229,7 +242,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables File & Pay button when page valid flag is false', () => {
+  it('disables File & Pay button when page valid flag is false', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
       store,
@@ -249,12 +262,14 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.inFilingReview = true
-    vm.codDateValid = false
-    vm.directorFormValid = false
-    vm.certifyFormValid = false
-    store.state.filingData = [] // no data
+    // set local properties
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: false,
+      directorFormValid: false,
+      certifyFormValid: false
+    })
+    await vm.$store.commit('filingData', []) // no data
 
     // confirm that button is disabled
     expect(wrapper.find('#cod-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -309,8 +324,7 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
-    // wait for draft to be fetched
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -399,8 +413,7 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
-    // wait for draft to be fetched
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -488,8 +501,7 @@ describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff pay
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
     const vm = wrapper.vm as any
-    // wait for draft to be fetched
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -679,7 +691,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
-      sync: false,
       store,
       mocks: { $route },
       stubs: {
@@ -698,17 +709,16 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const vm: any = wrapper.vm as any
 
     // make sure form is validated
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{ filingTypeCode: 'OTCDR', entityType: 'CP' }]) // dummy data
 
     // make sure a fee is required
-    vm.totalFee = 100
-
-    // wait for things to stabilize
-    await flushPromises()
+    await wrapper.setData({ totalFee: 100 })
 
     // sanity checks
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -723,7 +733,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // click the File & Pay button and wait for async methods to finish
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify v-tooltip text
     // FUTURE: Tool tip is outside the wrapper. Have yet to find out how to get hold of that.
@@ -751,7 +761,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
-      sync: false,
       store,
       mocks: { $route },
       stubs: {
@@ -769,17 +778,16 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const vm: any = wrapper.vm as any
 
     // make sure form is validated
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'BEN' }] // dummy data
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{ filingTypeCode: 'OTCDR', entityType: 'BEN' }]) // dummy data
 
     // make sure a fee is required
-    vm.totalFee = 100
-
-    // wait for things to stabilize
-    await flushPromises()
+    await wrapper.setData({ totalFee: 100 })
 
     // sanity checks
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -840,17 +848,16 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const vm: any = wrapper.vm as any
 
     // make sure form is validated
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // make sure a fee is required
-    vm.totalFee = 100
-
-    // wait for things to stabilize
-    await flushPromises()
+    await wrapper.setData({ totalFee: 100 })
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -865,7 +872,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // click the File & Pay button and wait for async methods to finish
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify v-tooltip text - To find out how to get the tool tip text outside the wrapper
     // const tooltipText = wrapper.find('#cod-file-pay-btn + span').text()
@@ -953,11 +960,13 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
     const vm: any = wrapper.vm as any
 
     // make sure form is validated
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      codDateValid: true,
+      inFilingReview: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // NB: can't find button because Vuetify hasn't rendered it
     // const button = wrapper.find('#cod-file-pay-btn')
@@ -1056,10 +1065,12 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.codDateValid = true
-      vm.directorFormValid = true
-      vm.certifyFormValid = true
-      store.state.filingData = [{}] // dummy data
+      await wrapper.setData({
+        codDateValid: true,
+        directorFormValid: true,
+        certifyFormValid: true
+      })
+      await vm.$store.commit('filingData', [{}]) // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1096,11 +1107,13 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1131,7 +1144,7 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
   let vm: any
   let spy: any
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // init store
     store.state.identifier = 'CP0001191'
     store.state.entityName = 'Legal Name - CP0001191'
@@ -1171,64 +1184,68 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
     vm = wrapper.vm
 
     // set up director data
-    vm.updatedDirectors = [
-      // unchanged director
-      {
-        officer: {
-          firstName: 'Unchanged',
-          lastName: 'lastname'
+    await wrapper.setData({
+      updatedDirectors: [
+        // unchanged director
+        {
+          officer: {
+            firstName: 'Unchanged',
+            lastName: 'lastname'
+          },
+          deliveryAddress: {
+            streetAddress: 'a1',
+            addressCity: 'city',
+            addressCountry: 'country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
+          },
+          appointmentDate: '2019-01-01',
+          cessationDate: null,
+          actions: []
         },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
+        // appointed director
+        {
+          officer: {
+            firstName: 'Appointed',
+            lastName: 'lastname'
+          },
+          deliveryAddress: {
+            streetAddress: 'a1',
+            addressCity: 'city',
+            addressCountry: 'country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
+          },
+          appointmentDate: '2019-01-01',
+          cessationDate: null,
+          actions: ['appointed']
         },
-        appointmentDate: '2019-01-01',
-        cessationDate: null,
-        actions: []
-      },
-      // appointed director
-      {
-        officer: {
-          firstName: 'Appointed',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: null,
-        actions: ['appointed']
-      },
-      // ceased director
-      {
-        officer: {
-          firstName: 'Ceased',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: '2019-03-25',
-        actions: ['ceased']
-      }
-    ]
+        // ceased director
+        {
+          officer: {
+            firstName: 'Ceased',
+            lastName: 'lastname'
+          },
+          deliveryAddress: {
+            streetAddress: 'a1',
+            addressCity: 'city',
+            addressCountry: 'country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
+          },
+          appointmentDate: '2019-01-01',
+          cessationDate: '2019-03-25',
+          actions: ['ceased']
+        }
+      ]
+    })
 
     // make sure form is validated
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     vm.onDirectorsPaidChange(true)
   })
@@ -1433,11 +1450,13 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.inFilingReview = true
-      vm.codDateValid = true
-      vm.directorFormValid = true
-      vm.certifyFormValid = true
-      store.state.filingData = [{}] // dummy data
+      await wrapper.setData({
+        inFilingReview: true,
+        codDateValid: true,
+        directorFormValid: true,
+        certifyFormValid: true
+      })
+      await vm.$store.commit('filingData', [{}]) // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1468,11 +1487,13 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.inFilingReview = true
-      vm.codDateValid = true
-      vm.directorFormValid = true
-      vm.certifyFormValid = true
-      store.state.filingData = [{}] // dummy data
+      await wrapper.setData({
+        inFilingReview: true,
+        codDateValid: true,
+        directorFormValid: true,
+        certifyFormValid: true
+      })
+      await vm.$store.commit('filingData', [{}]) // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1580,26 +1601,29 @@ describe('Standalone Directors Filing - payment required error', () => {
       },
       vuetify
     })
-
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.inFilingReview = true
-    vm.codDateValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
+    await wrapper.setData({
+      inFilingReview: true,
+      codDateValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
+    await vm.$store.commit('filingData', [{ filingTypeCode: 'OTCDR', entityType: 'CP' }]) // dummy data
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // make sure a fee is required
-    vm.totalFee = 100
+    await wrapper.setData({ totalFee: 100 })
 
     // sanity check
     expect(vm.saveErrors).toStrictEqual([])

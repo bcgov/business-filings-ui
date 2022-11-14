@@ -22,7 +22,7 @@ describe('FetchErrorDialog', () => {
       .toContain('We were unable to fetch some data needed for your filing.')
     expect(wrapper.find('#dialog-text').text())
       .toContain('You can return to the Business Dashboard and try again.')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('#dialog-actions').text()).toBe('Return to dashboard')
 
     wrapper.destroy()
@@ -34,7 +34,7 @@ describe('FetchErrorDialog', () => {
 
     const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, store, vuetify })
 
-    expect(wrapper.find(ContactInfo).exists()).toBe(false)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(false)
 
     wrapper.destroy()
   })

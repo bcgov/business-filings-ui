@@ -20,7 +20,8 @@ describe('Future Effective Pending', () => {
     })
 
     // verify content
-    expect(wrapper.html()).toBeUndefined()
+    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.html()).toBeFalsy()
 
     wrapper.destroy()
   })
@@ -40,7 +41,7 @@ describe('Future Effective Pending', () => {
     expect(paragraphs.at(0).text()).toContain('has been recorded as Unknown.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing. If this issue persists,')
     expect(paragraphs.at(1).text()).toContain('please contact us.')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -67,7 +68,7 @@ describe('Future Effective Pending', () => {
     expect(paragraphs.at(0).text()).toContain('has been recorded as May 15, 2020 at 12:00 pm Pacific time.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing. If this issue persists,')
     expect(paragraphs.at(1).text()).toContain('please contact us.')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -94,7 +95,7 @@ describe('Future Effective Pending', () => {
     expect(paragraphs.at(0).text()).toContain('has been recorded as May 15, 2020 at 12:00 pm Pacific time.')
     expect(paragraphs.at(1).text()).toContain('It may take up to one hour to process this filing. If this issue persists,')
     expect(paragraphs.at(1).text()).toContain('please contact us.')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -125,7 +126,7 @@ describe('Future Effective Pending', () => {
     expect(paragraphs.at(2).text()).toContain('Pursuant to a Plan of Arrangement')
     expect(paragraphs.at(3).text()).toContain('It may take up to one hour to process this filing. If this issue persists,')
     expect(paragraphs.at(3).text()).toContain('please contact us.')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

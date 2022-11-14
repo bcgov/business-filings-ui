@@ -18,8 +18,8 @@ import { mount, Wrapper } from '@vue/test-utils'
 import { Certify } from '@/components/common'
 
 Vue.use(Vuetify)
-const vuetify = new Vuetify({})
 
+const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 // Input field selectors to test changes to the DOM elements.
@@ -65,7 +65,6 @@ function createComponent (
   return mount(Certify, {
     vuetify,
     store,
-    sync: false,
     propsData: {
       certifiedBy,
       isCertified

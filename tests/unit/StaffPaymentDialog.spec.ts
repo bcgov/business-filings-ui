@@ -9,7 +9,6 @@ import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 Vue.config.silent = true
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
@@ -27,7 +26,7 @@ describe('StaffPaymentDialog', () => {
 
     // verify displayed elements
     expect(wrapper.find('.v-card__title div').text()).toBe('Staff Payment')
-    expect(wrapper.find(StaffPayment).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
     expect(wrapper.find('#dialog-close-button').text()).toBe('Exit Payment')
     expect(wrapper.find('#dialog-submit-button').text()).toBe('Submit')
 
@@ -53,10 +52,9 @@ describe('StaffPaymentDialog', () => {
       // NB: stub the Staff Payment component to avoid nested event errors
       stubs: { StaffPayment: true }
     })
-    await Vue.nextTick()
 
     // set form valid since the Staff Payment component is stubbed
-    wrapper.setData({ staffPaymentFormValid: true })
+    await wrapper.setData({ staffPaymentFormValid: true })
 
     // click the Exit button
     await wrapper.find('#dialog-close-button').trigger('click')
@@ -81,10 +79,9 @@ describe('StaffPaymentDialog', () => {
       // NB: stub the Staff Payment component to avoid nested event errors
       stubs: { StaffPayment: true }
     })
-    await Vue.nextTick()
 
     // set form valid since the Staff Payment component is stubbed
-    wrapper.setData({ staffPaymentFormValid: true })
+    await wrapper.setData({ staffPaymentFormValid: true })
 
     // click the Submit button
     await wrapper.find('#dialog-submit-button').trigger('click')

@@ -14,7 +14,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 document.body.setAttribute('data-app', 'true')
 
 describe('Payment Error Dialog', () => {
-  it('displays generic message for normal users', () => {
+  it('displays generic message for normal users', async () => {
     // init store
     store.state.keycloakRoles = []
 
@@ -27,15 +27,16 @@ describe('Payment Error Dialog', () => {
         store,
         vuetify
       })
+    await Vue.nextTick()
 
-    expect(wrapper.attributes('content-class')).toBe('payment-error-dialog')
+    expect(wrapper.attributes('contentclass')).toBe('payment-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')
     expect(wrapper.find('#dialog-text').text()).toContain('This FILING has been')
     expect(wrapper.find('#dialog-text').text()).toContain('PayBC is normally available')
     expect(wrapper.find('#dialog-text').text()).toContain('If this error persists')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -55,7 +56,7 @@ describe('Payment Error Dialog', () => {
         vuetify
       })
 
-    expect(wrapper.attributes('content-class')).toBe('payment-error-dialog')
+    expect(wrapper.attributes('contentclass')).toBe('payment-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Process Payment')
     expect(wrapper.find('#dialog-text').text()).toContain('We are unable to process your payment')

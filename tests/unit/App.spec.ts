@@ -966,7 +966,6 @@ describe('App as a Draft IA with approved NR', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
@@ -1093,7 +1092,6 @@ describe('App as a Draft IA with conditional-not required NR', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
@@ -1200,7 +1198,6 @@ describe('App as a Draft IA with conditional-received NR', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
@@ -1307,7 +1304,6 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
@@ -1424,7 +1420,6 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
@@ -1575,7 +1570,6 @@ describe('App as a COMPLETED Incorporation Application', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,
@@ -1751,7 +1745,6 @@ describe('App as an historical business', () => {
     router.push({ name: 'dashboard' })
 
     wrapper = shallowMount(App, {
-      sync: false,
       localVue,
       router,
       store,

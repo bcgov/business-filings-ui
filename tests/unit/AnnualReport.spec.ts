@@ -45,22 +45,23 @@ describe('Annual Report - Part 1 - UI', () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
-    expect(wrapper.find(AgmDate).exists()).toBe(true)
-    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
-    expect(wrapper.find(Directors).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(AgmDate).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(Directors).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('Verify AR Certify contains correct section codes', () => {
+  it('Verify AR Certify contains correct section codes', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
     store.state.entityType = 'CP'
     store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
-    expect(wrapper.find(Certify).exists()).toBe(true)
-    const certify: any = wrapper.find(Certify)
+    await Vue.nextTick() // wait for DOM to update
 
+    const certify: any = wrapper.findComponent(Certify)
+    expect(certify.exists()).toBe(true)
     expect(certify.vm.message).toContain('See Section 126 of the Cooperative Association Act.')
     expect(certify.vm.entityDisplay).toEqual('Cooperative')
 
@@ -89,16 +90,18 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('enables Validated flag when sub-component flags are valid', () => {
+  it('enables Validated flag when sub-component flags are valid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(true)
@@ -106,16 +109,18 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when AGM Date is invalid', () => {
+  it('disables Validated flag when AGM Date is invalid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.agmDateValid = false
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: false,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -123,16 +128,18 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when Addresses form is invalid', () => {
+  it('disables Validated flag when Addresses form is invalid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = false
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: false,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -140,19 +147,20 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables address component when AGM Date < Last COA Date', () => {
+  it('disables address component when AGM Date < Last COA Date', async () => {
     store.state.lastAddressChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    wrapper.setData({ agmDate: '2019-05-05' })
-
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = false
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDate: '2019-05-05',
+      agmDateValid: true,
+      addressesFormValid: false,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that change state is disabled
     expect(vm.allowChange('coa')).toBe(false)
@@ -160,19 +168,20 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('has no effect on address component when Last COA Date is null', () => {
+  it('has no effect on address component when Last COA Date is null', async () => {
     store.state.lastAddressChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    wrapper.setData({ agmDate: '2019-02-09' })
-
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = false
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDate: '2019-02-09',
+      agmDateValid: true,
+      addressesFormValid: false,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that change state is enabled
     expect(vm.allowChange('coa')).toBe(true)
@@ -180,19 +189,20 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component when AGM Date < Last COD Date', () => {
+  it('disables directors component when AGM Date < Last COD Date', async () => {
     store.state.lastDirectorChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    wrapper.setData({ agmDate: '2019-05-05' })
-
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = false
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDate: '2019-05-05',
+      agmDateValid: true,
+      addressesFormValid: false,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that change state is disabled
     expect(vm.allowChange('cod')).toBe(false)
@@ -200,19 +210,20 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables directors component when Last COD Date is null', () => {
+  it('disables directors component when Last COD Date is null', async () => {
     store.state.lastDirectorChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    wrapper.setData({ agmDate: '2019-02-09' })
-
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = false
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDate: '2019-02-09',
+      agmDateValid: true,
+      addressesFormValid: false,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that change state is enabled
     expect(vm.allowChange('cod')).toBe(true)
@@ -220,16 +231,18 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when Director form is invalid', () => {
+  it('disables Validated flag when Director form is invalid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = false
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: false,
+      certifyFormValid: true
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -237,16 +250,18 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when Certify form is invalid', () => {
+  it('disables Validated flag when Certify form is invalid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = false
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: false
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -254,7 +269,7 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('enables File & Pay button when form is validated', () => {
+  it('enables File & Pay button when form is validated', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -279,15 +294,16 @@ describe('Annual Report - Part 1 - UI', () => {
       },
       vuetify
     })
-
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    vm.directorEditInProgress = false
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      directorEditInProgress: false
+    })
 
     // confirm that button is enabled
     expect(wrapper.find('#ar-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -295,7 +311,7 @@ describe('Annual Report - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables File & Pay button when form is not validated', () => {
+  it('disables File & Pay button when form is not validated', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -322,11 +338,13 @@ describe('Annual Report - Part 1 - UI', () => {
     })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.agmDateValid = false
-    vm.addressesFormValid = false
-    vm.directorFormValid = false
-    vm.certifyFormValid = false
+    // set local properties
+    await wrapper.setData({
+      agmDateValid: false,
+      addressesFormValid: false,
+      directorFormValid: false,
+      certifyFormValid: false
+    })
 
     // confirm that button is disabled
     expect(wrapper.find('#ar-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -349,10 +367,10 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
 
-    expect(wrapper.find(ArDate).exists()).toBe(true)
-    expect(wrapper.find(SummaryOfficeAddresses).exists()).toBe(true)
-    expect(wrapper.find(SummaryDirectors).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(ArDate).exists()).toBe(true)
+    expect(wrapper.findComponent(SummaryOfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(SummaryDirectors).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -374,13 +392,13 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     wrapper.destroy()
   })
 
-  it('enables Validated flag when sub-component flags are valid', () => {
+  it('enables Validated flag when sub-component flags are valid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.certifyFormValid = true
+    // set local properties
+    await wrapper.setData({ certifyFormValid: true })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(true)
@@ -388,13 +406,13 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when Certify form is invalid', () => {
+  it('disables Validated flag when Certify form is invalid', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.certifyFormValid = false
+    // set local properties
+    await wrapper.setData({ certifyFormValid: false })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -402,7 +420,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     wrapper.destroy()
   })
 
-  it('enables File & Pay button when form is validated', () => {
+  it('enables File & Pay button when form is validated', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -426,12 +444,13 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
       },
       vuetify
     })
-
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.certifyFormValid = true
-    vm.directorEditInProgress = false
+    await wrapper.setData({
+      certifyFormValid: true,
+      directorEditInProgress: false
+    })
 
     // confirm that button is enabled
     expect(wrapper.find('#ar-file-pay-bc-btn').attributes('disabled')).toBeUndefined()
@@ -439,7 +458,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     wrapper.destroy()
   })
 
-  it('disables File & Pay button when form is not validated', () => {
+  it('disables File & Pay button when form is not validated', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -466,7 +485,7 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
     const vm: any = wrapper.vm
 
     // set properties
-    vm.certifyFormValid = false
+    await wrapper.setData({ certifyFormValid: false })
 
     // confirm that button is disabled
     expect(wrapper.find('#ar-file-pay-bc-btn').attributes('disabled')).toBe('disabled')
@@ -528,8 +547,7 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    // wait for draft to be fetched
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // FUTURE: verify that Draft Date (for directors) was restored
     // (should be '2018-07-15')
@@ -611,8 +629,7 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    // wait for draft to be fetched
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // FUTURE: verify that Draft Date (for directors) was restored
     // (should be '2018-07-15')
@@ -693,8 +710,7 @@ describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    // wait for draft to be fetched
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // FUTURE: verify that Draft Date (for directors) was restored
     // (should be '2018-07-15')
@@ -888,20 +904,24 @@ describe('Annual Report - Part 3 - Submitting', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    vm.directorEditInProgress = false
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      directorEditInProgress: false
+    })
     store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -959,20 +979,24 @@ describe('Annual Report - Part 3 - Submitting', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    vm.directorEditInProgress = false
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      directorEditInProgress: false
+    })
     store.state.filingData = [{ filingTypeCode: 'OTCDR', entityType: 'CP' }] // dummy data
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // make sure a fee is required
     vm.totalFee = 100
@@ -1080,7 +1104,6 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
 
     const wrapper = mount(AnnualReport, {
-      sync: false,
       store,
       localVue,
       router,
@@ -1101,14 +1124,12 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.certifyFormValid = true
+    await wrapper.setData({ certifyFormValid: true })
     store.state.filingData = [{ filingTypeCode: 'ANNBC', entityType: 'BEN' }] // dummy data
 
     // make sure a fee is required
-    vm.totalFee = 100
-
-    // wait for things to stabilize
-    await flushPromises()
+    await wrapper.setData({ totalFee: 100 })
+    await Vue.nextTick()
 
     // sanity checks
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1202,22 +1223,26 @@ describe('Annual Report - Part 4 - Saving', () => {
 
   it('saves a new filing when the Save button is clicked', async () => {
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
-      },
-      recordsOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        },
+        recordsOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // click the Save button
     await wrapper.find('#ar-save-btn').trigger('click')
@@ -1231,22 +1256,26 @@ describe('Annual Report - Part 4 - Saving', () => {
 
   it('saves a filing and routes to Dashboard URL when the Save & Resume button is clicked', async () => {
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
-      },
-      recordsOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        },
+        recordsOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // click the Save & Resume Later button
     // await wrapper.find('#ar-save-resume-btn').trigger('click')
@@ -1259,10 +1288,12 @@ describe('Annual Report - Part 4 - Saving', () => {
 
   it('routes to Dashboard URL when the Cancel button is clicked', async () => {
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // click the Cancel button
     // await wrapper.find('#ar-cancel-btn').trigger('click')
@@ -1281,7 +1312,7 @@ describe('Annual Report - Part 5 - Data', () => {
 
   const currentFilingYear = 2017
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // init store
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
@@ -1327,77 +1358,83 @@ describe('Annual Report - Part 5 - Data', () => {
     vm = wrapper.vm
 
     // set up director data
-    vm.updatedDirectors = [
-      // unchanged director
-      {
-        officer: {
-          firstName: 'Unchanged',
-          lastName: 'lastname'
+    await wrapper.setData({
+      updatedDirectors: [
+        // unchanged director
+        {
+          officer: {
+            firstName: 'Unchanged',
+            lastName: 'lastname'
+          },
+          deliveryAddress: {
+            streetAddress: 'a1',
+            addressCity: 'city',
+            addressCountry: 'country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
+          },
+          appointmentDate: '2019-01-01',
+          cessationDate: null,
+          actions: []
         },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
+        // appointed director
+        {
+          officer: {
+            firstName: 'Appointed',
+            lastName: 'lastname'
+          },
+          deliveryAddress: {
+            streetAddress: 'a1',
+            addressCity: 'city',
+            addressCountry: 'country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
+          },
+          appointmentDate: '2019-01-01',
+          cessationDate: null,
+          actions: ['appointed']
         },
-        appointmentDate: '2019-01-01',
-        cessationDate: null,
-        actions: []
-      },
-      // appointed director
-      {
-        officer: {
-          firstName: 'Appointed',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: null,
-        actions: ['appointed']
-      },
-      // ceased director
-      {
-        officer: {
-          firstName: 'Ceased',
-          lastName: 'lastname'
-        },
-        deliveryAddress: {
-          streetAddress: 'a1',
-          addressCity: 'city',
-          addressCountry: 'country',
-          postalCode: 'H0H0H0',
-          addressRegion: 'BC'
-        },
-        appointmentDate: '2019-01-01',
-        cessationDate: '2019-03-25',
-        actions: ['ceased']
-      }
-    ]
+        // ceased director
+        {
+          officer: {
+            firstName: 'Ceased',
+            lastName: 'lastname'
+          },
+          deliveryAddress: {
+            streetAddress: 'a1',
+            addressCity: 'city',
+            addressCountry: 'country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
+          },
+          appointmentDate: '2019-01-01',
+          cessationDate: '2019-03-25',
+          actions: ['ceased']
+        }
+      ]
+    })
 
     // stub address data
-    vm.updatedAddresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
-      },
-      recordsOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      updatedAddresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        },
+        recordsOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
   })
 
   afterEach(() => {
@@ -1521,7 +1558,7 @@ describe('Annual Report - Part 5 - Data', () => {
     store.state.currentDate = '2019-03-03'
 
     // set No AGM
-    vm.didNotHoldAgm = true
+    await wrapper.setData({ didNotHoldAgm: true })
 
     // click the Save button
     // await wrapper.find('#ar-save-btn').trigger('click')
@@ -1550,7 +1587,7 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
 
   const currentFilingYear = 2018
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // init store
     store.state.identifier = 'BC0007291'
     store.state.entityName = 'Legal Name - BC0007291'
@@ -1595,7 +1632,6 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     router.push({ name: 'annual-report', params: { filingId: '0' } }) // new filing id
 
     wrapper = mount(AnnualReport, {
-      sync: false,
       store,
       localVue,
       router,
@@ -1618,10 +1654,12 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
     // no need to set up directors or office addresses - just use initial values
 
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
   })
 
   afterEach(() => {
@@ -1834,10 +1872,12 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
 
   it('sets the required fields to display errors from the api after a POST call', async () => {
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(true)
@@ -1846,12 +1886,14 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // click the File & Pay button
     await wrapper.find('#ar-file-pay-btn').trigger('click')
@@ -1869,10 +1911,12 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
 
   it('sets the required fields to display errors from the api after a PUT call', async () => {
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true
+    })
 
     // confirm that flags are set correctly
     expect(vm.isPageValid).toEqual(true)
@@ -1881,15 +1925,17 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // set the filingId
-    vm.filingId = 123
+    await wrapper.setData({ filingId: 123 })
 
     // click the File & Pay button
     await wrapper.find('#ar-file-pay-btn').trigger('click')
@@ -1980,19 +2026,23 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   })
 
   it('prevents saving if a pending task exists', async () => {
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    vm.directorEditInProgress = false
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      directorEditInProgress: false
+    })
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // click the File & Pay button
     await wrapper.find('#ar-file-pay-btn').trigger('click')
@@ -2108,23 +2158,27 @@ describe('Annual Report - payment required error', () => {
       .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
 
     // make sure form is validated
-    vm.agmDateValid = true
-    vm.addressesFormValid = true
-    vm.directorFormValid = true
-    vm.certifyFormValid = true
-    vm.directorEditInProgress = false
+    await wrapper.setData({
+      agmDateValid: true,
+      addressesFormValid: true,
+      directorFormValid: true,
+      certifyFormValid: true,
+      directorEditInProgress: false
+    })
     store.state.filingData = [{ filingTypeCode: 'OTANN', entityType: 'CP' }] // dummy data
 
     // stub address data
-    vm.addresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      addresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // make sure a fee is required
-    vm.totalFee = 100
+    await wrapper.setData({ totalFee: 100 })
 
     // sanity check
     expect(vm.saveErrors).toStrictEqual([])

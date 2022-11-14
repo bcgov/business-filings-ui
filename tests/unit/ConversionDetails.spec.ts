@@ -4,7 +4,6 @@ import { mount } from '@vue/test-utils'
 import ConversionDetails from '@/components/Dashboard/TodoList/ConversionDetails.vue'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
 
 describe('Conversion Details component', () => {

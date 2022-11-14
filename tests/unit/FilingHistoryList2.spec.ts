@@ -31,7 +31,7 @@ const isPaperOnly = (filing) => filing.availableOnPaperOnly
 const isCorrection = (filing) => !!filing.correctedFilingId
 const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === 'incorporationApplication')
-const isBcompCoa = () => false // FUTURE: implement BComp tests
+const isBcompCoa = (filing) => false // FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === 'alteration')
 const isStaff = (filing) => (
   filing.name === 'registrarsNotation' ||
@@ -217,7 +217,8 @@ filings.forEach((filing: any, index: number) => {
 
       // click button and verify updated label
       await expandBtn.trigger('click')
-      await flushPromises() // need to wait longer here
+      await flushPromises() // wait for expansion transition
+
       if (isPaperOnly(filing)) {
         expect(expandBtn.text()).toContain('Close')
       } else if (isStaff(filing)) {
@@ -232,25 +233,25 @@ filings.forEach((filing: any, index: number) => {
       const item = vm.historyItems[0]
 
       if (item.isTypeStaff) {
-        expect(wrapper.find(StaffFiling).exists()).toBe(true)
+        expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
       } else if (item.isFutureEffectiveBcompCoaPending) {
         // no details
       } else if (item.isCompletedIa) {
-        expect(wrapper.find(CompletedIa).exists()).toBe(true)
+        expect(wrapper.findComponent(CompletedIa).exists()).toBe(true)
       } else if (item.isFutureEffectiveIaPending) {
-        expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
+        expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
       } else if (item.isFutureEffectiveIa) {
-        expect(wrapper.find(FutureEffective).exists()).toBe(true)
+        expect(wrapper.findComponent(FutureEffective).exists()).toBe(true)
       } else if (item.isFutureEffectiveAlterationPending) {
-        expect(wrapper.find(FutureEffectivePending).exists()).toBe(true)
+        expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(true)
       } else if (item.isFutureEffectiveAlteration) {
-        expect(wrapper.find(FutureEffective).exists()).toBe(true)
+        expect(wrapper.ffindComponentind(FutureEffective).exists()).toBe(true)
       } else if (item.status === 'PAID') {
-        expect(wrapper.find(PendingFiling).exists()).toBe(true)
+        expect(wrapper.findComponent(PendingFiling).exists()).toBe(true)
       } else if (item.name === 'alteration') {
-        expect(wrapper.find(CompletedAlteration).exists()).toBe(true)
+        expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(true)
       } else if (item.availableOnPaperOnly) {
-        expect(wrapper.find(PaperFiling).exists()).toBe(true)
+        expect(wrapper.findComponent(PaperFiling).exists()).toBe(true)
       } else {
         // no details
       }

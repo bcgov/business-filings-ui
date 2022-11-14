@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import { ContactInfo } from '@/components/common'
+import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 
@@ -26,8 +27,8 @@ describe('Missing Information component', () => {
     const wrapper = mount(MissingInformation, { store, vuetify })
 
     // click the button
-    wrapper.find('.details-btn').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('.details-btn').trigger('click')
+    await flushPromises() // wait for expansion transition
 
     // verify content
     expect(wrapper.find('h3').text()).toBe('Missing information')
@@ -35,7 +36,7 @@ describe('Missing Information component', () => {
     expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(true)
     expect(wrapper.find('.v-expansion-panel-content__wrap').text()).toContain('BC Registries is missing')
     expect(wrapper.find('.v-expansion-panel-content__wrap').text()).toContain('If further action is required')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -5,7 +5,6 @@ import { NotInGoodStandingDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
@@ -19,14 +18,14 @@ describe('Not In Good Standing Dialog', () => {
         propsData: { dialog: true, message: 'dissolve' }
       })
 
-    expect(wrapper.attributes('content-class')).toBe('not-in-good-standing-dialog')
+    expect(wrapper.attributes('contentclass')).toBe('not-in-good-standing-dialog')
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('.warning-title').text()).toContain('Business is not in good standing')
     expect(wrapper.findAll('.warning-text').at(0).text())
       .toContain('This business cannot be dissolved at this time because it is not in good standing')
     expect(wrapper.findAll('.warning-text').at(1).text())
       .toContain('Please file any overdue annual reports in your To Do list and try your voluntary')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('#dialog-close-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -39,14 +38,14 @@ describe('Not In Good Standing Dialog', () => {
         propsData: { dialog: true, message: 'changeCompanyInfo' }
       })
 
-    expect(wrapper.attributes('content-class')).toBe('not-in-good-standing-dialog')
+    expect(wrapper.attributes('contentclass')).toBe('not-in-good-standing-dialog')
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('.warning-title').text()).toContain('Business is not in good standing')
     expect(wrapper.findAll('.warning-text').at(0).text())
       .toContain('The complete company information for this business cannot be viewed or changed at')
     expect(wrapper.findAll('.warning-text').at(1).text())
       .toContain('Please file any overdue annual reports in your To Do list and try to view and change')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('#dialog-close-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -59,11 +58,11 @@ describe('Not In Good Standing Dialog', () => {
         propsData: { dialog: true }
       })
 
-    expect(wrapper.attributes('content-class')).toBe('not-in-good-standing-dialog')
+    expect(wrapper.attributes('contentclass')).toBe('not-in-good-standing-dialog')
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('.warning-title').text()).toContain('Business is not in good standing')
     expect(wrapper.find('.warning-text').text()).toContain('Please contact BC Registries staff:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('#dialog-close-button').exists()).toBe(true)
 
     wrapper.destroy()

@@ -14,7 +14,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 document.body.setAttribute('data-app', 'true')
 
 describe('Save Error Dialog', () => {
-  it('displays generic message for normal users', () => {
+  it('displays generic message for normal users', async () => {
     // init store
     store.state.keycloakRoles = []
 
@@ -27,14 +27,15 @@ describe('Save Error Dialog', () => {
         store,
         vuetify
       })
+    await Vue.nextTick()
 
-    expect(wrapper.attributes('content-class')).toBe('save-error-dialog')
+    expect(wrapper.attributes('contentclass')).toBe('save-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Save FILING')
     expect(wrapper.find('#dialog-text').text()).toContain('We were unable to save your FILING.')
     expect(wrapper.find('#dialog-text').text()).toContain('If you exit this FILING,')
     expect(wrapper.find('#dialog-text').text()).toContain('If this error persists, please contact us:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button')).toBeDefined()
     expect(wrapper.find('#dialog-retry-button')).toBeDefined()
 
@@ -59,7 +60,7 @@ describe('Save Error Dialog', () => {
     expect(wrapper.find('#dialog-text').text()).toContain('We were unable to save your FILING.')
     expect(wrapper.find('#dialog-text').text()).toContain('If you exit this FILING,')
     expect(wrapper.find('#dialog-text').text()).not.toContain('If this error persists, please contact us:')
-    expect(wrapper.find(ContactInfo).exists()).toBe(false)
+    expect(wrapper.findComponent(ContactInfo).exists()).toBe(false)
     expect(wrapper.find('#dialog-exit-button')).toBeDefined()
     expect(wrapper.find('#dialog-retry-button')).toBeDefined()
 

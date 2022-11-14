@@ -32,7 +32,7 @@ describe('AddCommentDialog', () => {
     const vm: any = wrapper.vm
 
     expect(wrapper.find('#dialog-title').text()).toBe('Add Detail')
-    expect(wrapper.find(DetailComment).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 

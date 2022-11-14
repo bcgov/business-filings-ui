@@ -26,6 +26,7 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
+
 store.state.currentJsDate = new Date('2019-07-15T12:00:00')
 store.state.currentDate = '2019-07-15'
 
@@ -60,8 +61,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route } })
 
-    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -71,11 +72,12 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.certifyFormValid = true
-    vm.addressesFormValid = true
-    store.state.filingData = [{}] // dummy data
-    await flushPromises()
+    // set local properties
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(true)
@@ -83,15 +85,17 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when Office Address form is invalid', () => {
+  it('disables Validated flag when Office Address form is invalid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.certifyFormValid = true
-    vm.addressesFormValid = false
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: false
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -99,15 +103,17 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when Certify form is invalid', () => {
+  it('disables Validated flag when Certify form is invalid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.certifyFormValid = false
-    vm.addressesFormValid = true
-    store.state.filingData = [{}] // dummy data
+    // set local properties
+    await wrapper.setData({
+      certifyFormValid: false,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -115,21 +121,23 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables Validated flag when filing data is invalid', () => {
+  it('disables Validated flag when filing data is invalid', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
-    // set properties
-    vm.certifyFormValid = true
-    vm.addressesFormValid = true
-    store.state.filingData = [] // no data
+    // set local properties
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', []) // no data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
   })
 
-  it('enables File & Pay button when Validated is true', () => {
+  it('enables File & Pay button when Validated is true', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -154,9 +162,11 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set all properties truthy
-    vm.certifyFormValid = true
-    vm.addressesFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // confirm that button is enabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -164,7 +174,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('disables File & Pay button when Validated is false', () => {
+  it('disables File & Pay button when Validated is false', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -189,11 +199,11 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     const vm: any = wrapper.vm
 
     // set all properties falsy
-    vm.certifyFormValid = false
-    vm.addressesFormValid = false
-
-    // set no filing data
-    store.state.filingData = []
+    await wrapper.setData({
+      certifyFormValid: false,
+      addressesFormValid: false
+    })
+    await vm.$store.commit('filingData', []) // no data
 
     // confirm that button is disabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -201,7 +211,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     wrapper.destroy()
   })
 
-  it('Verify COA Certify contains correct section codes', () => {
+  it('Verify COA Certify contains correct section codes', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -226,10 +236,10 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 
     store.state.entityType = 'BEN'
     store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
+    await Vue.nextTick()
 
-    expect(wrapper.find(Certify).exists()).toBe(true)
-    const certify: any = wrapper.find(Certify)
-
+    const certify: any = wrapper.findComponent(Certify)
+    expect(certify.exists()).toBe(true)
     expect(certify.vm.message).toContain('See Sections 35 and 36 of the Business Corporations Act.')
     expect(certify.vm.entityDisplay).toEqual('Benefit Company')
 
@@ -286,7 +296,7 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -359,7 +369,7 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -431,7 +441,7 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -503,7 +513,7 @@ describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => 
     const $route = { params: { filingId: '123' } } // draft filing id
     const wrapper = shallowMount(StandaloneOfficeAddressFiling, { store, mocks: { $route }, vuetify })
     const vm = wrapper.vm as any
-    await flushPromises()
+    await flushPromises() // wait for draft to be fetched
 
     // verify that Certified By was restored
     expect(vm.certifiedBy).toBe('Full Name')
@@ -699,9 +709,12 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
+
     expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
@@ -717,7 +730,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // click the File & Pay button
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -757,9 +770,12 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
+
     expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
@@ -775,7 +791,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
     // click the File & Pay button
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify v-tooltip text
     // FUTURE: How to get the tool tip rendered outside the wrapper?
@@ -981,9 +997,12 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
+
     expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
@@ -999,7 +1018,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // click the File & Pay button
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify redirection
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
@@ -1039,9 +1058,12 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
+
     expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
@@ -1057,7 +1079,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
     // click the File & Pay button
     await button.trigger('click')
-    await flushPromises() // need to wait longer here
+    await flushPromises() // wait for save to complete and everything to update
 
     // verify v-tooltip text
     // FUTURE: How to get the tool tip rendered outside the wrapper?
@@ -1152,8 +1174,10 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.addressesFormValid = true
-      vm.certifyFormValid = true
+      await wrapper.setData({
+        certifyFormValid: true,
+        addressesFormValid: true
+      })
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1183,8 +1207,10 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
 
     // click the Save & Resume Later button
     // await wrapper.find('#coa-save-resume-btn').trigger('click')
@@ -1286,8 +1312,10 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       const vm = wrapper.vm as any
 
       // make sure form is validated
-      vm.addressesFormValid = true
-      vm.certifyFormValid = true
+      await wrapper.setData({
+        certifyFormValid: true,
+        addressesFormValid: true
+      })
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1317,8 +1345,10 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
     const vm = wrapper.vm as any
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
 
     // click the Save & Resume Later button
     // await wrapper.find('#coa-save-resume-btn').trigger('click')
@@ -1680,8 +1710,10 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1729,8 +1761,10 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     const vm: any = wrapper.vm
 
     // make sure form is validated
-    vm.addressesFormValid = true
-    vm.certifyFormValid = true
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1843,20 +1877,24 @@ describe('Standalone Office Address Filing - payment required error', () => {
     const vm: any = wrapper.vm
 
     // set all properties truthy
-    vm.certifyFormValid = true
-    vm.addressesFormValid = true
-    store.state.filingData = [{}] // dummy data
+    await wrapper.setData({
+      certifyFormValid: true,
+      addressesFormValid: true
+    })
+    await vm.$store.commit('filingData', [{}]) // dummy data
 
     // stub address data
-    vm.updatedAddresses = {
-      registeredOffice: {
-        deliveryAddress: {},
-        mailingAddress: {}
+    await wrapper.setData({
+      updatedAddresses: {
+        registeredOffice: {
+          deliveryAddress: {},
+          mailingAddress: {}
+        }
       }
-    }
+    })
 
     // make sure a fee is required
-    vm.totalFee = 100
+    await wrapper.setData({ totalFee: 100 })
 
     // sanity check
     expect(vm.saveErrors).toStrictEqual([])

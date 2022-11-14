@@ -115,7 +115,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
     // set the props
-    wrapper.setProps({ loadingOne: true, loadingOneIndex: 1 })
+    await wrapper.setProps({ loadingOne: true, loadingOneIndex: 1 })
 
     // verify that all buttons are disabled and that only button 1 is loading
     expect(documentBtns.at(0).attributes('disabled')).toBe('disabled')
@@ -151,7 +151,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
     // set the prop
-    wrapper.setProps({ loadingAll: true })
+    await wrapper.setProps({ loadingAll: true })
 
     // verify that all buttons are disabled and that only button 1 is loading
     expect(documentBtns.at(0).attributes('disabled')).toBe('disabled')

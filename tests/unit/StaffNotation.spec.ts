@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
@@ -43,11 +42,7 @@ describe('StaffNotation', () => {
   })
 
   it('renders the menu correctly', async () => {
-    const wrapper = mount(StaffNotation, {
-      vuetify,
-      sync: false,
-      store
-    })
+    const wrapper = mount(StaffNotation, { vuetify, store })
 
     // Open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -62,11 +57,7 @@ describe('StaffNotation', () => {
   })
 
   it('emits close', async () => {
-    const wrapper = mount(StaffNotation, {
-      vuetify,
-      sync: false,
-      store
-    })
+    const wrapper = mount(StaffNotation, { vuetify, store })
 
     // Open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -74,7 +65,7 @@ describe('StaffNotation', () => {
 
     // Click on first item
     await wrapper.find('.v-list .v-item-group .v-list-item').trigger('click')
-    await flushPromises() // need to wait longer here
+    await Vue.nextTick()
 
     expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeTruthy()
 
@@ -89,11 +80,7 @@ describe('StaffNotation', () => {
 
   for (const test of staffFilingTypes) {
     it(`renders the modal correctly for ${test.name}`, async () => {
-      const wrapper = mount(StaffNotation, {
-        vuetify,
-        sync: false,
-        store
-      })
+      const wrapper = mount(StaffNotation, { vuetify, store })
 
       // Open menu
       await wrapper.find('.menu-btn').trigger('click')

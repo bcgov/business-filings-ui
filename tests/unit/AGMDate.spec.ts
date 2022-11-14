@@ -43,18 +43,18 @@ describe('AgmDate', () => {
     expect(vm.$data.noAgm).toBe(false)
   })
 
-  it('does not render the checkbox if today is before max AGM date', () => {
-    store.state.currentDate = '2019-03-15'
+  it('does not render the checkbox if today is before max AGM date', async () => {
+    await vm.$store.commit('currentDate', '2019-03-15')
     expect(wrapper.find('#no-agm-checkbox').exists()).toBe(false)
   })
 
-  it('renders the checkbox if today is after max AGM date', () => {
-    store.state.currentDate = '2020-01-01'
+  it('renders the checkbox if today is after max AGM date', async () => {
+    await vm.$store.commit('currentDate', '2020-01-01')
     expect(wrapper.find('#no-agm-checkbox').exists()).toBe(true)
   })
 
-  it('sets AGM Date when date picker is set', () => {
-    wrapper.setData({ datePicker: '2019-05-10' })
+  it('sets AGM Date when date picker is set', async () => {
+    await wrapper.setData({ datePicker: '2019-05-10' })
     vm.onDatePickerChanged('2019-05-10')
 
     // verify local variables
@@ -73,8 +73,8 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('sets No AGM when checkbox is checked', () => {
-    wrapper.setData({ noAgm: true })
+  xit('sets No AGM when checkbox is checked', async () => {
+    await wrapper.setData({ noAgm: true })
     vm.onCheckboxChanged(true)
 
     // verify local variables
@@ -99,8 +99,7 @@ describe('AgmDate', () => {
   })
 
   it('sets AGM Date when AGM Date prop is set to a date', async () => {
-    wrapper.setProps({ newAgmDate: '2019-05-10' })
-    await Vue.nextTick()
+    await wrapper.setProps({ newAgmDate: '2019-05-10' })
 
     // verify local variables
     expect(vm.$data.dateText).toBe('2019-05-10')
@@ -118,8 +117,8 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('clears AGM Date when AGM Date prop is set to empty', () => {
-    wrapper.setProps({ newAgmDate: '' })
+  xit('clears AGM Date when AGM Date prop is set to empty', async () => {
+    await wrapper.setProps({ newAgmDate: '' })
 
     // verify local variables
     expect(vm.$data.dateText).toBe('')
@@ -137,8 +136,8 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([false])
   })
 
-  xit('sets No AGM when No AGM prop is set to true', () => {
-    wrapper.setProps({ newNoAgm: true })
+  xit('sets No AGM when No AGM prop is set to true', async () => {
+    await wrapper.setProps({ newNoAgm: true })
 
     // verify local variables
     expect(vm.$data.dateText).toBe('')
@@ -156,9 +155,9 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('displays disabled address change message when allowCoa is false', () => {
-    wrapper.setData({ dateText: '2019-07-15' })
-    wrapper.setProps({ allowCa: false })
+  xit('displays disabled address change message when allowCoa is false', async () => {
+    await wrapper.setData({ dateText: '2019-07-15' })
+    await wrapper.setProps({ allowCoa: false })
 
     // verify validation error
     expect(vm.$el.querySelector('.restriction-messages').textContent.trim()).toContain(
@@ -166,9 +165,9 @@ describe('AgmDate', () => {
     )
   })
 
-  xit('displays disabled director change message when allowCod is false', () => {
-    wrapper.setData({ dateText: '2019-07-15' })
-    wrapper.setProps({ allowCod: false })
+  xit('displays disabled director change message when allowCod is false', async () => {
+    await wrapper.setData({ dateText: '2019-07-15' })
+    await wrapper.setProps({ allowCod: false })
 
     // verify validation error
     expect(vm.$el.querySelector('.restriction-messages').textContent.trim()).toContain(
@@ -176,9 +175,9 @@ describe('AgmDate', () => {
     )
   })
 
-  xit('displays disabled address + director change message when allowCoa and allowCod are both false', () => {
-    wrapper.setData({ dateText: '2019-07-15' })
-    wrapper.setProps({ allowCoa: false, allowCod: false })
+  xit('displays disabled address + director change message when allowCoa and allowCod are both false', async () => {
+    await wrapper.setData({ dateText: '2019-07-15' })
+    await wrapper.setProps({ allowCoa: false, allowCod: false })
 
     // verify validation error
     expect(vm.$el.querySelector('.restriction-messages').textContent.trim()).toContain(

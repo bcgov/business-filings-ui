@@ -2,35 +2,19 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
-import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { getVuexStore } from '@/store'
 import Directors from '@/components/common/Directors.vue'
 import { ConfigJson } from '@/resources/business-config'
+import { click } from '../click'
+import { setValue } from '../setValue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
-
-async function click (vm: any, id: string) {
-  const button = vm.$el.querySelector(id)
-  const window = button.ownerDocument.defaultView
-  const event = new window.Event('click')
-  button.dispatchEvent(event)
-  await Vue.nextTick()
-}
-
-async function setValue (vm: any, id: string, value: string) {
-  const input = vm.$el.querySelector(id)
-  input.value = value
-  const window = input.ownerDocument.defaultView
-  const event = new window.Event('input')
-  input.dispatchEvent(event)
-  await Vue.nextTick()
-}
 
 describe('Directors as a COOP', () => {
   let wrapper: Wrapper<Directors>
@@ -173,8 +157,7 @@ describe('Directors as a COOP', () => {
     // change one director to non-Canadian so that now 2 out of 3 are non-Canadian
     const directors = [...vm.allDirectors]
     directors[0].deliveryAddress.addressCountry = 'UK'
-    wrapper.setProps({ directors })
-    await Vue.nextTick()
+    await wrapper.setProps({ directors })
 
     // verify compliance message
     expect(vm.complianceMsg.title).toBe('Canadian Resident Directors Required')
@@ -191,8 +174,7 @@ describe('Directors as a COOP', () => {
     directors[0].deliveryAddress.addressRegion = 'ON'
     directors[1].deliveryAddress.addressRegion = 'ON'
     directors[2].deliveryAddress.addressRegion = 'ON'
-    wrapper.setProps({ directors })
-    await Vue.nextTick()
+    await wrapper.setProps({ directors })
 
     // verify compliance message
     expect(vm.complianceMsg.title).toBe('BC Resident Director Required')
@@ -247,8 +229,7 @@ describe('Directors as a COOP', () => {
 
   it('disables buttons/actions when instructed by parent component', async () => {
     // clear enabled prop
-    wrapper.setProps({ componentEnabled: false })
-    await Vue.nextTick()
+    await wrapper.setProps({ componentEnabled: false })
 
     // confirm that flag is set correctly
     expect(vm.componentEnabled).toEqual(false)
@@ -263,8 +244,7 @@ describe('Directors as a COOP', () => {
 
   it('enables buttons/actions when instructed by parent component', async () => {
     // set enabled prop
-    wrapper.setProps({ componentEnabled: true })
-    await Vue.nextTick()
+    await wrapper.setProps({ componentEnabled: true })
 
     // confirm that flag is set correctly
     expect(vm.componentEnabled).toEqual(true)
@@ -279,8 +259,7 @@ describe('Directors as a COOP', () => {
 
   it('displays Appoint New Director form when button clicked', async () => {
     // set enabled prop
-    wrapper.setProps({ componentEnabled: true })
-    await Vue.nextTick()
+    await wrapper.setProps({ componentEnabled: true })
 
     // confirm that flag is set correctly
     expect(vm.componentEnabled).toEqual(true)
@@ -411,7 +390,7 @@ describe('Directors as a COOP (no sync)', () => {
       })))
 
     // mount the component
-    wrapper = mount(Directors, { sync: false, store, vuetify })
+    wrapper = mount(Directors, { store, vuetify })
     vm = wrapper.vm
 
     // fetch original directors
@@ -788,8 +767,7 @@ describe('Directors as a BCOMP', () => {
 
   it('disables buttons/actions when instructed by parent component', async () => {
     // clear enabled prop
-    wrapper.setProps({ componentEnabled: false })
-    await Vue.nextTick()
+    await wrapper.setProps({ componentEnabled: false })
 
     // confirm that flag is set correctly
     expect(vm.componentEnabled).toEqual(false)
@@ -804,8 +782,7 @@ describe('Directors as a BCOMP', () => {
 
   it('enables buttons/actions when instructed by parent component', async () => {
     // set enabled prop
-    wrapper.setProps({ componentEnabled: true })
-    await Vue.nextTick()
+    await wrapper.setProps({ componentEnabled: true })
 
     // confirm that flag is set correctly
     expect(vm.componentEnabled).toEqual(true)
@@ -820,8 +797,7 @@ describe('Directors as a BCOMP', () => {
 
   it('displays Appoint New Director form when button clicked', async () => {
     // set enabled prop
-    wrapper.setProps({ componentEnabled: true })
-    await Vue.nextTick()
+    await wrapper.setProps({ componentEnabled: true })
 
     // confirm that flag is set correctly
     expect(vm.componentEnabled).toEqual(true)
@@ -917,7 +893,7 @@ describe('Appoint New Director tests', () => {
       })))
 
     // mount the component
-    wrapper = mount(Directors, { sync: false, store, vuetify })
+    wrapper = mount(Directors, { store, vuetify })
     vm = wrapper.vm
 
     // fetch original directors
@@ -933,8 +909,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('accepts valid First Name', async () => {
-    wrapper.find('#new-director__first-name').setValue('First First')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__first-name').setValue('First First')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.firstName).toBe('First First')
 
@@ -943,8 +919,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('displays error for invalid First Name - leading spaces', async () => {
-    wrapper.find('#new-director__first-name').setValue('  First')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__first-name').setValue('  First')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.firstName).toBe('  First')
 
@@ -953,8 +929,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('displays error for invalid First Name - trailing spaces', async () => {
-    wrapper.find('#new-director__first-name').setValue('First  ')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__first-name').setValue('First  ')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.firstName).toBe('First  ')
 
@@ -963,8 +939,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('allows First Name with multiple inline spaces', async () => {
-    wrapper.find('#new-director__first-name').setValue('First  First')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__first-name').setValue('First  First')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.firstName).toBe('First  First')
 
@@ -973,8 +949,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('accepts valid Middle Initial', async () => {
-    wrapper.find('#new-director__middle-initial').setValue('M M')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__middle-initial').setValue('M M')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.middleInitial).toBe('M M')
 
@@ -983,8 +959,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('displays error for invalid Middle Initial - leading spaces', async () => {
-    wrapper.find('#new-director__middle-initial').setValue('  M')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__middle-initial').setValue('  M')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.middleInitial).toBe('  M')
 
@@ -993,8 +969,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('displays error for invalid Middle Initial - trailing spaces', async () => {
-    wrapper.find('#new-director__middle-initial').setValue('M  ')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__middle-initial').setValue('M  ')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.middleInitial).toBe('M  ')
 
@@ -1003,8 +979,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('allows Middle Initial with multiple inline spaces', async () => {
-    wrapper.find('#new-director__middle-initial').setValue('M  M')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__middle-initial').setValue('M  M')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.middleInitial).toBe('M  M')
 
@@ -1013,8 +989,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('accepts valid Last Name', async () => {
-    wrapper.find('#new-director__last-name').setValue('Last Last')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__last-name').setValue('Last Last')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.lastName).toBe('Last Last')
 
@@ -1023,8 +999,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('displays error for invalid Last Name - leading spaces', async () => {
-    wrapper.find('#new-director__last-name').setValue('  Last')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__last-name').setValue('  Last')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.lastName).toBe('  Last')
 
@@ -1033,8 +1009,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('displays error for invalid Last Name - trailing spaces', async () => {
-    wrapper.find('#new-director__last-name').setValue('Last  ')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__last-name').setValue('Last  ')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.lastName).toBe('Last  ')
 
@@ -1043,8 +1019,8 @@ describe('Appoint New Director tests', () => {
   })
 
   it('allows Last Name with multiple inline spaces', async () => {
-    wrapper.find('#new-director__last-name').setValue('Last  Last')
-    await flushPromises() // needed due to sync:false
+    await wrapper.find('#new-director__last-name').setValue('Last  Last')
+    await Vue.nextTick()
 
     expect(vm.newDirector.officer.lastName).toBe('Last  Last')
 

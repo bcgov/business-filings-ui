@@ -18,7 +18,8 @@ describe('Alteration Filing', () => {
     })
 
     // verify content
-    expect(wrapper.html()).toBeUndefined()
+    expect(wrapper.exists()).toBe(true)
+    expect(wrapper.html()).toBeFalsy()
 
     wrapper.destroy()
   })

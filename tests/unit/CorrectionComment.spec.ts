@@ -13,7 +13,7 @@ describe('DetailComment', () => {
       vuetify
     })
 
-    expect(wrapper.find(CorrectionComment).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectionComment).exists()).toBe(true)
     expect(wrapper.find('.correction-comment').exists()).toBe(false)
 
     wrapper.destroy()
@@ -25,7 +25,7 @@ describe('DetailComment', () => {
       vuetify
     })
 
-    expect(wrapper.find(CorrectionComment).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectionComment).exists()).toBe(true)
     expect(wrapper.find('h4 span').text()).toBe('Detail')
     expect(wrapper.find('p').text()).toBe('A test comment')
 
