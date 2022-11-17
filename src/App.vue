@@ -146,12 +146,12 @@ export default {
       /** Currently supported entity types in Filings UI. */
       supportedEntityTypes: [
         CorpTypeCd.BENEFIT_COMPANY,
+        CorpTypeCd.BC_CCC,
         CorpTypeCd.BC_COMPANY,
         CorpTypeCd.BC_ULC_COMPANY,
-        CorpTypeCd.BC_CCC,
         CorpTypeCd.COOP,
-        CorpTypeCd.SOLE_PROP,
-        CorpTypeCd.PARTNERSHIP
+        CorpTypeCd.PARTNERSHIP,
+        CorpTypeCd.SOLE_PROP
       ]
     }
   },
@@ -676,11 +676,7 @@ export default {
       }
 
       // verify that NR type matches entity type from application
-      if (nr.legalType === 'CCC' && this.getEntityType === CorpTypeCd.BC_CCC) {
-        // TEMPORARY FIX:
-        // at the moment, Namex API is passing CCC instead of CC
-        // remove this when no longer needed
-      } else if (nr.legalType !== this.getEntityType) {
+      if (nr.legalType !== this.getEntityType) {
         this.nameRequestInvalidDialog = true
         throw new Error('Invalid NR request type')
       }

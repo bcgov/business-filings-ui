@@ -59,7 +59,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed('addStaffComment')).toBe(true)
   })
 
-  it('identifies whether Dissolve Company is allowed', () => {
+  it('identifies whether Dissolve Company for BC is allowed', () => {
     store.state.entityType = 'BC'
 
     const tests = [
@@ -87,7 +87,7 @@ describe('Allowable Actions Mixin', () => {
     }
   })
 
-  it('identifies whether Dissolve Company fo SP is allowed', () => {
+  it('identifies whether Dissolve Company for SP is allowed', () => {
     store.state.entityType = 'SP'
 
     const tests = [
@@ -287,12 +287,18 @@ describe('Allowable Actions Mixin', () => {
       { entityState: 'HISTORICAL', businessId: null, entityType: 'BC', expected: false },
       // only third condition (ULC):
       { entityState: 'HISTORICAL', businessId: null, entityType: 'ULC', expected: false },
-      // all conditions (BEN):
-      { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'BEN', expected: true },
       // all conditions (BC):
-      { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'BC', expected: true },
+      { entityState: 'ACTIVE', businessId: 'BC1234567', entityType: 'BC', expected: true },
+      // all conditions (BEN):
+      { entityState: 'ACTIVE', businessId: 'BC1234567', entityType: 'BEN', expected: true },
+      // all conditions (CCC):
+      { entityState: 'ACTIVE', businessId: 'BC1234567', entityType: 'CC', expected: true },
+      // all conditions (GP):
+      { entityState: 'ACTIVE', businessId: 'FM1234567', entityType: 'GP', expected: true },
+      // all conditions (SP):
+      { entityState: 'ACTIVE', businessId: 'FM1234567', entityType: 'SP', expected: true },
       // all conditions (ULC):
-      { entityState: 'ACTIVE', businessId: 'CP1234567', entityType: 'ULC', expected: true }
+      { entityState: 'ACTIVE', businessId: 'BC1234567', entityType: 'ULC', expected: true }
     ]
 
     for (const test of tests) {
