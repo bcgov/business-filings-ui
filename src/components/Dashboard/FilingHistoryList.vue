@@ -67,8 +67,8 @@
                   <span v-else><FiledLabel :filing="filing"/></span>
                 </div>
 
-                <!-- is this a FE BCOMP COA pending (not yet completed)? -->
-                <div v-else-if="filing.isFutureEffectiveBcompCoaPending" class="item-header__subtitle">
+                <!-- is this a future effctive COA pending (not yet completed)? -->
+                <div v-else-if="filing.isFutureEffectiveCoaPending" class="item-header__subtitle">
                   <span>FILED AND PENDING <FiledLabel :filing="filing" /></span>
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
@@ -252,8 +252,8 @@
               <StaffFiling :filing="filing" class="mt-6" />
             </template>
 
-            <!-- is this a FE BCOMP COA pending (not yet completed)? -->
-            <template v-else-if="filing.isFutureEffectiveBcompCoaPending">
+            <!-- is this a future effective COA pending (not yet completed)? -->
+            <template v-else-if="filing.isFutureEffectiveCoaPending">
               <!-- no details -->
             </template>
 
@@ -410,6 +410,8 @@ export default class FilingHistoryList extends Vue {
 
   @Getter getFilings!: Array<ApiFilingIF>
   @Getter hasCourtOrders!: boolean
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isFirm!: boolean
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
@@ -481,9 +483,9 @@ export default class FilingHistoryList extends Vue {
     // Also update pending COA data.
     let isCoaPending = false
     let coaEffectiveDate: Date = null
-    const blockerFiling = this.historyItems.find(item => {
+    const blockerFiling = this.historyItems.some(item => {
       if (this.isStatusPaid(item)) {
-        if (item.isFutureEffectiveBcompCoaPending) {
+        if (item.isFutureEffectiveCoaPending) {
           isCoaPending = true
           coaEffectiveDate = item.effectiveDate
         }
@@ -493,7 +495,7 @@ export default class FilingHistoryList extends Vue {
     })
     this.setIsCoaPending(isCoaPending)
     this.setCoaEffectiveDate(coaEffectiveDate)
-    this.setHasBlockerFiling(!!blockerFiling)
+    this.setHasBlockerFiling(blockerFiling)
 
     // if needed, highlight a specific filing
     if (this.highlightId) this.highlightFiling(this.highlightId)
@@ -542,11 +544,11 @@ export default class FilingHistoryList extends Vue {
         item.correctionLink = filing.correctionLink
       }
 
-      // add properties for BCOMP COAs
-      if (this.isBComp && this.isTypeChangeOfAddress(filing)) {
-        // is this a Future Effective BCOMP COA pending (not yet completed)?
+      // add properties for BEN/BC/CCC/ULC COAs
+      if (this.isBenBcCccUlc && this.isTypeChangeOfAddress(filing)) {
+        // is this a Future Effective COA pending (not yet completed)?
         // (NB: this is False after the effective date)
-        item.isFutureEffectiveBcompCoaPending = (
+        item.isFutureEffectiveCoaPending = (
           filing.isFutureEffective &&
           this.isStatusPaid(filing) &&
           this.isEffectiveDateFuture(effectiveDate)
@@ -673,7 +675,7 @@ export default class FilingHistoryList extends Vue {
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
-      if (this.isFirm || this.isBComp || this.isBcCompany || this.isCcc || this.isUlc) {
+      if (this.isFirm || this.isBenBcCccUlc) {
         correctionFiling = this.buildCorrectionFiling(this.currentFiling, correctionType)
       }
 
@@ -883,22 +885,9 @@ export default class FilingHistoryList extends Vue {
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
     conditions[3] = () => item.isFutureEffective
-    conditions[4] = () => (
-      this.isTypeIncorporationApplication(item) &&
-      !this.isBComp &&
-      !this.isBcCompany &&
-      !this.isCcc &&
-      !this.isUlc
-    )
+    conditions[4] = () => (this.isTypeIncorporationApplication(item) && !this.isBenBcCccUlc)
     conditions[5] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
-    conditions[6] = () => (
-      this.isTypeCorrection(item) &&
-      !this.isFirm &&
-      !this.isBComp &&
-      !this.isBcCompany &&
-      !this.isCcc &&
-      !this.isUlc
-    )
+    conditions[6] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBenBcCccUlc)
     conditions[7] = () => (this.isTypeRegistration(item) && !this.isFirm)
 
     return conditions.some(condition => condition())

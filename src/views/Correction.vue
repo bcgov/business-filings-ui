@@ -189,7 +189,7 @@ import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDia
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -219,6 +219,7 @@ export default class Correction extends Vue {
   }
 
   @State entityFoundingDate!: Date
+  @State filingData!: Array<FilingDataIF>
 
   @Getter isRoleStaff!: boolean
   @Getter getEntityName!: string

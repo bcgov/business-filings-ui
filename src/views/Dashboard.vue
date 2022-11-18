@@ -138,7 +138,7 @@
             </section>
 
             <!-- Proprietor / Partners -->
-            <section v-if="isSoleProp || isPartnership">
+            <section v-else-if="isSoleProp || isPartnership">
               <header class="aside-header mb-3">
                 <h2 v-if="isSoleProp" data-test-id="dashboard-proprietor-subtitle">Proprietor</h2>
                 <h2 v-if="isPartnership" data-test-id="dashboard-partners-subtitle">Partners</h2>
@@ -223,7 +223,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBComp', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
+    ...mapGetters(['isBenBcCccUlc', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
       'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier',
       'hasMissingInfoWarning', 'hasComplianceWarning']),
 
@@ -302,7 +302,7 @@ export default {
       if (this.isFirm) {
         const url = `${this.editUrl}${this.getIdentifier}/change`
         navigate(url)
-      } else if (this.isBComp) {
+      } else if (this.isBenBcCccUlc) {
         this.toggleCoaWarning()
       } else {
         this.goToStandaloneAddresses()

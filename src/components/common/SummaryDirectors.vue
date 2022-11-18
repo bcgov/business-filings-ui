@@ -6,7 +6,7 @@
         <v-subheader class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="isBComp">Mailing Address</span>
+          <span v-if="isBenBcCccUlc">Mailing Address</span>
           <span class="header-appointed">Appointed/Elected</span>
         </v-subheader>
 
@@ -67,7 +67,7 @@
                     <base-address :address="director.deliveryAddress" />
                   </div>
 
-                  <div class="address same-address" v-if="isBComp">
+                  <div class="address same-address" v-if="isBenBcCccUlc">
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                       Same as Delivery Address
                     </span>
@@ -153,7 +153,7 @@
                     <div class="address">
                       <base-address :address="director.deliveryAddress" />
                     </div>
-                    <div class="address same-address" v-if="isBComp">
+                    <div class="address same-address" v-if="isBenBcCccUlc">
                       <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                         Same as Delivery Address
                       </span>
@@ -195,7 +195,7 @@ export default class SummaryDirectors extends Vue {
   // Directors array passed into this component.
   @Prop({ default: () => [] }) readonly directors!: Array<DirectorIF>
 
-  @Getter isBComp!: boolean
+  @Getter isBenBcCccUlc!: boolean
 
   // Local properties
   protected directorSummary: Array<DirectorIF> = []

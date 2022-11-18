@@ -68,7 +68,7 @@ export default class CodDate extends Vue {
   @State lastAnnualReportDate!: string
   @State entityFoundingDate!: Date
   @State lastDirectorChangeDate!: string
-  @Getter isBComp!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter getCurrentDate!: string
 
   // Local properties.
@@ -92,8 +92,8 @@ export default class CodDate extends Vue {
   get minDate (): string {
     let date: string = null
 
-    if (this.isBComp) {
-      // For BComps, use the last COD filing in filing history.
+    if (this.isBenBcCccUlc) {
+      // For BEN/BC/CCC/ULC, use the last COD filing in filing history.
       date = (this.lastDirectorChangeDate || this.dateToYyyyMmDd(this.entityFoundingDate))
     } else if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
       // For Coops, use the latest of the following dates:

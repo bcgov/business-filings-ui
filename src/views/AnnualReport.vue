@@ -73,10 +73,7 @@
         <v-col cols="12" lg="9">
           <section id="annual-report-main-section">
             <!-- COOPs only: -->
-            <article
-              v-if="isCoop"
-              class="annual-report-article"
-            >
+            <article v-if="isCoop" class="annual-report-article">
               <!-- Page Title -->
               <header>
                 <h1 id="annual-report-header">File {{ARFilingYear}} Annual Report
@@ -146,11 +143,8 @@
               </section>
             </article>
 
-            <!-- BCOMPs only: -->
-            <article
-              v-if="isBComp"
-              class="annual-report-article"
-            >
+            <!-- BEN/BC/CCC/ULC only: -->
+            <article v-else-if="isBenBcCccUlc" class="annual-report-article">
               <!-- Page Title -->
               <header>
                 <h1 id="annual-report-header-BC">File {{ARFilingYear}} Annual Report
@@ -196,13 +190,11 @@
               </section>
             </article>
 
-            <!-- Both COOP and BCOMP: -->
-
             <!-- Certify -->
-            <section v-show="isBComp || agmDateValid">
+            <section v-show="isBenBcCccUlc || agmDateValid">
               <header>
-                <h2 id="certify-header" v-if="isBComp">3. Certify</h2>
-                <h2 id="certify-header" v-else>4. Certify</h2>
+                <h2 v-if="isCoop" id="certify-header">4. Certify</h2>
+                <h2 v-else-if="isBenBcCccUlc" id="certify-header">3. Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
               <Certify
@@ -234,11 +226,7 @@
     </v-container>
 
     <!-- Buttons ( COOP only ) -->
-    <v-container
-      v-if="isCoop"
-      class="list-item"
-      id="coop-buttons-container"
-    >
+    <v-container v-if="isCoop" id="coop-buttons-container" class="list-item">>
       <div class="buttons-left">
         <v-btn id="ar-save-btn" large
           v-if="isCurrentFilingEditable"
@@ -290,12 +278,8 @@
       </div>
     </v-container>
 
-    <!-- Buttons ( BCOMP only ) -->
-    <v-container
-      v-if="isBComp"
-      class="list-item"
-      id="bcorp-buttons-container"
-    >
+    <!-- Buttons ( BEN/BC/CCC/ULC only ) -->
+    <v-container v-else-if="isBenBcCccUlc" id="bcorp-buttons-container" class="list-item">
       <div class="buttons-left"></div>
 
       <div class="buttons-right">
@@ -348,7 +332,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
 import { CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -372,7 +356,8 @@ import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
     DateMixin,
     FilingMixin,
     LegalApiMixin,
-    ResourceLookupMixin]
+    ResourceLookupMixin
+  ]
 })
 export default class AnnualReport extends Vue {
   // Refs
@@ -390,8 +375,10 @@ export default class AnnualReport extends Vue {
   @State lastAddressChangeDate!: string
   @State lastDirectorChangeDate!: string
   @State lastAnnualReportDate!: string
+  @State filingData!: Array<FilingDataIF>
 
   @Getter isCoop!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isCurrentFilingEditable!: boolean
   @Getter getReportState!: string
@@ -405,7 +392,7 @@ export default class AnnualReport extends Vue {
   private agmDate = null
   private agmExtension = null
   private noAgm = null
-  private agmDateValid = false
+  protected agmDateValid = false
 
   // variables for OfficeAddresses component
   private originalAddresses: any = { registeredOffice: {}, recordsOffice: {} }
@@ -467,7 +454,7 @@ export default class AnnualReport extends Vue {
       // if filing is in past year then use last day in that year
       if (this.ARFilingYear < this.getCurrentYear) return `${this.ARFilingYear}-12-31`
     }
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       return this.nextARDate
     }
     // should never get here
@@ -475,7 +462,7 @@ export default class AnnualReport extends Vue {
   }
 
   get certifyMessage (): string {
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       return this.certifyText(FilingCodes.ANNUAL_REPORT_BC)
     }
     return this.certifyText(FilingCodes.ANNUAL_REPORT_OT)
@@ -552,7 +539,7 @@ export default class AnnualReport extends Vue {
       this.goToDashboard(true)
       return // don't continue
     }
-    if (this.isBComp && !this.nextARDate) {
+    if (this.isBenBcCccUlc && !this.nextARDate) {
       // eslint-disable-next-line no-console
       console.log('Annual Report error - missing Next AR Date!')
       this.goToDashboard(true)
@@ -590,7 +577,7 @@ export default class AnnualReport extends Vue {
     // for BComp, add AR filing code now
     // for Coop, code is added when AGM Date becomes valid
     // use existing Priority and Waive Fees flags
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, this.staffPaymentData.isPriority,
         (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
     }
@@ -686,9 +673,9 @@ export default class AnnualReport extends Vue {
         // records office is required for BCOMP only
         const registeredOffice = changeOfAddress.offices?.registeredOffice
         const recordsOffice = changeOfAddress.offices?.recordsOffice
-        if (this.isBComp && registeredOffice && recordsOffice) {
+        if (this.isBenBcCccUlc && registeredOffice && recordsOffice) {
           this.updatedAddresses = { registeredOffice, recordsOffice }
-        } else if (!this.isBComp && registeredOffice) {
+        } else if (!this.isBenBcCccUlc && registeredOffice) {
           this.updatedAddresses = { registeredOffice }
         } else {
           throw new Error('Invalid change of address object')
@@ -1018,7 +1005,7 @@ export default class AnnualReport extends Vue {
       }
     }
 
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       annualReport = {
         annualReport: {
           annualReportDate: this.asOfDate,
@@ -1234,7 +1221,7 @@ export default class AnnualReport extends Vue {
 
     // apply Priority flag to AR filing code only
     // simply re-add the AR code with the updated Priority flag and existing Waive Fees flag
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_BC, val.isPriority, waiveFees)
     } else if (this.isCoop) {
       this.updateFilingData('add', FilingCodes.ANNUAL_REPORT_OT, val.isPriority, waiveFees)
