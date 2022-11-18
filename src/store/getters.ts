@@ -102,8 +102,9 @@ export default {
   },
 
   /** Is True if entity is a Sole Proprietorship or General Partnership. */
-  isFirm (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.SOLE_PROP || state.entityType === CorpTypeCd.PARTNERSHIP)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  isFirm (state: StateIF, getters: any): boolean {
+    return (getters.isSoleProp || getters.isPartnership)
   },
 
   /** Is True if entity is a Sole Proprietorship. */
@@ -119,6 +120,11 @@ export default {
   /** Is True if entity is a BC Company. */
   isBcCompany (state: StateIF): boolean {
     return (state.entityType === CorpTypeCd.BC_COMPANY)
+  },
+
+  /** Is True if entity is a BC Community Contribution Company. */
+  isCcc (state: StateIF): boolean {
+    return (state.entityType === CorpTypeCd.BC_CCC)
   },
 
   /** Is True if entity is a BC ULC Company. */

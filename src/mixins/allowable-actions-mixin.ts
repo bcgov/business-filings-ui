@@ -8,17 +8,18 @@ import { AllowableActions, CorpTypeCd, Routes } from '@/enums'
 export default class AllowableActionsMixin extends Vue {
   @Getter getEntityType!: CorpTypeCd
   @Getter hasBlocker!: boolean
+  @Getter hasBlockerExceptStaffApproval!: boolean
   @Getter isBComp!: boolean
   @Getter isBcCompany!: boolean
-  @Getter isUlc!: boolean
+  @Getter isCcc!: boolean
+  @Getter isCoop!: boolean
+  @Getter isFirm!: boolean
+  @Getter isGoodStanding!: boolean
   @Getter isHistorical!: boolean
+  @Getter isPartnership!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isSoleProp!: boolean
-  @Getter isPartnership!: boolean
-  @Getter isFirm!: boolean
-  @Getter isCoop!: boolean
-  @Getter hasBlockerExceptStaffApproval!: boolean
-  @Getter isGoodStanding!: boolean
+  @Getter isUlc!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -37,10 +38,14 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DISSOLVE_COMPANY: {
-        const isDissolveAllowed = (!this.isHistorical && !!businessId &&
-          !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType))
-        // if its not SP/GP , then consider hasBlocker flag (existing)
-        if (!this.isFirm) {
+        const isDissolveAllowed = (
+          !this.isHistorical &&
+          !!businessId &&
+          !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType)
+        )
+
+        // if it's not SP/GP then consider hasBlocker flag
+        if (!this.isSoleProp && !this.isPartnership) {
           return isDissolveAllowed && !this.hasBlocker
         }
 
@@ -53,7 +58,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.EDIT_BUSINESS_PROFILE: {
-        return !!businessId
+        return !!businessId // FUTURE: disable for staff? see #14314
       }
 
       case AllowableActions.FILE_ADDRESS_CHANGE: {
@@ -77,11 +82,16 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.VIEW_CHANGE_COMPANY_INFO: {
-        const isCoopAllowed = (!!getFeatureFlag('special-resolution-ui-enabled') && this.isCoop)
-        return (!this.isHistorical &&
-          !!businessId &&
-          (this.isBComp || this.isBcCompany || this.isUlc || this.isSoleProp || this.isPartnership || isCoopAllowed)
+        const isAllowedEntityType = (
+          this.isBComp ||
+          this.isBcCompany ||
+          this.isCcc ||
+          (this.isCoop && !!getFeatureFlag('special-resolution-ui-enabled')) ||
+          this.isPartnership ||
+          this.isSoleProp ||
+          this.isUlc
         )
+        return (!this.isHistorical && !!businessId && isAllowedEntityType)
       }
 
       case AllowableActions.VIEW_ADD_DIGITAL_CREDENTIALS: {

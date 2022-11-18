@@ -27,6 +27,7 @@ export default class ResourceLookupMixin extends Vue {
 
     /**
      * Returns the current entity's full display name.
+     * Used by Correction component.
      * @returns the entity display name (if the configuration has been loaded)
      */
     displayName (): string {
@@ -35,6 +36,7 @@ export default class ResourceLookupMixin extends Vue {
 
     /**
      * Validates directors on edit/cease and return any warning messages.
+     * Used by StandaloneDirectorsFiling component.
      * @returns the compliance message or null (if the configuration has been loaded)
      */
     directorWarning (directors: Array<any>): AlertMessageIF {
@@ -89,7 +91,10 @@ export default class ResourceLookupMixin extends Vue {
       return null
     }
 
-    /** The obligations content for the current entity type. */
+    /**
+     * The obligations content for the current entity type.
+     * Used by TodoList component.
+     */
     get getObligations (): ObligationsResourceIF {
       return this.configObject?.obligations
     }

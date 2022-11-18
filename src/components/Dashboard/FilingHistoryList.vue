@@ -673,7 +673,7 @@ export default class FilingHistoryList extends Vue {
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
-      if (this.isBComp || this.isFirm) {
+      if (this.isFirm || this.isBComp || this.isBcCompany || this.isCcc || this.isUlc) {
         correctionFiling = this.buildCorrectionFiling(this.currentFiling, correctionType)
       }
 
@@ -883,9 +883,22 @@ export default class FilingHistoryList extends Vue {
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
     conditions[3] = () => item.isFutureEffective
-    conditions[4] = () => (this.isTypeIncorporationApplication(item) && !this.isBComp)
+    conditions[4] = () => (
+      this.isTypeIncorporationApplication(item) &&
+      !this.isBComp &&
+      !this.isBcCompany &&
+      !this.isCcc &&
+      !this.isUlc
+    )
     conditions[5] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
-    conditions[6] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBComp)
+    conditions[6] = () => (
+      this.isTypeCorrection(item) &&
+      !this.isFirm &&
+      !this.isBComp &&
+      !this.isBcCompany &&
+      !this.isCcc &&
+      !this.isUlc
+    )
     conditions[7] = () => (this.isTypeRegistration(item) && !this.isFirm)
 
     return conditions.some(condition => condition())

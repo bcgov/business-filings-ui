@@ -378,9 +378,11 @@ describe('Filing History List - misc functionality', () => {
     jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
     expect(vm.disableCorrection({ ...item })).toBe(false)
 
-    // conditions[6]: IA as a BEN
-    store.state.entityType = 'BEN'
-    expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
+    // conditions[6]: IA as a BEN/BC/CC/ULC
+    for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
+      store.state.entityType = entityType
+      expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
+    }
 
     // conditions[7]: Change of Registration as a firm
     for (const entityType of ['SP', 'GP']) {
@@ -388,8 +390,8 @@ describe('Filing History List - misc functionality', () => {
       expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
     }
 
-    // conditions[8]: Correction as a firm or BEN
-    for (const entityType of ['SP', 'GP', 'BEN']) {
+    // conditions[8]: Correction as a firm or BEN/BC/CC/ULC
+    for (const entityType of ['SP', 'GP', 'BEN', 'BC', 'CC', 'ULC']) {
       store.state.entityType = entityType
       expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
     }
@@ -424,7 +426,7 @@ describe('Filing History List - misc functionality', () => {
     // only conditions[3]
     expect(vm.disableCorrection({ ...item, isFutureEffective: true })).toBe(true)
 
-    // only conditions[4]: IA as not a BEN
+    // only conditions[4]: IA as not a BEN/BC/CC/ULC
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
@@ -432,7 +434,7 @@ describe('Filing History List - misc functionality', () => {
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
-    // only conditions[6]: Correction as not a firm nor BEN
+    // only conditions[6]: Correction as not a firm nor BEN/BC/CC/ULC
     store.state.entityType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
 
