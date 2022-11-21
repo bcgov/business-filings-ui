@@ -803,7 +803,7 @@ export default class TodoList extends Vue {
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BCOMP only
+        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CC/ULC only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)
@@ -966,7 +966,7 @@ export default class TodoList extends Vue {
 
   /**
    * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
-   * (Currently used for Coop ARs only, as BComps can't save draft ARs.)
+   * (Currently used for Coop ARs only, as BEN/BC/CCC/ULC can't save draft ARs.)
    */
   private async loadAnnualReport (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
@@ -990,6 +990,7 @@ export default class TodoList extends Vue {
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
+        nextArDate: annualReport.nextARDate, // BEN/BC/CCC/ULC only
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -1335,7 +1336,7 @@ export default class TodoList extends Vue {
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BCOMP only
+        this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
         this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
@@ -1359,7 +1360,7 @@ export default class TodoList extends Vue {
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BCOMP only
+        this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
         break

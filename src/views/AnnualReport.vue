@@ -1009,7 +1009,7 @@ export default class AnnualReport extends Vue {
       annualReport = {
         annualReport: {
           annualReportDate: this.asOfDate,
-          nextARDate: this.nextARDate, // used by BCOMP only
+          nextARDate: this.nextARDate, // used by BEN/BC/CCC/ULC only
           // NB: there was an enrichment ticket to populate offices and directors here
           offices: {
             registeredOffice: this.originalAddresses.registeredOffice,
