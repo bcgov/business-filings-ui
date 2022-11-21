@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import { NameRequestInfo } from '@/components/common/'
 
@@ -8,10 +8,6 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
-
-const localVue = createLocalVue()
-localVue.filter('VMask', data => data) // mock filter
-localVue.filter('capitalize', data => data) // mock filter
 
 const approvedCpNamerequest = {
   nrNum: 'NR 1234567',
@@ -28,7 +24,7 @@ const approvedCpNamerequest = {
     countryTypeCd: 'CA',
     // contact info
     emailAddress: 'email@example.com',
-    phoneNumber: '(123) 456-7890',
+    phoneNumber: '1234567890',
     // name info
     firstName: 'First',
     middleName: 'Middle',
@@ -60,7 +56,7 @@ const conditionalSpNamerequest = {
     countryTypeCd: 'CA',
     // contact info
     emailAddress: 'email@example.com',
-    phoneNumber: '(123) 456-7890',
+    phoneNumber: '1234567890',
     // name info
     firstName: 'First',
     middleName: 'Middle',
@@ -84,7 +80,6 @@ describe('NameRequestInfo component', () => {
       {
         propsData: { nameRequest: approvedCpNamerequest },
         store,
-        localVue,
         vuetify
       })
     await Vue.nextTick()
@@ -104,7 +99,7 @@ describe('NameRequestInfo component', () => {
     expect(vals.at(0).text()).toBe('BC Cooperative Association')
     expect(vals.at(1).text()).toBe('New Business')
     expect(vals.at(2).text()).toBe('July 4, 2022 at 11:59 pm Pacific time')
-    expect(vals.at(3).text()).toBe('APPROVED')
+    expect(vals.at(3).text()).toBe('Approved')
     expect(vals.at(4).text()).toBe('Not Required')
 
     expect(firstCol.find('#status .nr-status-icon.mdi-check').exists()).toBe(true)
@@ -136,7 +131,6 @@ describe('NameRequestInfo component', () => {
       {
         propsData: { nameRequest: conditionalSpNamerequest },
         store,
-        localVue,
         vuetify
       })
     await Vue.nextTick()
@@ -156,7 +150,7 @@ describe('NameRequestInfo component', () => {
     expect(vals.at(0).text()).toBe('BC Sole Proprietorship or Doing Business As (DBA)')
     expect(vals.at(1).text()).toBe('New Business')
     expect(vals.at(2).text()).toBe('July 4, 2021 at 11:59 pm Pacific time')
-    expect(vals.at(3).text()).toBe('EXPIRED')
+    expect(vals.at(3).text()).toBe('Expired')
     expect(vals.at(4).text()).toBe('Not Received')
 
     expect(firstCol.find('#status .nr-status-icon.mdi-check').exists()).toBe(false)
