@@ -53,7 +53,7 @@
                 </v-btn>
               </h3>
 
-              <!-- Annual Report verify checbox -->
+              <!-- Annual Report verify checkbox -->
               <div v-if="isShowAnnualReportCheckbox(item)" class="list-item__subtitle pt-4">
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
