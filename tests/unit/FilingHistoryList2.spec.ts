@@ -111,7 +111,7 @@ filings.forEach((filing: any, index: number) => {
       expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
-      expect(item.isFutureEffectiveBcompCoaPending).toBeDefined()
+      expect(item.isFutureEffectiveCoaPending).toBeDefined()
     })
 
     itIf(isAlteration(filing))('alteration filing', () => {
@@ -156,7 +156,7 @@ filings.forEach((filing: any, index: number) => {
         } else {
           expect(wrapper.find('.item-header__subtitle').text()).toContain('Filed by Registry Staff on')
         }
-      } else if (item.isFutureEffectiveBcompCoaPending) {
+      } else if (item.isFutureEffectiveCoaPending) {
         expect(wrapper.find('.item-header__subtitle').text()).toContain('FILED AND PENDING')
         expect(wrapper.find('.item-header__subtitle').text()).not.toContain('PAID')
         expect(wrapper.find('.item-header__subtitle').text()).toContain('(filed by Registry Staff on')
@@ -234,7 +234,7 @@ filings.forEach((filing: any, index: number) => {
 
       if (item.isTypeStaff) {
         expect(wrapper.findComponent(StaffFiling).exists()).toBe(true)
-      } else if (item.isFutureEffectiveBcompCoaPending) {
+      } else if (item.isFutureEffectiveCoaPending) {
         // no details
       } else if (item.isCompletedIa) {
         expect(wrapper.findComponent(CompletedIa).exists()).toBe(true)

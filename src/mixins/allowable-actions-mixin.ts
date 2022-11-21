@@ -10,16 +10,13 @@ export default class AllowableActionsMixin extends Vue {
   @Getter hasBlocker!: boolean
   @Getter hasBlockerExceptStaffApproval!: boolean
   @Getter isBComp!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isCcc!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter isCoop!: boolean
-  @Getter isFirm!: boolean
   @Getter isGoodStanding!: boolean
   @Getter isHistorical!: boolean
   @Getter isPartnership!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isSoleProp!: boolean
-  @Getter isUlc!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -83,13 +80,10 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.VIEW_CHANGE_COMPANY_INFO: {
         const isAllowedEntityType = (
-          this.isBComp ||
-          this.isBcCompany ||
-          this.isCcc ||
+          this.isBenBcCccUlc ||
           (this.isCoop && !!getFeatureFlag('special-resolution-ui-enabled')) ||
           this.isPartnership ||
-          this.isSoleProp ||
-          this.isUlc
+          this.isSoleProp
         )
         return (!this.isHistorical && !!businessId && isAllowedEntityType)
       }

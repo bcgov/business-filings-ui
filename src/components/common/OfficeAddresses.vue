@@ -93,7 +93,7 @@
           </div>
         </li>
 
-        <div v-if="isBComp">
+        <div v-if="isBenBcCccUlc">
           <div class="address-edit-header" v-if="showAddressForm">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -228,7 +228,7 @@ export default class OfficeAddresses extends Vue {
    */
   @Prop({ default: () => {} }) readonly addresses!: RegRecAddressesIF
 
-  @Getter isBComp!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter getIdentifier!: string
 
   /** Effective date for fetching office addresses. */
@@ -304,7 +304,7 @@ export default class OfficeAddresses extends Vue {
             deliveryAddress: { ...recordsOffice.deliveryAddress, actions: [] },
             mailingAddress: { ...recordsOffice.mailingAddress, actions: [] }
           }
-        } else if (this.isBComp) {
+        } else if (this.isBenBcCccUlc) {
           throw new Error('Missing records office address')
         }
       }).catch(error => {
@@ -357,7 +357,7 @@ export default class OfficeAddresses extends Vue {
     this.inheritDeliveryAddress =
       this.isSame(this.deliveryAddress, this.mailingAddress, ['addressType'])
 
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       this.recDeliveryAddress = { ...addresses?.recordsOffice?.deliveryAddress }
       this.recMailingAddress = { ...addresses?.recordsOffice?.mailingAddress }
 
@@ -406,7 +406,7 @@ export default class OfficeAddresses extends Vue {
       // inherit the registered delivery address
       this.mailingAddress = { ...this.deliveryAddress, addressType: 'mailing' }
     }
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       if (this.inheritRecDeliveryAddress) {
         // inherit the records delivery address
         this.recMailingAddress = { ...this.recDeliveryAddress, addressType: 'mailing' }
@@ -455,7 +455,7 @@ export default class OfficeAddresses extends Vue {
   /** Emits original addresses object to the parent page. */
   @Emit('original')
   private emitOriginalAddresses (): RegRecAddressesIF {
-    if (this.isBComp) {
+    if (this.isBenBcCccUlc) {
       return {
         registeredOffice: this.original.registeredOffice,
         recordsOffice: this.original.recordsOffice
@@ -487,7 +487,7 @@ export default class OfficeAddresses extends Vue {
         ? this.removeAction(mailingAddress, Actions.ADDRESSCHANGED)
         : this.addAction(mailingAddress, Actions.ADDRESSCHANGED)
 
-      if (this.isBComp) {
+      if (this.isBenBcCccUlc) {
         // update records delivery action
         this.isSame(this.recDeliveryAddress, this.original?.recordsOffice?.deliveryAddress)
           ? this.removeAction(recDeliveryAddress, Actions.ADDRESSCHANGED)

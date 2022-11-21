@@ -87,7 +87,7 @@
                     />
                   </div>
 
-                  <div class="form__row" v-if="isBComp">
+                  <div class="form__row" v-if="isBenBcCccUlc">
                     <v-checkbox
                       class="inherit-checkbox"
                       label="Mailing Address same as Delivery Address"
@@ -182,7 +182,7 @@
         <v-subheader v-if="allDirectors.length && !directorEditInProgress" class="director-header">
           <span>Names</span>
           <span>Delivery Address</span>
-          <span v-if="isBComp">Mailing Address</span>
+          <span v-if="isBenBcCccUlc">Mailing Address</span>
           <span>Appointed/Elected</span>
         </v-subheader>
 
@@ -244,7 +244,7 @@
                     <base-address :address="dir.deliveryAddress" />
                   </div>
 
-                  <div class="address same-address" v-if="isBComp">
+                  <div class="address same-address" v-if="isBenBcCccUlc">
                     <span v-if="isSame(dir.deliveryAddress, dir.mailingAddress)">
                       Same as Delivery Address
                     </span>
@@ -379,7 +379,7 @@
                       />
                     </div>
 
-                    <div class="form__row" v-if="isBComp">
+                    <div class="form__row" v-if="isBenBcCccUlc">
                       <v-checkbox
                         class="inherit-checkbox"
                         label="Mailing Address same as Delivery Address"
@@ -584,6 +584,7 @@ export default class Directors extends Vue {
 
   @Getter getIdentifier!: string
   @Getter getCurrentDate!: string
+  @Getter isBenBcCccUlc!: boolean
   @State lastAnnualReportDate!: string
   @State entityFoundingDate!: Date
   @State lastDirectorChangeDate!: string
@@ -958,8 +959,8 @@ export default class Directors extends Vue {
       cessationDate: null // when implemented: this.newDirector.cessationDate
     }
 
-    // Add the mailing address property if the entity is a BCOMP
-    if (this.isBComp) {
+    // Add the mailing address property if the entity is a BEN/BC/CCC/ULC
+    if (this.isBenBcCccUlc) {
       director.mailingAddress = { ...this.inProgressMailAddress }
     }
 
@@ -1079,7 +1080,7 @@ export default class Directors extends Vue {
         director.deliveryAddress = this.inProgressDelivAddress
       }
 
-      if (this.isBComp) {
+      if (this.isBenBcCccUlc) {
         if (!Object.values(this.inProgressMailAddress).every(el => el === undefined)) {
           director.mailingAddress = this.inProgressMailAddress
         }

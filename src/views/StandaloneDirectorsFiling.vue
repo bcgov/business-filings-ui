@@ -81,7 +81,7 @@
                       one for each unique date.</p>
 
                   <v-alert type="info" outlined
-                    v-if="!isBComp"
+                    v-if="!isBenBcCccUlc"
                     icon="mdi-information"
                     class="white-background"
                   >
@@ -342,9 +342,11 @@ export default class StandaloneDirectorsFiling extends Vue {
   }
 
   @State entityFoundingDate!: Date
+  @State filingData!: Array<FilingDataIF>
 
   @Getter isRoleStaff!: boolean
   @Getter getEntityName!: string
+  @Getter isBenBcCccUlc!: boolean
 
   // variables
   private updatedDirectors = []
@@ -428,12 +430,12 @@ export default class StandaloneDirectorsFiling extends Vue {
 
   /** The Director Change fee code based on entity type. */
   get feeCode (): FilingCodes {
-    return this.isBComp ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
+    return this.isBenBcCccUlc ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
   }
 
   /** The Free Director Change fee code based on entity type. */
   get freeFeeCode (): FilingCodes {
-    return this.isBComp ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
+    return this.isBenBcCccUlc ? FilingCodes.FREE_DIRECTOR_CHANGE_BC : FilingCodes.FREE_DIRECTOR_CHANGE_OT
   }
 
   /** Called when component is created. */

@@ -40,8 +40,8 @@ export interface HistoryItemIF {
   // Registrations only
   isCompletedRegistration?: boolean
 
-  // BCOMP COAs only
-  isFutureEffectiveBcompCoaPending?: boolean
+  // BEN/BC/CCC/ULC COAs only
+  isFutureEffectiveCoaPending?: boolean
 
   // alterations only
   courtOrderNumber?: string

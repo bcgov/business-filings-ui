@@ -107,9 +107,9 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
 
-      <!-- Records Office (BCOMPs and CORPs) -->
+      <!-- Records Office (BEN/BC/CCC/ULC and CORPs) -->
       <v-expansion-panel id="records-office-panel"
-        v-if="isBComp || isCorp"
+        v-if="isBenBcCccUlc || isCorp"
         class="align-items-top"
         :class="{
           'address-overlay': isCoaPending,
@@ -231,7 +231,7 @@ export default class AddressListSm extends Vue {
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
-  @Getter isBComp!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter isCorp!: boolean
   @Getter isFirm!: boolean
   @Getter isCoaPending!: boolean

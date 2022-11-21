@@ -75,13 +75,11 @@
             <header>
               <h1 id="address-change-header">Address Change</h1>
 
-              <p>
-                <span v-if="isCoop">Please change your Registered Office Address.</span>
-                <span v-if="isBComp">Please change your Registered Office Address and Records Address.</span>
-              </p>
+              <p v-if="isCoop">Please change your Registered Office Address.</p>
+              <p v-else-if="isBenBcCccUlc">Please change your Registered Office Address and Records Address.</p>
 
               <v-alert type="info" outlined
-                v-if="isBComp"
+                v-if="isBenBcCccUlc"
                 icon="mdi-information"
                 class="white-background"
               >
@@ -203,7 +201,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -233,8 +231,10 @@ export default class StandaloneOfficeAddressFiling extends Vue {
   }
 
   @State entityFoundingDate!: Date
+  @State filingData!: Array<FilingDataIF>
 
   @Getter isCoop!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter isRoleStaff!: boolean
   @Getter getEntityName!: string
 
@@ -312,7 +312,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
 
   /** Local computed value for the fee code based on entity type */
   get feeCode (): FilingCodes {
-    return this.isBComp ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT
+    return this.isBenBcCccUlc ? FilingCodes.ADDRESS_CHANGE_BC : FilingCodes.ADDRESS_CHANGE_OT
   }
 
   /** Called when component is created. */
@@ -432,9 +432,9 @@ export default class StandaloneOfficeAddressFiling extends Vue {
         // records office is required for BCOMP only
         const registeredOffice = changeOfAddress.offices?.registeredOffice
         const recordsOffice = changeOfAddress.offices?.recordsOffice
-        if (this.isBComp && registeredOffice && recordsOffice) {
+        if (this.isBenBcCccUlc && registeredOffice && recordsOffice) {
           this.updatedAddresses = { registeredOffice, recordsOffice }
-        } else if (!this.isBComp && registeredOffice) {
+        } else if (!this.isBenBcCccUlc && registeredOffice) {
           this.updatedAddresses = { registeredOffice }
         } else {
           throw new Error('Invalid change of address object')

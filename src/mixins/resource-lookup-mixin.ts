@@ -10,7 +10,7 @@ import { FilingCodes } from '@/enums'
 @Component({})
 export default class ResourceLookupMixin extends Vue {
     @State configObject!: any
-    @Getter isBComp!: boolean
+    @Getter isBenBcCccUlc!: boolean
 
     /**
      * Returns certify message using the configuration lookup object.
@@ -40,7 +40,7 @@ export default class ResourceLookupMixin extends Vue {
      * @returns the compliance message or null (if the configuration has been loaded)
      */
     directorWarning (directors: Array<any>): AlertMessageIF {
-      const filingCode = this.isBComp ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
+      const filingCode = this.isBenBcCccUlc ? FilingCodes.DIRECTOR_CHANGE_BC : FilingCodes.DIRECTOR_CHANGE_OT
       // FUTURE: Too much code for this. Can be condensed and made more reusable.
       if (directors?.length) {
         const warnings = this.configObject?.flows?.find(x => x.feeCode === filingCode)?.warnings

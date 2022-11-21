@@ -132,6 +132,12 @@ export default {
     return (state.entityType === CorpTypeCd.BC_ULC_COMPANY)
   },
 
+  /** Is True if entity is a BEN/BC/CCC/ULC. */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  isBenBcCccUlc (state: StateIF, getters: any): boolean {
+    return (getters.isBComp || getters.isBcCompany || getters.isCcc || getters.isUlc)
+  },
+
   /** Is True if Staff role is set. */
   isRoleStaff (state: StateIF): boolean {
     return state.keycloakRoles.includes('staff')

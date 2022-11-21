@@ -53,10 +53,8 @@
                 </v-btn>
               </h3>
 
-              <!-- BCOMP AR special case -->
-              <div v-if="businessId && isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)"
-                class="list-item__subtitle pt-4"
-              >
+              <!-- Annual Report verify checbox -->
+              <div v-if="isShowAnnualReportCheckbox(item)" class="list-item__subtitle pt-4">
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
                   id="enable-checkbox"
@@ -64,7 +62,7 @@
                   label="All information about the Office Addresses and Current Directors is correct."
                   :disabled="!item.enabled || isCoaPending"
                   v-model="enableCheckbox[index]"
-                  @click.native.stop
+                  @click.stop
                 />
               </div>
 
@@ -101,7 +99,7 @@
                 </div>
 
                 <!-- alteration in good standing -->
-                <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBComp && !isCoop"
+                <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBenBcCccUlc && !isCoop"
                   class="todo-subtitle my-4"
                 >
                   <span>Your business is ready to alter from a {{ item.legalType }} to a BC
@@ -168,8 +166,8 @@
 
             <div class="list-item__actions">
               <div style="width:100%">
-                <!-- BCOMP AR special case -->
-                <template v-if="isBComp && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
+                <!-- BEN/BC/CCC/ULC AR special case -->
+                <template v-if="isBenBcCccUlc && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
                   <p class="date-subtitle">Due: {{item.arDueDate}}</p>
                 </template>
 
@@ -390,7 +388,7 @@
                     class="btn-file-now"
                     color="primary"
                     :disabled="isFileAnnualReportDisabled(item, index)"
-                    @click.native.stop="doFileNow(item)"
+                    @click.stop="doFileNow(item)"
                   >
                     <span>File Annual Report</span>
                   </v-btn>
@@ -560,6 +558,7 @@ export default class TodoList extends Vue {
   @Getter isCoaPending!: boolean
   @Getter getTodoListResource!: TodoListResourceIF
   @Getter getBusinessWarnings!: BusinessWarningIF
+  @Getter isBenBcCccUlc!: boolean
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -634,11 +633,22 @@ export default class TodoList extends Vue {
     return this.getTodoListResource?.title
   }
 
+  /** Whether the Annual Report verify checkbox should be shown. */
+  protected isShowAnnualReportCheckbox (item: TodoItemIF): boolean {
+    return (
+      item.enabled &&
+      this.businessId &&
+      this.isBenBcCccUlc &&
+      this.isTypeAnnualReport(item) &&
+      this.isStatusNew(item)
+    )
+  }
+
   /** Whether the File Annual Report button should be disabled. */
   protected isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
     return (
       !item.enabled ||
-      (this.isBComp && !this.enableCheckbox[index]) ||
+      (this.isBenBcCccUlc && !this.enableCheckbox[index]) ||
       !this.isAllowed(AllowableActions.FILE_ANNUAL_REPORT)
     )
   }
@@ -775,7 +785,7 @@ export default class TodoList extends Vue {
       const ARFilingYear = header.ARFilingYear
 
       let subtitle: string = null
-      if (task.enabled && !this.isBComp) {
+      if (task.enabled && !this.isBenBcCccUlc) {
         subtitle = '(including Address and/or Director Change)'
       }
 
@@ -793,7 +803,7 @@ export default class TodoList extends Vue {
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BCOMP only
+        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CC/ULC only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)
@@ -956,7 +966,7 @@ export default class TodoList extends Vue {
 
   /**
    * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
-   * (Currently used for Coop ARs only, as BComps can't save draft ARs.)
+   * (Currently used for Coop ARs only, as BEN/BC/CCC/ULC can't save draft ARs.)
    */
   private async loadAnnualReport (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
@@ -980,6 +990,7 @@ export default class TodoList extends Vue {
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
+        nextArDate: annualReport.nextARDate, // BEN/BC/CCC/ULC only
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -1325,7 +1336,7 @@ export default class TodoList extends Vue {
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BCOMP only
+        this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
         this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
@@ -1349,7 +1360,7 @@ export default class TodoList extends Vue {
         this.setARFilingYear(item.ARFilingYear)
         this.setArMinDate(item.arMinDate) // COOP only
         this.setArMaxDate(item.arMaxDate) // COOP only
-        this.setNextARDate(item.nextArDate) // BCOMP only
+        this.setNextARDate(item.nextArDate) // BEN/BC/CCC/ULC only
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: item.filingId.toString() } })
         break

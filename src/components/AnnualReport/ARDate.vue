@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="ar-date-container" v-if="isBComp">
+  <v-card flat class="ar-date-container" v-if="isBenBcCccUlc">
     <div class="timeline">
       <label>Annual Report Date</label>
       <span class="date ar-date">{{formatYyyyMmDd(nextARDate)}}</span>
@@ -20,7 +20,7 @@ import { DateMixin } from '@/mixins'
 })
 export default class ArDate extends Vue {
   @State nextARDate!: string
-  @Getter isBComp!: boolean
+  @Getter isBenBcCccUlc!: boolean
   @Getter getCurrentDate!: string
 }
 </script>
