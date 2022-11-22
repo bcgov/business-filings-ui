@@ -134,7 +134,7 @@ export default class NameRequestInfo extends Vue {
     return capitalize(this.nameRequestDetails.status)
   }
 
-  /** Return condition/consent string */
+  /** The condition/consent string */
   get conditionConsent (): string {
     if (this.nameRequestDetails.status === NameRequestStates.APPROVED) {
       return this.NOT_REQUIRED_STATE
@@ -162,7 +162,7 @@ export default class NameRequestInfo extends Vue {
     return name
   }
 
-  /** the formatted address string */
+  /** The formatted address string */
   get applicantAddress (): string {
     // Get Address info
     const city = this.nameRequestApplicant.city
@@ -184,6 +184,7 @@ export default class NameRequestInfo extends Vue {
     return `${address}, ${city}, ${stateProvince}, ${postal}, ${country}`
   }
 
+  /** The formatted phone number */
   get formattedPhoneNumber (): string {
     return formatPhoneNumber(this.nameRequestApplicant.phoneNumber)
   }
