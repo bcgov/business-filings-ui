@@ -378,6 +378,11 @@ describe('Filing History List - misc functionality', () => {
     jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
     expect(vm.disableCorrection({ ...item })).toBe(false)
 
+    // conditions[3]: FE filing that is Completed or Corrected
+    for (const status of ['COMPLETED', 'CORRECTED']) {
+      expect(vm.disableCorrection({ ...item, isFutureEffective: true, status })).toBe(false)
+    }
+
     // conditions[6]: IA as a BEN/BC/CC/ULC
     for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
       store.state.entityType = entityType
@@ -424,7 +429,9 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.disableCorrection({ ...item, isTypeStaff: true })).toBe(true)
 
     // only conditions[3]
-    expect(vm.disableCorrection({ ...item, isFutureEffective: true })).toBe(true)
+    for (const status of ['CANCELLED', 'DELETED', 'DRAFT', 'ERROR', 'NEW', 'PAID', 'PENDING', 'WITHDRAWN']) {
+      expect(vm.disableCorrection({ ...item, isFutureEffective: true, status })).toBe(true)
+    }
 
     // only conditions[4]: IA as not a BEN/BC/CC/ULC
     store.state.entityType = 'CP'
