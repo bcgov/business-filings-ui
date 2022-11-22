@@ -23,7 +23,7 @@
     <v-expansion-panels v-if="showTodoPanel" accordion v-model="panel">
       <v-expansion-panel
         class="align-items-top todo-item px-6 py-5"
-        v-for="(item, index) in orderBy(todoItems, 'order')"
+        v-for="(item, index) in orderedTodoItems"
         :key="index"
         :class="{
           'disabled': !item.enabled,
@@ -488,7 +488,6 @@ import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import axios from '@/axios-auth'
-import Vue2Filters from 'vue2-filters' // needed for orderBy
 import { navigate } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
 import { NameRequestInfo, ContactInfo } from '@/components/common'
@@ -527,8 +526,7 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialo
     EnumMixin,
     FilingMixin,
     LegalApiMixin,
-    PayApiMixin,
-    Vue2Filters.mixin
+    PayApiMixin
   ]
 })
 export default class TodoList extends Vue {
@@ -631,6 +629,11 @@ export default class TodoList extends Vue {
   /** The Todo List title. */
   get todoListTitle (): string {
     return this.getTodoListResource?.title
+  }
+
+  /** The todo items sorted by "order" key. */
+  get orderedTodoItems (): Array<TodoItemIF> {
+    return this.todoItems.sort((a, b) => (a.order - b.order))
   }
 
   /** Whether the Annual Report verify checkbox should be shown. */

@@ -6,7 +6,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
-import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary and for orderBy
+import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import { fetchConfig, initLdClient, navigate } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
@@ -25,7 +25,7 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 Vue.use(Affix)
-Vue.use(Vue2Filters)
+Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
 // main code
 async function start () {

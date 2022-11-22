@@ -8,22 +8,22 @@
           </li>
           <li class="mt-4">
             <span class="key">Entity Type:</span>
-            <span class="val">{{ entityTypeDescription() }}</span>
+            <span class="val">{{ entityTypeDescription }}</span>
           </li>
           <li>
             <span class="key">Request Type:</span>
-            <span class="val">{{ requestType() }}</span>
+            <span class="val">{{ requestType }}</span>
           </li>
           <li>
             <span class="key">Expiry Date:</span>
-            <span class="val">{{ formattedExpirationDate() }}</span>
+            <span class="val">{{ formattedExpirationDate }}</span>
           </li>
           <li id="status">
             <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED ||
                           nameRequestDetails.status === NameRequestStates.CONDITIONAL"
               color="green" class="nr-status-icon">mdi-check</v-icon>
             <span class="key">Status:</span>
-            <span class="val">{{ nameRequestDetails.status | capitalize }}</span>
+            <span class="val">{{ formattedStatus }}</span>
           </li>
           <li id="condition-consent">
             <v-icon v-if="conditionConsent === NOT_REQUIRED_STATE ||
@@ -45,11 +45,11 @@
           </li>
           <li class="mt-4">
             <span class="key">Name:</span>
-            <span class="val">{{ applicantName() }}</span>
+            <span class="val">{{ applicantName }}</span>
           </li>
           <li>
             <span class="key">Address:</span>
-            <span class="val">{{ applicantAddress() }}</span>
+            <span class="val">{{ applicantAddress }}</span>
           </li>
           <li>
             <span class="key">Email:</span>
@@ -57,7 +57,7 @@
           </li>
           <li>
             <span class="key">Phone:</span>
-            <span class="val">{{ nameRequestApplicant.phoneNumber | VMask("(###) ###-####") }}</span>
+            <span class="val">{{ formattedPhoneNumber }}</span>
           </li>
         </ul>
       </v-col>
@@ -70,13 +70,12 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { getName } from 'country-list'
-import { VueMaskFilter } from 'v-mask'
+import { capitalize, formatPhoneNumber } from '@/utils'
 import { NameRequestStates } from '@/enums'
 import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 @Component({
-  filters: { 'VMask': VueMaskFilter },
   mixins: [
     DateMixin,
     EnumMixin,
@@ -88,8 +87,9 @@ export default class NameRequestInfo extends Vue {
 
   @Getter isSoleProp!: boolean
 
-  // Enum for template
+  // For template
   readonly NameRequestStates = NameRequestStates
+  readonly capitalize = capitalize
 
   // Constants
   readonly RECEIVED_STATE = 'Received'
@@ -111,7 +111,7 @@ export default class NameRequestInfo extends Vue {
   }
 
   /** The entity title  */
-  protected entityTypeDescription (): string {
+  get entityTypeDescription (): string {
     const corpTypeDescription = this.getCorpTypeDescription(this.parsedNameRequest.entityType)
     if (this.isSoleProp) {
       return `${corpTypeDescription} or Doing Business As (DBA)`
@@ -120,16 +120,21 @@ export default class NameRequestInfo extends Vue {
   }
 
   /** The request type */
-  protected requestType (): string {
+  get requestType (): string {
     return 'New Business'
   }
 
-  /** Return formatted expiration date */
-  protected formattedExpirationDate (): string {
+  /** The formatted expiration date */
+  get formattedExpirationDate (): string {
     return this.apiToPacificDateTime(this.nameRequestDetails.expirationDate, true)
   }
 
-  /** Return condition/consent string */
+  /** The formatted status */
+  get formattedStatus (): string {
+    return capitalize(this.nameRequestDetails.status)
+  }
+
+  /** The condition/consent string */
   get conditionConsent (): string {
     if (this.nameRequestDetails.status === NameRequestStates.APPROVED) {
       return this.NOT_REQUIRED_STATE
@@ -146,8 +151,8 @@ export default class NameRequestInfo extends Vue {
     return this.NOT_RECEIVED_STATE
   }
 
-  /** Return formatted applicant name */
-  protected applicantName (): string {
+  /** The formatted applicant name */
+  get applicantName (): string {
     let name = this.nameRequestApplicant.firstName
     if (this.nameRequestApplicant.middleName) {
       name = `${name} ${this.nameRequestApplicant.middleName} ${this.nameRequestApplicant.lastName}`
@@ -157,8 +162,8 @@ export default class NameRequestInfo extends Vue {
     return name
   }
 
-  /** Return formatted address string */
-  protected applicantAddress (): string {
+  /** The formatted address string */
+  get applicantAddress (): string {
     // Get Address info
     const city = this.nameRequestApplicant.city
     const stateProvince = this.nameRequestApplicant.stateProvinceCode
@@ -177,6 +182,11 @@ export default class NameRequestInfo extends Vue {
     }
 
     return `${address}, ${city}, ${stateProvince}, ${postal}, ${country}`
+  }
+
+  /** The formatted phone number */
+  get formattedPhoneNumber (): string {
+    return formatPhoneNumber(this.nameRequestApplicant.phoneNumber)
   }
 }
 </script>

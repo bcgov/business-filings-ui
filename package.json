@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "5.7.20",
+  "version": "5.7.21",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -38,7 +38,6 @@
     "regenerator-runtime": "^0.13.9",
     "register-service-worker": "^1.7.2",
     "sbc-common-components": "3.0.5",
-    "v-mask": "^2.3.0",
     "vue": "^2.7.10",
     "vue-affix": "^0.5.2",
     "vue-router": "^3.6.5",

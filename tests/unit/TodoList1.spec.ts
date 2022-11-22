@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import Vue2Filters from 'vue2-filters'
 import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 import { createLocalVue, mount } from '@vue/test-utils'
@@ -24,7 +23,6 @@ import PaymentUnsuccessful from '@/components/Dashboard/TodoList/PaymentUnsucces
 Vue.config.silent = true
 
 Vue.use(Vuetify)
-Vue.use(Vue2Filters)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
