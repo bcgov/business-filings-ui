@@ -884,7 +884,7 @@ export default class FilingHistoryList extends Vue {
     conditions[0] = () => !this.isAllowed(AllowableActions.FILE_CORRECTION)
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
-    conditions[3] = () => item.isFutureEffective
+    conditions[3] = () => (item.isFutureEffective && !this.isStatusCompleted(item) && !this.isStatusCorrected(item))
     conditions[4] = () => (this.isTypeIncorporationApplication(item) && !this.isBenBcCccUlc)
     conditions[5] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
     conditions[6] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBenBcCccUlc)
