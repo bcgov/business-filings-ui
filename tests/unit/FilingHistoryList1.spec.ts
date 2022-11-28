@@ -938,7 +938,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays a "future effective pending" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.nameRequest = { nrNumber: 'NR 1234567' }
+    store.state.nameRequest = { nrNum: 'NR 1234567' }
     store.state.entityType = 'BEN'
     store.state.filings = [
       {
@@ -1002,7 +1002,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays a Paid IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.nameRequest = { nrNumber: 'NR 1234567' }
+    store.state.nameRequest = { nrNum: 'NR 1234567' }
     store.state.entityType = 'BEN'
     store.state.filings = [
       {
@@ -1128,7 +1128,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays a Paid IA (business mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.nameRequest = { nrNumber: 'NR 1234567' }
+    store.state.nameRequest = { nrNum: 'NR 1234567' }
     store.state.entityType = 'BEN'
     store.state.filings = [
       {

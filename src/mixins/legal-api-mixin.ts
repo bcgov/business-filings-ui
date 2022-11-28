@@ -2,7 +2,7 @@
 import { Component } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { CommonMixin } from '@/mixins'
-import { ApiDocumentsIF, CommentIF, DocumentIF } from '@/interfaces'
+import { ApiDocumentsIF, CommentIF, DocumentIF, NameRequestIF } from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
@@ -82,7 +82,7 @@ export default class LegalApiMixin extends CommonMixin {
    * @param filingId the NR number
    * @returns a promise to return the NR data from the response
    */
-  async fetchNameRequest (nrNumber: string): Promise<any> {
+  async fetchNameRequest (nrNumber: string): Promise<NameRequestIF> {
     const url = `nameRequests/${nrNumber}`
     return axios.get(url)
       // workaround because data is at "response.data.data"

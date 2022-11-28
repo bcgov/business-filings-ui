@@ -116,7 +116,6 @@
 
         <v-col cols="12" md="3">
           <dl>
-
             <!-- Registration Date -->
             <template v-if="businessId && isFirm">
               <dt class="mr-2">Registration Date:</dt>

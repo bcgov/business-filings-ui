@@ -2,14 +2,12 @@
 // NB: this is how to re-export a type in TS
 // https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/
 import type { CorpInfoIF } from '@bcrs-shared-components/corp-type-module'
-import type { AlterationIF, ChangeOfNameIF, ContactPointIF, NameRequestIF,
-  NameTranslationIF, NameRequestDetailsIF, NameRequestApplicantIF, ShareStructureIF, CourtOrderIF,
+import type { AlterationIF, ChangeOfNameIF, ContactPointIF, NameTranslationIF, ShareStructureIF, CourtOrderIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 export type { CorpInfoIF }
 
-export type { AlterationIF, ChangeOfNameIF, ContactPointIF, NameRequestIF,
-  NameTranslationIF, NameRequestDetailsIF, NameRequestApplicantIF, ShareStructureIF, CourtOrderIF,
+export type { AlterationIF, ChangeOfNameIF, ContactPointIF, NameTranslationIF, ShareStructureIF, CourtOrderIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 
@@ -30,6 +28,7 @@ export * from './filing-data-interface'
 export * from './dissolution-filing-interface'
 export * from './form-interface'
 export * from './history-item-interface'
+export * from './name-request-interface'
 export * from './officer-interface'
 export * from './party-interface'
 export * from './payment-error-interface'
