@@ -15,12 +15,13 @@ export default class NameRequestMixin extends Vue {
   isNrValid (nr: NameRequestIF): boolean {
     return Boolean(
       nr &&
-      nr.state &&
+      nr.applicants &&
       nr.expirationDate &&
+      nr.legalType &&
       !!this.getNrApprovedName(nr) &&
       nr.nrNum &&
-      nr.legalType &&
-      (nr.request_action_cd === NameRequestTypes.NEW)
+      (nr.request_action_cd === NameRequestTypes.NEW) &&
+      nr.state &&
     )
   }
 
