@@ -207,8 +207,7 @@ export default {
   },
 
   getNrNumber (state: StateIF): string {
-    // workaround for old or new property name
-    return (state.nameRequest?.nrNum || state.nameRequest?.nrNumber)
+    return (state.nameRequest?.nrNum)
   },
 
   isCurrentFilingEditable (state: StateIF): boolean {

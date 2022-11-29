@@ -52,7 +52,7 @@ describe('EntityInfo - data', () => {
     store.state.entityName = 'My Named Company'
     store.state.entityStatus = 'DRAFT_APP'
     store.state.entityType = 'BEN'
-    store.state.nameRequest = { nrNumber: 'NR 1234567' }
+    store.state.nameRequest = { nrNum: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
@@ -96,7 +96,7 @@ describe('EntityInfo - data', () => {
     store.state.entityName = 'My Future Company'
     store.state.entityStatus = 'FILED_APP'
     store.state.entityType = 'BEN'
-    store.state.nameRequest = { nrNumber: 'NR 1234567' }
+    store.state.nameRequest = { nrNum: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()

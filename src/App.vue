@@ -106,7 +106,8 @@ import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadc
   getStaffDashboardBreadcrumb } from '@/resources'
 import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
   NameRequestMixin } from '@/mixins'
-import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, PartyIF, TaskTodoIF } from '@/interfaces'
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, NameRequestIF, PartyIF, TaskTodoIF }
+  from '@/interfaces'
 import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
   NigsMessage, Routes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -578,13 +579,18 @@ export default {
         throw new Error(`Invalid ${filingName} filing - filing status`)
       }
 
-      const nameRequest = filing[filingName].nameRequest
+      // NB: different object from actual NR
+      const nameRequest = filing[filingName].nameRequest as {
+        legalName?: string
+        legalType: CorpTypeCd
+        nrNumber: string
+      }
       if (!nameRequest) {
         throw new Error(`Invalid ${filingName} filing - Name Request object`)
       }
 
       // verify that this is a supported entity type
-      const legalType = nameRequest.legalType as CorpTypeCd
+      const legalType = nameRequest.legalType
       if (!legalType || !this.supportedEntityTypes.includes(legalType)) {
         throw new Error(`Invalid ${filingName} filing - legal type`)
       }
@@ -594,11 +600,10 @@ export default {
       this.setEntityType(legalType)
 
       // store NR Number if present
-      // (look for old or new property name)
-      this.localNrNumber = nameRequest?.nrNum || nameRequest?.nrNumber || null
+      this.localNrNumber = nameRequest.nrNumber || null
 
       // store Legal Name if present
-      this.setEntityName(nameRequest?.legalName || null)
+      this.setEntityName(nameRequest.legalName || null)
 
       switch (status) {
         case FilingStatus.DRAFT:
@@ -668,7 +673,7 @@ export default {
       this.setFilings([filingItem])
     },
 
-    storeNrData (nr: any, ia: any): void {
+    storeNrData (nr: NameRequestIF, ia: any): void {
       // check if NR is valid
       if (!this.isNrValid(nr)) {
         this.nameRequestInvalidDialog = true
@@ -684,7 +689,7 @@ export default {
       // if IA is not yet completed, check if NR is consumable
       // (once IA is completed, NR state will be CONSUMED)
       if (ia.filing.header.status !== FilingStatus.COMPLETED) {
-        const nrState: NameRequestStates = this.getNrState(nr)
+        const nrState = this.getNrState(nr) as NameRequestStates
         if (nrState !== NameRequestStates.APPROVED && nrState !== NameRequestStates.CONDITIONAL) {
           this.nameRequestInvalidDialog = true
           this.nameRequestInvalidType = nrState

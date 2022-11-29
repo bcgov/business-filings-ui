@@ -2241,7 +2241,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
         order: 1
       }
     ]
-    store.state.nameRequest = { nrNumber: 'NR 1234567' }
+    store.state.nameRequest = { nrNum: 'NR 1234567' }
     store.state.entityStatus = 'DRAFT_APP'
 
     const wrapper = mount(TodoList, { store, vuetify })

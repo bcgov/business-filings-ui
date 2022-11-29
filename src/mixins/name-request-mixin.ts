@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { NameRequestStates } from '@/enums'
+import { NameRequestStates, NameRequestTypes } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 
 /**
@@ -12,14 +12,15 @@ export default class NameRequestMixin extends Vue {
    * Returns True if the Name Request data is valid.
    * @param nr the name request response payload
    */
-  isNrValid (nr: any): boolean {
-    return Boolean(nr &&
+  isNrValid (nr: NameRequestIF): boolean {
+    return Boolean(
+      nr &&
       nr.state &&
       nr.expirationDate &&
       !!this.getNrApprovedName(nr) &&
-      // workaround for old or new property name
-      (nr.nrNum || nr.nrNumber) &&
-      nr.legalType
+      nr.nrNum &&
+      nr.legalType &&
+      (nr.request_action_cd === NameRequestTypes.NEW)
     )
   }
 
@@ -27,7 +28,7 @@ export default class NameRequestMixin extends Vue {
    * Returns the Name Request's state.
    * @param nr the name request response payload
    */
-  getNrState (nr: any): NameRequestStates {
+  getNrState (nr: NameRequestIF): NameRequestStates {
     // Ensure a NR payload is provided.
     if (!nr) {
       throw new Error('getNrState() : no NR provided')
@@ -37,6 +38,7 @@ export default class NameRequestMixin extends Vue {
     // null = consent not required
     // R = consent received
     // N = consent waived
+    // Y = consent required
     if (nr.state === NameRequestStates.CONDITIONAL &&
       nr.consentFlag !== null && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
       return NameRequestStates.NEED_CONSENT
@@ -49,53 +51,14 @@ export default class NameRequestMixin extends Vue {
     }
 
     // Otherwise, the NR is consumable.
-    return nr.state // APPROVED or CONDITIONAL or EXPIRED or CONSUMED
-  }
-
-  /**
-   * Parses Name Request from namex response into our NR object.
-   * @param nr the name request response payload
-   * @param filingId the filing id
-   */
-  parseNameRequest (nr: any, filingId: number): NameRequestIF {
-    return {
-      // workaround for old or new property name
-      nrNumber: nr.nrNum || nr.nrNumber,
-      entityType: nr.legalType,
-      filingId: filingId,
-      applicant: {
-        // address information
-        addressLine1: nr.applicants.addrLine1,
-        addressLine2: nr.applicants.addrLine2,
-        addressLine3: nr.applicants.addrLine3,
-        city: nr.applicants.city,
-        stateProvinceCode: nr.applicants.stateProvinceCd,
-        postalCode: nr.applicants.postalCd,
-        countryTypeCode: nr.applicants.countryTypeCd,
-
-        // applicant contact information
-        emailAddress: nr.applicants.emailAddress,
-        phoneNumber: nr.applicants.phoneNumber,
-
-        // applicant name information
-        firstName: nr.applicants.firstName,
-        middleName: nr.applicants.middleName,
-        lastName: nr.applicants.lastName
-      },
-      details: {
-        approvedName: this.getNrApprovedName(nr) || '',
-        consentFlag: nr.consentFlag,
-        expirationDate: nr.expirationDate,
-        status: nr.state
-      }
-    }
+    return nr.state // APPROVED or CONDITIONAL or CONSUMED or EXPIRED
   }
 
   /**
    * Returns the Name Request's approved name (or undefined or null if not found).
    * @param nr the name request response payload
    */
-  getNrApprovedName (nr: any): string {
+  getNrApprovedName (nr: NameRequestIF): string {
     if (nr?.names?.length > 0) {
       return nr.names
         .find(name => [NameRequestStates.APPROVED, NameRequestStates.CONDITION].includes(name.state))?.name

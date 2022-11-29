@@ -918,19 +918,18 @@ describe('App as a Draft IA with approved NR', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
+        data: {
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
           names: [
             {
               name: 'My Name Request',
-              state: 'APPROVED',
-              consumptionDate: null
+              state: 'APPROVED'
             }
           ],
-          nrNumber: 'NR 1234567',
+          nrNum: 'NR 1234567',
           legalType: 'BEN',
-          state: 'APPROVED'
+          state: 'APPROVED',
+          request_action_cd: 'NEW'
         }
       })))
 
@@ -1043,20 +1042,19 @@ describe('App as a Draft IA with conditional-not required NR', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
+        data: {
           consentFlag: null, // not required
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
           names: [
             {
               name: 'My Conditional NR With Consent Not Required',
-              state: 'CONDITION',
-              consumptionDate: null
+              state: 'CONDITION'
             }
           ],
-          nrNumber: 'NR 1234567',
+          nrNum: 'NR 1234567',
           legalType: 'BEN',
-          state: 'CONDITIONAL'
+          state: 'CONDITIONAL',
+          request_action_cd: 'NEW'
         }
       })))
 
@@ -1149,20 +1147,19 @@ describe('App as a Draft IA with conditional-received NR', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
+        data: {
           consentFlag: 'R', // received
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
           names: [
             {
               name: 'My Conditional NR With Consent Received',
-              state: 'CONDITION',
-              consumptionDate: null
+              state: 'CONDITION'
             }
           ],
-          nrNumber: 'NR 1234567',
+          nrNum: 'NR 1234567',
           legalType: 'BEN',
-          state: 'CONDITIONAL'
+          state: 'CONDITIONAL',
+          request_action_cd: 'NEW'
         }
       })))
 
@@ -1255,20 +1252,19 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
+        data: {
           consentFlag: 'N', // waived
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
           names: [
             {
               name: 'My Conditional NR With Consent Waived',
-              state: 'CONDITION',
-              consumptionDate: null
+              state: 'CONDITION'
             }
           ],
-          nrNumber: 'NR 1234567',
+          nrNum: 'NR 1234567',
           legalType: 'BEN',
-          state: 'CONDITIONAL'
+          state: 'CONDITIONAL',
+          request_action_cd: 'NEW'
         }
       })))
 
@@ -1361,19 +1357,18 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
+        data: {
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
           names: [
             {
               name: 'My Name Request',
-              state: 'APPROVED',
-              consumptionDate: null
+              state: 'APPROVED'
             }
           ],
-          nrNumber: 'NR 1234567',
+          nrNum: 'NR 1234567',
           legalType: 'BEN',
-          state: 'APPROVED'
+          state: 'APPROVED',
+          request_action_cd: 'NEW'
         }
       })))
 
@@ -1511,19 +1506,18 @@ describe('App as a COMPLETED Incorporation Application', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
+        data: {
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
           names: [
             {
               name: 'My Name Request',
-              state: 'APPROVED',
-              consumptionDate: '2099-10-30T00:11:55.887740+00:00'
+              state: 'APPROVED'
             }
           ],
-          nrNumber: 'NR 1234567',
+          nrNum: 'NR 1234567',
           legalType: 'BEN',
-          state: 'CONSUMED'
+          state: 'CONSUMED',
+          request_action_cd: 'NEW'
         }
       })))
 
@@ -1804,20 +1798,19 @@ describe('App as a Draft Registration with approved NR', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-          {
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Name Request',
-                state: 'APPROVED',
-                consumptionDate: null
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            legalType: 'SP',
-            state: 'APPROVED'
-          }
+        data: {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED'
+            }
+          ],
+          nrNum: 'NR 1234567',
+          legalType: 'SP',
+          state: 'APPROVED',
+          request_action_cd: 'NEW'
+        }
       })))
 
     // GET IA filing
@@ -1930,20 +1923,19 @@ describe('App as a COMPLETED Registration Application', () => {
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-          {
-            expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
-            names: [
-              {
-                name: 'My Name Request',
-                state: 'APPROVED',
-                consumptionDate: '2099-10-30T00:11:55.887740+00:00'
-              }
-            ],
-            nrNumber: 'NR 1234567',
-            legalType: 'SP',
-            state: 'CONSUMED'
-          }
+        data: {
+          expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          names: [
+            {
+              name: 'My Name Request',
+              state: 'APPROVED'
+            }
+          ],
+          nrNum: 'NR 1234567',
+          legalType: 'SP',
+          state: 'CONSUMED',
+          request_action_cd: 'NEW'
+        }
       })))
 
     // GET IA filing

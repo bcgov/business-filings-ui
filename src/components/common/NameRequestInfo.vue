@@ -16,14 +16,14 @@
           </li>
           <li>
             <span class="key">Expiry Date:</span>
-            <span class="val">{{ formattedExpirationDate }}</span>
+            <span class="val">{{ expirationDate }}</span>
           </li>
           <li id="status">
-            <v-icon v-if="nameRequestDetails.status === NameRequestStates.APPROVED ||
-                          nameRequestDetails.status === NameRequestStates.CONDITIONAL"
+            <v-icon v-if="state === NameRequestStates.APPROVED ||
+                          state === NameRequestStates.CONDITIONAL"
               color="green" class="nr-status-icon">mdi-check</v-icon>
             <span class="key">Status:</span>
-            <span class="val">{{ formattedStatus }}</span>
+            <span class="val">{{ capitalize(state) }}</span>
           </li>
           <li id="condition-consent">
             <v-icon v-if="conditionConsent === NOT_REQUIRED_STATE ||
@@ -53,11 +53,11 @@
           </li>
           <li>
             <span class="key">Email:</span>
-            <span class="val">{{ nameRequestApplicant.emailAddress }}</span>
+            <span class="val">{{ emailAddress }}</span>
           </li>
           <li>
             <span class="key">Phone:</span>
-            <span class="val">{{ formattedPhoneNumber }}</span>
+            <span class="val">{{ phoneNumber }}</span>
           </li>
         </ul>
       </v-col>
@@ -72,7 +72,7 @@ import { Getter } from 'vuex-class'
 import { getName } from 'country-list'
 import { capitalize, formatPhoneNumber } from '@/utils'
 import { NameRequestStates } from '@/enums'
-import { NameRequestIF, NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
+import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 @Component({
@@ -83,7 +83,7 @@ import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
   ]
 })
 export default class NameRequestInfo extends Vue {
-  @Prop() readonly nameRequest!: any
+  @Prop({ default: () => {} }) readonly nameRequest!: NameRequestIF
 
   @Getter isSoleProp!: boolean
 
@@ -97,96 +97,95 @@ export default class NameRequestInfo extends Vue {
   readonly NOT_REQUIRED_STATE = 'Not Required'
   readonly WAIVED_STATE = 'Waived'
 
-  private parsedNameRequest: NameRequestIF
-  private nameRequestDetails: NameRequestDetailsIF
-  private nameRequestApplicant: NameRequestApplicantIF
-
-  /** Called when component is created. */
-  protected created (): void {
-    if (!this.nameRequest) return // safety check
-
-    this.parsedNameRequest = this.parseNameRequest(this.nameRequest, null)
-    this.nameRequestDetails = this.parsedNameRequest.details
-    this.nameRequestApplicant = this.parsedNameRequest.applicant
-  }
-
-  /** The entity title  */
+  /** The entity type description. */
   get entityTypeDescription (): string {
-    const corpTypeDescription = this.getCorpTypeDescription(this.parsedNameRequest.entityType)
+    const corpTypeDescription = this.getCorpTypeDescription(this.nameRequest.legalType)
     if (this.isSoleProp) {
       return `${corpTypeDescription} or Doing Business As (DBA)`
     }
     return corpTypeDescription
   }
 
-  /** The request type */
+  /** The request type. */
   get requestType (): string {
     return 'New Business'
   }
 
-  /** The formatted expiration date */
-  get formattedExpirationDate (): string {
-    return this.apiToPacificDateTime(this.nameRequestDetails.expirationDate, true)
+  /** The expiration date. */
+  get expirationDate (): string {
+    return this.apiToPacificDateTime(this.nameRequest.expirationDate, true)
   }
 
-  /** The formatted status */
-  get formattedStatus (): string {
-    return capitalize(this.nameRequestDetails.status)
+  /** The state. */
+  get state (): NameRequestStates {
+    return this.nameRequest.state
   }
 
-  /** The condition/consent string */
+  /** The consent flag. */
+  get consentFlag (): string {
+    return this.nameRequest.consentFlag
+  }
+
+  /** The condition/consent string. */
   get conditionConsent (): string {
-    if (this.nameRequestDetails.status === NameRequestStates.APPROVED) {
+    if (this.state === NameRequestStates.APPROVED) {
       return this.NOT_REQUIRED_STATE
     }
-    if (this.nameRequestDetails.consentFlag === null) {
+    if (this.consentFlag === null) {
       return this.NOT_REQUIRED_STATE
     }
-    if (this.nameRequestDetails.consentFlag === 'R') {
+    if (this.consentFlag === 'R') {
       return this.RECEIVED_STATE
     }
-    if (this.nameRequestDetails.consentFlag === 'N') {
+    if (this.consentFlag === 'N') {
       return this.WAIVED_STATE
     }
     return this.NOT_RECEIVED_STATE
   }
 
-  /** The formatted applicant name */
+  /** The applicant. */
+  get applicant (): NameRequestApplicantIF {
+    return this.nameRequest.applicants // not an array
+  }
+
+  /** The applicant's name. */
   get applicantName (): string {
-    let name = this.nameRequestApplicant.firstName
-    if (this.nameRequestApplicant.middleName) {
-      name = `${name} ${this.nameRequestApplicant.middleName} ${this.nameRequestApplicant.lastName}`
+    let name: string
+    if (this.applicant?.middleName) {
+      name = `${this.applicant?.firstName} ${this.applicant?.middleName} ${this.applicant?.lastName}`
     } else {
-      name = `${name} ${this.nameRequestApplicant.lastName}`
+      name = `${this.applicant?.firstName} ${this.applicant?.lastName}`
     }
     return name
   }
 
-  /** The formatted address string */
+  /** The applicant's address. */
   get applicantAddress (): string {
-    // Get Address info
-    const city = this.nameRequestApplicant.city
-    const stateProvince = this.nameRequestApplicant.stateProvinceCode
-    const postal = this.nameRequestApplicant.postalCode
-    const country = this.nameRequestApplicant.countryTypeCode
-      ? getName(this.nameRequestApplicant.countryTypeCode)
-      : ''
+    const city = this.applicant?.city
+    const stateProvince = this.applicant?.stateProvinceCd
+    const postal = this.applicant?.postalCd
+    const country = this.applicant?.countryTypeCd ? getName(this.applicant?.countryTypeCd) : ''
 
     // Build address lines
-    let address = this.nameRequestApplicant.addressLine1
-    if (this.nameRequestApplicant.addressLine2) {
-      address = `${address}, ${this.nameRequestApplicant.addressLine2}`
+    let address = this.applicant?.addrLine1
+    if (this.applicant?.addrLine2) {
+      address = `${address}, ${this.applicant?.addrLine2}`
     }
-    if (this.nameRequestApplicant.addressLine3) {
-      address = `${address}, ${this.nameRequestApplicant.addressLine3}`
+    if (this.applicant?.addrLine3) {
+      address = `${address}, ${this.applicant?.addrLine3}`
     }
 
     return `${address}, ${city}, ${stateProvince}, ${postal}, ${country}`
   }
 
-  /** The formatted phone number */
-  get formattedPhoneNumber (): string {
-    return formatPhoneNumber(this.nameRequestApplicant.phoneNumber)
+  /** The applicant's email address. */
+  get emailAddress (): string {
+    return this.applicant?.emailAddress
+  }
+
+  /** The applicant's phone number. */
+  get phoneNumber (): string {
+    return formatPhoneNumber(this.applicant?.phoneNumber)
   }
 }
 </script>
