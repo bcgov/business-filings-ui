@@ -9,20 +9,19 @@ import { NameRequestIF } from '@/interfaces'
 @Component({})
 export default class NameRequestMixin extends Vue {
   /**
-   * Returns True if the Name Request data is valid.
+   * Returns error message if the Name Request data is invalid.
    * @param nr the name request response payload
    */
-  isNrValid (nr: NameRequestIF): boolean {
-    return Boolean(
-      nr &&
-      nr.applicants &&
-      nr.expirationDate &&
-      nr.legalType &&
-      !!this.getNrApprovedName(nr) &&
-      nr.nrNum &&
-      (nr.request_action_cd === NameRequestTypes.NEW) &&
-      nr.state
-    )
+  isNrInvalid (nr: NameRequestIF): string {
+    if (!nr) return 'Invalid NR object'
+    if (!nr.applicants) return 'Invalid NR applicants'
+    if (!nr.expirationDate) return 'Invalid NR expiration date'
+    if (!nr.legalType) return 'Invalid NR legal type'
+    if (!this.getNrApprovedName(nr)) return 'Invalid NR approved name'
+    if (!nr.nrNum) return 'Invalid NR number'
+    if (nr.request_action_cd !== NameRequestTypes.NEW) return 'Invalid NR action code'
+    if (!nr.state) return 'Invalid NR state'
+    return null
   }
 
   /**
@@ -31,9 +30,7 @@ export default class NameRequestMixin extends Vue {
    */
   getNrState (nr: NameRequestIF): NameRequestStates {
     // Ensure a NR payload is provided.
-    if (!nr) {
-      throw new Error('getNrState() : no NR provided')
-    }
+    if (!nr) return null
 
     // If the NR is awaiting consent, it is not consumable.
     // null = consent not required

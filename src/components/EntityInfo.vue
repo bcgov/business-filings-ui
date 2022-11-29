@@ -142,9 +142,9 @@
             </template>
 
             <!-- NR Number -->
-            <template v-if="getNrNumber">
+            <template v-if="getNameRequestNumber">
               <dt class="mr-2">Name Request Number:</dt>
-              <dd id="nr-number">{{ getNrNumber }}</dd>
+              <dd id="nr-number">{{ getNameRequestNumber }}</dd>
             </template>
 
             <!-- Email -->
@@ -222,7 +222,7 @@ export default class EntityInfo extends Vue {
   @Getter getBusinessNumber!: string
   @Getter getIdentifier!: number
   @Getter getEntityName!: string
-  @Getter getNrNumber!: string
+  @Getter getNameRequestNumber!: string
   @Getter isPendingDissolution!: boolean
   @Getter getEntityFoundingDate!: Date
 

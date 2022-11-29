@@ -37,7 +37,6 @@ export interface NameRequestIF {
   applicants: NameRequestApplicantIF
   consentFlag: string
   expirationDate: string // yyyy-mm-ddRhh:mm:ss+00:00
-  legalName?: string // from IA only
   legalType: CorpTypeCd
   names: Array<NameRequestNameIF>
   nrNum: string
