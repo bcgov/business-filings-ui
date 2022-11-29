@@ -21,7 +21,7 @@ export default class NameRequestMixin extends Vue {
       !!this.getNrApprovedName(nr) &&
       nr.nrNum &&
       (nr.request_action_cd === NameRequestTypes.NEW) &&
-      nr.state &&
+      nr.state
     )
   }
 
