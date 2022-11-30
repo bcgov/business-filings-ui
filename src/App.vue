@@ -674,10 +674,11 @@ export default {
     },
 
     storeNrData (nr: NameRequestIF, ia: any): void {
-      // check if NR is valid
-      if (!this.isNrValid(nr)) {
+      // verify that NR is valid
+      const error = this.isNrInvalid(nr)
+      if (error) {
         this.nameRequestInvalidDialog = true
-        throw new Error('Invalid NR data')
+        throw new Error(error)
       }
 
       // verify that NR type matches entity type from application

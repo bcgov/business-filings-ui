@@ -919,7 +919,9 @@ describe('App as a Draft IA with approved NR', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'BEN',
           names: [
             {
               name: 'My Name Request',
@@ -927,9 +929,8 @@ describe('App as a Draft IA with approved NR', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'BEN',
-          state: 'APPROVED',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'APPROVED'
         }
       })))
 
@@ -982,7 +983,7 @@ describe('App as a Draft IA with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1043,8 +1044,10 @@ describe('App as a Draft IA with conditional-not required NR', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           consentFlag: null, // not required
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'BEN',
           names: [
             {
               name: 'My Conditional NR With Consent Not Required',
@@ -1052,9 +1055,8 @@ describe('App as a Draft IA with conditional-not required NR', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'BEN',
-          state: 'CONDITIONAL',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'CONDITIONAL'
         }
       })))
 
@@ -1107,7 +1109,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
   })
 
   it('fetches conditional-not required NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Not Required')
   })
 })
@@ -1148,8 +1150,10 @@ describe('App as a Draft IA with conditional-received NR', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           consentFlag: 'R', // received
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'BEN',
           names: [
             {
               name: 'My Conditional NR With Consent Received',
@@ -1157,9 +1161,8 @@ describe('App as a Draft IA with conditional-received NR', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'BEN',
-          state: 'CONDITIONAL',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'CONDITIONAL'
         }
       })))
 
@@ -1212,7 +1215,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
   })
 
   it('fetches conditional-received NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Received')
   })
 })
@@ -1253,8 +1256,10 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           consentFlag: 'N', // waived
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'BEN',
           names: [
             {
               name: 'My Conditional NR With Consent Waived',
@@ -1262,9 +1267,8 @@ describe('App as a Draft IA with conditional-waived NR', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'BEN',
-          state: 'CONDITIONAL',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'CONDITIONAL'
         }
       })))
 
@@ -1317,7 +1321,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
   })
 
   it('fetches conditional-waived NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Waived')
   })
 })
@@ -1358,7 +1362,9 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'BEN',
           names: [
             {
               name: 'My Name Request',
@@ -1366,9 +1372,8 @@ describe('App as a PAID (pending) Incorporation Application', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'BEN',
-          state: 'APPROVED',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'APPROVED'
         }
       })))
 
@@ -1432,7 +1437,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1507,7 +1512,9 @@ describe('App as a COMPLETED Incorporation Application', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'BEN',
           names: [
             {
               name: 'My Name Request',
@@ -1515,9 +1522,8 @@ describe('App as a COMPLETED Incorporation Application', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'BEN',
-          state: 'CONSUMED',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'CONSUMED'
         }
       })))
 
@@ -1581,7 +1587,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1799,7 +1805,9 @@ describe('App as a Draft Registration with approved NR', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'SP',
           names: [
             {
               name: 'My Name Request',
@@ -1807,9 +1815,8 @@ describe('App as a Draft Registration with approved NR', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'SP',
-          state: 'APPROVED',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'APPROVED'
         }
       })))
 
@@ -1862,7 +1869,7 @@ describe('App as a Draft Registration with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1924,7 +1931,9 @@ describe('App as a COMPLETED Registration Application', () => {
     get.withArgs('nameRequests/NR 1234567')
       .returns(new Promise(resolve => resolve({
         data: {
+          applicants: {},
           expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
+          legalType: 'SP',
           names: [
             {
               name: 'My Name Request',
@@ -1932,9 +1941,8 @@ describe('App as a COMPLETED Registration Application', () => {
             }
           ],
           nrNum: 'NR 1234567',
-          legalType: 'SP',
-          state: 'CONSUMED',
-          request_action_cd: 'NEW'
+          request_action_cd: 'NEW',
+          state: 'CONSUMED'
         }
       })))
 
@@ -1998,7 +2006,7 @@ describe('App as a COMPLETED Registration Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNrNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 

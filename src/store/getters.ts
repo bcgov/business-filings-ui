@@ -206,7 +206,8 @@ export default {
     return (state.entityState === EntityState.LIQUIDATION)
   },
 
-  getNrNumber (state: StateIF): string {
+  /** The Name Request number. */
+  getNameRequestNumber (state: StateIF): string {
     return (state.nameRequest?.nrNum)
   },
 
