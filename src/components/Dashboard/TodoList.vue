@@ -189,7 +189,7 @@
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <span>Resume</span>
+                    <span>Resume+++</span>
                   </v-btn>
 
                   <!-- dropdown menu -->
@@ -1357,6 +1357,7 @@ export default class TodoList extends Vue {
 
   /** Resumes a draft filing. */
   protected doResumeFiling (item: TodoItemIF): void {
+    console.log(item)
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
@@ -1385,10 +1386,12 @@ export default class TodoList extends Vue {
         switch (item.correctedFilingType) {
           case FilingTypes.ALTERATION:
           case FilingNames.INCORPORATION_APPLICATION:
+          case FilingNames.CHANGE_OF_COMPANY_INFO:
           case FilingNames.CHANGE_OF_REGISTRATION:
           case FilingNames.CORRECTION:
           case FilingNames.REGISTRATION:
             // resume correction via Edit UI
+            console.log('in edit ui redirect.')
             const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
             navigate(correctionUrl)
             break
@@ -1398,6 +1401,7 @@ export default class TodoList extends Vue {
           case FilingTypes.CHANGE_OF_DIRECTORS:
           case FilingTypes.CONVERSION:
           default:
+            console.log('defaulting', item.correctedFilingType)
             // resume local correction for all other filings
             this.setCurrentFilingStatus(FilingStatus.DRAFT)
             this.$router.push({
