@@ -707,6 +707,7 @@ export default class FilingHistoryList extends Vue {
   protected async correctThisFiling (item: HistoryItemIF): Promise<void> {
     // see also TodoList.vue:doResumeFiling()
     switch (item?.name) {
+      case FilingTypes.ALTERATION:
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.CORRECTION:
@@ -717,7 +718,6 @@ export default class FilingHistoryList extends Vue {
         break
 
       case FilingTypes.ANNUAL_REPORT:
-      case FilingTypes.ALTERATION:
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
       case FilingTypes.CONVERSION:
