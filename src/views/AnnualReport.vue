@@ -226,7 +226,7 @@
     </v-container>
 
     <!-- Buttons ( COOP only ) -->
-    <v-container v-if="isCoop" id="coop-buttons-container" class="list-item">>
+    <v-container v-if="isCoop" id="coop-buttons-container" class="list-item">
       <div class="buttons-left">
         <v-btn id="ar-save-btn" large
           v-if="isCurrentFilingEditable"
