@@ -189,7 +189,7 @@
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <span>Resume+++</span>
+                    <span>Resume</span>
                   </v-btn>
 
                   <!-- dropdown menu -->
