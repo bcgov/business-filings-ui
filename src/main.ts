@@ -34,7 +34,6 @@ async function start () {
   // must come first as inits below depend on config
   await fetchConfig()
 
-  // initialize Sentry
   if (window['sentryEnable'] === 'true') {
     // initialize Sentry
     const sentryDsn = window['sentryDsn']
