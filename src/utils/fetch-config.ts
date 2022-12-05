@@ -38,19 +38,19 @@ export async function fetchConfig (): Promise<void> {
   sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)
   console.info('Set Auth Web URL to: ' + authWebUrl)
 
-  const registryHomeUrl = response.data['REGISTRY_HOME_URL']
+  const registryHomeUrl: string = response.data['REGISTRY_HOME_URL']
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
   console.info('Set Registry Home URL to: ' + registryHomeUrl)
 
-  const businessesUrl = response.data['BUSINESSES_URL']
+  const businessesUrl: string = response.data['BUSINESSES_URL']
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
   console.info('Set Businesses URL to: ' + businessesUrl)
 
-  const createUrl = response.data['BUSINESS_CREATE_URL']
+  const createUrl: string = response.data['BUSINESS_CREATE_URL']
   sessionStorage.setItem('CREATE_URL', createUrl)
   console.info('Set Create URL to: ' + createUrl)
 
-  const editUrl = response.data['BUSINESS_EDIT_URL']
+  const editUrl: string = response.data['BUSINESS_EDIT_URL']
   sessionStorage.setItem('EDIT_URL', editUrl)
   console.info('Set Edit URL to: ' + editUrl)
 
@@ -72,7 +72,7 @@ export async function fetchConfig (): Promise<void> {
   sessionStorage.setItem('STATUS_API_URL', statusApiUrl)
   console.info('Set Status API URL to: ' + statusApiUrl)
 
-  const keycloakConfigPath = response.data['KEYCLOAK_CONFIG_PATH']
+  const keycloakConfigPath: string = response.data['KEYCLOAK_CONFIG_PATH']
   sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
   console.info('Set KeyCloak Config Path to: ' + keycloakConfigPath)
 
@@ -82,19 +82,23 @@ export async function fetchConfig (): Promise<void> {
     console.info('Set Siteminder Logout Url to: ' + siteminderLogoutUrl)
   }
 
-  const addressCompleteKey = response.data['ADDRESS_COMPLETE_KEY'];
+  const hotjarId: string = response.data['HOTJAR_ID'];
+  (<any>window).hotjarId = hotjarId
+  hotjarId && console.info('Set Hotjar ID.')
+
+  const addressCompleteKey: string = response.data['ADDRESS_COMPLETE_KEY'];
   (<any>window).addressCompleteKey = addressCompleteKey
   addressCompleteKey && console.info('Set Address Complete Key.')
 
-  const ldClientId = response.data['BUSINESS_FILING_LD_CLIENT_ID'];
+  const ldClientId: string = response.data['BUSINESS_FILING_LD_CLIENT_ID'];
   (<any>window).ldClientId = ldClientId
   ldClientId && console.info('Set Launch Darkly Client ID.')
 
-  const sentryDsn = response.data['SENTRY_DSN'];
+  const sentryDsn: string = response.data['SENTRY_DSN'];
   (<any>window).sentryDsn = sentryDsn
   sentryDsn && console.info('Set Sentry DSN.')
 
-  const sentryEnable = response.data['SENTRY_ENABLE'];
+  const sentryEnable: string = response.data['SENTRY_ENABLE'];
   (<any>window).sentryEnable = sentryEnable
 
   // get Business ID / Temp Reg Number and validate that it looks OK
