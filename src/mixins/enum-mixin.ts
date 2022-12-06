@@ -71,6 +71,11 @@ export default class EnumMixin extends Vue {
     return (item.status === FilingStatus.PENDING)
   }
 
+  /** Returns True if item status is Pending-Correction. */
+  isStatusPendingCorrection (item: any): boolean {
+    return (item.status === FilingStatus.PENDING_CORRECTION)
+  }
+
   /** Returns True if item status is Withdrawn. */
   isStatusWithdrawn (item: any): boolean {
     return (item.status === FilingStatus.WITHDRAWN)
