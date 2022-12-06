@@ -130,9 +130,10 @@
                 </div>
 
                 <!-- pending filing - correction or alteration, or payment incomplete -->
-                <div v-else-if="isStatusPending(item)" class="todo-subtitle">
+                <div v-else-if="(isStatusPending(item) || isStatusPendingCorrection(item))" class="todo-subtitle">
                   <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
-                    <span>FILING PENDING</span>
+                    <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
+                    <span v-else>FILING PENDING</span>
                   </template>
 
                   <template v-else>
@@ -357,7 +358,7 @@
                     <v-list class="actions__more-actions">
                       <v-list-item
                         id="btn-cancel-payment"
-                        @click.native.stop="confirmCancelPayment(item)"
+                        @click.stop="confirmCancelPayment(item)"
                       >
                         <v-list-item-title>Cancel Payment</v-list-item-title>
                       </v-list-item>
@@ -717,6 +718,7 @@ export default class TodoList extends Vue {
    * process to check if the task changes to a completed filing.
    */
   private highlightTask (id: number): void {
+    // first ensure filing is in todo list
     const index = this.todoItems.findIndex(h => h.filingId === id)
     if (index >= 0) {
       this.inProcessFiling = id
@@ -728,11 +730,11 @@ export default class TodoList extends Vue {
 
   /**
    * Checks whether the subject filing is now Completed.
-   * Retries after 1 second for up to 10 iterations.
+   * Retries after 1 second for up to 5 iterations.
    */
   private checkIfCompleted (id: number, count: number): void {
-    // stop this cycle after 10 iterations
-    if (++count > 10) {
+    // stop this cycle after 5 iterations
+    if (++count > 5) {
       this.inProcessFiling = null
       return
     }
@@ -1756,7 +1758,9 @@ export default class TodoList extends Vue {
     color: $app-blue;
   }
 
-  #btn-draft-delete:hover {
+  #btn-draft-delete:hover,
+  #btn-delete-application:hover,
+  #btn-cancel-payment:hover {
     background-color: $gray1;
   }
 }

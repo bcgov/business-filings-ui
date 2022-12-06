@@ -29,6 +29,7 @@ describe('Enum Mixin', () => {
     expect(vm.isStatusNew({ status: 'NEW' })).toBe(true)
     expect(vm.isStatusPaid({ status: 'PAID' })).toBe(true)
     expect(vm.isStatusPending({ status: 'PENDING' })).toBe(true)
+    expect(vm.isStatusPendingCorrection({ status: 'PENDING_CORRECTION' })).toBe(true)
     expect(vm.isStatusWithdrawn({ status: 'WITHDRAWN' })).toBe(true)
   })
 

@@ -9,5 +9,6 @@ export enum FilingStatus {
   NEW = 'NEW', // used for Todo List items only (ie, not yet a filing)
   PAID = 'PAID',
   PENDING = 'PENDING',
+  PENDING_CORRECTION = 'PENDING_CORRECTION',
   WITHDRAWN = 'WITHDRAWN',
 }
