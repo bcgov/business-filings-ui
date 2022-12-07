@@ -2378,7 +2378,10 @@ describe('TodoList - Click Tests - Corrections', () => {
     })
   }
 
-  const localTest = ['annualReport', 'changeOfAddress', 'changeOfDirectors', 'conversion']
+  // courtOrder is not a valid filing for Corrections
+  const localTest = ['annualReport', 'changeOfAddress', 'changeOfDirectors', 'conversion', 'changeOfName',
+    'courtOrder', 'dissolution', 'dissolved', 'involuntaryDissolution', 'putBackOn', 'registrarsNotation',
+    'registrarsOrder', 'specialResolution', 'transition', 'voluntaryDissolution']
 
   for (const test of localTest) {
     it(`Router pushes locally to resume a draft ${test} correction`, async () => {
