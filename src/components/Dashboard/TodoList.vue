@@ -1081,9 +1081,10 @@ export default class TodoList extends Vue {
         // this is only used for internal corrections (not IA):
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
-        correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes),
+        // Corrections on Alterations always have a correctedFilingType of Alteration -> alterationRequired = true
+        correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true),
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
-          this.filingTypeToName(correction.correctedFilingType as FilingTypes)),
+          this.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true)),
         draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
         status: header.status,
         enabled: task.enabled,
@@ -1385,7 +1386,7 @@ export default class TodoList extends Vue {
       case FilingTypes.CORRECTION:
         // see also FilingHistoryList.vue:correctThisFiling()
         switch (item.correctedFilingType) {
-          case FilingTypes.ALTERATION:
+          case FilingNames.ALTERATION:
           case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.CHANGE_OF_REGISTRATION:
           case FilingNames.CORRECTION:
