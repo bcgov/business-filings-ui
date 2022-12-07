@@ -2308,7 +2308,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
   })
 })
 
-describe('TodoList - Click Tests - IA Corrections', () => {
+describe('TodoList - Click Tests - Corrections', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -2321,52 +2321,115 @@ describe('TodoList - Click Tests - IA Corrections', () => {
     window.location.assign = assign
   })
 
-  it('redirects to Edit URL to resume a draft IA correction', async () => {
-    // init store
-    sessionStorage.clear()
-    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
-    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.identifier = 'BC1234567'
-    // init draft Correction filing task
-    store.state.tasks = [
-      {
-        task: {
-          filing: {
-            header: {
-              name: 'correction',
-              status: 'DRAFT',
-              filingId: 123,
-              comments: []
-            },
-            business: {},
-            correction: {
-              correctedFilingType: 'incorporationApplication'
+  const editTests = [
+    { businessId: 'BC1234567', correctedFilingType: 'alteration' },
+    { businessId: 'BC1234567', correctedFilingType: 'incorporationApplication' },
+    { businessId: 'FM1234567', correctedFilingType: 'changeOfRegistration' },
+    { businessId: 'BC1234567', correctedFilingType: 'correction' },
+    { businessId: 'FM1234567', correctedFilingType: 'registration' }
+  ]
+
+  for (const test of editTests) {
+    it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
+      // init store
+      sessionStorage.clear()
+      sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
+      sessionStorage.setItem('BUSINESS_ID', test.businessId)
+      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+      store.state.identifier = test.businessId
+      // init draft Correction filing task
+      store.state.tasks = [
+        {
+          task: {
+            filing: {
+              header: {
+                name: 'correction',
+                status: 'DRAFT',
+                filingId: 123,
+                comments: []
+              },
+              business: {},
+              correction: {
+                correctedFilingType: test.correctedFilingType
+              }
             }
-          }
-        },
-        enabled: true,
-        order: 1
-      }
-    ]
-    store.state.keycloakRoles = ['staff'] // only staff may resume draft corrections
+          },
+          enabled: true,
+          order: 1
+        }
+      ]
+      store.state.keycloakRoles = ['staff'] // only staff may resume draft corrections
 
-    const wrapper = mount(TodoList, { store, vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
+      const wrapper = mount(TodoList, { store, vuetify })
+      const vm = wrapper.vm as any
+      await Vue.nextTick()
 
-    expect(vm.todoItems.length).toEqual(1)
-    expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
+      expect(vm.todoItems.length).toEqual(1)
+      expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
 
-    await wrapper.find('.btn-draft-resume').trigger('click')
+      await wrapper.find('.btn-draft-resume').trigger('click')
 
-    // verify redirection
-    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=123'
-    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
+      // verify redirection
+      const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+      const editUrl = `https://edit.url/${test.businessId}/correction/?correction-id=123`
+      expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
 
-    wrapper.destroy()
-  })
+      wrapper.destroy()
+    })
+  }
+
+  const localTest = ['annualReport', 'changeOfAddress', 'changeOfDirectors', 'conversion']
+
+  for (const test of localTest) {
+    it(`Router pushes locally to resume a draft ${test} correction`, async () => {
+      // init draft Correction filing task
+      store.state.tasks = [
+        {
+          task: {
+            filing: {
+              header: {
+                name: 'correction',
+                status: 'DRAFT',
+                filingId: 123,
+                comments: []
+              },
+              business: {},
+              correction: {
+                correctedFilingType: test,
+                correctedFilingId: 456
+              }
+            }
+          },
+          enabled: true,
+          order: 1
+        }
+      ]
+      store.state.keycloakRoles = ['staff'] // only staff may resume draft corrections
+
+      const localVue = createLocalVue()
+      localVue.use(VueRouter)
+      const router = mockRouter.mock()
+
+      const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+      const vm = wrapper.vm as any
+      await Vue.nextTick()
+
+      expect(vm.todoItems.length).toEqual(1)
+      expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
+
+      await wrapper.find('.btn-draft-resume').trigger('click')
+
+      // wait for save to complete and everything to update
+      // await flushPromises()
+
+      // verify routing to Correction page with filing id = 123 and corrected filing id = 456
+      expect(vm.$route.name).toBe('correction')
+      expect(vm.$route.params.filingId).toBe('123')
+      expect(vm.$route.params.correctedFilingId).toBe('456')
+
+      wrapper.destroy()
+    })
+  }
 })
 
 describe('TodoList - Click Tests - Alterations', () => {
