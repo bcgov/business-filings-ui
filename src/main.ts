@@ -18,6 +18,7 @@ import KeycloakService from 'sbc-common-components/src/services/keycloak.service
 import App from '@/App.vue'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
+import Hotjar from 'vue-hotjar'
 
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
@@ -46,6 +47,12 @@ async function start () {
         ]
       })
     }
+  }
+
+  // initialize Hotjar
+  if (window['hotjarId']) {
+    console.info('Initializing Hotjar...') // eslint-disable-line no-console
+    Vue.use(Hotjar, { id: window['hotjarId'], isProduction: true })
   }
 
   // initialize Launch Darkly

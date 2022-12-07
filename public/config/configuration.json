@@ -8,6 +8,7 @@
   "BUSINESS_FILING_LD_CLIENT_ID": "5f4d47179db2f40a33e88d32",
   "BUSINESSES_URL": "https://dev.bcregistry.ca/business/auth/",
   "DASHBOARD_URL": "https://dev.bcregistry.ca/business/",
+  "HOTJAR_ID": "",
   "KEYCLOAK_CONFIG_PATH": "/local-keycloak-config-url/keycloak.json",
   "LEGAL_API_URL": "https://legal-api-dev.apps.silver.devops.gov.bc.ca",
   "LEGAL_API_VERSION_2": "/api/v2",

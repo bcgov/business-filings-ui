@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "5.7.26",
+  "version": "5.8.1",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -40,6 +40,7 @@
     "sbc-common-components": "3.0.5",
     "vue": "^2.7.10",
     "vue-affix": "^0.5.2",
+    "vue-hotjar": "^1.4.0",
     "vue-router": "^3.6.5",
     "vue2-filters": "^0.14.0",
     "vuelidate": "^0.7.7",
