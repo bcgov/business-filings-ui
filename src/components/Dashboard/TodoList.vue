@@ -1388,7 +1388,6 @@ export default class TodoList extends Vue {
         switch (item.correctedFilingType) {
           case FilingNames.ALTERATION:
           case FilingNames.INCORPORATION_APPLICATION:
-          case FilingNames.CHANGE_OF_COMPANY_INFO:
           case FilingNames.CHANGE_OF_REGISTRATION:
           case FilingNames.CORRECTION:
           case FilingNames.REGISTRATION:
