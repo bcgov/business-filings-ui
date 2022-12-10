@@ -19,8 +19,9 @@
                 </h2>
               </header>
               <!-- FUTURE: move these to a new Alerts component and inside one expansion panel -->
-              <MissingInformation v-if="isMissingInformationAlert"/>
-              <NotInGoodStanding v-if="isNotInGoodStandingAlert"/>
+              <MissingInformation v-if="isMissingInformationAlert" />
+              <NotInCompliance v-if="isNotInComplianceAlert" />
+              <NotInGoodStanding v-if="isNotInGoodStandingAlert" />
             </section>
 
             <!-- To Do section-->
@@ -182,6 +183,7 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CoaWarningDialog } from '@/components/dialogs'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
+import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
 import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
 import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
@@ -205,6 +207,7 @@ export default {
     FilingHistoryList,
     LegalObligation,
     MissingInformation,
+    NotInCompliance,
     NotInGoodStanding,
     ProprietorPartnersListSm,
     StaffNotation,
@@ -243,20 +246,26 @@ export default {
       return sessionStorage.getItem('EDIT_URL')
     },
 
-    /** Show Missing Information alert only for firm with missing info warning. */
+    /** Whether to show Missing Information alert. */
     isMissingInformationAlert (): boolean {
-      return this.isFirm && this.hasMissingInfoWarning
+      return this.hasMissingInfoWarning
     },
 
-    /** Show Not In Good Standing alert only for firm with compliance warning. */
+    /** Whether to show Not In Compliance alert. */
+    isNotInComplianceAlert (): boolean {
+      return this.hasComplianceWarning
+    },
+
+    /** Whether to show Not In Good Standing alert. */
     isNotInGoodStandingAlert (): boolean {
-      return this.isFirm && this.hasComplianceWarning
+      return !this.isGoodStanding
     },
 
     /** The number of alerts. */
     alertCount (): number {
       let count = 0
       if (this.isMissingInformationAlert) count++
+      if (this.isNotInComplianceAlert) count++
       if (this.isNotInGoodStandingAlert) count++
       return count
     },
