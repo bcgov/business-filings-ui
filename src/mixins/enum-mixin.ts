@@ -223,13 +223,13 @@ export default class EnumMixin extends Vue {
    * @param alterationRequired A boolean indicating a required business type change
    * @returns the filing name
    */
-  filingTypeToName (type: FilingTypes, agmYear = null as string, alterationRequired = false): string {
+  filingTypeToName (type: FilingTypes, agmYear = null as string): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
-      case FilingTypes.ALTERATION:
-        return alterationRequired ? FilingNames.ALTERATION : FilingNames.CHANGE_OF_COMPANY_INFO
+      case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
+      case FilingTypes.CHANGE_OF_COMPANY_INFO: return FilingNames.CHANGE_OF_COMPANY_INFO
       case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
       case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
       case FilingTypes.CHANGE_OF_REGISTRATION: return FilingNames.CHANGE_OF_REGISTRATION

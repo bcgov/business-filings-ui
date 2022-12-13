@@ -64,9 +64,9 @@ describe('Enum Mixin', () => {
 
   it('returns correct values for filingTypeToName()', () => {
     expect(vm.filingTypeToName('alteration', null, true)).toBe('Alteration')
-    expect(vm.filingTypeToName('alteration', null, false)).toBe('Change of Company Information')
     expect(vm.filingTypeToName('annualReport', '2020')).toBe('Annual Report (2020)')
     expect(vm.filingTypeToName('changeOfAddress')).toBe('Address Change')
+    expect(vm.filingTypeToName('changeOfCompanyInfo')).toBe('Change of Company Information')
     expect(vm.filingTypeToName('changeOfDirectors')).toBe('Director Change')
     expect(vm.filingTypeToName('changeOfName')).toBe('Legal Name Change')
     expect(vm.filingTypeToName('conversion')).toBe('Record Conversion')

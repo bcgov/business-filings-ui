@@ -32,7 +32,7 @@
       >
         <v-expansion-panel-header
           class="no-dropdown-icon pa-0"
-          :class="{'invalid-section': isTypeAlteration(item) && requiresAlteration && !item.goodStanding}"
+          :class="{'invalid-section ml-n1 pl-1 rounded-0': showInvalidSection(item)}"
         >
           <div class="list-item">
             <div class="todo-label">
@@ -54,7 +54,7 @@
               </h3>
 
               <!-- Annual Report verify checkbox -->
-              <div v-if="isShowAnnualReportCheckbox(item)" class="list-item__subtitle pt-4">
+              <div v-if="showAnnualReportCheckbox(item)" class="list-item__subtitle pt-4">
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
                   id="enable-checkbox"
@@ -79,9 +79,9 @@
                   <span>PAYMENT INCOMPLETE</span>
                 </div>
 
-                <!-- draft alteration not in good standing -->
-                <div v-else-if="isStatusDraft(item) && isTypeAlteration(item) && !item.goodStanding"
-                  class="todo-subtitle-warning"
+                <!-- draft alteration to a BEN not in good standing -->
+                <div v-else-if="isStatusDraft(item) && item.isAlteringToBen && !isGoodStanding"
+                  class="todo-subtitle mt-4 flex-column align-start"
                 >
                   <p class="app-red font-weight-bold">
                     <v-icon small color="error">mdi-alert</v-icon>
@@ -94,13 +94,15 @@
                     the most common reason is an overdue annual report.
                   </p>
 
-                  <p>To resolve this issue, you MUST contact BC Registries staff:</p>
+                  <p>
+                    To resolve this issue, you MUST contact BC Registries staff:
+                  </p>
                   <ContactInfo class="mt-4 contact-info-warning" />
                 </div>
 
-                <!-- alteration in good standing -->
-                <div v-else-if="isTypeAlteration(item) && item.goodStanding && !isBenBcCccUlc && !isCoop"
-                  class="todo-subtitle my-4"
+                <!-- alteration to a BEN in good standing -->
+                <div v-else-if="item.isAlteringToBen && isGoodStanding"
+                  class="todo-subtitle mt-4"
                 >
                   <span>Your business is ready to alter from a {{ item.legalType }} to a BC
                   Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
@@ -232,11 +234,11 @@
                     :disabled="!item.enabled"
                     @click.native.stop="doResumeFiling(item)"
                   >
-                    <span>{{alterationBtnLabel}}</span>
+                    <span>{{item.isAlteringToBen ? 'Alter Now' : 'Resume'}}</span>
                   </v-btn>
 
                   <!-- dropdown menu -->
-                  <v-menu v-if="!requiresAlteration" offset-y left>
+                  <v-menu v-if="!item.isAlteringToBen" offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn
                         v-on="on"
@@ -500,7 +502,7 @@ import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { AllowableActions, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
 
@@ -609,19 +611,6 @@ export default class TodoList extends Vue {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
-  /** Whether filing an Alteration is required (ie, there is a Todo filing). */
-  get requiresAlteration (): boolean {
-    if (this.isBcCompany || this.isUlc) {
-      return this.getTasks.some(task => task.task?.filing?.header?.name === FilingTypes.ALTERATION)
-    }
-    return false
-  }
-
-  /** Alteration action button label. */
-  get alterationBtnLabel (): string {
-    return this.requiresAlteration ? 'Alter Now' : 'Resume'
-  }
-
   /** Whether to show the todo panel. */
   get showTodoPanel () {
     return (this.todoItems.length > 0)
@@ -637,8 +626,14 @@ export default class TodoList extends Vue {
     return this.todoItems.sort((a, b) => (a.order - b.order))
   }
 
-  /** Whether the Annual Report verify checkbox should be shown. */
-  protected isShowAnnualReportCheckbox (item: TodoItemIF): boolean {
+  /** Whether to show the invalid section styling. */
+  protected showInvalidSection (item: TodoItemIF): boolean {
+    if (item.isAlteringToBen && !this.isGoodStanding) return true
+    return false
+  }
+
+  /** Whether to show the Annual Report verify checkbox. */
+  protected showAnnualReportCheckbox (item: TodoItemIF): boolean {
     return (
       item.enabled &&
       this.businessId &&
@@ -902,7 +897,8 @@ export default class TodoList extends Vue {
     const header = filing.header
 
     if (dissolution && business && header) {
-      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+      // don't allow resuming a draft if not in good standing
+      if (this.isStatusDraft(header) && !this.isGoodStanding) {
         task.enabled = false
       }
 
@@ -920,7 +916,6 @@ export default class TodoList extends Vue {
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -939,11 +934,27 @@ export default class TodoList extends Vue {
     const header = filing.header
 
     if (alteration && business && header) {
-      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+      // whether this is a non-BEN altering to a BEN
+      const isAlteringToBen = (
+        business.legalType !== CorpTypeCd.BENEFIT_COMPANY &&
+        alteration.business?.legalType === CorpTypeCd.BENEFIT_COMPANY
+      )
+
+      // don't allow resuming a draft if not in good standing
+      // for entity type change alterations only
+      if (this.isStatusDraft(header) && !this.isGoodStanding && isAlteringToBen) {
         task.enabled = false
       }
 
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+
+      let title = header.priority ? 'Priority ' : ''
+      if (isAlteringToBen) {
+        title += this.filingTypeToName(FilingTypes.CHANGE_OF_COMPANY_INFO)
+        title += ` - ${corpTypeDescription} to a BC Benefit Company`
+      } else {
+        title += this.filingTypeToName(FilingTypes.ALTERATION)
+      }
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
@@ -952,12 +963,12 @@ export default class TodoList extends Vue {
         name: FilingTypes.ALTERATION,
         filingId: header.filingId,
         legalType: corpTypeDescription,
-        title: this.alterationTitle(header.priority, corpTypeDescription),
+        isAlteringToBen,
+        title,
         draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -1289,7 +1300,8 @@ export default class TodoList extends Vue {
     const specialResolution = filing.specialResolution
 
     if (header && specialResolution) {
-      if (!this.isGoodStanding && this.isStatusDraft(header)) {
+      // don't allow resuming a draft if not in good standing
+      if (this.isStatusDraft(header) && !this.isGoodStanding) {
         task.enabled = false
       }
 
@@ -1307,7 +1319,6 @@ export default class TodoList extends Vue {
         status: header.status,
         enabled: task.enabled,
         order: task.order,
-        goodStanding: this.isGoodStanding,
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj
@@ -1629,17 +1640,6 @@ export default class TodoList extends Vue {
     return !!item.payErrorObj
   }
 
-  private alterationTitle (priority: boolean, fromLegalType: string): string {
-    let title = priority ? 'Priority ' : ''
-    if (this.requiresAlteration) {
-      title += this.filingTypeToName(FilingTypes.ALTERATION, null, true)
-      title += ` - ${fromLegalType} to a BC Benefit Company`
-    } else {
-      title += this.filingTypeToName(FilingTypes.ALTERATION)
-    }
-    return title
-  }
-
   private priorityCorrectionTitle (priority: boolean): string {
     let title = priority ? 'Priority ' : ''
     title += this.filingTypeToName(FilingTypes.CORRECTION)
@@ -1766,17 +1766,11 @@ export default class TodoList extends Vue {
   }
 }
 
-.todo-subtitle,
-.todo-subtitle-warning {
+.todo-subtitle {
   color: $gray7;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
-
-.todo-subtitle-warning {
-  align-items: flex-start;
-  flex-direction: column;
 }
 
 .contact-info-warning {

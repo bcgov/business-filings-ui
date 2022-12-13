@@ -45,14 +45,12 @@ export default {
   /** Is True if there is a blocker including firm compliance. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hasBlocker (state: StateIF, getters: any): boolean {
-    // check for firm with compliance warning
-    if (getters.isFirm && getters.hasComplianceWarning) {
-      return true
-    }
-    // check for firm with missing info warning
-    if (getters.isFirm && getters.hasMissingInfoWarning) {
-      return true
-    }
+    // check for compliance warning
+    if (getters.hasComplianceWarning) return true
+
+    // check for missing info warning
+    if (getters.hasMissingInfoWarning) return true
+
     return getters.hasBlockerExceptStaffApproval
   },
 
@@ -169,16 +167,20 @@ export default {
     return state.businessWarnings
   },
 
-  /** Is True if business has at least one compliance warning. */
-  hasComplianceWarning (state: StateIF): boolean {
-    return state.businessWarnings
-      .some(item => item.warningType?.includes('COMPLIANCE'))
+  /** Is True if a firm has at least one "compliance" warning. */
+  hasComplianceWarning (state: StateIF, getters: any): boolean {
+    return (
+      getters.isFirm &&
+      state.businessWarnings.some(item => item.warningType?.includes('COMPLIANCE'))
+    )
   },
 
-  /** Is True if business has at least one missing required business info warning. */
-  hasMissingInfoWarning (state: StateIF): boolean {
-    return state.businessWarnings
-      .some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
+  /** Is True if a firm has at least one "missing required business info" warning. */
+  hasMissingInfoWarning (state: StateIF, getters: any): boolean {
+    return (
+      getters.isFirm &&
+      state.businessWarnings.some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
+    )
   },
 
   /** Is True if this is a Draft Application. */

@@ -2,6 +2,7 @@ export enum FilingTypes {
   ALTERATION = 'alteration',
   ANNUAL_REPORT = 'annualReport',
   CHANGE_OF_ADDRESS = 'changeOfAddress',
+  CHANGE_OF_COMPANY_INFO = 'changeOfCompanyInfo', // a type of alteration
   CHANGE_OF_DIRECTORS = 'changeOfDirectors',
   CHANGE_OF_NAME = 'changeOfName',
   CHANGE_OF_REGISTRATION = 'changeOfRegistration',
