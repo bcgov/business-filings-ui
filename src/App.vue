@@ -597,7 +597,7 @@ export default {
       this.setIdentifier(this.tempRegNumber)
       this.setEntityType(legalType)
 
-      // NameRequests are always in good standing
+      // Draft Applications are always in good standing
       this.setGoodStanding(true)
 
       // store NR Number if present
