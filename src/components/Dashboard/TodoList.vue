@@ -100,22 +100,6 @@
                   <ContactInfo class="mt-4 contact-info-warning" />
                 </div>
 
-                <!-- alteration to a BEN in good standing -->
-                <div v-else-if="item.isAlteringToBen && isGoodStanding"
-                  class="todo-subtitle mt-4"
-                >
-                  <span>Your business is ready to alter from a {{ item.legalType }} to a BC
-                  Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
-                  any other changes to your business until the alteration is complete.</span>
-                </div>
-
-                <!-- draft correction or alteration -->
-                <div v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeAlteration(item))"
-                  class="todo-subtitle"
-                >
-                  <span>DRAFT</span>
-                </div>
-
                 <!-- draft incorporation -->
                 <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)" class="todo-subtitle">
                   <span>{{ item.subtitle }}</span>
@@ -131,8 +115,8 @@
                   <span>DRAFT</span>
                 </div>
 
-                <!-- pending filing - correction or alteration, or payment incomplete -->
-                <div v-else-if="(isStatusPending(item) || isStatusPendingCorrection(item))" class="todo-subtitle">
+                <!-- pending filing -->
+                <div v-else-if="isStatusPending(item) || isStatusPendingCorrection(item)" class="todo-subtitle">
                   <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
                     <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                     <span v-else>FILING PENDING</span>
@@ -142,14 +126,12 @@
                     <span>FILING PENDING</span>
                     <span class="vert-pipe"></span>
                     <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
-                    <span v-else class="d-flex align-center">
-                      <span v-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
-                      <span v-else>PAYMENT INCOMPLETE</span>
-                    </span>
+                    <span v-else-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
+                    <span v-else>PAYMENT INCOMPLETE</span>
                   </template>
                 </div>
 
-                <!-- pending filing - payment unsuccessful -->
+                <!-- error filing -->
                 <div v-else-if="isStatusError(item)" class="todo-subtitle">
                   <span>FILING PENDING</span>
                   <span class="vert-pipe"></span>
@@ -157,7 +139,7 @@
                   <span v-else>PAYMENT UNSUCCESSFUL</span>
                 </div>
 
-                <!-- pending filing - paid -->
+                <!-- paid filing -->
                 <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
                   <span>FILING PENDING</span>
                   <span class="vert-pipe"></span>
@@ -181,9 +163,32 @@
                   <v-btn text loading disabled />
                 </template>
 
-                <!-- draft correction or alteration or conversion (staff only) -->
-                <template v-else-if="isStatusDraft(item)
-                  && (isTypeCorrection(item) || isTypeAlteration(item) || isTypeConversion(item))
+                <!-- new annual report -->
+                <template v-else-if="isStatusNew(item) && isTypeAnnualReport(item)">
+                  <v-btn
+                    class="btn-file-now"
+                    color="primary"
+                    :disabled="isFileAnnualReportDisabled(item, index)"
+                    @click.stop="doFileNow(item)"
+                  >
+                    <span>File Annual Report</span>
+                  </v-btn>
+                </template>
+
+                <!-- new conversion (staff only) -->
+                <template v-else-if="isStatusNew(item) && isTypeConversion(item) && isRoleStaff">
+                  <v-btn
+                    class="btn-file-now"
+                    color="primary"
+                    :disabled="!item.enabled"
+                    @click.stop="doFileNow(item)"
+                  >
+                    <span>File Record Conversion</span>
+                  </v-btn>
+                </template>
+
+                <!-- draft correction or conversion (staff only) -->
+                <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item))
                   && isRoleStaff"
                 >
                   <v-btn
@@ -209,11 +214,7 @@
                       </v-btn>
                     </template>
                     <v-list class="actions__more-actions">
-                      <v-list-item
-                        v-if="businessId"
-                        id="btn-draft-delete"
-                        @click.stop="confirmDeleteDraft(item)"
-                      >
+                      <v-list-item id="btn-draft-delete" @click.stop="confirmDeleteDraft(item)">
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
                         <v-list-item-title>Delete draft</v-list-item-title>
                       </v-list-item>
@@ -221,46 +222,9 @@
                   </v-menu>
                 </template>
 
-                <!-- other correction -->
-                <template v-else-if="isTypeCorrection(item)">
+                <!-- other correction or conversion -->
+                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item)">
                   <!-- no action button in this case -->
-                </template>
-
-                <!-- draft alteration (not staff) -->
-                <template v-else-if="isStatusDraft(item) && isTypeAlteration(item)">
-                  <v-btn
-                    class="btn-draft-resume"
-                    color="primary"
-                    :disabled="!item.enabled"
-                    @click.native.stop="doResumeFiling(item)"
-                  >
-                    <span>{{item.isAlteringToBen ? 'Alter Now' : 'Resume'}}</span>
-                  </v-btn>
-
-                  <!-- dropdown menu -->
-                  <v-menu v-if="!item.isAlteringToBen" offset-y left>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        id="menu-activator"
-                        class="actions__more-actions__btn px-0"
-                        color="primary"
-                        :disabled="!item.enabled"
-                      >
-                        <v-icon>mdi-menu-down</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list class="actions__more-actions">
-                      <v-list-item
-                        v-if="businessId"
-                        id="btn-draft-delete"
-                        @click.stop="confirmDeleteDraft(item)"
-                      >
-                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete changes to company information</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
                 </template>
 
                 <!-- other draft filing -->
@@ -306,6 +270,9 @@
                         </v-list-item-title>
                         <v-list-item-title v-else-if="isTypeSpecialResolution(item)">
                           Delete Special Resolution
+                        </v-list-item-title>
+                        <v-list-item-title v-else-if="isTypeAlteration(item)">
+                          Delete changes to company information
                         </v-list-item-title>
                         <v-list-item-title v-else>
                           Delete draft
@@ -384,30 +351,6 @@
                 <template v-else-if="isStatusPaid(item)">
                   <!-- no action button in this case -->
                 </template>
-
-                <!-- new annual report -->
-                <template v-else-if="isStatusNew(item) && isTypeAnnualReport(item)">
-                  <v-btn
-                    class="btn-file-now"
-                    color="primary"
-                    :disabled="isFileAnnualReportDisabled(item, index)"
-                    @click.stop="doFileNow(item)"
-                  >
-                    <span>File Annual Report</span>
-                  </v-btn>
-                </template>
-
-                <!-- new conversion (staff only) -->
-                <template v-else-if="isStatusNew(item) && isTypeConversion(item) && isRoleStaff">
-                  <v-btn
-                    class="btn-file-now"
-                    color="primary"
-                    :disabled="!item.enabled"
-                    @click.stop="doFileNow(item)"
-                  >
-                    <span>File Record Conversion</span>
-                  </v-btn>
-                </template>
               </div>
             </div> <!-- end of actions -->
           </div> <!-- end of list item -->
@@ -421,8 +364,8 @@
             <PaymentIncomplete :filing=item />
           </template>
 
-          <!-- is this a conversion in any status? (staff only) -->
-          <template v-else-if="isTypeConversion(item) && isRoleStaff">
+          <!-- is this a conversion in any status? -->
+          <template v-else-if="isTypeConversion(item)">
             <ConversionDetails :filing=item class="mb-4" />
           </template>
 
@@ -1257,8 +1200,6 @@ export default class TodoList extends Vue {
   }
 
   private async loadConversion (task: ApiTaskIF): Promise<void> {
-    if (!this.isRoleStaff) return // regular users can't load a draft conversion
-
     const filing = task.task.filing
     const header = filing.header
     const conversion = filing.conversion
@@ -1267,9 +1208,8 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode || null
       const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
 
-      const draft = conversion
-      // FUTURE: verify that this checks for all possible data:
-      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
+      // FUTURE: check for all possible data:
+      const haveData = Boolean(conversion?.offices || conversion?.contactPoint || conversion?.parties)
 
       const item: TodoItemIF = {
         name: FilingTypes.CONVERSION,
