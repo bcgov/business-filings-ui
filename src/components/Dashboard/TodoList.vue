@@ -444,7 +444,8 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
@@ -470,9 +471,7 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialo
     AllowableActionsMixin,
     DateMixin,
     EnumMixin,
-    FilingMixin,
-    LegalApiMixin,
-    PayApiMixin
+    FilingMixin
   ]
 })
 export default class TodoList extends Vue {
@@ -679,7 +678,7 @@ export default class TodoList extends Vue {
 
     // get filing's status
     let url = `businesses/${this.getIdentifier}/filings/${id}`
-    this.fetchFiling(url).then(filing => {
+    LegalServices.fetchFiling(url).then(filing => {
       // if the filing is now COMPLETED, emit event to reload all data
       if (filing?.header?.status === FilingStatus.COMPLETED) {
         this.$root.$emit('reloadData')
@@ -848,7 +847,7 @@ export default class TodoList extends Vue {
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.DISSOLUTION,
@@ -900,7 +899,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.ALTERATION,
@@ -936,7 +935,7 @@ export default class TodoList extends Vue {
     if (annualReport && business && header) {
       const ARFilingYear = header.ARFilingYear
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.ANNUAL_REPORT,
@@ -968,8 +967,8 @@ export default class TodoList extends Vue {
 
     // NB: don't check "changeOfDirectors" as it may be empty
     if (business && header) {
-      const paymentStatusCode = header.paymentStatusCode || null
-      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_DIRECTORS,
@@ -997,8 +996,8 @@ export default class TodoList extends Vue {
     const header = filing.header
 
     if (business && changeOfAddress && header) {
-      const paymentStatusCode = header.paymentStatusCode || null
-      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_ADDRESS,
@@ -1027,7 +1026,7 @@ export default class TodoList extends Vue {
 
     if (business && correction && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CORRECTION,
@@ -1074,8 +1073,8 @@ export default class TodoList extends Vue {
         }
       }
 
-      const paymentStatusCode = header.paymentStatusCode || null
-      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const ia = incorporationApplication // may be undefined
       const haveData = Boolean(ia?.offices || ia?.contactPoint || ia?.parties || ia?.shareClasses)
@@ -1124,8 +1123,8 @@ export default class TodoList extends Vue {
         }
       }
 
-      const paymentStatusCode = header.paymentStatusCode || null
-      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const draft = registration // may be undefined
       const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties || draft?.shareClasses)
@@ -1170,8 +1169,8 @@ export default class TodoList extends Vue {
         }
       }
 
-      const paymentStatusCode = header.paymentStatusCode || null
-      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const draft = changeOfRegistration
       // FUTURE: verify that this checks for all possible data:
@@ -1205,8 +1204,8 @@ export default class TodoList extends Vue {
     const conversion = filing.conversion
 
     if (header && conversion) {
-      const paymentStatusCode = header.paymentStatusCode || null
-      const payErrorObj = paymentStatusCode && await this.getPayErrorObj(paymentStatusCode)
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       // FUTURE: check for all possible data:
       const haveData = Boolean(conversion?.offices || conversion?.contactPoint || conversion?.parties)
@@ -1248,7 +1247,7 @@ export default class TodoList extends Vue {
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode ? await this.getPayErrorObj(paymentStatusCode) : null
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.SPECIAL_RESOLUTION,
