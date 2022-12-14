@@ -34,7 +34,23 @@ describe('Dashboard - UI', () => {
 
     // create wrapper for Dashboard
     // this stubs out the 5 sub-components
-    wrapper = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    wrapper = shallowMount(Dashboard, { store,
+      vuetify,
+      mocks: { $route },
+      data: () => ({
+        isInGoodStanding: true
+      }),
+      computed: {
+        isGoodStanding: {
+          get (): boolean {
+            return this.$data.isInGoodStanding
+          },
+          set (val: boolean) {
+            this.$data.isInGoodStanding = val
+          }
+        }
+      }
+    })
     vm = wrapper.vm
   })
 
@@ -149,6 +165,14 @@ describe('Dashboard - UI', () => {
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
+  })
+
+  it('Alert does not display by default, and does display for business not in good standing', async () => {
+    expect(wrapper.find('#dashboard-alerts-section').exists()).toBe(false)
+    wrapper.vm.isInGoodStanding = false
+    await Vue.nextTick()
+
+    expect(wrapper.find('#dashboard-alerts-section').exists()).toBe(true)
   })
 })
 
