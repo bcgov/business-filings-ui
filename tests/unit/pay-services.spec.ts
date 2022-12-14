@@ -1,24 +1,16 @@
-import Vue from 'vue'
 import sinon from 'sinon'
-import { shallowMount, Wrapper } from '@vue/test-utils'
 import axios from '@/axios-auth'
-import MixinTester from '@/mixin-tester.vue'
+import PayServices from '@/services/pay-services'
 
-describe('Pay API Mixin', () => {
+describe('Pay Services', () => {
   let get: any
-  let wrapper: Wrapper<Vue>
-  let vm: any
 
-  beforeEach(async () => {
+  beforeEach(() => {
     get = sinon.stub(axios, 'get')
-    wrapper = shallowMount(MixinTester)
-    vm = wrapper.vm
-    await Vue.nextTick()
   })
 
   afterEach(() => {
     sinon.restore()
-    wrapper.destroy()
   })
 
   it('fetches pay error object correctly', async () => {
@@ -35,7 +27,7 @@ describe('Pay API Mixin', () => {
       })))
 
     // call method
-    const response = await vm.getPayErrorObj('123')
+    const response = await PayServices.getPayErrorObj('123')
 
     // verify data
     expect(response).toEqual({ ...paymentErrorObj })

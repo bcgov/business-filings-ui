@@ -374,7 +374,8 @@ import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrec
 import { AllowableActions, FilingTypes, Routes, CorrectionTypes, FilingNames } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
-import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { LegalServices } from '@/services/'
 
 @Component({
   components: {
@@ -401,8 +402,7 @@ import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin
     AllowableActionsMixin,
     DateMixin,
     EnumMixin,
-    FilingMixin,
-    LegalApiMixin
+    FilingMixin
   ]
 })
 export default class FilingHistoryList extends Vue {
@@ -682,7 +682,7 @@ export default class FilingHistoryList extends Vue {
       if (!correctionFiling) throw new Error('Invalid filing type')
 
       // save draft filing
-      const draftCorrection = await this.createFiling(this.getIdentifier, correctionFiling, true)
+      const draftCorrection = await LegalServices.createFiling(this.getIdentifier, correctionFiling, true)
       const draftCorrectionId = +draftCorrection?.header?.filingId
       if (isNaN(draftCorrectionId)) {
         throw new Error('Invalid API response')
@@ -736,7 +736,7 @@ export default class FilingHistoryList extends Vue {
       this.loadingOne = true
       this.loadingOneIndex = index
 
-      await this.fetchDocument(document).catch(error => {
+      await LegalServices.fetchDocument(document).catch(error => {
         // eslint-disable-next-line no-console
         console.log('fetchDocument() error =', error)
         this.downloadErrorDialog = true
@@ -752,7 +752,7 @@ export default class FilingHistoryList extends Vue {
       this.loadingAll = true
 
       for (const document of item.documents) {
-        await this.fetchDocument(document).catch(error => {
+        await LegalServices.fetchDocument(document).catch(error => {
           // eslint-disable-next-line no-console
           console.log('fetchDocument() error =', error)
           this.downloadErrorDialog = true
@@ -784,7 +784,7 @@ export default class FilingHistoryList extends Vue {
   private async loadComments (item: HistoryItemIF): Promise<void> {
     try {
       // fetch comments array from API
-      const comments = await this.fetchComments(item.commentsLink)
+      const comments = await LegalServices.fetchComments(item.commentsLink)
       // flatten and sort the comments
       item.comments = this.flattenAndSortComments(comments)
     } catch (error) {
@@ -802,7 +802,7 @@ export default class FilingHistoryList extends Vue {
   private async loadDocuments (item: HistoryItemIF): Promise<void> {
     try {
       // fetch documents object from API
-      const documents = await this.fetchDocuments(item.documentsLink)
+      const documents = await LegalServices.fetchDocuments(item.documentsLink)
       // load each type of document
       item.documents = []
       // iterate over documents properties

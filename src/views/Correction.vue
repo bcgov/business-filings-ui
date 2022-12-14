@@ -186,7 +186,8 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
-import { CommonMixin, DateMixin, EnumMixin, FilingMixin, LegalApiMixin, ResourceLookupMixin } from '@/mixins'
+import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
@@ -208,7 +209,6 @@ import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
     DateMixin,
     EnumMixin,
     FilingMixin,
-    LegalApiMixin,
     ResourceLookupMixin
   ]
 })
@@ -398,7 +398,7 @@ export default class Correction extends Vue {
   /** Fetches the draft correction filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-    await this.fetchFiling(url).then(filing => {
+    await LegalServices.fetchFiling(url).then(filing => {
       // verify data
       if (!filing) throw new Error('Missing filing')
       if (!filing.header) throw new Error('Missing header')
@@ -450,7 +450,7 @@ export default class Correction extends Vue {
   /** Fetches the original filing to correct. */
   async fetchOrigFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.correctedFilingId}`
-    await this.fetchFiling(url).then(filing => {
+    await LegalServices.fetchFiling(url).then(filing => {
       this.origFiling = filing
 
       // verify data
@@ -633,7 +633,7 @@ export default class Correction extends Vue {
 
     // if this is a new filing, ensure there are no pending tasks
     if (this.filingId === 0) {
-      const hasPendingTasks = await this.hasPendingTasks(this.getIdentifier)
+      const hasPendingTasks = await LegalServices.hasPendingTasks(this.getIdentifier)
         .catch(() => {
           this.saveErrors = [{ error: 'Unable to check server for pending tasks.' }]
           throw new Error()
@@ -702,10 +702,10 @@ export default class Correction extends Vue {
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await this.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        ret = await this.createFiling(this.getIdentifier, data, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, data, isDraft)
       }
       return ret
     } catch (error) {

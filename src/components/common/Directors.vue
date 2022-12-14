@@ -791,7 +791,7 @@ export default class Directors extends Vue {
 
   /**
    * Fetches the list of directors on As Of Date from the Legal API.
-   * See also LegalApiMixin.fetchParties().
+   * See also LegalServices.fetchParties().
    */
   // FUTURE: this API call should be in the parent component or some mixin/service
   private async fetchDirectors (): Promise<void> {
