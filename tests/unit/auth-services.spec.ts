@@ -1,24 +1,16 @@
-import Vue from 'vue'
 import sinon from 'sinon'
-import { shallowMount, Wrapper } from '@vue/test-utils'
 import axios from '@/axios-auth'
-import MixinTester from '@/mixin-tester.vue'
+import AuthServices from '@/services/auth-services'
 
-describe('Auth API Mixin', () => {
+describe('Auth Services', () => {
   let get: any
-  let wrapper: Wrapper<Vue>
-  let vm: any
 
-  beforeEach(async () => {
+  beforeEach(() => {
     get = sinon.stub(axios, 'get')
-    wrapper = shallowMount(MixinTester)
-    vm = wrapper.vm
-    await Vue.nextTick()
   })
 
   afterEach(() => {
     sinon.restore()
-    wrapper.destroy()
   })
 
   it('fetches authorizations correctly', async () => {
@@ -31,7 +23,7 @@ describe('Auth API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: AUTHORIZATIONS })))
 
     // call method
-    const authorizations = await vm.fetchAuthorizations('CP1234567')
+    const authorizations = await AuthServices.fetchAuthorizations('CP1234567')
 
     // verify data
     expect(authorizations).toEqual({ data: AUTHORIZATIONS })
@@ -53,7 +45,7 @@ describe('Auth API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: USER_INFO })))
 
     // call method
-    const userInfo = await vm.fetchUserInfo()
+    const userInfo = await AuthServices.fetchUserInfo()
 
     // verify data
     expect(userInfo).toEqual(USER_INFO)
@@ -75,7 +67,7 @@ describe('Auth API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
 
     // call method
-    const businessInfo = await vm.fetchEntityInfo('CP1234567')
+    const businessInfo = await AuthServices.fetchEntityInfo('CP1234567')
 
     // verify data
     expect(businessInfo).toEqual({ data: ENTITY_INFO })

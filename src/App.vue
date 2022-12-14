@@ -104,8 +104,8 @@ import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DashboardUnavailable
   NameRequestAuthErrorDialog, NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
 import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources'
-import { AuthApiMixin, CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, LegalApiMixin,
-  NameRequestMixin } from '@/mixins'
+import { CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, NameRequestMixin } from '@/mixins'
+import { AuthServices, LegalServices } from '@/services/'
 import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, NameRequestIF, PartyIF, TaskTodoIF }
   from '@/interfaces'
 import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
@@ -116,13 +116,11 @@ export default {
   name: 'App',
 
   mixins: [
-    AuthApiMixin,
     CommonMixin,
     DateMixin,
     DirectorMixin,
     EnumMixin,
     FilingMixin,
-    LegalApiMixin,
     NameRequestMixin
   ],
 
@@ -314,7 +312,7 @@ export default {
         }
 
         // check if current user is authorized
-        const authData = await this.fetchAuthorizations(this.businessId || this.tempRegNumber)
+        const authData = await AuthServices.fetchAuthorizations(this.businessId || this.tempRegNumber)
         this.storeAuthorizations(authData) // throws if no role
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -325,7 +323,7 @@ export default {
 
       // fetch user info and update Launch Darkly
       try {
-        const userInfo = await this.fetchUserInfo()
+        const userInfo = await AuthServices.fetchUserInfo()
         await this.updateLaunchDarkly(userInfo)
       } catch (error) {
         // just log the error -- no need to halt app
@@ -363,11 +361,11 @@ export default {
     /** Fetches and stores the business data. */
     async fetchBusinessData (): Promise<void> {
       const data = await Promise.all([
-        this.fetchEntityInfo(this.businessId),
-        this.fetchBusinessInfo(this.businessId),
-        this.fetchTasks(this.businessId),
-        this.fetchFilings(this.businessId || this.tempRegNumber),
-        this.fetchParties(this.businessId)
+        AuthServices.fetchEntityInfo(this.businessId),
+        LegalServices.fetchBusinessInfo(this.businessId),
+        LegalServices.fetchTasks(this.businessId),
+        LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
+        LegalServices.fetchParties(this.businessId)
       ])
 
       if (!data || data.length !== 5) throw new Error('Incomplete business data')
@@ -382,7 +380,7 @@ export default {
     async fetchStoreAddressData ():Promise<void> {
       let hasBAError = false
       const data = await Promise.resolve(
-        this.fetchAddresses(this.businessId)
+        LegalServices.fetchAddresses(this.businessId)
       ).catch(error => {
         if (error.response.status === 404 &&
           error.response.config.url.includes('addresses') &&
@@ -402,14 +400,14 @@ export default {
     async fetchDraftAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      const draft = await this.fetchDraftApp(this.tempRegNumber)
+      const draft = await LegalServices.fetchDraftApp(this.tempRegNumber)
 
       // Handle Draft filings
       this.storeDraftApp(draft)
 
       // if the draft has a NR, load it
       if (this.localNrNumber) {
-        const nr = await this.fetchNameRequest(this.localNrNumber)
+        const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
         this.storeNrData(nr, draft)
       }
     },
@@ -532,7 +530,7 @@ export default {
 
     /** Fetches and parses the filing that changed the business state. */
     async parseStateFiling (stateFiling: string): Promise<void> {
-      const filing = stateFiling && await this.fetchFiling(stateFiling)
+      const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
       const filingType = filing?.header?.name as FilingTypes
 
       if (!filing || !filingType) {
@@ -761,7 +759,7 @@ export default {
     /** Creates a draft filing and navigates to the Create UI to file a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
-      const draftDissolution = await this.createFiling(this.getIdentifier, dissolutionFiling, true)
+      const draftDissolution = await LegalServices.createFiling(this.getIdentifier, dissolutionFiling, true)
       const draftDissolutionId = +draftDissolution?.header?.filingId
 
       if (!draftDissolution || isNaN(draftDissolutionId)) {
@@ -803,7 +801,7 @@ export default {
         link: `businesses/${this.businessId}/documents/summary`
       }
 
-      await this.fetchDocument(summaryDocument).catch(error => {
+      await LegalServices.fetchDocument(summaryDocument).catch(error => {
         // eslint-disable-next-line no-console
         console.log('fetchDocument() error =', error)
         this.downloadErrorDialog = true

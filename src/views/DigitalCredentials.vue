@@ -74,15 +74,14 @@ import {
 import { Stepper } from '@/components/common'
 import { DigitalCredentialTypes, Routes } from '@/enums'
 import { DigitalCredentialsIF, StepsIF } from '@/interfaces'
-import { LegalApiMixin } from '@/mixins'
+import { LegalServices } from '@/services/'
 
 @Component({
   components: {
     CredentialsLanding,
     CredentialsFooter,
     Stepper
-  },
-  mixins: [LegalApiMixin]
+  }
 })
 export default class DigitalCredentials extends Vue {
   @Getter getIdentifier!: string
@@ -154,28 +153,28 @@ export default class DigitalCredentials extends Vue {
   }
 
   private async getCredentials (): Promise<void> {
-    const { data } = await this.fetchCredentials(this.getIdentifier)
+    const { data } = await LegalServices.fetchCredentials(this.getIdentifier)
     if (data?.issuedCredentials) {
       this.issuedCredentials = data.issuedCredentials
     }
   }
 
   private async addCredentialInvitation (): Promise<void> {
-    const { data } = await this.createCredentialInvitation(this.getIdentifier)
+    const { data } = await LegalServices.createCredentialInvitation(this.getIdentifier)
     if (data?.invitationUrl) {
       this.credentialInvitationUrl = data.invitationUrl
     }
   }
 
   private async getCredentialsConnection (): Promise<void> {
-    const connection = await this.fetchCredentialConnection(this.getIdentifier)
+    const connection = await LegalServices.fetchCredentialConnection(this.getIdentifier)
     if (connection) {
       this.hasRegisteredWallet = true
     }
   }
 
   protected async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
-    const credentialIssued = await this.issueCredentialOffer(this.getIdentifier, credentialType)
+    const credentialIssued = await LegalServices.issueCredentialOffer(this.getIdentifier, credentialType)
     if (credentialIssued) {
       await this.getCredentials()
     }

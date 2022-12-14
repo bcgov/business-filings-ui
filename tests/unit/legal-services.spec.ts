@@ -1,28 +1,24 @@
-import Vue from 'vue'
 import sinon from 'sinon'
-import { shallowMount, Wrapper } from '@vue/test-utils'
 import axios from '@/axios-auth'
-import MixinTester from '@/mixin-tester.vue'
+import LegalServices from '@/services/legal-services'
 
-describe('Legal API Mixin', () => {
+// mock some window.URL functions that are not defined in Jest
+window.URL.createObjectURL = jest.fn()
+window.URL.revokeObjectURL = jest.fn()
+
+describe('Legal Services', () => {
   let get: any
   let post: any
   let put: any
-  let wrapper: Wrapper<Vue>
-  let vm: any
 
-  beforeEach(async () => {
+  beforeEach(() => {
     get = sinon.stub(axios, 'get')
     post = sinon.stub(axios, 'post')
     put = sinon.stub(axios, 'put')
-    wrapper = shallowMount(MixinTester)
-    vm = wrapper.vm
-    await Vue.nextTick()
   })
 
   afterEach(() => {
     sinon.restore()
-    wrapper.destroy()
   })
 
   it('fetches entity info correctly', async () => {
@@ -38,7 +34,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
 
     // call method
-    const entityInfo = await vm.fetchBusinessInfo('CP1234567')
+    const entityInfo = await LegalServices.fetchBusinessInfo('CP1234567')
 
     // verify data
     expect(entityInfo).toEqual({ data: ENTITY_INFO })
@@ -56,7 +52,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: TASKS })))
 
     // call method
-    const tasks = await vm.fetchTasks('CP1234567')
+    const tasks = await LegalServices.fetchTasks('CP1234567')
 
     // verify data
     expect(tasks).toEqual({ data: TASKS })
@@ -74,7 +70,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: FILINGS })))
 
     // call method
-    const filings = await vm.fetchFilings('CP1234567')
+    const filings = await LegalServices.fetchFilings('CP1234567')
 
     // verify data
     expect(filings).toEqual({ data: FILINGS })
@@ -97,7 +93,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: ADDRESSES })))
 
     // call method
-    const addresses = await vm.fetchAddresses('CP1234567')
+    const addresses = await LegalServices.fetchAddresses('CP1234567')
 
     // verify data
     expect(addresses).toEqual({ data: ADDRESSES })
@@ -115,7 +111,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: DIRECTORS })))
 
     // call method
-    const directors = await vm.fetchParties('CP1234567', 'Director')
+    const directors = await LegalServices.fetchParties('CP1234567', 'Director' as any)
 
     // verify data
     expect(directors).toEqual({ data: DIRECTORS })
@@ -131,7 +127,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: IA })))
 
     // call method
-    const ia = await vm.fetchDraftApp('T1234567')
+    const ia = await LegalServices.fetchDraftApp('T1234567')
 
     // verify data
     expect(ia).toEqual(IA)
@@ -147,7 +143,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: NR })))
 
     // call method
-    const nr = await vm.fetchNameRequest('NR1234567')
+    const nr = await LegalServices.fetchNameRequest('NR1234567')
 
     // verify data
     expect(nr).toEqual(NR)
@@ -164,7 +160,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
-    const filing = await vm.fetchFiling(endpoint)
+    const filing = await LegalServices.fetchFiling(endpoint)
 
     // verify data
     expect(filing).toEqual(FILING)
@@ -180,7 +176,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
-    const response = await vm.createFiling('CP1234567', FILING, true)
+    const response = await LegalServices.createFiling('CP1234567', FILING, true)
 
     // verify data
     expect(response).toEqual(FILING)
@@ -196,7 +192,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: { filing: FILING } })))
 
     // call method
-    const response = await vm.updateFiling('CP1234567', FILING, 1234, true)
+    const response = await LegalServices.updateFiling('CP1234567', FILING, 1234, true)
 
     // verify data
     expect(response).toEqual(FILING)
@@ -214,7 +210,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: { comments: COMMENTS } })))
 
     // call method
-    const comments = await vm.fetchComments('COMMENTS_URL')
+    const comments = await LegalServices.fetchComments('COMMENTS_URL')
 
     // verify data
     expect(comments).toEqual(COMMENTS)
@@ -236,7 +232,7 @@ describe('Legal API Mixin', () => {
       .returns(new Promise(resolve => resolve({ data: { documents: DOCUMENTS } })))
 
     // call method
-    const comments = await vm.fetchDocuments(URL)
+    const comments = await LegalServices.fetchDocuments(URL)
 
     // verify data
     expect(comments).toEqual(DOCUMENTS)
@@ -258,7 +254,7 @@ describe('Legal API Mixin', () => {
     }
 
     // call method
-    const response = await vm.fetchDocument(document)
+    const response = await LegalServices.fetchDocument(document)
 
     // verify data
     expect(response).toEqual({ data: PDF })
