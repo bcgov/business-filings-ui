@@ -100,15 +100,6 @@
                   <ContactInfo class="mt-4 contact-info-warning" />
                 </div>
 
-                <!-- draft alteration to a BEN in good standing -->
-                <div v-else-if="isStatusDraft(item) && item.isAlteringToBen && isGoodStanding"
-                  class="todo-subtitle mt-4"
-                >
-                  <span>Your business is ready to alter from a {{ item.legalType }} to a BC
-                  Benefit Company. Select "Alter Now" to begin your alteration. You will not be able to make
-                  any other changes to your business until the alteration is complete.</span>
-                </div>
-
                 <!-- draft incorporation -->
                 <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)" class="todo-subtitle">
                   <span>{{ item.subtitle }}</span>
@@ -251,9 +242,6 @@
                     <template v-else-if="isTypeRegistration(item) && item.isEmptyFiling">
                       <span>Register using this NR</span>
                     </template>
-                    <!-- <template v-else-if="item.isAlteringToBen">
-                      <span>Alter Now</span>
-                    </template> -->
                     <span v-else>Resume</span>
                   </v-btn>
 
