@@ -14,7 +14,7 @@
   "LEGAL_API_VERSION_2": "/api/v2",
   "PAY_API_URL": "https://pay-api-dev.apps.silver.devops.gov.bc.ca",
   "PAY_API_VERSION": "/api/v1",
-  "REGISTRY_HOME_URL": "https://yfthig-dev.web.app/",
+  "REGISTRY_HOME_URL": "https://dev.bcros.ca/",
   "SENTRY_DSN": "",
   "SENTRY_ENABLE": "false",
   "SITEMINDER_LOGOUT_URL": "https://logontest7.gov.bc.ca/clp-cgi/logoff.cgi",
