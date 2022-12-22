@@ -106,7 +106,7 @@ describe('StaffNotation', () => {
 
       // Verify the modal title
       expect(wrapper.find('#dialog-title').text()).toContain(`Add a ${test.name}`)
-      expect(wrapper.find('#notation-form .text-input-field .v-label').text()).toContain(test.name)
+      expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toContain(test.name)
 
       // click the Cancel button
       await wrapper.find('#dialog-cancel-button').trigger('click')
