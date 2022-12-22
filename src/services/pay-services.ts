@@ -9,7 +9,7 @@ export default class PayServices {
   /**
    * Fetches a payment error object (description) by its code.
    * @param code the error code to look up
-   * @returns a promise to return the payment error object
+   * @returns the payment error object
    */
   static async getPayErrorObj (code: string): Promise<PaymentErrorIF> {
     const payApiUrl = sessionStorage.getItem('PAY_API_URL') || ''

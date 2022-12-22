@@ -1,6 +1,7 @@
 // Libraries
 import axios from '@/axios-auth'
-import { ApiDocumentsIF, CommentIF, DocumentIF, NameRequestIF } from '@/interfaces'
+import { AxiosResponse } from 'axios'
+import { CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF, PresignedUrlIF } from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
@@ -10,9 +11,9 @@ export default class LegalServices {
   /**
    * Fetches business info.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the info from the response
+   * @returns the axios response
    */
-  static async fetchBusinessInfo (businessId: string): Promise<any> {
+  static async fetchBusinessInfo (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}`
     return axios.get(url)
   }
@@ -20,9 +21,9 @@ export default class LegalServices {
   /**
    * Fetches tasks list.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the tasks from the response
+   * @returns the axios response
    */
-  static async fetchTasks (businessId: string): Promise<any> {
+  static async fetchTasks (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/tasks`
     return axios.get(url)
   }
@@ -30,9 +31,9 @@ export default class LegalServices {
   /**
    * Fetches filings list.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the filings from the response
+   * @returns the axios response
    */
-  static async fetchFilings (businessId: string): Promise<any> {
+  static async fetchFilings (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/filings`
     return axios.get(url)
   }
@@ -41,9 +42,9 @@ export default class LegalServices {
    * Fetches addresses.
    * See also Directors.fetchDirectors().
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the addresses from the response
+   * @returns the axios response
    */
-  static async fetchAddresses (businessId: string): Promise<any> {
+  static async fetchAddresses (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/addresses`
     return axios.get(url)
   }
@@ -52,9 +53,9 @@ export default class LegalServices {
    * Fetches parties list.
    * @param businessId the business identifier (aka entity inc no)
    * @param role optional role to filter parties response
-   * @returns a promise to return the parties from the response
+   * @returns the axios response
    */
-  static async fetchParties (businessId: string, role: Roles = null): Promise<any> {
+  static async fetchParties (businessId: string, role: Roles = null): Promise<AxiosResponse> {
     let url = `businesses/${businessId}/parties`
     if (role) url += `?role=${role}`
     return axios.get(url)
@@ -65,7 +66,7 @@ export default class LegalServices {
    * This is a unique request using the temp reg number.
    * This assumes a single filing is returned.
    * @param tempRegNumber the temporary registration number
-   * @returns a promise to return the filing from the response
+   * @returns the draft app response
    */
   static async fetchDraftApp (tempRegNumber: string): Promise<any> {
     const url = `businesses/${tempRegNumber}/filings`
@@ -77,7 +78,7 @@ export default class LegalServices {
   /**
    * Fetches a Name Request.
    * @param filingId the NR number
-   * @returns a promise to return the NR data from the response
+   * @returns the name request object
    */
   static async fetchNameRequest (nrNumber: string): Promise<NameRequestIF> {
     const url = `nameRequests/${nrNumber}`
@@ -89,7 +90,7 @@ export default class LegalServices {
   /**
    * Fetches a filing.
    * @param url the full URL to fetch the filing
-   * @returns a promise to return the filing from the response
+   * @returns the filing object
    */
   static async fetchFiling (url: string): Promise<any> {
     return axios.get(url)
@@ -109,7 +110,7 @@ export default class LegalServices {
    * @param businessId the business identifier (aka entity inc no)
    * @param filing the object body of the request
    * @param isDraft whether this is a draft or whether to also file this filing
-   * @returns a promise to return the filing from the response
+   * @returns the filing object
    */
   static async createFiling (businessId: string, filing: any, isDraft: boolean): Promise<any> {
     let url = `businesses/${businessId}/filings`
@@ -134,7 +135,7 @@ export default class LegalServices {
    * @param filing the object body of the request
    * @param filingId the filing identifier
    * @param isDraft whether this is a draft or whether to also file this filing
-   * @returns a promise to return the filing from the response
+   * @returns the filing object
    */
   static async updateFiling (businessId: string, filing: any, filingId: number, isDraft: boolean): Promise<any> {
     let url = `businesses/${businessId}/filings/${filingId}`
@@ -156,7 +157,7 @@ export default class LegalServices {
   /**
    * Fetches comments array.
    * @param url the full URL to fetch the comments
-   * @returns a promise to return the comments array from the response
+   * @returns the comments array
    */
   static async fetchComments (url: string): Promise<CommentIF[]> {
     return axios.get(url)
@@ -174,9 +175,9 @@ export default class LegalServices {
   /**
    * Fetches documents object.
    * @param url the full URL to fetch the documents
-   * @returns a promise to return the documents object from the response
+   * @returns the fetch documents object
    */
-  static async fetchDocuments (url: string): Promise<ApiDocumentsIF> {
+  static async fetchDocuments (url: string): Promise<FetchDocumentsIF> {
     return axios.get(url)
       .then(response => {
         const documents = response?.data?.documents
@@ -192,12 +193,11 @@ export default class LegalServices {
   /**
    * Fetches a document and prompts browser to open/save it.
    * @param document the document info object
+   * @returns the axios response
    */
-  static async fetchDocument (document: DocumentIF): Promise<any> {
+  static async fetchDocument (document: DocumentIF): Promise<AxiosResponse> {
     // safety checks
-    if (!document?.link || !document?.filename) {
-      throw new Error('Invalid parameters')
-    }
+    if (!document?.link || !document?.filename) throw new Error('Invalid parameters')
 
     const config = {
       headers: { 'Accept': 'application/pdf' },
@@ -235,7 +235,8 @@ export default class LegalServices {
     })
   }
 
-  /** Checks if the specified business has any pending tasks.
+  /**
+   * Checks if the specified business has any pending tasks.
    * @param businessId the business identifier (aka entity inc no)
    * @returns True if there are any non-NEW tasks, else False
    */
@@ -252,58 +253,98 @@ export default class LegalServices {
     })
   }
 
-  /** Business Digital Credential Helpers **/
+  /**
+   * Gets a pre-signed URL for the specified filename.
+   * @param filename the file name
+   * @returns the presigned url object
+   */
+  static async getPresignedUrl (fileName: string): Promise<PresignedUrlIF> {
+    const url = `documents/${fileName}/signatures`
+    return axios.get(url)
+      .then(response => response?.data)
+  }
+
+  /**
+   * Uploads the specified file to the specified URL.
+   * @param url the URL to upload to
+   * @param file the file to upload
+   * @param key the file key
+   * @param userId the file user id
+   * @returns the axios response
+   */
+  static async uploadToUrl (url: string, file: File, key: string, userId: string): Promise<AxiosResponse> {
+    const headers = {
+      'Content-Type': file.type,
+      'x-amz-meta-userid': `${userId}`,
+      'x-amz-meta-key': `${key}`,
+      'Content-Disposition': `attachment; filename=${file.name}`
+    }
+    return axios.put(url, file, { headers })
+  }
+
+  //
+  // Business Digital Credential Helpers
+  //
 
   /**
    * Fetches digital credential information.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the credentials connection data
+   * @returns the axios response
    */
-  static async fetchCredentials (businessId: string): Promise<any> {
+  static async fetchCredentials (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials`
     return axios.get(url)
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.log(error.message)
+        return null
       })
   }
 
   /**
    * Creates a digital credentials invitation.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the invitation data
+   * @returns the axios response
    */
-  static async createCredentialInvitation (businessId: string): Promise<any> {
+  static async createCredentialInvitation (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/invitation`
     return axios.post(url)
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.log(error.message)
+        return null
       })
   }
 
   /**
    * Fetches a digital credentials connection information.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns a promise to return the credentials connection data
+   * @returns the axios response
    */
-  static async fetchCredentialConnection (businessId: string): Promise<any> {
+  static async fetchCredentialConnection (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/connection`
     return axios.get(url)
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.log(error.message)
+        return null
       })
   }
 
   /**
-   * Issue a digital credentials offer.
+   * Issues a digital credentials offer.
    * @param businessId The business identifier (aka entity inc no)
    * @param credentialType The credential offer type
-   * @returns a promise to return the credentials connection data
+   * @returns the axios response
    */
-  static async issueCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes): Promise<any> {
+  static async issueCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes)
+  : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
     return axios.post(url)
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.log(error.message)
+        return null
       })
   }
 }

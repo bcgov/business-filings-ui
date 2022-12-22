@@ -23,10 +23,10 @@ describe('Auth Services', () => {
       .returns(new Promise(resolve => resolve({ data: AUTHORIZATIONS })))
 
     // call method
-    const authorizations = await AuthServices.fetchAuthorizations('CP1234567')
+    const response = await AuthServices.fetchAuthorizations('CP1234567')
 
     // verify data
-    expect(authorizations).toEqual({ data: AUTHORIZATIONS })
+    expect(response).toEqual({ data: AUTHORIZATIONS })
   })
 
   it('fetches user info correctly', async () => {
@@ -45,10 +45,10 @@ describe('Auth Services', () => {
       .returns(new Promise(resolve => resolve({ data: USER_INFO })))
 
     // call method
-    const userInfo = await AuthServices.fetchUserInfo()
+    const response = await AuthServices.fetchUserInfo()
 
     // verify data
-    expect(userInfo).toEqual(USER_INFO)
+    expect(response).toEqual({ data: USER_INFO })
   })
 
   it('fetches entity info correctly', async () => {
@@ -67,9 +67,9 @@ describe('Auth Services', () => {
       .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
 
     // call method
-    const businessInfo = await AuthServices.fetchEntityInfo('CP1234567')
+    const response = await AuthServices.fetchEntityInfo('CP1234567')
 
     // verify data
-    expect(businessInfo).toEqual({ data: ENTITY_INFO })
+    expect(response).toEqual({ data: ENTITY_INFO })
   })
 })

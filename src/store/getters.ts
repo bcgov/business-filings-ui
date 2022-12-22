@@ -5,6 +5,11 @@ import {
 } from '@/interfaces'
 
 export default {
+  /** The user's Keycloak GUID. */
+  getUserKeycloakGuid (state: StateIF): string {
+    return state.userKeycloakGuid
+  },
+
   /** The list of filings from the API. */
   getFilings (state: StateIF): ApiFilingIF[] {
     return state.filings

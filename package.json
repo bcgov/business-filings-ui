@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "5.8.6",
+  "version": "5.9.0",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -33,6 +33,7 @@
     "http-status-codes": "^2.2.0",
     "launchdarkly-js-client-sdk": "^2.22.1",
     "lodash": "^4.17.21",
+    "pdfjs-dist": "2.0.943",
     "provinces": "^1.11.0",
     "qrcode.vue": "1.7.0",
     "regenerator-runtime": "^0.13.9",
@@ -54,6 +55,7 @@
     "@types/vuelidate": "^0.7.15",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
+    "@volar-plugins/vetur": "latest",
     "@vue/cli-plugin-babel": "^4.5.19",
     "@vue/cli-plugin-eslint": "^4.5.19",
     "@vue/cli-plugin-typescript": "^4.5.19",

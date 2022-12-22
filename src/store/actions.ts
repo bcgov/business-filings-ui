@@ -6,6 +6,9 @@ export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
     commit('keycloakRoles', keycloakRoles)
   },
+  setUserKeycloakGuid ({ commit }, userKeycloakGuid: string) {
+    commit('userKeycloakGuid', userKeycloakGuid)
+  },
   setAuthRoles ({ commit }, authRoles: Array<string>) {
     commit('authRoles', authRoles)
   },
