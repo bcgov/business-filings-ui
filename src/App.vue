@@ -284,7 +284,7 @@ export default {
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
       'setConfigObject', 'setReasonText', 'setEntityState', 'setAdminFreeze', 'setBusinessWarnings',
-      'setGoodStanding', 'setHasCourtOrders']),
+      'setGoodStanding', 'setHasCourtOrders', 'setUserKeycloakGuid']),
 
     /** Fetches business data / incorp app data. */
     async fetchData (): Promise<void> {
@@ -312,8 +312,8 @@ export default {
         }
 
         // check if current user is authorized
-        const authData = await AuthServices.fetchAuthorizations(this.businessId || this.tempRegNumber)
-        this.storeAuthorizations(authData) // throws if no role
+        const response = await AuthServices.fetchAuthorizations(this.businessId || this.tempRegNumber)
+        this.storeAuthorizations(response) // throws if no role
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
         if (this.businessId) this.businessAuthErrorDialog = true
@@ -322,9 +322,11 @@ export default {
       }
 
       // fetch user info and update Launch Darkly
+      // and save user's Keycloak GUID
       try {
-        const userInfo = await AuthServices.fetchUserInfo()
+        const userInfo = await AuthServices.fetchUserInfo().then(response => response?.data)
         await this.updateLaunchDarkly(userInfo)
+        this.setUserKeycloakGuid(userInfo.keycloakGuid)
       } catch (error) {
         // just log the error -- no need to halt app
         console.log('Error updating Launch Darkly =', error) // eslint-disable-line no-console

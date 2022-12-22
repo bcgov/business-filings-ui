@@ -6,8 +6,8 @@ export interface LegalFilingIF {
   [name: string]: string // link to fetch it
 }
 
-/** A documents object from the API. */
-export interface ApiDocumentsIF {
+/** Response object from LegalServices.fetchDocuments(). */
+export interface FetchDocumentsIF {
   // contains any number of arbitrarily-named submission level outputs
   // or an array named "legalFilings"
   // eg, certificate, noticeOfArticles, receipt, etc

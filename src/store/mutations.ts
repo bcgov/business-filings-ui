@@ -6,6 +6,9 @@ export default {
   keycloakRoles (state: StateIF, keycloakRoles: Array<string>) {
     state.keycloakRoles = keycloakRoles
   },
+  userKeycloakGuid (state: StateIF, userKeycloakGuid: string) {
+    state.userKeycloakGuid = userKeycloakGuid
+  },
   authRoles (state: StateIF, authRoles: Array<string>) {
     state.authRoles = authRoles
   },

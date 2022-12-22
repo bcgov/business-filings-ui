@@ -6,8 +6,8 @@ import { ApiFilingIF, ApiTaskIF, BusinessWarningIF, FilingDataIF, OfficeAddressI
 export interface StateIF {
   // tombstone data
   keycloakRoles: Array<string>
+  userKeycloakGuid: string
   authRoles: Array<string>
-  username: string
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
 

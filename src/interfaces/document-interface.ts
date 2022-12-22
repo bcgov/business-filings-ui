@@ -1,4 +1,4 @@
-/** A document in the UI. */
+/** A document attached to a filing. */
 export interface DocumentIF {
   title: string // eg, "Certificate"
   filename: string // eg, "BC1230082 - Certificate - 2021-02-08.pdf"

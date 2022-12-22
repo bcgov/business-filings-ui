@@ -155,6 +155,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.PUT_BACK_ON)
   }
 
+  /** Returns True if filing is a Court Order. */
+  isTypeCourtOrder (item: any): boolean {
+    return (item.name === FilingTypes.COURT_ORDER)
+  }
+
   /** Returns True if filing is a Special Resolution. */
   isTypeSpecialResolution (item: any): boolean {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)

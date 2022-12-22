@@ -2,8 +2,8 @@ import { StateIF } from '@/interfaces'
 
 export const state: StateIF = {
   keycloakRoles: [],
+  userKeycloakGuid: null,
   authRoles: [],
-  username: null,
   currentJsDate: null,
   currentDate: null,
 

@@ -1067,7 +1067,7 @@ export default class Directors extends Vue {
     let addressFormIsValid = this.$refs.baseAddressEdit[0].$refs.addressForm.validate() as boolean
 
     if (this.$refs.mailAddressEdit && this.$refs.mailAddressEdit[0]) {
-      let mailAddressFormIsValid = this.$refs.mailAddressEdit[0].$refs.addressForm.validate()
+      let mailAddressFormIsValid = this.$refs.mailAddressEdit[0].$refs.addressForm.validate() as boolean
       if (!mailAddressFormIsValid) {
         addressFormIsValid = mailAddressFormIsValid
       }
