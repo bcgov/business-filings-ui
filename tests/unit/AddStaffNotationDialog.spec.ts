@@ -35,7 +35,8 @@ describe('AddStaffNotationDialog', () => {
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
-    expect(vm.notationMaxLength).toBe(2000)
+    expect(vm.NOTATION_MAX_LENGTH).toBe(2000)
+    expect(vm.MAX_FILE_SIZE).toBe(30)
 
     wrapper.destroy()
   })
@@ -59,7 +60,8 @@ describe('AddStaffNotationDialog', () => {
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
-    expect(vm.notationMaxLength).toBe(2000)
+    expect(vm.NOTATION_MAX_LENGTH).toBe(2000)
+    expect(vm.MAX_FILE_SIZE).toBe(30)
 
     wrapper.destroy()
   })
@@ -82,7 +84,8 @@ describe('AddStaffNotationDialog', () => {
     expect(wrapper.find('#dialog-save-button')).toBeDefined()
     expect(wrapper.find('#dialog-cancel-button')).toBeDefined()
 
-    expect(vm.notationMaxLength).toBe(2000)
+    expect(vm.NOTATION_MAX_LENGTH).toBe(2000)
+    expect(vm.MAX_FILE_SIZE).toBe(30)
 
     wrapper.destroy()
   })
@@ -92,7 +95,8 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          displayName: 'Test'
+          displayName: 'Test',
+          name: 'registrarsNotation'
         },
         store
       })
@@ -120,13 +124,13 @@ describe('AddStaffNotationDialog', () => {
       })
 
     // Should not start with validation
-    expect(wrapper.find('#notation-form').text()).not.toContain('Enter a Test')
+    expect(wrapper.find('.notation-textarea').text()).not.toContain('Enter a Test')
 
     // Should validate after clicking on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find('#notation-form').text()).toContain('Enter a Test')
+    expect(wrapper.find('.notation-textarea').text()).toContain('Enter a Test')
 
     wrapper.destroy()
   })
@@ -145,13 +149,13 @@ describe('AddStaffNotationDialog', () => {
       })
 
     // Should not start with validation
-    expect(wrapper.find('#notation-form').text()).not.toContain('Enter a detailed comment')
+    expect(wrapper.find('.notation-textarea').text()).not.toContain('Enter a detailed comment')
 
     // Should validate after clicking on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find('#notation-form').text()).toContain('Enter a detailed comment')
+    expect(wrapper.find('.notation-textarea').text()).toContain('Enter a detailed comment')
 
     wrapper.destroy()
   })
@@ -171,13 +175,13 @@ describe('AddStaffNotationDialog', () => {
       })
 
     // Should not start with validation
-    expect(wrapper.find('#notation-form').text()).not.toContain('Enter a detailed comment')
+    expect(wrapper.find('.notation-textarea').text()).not.toContain('Enter a detailed comment')
 
     // Should validate after clicking on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find('#notation-form').text()).toContain('Enter a detailed comment')
+    expect(wrapper.find('.notation-textarea').text()).toContain('Enter a detailed comment')
 
     wrapper.destroy()
   })
@@ -188,6 +192,7 @@ describe('AddStaffNotationDialog', () => {
         propsData: {
           dialog: true,
           displayName: 'Test',
+          name: 'registrarsNotation',
           courtOrderNumberRequired: true
         },
         store,
@@ -195,18 +200,18 @@ describe('AddStaffNotationDialog', () => {
       })
 
     // Valid data should be allowed
-    await wrapper.find('#notation').setValue('a'.repeat(2000))
+    await wrapper.find('.notation-textarea textarea').setValue('a'.repeat(2000))
     await wrapper.find('#dialog-save-button').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find('#notation-form').text()).not.toContain('Maximum characters exceeded.')
+    expect(wrapper.find('.notation-textarea').text()).not.toContain('Maximum characters exceeded.')
 
     // Larger than allowed
-    await wrapper.find('#notation').setValue('a'.repeat(2001))
+    await wrapper.find('.notation-textarea textarea').setValue('a'.repeat(2001))
     await wrapper.find('#dialog-save-button').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find('#notation-form').text()).toContain('Maximum characters exceeded.')
+    expect(wrapper.find('.notation-textarea').text()).toContain('Maximum characters exceeded.')
 
     wrapper.destroy()
   })
@@ -216,7 +221,8 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          displayName: 'Test'
+          displayName: 'Test',
+          name: 'registrarsNotation'
         },
         store,
         vuetify
@@ -227,10 +233,10 @@ describe('AddStaffNotationDialog', () => {
     await Vue.nextTick()
 
     // Should not validate if plan of arrangement is not checked
-    expect(wrapper.find('#court-order').text()).not.toContain('A Court Order number is required')
+    expect(wrapper.find('#court-order-poa').text()).not.toContain('A Court Order number is required')
 
     await wrapper.find('#plan-of-arrangement-checkbox').trigger('click')
-    expect(wrapper.find('#court-order').text()).toContain('A Court Order number is required')
+    expect(wrapper.find('#court-order-poa').text()).toContain('A Court Order number is required')
 
     wrapper.destroy()
   })
@@ -241,6 +247,7 @@ describe('AddStaffNotationDialog', () => {
         propsData: {
           dialog: true,
           displayName: 'Test',
+          name: 'registrarsNotation',
           courtOrderNumberRequired: true
         },
         store,
@@ -248,13 +255,13 @@ describe('AddStaffNotationDialog', () => {
       })
 
     // Should not start with validation
-    expect(wrapper.find('#court-order').text()).not.toContain('A Court Order number is required')
+    expect(wrapper.find('#court-order-poa').text()).not.toContain('A Court Order number is required')
 
     // Validates on 'Save'
     await wrapper.find('#dialog-save-button').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find('#court-order').text()).toContain('A Court Order number is required')
+    expect(wrapper.find('#court-order-poa').text()).toContain('A Court Order number is required')
 
     wrapper.destroy()
   })
@@ -264,7 +271,8 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          displayName: 'Test'
+          displayName: 'Test',
+          name: 'registrarsNotation'
         },
         store,
         vuetify
@@ -276,7 +284,7 @@ describe('AddStaffNotationDialog', () => {
     // for some reason, awaiting the 2 statements above doesn't work as expected
     await Vue.nextTick()
 
-    expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
+    expect(wrapper.find('#court-order-poa').text()).toContain('Court order number is invalid')
 
     // Allowed length (min 5)
     wrapper.find('#court-order-number-input').setValue('a'.repeat(5))
@@ -284,7 +292,7 @@ describe('AddStaffNotationDialog', () => {
     // for some reason, awaiting the 2 statements above doesn't work as expected
     await Vue.nextTick()
 
-    expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
+    expect(wrapper.find('#court-order-poa').text()).not.toContain('Court order number is invalid')
 
     wrapper.destroy()
   })
@@ -294,7 +302,8 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          displayName: 'Test'
+          displayName: 'Test',
+          name: 'registrarsNotation'
         },
         store,
         vuetify
@@ -306,7 +315,7 @@ describe('AddStaffNotationDialog', () => {
     // for some reason, awaiting the 2 statements above doesn't work as expected
     await Vue.nextTick()
 
-    expect(wrapper.find('#court-order').text()).not.toContain('Court order number is invalid')
+    expect(wrapper.find('#court-order-poa').text()).not.toContain('Court order number is invalid')
 
     // Greater than allowed (max 20)
     wrapper.find('#court-order-number-input').setValue('a'.repeat(21))
@@ -314,7 +323,7 @@ describe('AddStaffNotationDialog', () => {
     // for some reason, awaiting the 2 statements above doesn't work as expected
     await Vue.nextTick()
 
-    expect(wrapper.find('#court-order').text()).toContain('Court order number is invalid')
+    expect(wrapper.find('#court-order-poa').text()).toContain('Court order number is invalid')
 
     wrapper.destroy()
   })
@@ -326,24 +335,20 @@ describe('AddStaffNotationDialog', () => {
     sinon
       .stub(axios, 'post')
       .withArgs('businesses/BC0870669/filings')
-      .returns(
-        new Promise(resolve =>
-          resolve({
-            data: {}
-          })
-        )
-      )
+      .returns(new Promise(resolve => resolve({ data: { filing: {} } })))
 
     const wrapper = mount(AddStaffNotationDialog,
       {
         propsData: {
-          dialog: true
+          dialog: true,
+          displayName: 'Test',
+          name: 'registrarsNotation'
         },
         store,
         vuetify
       })
 
-    wrapper.find('#notation').setValue('Notation...')
+    wrapper.find('.notation-textarea textarea').setValue('Notation...')
     wrapper.find('#dialog-save-button').trigger('click')
     // for some reason, awaiting the 2 statements above doesn't work as expected
     await flushPromises() // need to wait longer here
