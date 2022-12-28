@@ -42,6 +42,14 @@
       :dissolutionType="DissolutionTypes.ADMINISTRATIVE"
     />
 
+    <AddStaffNotationDialog
+      :dialog="isAddingAdministerFreeze"
+      @close="hideAdministerFreezeDialog($event)"
+      attach="#staff-notation"
+      :displayName="FilingNames.ADMIN_FREEZE"
+      :name="FilingTypes.ADMIN_FREEZE"
+    />
+
     <div class="staff-notation-container">
       <v-menu offset-y transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
@@ -89,6 +97,13 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
+            <template v-if="isFirm || isCoop || isBenBcCccUlc">
+              <v-list-item v-if="!isHistorical && !adminFreeze" @click="showAdministerFreezeDialog()">
+                <v-list-item-title>
+                  <span class="app-blue">Administer Freeze</span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -114,6 +129,7 @@ export default class StaffNotation extends Vue {
   private isAddingCourtOrder = false
   private isAddingPutBackOn = false
   private isAddingAdministrativeDissolution = false
+  private isAddingAdministerFreeze = false
   private expand = false
 
   // enum for template
@@ -133,6 +149,7 @@ export default class StaffNotation extends Vue {
   @Getter isCoop!: boolean
   @Getter getIdentifier: string
   @Getter isHistorical!: boolean
+  @Getter adminFreeze!: boolean
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -179,8 +196,17 @@ export default class StaffNotation extends Vue {
     this.isAddingAdministrativeDissolution = true
   }
 
+  showAdministerFreezeDialog (): void {
+    this.isAddingAdminterFreeze = true
+  }
+
   hideAdministrativeDissolutionDialog (needReload: boolean): void {
     this.isAddingAdministrativeDissolution = false
+    this.close(needReload)
+  }
+
+  hideAdministerFreezeDialog (needReload: boolean): void {
+    this.isAddingAdminterFreeze = false
     this.close(needReload)
   }
 
