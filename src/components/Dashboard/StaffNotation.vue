@@ -98,7 +98,7 @@
               </v-list-item>
             </template>
             <template v-if="isFirm || isCoop || isBenBcCccUlc">
-              <v-list-item v-if="!isHistorical && !adminFreeze" @click="showAdministerFreezeDialog()">
+              <v-list-item v-if="!isHistorical && !isAdminFreeze" @click="showAdministerFreezeDialog()">
                 <v-list-item-title>
                   <span class="app-blue">Administer Freeze</span>
                 </v-list-item-title>
@@ -149,7 +149,7 @@ export default class StaffNotation extends Vue {
   @Getter isCoop!: boolean
   @Getter getIdentifier: string
   @Getter isHistorical!: boolean
-  @Getter adminFreeze!: boolean
+  @Getter isAdminFreeze!: boolean
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -197,7 +197,7 @@ export default class StaffNotation extends Vue {
   }
 
   showAdministerFreezeDialog (): void {
-    this.isAddingAdminterFreeze = true
+    this.isAddingAdministerFreeze = true
   }
 
   hideAdministrativeDissolutionDialog (needReload: boolean): void {
@@ -206,7 +206,7 @@ export default class StaffNotation extends Vue {
   }
 
   hideAdministerFreezeDialog (needReload: boolean): void {
-    this.isAddingAdminterFreeze = false
+    this.isAddingAdministerFreeze = false
     this.close(needReload)
   }
 

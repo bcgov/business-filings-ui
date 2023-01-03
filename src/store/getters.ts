@@ -208,6 +208,12 @@ export default {
     return (state.entityState === EntityState.HISTORICAL)
   },
 
+  /** Is True if the business is frozen */
+  isAdminFreeze (state: StateIF): boolean {
+    console.log('isAdminFreeze', state.adminFreeze)
+    return state.adminFreeze
+  },
+
   /** Is True if business is in liquidation. */
   isLiquidation (state: StateIF): boolean {
     return (state.entityState === EntityState.LIQUIDATION)

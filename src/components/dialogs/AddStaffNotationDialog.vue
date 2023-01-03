@@ -20,9 +20,14 @@
           {{getIdentifier}}</strong> back on the register.
         </p>
 
+        <p v-if="isFilingTypeAdminFreeze">
+          You are about to {{ !isAdminFreeze ? 'Freeze' : 'Unfreeze' }} <strong><span class="text-uppercase">{{getEntityName}}</span>,
+          {{getIdentifier}}</strong>.
+        </p>
+
         <v-form ref="notationFormRef" id="notation-form">
           <p id="notation-text" :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }">
-            Enter a {{(isAdministrativeDissolution || isPutBackOn) ? 'Detail' : displayName}}
+            Enter a {{(isAdministrativeDissolution || isPutBackOn || isFilingTypeAdminFreeze) ? 'Detail' : displayName}}
             that will appear on the ledger for this entity:
           </p>
 
@@ -30,7 +35,7 @@
             v-model="notation"
             class="notation-textarea xmt-4"
             filled
-            :label="(isAdministrativeDissolution || isPutBackOn) ? 'Add Detail' : displayName"
+            :label="(isAdministrativeDissolution || isPutBackOn || isFilingTypeAdminFreeze) ? 'Add Detail' : displayName"
             :rows="isCourtOrder ? 2: 5"
             :no-resize="true"
             :rules="enableValidation ? notationRules : []"
@@ -165,6 +170,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter getEntityType!: string
   @Getter getIdentifier!: string
   @Getter getUserKeycloakGuid!: string
+  @Getter isAdminFreeze!: boolean
 
   // Properties
   protected notation = '' // notation text
@@ -184,6 +190,11 @@ export default class AddStaffNotationDialog extends Vue {
   /** Whether this filing is a Put Back On. */
   get isPutBackOn (): boolean {
     return this.isTypePutBackOn({ name: this.name })
+  }
+
+  /** Whether this filing is a admin freeze. */
+  get isFilingTypeAdminFreeze (): boolean {
+    return this.isTypeAdminFreeze({ name: this.name })
   }
 
   /** Whether this filing is a Court Order. */
@@ -210,7 +221,7 @@ export default class AddStaffNotationDialog extends Vue {
       // others require a comment
       (v: string) => (
         !!v ||
-        (this.isAdministrativeDissolution || this.isPutBackOn || this.isCourtOrder) ||
+        (this.isAdministrativeDissolution || this.isPutBackOn || this.isCourtOrder || this.isFilingTypeAdminFreeze) ||
         `Enter a ${this.displayName}`
       ),
       (v: string) => (
@@ -356,6 +367,8 @@ export default class AddStaffNotationDialog extends Vue {
           fileType = 'put back on filing'
         } else if (this.isAdministrativeDissolution) {
           fileType = 'administrative dissolution filing'
+        } else if (this.isFilingTypeAdminFreeze) {
+          fileType = 'admin freeze filing'
         } else {
           fileType = 'notation'
         }

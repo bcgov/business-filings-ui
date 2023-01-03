@@ -155,6 +155,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.PUT_BACK_ON)
   }
 
+  /** Return True if the filing is a Admin Freeze */
+  isTypeAdminFreeze (item: any): boolean {
+    return (item.name === FilingTypes.ADMIN_FREEZE)
+  }
+
   /** Returns True if filing is a Court Order. */
   isTypeCourtOrder (item: any): boolean {
     return (item.name === FilingTypes.COURT_ORDER)
