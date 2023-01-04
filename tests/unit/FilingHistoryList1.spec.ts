@@ -759,8 +759,8 @@ describe('Filing History List - redirections', () => {
     await Vue.nextTick()
 
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    const createUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
-    expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
+    const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
 
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
