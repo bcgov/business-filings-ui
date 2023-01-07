@@ -45,6 +45,7 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeDissolution({ name: 'dissolution' })).toBe(true)
     expect(vm.isTypeIncorporationApplication({ name: 'incorporationApplication' })).toBe(true)
     expect(vm.isTypeRegistration({ name: 'registration' })).toBe(true)
+    expect(vm.isTypeRestoration({ name: 'restoration' })).toBe(true)
     expect(vm.isTypeTransition({ name: 'transition' })).toBe(true)
     expect(vm.isTypePutBackOn({ name: 'putBackOn' })).toBe(true)
     expect(vm.isTypeSpecialResolution({ name: 'specialResolution' })).toBe(true)

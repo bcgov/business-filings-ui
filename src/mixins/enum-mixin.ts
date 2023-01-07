@@ -140,6 +140,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.REGISTRATION)
   }
 
+  /** Returns True if filing is a Restoration. */
+  isTypeRestoration (item: any): boolean {
+    return (item.name === FilingTypes.RESTORATION)
+  }
+
   /** Returns True if filing is a Transition. */
   isTypeTransition (item: any): boolean {
     return (item.name === FilingTypes.TRANSITION)
