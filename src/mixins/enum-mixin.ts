@@ -7,7 +7,8 @@ import {
   FilingNames,
   FilingStatus,
   FilingTypes,
-  PaymentMethod
+  PaymentMethod,
+  RestorationTypes
 } from '@/enums'
 import {
   GetCorpFullDescription,
@@ -233,7 +234,7 @@ export default class EnumMixin extends Vue {
    * @param alterationRequired A boolean indicating a required business type change
    * @returns the filing name
    */
-  filingTypeToName (type: FilingTypes, agmYear = null as string): string {
+  filingTypeToName (type: FilingTypes, agmYear = null as string, subType = null as any): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
@@ -253,6 +254,9 @@ export default class EnumMixin extends Vue {
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
       case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
+      case FilingTypes.RESTORATION: return (subType === RestorationTypes.FULL)
+        ? FilingNames.RESTORATION_FULL
+        : FilingNames.RESTORATION_LIMITED
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION

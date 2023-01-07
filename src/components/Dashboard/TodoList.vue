@@ -446,7 +446,7 @@ import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 import { LegalServices, PayServices } from '@/services/'
-import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, RestorationTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
 
@@ -1286,6 +1286,8 @@ export default class TodoList extends Vue {
 
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
+      const title = this.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)
+
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
@@ -1293,8 +1295,8 @@ export default class TodoList extends Vue {
         name: FilingTypes.RESTORATION,
         filingId: header.filingId,
         legalType: corpTypeDescription,
-        title: FilingNames.RESTORATION,
-        draftTitle: FilingNames.RESTORATION,
+        title,
+        draftTitle: title,
         status: header.status,
         enabled: task.enabled,
         order: task.order,

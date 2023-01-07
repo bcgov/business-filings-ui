@@ -104,7 +104,7 @@ describe('TodoList - common expansion panel header tests', () => {
               comments: []
             },
             business: {},
-            restoration: {}
+            restoration: { type: 'FULL' }
           }
         }
       }
@@ -121,7 +121,7 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify sub-title
     // verify resume button
     expect(wrapper.findAll('.todo-item').length).toEqual(1)
-    expect(wrapper.find('.list-item__title').text()).toBe('Restoration')
+    expect(wrapper.find('.list-item__title').text()).toBe('Full Restoration')
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
     expect(wrapper.find('.btn-draft-resume').exists()).toBe(true)
 
@@ -150,7 +150,7 @@ describe('TodoList - common expansion panel header tests', () => {
               comments: []
             },
             business: {},
-            restoration: {}
+            restoration: { type: 'FULL' }
           }
         }
       }
@@ -167,7 +167,7 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify sub-title
     // verify no resume button
     expect(wrapper.findAll('.todo-item').length).toEqual(1)
-    expect(wrapper.find('.list-item__title').text()).toBe('Restoration')
+    expect(wrapper.find('.list-item__title').text()).toBe('Full Restoration')
     expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
     expect(wrapper.find('.btn-draft-resume').exists()).toBe(false)
 
