@@ -5,7 +5,7 @@ import { RestorationTypes } from '@/enums'
  * https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/restoration.json
  */
 export interface RestorationIF {
-  date: string // *** TODO: format?
+  date: string // FUTURE: describe format here
   type: RestorationTypes
-  expiry?: string // *** TODO: format?
+  expiry?: string // FUTURE: describe format here
 }
