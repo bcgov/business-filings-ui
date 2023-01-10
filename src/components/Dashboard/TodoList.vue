@@ -444,7 +444,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
@@ -470,8 +470,7 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialo
   mixins: [
     AllowableActionsMixin,
     DateMixin,
-    EnumMixin,
-    FilingMixin
+    EnumMixin
   ]
 })
 export default class TodoList extends Vue {
@@ -502,6 +501,8 @@ export default class TodoList extends Vue {
   @Getter getTodoListResource!: TodoListResourceIF
   @Getter getBusinessWarnings!: BusinessWarningIF
   @Getter isBenBcCccUlc!: boolean
+  @Getter getEntityType!: CorpTypeCd
+  @Getter getIdentifier!: string
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -745,7 +746,7 @@ export default class TodoList extends Vue {
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CC/ULC only
+        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CCC/ULC only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)

@@ -1,7 +1,7 @@
-/** Dissolution filing. */
 import { OfficeAddressIF } from '@/interfaces/address-interfaces'
 import { DissolutionTypes } from '@/enums'
 
+/** Dissolution filing interface. */
 export interface DissolutionFilingIF {
   header: {
     name: string
