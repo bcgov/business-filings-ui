@@ -1,7 +1,8 @@
 import { Component } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { Action, State, Getter } from 'vuex-class'
-import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF } from '@/interfaces'
+import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF,
+  RestorationFilingIF } from '@/interfaces'
 import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
 
 /**
@@ -119,7 +120,7 @@ export default class FilingMixin extends DateMixin {
   }
 
   /**
-   * Builds a Dissolution filing body. Used when creating a draft Dissolution filing.
+   * Builds a Dissolution filing body.
    * @returns the filing body
    */
   buildDissolutionFiling (): DissolutionFilingIF {
@@ -152,5 +153,32 @@ export default class FilingMixin extends DateMixin {
     }
 
     return dissolutionFiling
+  }
+
+  /**
+   * Builds a Restoration filing body.
+   * @returns the filing body
+   */
+  buildRestorationFiling (): RestorationFilingIF {
+    const restorationFiling: RestorationFilingIF = {
+      header: {
+        date: this.getCurrentDate,
+        name: FilingTypes.RESTORATION
+      },
+      business: {
+        foundingDate: this.dateToApi(this.getEntityFoundingDate),
+        identifier: this.getIdentifier,
+        legalName: this.entityName,
+        legalType: this.getEntityType
+      },
+      restoration: {
+        // FUTURE: update as needed
+        date: null,
+        type: null,
+        expiry: null
+      }
+    }
+
+    return restorationFiling
   }
 }

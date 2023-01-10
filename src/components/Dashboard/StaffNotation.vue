@@ -26,20 +26,20 @@
     />
 
     <AddStaffNotationDialog
-      :dialog="isAddingPutBackOn"
-      @close="hidePutBackOnDialog($event)"
-      attach="#staff-notation"
-      :displayName="FilingNames.PUT_BACK_ON"
-      :name="FilingTypes.PUT_BACK_ON"
-    />
-
-    <AddStaffNotationDialog
       :dialog="isAddingAdministrativeDissolution"
       @close="hideAdministrativeDissolutionDialog($event)"
       attach="#staff-notation"
       :displayName="DissolutionNames.ADMINISTRATIVE"
       :name="FilingTypes.DISSOLUTION"
       :dissolutionType="DissolutionTypes.ADMINISTRATIVE"
+    />
+
+    <AddStaffNotationDialog
+      :dialog="isAddingPutBackOn"
+      @close="hidePutBackOnDialog($event)"
+      attach="#staff-notation"
+      :displayName="FilingNames.PUT_BACK_ON"
+      :name="FilingTypes.PUT_BACK_ON"
     />
 
     <div class="staff-notation-container">
@@ -55,37 +55,76 @@
 
         <v-list dense>
           <v-list-item-group color="primary">
-            <v-list-item @click="showRegistrarsNotationDialog()" :disabled="disabled">
+            <v-list-item
+              data-type="registrars-notation"
+              @click="showRegistrarsNotationDialog()"
+              disabled="disabled"
+            >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Notation</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="showRegistrarsOrderDialog()" :disabled="disabled">
+
+            <v-list-item
+              data-type="registrars-order"
+              @click="showRegistrarsOrderDialog()"
+              :disabled="disabled"
+            >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Order</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="showCourtOrderDialog()" :disabled="disabled">
+
+            <v-list-item
+              data-type="court-order"
+              @click="showCourtOrderDialog()"
+              :disabled="disabled"
+            >
               <v-list-item-title>
                 <span class="app-blue">Add Court Order</span>
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="goToConversionFiling()" :disabled="disabled || !isFirm">
+
+            <v-list-item
+              data-type="record-conversion"
+              @click="goToConversionFiling()"
+              :disabled="disabled || !isFirm"
+            >
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
             </v-list-item>
-            <template v-if="isFirm || isCoop || isBenBcCccUlc">
-              <v-list-item v-if="isHistorical" @click="showPutBackOnDialog()" :disabled="!isHistorical">
+
+            <template v-if="(isFirm || isCoop || isBenBcCccUlc) && !isHistorical">
+              <v-list-item
+                data-type="administrative-dissolution"
+                @click="showAdministrativeDissolutionDialog()"
+                :disabled="disabled"
+              >
                 <v-list-item-title>
-                  <span class="app-blue">Put Back On</span>
+                  <span class="app-blue">Administrative Dissolution</span>
                 </v-list-item-title>
               </v-list-item>
             </template>
-            <template v-if="isFirm || isCoop || isBenBcCccUlc">
-              <v-list-item v-if="!isHistorical" @click="showAdministrativeDissolutionDialog()" :disabled="disabled">
+
+            <template v-if="isBenBcCccUlc && isHistorical">
+              <v-list-item
+                data-type="restoration"
+                @click="goToRestorationFiling()"
+              >
                 <v-list-item-title>
-                  <span class="app-blue">Administrative Dissolution</span>
+                  <span class="app-blue">Restore Company</span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+
+            <template v-if="(isFirm || isCoop || isBenBcCccUlc) && isHistorical">
+              <v-list-item
+                data-type="put-back-on"
+                @click="showPutBackOnDialog()"
+              >
+                <v-list-item-title>
+                  <span class="app-blue">Put Back On</span>
                 </v-list-item-title>
               </v-list-item>
             </template>
@@ -102,11 +141,13 @@ import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { navigate } from '@/utils'
 import { DissolutionTypes, DissolutionNames, FilingTypes, FilingNames } from '@/enums'
-// Dialog
 import { AddStaffNotationDialog } from '@/components/dialogs'
+import { FilingMixin } from '@/mixins'
+import { LegalServices } from '@/services'
 
 @Component({
-  components: { AddStaffNotationDialog }
+  components: { AddStaffNotationDialog },
+  mixins: [FilingMixin]
 })
 export default class StaffNotation extends Vue {
   private isAddingRegistrarsNotation = false
@@ -133,6 +174,11 @@ export default class StaffNotation extends Vue {
   @Getter isCoop!: boolean
   @Getter getIdentifier: string
   @Getter isHistorical!: boolean
+
+  /** The Create URL string. */
+  get createUrl (): string {
+    return sessionStorage.getItem('CREATE_URL')
+  }
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -166,13 +212,9 @@ export default class StaffNotation extends Vue {
     this.close(needReload)
   }
 
-  showPutBackOnDialog (): void {
-    this.isAddingPutBackOn = true
-  }
-
-  hidePutBackOnDialog (needReload: boolean): void {
-    this.isAddingPutBackOn = false
-    this.close(needReload)
+  goToConversionFiling ():void {
+    const url = `${this.editUrl}${this.getIdentifier}/conversion`
+    navigate(url)
   }
 
   showAdministrativeDissolutionDialog (): void {
@@ -184,14 +226,41 @@ export default class StaffNotation extends Vue {
     this.close(needReload)
   }
 
+  async goToRestorationFiling (): Promise<void> {
+    try {
+      // show spinner since the network calls below can take a few seconds
+      this.$root.$emit('showSpinner', true)
+
+      // create restoration draft filing
+      const restoration = this.buildRestorationFiling()
+      const filing = await LegalServices.createFiling(this.getIdentifier, restoration, true)
+      const id = +filing?.header?.filingId
+
+      if (isNaN(id)) throw new Error('Invalid API response')
+
+      // navigate to Create UI
+      const url = `${this.createUrl}?id=${this.getIdentifier}`
+      navigate(url)
+    } catch (error) {
+      // clear spinner on error
+      this.$root.$emit('showSpinner', false)
+
+      alert(`Could not create restoration filing. Please try again or cancel.`)
+    }
+  }
+
+  showPutBackOnDialog (): void {
+    this.isAddingPutBackOn = true
+  }
+
+  hidePutBackOnDialog (needReload: boolean): void {
+    this.isAddingPutBackOn = false
+    this.close(needReload)
+  }
+
   @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private close (needReload: boolean): void {}
-
-  goToConversionFiling ():void {
-    const url = `${this.editUrl}${this.getIdentifier}/conversion`
-    navigate(url)
-  }
 }
 </script>
 
