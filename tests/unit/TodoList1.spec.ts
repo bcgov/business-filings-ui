@@ -2331,7 +2331,7 @@ describe('TodoList - Click Tests - Corrections', () => {
 
   for (const test of editTests) {
     it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
-      // init store
+      // init session storage and store
       sessionStorage.clear()
       sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
       sessionStorage.setItem('BUSINESS_ID', test.businessId)
@@ -2449,7 +2449,7 @@ describe('TodoList - Click Tests - Alterations', () => {
   })
 
   it('redirects to Edit URL to resume a draft alteration', async () => {
-    // init store
+    // init session storage and store
     sessionStorage.clear()
     sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -2518,7 +2518,7 @@ describe('TodoList - Delete Draft', () => {
   })
 
   it('shows confirmation popup when \'Delete Draft\' is clicked', async () => {
-    // init store
+    // init session storage and store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     store.state.tasks = [
@@ -2651,7 +2651,7 @@ describe('TodoList - Delete Draft', () => {
   })
 
   it('shows confirmation popup when \'Delete Incorporation Application\' is clicked', async () => {
-    // init
+    // init session storage and store
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.identifier = 'T123456789'
