@@ -56,6 +56,7 @@
               :file.sync="file"
               :fileKey.sync="fileKey"
               :isRequired="enableValidation && isCourtOrder && !notation"
+              :displayName="this.displayName"
               :maxSize="MAX_FILE_SIZE"
               :pageSize="PageSizes.LETTER_PORTRAIT"
               :userId="getUserKeycloakGuid"
@@ -167,6 +168,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter getUserKeycloakGuid!: string
 
   // Properties
+  protected displayName: string = this.displayName
   protected notation = '' // notation text
   protected courtOrderNumber = '' // court order number
   protected planOfArrangement = false // whether filing has plan of arrangement
@@ -205,7 +207,7 @@ export default class AddStaffNotationDialog extends Vue {
         !!v ||
         !this.isCourtOrder ||
         (!!this.file && !!this.fileKey) ||
-        `Enter a ${this.displayName}`
+        `Enter a ${this.displayName} and/or upload file`
       ),
       // others require a comment
       (v: string) => (

@@ -57,7 +57,7 @@
                 <h3 class="item-header__title">
                   <v-icon v-if="filing.displayName==FilingNames.COURT_ORDER" class="pr-1">mdi-gavel</v-icon>
                   <span>{{filing.displayName}}</span>
-                  </h3>
+                </h3>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
