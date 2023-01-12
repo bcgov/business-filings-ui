@@ -187,9 +187,9 @@
                   </v-btn>
                 </template>
 
-                <!-- draft correction or conversion (staff only) -->
-                <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item))
-                  && isRoleStaff"
+                <!-- draft correction or conversion or restoration (staff only) -->
+                <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item) ||
+                  isTypeRestoration(item)) && isRoleStaff"
                 >
                   <v-btn
                     class="btn-draft-resume"
@@ -222,8 +222,8 @@
                   </v-menu>
                 </template>
 
-                <!-- other correction or conversion -->
-                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item)">
+                <!-- other correction or conversion or restoration -->
+                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) || isTypeRestoration(item)">
                   <!-- no action button in this case -->
                 </template>
 
@@ -444,7 +444,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
@@ -470,8 +470,7 @@ import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialo
   mixins: [
     AllowableActionsMixin,
     DateMixin,
-    EnumMixin,
-    FilingMixin
+    EnumMixin
   ]
 })
 export default class TodoList extends Vue {
@@ -502,6 +501,8 @@ export default class TodoList extends Vue {
   @Getter getTodoListResource!: TodoListResourceIF
   @Getter getBusinessWarnings!: BusinessWarningIF
   @Getter isBenBcCccUlc!: boolean
+  @Getter getEntityType!: CorpTypeCd
+  @Getter getIdentifier!: string
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -745,7 +746,7 @@ export default class TodoList extends Vue {
         status: header.status || FilingStatus.NEW,
         enabled: task.enabled,
         order: task.order,
-        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CC/ULC only
+        nextArDate: this.apiToYyyyMmDd(business.nextAnnualReport), // BEN/BC/CCC/ULC only
         arDueDate: this.formatYyyyMmDd(header.arMaxDate)
       }
       this.todoItems.push(item)
@@ -820,6 +821,9 @@ export default class TodoList extends Vue {
           break
         case FilingTypes.SPECIAL_RESOLUTION:
           await this.loadSpecialResolution(task)
+          break
+        case FilingTypes.RESTORATION:
+          await this.loadRestoration(task)
           break
         default:
           // eslint-disable-next-line no-console
@@ -1269,6 +1273,45 @@ export default class TodoList extends Vue {
     }
   }
 
+  private async loadRestoration (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const business = filing.business
+    const restoration = filing.restoration
+
+    if (header && restoration) {
+      // don't allow resuming a draft if not in good standing
+      if (this.isStatusDraft(header) && !this.isGoodStanding) {
+        task.enabled = false
+      }
+
+      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+
+      const title = this.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)
+
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.RESTORATION,
+        filingId: header.filingId,
+        legalType: corpTypeDescription,
+        title,
+        draftTitle: title,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or restoration in task =', task)
+    }
+  }
+
   private expiresText (nameRequest: any): string {
     const date = this.apiToDate(nameRequest.expirationDate)
     const expireDays = this.daysFromToday(date)
@@ -1408,6 +1451,13 @@ export default class TodoList extends Vue {
         const specialResolutionUrl =
           `${this.editUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
         navigate(specialResolutionUrl)
+        break
+      }
+
+      case FilingTypes.RESTORATION: {
+        // navigate to Create UI to resume this Restoration
+        const registrationAppUrl = `${this.createUrl}?id=${this.getIdentifier}`
+        navigate(registrationAppUrl)
         break
       }
 

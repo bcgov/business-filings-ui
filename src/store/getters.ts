@@ -48,8 +48,7 @@ export default {
   },
 
   /** Is True if there is a blocker including firm compliance. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hasBlocker (state: StateIF, getters: any): boolean {
+  hasBlocker (_state: StateIF, getters: any): boolean {
     // check for compliance warning
     if (getters.hasComplianceWarning) return true
 
@@ -105,8 +104,7 @@ export default {
   },
 
   /** Is True if entity is a Sole Proprietorship or General Partnership. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isFirm (state: StateIF, getters: any): boolean {
+  isFirm (_state: StateIF, getters: any): boolean {
     return (getters.isSoleProp || getters.isPartnership)
   },
 
@@ -136,8 +134,7 @@ export default {
   },
 
   /** Is True if entity is a BEN/BC/CCC/ULC. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isBenBcCccUlc (state: StateIF, getters: any): boolean {
+  isBenBcCccUlc (_state: StateIF, getters: any): boolean {
     return (getters.isBComp || getters.isBcCompany || getters.isCcc || getters.isUlc)
   },
 

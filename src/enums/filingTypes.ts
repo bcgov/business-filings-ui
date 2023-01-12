@@ -17,6 +17,7 @@ export enum FilingTypes {
   REGISTRATION = 'registration',
   REGISTRARS_NOTATION = 'registrarsNotation',
   REGISTRARS_ORDER = 'registrarsOrder',
+  RESTORATION = 'restoration',
   SPECIAL_RESOLUTION = 'specialResolution',
   TRANSITION = 'transition',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',

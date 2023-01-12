@@ -26,13 +26,6 @@
       attach="#filing-history-list"
     />
 
-    <!-- Display for if a court order(s) have been filed -->
-    <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
-      <v-icon>mdi-gavel</v-icon>
-      <span> Court order(s) have been filed on this company. Review the filing history for impacts to business
-        information.</span>
-    </v-card>
-
     <!-- Alternate Loading Spinner -->
     <v-fade-transition>
       <div class="loading-container grayed-out" v-show="isBusy">
@@ -42,6 +35,13 @@
         </div>
       </div>
     </v-fade-transition>
+
+    <!-- Court order notification -->
+    <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
+      <v-icon>mdi-gavel</v-icon>
+      <span class="ml-1">Court order(s) have been filed on this company. Review the filing history for impacts
+        to business information.</span>
+    </v-card>
 
     <div class="scrollable-container">
       <v-expansion-panels v-if="showHistoryPanel" v-model="panel">

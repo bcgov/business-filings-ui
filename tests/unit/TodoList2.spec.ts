@@ -20,12 +20,19 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-// FUTURE: implement this
-xdescribe('TodoList - common expansion panel header tests', () => {
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
+// Prevent the warning "[Vuetify] Unable to locate target #filing-history-list"
+document.body.setAttribute('id', 'todo-list')
+
+// FUTURE: expand this
+describe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {
     sessionStorage.clear()
-    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.entityType = 'CP'
+    sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    store.state.entityType = 'BEN'
+    store.state.goodStanding = true
   })
 
   it('handles empty data', async () => {
@@ -36,6 +43,7 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
+    // verify no-results message
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
     expect(vm.$el.querySelector('.no-results')).toBeDefined()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
@@ -43,7 +51,7 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     wrapper.destroy()
   })
 
-  it('displays disabled task', async () => {
+  xit('displays disabled task', async () => {
     // NB: this should only be NEW tasks (ie, blocked by another task)
     // verify class
     // verify disabled actions
@@ -51,7 +59,7 @@ xdescribe('TodoList - common expansion panel header tests', () => {
 
   })
 
-  it('displays draft task with pay error', async () => {
+  xit('displays draft task with pay error', async () => {
     // verify class
     // verify red top border
     // verify title
@@ -59,7 +67,7 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     // verify details expand-btn
   })
 
-  it('displays draft correction without comments', async () => {
+  xit('displays draft correction without comments', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -67,7 +75,7 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  it('displays draft correction with comments', async () => {
+  xit('displays draft correction with comments', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -76,12 +84,97 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  it('displays draft correction as staff', async () => {
-    // verify resume button
-    // verify delete draft button
+  xit('displays draft correction as non-staff', async () => {
+    // verify no resume button
+    // verify no delete draft button
   })
 
-  it('displays draft alteration without comments', async () => {
+  it('displays draft restoration as staff', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        enabled: true,
+        order: 1,
+        task: {
+          filing: {
+            header: {
+              name: 'restoration',
+              status: 'DRAFT',
+              filingId: 1,
+              comments: []
+            },
+            business: {},
+            restoration: { type: 'FULL' }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(TodoList, {
+      store,
+      computed: { isRoleStaff: () => true },
+      vuetify
+    })
+    await Vue.nextTick()
+
+    // verify title
+    // verify sub-title
+    // verify resume button
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.find('.list-item__title').text()).toBe('Full Restoration')
+    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+    expect(wrapper.find('.btn-draft-resume').exists()).toBe(true)
+
+    // open dropdown menu and click Delete button
+    await wrapper.find('#menu-activator').trigger('click')
+    await wrapper.find('#btn-draft-delete').trigger('click')
+
+    // verify confirmation popup is showing
+    expect(wrapper.vm.$refs.confirm).toBeTruthy()
+
+    wrapper.destroy()
+  })
+
+  it('displays draft restoration as non-staff', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        enabled: true,
+        order: 1,
+        task: {
+          filing: {
+            header: {
+              name: 'restoration',
+              status: 'DRAFT',
+              filingId: 1,
+              comments: []
+            },
+            business: {},
+            restoration: { type: 'FULL' }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(TodoList, {
+      store,
+      computed: { isRoleStaff: () => false },
+      vuetify
+    })
+    await Vue.nextTick()
+
+    // verify title
+    // verify sub-title
+    // verify no resume button
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.find('.list-item__title').text()).toBe('Full Restoration')
+    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+    expect(wrapper.find('.btn-draft-resume').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  xit('displays draft alteration without comments', async () => {
     // verify title
     // verify sub-title
     // verify detaild expand-btn
@@ -89,7 +182,7 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  it('displays draft alteration with comments', async () => {
+  xit('displays draft alteration with comments', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -98,91 +191,91 @@ xdescribe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  it('displays draft alteration as staff', async () => {
+  xit('displays draft alteration as staff', async () => {
     // verify resume button
     // verify delete draft button
   })
 
-  it('displays new task with subtitle', async () => {
+  xit('displays new task with subtitle', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
   })
 
-  it('displays new task without subtitle', async () => {
+  xit('displays new task without subtitle', async () => {
     // verify title
     // verify no sub-title
     // verify no details expand-btn
   })
 
-  it('displays draft IA for numbered company', async () => {
+  xit('displays draft IA for numbered company', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify "incorporate a numbered company" button
   })
 
-  it('displays draft IA for named business', async () => {
+  xit('displays draft IA for named business', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
     // verify "incorporate using this nr" button
   })
 
-  it('displays correction-pending correction', async () => {
+  xit('displays correction-pending correction', async () => {
     // verify title
     // verify sub-title
     // verify comments "button"
     // verify no action buttons
   })
 
-  it('displays correction-pending alteration', async () => {
+  xit('displays correction-pending alteration', async () => {
     // verify title
     // verify sub-title
     // verify comments "button"
     // verify no action buttons
   })
 
-  it('displays pending task in process', async () => {
+  xit('displays pending task in process', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify loading button
   })
 
-  it('displays pending task with online banking pay method', async () => {
+  xit('displays pending task with online banking pay method', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
   })
 
-  it('displays pending task with other pay method', async () => {
+  xit('displays pending task with other pay method', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
   })
 
-  it('displays error task in process', async () => {
+  xit('displays error task in process', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify loading button
   })
 
-  it('displays error task', async () => {
+  xit('displays error task', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
   })
 
-  it('displays paid task in process', async () => {
+  xit('displays paid task in process', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify loading button
   })
 
-  it('displays paid task', async () => {
+  xit('displays paid task', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -198,7 +291,21 @@ xdescribe('TodoList - common expansion panel content tests', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - tests specific to Benefit Companies', () => {
+xdescribe('TodoList - tests specific to Cooperatives', () => {
+  beforeAll(() => {
+    sessionStorage.clear()
+    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+    store.state.entityType = 'BEN'
+  })
+  //
+  // FUTURE: add any Coop-specific tests here
+  // eg, year in title
+  // eg, no checkbox (as with BENs)
+  //
+})
+
+// FUTURE: implement this
+xdescribe('TodoList - tests specific to corporations (BEN, etc)', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
