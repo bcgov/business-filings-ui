@@ -182,7 +182,8 @@ export default class EnumMixin extends Vue {
       FilingTypes.REGISTRARS_NOTATION,
       FilingTypes.REGISTRARS_ORDER,
       FilingTypes.COURT_ORDER,
-      FilingTypes.PUT_BACK_ON
+      FilingTypes.PUT_BACK_ON,
+      FilingTypes.ADMIN_FREEZE
     ].includes(item.name)
     const adminDissolution = [
       DissolutionTypes.ADMINISTRATIVE

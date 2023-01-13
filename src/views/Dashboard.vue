@@ -19,6 +19,7 @@
                 </h2>
               </header>
               <!-- FUTURE: move these to a new Alerts component and inside one expansion panel -->
+              <FrozenInformation v-if="isFrozenInformationAlert" />
               <MissingInformation v-if="isMissingInformationAlert" />
               <NotInCompliance v-if="isNotInComplianceAlert" />
               <NotInGoodStanding v-if="isNotInGoodStandingAlert" />
@@ -177,6 +178,7 @@ import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
+import FrozenInformation from '@/components/Dashboard/Alerts/FrozenInformation.vue'
 import LegalObligation from '@/components/Dashboard/LegalObligation.vue'
 import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
@@ -205,6 +207,7 @@ export default {
     CustodianListSm,
     DirectorListSm,
     FilingHistoryList,
+    FrozenInformation,
     LegalObligation,
     MissingInformation,
     NotInCompliance,
@@ -228,7 +231,7 @@ export default {
   computed: {
     ...mapGetters(['isBenBcCccUlc', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
       'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier',
-      'hasMissingInfoWarning', 'hasComplianceWarning']),
+      'hasMissingInfoWarning', 'hasComplianceWarning', 'isAdminFreeze']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -251,6 +254,11 @@ export default {
       return this.hasMissingInfoWarning
     },
 
+    /** Whether to show Missing Information alert. */
+    isFrozenInformationAlert (): boolean {
+      return this.isAdminFreeze
+    },
+
     /** Whether to show Not In Compliance alert. */
     isNotInComplianceAlert (): boolean {
       return this.hasComplianceWarning
@@ -264,6 +272,7 @@ export default {
     /** The number of alerts. */
     alertCount (): number {
       let count = 0
+      if (this.isFrozenInformationAlert) count++
       if (this.isMissingInformationAlert) count++
       if (this.isNotInComplianceAlert) count++
       if (this.isNotInGoodStandingAlert) count++

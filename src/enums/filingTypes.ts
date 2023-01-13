@@ -1,4 +1,5 @@
 export enum FilingTypes {
+  ADMIN_FREEZE = 'adminFreeze',
   ALTERATION = 'alteration',
   ANNUAL_REPORT = 'annualReport',
   CHANGE_OF_ADDRESS = 'changeOfAddress',
@@ -21,7 +22,6 @@ export enum FilingTypes {
   SPECIAL_RESOLUTION = 'specialResolution',
   TRANSITION = 'transition',
   VOLUNTARY_DISSOLUTION = 'voluntaryDissolution',
-  ADMIN_FREEZE = 'adminFreeze',
 
   UNKNOWN = 'unknown' // for fallback
 }

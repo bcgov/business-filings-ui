@@ -40,7 +40,7 @@
                 <v-btn
                   small text color="primary"
                   id="company-information-button"
-                  :disabled="hasBlocker"
+                  :disabled="hasBlocker || isAdminFreeze"
                   @click="promptChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
@@ -62,7 +62,7 @@
                   <v-btn
                     small text color="primary"
                     id="dissolution-button"
-                    :disabled="hasBlocker"
+                    :disabled="hasBlocker || isAdminFreeze"
                     @click="promptDissolve()"
                     v-on="on"
                   >
@@ -223,6 +223,7 @@ export default class EntityInfo extends Vue {
   @Getter getIdentifier!: number
   @Getter getEntityName!: string
   @Getter getNameRequestNumber!: string
+  @Getter isAdminFreeze!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter getEntityFoundingDate!: Date
 

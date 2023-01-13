@@ -76,7 +76,7 @@
             <v-list-item
               data-type="registrars-order"
               @click="showRegistrarsOrderDialog()"
-              :disabled="disabled"
+              :disabled="disabled || isAdminFreeze"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Order</span>
@@ -86,7 +86,7 @@
             <v-list-item
               data-type="court-order"
               @click="showCourtOrderDialog()"
-              :disabled="disabled"
+              :disabled="disabled || isAdminFreeze"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Court Order</span>
@@ -96,7 +96,7 @@
             <v-list-item
               data-type="record-conversion"
               @click="goToConversionFiling()"
-              :disabled="disabled || !isFirm"
+              :disabled="disabled || !isFirm || isAdminFreeze"
             >
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
@@ -107,7 +107,7 @@
               <v-list-item
                 data-type="administrative-dissolution"
                 @click="showAdministrativeDissolutionDialog()"
-                :disabled="disabled"
+                :disabled="disabled  || isAdminFreeze"
               >
                 <v-list-item-title>
                   <span class="app-blue">Administrative Dissolution</span>
@@ -136,10 +136,10 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
-            <template v-if="isFirm || isCoop || isBenBcCccUlc">
-              <v-list-item v-if="!isHistorical && !isAdminFreeze" @click="showAdministerFreezeDialog()">
+            <template v-if="!isHistorical">
+              <v-list-item @click="showAdministerFreezeDialog()">
                 <v-list-item-title>
-                  <span class="app-blue">Administer Freeze</span>
+                  <span class="app-blue">{{ isAdminFreeze ? 'Administer Unfreeze' : 'Administer freeze' }}</span>
                 </v-list-item-title>
               </v-list-item>
             </template>

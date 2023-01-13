@@ -1,4 +1,5 @@
 export enum FilingNames {
+  ADMIN_FREEZE = 'Administer Freeze / Unfreeze',
   ALTERATION = 'Alteration',
   ANNUAL_REPORT = 'Annual Report',
   CHANGE_OF_ADDRESS = 'Address Change',
@@ -21,6 +22,5 @@ export enum FilingNames {
   RESTORATION_LIMITED = 'Limited Restoration',
   SPECIAL_RESOLUTION = 'Special Resolution',
   TRANSITION_APPLICATION = 'Transition Application',
-  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution',
-  ADMIN_FREEZE = 'Administer Freeze / Unfreeze'
+  VOLUNTARY_DISSOLUTION = 'Voluntary Dissolution'
 }

@@ -207,7 +207,6 @@ export default {
 
   /** Is True if the business is frozen */
   isAdminFreeze (state: StateIF): boolean {
-    console.log('isAdminFreeze', state.adminFreeze)
     return state.adminFreeze
   },
 
