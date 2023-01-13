@@ -21,8 +21,8 @@
         </p>
 
         <p v-if="isAdministerFreeze">
-          You are about to {{ !isAdminFreeze ? 'Freeze' : 'Unfreeze' }} <strong><span class="text-uppercase">{{getEntityName}}</span>,
-          {{getIdentifier}}</strong>.
+          You are about to {{ !isAdminFreeze ? 'Freeze' : 'Unfreeze' }} <span class="text-uppercase font-weight-bold">{{getEntityName}}</span>,
+          {{getIdentifier}}.
         </p>
 
         <v-form ref="notationFormRef" id="notation-form">
