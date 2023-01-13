@@ -285,7 +285,7 @@ export default class AddStaffNotationDialog extends Vue {
     // if any component is invalid, don't save
     const isNotationFormValid = this.$refs.notationFormRef.validate()
     const isFileComponentValid = (!this.isCourtOrder || this.$refs.fileUploadRef.validate())
-    const isCourtOrderPoaValid = !this.isAdministerFreeze ? this.$refs.courtOrderPoaRef?.validate() : true
+    const isCourtOrderPoaValid = !this.isAdministerFreeze ? this.$refs.courtOrderPoaRef.validate() : true
 
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
