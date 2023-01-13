@@ -243,6 +243,7 @@ export default class EnumMixin extends Vue {
   filingTypeToName (type: FilingTypes, agmYear = null as string, subType = null as any): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
+      case FilingTypes.ADMIN_FREEZE: return FilingNames.ADMIN_FREEZE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
