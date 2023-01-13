@@ -66,7 +66,7 @@
             <v-list-item
               data-type="registrars-notation"
               @click="showRegistrarsNotationDialog()"
-              disabled="disabled"
+              :disabled="disabled"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Notation</span>
