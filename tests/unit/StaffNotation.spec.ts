@@ -226,7 +226,7 @@ describe('StaffNotation', () => {
     await Vue.nextTick()
 
     // verify flag
-    expect(wrapper.vm.$data.isAddingAdministerFreeze).toBeTruthy()
+    expect(wrapper.vm.$data.isAddingAdministerFreeze).toBe(true)
 
     // verify modal title
     expect(wrapper.find('#dialog-title').text()).toContain('Add a Administer Freeze / Unfreeze')
@@ -237,7 +237,7 @@ describe('StaffNotation', () => {
     // click Cancel button
     await wrapper.find('#dialog-cancel-button').trigger('click')
     await Vue.nextTick() // need to wait longer here
-    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
+    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBe(false)
 
     // verify Close event
     expect(wrapper.emitted('close').pop()).toEqual([false])
