@@ -16,7 +16,7 @@
 
       <v-expansion-panel-content>
         <p class="mb-0">
-          This businessis frozen and therefore no filings can be completed at this time.
+          This business is frozen and therefore no filings can be completed at this time.
         </p>
         <p class="mb-0 pt-5">
           For assistance, please contact BC Registries staff:
