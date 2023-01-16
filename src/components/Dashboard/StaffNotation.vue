@@ -137,9 +137,11 @@
               </v-list-item>
             </template>
             <template v-if="!isHistorical">
-              <v-list-item @click="showAdministerFreezeDialog()">
+              <v-list-item
+                data-type="admin-freeze"
+                @click="showAdministerFreezeDialog()">
                 <v-list-item-title>
-                  <span class="app-blue">{{ isAdminFreeze ? 'Administer Unfreeze' : 'Administer freeze' }}</span>
+                  <span class="app-blue">{{ isAdminFreeze ? 'Administer Unfreeze' : 'Administer Freeze' }}</span>
                 </v-list-item-title>
               </v-list-item>
             </template>

@@ -44,7 +44,7 @@ export default {
 
   /** Is True if there are any blockers, eg, pending tasks or filings. */
   hasBlockerExceptStaffApproval (state: StateIF): boolean {
-    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending || state.adminFreeze)
   },
 
   /** Is True if there is a blocker including firm compliance. */

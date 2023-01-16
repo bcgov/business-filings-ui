@@ -40,7 +40,7 @@
                 <v-btn
                   small text color="primary"
                   id="company-information-button"
-                  :disabled="hasBlocker || isAdminFreeze"
+                  :disabled="hasBlocker"
                   @click="promptChangeCompanyInfo()"
                 >
                   <v-icon medium>mdi-file-document-edit-outline</v-icon>
@@ -62,7 +62,7 @@
                   <v-btn
                     small text color="primary"
                     id="dissolution-button"
-                    :disabled="hasBlocker || isAdminFreeze"
+                    :disabled="hasBlocker"
                     @click="promptDissolve()"
                     v-on="on"
                   >
