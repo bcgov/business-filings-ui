@@ -20,7 +20,7 @@ import Vue from 'vue'
 import { AxiosResponse } from 'axios'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist/build/pdf'
-import { FilingNames, PageSizes, PAGE_SIZE_DICT } from '@/enums'
+import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
 
 // set web worker

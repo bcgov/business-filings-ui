@@ -23,7 +23,6 @@
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { HistoryItemIF } from '@/interfaces'
-import { VBtn, VIcon } from 'vuetify/lib'
 import { Getter } from 'vuex-class'
 import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
 
@@ -45,7 +44,8 @@ export default class StaffFiling extends Vue {
   @Getter isRoleStaff!: boolean
 
   @Emit('downloadOne')
-  downloadOne (filing: HistoryItemIF, index: number): void {}
+  protected downloadOne (document: DocumentIF, index: number): void {}
+  // downloadOne (filing: HistoryItemIF, index: number): void {}
 }
 </script>
 
