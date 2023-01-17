@@ -2,6 +2,17 @@
   <div v-if="filing" class="staff-filing-details body-2">
     <p>{{filing.notationOrOrder}}</p>
 
+    <template>
+      <DocumentsList
+                :filing=filing
+                :loadingOne=loadingOne
+                :loadingAll=loadingAll
+                :loadingOneIndex=loadingOneIndex
+                @downloadOne="downloadOne(...arguments)"
+                @downloadAll="downloadAll($event)"
+              />
+   </template>
+
     <p class="mb-0" v-if="filing.fileNumber">Court Order Number: {{filing.fileNumber}}</p>
 
     <p class="mt-0" v-if="filing.planOfArrangement">{{filing.planOfArrangement}}</p>
@@ -10,13 +21,31 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { HistoryItemIF } from '@/interfaces'
+import { VBtn, VIcon } from 'vuetify/lib'
+import { Getter } from 'vuex-class'
+import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
 
-@Component({})
+@Component({
+  components: {
+    DocumentsList
+  }
+})
 export default class StaffFiling extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: HistoryItemIF
+
+  @Prop({ default: false }) readonly loadingOne!: boolean
+
+  @Prop({ default: false }) readonly loadingAll!: boolean
+
+  @Prop({ default: -1 }) readonly loadingOneIndex!: number
+
+  @Getter isRoleStaff!: boolean
+
+  @Emit('downloadOne')
+  downloadOne (filing: HistoryItemIF, index: number): void {}
 }
 </script>
 

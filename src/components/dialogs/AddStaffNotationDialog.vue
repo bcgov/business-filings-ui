@@ -56,7 +56,7 @@
               :file.sync="file"
               :fileKey.sync="fileKey"
               :isRequired="enableValidation && isCourtOrder && !notation"
-              :displayName="this.displayName"
+              :customErrorMSg="courtOrderCustomValidationMsg"
               :maxSize="MAX_FILE_SIZE"
               :pageSize="PageSizes.LETTER_PORTRAIT"
               :userId="getUserKeycloakGuid"
@@ -168,7 +168,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter getUserKeycloakGuid!: string
 
   // Properties
-  protected displayName: string = this.displayName
+  protected customErrorMsg = ''
   protected notation = '' // notation text
   protected courtOrderNumber = '' // court order number
   protected planOfArrangement = false // whether filing has plan of arrangement
@@ -191,6 +191,13 @@ export default class AddStaffNotationDialog extends Vue {
   /** Whether this filing is a Court Order. */
   get isCourtOrder (): boolean {
     return this.isTypeCourtOrder({ name: this.name })
+  }
+
+  get courtOrderCustomValidationMsg (): string {
+    if (this.isCourtOrder && !this.notation) {
+      return `Enter a ${this.displayName} and/or upload file`
+    }
+    return ''
   }
 
   /** The notation textarea validation rules. */
@@ -327,14 +334,22 @@ export default class AddStaffNotationDialog extends Vue {
         }
       }
     } else if (this.isCourtOrder) {
-      filing[FilingTypes.COURT_ORDER] = {
-        effectOfOrder,
-        fileNumber,
-        orderDetails: this.notation,
-        fileKey: this.fileKey,
-        fileName: this.file.name,
-        fileLastModified: this.file.lastModified,
-        fileSize: this.file.size
+      if (this.file) {
+        filing[FilingTypes.COURT_ORDER] = {
+          effectOfOrder,
+          fileNumber,
+          orderDetails: this.notation,
+          fileKey: this.fileKey,
+          fileName: this.file.name,
+          fileLastModified: this.file.lastModified,
+          fileSize: this.file.size
+        }
+      } else {
+        filing[FilingTypes.COURT_ORDER] = {
+          effectOfOrder,
+          fileNumber,
+          orderDetails: this.notation
+        }
       }
     } else {
       // this may be a Registrar's Notation or a Registrar's Order filing

@@ -28,7 +28,7 @@ GlobalWorkerOptions.workerSrc = require('pdfjs-dist/build/pdf.worker.entry')
 
 @Component({})
 export default class FileUploadPdf extends Vue {
-  @Prop({ default: null }) readonly displayName!: string
+  @Prop({ default: null }) readonly customErrorMSg!: string
   @Prop({ default: null }) readonly file!: File
   @Prop({ default: null }) readonly fileKey!: string
   @Prop({ default: true }) readonly isRequired!: boolean
@@ -81,8 +81,8 @@ export default class FileUploadPdf extends Vue {
     // if (have file) and (no key) => error
 
     if (!this.file) {
-      if (this.isRequired && this.displayName === FilingNames.COURT_ORDER) {
-        this.errorMessages = [`Enter a ${this.displayName} and/or upload file`]
+      if (this.isRequired && this.customErrorMSg) {
+        this.errorMessages = [this.customErrorMSg]
         return false
       } else if (this.isRequired) {
         this.errorMessages = ['File is required']
