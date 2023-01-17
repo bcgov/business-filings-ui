@@ -2,7 +2,7 @@
   <div v-if="filing" class="staff-filing-details body-2">
     <p>{{filing.notationOrOrder}}</p>
 
-    <template>
+    <template v-if="filing.documents && filing.documents.length > 0">
       <DocumentsList
                 :filing=filing
                 :loadingOne=loadingOne

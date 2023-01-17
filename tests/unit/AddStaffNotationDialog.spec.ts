@@ -7,6 +7,7 @@ import { getVuexStore } from '@/store'
 import axios from '@/axios-auth'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
+import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 
 Vue.use(Vuetify)
 
@@ -324,6 +325,54 @@ describe('AddStaffNotationDialog', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#court-order-poa').text()).toContain('Court order number is invalid')
+
+    wrapper.destroy()
+  })
+
+  it('validates court order or upload is required if none added', async () => {
+    const wrapper = mount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Court Order',
+          name: 'courtOrder'
+        },
+        store,
+        vuetify
+      })
+
+    // Enables validation
+    await wrapper.find('#dialog-save-button').trigger('click')
+    await Vue.nextTick()
+
+    const messages = wrapper.findAll('.error--text .v-messages__message')
+    expect(messages.length).toBe(2)
+    expect(messages.at(0).text()).toBe('Enter a Court Order and/or upload file')
+    expect(messages.at(1).text()).toBe('Enter a Court Order and/or upload file')
+
+    expect(wrapper.findComponent(FileUploadPdf).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('validates court order or upload is not required if either added', async () => {
+    const wrapper = mount(AddStaffNotationDialog,
+      {
+        propsData: {
+          dialog: true,
+          displayName: 'Court Order',
+          name: 'courtOrder'
+        },
+        store,
+        vuetify
+      })
+
+    wrapper.find('.notation-textarea textarea').setValue('Court order 123456')
+    await wrapper.find('#dialog-save-button').trigger('click')
+    await Vue.nextTick()
+
+    const messages = wrapper.findAll('.error--text .v-messages__message')
+    expect(messages.length).toBe(0)
 
     wrapper.destroy()
   })

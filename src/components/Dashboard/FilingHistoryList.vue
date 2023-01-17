@@ -312,8 +312,7 @@
             </template>
 
             <!-- the documents section -->
-            <template v-if="filing.displayName !== FilingNames.COURT_ORDER && filing.documents
-              && filing.documents.length > 0">
+            <template v-if="!isCourtOrder(filing) && filing.documents && filing.documents.length > 0">
               <v-divider class="my-6" />
               <DocumentsList
                 :filing=filing
@@ -459,6 +458,11 @@ export default class FilingHistoryList extends Vue {
   /** Returns whether the action button is visible or not. */
   protected displayAction (filing): string {
     return filing.availableOnPaperOnly || filing.isTypeStaff || filing.documentsLink
+  }
+
+  /** Whether this filing is a Court Order. */
+  isCourtOrder (filing): boolean {
+    return this.isTypeCourtOrder({ name: filing.name })
   }
 
   /** Loads list of filings from the API into History Items array. */
@@ -806,7 +810,6 @@ export default class FilingHistoryList extends Vue {
     try {
       // fetch documents object from API
       const documents = await LegalServices.fetchDocuments(item.documentsLink)
-      console.log('Documents uploaded', documents)
       // load each type of document
       item.documents = []
       // iterate over documents properties
@@ -829,7 +832,7 @@ export default class FilingHistoryList extends Vue {
             }
           }
         } else if (prop === 'uploadedCourtOrder') {
-          const title = `${item.displayName} ${item.fileNumber}`
+          const title = this.isRoleStaff ? `${item.displayName} ${item.fileNumber}` : `${item.displayName}`
           const filename = title
           const link = documents[prop] as string
           pushDocument(title, filename, link)
@@ -851,9 +854,6 @@ export default class FilingHistoryList extends Vue {
     }
 
     function pushDocument (title: string, filename: string, link: string) {
-      console.log(title)
-      console.log(filename)
-      console.log(link)
       if (title && filename && link) {
         item.documents.push({ title, filename, link } as DocumentIF)
       } else {

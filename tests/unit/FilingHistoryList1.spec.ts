@@ -1753,6 +1753,93 @@ describe('Filing History List - paper only and other filings', () => {
   })
 })
 
+describe('Filing History List - with Court Order documents', () => {
+  const FILING_WITH_COURT_ORDER_DOCUMENTS_LINK = {
+    availableOnPaperOnly: false,
+    businessIdentifier: 'BC0871300',
+    commentsCounts: 0,
+    displayName: 'Court Order 17321728',
+    documentsLink: 'businesses/BC0871300/filings/111/documents',
+    effectiveDate: '2019-12-13 00:00:00 GMT',
+    filingId: 111,
+    isFutureEffective: false,
+    name: 'uploadedCourtOrder',
+    status: 'COMPLETED',
+    submittedDate: '2022-04-06 19:22:59.00 GMT',
+    submitter: 'Cameron'
+  }
+
+  it('does not display the documents list when no documents are present on a filing', async () => {
+    // init store
+    store.state.filings = [ FILING_WITH_COURT_ORDER_DOCUMENTS_LINK ]
+
+    // mock "get documents"
+    sinon.stub(axios, 'get').withArgs('businesses/BC0871300/filings/111/documents')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          documents: {}
+        }
+      })))
+
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    await Vue.nextTick()
+
+    // verify that Documents List component does not exist before the item is expanded
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand details
+    await button.trigger('click')
+
+    // verify that Documents List component is not displayed after the item is expanded
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
+
+    sinon.restore()
+    wrapper.destroy()
+  })
+
+  it('display the documents list when documents are present on a filing', async () => {
+    // init store
+    store.state.filings = [ FILING_WITH_COURT_ORDER_DOCUMENTS_LINK ]
+
+    // mock "get documents"
+    sinon.stub(axios, 'get').withArgs('businesses/BC0871300/filings/111/documents')
+      .returns(new Promise(resolve => resolve({
+        data: {
+          documents: {
+            uploadedCourtOrder: 'businesses/BC0871300/filings/111/documents/uploadedCourtOrder'
+          }
+        }
+      })))
+
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    await Vue.nextTick()
+
+    // verify that Documents List component does not exist before the item is expanded
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(false)
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand details
+    await button.trigger('click')
+    await flushPromises() // wait for expansion transition
+
+    // verify that Documents List component is displayed after the item is expanded
+    expect(wrapper.findComponent(DocumentsList).exists()).toBe(true)
+
+    // verify the number of documents
+    expect(wrapper.findAll('.documents-list .download-one-btn').length).toBe(1)
+
+    sinon.restore()
+    wrapper.destroy()
+  })
+})
+
 describe('Filing History List - with documents', () => {
   const FILING_WITH_DOCUMENTS_LINK = {
     availableOnPaperOnly: false,
