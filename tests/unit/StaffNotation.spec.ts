@@ -63,6 +63,7 @@ describe('StaffNotation', () => {
     expect(wrapper.find('.v-list').text()).toContain('Administrative Dissolution')
     expect(wrapper.find('.v-list').text()).not.toContain('Restore Company')
     expect(wrapper.find('.v-list').text()).not.toContain('Put Back On')
+    expect(wrapper.find('.v-list').text()).toContain('Administer Freeze')
 
     wrapper.destroy()
   })
@@ -85,6 +86,7 @@ describe('StaffNotation', () => {
     expect(wrapper.find('.v-list').text()).not.toContain('Administrative Dissolution')
     expect(wrapper.find('.v-list').text()).not.toContain('Restore Company')
     expect(wrapper.find('.v-list').text()).toContain('Put Back On')
+    expect(wrapper.find('.v-list').text()).not.toContain('Administer Freeze')
 
     wrapper.destroy()
   })
@@ -201,6 +203,41 @@ describe('StaffNotation', () => {
     await wrapper.find('#dialog-cancel-button').trigger('click')
     await Vue.nextTick() // need to wait longer here
     expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBeFalsy()
+
+    // verify Close event
+    expect(wrapper.emitted('close').pop()).toEqual([false])
+
+    wrapper.destroy()
+  })
+
+  it('renders the staff notation dialog for Admin Freeze', async () => {
+    // set store specifically for this test
+    store.state.entityType = 'SP'
+    store.state.entityState = 'ACTIVE'
+
+    const wrapper = mount(StaffNotation, { vuetify, store })
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // find and click respective item
+    await wrapper.find('.v-list-item[data-type="admin-freeze"]').trigger('click')
+    await Vue.nextTick()
+
+    // verify flag
+    expect(wrapper.vm.$data.isAddingAdministerFreeze).toBe(true)
+
+    // verify modal title
+    expect(wrapper.find('#dialog-title').text()).toContain('Add a Administer Freeze / Unfreeze')
+
+    // verify textarea label
+    expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
+
+    // click Cancel button
+    await wrapper.find('#dialog-cancel-button').trigger('click')
+    await Vue.nextTick() // need to wait longer here
+    expect(wrapper.vm.$data.isAddingRegistrarsNotation).toBe(false)
 
     // verify Close event
     expect(wrapper.emitted('close').pop()).toEqual([false])

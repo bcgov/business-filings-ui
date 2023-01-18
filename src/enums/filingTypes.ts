@@ -1,4 +1,5 @@
 export enum FilingTypes {
+  ADMIN_FREEZE = 'adminFreeze',
   ALTERATION = 'alteration',
   ANNUAL_REPORT = 'annualReport',
   CHANGE_OF_ADDRESS = 'changeOfAddress',

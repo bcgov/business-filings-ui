@@ -20,9 +20,14 @@
           {{getIdentifier}}</strong> back on the register.
         </p>
 
+        <p v-if="isAdministerFreeze">
+          You are about to {{ !isAdminFreeze ? 'Freeze' : 'Unfreeze' }}
+          <span class="text-uppercase font-weight-bold">{{getEntityName}}</span>, {{getIdentifier}}.
+        </p>
+
         <v-form ref="notationFormRef" id="notation-form">
           <p id="notation-text" :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }">
-            Enter a {{(isAdministrativeDissolution || isPutBackOn) ? 'Detail' : displayName}}
+            Enter a {{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'Detail' : displayName}}
             that will appear on the ledger for this entity:
           </p>
 
@@ -30,7 +35,7 @@
             v-model="notation"
             class="notation-textarea xmt-4"
             filled
-            :label="(isAdministrativeDissolution || isPutBackOn) ? 'Add Detail' : displayName"
+            :label="(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'Add Detail' : displayName"
             :rows="isCourtOrder ? 2: 5"
             :no-resize="true"
             :rules="enableValidation ? notationRules : []"
@@ -67,12 +72,12 @@
 
         <v-divider v-if="isCourtOrder" class="mt-4" />
 
-        <p class="mt-4">
+        <p class="mt-4" v-if="!isAdministerFreeze">
           If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
           to a plan of arrangement, enter the court order number and select Plan of Arrangement.
         </p>
 
-        <CourtOrderPoa
+        <CourtOrderPoa v-if="!isAdministerFreeze"
           ref="courtOrderPoaRef"
           class="mt-4"
           @emitCourtNumber="courtOrderNumber = $event"
@@ -95,7 +100,7 @@
             :loading="saving"
             @click.native="onSave()"
           >
-            <span>{{(isAdministrativeDissolution || isPutBackOn) ? 'File' : 'Save'}}</span>
+            <span>{{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'File' : 'Save'}}</span>
           </v-btn>
           <v-btn text color="primary"
             id="dialog-cancel-button"
@@ -165,6 +170,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter getEntityType!: string
   @Getter getIdentifier!: string
   @Getter getUserKeycloakGuid!: string
+  @Getter isAdminFreeze!: boolean
 
   // Properties
   protected notation = '' // notation text
@@ -184,6 +190,11 @@ export default class AddStaffNotationDialog extends Vue {
   /** Whether this filing is a Put Back On. */
   get isPutBackOn (): boolean {
     return this.isTypePutBackOn({ name: this.name })
+  }
+
+  /** Whether this filing is a admin freeze. */
+  get isAdministerFreeze (): boolean {
+    return this.isTypeAdminFreeze({ name: this.name })
   }
 
   /** Whether this filing is a Court Order. */
@@ -210,7 +221,7 @@ export default class AddStaffNotationDialog extends Vue {
       // others require a comment
       (v: string) => (
         !!v ||
-        (this.isAdministrativeDissolution || this.isPutBackOn || this.isCourtOrder) ||
+        (this.isAdministrativeDissolution || this.isPutBackOn || this.isCourtOrder || this.isAdministerFreeze) ||
         `Enter a ${this.displayName}`
       ),
       (v: string) => (
@@ -274,7 +285,7 @@ export default class AddStaffNotationDialog extends Vue {
     // if any component is invalid, don't save
     const isNotationFormValid = this.$refs.notationFormRef.validate()
     const isFileComponentValid = (!this.isCourtOrder || this.$refs.fileUploadRef.validate())
-    const isCourtOrderPoaValid = this.$refs.courtOrderPoaRef.validate()
+    const isCourtOrderPoaValid = !this.isAdministerFreeze ? this.$refs.courtOrderPoaRef.validate() : true
 
     if (!isNotationFormValid || !isFileComponentValid || !isCourtOrderPoaValid) {
       this.saving = false
@@ -334,6 +345,11 @@ export default class AddStaffNotationDialog extends Vue {
         fileLastModified: this.file.lastModified,
         fileSize: this.file.size
       }
+    } else if (this.isAdministerFreeze) {
+      filing[FilingTypes.ADMIN_FREEZE] = {
+        details: this.notation,
+        freeze: !this.isAdminFreeze
+      }
     } else {
       // this may be a Registrar's Notation or a Registrar's Order filing
       filing[this.name] = {
@@ -356,6 +372,8 @@ export default class AddStaffNotationDialog extends Vue {
           fileType = 'put back on filing'
         } else if (this.isAdministrativeDissolution) {
           fileType = 'administrative dissolution filing'
+        } else if (this.isAdministerFreeze) {
+          fileType = 'admin freeze filing'
         } else {
           fileType = 'notation'
         }
