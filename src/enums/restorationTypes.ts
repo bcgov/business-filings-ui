@@ -1,4 +1,4 @@
 export enum RestorationTypes {
-  FULL = 'FULL',
-  LIMITED = 'LIMITED'
+  FULL = 'fullRestoration',
+  LIMITED = 'limitedRestoration'
 }
