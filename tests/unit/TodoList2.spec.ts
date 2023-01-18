@@ -104,7 +104,7 @@ describe('TodoList - common expansion panel header tests', () => {
               comments: []
             },
             business: {},
-            restoration: { type: 'FULL' }
+            restoration: { type: 'fullRestoration' }
           }
         }
       }
@@ -150,7 +150,7 @@ describe('TodoList - common expansion panel header tests', () => {
               comments: []
             },
             business: {},
-            restoration: { type: 'FULL' }
+            restoration: { type: 'fullRestoration' }
           }
         }
       }
