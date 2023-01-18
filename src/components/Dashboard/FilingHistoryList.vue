@@ -57,7 +57,7 @@
                 <h3 class="item-header__title">
                   <v-icon v-if="filing.displayName==FilingNames.COURT_ORDER" class="pr-1">mdi-gavel</v-icon>
                   <span>{{filing.displayName}}</span>
-                  </h3>
+                </h3>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
@@ -249,7 +249,12 @@
 
             <!-- is this a Staff Only filing? -->
             <template v-if="filing.isTypeStaff">
-              <StaffFiling :filing="filing" class="mt-6" />
+              <StaffFiling
+                class="mt-6"
+                :filing="filing"
+                @downloadOne="downloadOne(...arguments)"
+                @downloadAll="downloadAll($event)"
+              />
             </template>
 
             <!-- is this a future effective COA pending (not yet completed)? -->
@@ -311,7 +316,7 @@
             </template>
 
             <!-- the documents section -->
-            <template v-if="filing.documents && filing.documents.length > 0">
+            <template v-if="!isTypeCourtOrder(filing) && filing.documents && filing.documents.length > 0">
               <v-divider class="my-6" />
               <DocumentsList
                 :filing=filing
@@ -412,7 +417,7 @@ export default class FilingHistoryList extends Vue {
   @Getter hasCourtOrders!: boolean
   @Getter isBenBcCccUlc!: boolean
   @Getter isFirm!: boolean
-
+  @Getter isRoleStaff!: boolean
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
   @Action setHasBlockerFiling!: ActionBindingIF
@@ -634,7 +639,10 @@ export default class FilingHistoryList extends Vue {
 
       // add properties for staff filings
       if (this.isTypeStaff(filing)) {
-        item.documents = [] // no documents
+        // court orders may have documents so leave property as null (they load on toggle)
+        if (!this.isTypeCourtOrder(filing)) {
+          item.documents = [] // no documents
+        }
         item.fileNumber = filing.data.order?.fileNumber || '' // may be falsy
         item.isTypeStaff = true
         item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
@@ -817,12 +825,18 @@ export default class FilingHistoryList extends Vue {
               // use display name for primary document's title
               if (prop === item.name) title = item.displayName
               else title = this.filingTypeToName(prop as FilingTypes, null, true)
+
               const date = this.dateToYyyyMmDd(item.submittedDate)
               const filename = `${this.getIdentifier} ${title} - ${date}.pdf`
               const link = legalFiling[prop] as string
               pushDocument(title, filename, link)
             }
           }
+        } else if (prop === 'uploadedCourtOrder') {
+          const title = this.isRoleStaff ? `${item.displayName} ${item.fileNumber}` : `${item.displayName}`
+          const filename = title
+          const link = documents[prop] as string
+          pushDocument(title, filename, link)
         } else {
           // this is a submission level output
           const title = this.camelCaseToWords(prop)

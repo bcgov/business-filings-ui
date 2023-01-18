@@ -61,6 +61,7 @@
               :file.sync="file"
               :fileKey.sync="fileKey"
               :isRequired="enableValidation && isCourtOrder && !notation"
+              :customErrorMSg="courtOrderCustomValidationMsg"
               :maxSize="MAX_FILE_SIZE"
               :pageSize="PageSizes.LETTER_PORTRAIT"
               :userId="getUserKeycloakGuid"
@@ -173,6 +174,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter isAdminFreeze!: boolean
 
   // Properties
+  protected customErrorMsg = ''
   protected notation = '' // notation text
   protected courtOrderNumber = '' // court order number
   protected planOfArrangement = false // whether filing has plan of arrangement
@@ -202,6 +204,13 @@ export default class AddStaffNotationDialog extends Vue {
     return this.isTypeCourtOrder({ name: this.name })
   }
 
+  get courtOrderCustomValidationMsg (): string {
+    if (this.isCourtOrder && !this.notation) {
+      return `Enter a ${this.displayName} and/or upload file`
+    }
+    return ''
+  }
+
   /** The notation textarea validation rules. */
   get notationRules (): Array<(v) => boolean | string> {
     return [
@@ -216,7 +225,7 @@ export default class AddStaffNotationDialog extends Vue {
         !!v ||
         !this.isCourtOrder ||
         (!!this.file && !!this.fileKey) ||
-        `Enter a ${this.displayName}`
+        `Enter a ${this.displayName} and/or upload file`
       ),
       // others require a comment
       (v: string) => (
@@ -336,14 +345,22 @@ export default class AddStaffNotationDialog extends Vue {
         }
       }
     } else if (this.isCourtOrder) {
-      filing[FilingTypes.COURT_ORDER] = {
-        effectOfOrder,
-        fileNumber,
-        orderDetails: this.notation,
-        fileKey: this.fileKey,
-        fileName: this.file.name,
-        fileLastModified: this.file.lastModified,
-        fileSize: this.file.size
+      if (this.file) {
+        filing[FilingTypes.COURT_ORDER] = {
+          effectOfOrder,
+          fileNumber,
+          orderDetails: this.notation,
+          fileKey: this.fileKey,
+          fileName: this.file.name,
+          fileLastModified: this.file.lastModified,
+          fileSize: this.file.size
+        }
+      } else {
+        filing[FilingTypes.COURT_ORDER] = {
+          effectOfOrder,
+          fileNumber,
+          orderDetails: this.notation
+        }
       }
     } else if (this.isAdministerFreeze) {
       filing[FilingTypes.ADMIN_FREEZE] = {
