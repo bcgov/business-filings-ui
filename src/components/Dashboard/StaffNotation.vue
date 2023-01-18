@@ -42,6 +42,14 @@
       :name="FilingTypes.PUT_BACK_ON"
     />
 
+    <AddStaffNotationDialog
+      :dialog="isAddingAdministerFreeze"
+      @close="hideAdministerFreezeDialog($event)"
+      attach="#staff-notation"
+      :displayName="FilingNames.ADMIN_FREEZE"
+      :name="FilingTypes.ADMIN_FREEZE"
+    />
+
     <div class="staff-notation-container">
       <v-menu offset-y transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
@@ -68,7 +76,7 @@
             <v-list-item
               data-type="registrars-order"
               @click="showRegistrarsOrderDialog()"
-              :disabled="disabled"
+              :disabled="disabled || isAdminFreeze"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Order</span>
@@ -78,7 +86,7 @@
             <v-list-item
               data-type="court-order"
               @click="showCourtOrderDialog()"
-              :disabled="disabled"
+              :disabled="disabled || isAdminFreeze"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Court Order</span>
@@ -88,7 +96,7 @@
             <v-list-item
               data-type="record-conversion"
               @click="goToConversionFiling()"
-              :disabled="disabled || !isFirm"
+              :disabled="disabled || !isFirm || isAdminFreeze"
             >
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
@@ -99,7 +107,7 @@
               <v-list-item
                 data-type="administrative-dissolution"
                 @click="showAdministrativeDissolutionDialog()"
-                :disabled="disabled"
+                :disabled="disabled  || isAdminFreeze"
               >
                 <v-list-item-title>
                   <span class="app-blue">Administrative Dissolution</span>
@@ -125,6 +133,15 @@
               >
                 <v-list-item-title>
                   <span class="app-blue">Put Back On</span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+            <template v-if="!isHistorical">
+              <v-list-item
+                data-type="admin-freeze"
+                @click="showAdministerFreezeDialog()">
+                <v-list-item-title>
+                  <span class="app-blue">{{ isAdminFreeze ? 'Administer Unfreeze' : 'Administer Freeze' }}</span>
                 </v-list-item-title>
               </v-list-item>
             </template>
@@ -155,6 +172,7 @@ export default class StaffNotation extends Vue {
   private isAddingCourtOrder = false
   private isAddingPutBackOn = false
   private isAddingAdministrativeDissolution = false
+  private isAddingAdministerFreeze = false
   private expand = false
 
   // enum for template
@@ -174,6 +192,7 @@ export default class StaffNotation extends Vue {
   @Getter isCoop!: boolean
   @Getter getIdentifier: string
   @Getter isHistorical!: boolean
+  @Getter isAdminFreeze!: boolean
 
   /** The Create URL string. */
   get createUrl (): string {
@@ -255,6 +274,15 @@ export default class StaffNotation extends Vue {
 
   hidePutBackOnDialog (needReload: boolean): void {
     this.isAddingPutBackOn = false
+    this.close(needReload)
+  }
+
+  showAdministerFreezeDialog (): void {
+    this.isAddingAdministerFreeze = true
+  }
+
+  hideAdministerFreezeDialog (needReload: boolean): void {
+    this.isAddingAdministerFreeze = false
     this.close(needReload)
   }
 

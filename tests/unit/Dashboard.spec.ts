@@ -83,6 +83,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = false
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
+    store.state.adminFreeze = false
     expect(localVm.hasBlocker).toEqual(false)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(true)

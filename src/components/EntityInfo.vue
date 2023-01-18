@@ -223,6 +223,7 @@ export default class EntityInfo extends Vue {
   @Getter getIdentifier!: number
   @Getter getEntityName!: string
   @Getter getNameRequestNumber!: string
+  @Getter isAdminFreeze!: boolean
   @Getter isPendingDissolution!: boolean
   @Getter getEntityFoundingDate!: Date
 

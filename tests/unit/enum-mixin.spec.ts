@@ -48,6 +48,7 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeRestoration({ name: 'restoration' })).toBe(true)
     expect(vm.isTypeTransition({ name: 'transition' })).toBe(true)
     expect(vm.isTypePutBackOn({ name: 'putBackOn' })).toBe(true)
+    expect(vm.isTypeAdminFreeze({name: 'adminFreeze'})).toBe(true)
     expect(vm.isTypeSpecialResolution({ name: 'specialResolution' })).toBe(true)
 
     expect(vm.isTypeStaff({ name: 'registrarsNotation' })).toBe(true)

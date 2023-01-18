@@ -161,6 +161,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.PUT_BACK_ON)
   }
 
+  /** Return True if the filing is a Admin Freeze */
+  isTypeAdminFreeze (item: any): boolean {
+    return (item.name === FilingTypes.ADMIN_FREEZE)
+  }
+
   /** Returns True if filing is a Court Order. */
   isTypeCourtOrder (item: any): boolean {
     return (item.name === FilingTypes.COURT_ORDER)
@@ -177,7 +182,8 @@ export default class EnumMixin extends Vue {
       FilingTypes.REGISTRARS_NOTATION,
       FilingTypes.REGISTRARS_ORDER,
       FilingTypes.COURT_ORDER,
-      FilingTypes.PUT_BACK_ON
+      FilingTypes.PUT_BACK_ON,
+      FilingTypes.ADMIN_FREEZE
     ].includes(item.name)
     const adminDissolution = [
       DissolutionTypes.ADMINISTRATIVE
@@ -237,6 +243,7 @@ export default class EnumMixin extends Vue {
   filingTypeToName (type: FilingTypes, agmYear = null as string, subType = null as any): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
+      case FilingTypes.ADMIN_FREEZE: return FilingNames.ADMIN_FREEZE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS

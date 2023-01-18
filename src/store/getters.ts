@@ -44,7 +44,7 @@ export default {
 
   /** Is True if there are any blockers, eg, pending tasks or filings. */
   hasBlockerExceptStaffApproval (state: StateIF): boolean {
-    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending)
+    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending || state.adminFreeze)
   },
 
   /** Is True if there is a blocker including firm compliance. */
@@ -203,6 +203,11 @@ export default {
   /** Is True if business is historical (ie, dissolved). */
   isHistorical (state: StateIF): boolean {
     return (state.entityState === EntityState.HISTORICAL)
+  },
+
+  /** Is True if the business is frozen */
+  isAdminFreeze (state: StateIF): boolean {
+    return state.adminFreeze
   },
 
   /** Is True if business is in liquidation. */
