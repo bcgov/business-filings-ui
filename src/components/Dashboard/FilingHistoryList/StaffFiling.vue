@@ -4,13 +4,13 @@
 
     <template v-if="filing.documents && filing.documents.length > 0">
       <DocumentsList
-                :filing=filing
-                :loadingOne=loadingOne
-                :loadingAll=loadingAll
-                :loadingOneIndex=loadingOneIndex
-                @downloadOne="downloadOne(...arguments)"
-                @downloadAll="downloadAll($event)"
-              />
+        :filing=filing
+        :loadingOne=loadingOne
+        :loadingAll=loadingAll
+        :loadingOneIndex=loadingOneIndex
+        @downloadOne="downloadOne(...arguments)"
+        @downloadAll="downloadAll($event)"
+      />
    </template>
 
     <p class="mb-0" v-if="filing.fileNumber">Court Order Number: {{filing.fileNumber}}</p>
@@ -45,7 +45,9 @@ export default class StaffFiling extends Vue {
 
   @Emit('downloadOne')
   protected downloadOne (document: DocumentIF, index: number): void {}
-  // downloadOne (filing: HistoryItemIF, index: number): void {}
+
+  @Emit('downloadAll')
+  protected downloadAll (item: HistoryItemIF) : void {}
 }
 </script>
 

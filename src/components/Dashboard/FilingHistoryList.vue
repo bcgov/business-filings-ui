@@ -249,8 +249,12 @@
 
             <!-- is this a Staff Only filing? -->
             <template v-if="filing.isTypeStaff">
-              <StaffFiling :filing="filing" class="mt-6"
-              @downloadOne="downloadOne(...arguments)"/>
+              <StaffFiling
+                class="mt-6"
+                :filing="filing"
+                @downloadOne="downloadOne(...arguments)"
+                @downloadAll="downloadAll($event)"
+              />
             </template>
 
             <!-- is this a future effective COA pending (not yet completed)? -->
@@ -312,7 +316,7 @@
             </template>
 
             <!-- the documents section -->
-            <template v-if="!isCourtOrder(filing) && filing.documents && filing.documents.length > 0">
+            <template v-if="!isTypeCourtOrder(filing) && filing.documents && filing.documents.length > 0">
               <v-divider class="my-6" />
               <DocumentsList
                 :filing=filing
@@ -458,11 +462,6 @@ export default class FilingHistoryList extends Vue {
   /** Returns whether the action button is visible or not. */
   protected displayAction (filing): string {
     return filing.availableOnPaperOnly || filing.isTypeStaff || filing.documentsLink
-  }
-
-  /** Whether this filing is a Court Order. */
-  isCourtOrder (filing): boolean {
-    return this.isTypeCourtOrder({ name: filing.name })
   }
 
   /** Loads list of filings from the API into History Items array. */
@@ -641,7 +640,9 @@ export default class FilingHistoryList extends Vue {
       // add properties for staff filings
       if (this.isTypeStaff(filing)) {
         // court orders may have documents so leave property as null (they load on toggle)
-        if (!this.isTypeCourtOrder(filing)) item.documents = [] // no documents
+        if (!this.isTypeCourtOrder(filing)) {
+          item.documents = [] // no documents
+        }
         item.fileNumber = filing.data.order?.fileNumber || '' // may be falsy
         item.isTypeStaff = true
         item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
