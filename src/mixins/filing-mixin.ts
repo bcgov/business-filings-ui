@@ -3,7 +3,8 @@ import { DateMixin } from '@/mixins'
 import { Action, State, Getter } from 'vuex-class'
 import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF,
   RestorationFilingIF } from '@/interfaces'
-import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes } from '@/enums'
+import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes, RestorationTypes }
+  from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -174,7 +175,7 @@ export default class FilingMixin extends DateMixin {
       restoration: {
         // FUTURE: update as needed
         date: null,
-        type: null,
+        type: RestorationTypes.FULL,
         expiry: null
       }
     }

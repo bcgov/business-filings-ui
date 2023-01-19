@@ -353,22 +353,14 @@ export default class AddStaffNotationDialog extends Vue {
         }
       }
     } else if (this.isCourtOrder) {
-      if (this.file) {
-        filing[FilingTypes.COURT_ORDER] = {
-          effectOfOrder,
-          fileNumber,
-          orderDetails: this.notation,
-          fileKey: this.fileKey,
-          fileName: this.file.name,
-          fileLastModified: this.file.lastModified,
-          fileSize: this.file.size
-        }
-      } else {
-        filing[FilingTypes.COURT_ORDER] = {
-          effectOfOrder,
-          fileNumber,
-          orderDetails: this.notation
-        }
+      filing[FilingTypes.COURT_ORDER] = {
+        effectOfOrder,
+        fileNumber,
+        orderDetails: this.notation,
+        fileKey: this.fileKey,
+        fileName: this.file.name,
+        fileLastModified: this.file.lastModified,
+        fileSize: this.file.size
       }
     } else if (this.isAdministerFreeze) {
       filing[FilingTypes.ADMIN_FREEZE] = {
