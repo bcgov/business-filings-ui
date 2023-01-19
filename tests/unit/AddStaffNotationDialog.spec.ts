@@ -360,8 +360,7 @@ describe('AddStaffNotationDialog', () => {
       {
         propsData: {
           dialog: true,
-          displayName: 'Court Order',
-          name: 'courtOrder'
+          displayName: 'Court Order'
         },
         store,
         vuetify
