@@ -35,7 +35,7 @@
             v-model="notation"
             class="notation-textarea xmt-4"
             filled
-            :label="(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'Add Detail' : displayName"
+            :label="notationLabel"
             :rows="isCourtOrder ? 2: 5"
             :no-resize="true"
             :rules="enableValidation ? notationRules : []"
@@ -209,6 +209,16 @@ export default class AddStaffNotationDialog extends Vue {
       return `Enter a ${this.displayName} and/or upload file`
     }
     return ''
+  }
+
+  get notationLabel (): string {
+    if (this.isAdministrativeDissolution || this.isPutBackOn || this.isAdministerFreeze) {
+      return 'Add Detail'
+    } else if (this.isCourtOrder) {
+      return `${this.displayName} Text`
+    } else {
+      return `${this.displayName}`
+    }
   }
 
   /** The notation textarea validation rules. */
