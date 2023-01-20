@@ -26,7 +26,7 @@
             </section>
 
             <!-- To Do section-->
-            <section v-if="!isHistorical" id="dashboard-todo-section">
+            <section id="dashboard-todo-section">
               <header>
                 <h2 class="mb-3">
                   <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
