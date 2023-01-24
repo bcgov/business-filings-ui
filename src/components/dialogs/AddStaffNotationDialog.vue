@@ -21,13 +21,13 @@
         </p>
 
         <p v-if="isAdministerFreeze">
-          You are about to {{ !isAdminFreeze ? 'Freeze' : 'Unfreeze' }}
+          You are about to {{ !isAdminFreeze ? 'freeze' : 'unfreeze' }}
           <span class="text-uppercase font-weight-bold">{{getEntityName}}</span>, {{getIdentifier}}.
         </p>
 
         <v-form ref="notationFormRef" id="notation-form">
           <p id="notation-text" :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }">
-            Enter a {{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'Detail' : displayName}}
+            Enter a {{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'detail' : displayName}}
             that will appear on the ledger for this entity:
           </p>
 
