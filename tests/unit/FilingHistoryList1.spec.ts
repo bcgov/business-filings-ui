@@ -18,6 +18,7 @@ import FutureEffectivePending from '@/components/Dashboard/FilingHistoryList/Fut
 import PaperFiling from '@/components/Dashboard/FilingHistoryList/PaperFiling.vue'
 import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/StaffFiling.vue'
+import LimitedRestorationFiling from '@/components/Dashboard/FilingHistoryList/LimitedRestorationFiling.vue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -296,6 +297,140 @@ describe('Filing History List - misc functionality', () => {
     expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('expands a full restoration filing', async () => {
+    // init store
+    store.state.identifier = 'CP0001191'
+    store.state.filings = [
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'CP0001191',
+        commentsCount: 0,
+        displayName: 'Full Restoration Application',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: 'restoration',
+        status: 'COMPLETED',
+        submittedDate: '2019-06-02',
+        submitter: 'Cameron',
+        documentsLink: 'http://test',
+        data: {
+          restoration: {
+            date: '2021-01-01',
+            type: 'fullRestoration'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const vm = wrapper.vm as any
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => (
+      Promise.resolve([])
+    ))
+    await Vue.nextTick()
+    expect(wrapper.find('.item-header__title').text()).toContain('Full Restoration Application')
+
+    const spans = wrapper.findAll('.item-header__subtitle span')
+    expect(spans.at(0).text()).toContain('FILED AND PAID')
+    expect(spans.at(0).text()).toContain('(filed by Cameron on Jun 1, 2019)')
+    expect(spans.at(0).text()).toContain('EFFECTIVE as of Nov 20, 2019')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify View Details button is not shown
+    expect(wrapper.find('.details-btn').exists()).toBe(false)
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand details
+    await button.trigger('click')
+    await Vue.nextTick()
+
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+    wrapper.destroy()
+  })
+
+  it('expands a limited restoration filing', async () => {
+    // init store
+    store.state.identifier = 'CP0001191'
+    store.state.filings = [
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'CP0001191',
+        commentsCount: 0,
+        displayName: 'Limited Restoration Application',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: 'restoration',
+        status: 'COMPLETED',
+        submittedDate: '2019-06-02',
+        submitter: 'Cameron',
+        documentsLink: 'http://test',
+        data: {
+          restoration: {
+            date: '2021-01-01',
+            type: 'limitedRestoration',
+            expiryDate: '2021-04-01',
+            legalName: 'BC1234567 LTD.'
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const vm = wrapper.vm as any
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => (
+      Promise.resolve([])
+    ))
+    await Vue.nextTick()
+    expect(wrapper.find('.item-header__title').text()).toContain('Limited Restoration Application')
+
+    const spans = wrapper.findAll('.item-header__subtitle span')
+    expect(spans.at(0).text()).toContain('FILED AND PAID')
+    expect(spans.at(0).text()).toContain('(filed by Cameron on Jun 1, 2019)')
+    expect(spans.at(0).text()).toContain('EFFECTIVE as of Nov 20, 2019')
+    expect(vm.panel).toBeNull() // no row is expanded
+    expect(wrapper.find('.no-results').exists()).toBe(false)
+
+    // verify View Details button and and toggle panel
+    const detailsBtn = wrapper.find('.details-btn')
+    expect(detailsBtn.text()).toContain('View Details')
+    jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    await detailsBtn.trigger('click')
+    await Vue.nextTick()
+    await flushPromises() // wait for expansion transition
+
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+
+    // verify Hide Details button
+    expect(wrapper.find('.details-btn').text()).toContain('Hide Details')
+
+    // verify row has been expanded
+    expect(vm.panel).toEqual(0)
+    expect(vm.historyItems.length).toEqual(1)
+    expect(wrapper.findComponent(CompletedAlteration).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletedIa).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffective).exists()).toBe(false)
+    expect(wrapper.findComponent(FutureEffectivePending).exists()).toBe(false)
+    expect(wrapper.findComponent(PaperFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(PendingFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
+    expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
+    expect(wrapper.findComponent(LimitedRestorationFiling).exists()).toBe(true)
+    expect(wrapper.find('.limited-restoration-period').text())
+      .toContain('The Company BC1234567 LTD. was successfully')
+    expect(wrapper.find('.limited-restoration-period').text())
+      .toContain('restored and active until Apr 1, 2021')
 
     wrapper.destroy()
   })
