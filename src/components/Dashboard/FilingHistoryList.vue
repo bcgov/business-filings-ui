@@ -86,8 +86,9 @@
                 <!-- or a completed Alteration? -->
                 <!-- or a completed Dissolution? -->
                 <!-- or a completed Registration? -->
+                <!-- or a limited Restoration? -->
                 <div v-else-if="filing.isCompletedIa || filing.isCompletedAlteration || filing.isCompletedDissolution ||
-                  filing.isCompletedRegistration" class="item-header__subtitle"
+                  filing.isCompletedRegistration || filing.isTypeLimitedRestoration" class="item-header__subtitle"
                 >
                   <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
                   <v-btn
@@ -300,6 +301,11 @@
               <FutureEffective :filing=filing class="mt-6" />
             </template>
 
+            <template v-else-if="filing.isTypeLimitedRestoration"
+            >
+              <LimitedRestorationFiling :filing="filing" class="mt-6" />
+            </template>
+
             <!-- is this a generic paid (not yet completed) filing? -->
             <template v-else-if="isStatusPaid(filing)">
               <PendingFiling :filing=filing class="mt-6" />
@@ -381,9 +387,11 @@ import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryIt
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
+import LimitedRestorationFiling from '@/components/Dashboard/FilingHistoryList/LimitedRestorationFiling.vue'
 
 @Component({
   components: {
+    LimitedRestorationFiling,
     // sub-components
     CompletedAlteration,
     CompletedDissolution,
@@ -650,6 +658,13 @@ export default class FilingHistoryList extends Vue {
         item.putBackOnOrAdminDissolution = this.isTypePutBackOn({ name: filing.name }) ||
           this.isTypeAdministrativeDissolution({ name: filing.name,
             dissolutionType: filing?.data?.dissolution?.dissolutionType })
+      }
+
+      // add properties for limited restorations
+      if (this.isTypeLimitedRestoration(filing)) {
+        item.isTypeLimitedRestoration = true
+        item.legalName = filing?.data?.restoration?.legalName
+        item.expiryDate = filing?.data?.restoration?.expiryDate
       }
 
       this.historyItems.push(item)
