@@ -67,6 +67,6 @@ export interface HistoryItemIF {
 
   // limited restorations
   isTypeLimitedRestoration?: boolean
-  expiryDate?: Date
+  expiry?: Date
   legalName?: string
 }

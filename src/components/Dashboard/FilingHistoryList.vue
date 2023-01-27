@@ -664,7 +664,7 @@ export default class FilingHistoryList extends Vue {
       if (this.isTypeLimitedRestoration(filing)) {
         item.isTypeLimitedRestoration = true
         item.legalName = filing.data.restoration?.legalName
-        item.expiryDate = filing.data.restoration?.expiryDate
+        item.expiry = filing.data.restoration?.expiry
       }
 
       this.historyItems.push(item)

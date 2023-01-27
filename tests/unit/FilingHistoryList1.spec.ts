@@ -379,7 +379,7 @@ describe('Filing History List - misc functionality', () => {
           restoration: {
             date: '2021-01-01',
             type: 'limitedRestoration',
-            expiryDate: '2021-04-01',
+            expiry: '2021-04-01',
             legalName: 'BC1234567 LTD.'
           }
         }

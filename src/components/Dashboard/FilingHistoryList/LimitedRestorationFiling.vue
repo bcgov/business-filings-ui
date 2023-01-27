@@ -31,7 +31,7 @@ export default class LimitedRestorationFiling extends Vue {
 
   /** The expiry datetime of the limited restoration filing. */
   get expiryDateFriendly (): string {
-    return (this.formatYyyyMmDd(this.filing.expiryDate) || 'Unknown')
+    return (this.formatYyyyMmDd(this.filing.expiry) || 'Unknown')
   }
 }
 
