@@ -178,7 +178,7 @@ export default class EnumMixin extends Vue {
 
   /** Returns True if filing is a Limited Restoration. */
   isTypeLimitedRestoration (item: any): boolean {
-    return (item.name === FilingTypes.RESTORATION && item.data?.restoration?.type === 'limitedRestoration')
+    return (item.name === FilingTypes.RESTORATION && item.data?.restoration?.type === RestorationTypes.LIMITED)
   }
 
   /** Returns True if filing is a Staff Only filing. */

@@ -378,6 +378,7 @@ import DocumentsList from './FilingHistoryList/DocumentsList.vue'
 import FiledLabel from './FilingHistoryList/FiledLabel.vue'
 import FutureEffective from './FilingHistoryList/FutureEffective.vue'
 import FutureEffectivePending from './FilingHistoryList/FutureEffectivePending.vue'
+import LimitedRestorationFiling from '@/components/Dashboard/FilingHistoryList/LimitedRestorationFiling.vue'
 import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import StaffFiling from './FilingHistoryList/StaffFiling.vue'
@@ -387,11 +388,9 @@ import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryIt
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import LimitedRestorationFiling from '@/components/Dashboard/FilingHistoryList/LimitedRestorationFiling.vue'
 
 @Component({
   components: {
-    LimitedRestorationFiling,
     // sub-components
     CompletedAlteration,
     CompletedDissolution,
@@ -402,6 +401,7 @@ import LimitedRestorationFiling from '@/components/Dashboard/FilingHistoryList/L
     FiledLabel,
     FutureEffective,
     FutureEffectivePending,
+    LimitedRestorationFiling,
     PaperFiling,
     PendingFiling,
     StaffFiling,
@@ -663,8 +663,8 @@ export default class FilingHistoryList extends Vue {
       // add properties for limited restorations
       if (this.isTypeLimitedRestoration(filing)) {
         item.isTypeLimitedRestoration = true
-        item.legalName = filing?.data?.restoration?.legalName
-        item.expiryDate = filing?.data?.restoration?.expiryDate
+        item.legalName = filing.data.restoration?.legalName
+        item.expiryDate = filing.data.restoration?.expiryDate
       }
 
       this.historyItems.push(item)
