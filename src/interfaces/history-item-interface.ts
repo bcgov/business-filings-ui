@@ -64,4 +64,9 @@ export interface HistoryItemIF {
   notationOrOrder?: string
   planOfArrangement?: string
   putBackOnOrAdminDissolution?: boolean
+
+  // limited restorations
+  isTypeLimitedRestoration?: boolean
+  expiry?: Date
+  legalName?: string
 }
