@@ -141,7 +141,7 @@
                 data-type="admin-freeze"
                 @click="showAdministerFreezeDialog()">
                 <v-list-item-title>
-                  <span class="app-blue">{{ isAdminFreeze ? 'Administer Unfreeze' : 'Administer Freeze' }}</span>
+                  <span class="app-blue">{{ isAdminFreeze ? 'Unfreeze Business' : 'Freeze Business' }}</span>
                 </v-list-item-title>
               </v-list-item>
             </template>

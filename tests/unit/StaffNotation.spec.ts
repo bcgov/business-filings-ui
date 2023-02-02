@@ -63,7 +63,7 @@ describe('StaffNotation', () => {
     expect(wrapper.find('.v-list').text()).toContain('Administrative Dissolution')
     expect(wrapper.find('.v-list').text()).not.toContain('Restore Company')
     expect(wrapper.find('.v-list').text()).not.toContain('Put Back On')
-    expect(wrapper.find('.v-list').text()).toContain('Administer Freeze')
+    expect(wrapper.find('.v-list').text()).toContain('Freeze Business')
 
     wrapper.destroy()
   })
@@ -86,7 +86,7 @@ describe('StaffNotation', () => {
     expect(wrapper.find('.v-list').text()).not.toContain('Administrative Dissolution')
     expect(wrapper.find('.v-list').text()).not.toContain('Restore Company')
     expect(wrapper.find('.v-list').text()).toContain('Put Back On')
-    expect(wrapper.find('.v-list').text()).not.toContain('Administer Freeze')
+    expect(wrapper.find('.v-list').text()).not.toContain('Freeze Business')
 
     wrapper.destroy()
   })
@@ -229,7 +229,7 @@ describe('StaffNotation', () => {
     expect(wrapper.vm.$data.isAddingAdministerFreeze).toBe(true)
 
     // verify modal title
-    expect(wrapper.find('#dialog-title').text()).toContain('Add a Administer Freeze / Unfreeze')
+    expect(wrapper.find('#dialog-title').text()).toContain('Add a Freeze Business / Unfreeze')
 
     // verify textarea label
     expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')

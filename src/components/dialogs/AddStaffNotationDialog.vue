@@ -5,6 +5,9 @@
         <span id="dialog-title" class="font-weight-bold">
           <template v-if="isPutBackOn" >Correction - {{displayName}}</template>
           <template v-else-if="isAdministrativeDissolution">{{displayName}}</template>
+          <template v-else-if="isAdministerFreeze">
+            {{!isAdminFreeze ? displayName : displayName.replace('Freeze', 'Unfreeze')}}
+          </template>
           <template v-else >Add a {{displayName}}</template>
         </span>
       </v-card-title>
@@ -224,10 +227,10 @@ export default class AddStaffNotationDialog extends Vue {
   /** The notation textarea validation rules. */
   get notationRules (): Array<(v) => boolean | string> {
     return [
-      // Administrative Dissolution and Put Back On require a detailed comment
+      // Administrative Dissolution, Put Back On, Freeze/Unfreeze Business require a detailed comment
       (v: string) => (
         !!v ||
-        (!this.isAdministrativeDissolution && !this.isPutBackOn) ||
+        (!this.isAdministrativeDissolution && !this.isPutBackOn & !this.isAdministerFreeze) ||
         'Enter a detailed comment'
       ),
       // Court Order requires a file or a comment
