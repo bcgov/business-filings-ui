@@ -825,6 +825,9 @@ export default class TodoList extends Vue {
         case FilingTypes.RESTORATION:
           await this.loadRestoration(task)
           break
+        case FilingTypes.ADMIN_FREEZE:
+          // Do nothing for admin_freeze.
+          break
         default:
           // eslint-disable-next-line no-console
           console.log('ERROR - invalid name in filing header =', header)
