@@ -1,5 +1,15 @@
 import { EntityState, CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, BusinessWarningIF, FilingDataIF, OfficeAddressIF, PartyIF }
+import {
+  ApiFilingIF,
+  ApiTaskIF,
+  BusinessWarningIF,
+  FilingDataIF,
+  OfficeAddressIF,
+  PartyIF,
+  ApiHeaderIF,
+  BusinessIF,
+  DissolutionFilingIF, RestorationFilingIF
+}
   from '@/interfaces'
 
 /** The state model interface. */
@@ -55,5 +65,12 @@ export interface StateIF {
   hasBlockerTask: boolean
   hasBlockerFiling: boolean
   isCoaPending: boolean
-  coaEffectiveDate: Date
+  coaEffectiveDate: Date,
+  stateFiling: {
+    business: any,
+    header: ApiHeaderIF,
+    dissolution?: any,
+    restoration?: any
+    // any others?
+  }
 }

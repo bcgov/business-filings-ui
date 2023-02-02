@@ -1765,7 +1765,7 @@ describe('App as an historical business', () => {
     expect(vm.$store.getters.isActive).toBe(false)
     expect(vm.$store.getters.isHistorical).toBe(true)
     expect(vm.$store.getters.isLiquidation).toBe(false)
-    expect(vm.$store.state.reasonText).toBe('Voluntary Dissolution – December 1, 2021')
+    expect(vm.$store.getters.getReasonText).toBe('Voluntary Dissolution – December 1, 2021')
   })
 })
 

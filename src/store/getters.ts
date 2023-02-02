@@ -1,8 +1,10 @@
-import { CorpTypeCd, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import {CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes} from '@/enums'
 import {
   ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
   StateIF, TodoListResourceIF, IsoDatePacific, BusinessWarningIF
 } from '@/interfaces'
+import DateUtilities from '@/resources/date-utilities'
+import EnumUtilities from '@/resources/enum-utilities'
 
 export default {
   /** The user's Keycloak GUID. */
@@ -283,5 +285,36 @@ export default {
   /** The entity TodoList resources. */
   getTodoListResource (state: StateIF): TodoListResourceIF {
     return state.configObject?.todoList
+  },
+
+  /** A formatted concatenation of the name and the effectiveDate of the filing  */
+  getReasonText (state: StateIF, getters): string {
+    const filingType: FilingTypes = state.stateFiling.header.name
+    // create reason text to display in the info header
+    let name: string
+    let date: string
+
+    if (filingType === FilingTypes.DISSOLUTION) {
+      name = EnumUtilities.dissolutionTypeToName(getters.isFirm,
+        (state.stateFiling?.dissolution?.dissolutionType as DissolutionTypes) ||
+        DissolutionTypes.UNKNOWN
+      )
+      const dissolutionDate = DateUtilities.yyyyMmDdToDate(state.stateFiling.dissolution?.dissolutionDate)
+      if (!dissolutionDate) throw new Error('Invalid dissolution date')
+      date = DateUtilities.dateToPacificDate(dissolutionDate, true)
+    } else {
+      name = EnumUtilities.filingTypeToName(filingType)
+      const effectiveDate = this.apiToDate(state.stateFiling.header?.effectiveDate)
+      if (!effectiveDate) throw new Error('Invalid effective date')
+      date = DateUtilities.dateToPacificDateTime(effectiveDate)
+    }
+
+    const enDash = '–' // ALT + 0150
+    return `${name} ${enDash} ${date}`
+  },
+
+  /** */
+  isEntityInLimitedRestoration (state: StateIF): boolean {
+    return (state.stateFiling?.business?.state === 'ACTIVE' && state.stateFiling.hasOwnProperty('restoration'))
   }
 }
