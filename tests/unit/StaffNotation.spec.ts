@@ -229,7 +229,7 @@ describe('StaffNotation', () => {
     expect(wrapper.vm.$data.isAddingAdministerFreeze).toBe(true)
 
     // verify modal title
-    expect(wrapper.find('#dialog-title').text()).toContain('Add a Freeze Business / Unfreeze')
+    expect(wrapper.find('#dialog-title').text()).toContain('Freeze Business')
 
     // verify textarea label
     expect(wrapper.find('#notation-form .notation-textarea .v-label').text()).toBe('Add Detail')
