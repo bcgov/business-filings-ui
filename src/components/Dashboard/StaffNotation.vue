@@ -201,6 +201,17 @@ import { LegalServices } from '@/services'
 import { mapGetters } from 'vuex'
 
 @Component({
+  computed: {
+    ...mapGetters([
+      'getIdentifier',
+      'isAdminFreeze',
+      'isBenBcCccUlc',
+      'isCoop',
+      'isEntityInLimitedRestoration',
+      'isFirm',
+      'isHistorical'
+    ])
+  },
   components: { AddStaffNotationDialog },
   computed: {
     ...mapGetters([
