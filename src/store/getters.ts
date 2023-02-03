@@ -3,8 +3,7 @@ import {
   ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
   StateIF, TodoListResourceIF, IsoDatePacific, BusinessWarningIF
 } from '@/interfaces'
-import DateUtilities from '@/services/date-utilities'
-import EnumUtilities from '@/services/enum-utilities'
+import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
   /** The user's Keycloak GUID. */
