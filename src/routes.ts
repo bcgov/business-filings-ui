@@ -1,15 +1,13 @@
-// Components
 import Dashboard from '@/views/Dashboard.vue'
 import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
+import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import Correction from '@/views/Correction.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
 import { DigitalCredentialRoutes } from '@/resources/DigitalCredentialRoutes'
-
-// Constants
-import { Routes } from '@/enums'
+import { FilingNames, Routes } from '@/enums'
 
 export default [
   {
@@ -28,7 +26,7 @@ export default [
       requiresAuth: true,
       breadcrumb: [
         {
-          text: 'File Annual Report',
+          text: `File ${FilingNames.ANNUAL_REPORT}`,
           disabled: false,
           exact: true,
           to: { name: Routes.ANNUAL_REPORT }
@@ -44,7 +42,7 @@ export default [
       requiresAuth: true,
       breadcrumb: [
         {
-          text: 'Director Change',
+          text: FilingNames.CHANGE_OF_DIRECTORS,
           disabled: false,
           exact: true,
           to: { name: Routes.STANDALONE_DIRECTORS }
@@ -60,10 +58,26 @@ export default [
       requiresAuth: true,
       breadcrumb: [
         {
-          text: 'Address Change',
+          text: FilingNames.CHANGE_OF_ADDRESS,
           disabled: false,
           exact: true,
           to: { name: Routes.STANDALONE_ADDRESSES }
+        }
+      ]
+    }
+  },
+  {
+    path: '/consent-continuation-out',
+    name: Routes.CONSENT_CONTINUATION_OUT,
+    component: ConsentContinuationOut,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: FilingNames.CONSENT_CONTINUATION_OUT,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.CONSENT_CONTINUATION_OUT }
         }
       ]
     }
@@ -76,7 +90,7 @@ export default [
       requiresAuth: true,
       breadcrumb: [
         {
-          text: 'Correction',
+          text: FilingNames.CORRECTION,
           disabled: false,
           exact: true,
           to: { name: Routes.CORRECTION }

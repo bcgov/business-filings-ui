@@ -810,23 +810,23 @@ export default class StandaloneDirectorsFiling extends Vue {
 
     if (this.hasFilingCode(this.feeCode) || this.hasFilingCode(this.freeFeeCode)) {
       changeOfDirectors = {
-        changeOfDirectors: {
+        [FilingTypes.CHANGE_OF_DIRECTORS]: {
           directors: this.updatedDirectors
         }
       }
     }
 
-    // build filing data
-    const data = Object.assign({}, header, business, changeOfDirectors)
+    // build filing
+    const filing = Object.assign({}, header, business, changeOfDirectors)
 
     try {
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, data, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
     } catch (error) {

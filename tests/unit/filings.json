@@ -54,7 +54,6 @@
       "commentsCount": 5,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112758/comments",
       "data": {
-        "applicationDate": "2019-09-01",
         "legalFilings": [
           "specialResolution"
         ],
@@ -82,7 +81,6 @@
           "fromLegalType": "BC",
           "toLegalType": "BEN"
         },
-        "applicationDate": "2019-02-01",
         "legalFilings": [
           "alteration"
         ],
@@ -115,7 +113,6 @@
           "fromLegalType": "BC",
           "toLegalType": "BEN"
         },
-        "applicationDate": "2019-01-01",
         "legalFilings": [
           "alteration"
         ],
@@ -143,9 +140,7 @@
       "businessIdentifier": "CP0000840",
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112761/comments",
-      "data": {
-        "applicationDate": "2018-12-01"
-      },
+      "data": {},
       "displayName": "Alteration",
       "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112761/documents",
       "effectiveDate": "Sat, 01 Dec 2018 00:02:26 GMT",
@@ -164,7 +159,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112757/comments",
       "data": {
-        "applicationDate": "2018-11-01",
         "legalFilings": [
           "annualReport",
           "changeOfDirectors",
@@ -196,7 +190,6 @@
           "annualGeneralMeetingDate": "2018-10-01",
           "annualReportDate": "2018-10-01"
         },
-        "applicationDate": "2018-10-01",
         "legalFilings": [
           "annualReport",
           "changeOfAddress",
@@ -221,7 +214,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112755/comments",
       "data": {
-        "applicationDate": "2018-08-01",
         "legalFilings": [
           "registrarsOrder"
         ],
@@ -245,7 +237,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112754/comments",
       "data": {
-        "applicationDate": "2018-07-01",
         "legalFilings": [
           "registrarsNotation"
         ],
@@ -269,7 +260,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112753/comments",
       "data": {
-        "applicationDate": "2018-06-01",
         "legalFilings": [
           "courtOrder"
         ],
@@ -298,7 +288,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112752/comments",
       "data": {
-        "applicationDate": "2018-05-01",
         "legalFilings": [
           "transition"
         ],
@@ -322,7 +311,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112751/comments",
       "data": {
-        "applicationDate": "2018-04-01",
         "dissolution": {
           "dissolutionType": "voluntary"
         },
@@ -348,7 +336,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112750/comments",
       "data": {
-        "applicationDate": "2018-03-01",
         "legalFilings": [
           "specialResolution"
         ],
@@ -372,7 +359,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112749/comments",
       "data": {
-        "applicationDate": "2018-02-01",
         "conversion": {},
         "legalFilings": [
           "conversion"
@@ -400,7 +386,6 @@
           "annualGeneralMeetingDate": "2018-01-01",
           "annualReportDate": "2018-01-01"
         },
-        "applicationDate": "2018-01-01",
         "legalFilings": [
           "annualReport"
         ]
@@ -423,7 +408,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112747/comments",
       "data": {
-        "applicationDate": "2017-12-01",
         "changeOfDirectors": {},
         "legalFilings": [
           "changeOfDirectors"
@@ -447,7 +431,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112746/comments",
       "data": {
-        "applicationDate": "2017-11-01",
         "changeOfAddress": {},
         "legalFilings": [
           "changeOfAddress"
@@ -499,7 +482,6 @@
           "fromLegalType": "BC",
           "toLegalType": "BEN"
         },
-        "applicationDate": "2017-10-01",
         "legalFilings": [
           "alteration"
         ],
@@ -528,7 +510,6 @@
       "commentsCount": 0,
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/comments",
       "data": {
-        "applicationDate": "2018-04-01",
         "dissolution": {
           "dissolutionType": "administrative"
         },
@@ -547,7 +528,32 @@
       "status": "COMPLETED",
       "submittedDate": "Sun, 01 Apr 2018 00:02:26 GMT",
       "submitter": "Registry Staff"
+    },
+    {
+      "availableOnPaperOnly": false,
+      "businessIdentifier": "CP0000840",
+      "commentsCount": 0,
+      "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/comments",
+      "data": {
+        "consentContinuationOut": {
+          "comment": "A note about this filing",
+          "expiry": "2022-12-31T08:01:00.000+00:00"
+        },
+        "legalFilings": [
+          "consentContinuationOut"
+        ]
+      },
+      "displayName": "6-Month Consent to Continue Out",
+      "documentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/documents",
+      "effectiveDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "filingId": 112751,
+      "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756",
+      "isFutureEffective": false,
+      "name": "consentContinuationOut",
+      "paymentStatusCode": null,
+      "status": "COMPLETED",
+      "submittedDate": "Fri, 03 Feb 2023 18:52:00 GMT",
+      "submitter": "Registry Staff"
     }
-    
   ]
 }

@@ -40,6 +40,7 @@ describe('Enum Mixin', () => {
     expect(vm.isTypeChangeOfDirectors({ name: 'changeOfDirectors' })).toBe(true)
     expect(vm.isTypeChangeOfName({ name: 'changeOfName' })).toBe(true)
     expect(vm.isTypeChangeOfRegistration({ name: 'changeOfRegistration' })).toBe(true)
+    expect(vm.isTypeConsentContinuationOut({ name: 'consentContinuationOut' })).toBe(true)
     expect(vm.isTypeConversion({ name: 'conversion' })).toBe(true)
     expect(vm.isTypeCorrection({ name: 'correction' })).toBe(true)
     expect(vm.isTypeDissolution({ name: 'dissolution' })).toBe(true)

@@ -2,12 +2,12 @@
 // NB: this is how to re-export a type in TS
 // https://devblogs.microsoft.com/typescript/announcing-typescript-3-8-beta/
 import type { CorpInfoIF } from '@bcrs-shared-components/corp-type-module'
-import type { AlterationIF, ChangeOfNameIF, ContactPointIF, NameTranslationIF, ShareStructureIF, CourtOrderIF,
+import type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF, CourtOrderIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 export type { CorpInfoIF }
 
-export type { AlterationIF, ChangeOfNameIF, ContactPointIF, NameTranslationIF, ShareStructureIF, CourtOrderIF,
+export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF, CourtOrderIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 

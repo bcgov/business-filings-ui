@@ -42,7 +42,7 @@ export interface TodoItemIF {
   // conversions only
   warnings?: Array<string>
 
-  // IAs only
+  // IAs and registrations only
   isEmptyFiling?: boolean
   nameRequest?: any
 

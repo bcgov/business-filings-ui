@@ -1,18 +1,12 @@
 <template>
-  <div id="correction">
+  <div id="consent-continuation-out">
     <ConfirmDialog
-      attach="#correction"
+      attach="#consent-continuation-out"
       ref="confirm"
     />
 
-    <LoadCorrectionDialog
-      attach="#correction"
-      :dialog="loadCorrectionDialog"
-      @exit="goToDashboard(true)"
-    />
-
     <PaymentErrorDialog
-      attach="#correction"
+      attach="#consent-continuation-out"
       filingName="Correction"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
@@ -21,13 +15,13 @@
     />
 
     <ResumeErrorDialog
-      attach="#correction"
+      attach="#consent-continuation-out"
       :dialog="resumeErrorDialog"
       @exit="goToDashboard(true)"
     />
 
     <SaveErrorDialog
-      attach="#correction"
+      attach="#consent-continuation-out"
       filingName="Correction"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
@@ -39,7 +33,7 @@
     />
 
     <StaffPaymentDialog
-      attach="#correction"
+      attach="#consent-continuation-out"
       :dialog="staffPaymentDialog"
       :staffPaymentData.sync="staffPaymentData"
       :loading="filingPaying"
@@ -64,8 +58,7 @@
           <article id="correction-article">
             <!-- Page Title -->
             <header>
-              <h1 id="correction-header">Correction &mdash; {{title}}</h1>
-              <p class="text-black">Original Filing Date: {{originalFilingDate}}</p>
+              <h1 id="correction-header">Six-Month Consent to Continue Out</h1>
             </header>
 
             <!-- Detail -->
@@ -184,8 +177,8 @@ import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment } from '@/components/common'
-import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
-  StaffPaymentDialog } from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+  from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
@@ -197,7 +190,6 @@ import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
     Certify,
     ConfirmDialog,
     DetailComment,
-    LoadCorrectionDialog,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -212,7 +204,7 @@ import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
     ResourceLookupMixin
   ]
 })
-export default class Correction extends Vue {
+export default class ConsentContinuationOut extends Vue {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -241,7 +233,6 @@ export default class Correction extends Vue {
   private staffPaymentDialog = false
 
   // variables for displaying dialogs
-  private loadCorrectionDialog = false
   private resumeErrorDialog = false
   private saveErrorReason: SaveErrorReasons = null
   private paymentErrorDialog = false
@@ -252,8 +243,6 @@ export default class Correction extends Vue {
   private loadingMessage = ''
   private filingId = 0 // id of this correction filing
   private savedFiling: any = null // filing during save
-  private correctedFilingId = 0 // id of filing to correct
-  private origFiling = null // copy of original filing
   private saving = false // true only when saving
   private savingResuming = false // true only when saving and resuming
   private filingPaying = false // true only when filing and paying
@@ -265,40 +254,12 @@ export default class Correction extends Vue {
   get showLoadingContainer (): boolean {
     // show loading container when data isn't yet loaded and when
     // no dialogs are displayed (otherwise dialogs may be hidden)
-    return (!this.dataLoaded && !this.loadCorrectionDialog && !this.saveErrorReason && !this.paymentErrorDialog)
-  }
-
-  /** Title of original filing. */
-  get title (): string {
-    if (this.origFiling?.header?.name) {
-      return this.filingTypeToName(this.origFiling.header.name as FilingTypes, this.agmYear)
-    }
-    return ''
-  }
-
-  /** AGM Year of original filing (AR only). */
-  get agmYear (): string {
-    if (this.origFiling?.annualReport?.annualReportDate) {
-      const date: string = this.origFiling.annualReport.annualReportDate
-      return date.slice(0, 4)
-    }
-    return null
-  }
-
-  /**
-   * Date of original filing.
-   * @returns for example, "Dec 23, 2018"
-   */
-  get originalFilingDate (): string {
-    if (this.origFiling?.header?.date) {
-      return this.apiToPacificDate(this.origFiling.header.date)
-    }
-    return 'Unknown' // should never happen
+    return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
   }
 
   /** Default comment (ie, the first line of the detail comment). */
   get defaultComment (): string {
-    return `Correction for ${this.title}, filed on ${this.originalFilingDate}.`
+    return 'Six Month Consent to Continue Out'
   }
 
   /** Maximum length of detail comment. */
@@ -352,18 +313,13 @@ export default class Correction extends Vue {
       }
     }
 
-    // this is the id of THIS correction filing
-    // if 0, this is a new correction filing
-    // otherwise it's a draft correction filing
-    this.filingId = +this.$route.params.filingId || 0 // number or NaN
+    // this is the id of THIS filing
+    // if 0, this is a new filing
+    // otherwise it's a draft filing
+    this.filingId = +this.$route.params.filingId // number or NaN
 
-    // this is the id of the original filing to correct
-    this.correctedFilingId = +this.$route.params.correctedFilingId // number (may be NaN)
-
-    // this is the correction type of either client or staff
-    // this.correctionType = this.$route.params.correctionUserType
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || isNaN(this.correctedFilingId)) {
+    if (!this.getIdentifier || isNaN(this.filingId)) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }
@@ -380,9 +336,7 @@ export default class Correction extends Vue {
       this.loadingMessage = `Preparing Your Correction`
     }
 
-    // first fetch original filing
-    // then fetch draft (which may overwrite some properties)
-    await this.fetchOrigFiling()
+    // fetch draft (which may overwrite some properties)
     if (this.filingId > 0) {
       await this.fetchDraftFiling()
     }
@@ -391,7 +345,7 @@ export default class Correction extends Vue {
 
     // always include correction code
     // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.CORRECTION, this.staffPaymentData.isPriority,
+    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
@@ -403,8 +357,8 @@ export default class Correction extends Vue {
       if (!filing) throw new Error('Missing filing')
       if (!filing.header) throw new Error('Missing header')
       if (!filing.business) throw new Error('Missing business')
-      if (!filing.correction) throw new Error('Missing correction')
-      if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
+      if (!filing.consentContinuationOut) throw new Error('Missing consent continuation out object')
+      if (filing.header.name !== FilingTypes.CONSENT_CONTINUATION_OUT) throw new Error('Invalid filing type')
       if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
       if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
@@ -438,36 +392,12 @@ export default class Correction extends Vue {
       }
 
       // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.correction.comment || ''
+      const comment: string = filing.consentContinuationOut.comment || ''
       this.detailComment = comment.split('\n').slice(1).join('\n')
     }).catch(error => {
       // eslint-disable-next-line no-console
       console.log('fetchDraftFiling() error =', error)
       this.resumeErrorDialog = true
-    })
-  }
-
-  /** Fetches the original filing to correct. */
-  async fetchOrigFiling (): Promise<void> {
-    const url = `businesses/${this.getIdentifier}/filings/${this.correctedFilingId}`
-    await LegalServices.fetchFiling(url).then(filing => {
-      this.origFiling = filing
-
-      // verify data
-      if (!this.origFiling) throw new Error('Missing filing')
-      if (!this.origFiling.header) throw new Error('Missing header')
-      if (!this.origFiling.business) throw new Error('Missing business')
-      if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
-      if (this.origFiling.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (this.origFiling.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
-
-      // FUTURE:
-      // use original Certified By name
-      // this.certifiedBy = this.origFiling.header.certifiedBy || ''
-    }).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchOrigFiling() error =', error)
-      this.loadCorrectionDialog = true
     })
   }
 
@@ -649,7 +579,7 @@ export default class Correction extends Vue {
 
     const header: any = {
       header: {
-        name: FilingTypes.CORRECTION,
+        name: FilingTypes.CONSENT_CONTINUATION_OUT,
         certifiedBy: this.certifiedBy || '',
         email: 'no_one@never.get',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
@@ -687,16 +617,13 @@ export default class Correction extends Vue {
     }
 
     const data: any = {
-      [FilingTypes.CORRECTION]: {
-        correctedFilingId: this.correctedFilingId,
-        correctedFilingType: this.origFiling.header.name,
-        correctedFilingDate: this.dateToYyyyMmDd(this.apiToDate(this.origFiling.header.date)),
+      [FilingTypes.CONSENT_CONTINUATION_OUT]: {
+        // FUTURE: add more filing properties below
         comment: `${this.defaultComment}\n${this.detailComment}`
       }
     }
 
     // build filing
-    // NB: a correction to a correction is applied to the original data
     const filing = Object.assign({}, header, business, data)
     try {
       let ret

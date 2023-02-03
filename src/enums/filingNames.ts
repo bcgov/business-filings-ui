@@ -1,3 +1,4 @@
+// FUTURE: add these to shared enum and import that instead
 export enum FilingNames {
   ADMIN_FREEZE = 'Freeze Business',
   ALTERATION = 'Alteration',
@@ -8,6 +9,7 @@ export enum FilingNames {
   CHANGE_OF_NAME = 'Legal Name Change',
   CHANGE_OF_REGISTRATION = 'Change of Registration',
   CONVERSION = 'Record Conversion',
+  CONSENT_CONTINUATION_OUT = 'Consent to Continuation Out',
   CORRECTION = 'Correction',
   COURT_ORDER = 'Court Order',
   DISSOLUTION = 'Dissolution',

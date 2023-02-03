@@ -187,9 +187,9 @@
                   </v-btn>
                 </template>
 
-                <!-- draft correction or conversion or restoration (staff only) -->
+                <!-- draft correction or conversion or restoration or consent to continuation Out (staff only) -->
                 <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item) ||
-                  isTypeRestoration(item)) && isRoleStaff"
+                  isTypeRestoration(item) || isTypeConsentContinuationOut(item)) && isRoleStaff"
                 >
                   <v-btn
                     class="btn-draft-resume"
@@ -222,8 +222,10 @@
                   </v-menu>
                 </template>
 
-                <!-- other correction or conversion or restoration -->
-                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) || isTypeRestoration(item)">
+                <!-- other correction or conversion or restoration or consent to continuation out -->
+                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) || isTypeRestoration(item) ||
+                  isTypeConsentContinuationOut(item)"
+                >
                   <!-- no action button in this case -->
                 </template>
 
@@ -798,6 +800,9 @@ export default class TodoList extends Vue {
         case FilingTypes.CHANGE_OF_ADDRESS:
           await this.loadChangeOfAddress(task)
           break
+        case FilingTypes.CONSENT_CONTINUATION_OUT:
+          await this.loadConsentContinuationOut(task)
+          break
         case FilingTypes.CORRECTION:
           await this.loadCorrection(task)
           break
@@ -1083,8 +1088,13 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
-      const ia = incorporationApplication // may be undefined
-      const haveData = Boolean(ia?.offices || ia?.contactPoint || ia?.parties || ia?.shareClasses)
+      // NB: incorporationApplicationmay be undefined
+      const haveData = Boolean(
+        incorporationApplication?.offices ||
+        incorporationApplication?.contactPoint ||
+        incorporationApplication?.parties ||
+        incorporationApplication?.shareClasses
+      )
 
       const item: TodoItemIF = {
         name: FilingTypes.INCORPORATION_APPLICATION,
@@ -1133,8 +1143,13 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
-      const draft = registration // may be undefined
-      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties || draft?.shareClasses)
+      // NB: registration may be undefined
+      const haveData = Boolean(
+        registration?.offices ||
+        registration?.contactPoint ||
+        registration?.parties ||
+        registration?.shareClasses
+      )
 
       const item: TodoItemIF = {
         name: FilingTypes.REGISTRATION,
@@ -1179,10 +1194,6 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
-      const draft = changeOfRegistration
-      // FUTURE: verify that this checks for all possible data:
-      const haveData = Boolean(draft?.offices || draft?.contactPoint || draft?.parties)
-
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         filingId: header.filingId,
@@ -1195,7 +1206,6 @@ export default class TodoList extends Vue {
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        isEmptyFiling: !haveData,
         nameRequest: this.nameRequest
       }
       this.todoItems.push(item)
@@ -1214,9 +1224,6 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
 
-      // FUTURE: check for all possible data:
-      const haveData = Boolean(conversion?.offices || conversion?.contactPoint || conversion?.parties)
-
       const item: TodoItemIF = {
         name: FilingTypes.CONVERSION,
         filingId: header.filingId,
@@ -1228,7 +1235,36 @@ export default class TodoList extends Vue {
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        isEmptyFiling: !haveData,
+        // FUTURE: ideally, this would come from the filing:
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
+      }
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  private async loadConsentContinuationOut (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const consentContinuationOut = filing.consentContinuationOut
+
+    if (header && consentContinuationOut) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+
+      const item: TodoItemIF = {
+        name: FilingTypes.CONSENT_CONTINUATION_OUT,
+        filingId: header.filingId,
+        title: FilingNames.CONSENT_CONTINUATION_OUT,
+        draftTitle: FilingNames.CONSENT_CONTINUATION_OUT,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
         // FUTURE: ideally, this would come from the filing:
         warnings: this.getBusinessWarnings.map(warning => warning.message)
       }
@@ -1377,6 +1413,12 @@ export default class TodoList extends Vue {
         // resume this Change Of Address locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: item.filingId.toString() } })
+        break
+
+      case FilingTypes.CONSENT_CONTINUATION_OUT:
+        // resume this Consent to Continuation Out locally
+        this.setCurrentFilingStatus(FilingStatus.DRAFT)
+        this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CORRECTION:
