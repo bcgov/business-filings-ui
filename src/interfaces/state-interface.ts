@@ -71,6 +71,6 @@ export interface StateIF {
     header: ApiHeaderIF,
     dissolution?: any,
     restoration?: any
-    // any others?
+    putBackOn?: any
   }
 }

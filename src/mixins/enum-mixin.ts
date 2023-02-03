@@ -12,7 +12,7 @@ import {
   GetCorpInfoObject,
   GetCorpNumberedDescription
 } from '@bcrs-shared-components/corp-type-module'
-import EnumUtilities from '@/resources/enum-utilities'
+import EnumUtilities from '@/services/enum-utilities'
 import { Getter } from 'vuex-class'
 
 /**

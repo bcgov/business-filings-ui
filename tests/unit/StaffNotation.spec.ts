@@ -48,8 +48,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and not limited restoration', async () => {
     // set store specifically for this test
-    store.state.entityType = CorpTypeCd.COOP
-    store.state.entityState = EntityState.ACTIVE
+    store.state.entityType = 'CP'
+    store.state.entityState = 'ACTIVE'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 

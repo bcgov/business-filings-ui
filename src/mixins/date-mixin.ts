@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
-import DateUtilities from '@/resources/date-utilities'
+import DateUtilities from '@/services/date-utilities'
 
 /** Mixin that provides some useful date utilities. */
 @Component({})

@@ -131,7 +131,7 @@ export default {
     const filingType = filing?.header?.name as FilingTypes
     return new Promise((resolve, reject) => {
       if (!filing || !filingType) {
-        console.log(filing, filingType)
+        console.log('Invalid state filing', filing, filingType) // eslint-disable-line no-console
         reject(Error('Invalid state filing'))
       } else {
         commit('setStateFiling', filing)

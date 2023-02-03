@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
 import { navigate, updateLdUser } from '@/utils'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'

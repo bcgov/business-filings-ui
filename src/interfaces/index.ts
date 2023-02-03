@@ -43,6 +43,3 @@ export * from './dissolution-confirmation-interface'
 export * from './todo-list-interface'
 export * from './steps-interface'
 export * from './table-header-interface'
-
-export interface StateFilingIF {
-}
