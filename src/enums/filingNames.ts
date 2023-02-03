@@ -1,5 +1,5 @@
 export enum FilingNames {
-  ADMIN_FREEZE = 'Administer Freeze / Unfreeze',
+  ADMIN_FREEZE = 'Freeze Business',
   ALTERATION = 'Alteration',
   ANNUAL_REPORT = 'Annual Report',
   CHANGE_OF_ADDRESS = 'Address Change',

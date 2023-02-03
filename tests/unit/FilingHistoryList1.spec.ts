@@ -430,7 +430,7 @@ describe('Filing History List - misc functionality', () => {
     expect(wrapper.find('.limited-restoration-period').text())
       .toContain('The Company BC1234567 LTD. was successfully')
     expect(wrapper.find('.limited-restoration-period').text())
-      .toContain('restored and active until Apr 1, 2021')
+      .toContain('restored and is active until Apr 1, 2021')
 
     wrapper.destroy()
   })
