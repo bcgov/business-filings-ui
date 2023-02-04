@@ -1,4 +1,4 @@
-import {CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes} from '@/enums'
+import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 import {
   ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
   StateIF, TodoListResourceIF, IsoDatePacific, BusinessWarningIF

@@ -1,6 +1,6 @@
-import {Component} from 'vue-property-decorator'
-import {DateMixin} from '@/mixins'
-import {Action, Getter, State} from 'vuex-class'
+import { Component } from 'vue-property-decorator'
+import { DateMixin } from '@/mixins'
+import { Action, Getter, State } from 'vuex-class'
 import {
   CommentIF,
   CorrectionFilingIF,
@@ -9,7 +9,7 @@ import {
   OfficeAddressIF,
   RestorationFilingIF
 } from '@/interfaces'
-import {CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes, RestorationTypes} from '@/enums'
+import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes, RestorationTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
