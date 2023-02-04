@@ -536,8 +536,8 @@
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/comments",
       "data": {
         "consentContinuationOut": {
-          "comment": "A note about this filing",
-          "expiry": "2022-12-31T08:01:00.000+00:00"
+          "orderDetails": "A note about this filing",
+          "expiry": "2023-12-31"
         },
         "legalFilings": [
           "consentContinuationOut"

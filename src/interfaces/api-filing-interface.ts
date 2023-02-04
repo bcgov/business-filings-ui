@@ -54,7 +54,10 @@ export interface ApiFilingIF {
     changeOfDirectors?: any // some object
 
     // consent to continuation out filings only
-    consentContinuationOut?: any // some object
+    consentContinuationOut?: {
+      expiry: IsoDatePacific
+      orderDetails: string
+    }
 
     // conversion filings only
     conversion?: any // some object

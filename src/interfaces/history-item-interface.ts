@@ -61,17 +61,12 @@ export interface HistoryItemIF {
   // staff filings only
   fileNumber?: string
   isTypeStaff?: boolean
-  notationOrOrder?: string
+  details?: string // also used for consent to continuation out
   planOfArrangement?: string
   putBackOnOrAdminDissolution?: boolean
 
   // limited restorations only
   isTypeLimitedRestoration?: boolean
+  expiry?: Date // also used for consent to continuation out
   legalName?: string
-
-  // consent to continuation outs only
-  comment?: string
-
-  // limited restorations + consent to continuation outs only
-  expiry?: Date
 }

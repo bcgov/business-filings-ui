@@ -318,7 +318,9 @@
 
             <!-- is this a consent to continuation out filing? -->
             <template v-else-if="isTypeConsentContinuationOut(filing)">
-              <p class="mt-4">This consent is valid <strong>until {{filing.expiry}}</strong>.</p>
+              <p class="mt-4">
+                This consent is valid <strong>until {{filing.expiry}} at 12:01 am Pacific time</strong>.
+              </p>
               <p class="mt-4">{{filing.comment}}</p>
             </template>
 
@@ -652,8 +654,9 @@ export default class FilingHistoryList extends Vue {
 
       // add properties for Consent to Continuation Outs
       if (this.isTypeConsentContinuationOut(filing)) {
-        item.expiry = this.apiToPacificDateTime(filing.data.consentContinuationOut?.expiry)
-        item.comment = filing.data.consentContinuationOut?.comment
+        // FUTURE: expiry date may come from business object
+        item.expiry = filing.data.consentContinuationOut?.expiry
+        item.details = filing.data.consentContinuationOut?.orderDetails
       }
 
       // add properties for staff filings
@@ -662,9 +665,9 @@ export default class FilingHistoryList extends Vue {
         if (!this.isTypeCourtOrder(filing)) {
           item.documents = [] // no documents
         }
-        item.fileNumber = filing.data.order?.fileNumber || '' // may be falsy
+        item.fileNumber = filing.data.order?.fileNumber || '' // may be absent
         item.isTypeStaff = true
-        item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
+        item.details = filing.data.order?.orderDetails // should always be present
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
         item.putBackOnOrAdminDissolution = this.isTypePutBackOn({ name: filing.name }) ||
           this.isTypeAdministrativeDissolution({ name: filing.name,

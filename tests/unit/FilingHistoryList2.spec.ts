@@ -131,7 +131,7 @@ filings.forEach((filing: any, index: number) => {
       expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
-      expect(item.comment).toBeDefined() // FUTURE: test this more specifically
+      expect(item.details).toBeDefined() // FUTURE: test this more specifically
       expect(item.expiry).toBeDefined() // FUTURE: test this more specifically
     })
 
@@ -141,7 +141,7 @@ filings.forEach((filing: any, index: number) => {
 
       expect(item.fileNumber).toBeDefined() // FUTURE: test this more specifically
       expect(item.isTypeStaff).toBe(true)
-      // expect(item.notationOrOrder).toBeDefined() // FUTURE: test this more specifically
+      // expect(item.details).toBeDefined() // FUTURE: test this more specifically
       expect(item.planOfArrangement).toBeDefined() // FUTURE: test this more specifically
     })
 

@@ -25,7 +25,7 @@ describe('Staff Filing', () => {
       vuetify,
       propsData: {
         filing: {
-          notationOrOrder: 'Notation Or Order',
+          details: 'Notation Or Order',
           fileNumber: '1234',
           planOfArrangement: 'Plan Of Arrangement'
         }

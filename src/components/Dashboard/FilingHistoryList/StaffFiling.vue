@@ -1,8 +1,6 @@
 <template>
   <div v-if="filing" class="staff-filing-details body-2">
-    <p v-if="filing.notationOrOrder" class="mt-4">
-      {{filing.notationOrOrder}}
-    </p>
+    <p v-if="filing.details" class="mt-4">{{filing.details}}</p>
 
     <!-- Documents list may be displayed here or in Filing History List. -->
     <DocumentsList
@@ -12,13 +10,9 @@
       @downloadAll="downloadAll($event)"
     />
 
-    <p v-if="filing.fileNumber" class="mt-4 mb-0">
-      Court Order Number: {{filing.fileNumber}}
-    </p>
+    <p v-if="filing.fileNumber" class="mt-4 mb-0">Court Order Number: {{filing.fileNumber}}</p>
 
-    <p v-if="filing.planOfArrangement" class="mt-0">
-      {{filing.planOfArrangement}}
-    </p>
+    <p v-if="filing.planOfArrangement" class="mt-0">{{filing.planOfArrangement}}</p>
   </div>
 </template>
 
