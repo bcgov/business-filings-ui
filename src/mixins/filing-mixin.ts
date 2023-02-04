@@ -166,7 +166,7 @@ export default class FilingMixin extends DateMixin {
    * @returns the filing body
    */
   buildRestorationFiling (restorationType = RestorationTypes.FULL): RestorationFilingIF {
-    return {
+    const restoration: RestorationFilingIF = {
       header: {
         date: this.getCurrentDate,
         name: FilingTypes.RESTORATION
@@ -181,5 +181,6 @@ export default class FilingMixin extends DateMixin {
         type: restorationType
       }
     }
+    return restoration
   }
 }
