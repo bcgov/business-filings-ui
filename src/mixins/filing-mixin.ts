@@ -1,10 +1,15 @@
 import { Component } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
-import { Action, State, Getter } from 'vuex-class'
-import { CommentIF, CorrectionFilingIF, DissolutionFilingIF, FilingDataIF, OfficeAddressIF,
-  RestorationFilingIF } from '@/interfaces'
-import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes, RestorationTypes }
-  from '@/enums'
+import { Action, Getter, State } from 'vuex-class'
+import {
+  CommentIF,
+  CorrectionFilingIF,
+  DissolutionFilingIF,
+  FilingDataIF,
+  OfficeAddressIF,
+  RestorationFilingIF
+} from '@/interfaces'
+import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes, RestorationTypes } from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -160,8 +165,8 @@ export default class FilingMixin extends DateMixin {
    * Builds a Restoration filing body.
    * @returns the filing body
    */
-  buildRestorationFiling (): RestorationFilingIF {
-    const restorationFiling: RestorationFilingIF = {
+  buildRestorationFiling (restorationType = RestorationTypes.FULL): RestorationFilingIF {
+    const restoration: RestorationFilingIF = {
       header: {
         date: this.getCurrentDate,
         name: FilingTypes.RESTORATION
@@ -173,13 +178,9 @@ export default class FilingMixin extends DateMixin {
         legalType: this.getEntityType
       },
       restoration: {
-        // FUTURE: update as needed
-        date: null,
-        type: RestorationTypes.FULL,
-        expiry: null
+        type: restorationType
       }
     }
-
-    return restorationFiling
+    return restoration
   }
 }

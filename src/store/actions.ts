@@ -1,6 +1,8 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
+import { EntityStatus, CorpTypeCd, FilingStatus, EntityState, FilingTypes, DissolutionTypes, Routes } from '@/enums'
 import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, BusinessWarningIF, PartyIF }
   from '@/interfaces'
+import { LegalServices } from '@/services'
+import { getVueRouter } from '@/router'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -66,9 +68,6 @@ export default {
   setHasCourtOrders ({ commit }, setHasCourtOrders: boolean) {
     commit('hasCourtOrders', setHasCourtOrders)
   },
-  setReasonText ({ commit }, text: string) {
-    commit('reasonText', text)
-  },
   setBusinessEmail ({ commit }, businessEmail: string) {
     commit('businessEmail', businessEmail)
   },
@@ -125,5 +124,19 @@ export default {
   },
   setCoaEffectiveDate ({ commit }, coaEffectiveDate: Date) {
     commit('coaEffectiveDate', coaEffectiveDate)
+  },
+  /** Fetches stateFiling from the API and, if successful, triggers mutation. */
+  async retrieveStateFiling ({ commit }, stateFilingUrl: string): Promise<void> {
+    const filing = stateFilingUrl && await LegalServices.fetchFiling(stateFilingUrl)
+    const filingType = filing?.header?.name as FilingTypes
+    return new Promise((resolve, reject) => {
+      if (!filing || !filingType) {
+        console.log('Invalid state filing', filing, filingType) // eslint-disable-line no-console
+        reject(Error('Invalid state filing'))
+      } else {
+        commit('setStateFiling', filing)
+        resolve(filing)
+      }
+    })
   }
 }

@@ -7,6 +7,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import LegalServices from '@/services/legal-services'
+import { CorpTypeCd, EntityState } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -45,9 +46,9 @@ describe('StaffNotation', () => {
     wrapper.destroy()
   })
 
-  it('renders drop-down menu correctly - active', async () => {
+  it('renders drop-down menu correctly - active and not limited restoration', async () => {
     // set store specifically for this test
-    store.state.entityType = 'SP'
+    store.state.entityType = 'CP'
     store.state.entityState = 'ACTIVE'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
@@ -56,22 +57,65 @@ describe('StaffNotation', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
-    expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Notation')
-    expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Order')
-    expect(wrapper.find('.v-list').text()).toContain('Add Court Order')
-    expect(wrapper.find('.v-list').text()).toContain('Record Conversion')
-    expect(wrapper.find('.v-list').text()).toContain('Administrative Dissolution')
-    expect(wrapper.find('.v-list').text()).not.toContain('Restore Company')
-    expect(wrapper.find('.v-list').text()).not.toContain('Put Back On')
-    expect(wrapper.find('.v-list').text()).toContain('Freeze Business')
+    // menu items expected as follows
+    const expectedStaffMenu = [
+      {
+        'type': 'registrars-notation',
+        'label': 'Add Registrar\'s Notation',
+        'disabled': false
+      },
+      {
+        'type': 'registrars-order',
+        'label': 'Add Registrar\'s Order',
+        'disabled': false
+      },
+      {
+        'type': 'court-order',
+        'label': 'Add Court Order',
+        'disabled': false
+      },
+      {
+        'type': 'record-conversion',
+        'label': 'Record Conversion',
+        'disabled': true
+      },
+      {
+        'type': 'administrative-dissolution',
+        'label': 'Administrative Dissolution',
+        'disabled': false
+      },
+      {
+        'type': 'admin-freeze',
+        'label': 'Freeze Business',
+        'disabled': false
+      }
+    ]
+
+    for (const menuItem of expectedStaffMenu) {
+      const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
+      expect(menuItemUnderTest.text()).toBe(menuItem.label)
+      console.log(menuItem)
+      if (menuItem.disabled) {
+        expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
+      } else {
+        expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
+      }
+    }
+    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(expectedStaffMenu.length)
 
     wrapper.destroy()
   })
 
-  it('renders drop-down menu correctly - historical', async () => {
+  it('renders drop-down menu correctly - active and limited restoration', async () => {
     // set store specifically for this test
-    store.state.entityType = 'SP'
-    store.state.entityState = 'HISTORICAL'
+    store.state.entityType = CorpTypeCd.COOP
+    store.state.entityState = EntityState.ACTIVE
+    store.state.stateFiling = {
+      business: {
+        state: 'ACTIVE'
+      },
+      restoration: {}
+    }
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -79,14 +123,117 @@ describe('StaffNotation', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
-    expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Notation')
-    expect(wrapper.find('.v-list').text()).toContain('Add Registrar\'s Order')
-    expect(wrapper.find('.v-list').text()).toContain('Add Court Order')
-    expect(wrapper.find('.v-list').text()).toContain('Record Conversion')
-    expect(wrapper.find('.v-list').text()).not.toContain('Administrative Dissolution')
-    expect(wrapper.find('.v-list').text()).not.toContain('Restore Company')
-    expect(wrapper.find('.v-list').text()).toContain('Put Back On')
-    expect(wrapper.find('.v-list').text()).not.toContain('Freeze Business')
+    // menu items expected as follows
+    const expectedStaffMenu = [
+      {
+        'type': 'registrars-notation',
+        'label': 'Add Registrar\'s Notation',
+        'disabled': false
+      },
+      {
+        'type': 'registrars-order',
+        'label': 'Add Registrar\'s Order',
+        'disabled': false
+      },
+      {
+        'type': 'court-order',
+        'label': 'Add Court Order',
+        'disabled': false
+      },
+      {
+        'type': 'record-conversion',
+        'label': 'Record Conversion',
+        'disabled': true
+      },
+      {
+        'type': 'administrative-dissolution',
+        'label': 'Administrative Dissolution',
+        'disabled': false
+      },
+      {
+        'type': 'admin-freeze',
+        'label': 'Freeze Business',
+        'disabled': false
+      },
+      {
+        'type': 'extend-limited-restoration',
+        'label': 'Extend Limited Restoration',
+        'disabled': false
+      },
+      {
+        'type': 'convert-full-restoration',
+        'label': 'Convert to Full Restoration',
+        'disabled': false
+      }
+    ]
+
+    for (const menuItem of expectedStaffMenu) {
+      const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
+      expect(menuItemUnderTest.text()).toBe(menuItem.label)
+      console.log(menuItem)
+      if (menuItem.disabled) {
+        expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
+      } else {
+        expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
+      }
+    }
+    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(expectedStaffMenu.length)
+
+    wrapper.destroy()
+  })
+
+  it('renders drop-down menu correctly - historical', async () => {
+    // set store specifically for this test
+    store.state.entityType = CorpTypeCd.SOLE_PROP
+    store.state.entityState = EntityState.HISTORICAL
+    store.state.stateFiling = {}
+
+    const wrapper = mount(StaffNotation, { vuetify, store })
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // menu items expected as follows
+    const expectedStaffMenu = [
+      {
+        'type': 'registrars-notation',
+        'label': 'Add Registrar\'s Notation',
+        'disabled': false
+      },
+      {
+        'type': 'registrars-order',
+        'label': 'Add Registrar\'s Order',
+        'disabled': false
+      },
+      {
+        'type': 'court-order',
+        'label': 'Add Court Order',
+        'disabled': false
+      },
+      {
+        'type': 'record-conversion',
+        'label': 'Record Conversion',
+        'disabled': false
+      },
+      {
+        'type': 'put-back-on',
+        'label': 'Put Back On',
+        'disabled': false
+      }
+    ]
+
+    for (const menuItem of expectedStaffMenu) {
+      const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
+      expect(menuItemUnderTest.text()).toBe(menuItem.label)
+      if (menuItem.disabled) {
+        expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
+      }
+      if (!menuItem.disabled) {
+        expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
+      }
+    }
+    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(expectedStaffMenu.length)
 
     wrapper.destroy()
   })
@@ -304,6 +451,54 @@ describe('StaffNotation', () => {
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith('https://create.url/?id=BC1234567')
+
+    wrapper.destroy()
+    sinon.restore()
+  })
+
+  it('goes to limited restoration filing', async () => {
+    // set store specifically for this test
+    store.state.identifier = 'BC1234567'
+    store.state.currentDate = '2022-12-31'
+    store.state.entityType = 'BEN'
+    store.state.entityState = 'ACTIVE'
+    store.state.stateFiling = {
+      business: {
+        state: 'ACTIVE'
+      },
+      restoration: {}
+    }
+
+    // stub "create draft" endpoint
+    sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
+      new Promise(resolve =>
+        resolve({ data: { filing: { header: { filingId: 1234 } } } })
+      )
+    )
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const wrapper = mount(StaffNotation, { vuetify, store, localVue })
+
+    // spy on build and create methods
+    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // find and click respective item
+    await wrapper.find('.v-list-item[data-type="extend-limited-restoration"]').trigger('click')
+    await Vue.nextTick()
+
+    // verify that build and create methods were called
+    expect(buildRestorationFiling).toHaveBeenCalled()
+    expect(createFiling).toHaveBeenCalled()
+
+    // verify redirection
+    expect(window.location.assign).toHaveBeenCalledWith(
+      'https://edit.url/BC1234567/restoration?restoration-id=1234')
 
     wrapper.destroy()
     sinon.restore()

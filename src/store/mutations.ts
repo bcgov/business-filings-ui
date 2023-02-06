@@ -125,5 +125,8 @@ export default {
   },
   coaEffectiveDate (state: StateIF, coaEffectiveDate: Date) {
     state.coaEffectiveDate = coaEffectiveDate
+  },
+  setStateFiling (state: StateIF, stateFilingResponse: any) {
+    state.stateFiling = stateFilingResponse
   }
 }

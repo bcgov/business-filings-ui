@@ -1,20 +1,18 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import {
-  DissolutionNames,
   DissolutionTypes,
   EffectOfOrderTypes,
-  FilingNames,
   FilingStatus,
   FilingTypes,
-  PaymentMethod,
-  RestorationTypes
+  PaymentMethod
 } from '@/enums'
 import {
   GetCorpFullDescription,
   GetCorpInfoObject,
   GetCorpNumberedDescription
 } from '@bcrs-shared-components/corp-type-module'
+import EnumUtilities from '@/services/enum-utilities'
 import { Getter } from 'vuex-class'
 
 /**
@@ -27,57 +25,57 @@ export default class EnumMixin extends Vue {
   //
   @Getter isFirm!: boolean
 
-  /** Returns True if item status is Cancelled. */
+  /** DEPRECATED Returns True if item status is Cancelled. */
   isStatusCancelled (item: any): boolean {
     return (item.status === FilingStatus.CANCELLED)
   }
 
-  /** Returns True if item status is Completed. */
+  /** DEPRECATED Returns True if item status is Completed. */
   isStatusCompleted (item: any): boolean {
     return (item.status === FilingStatus.COMPLETED)
   }
 
-  /** Returns True if item status is Corrected. */
+  /** DEPRECATED Returns True if item status is Corrected. */
   isStatusCorrected (item: any): boolean {
     return (item.status === FilingStatus.CORRECTED)
   }
 
-  /** Returns True if item status is Deleted. */
+  /** DEPRECATED Returns True if item status is Deleted. */
   isStatusDeleted (item: any): boolean {
     return (item.status === FilingStatus.DELETED)
   }
 
-  /** Returns True if item status is Draft. */
+  /** DEPRECATED Returns True if item status is Draft. */
   isStatusDraft (item: any): boolean {
     return (item.status === FilingStatus.DRAFT)
   }
 
-  /** Returns True if item status is Error. */
+  /** DEPRECATED Returns True if item status is Error. */
   isStatusError (item: any): boolean {
     return (item.status === FilingStatus.ERROR)
   }
 
-  /** Returns True if item status is New. */
+  /** DEPRECATED Returns True if item status is New. */
   isStatusNew (item: any): boolean {
     return (item.status === FilingStatus.NEW)
   }
 
-  /** Returns True if item status is Paid. */
+  /** DEPRECATED Returns True if item status is Paid. */
   isStatusPaid (item: any): boolean {
     return (item.status === FilingStatus.PAID)
   }
 
-  /** Returns True if item status is Pending. */
+  /** DEPRECATED Returns True if item status is Pending. */
   isStatusPending (item: any): boolean {
     return (item.status === FilingStatus.PENDING)
   }
 
-  /** Returns True if item status is Pending-Correction. */
+  /** DEPRECATED Returns True if item status is Pending-Correction. */
   isStatusPendingCorrection (item: any): boolean {
     return (item.status === FilingStatus.PENDING_CORRECTION)
   }
 
-  /** Returns True if item status is Withdrawn. */
+  /** DEPRECATED Returns True if item status is Withdrawn. */
   isStatusWithdrawn (item: any): boolean {
     return (item.status === FilingStatus.WITHDRAWN)
   }
@@ -86,141 +84,131 @@ export default class EnumMixin extends Vue {
   // Filing Type helpers
   //
 
-  /** Returns True if filing is an Alteration. */
+  /** DEPRECATED Returns True if filing is an Alteration. */
   isTypeAlteration (item: any): boolean {
     return (item.name === FilingTypes.ALTERATION)
   }
 
-  /** Returns True if filing is an Annual Report. */
+  /** DEPRECATED Returns True if filing is an Annual Report. */
   isTypeAnnualReport (item: any): boolean {
     return (item.name === FilingTypes.ANNUAL_REPORT)
   }
 
-  /** Returns True if filing is a Change of Address. */
+  /** DEPRECATED Returns True if filing is a Change of Address. */
   isTypeChangeOfAddress (item: any): boolean {
     return (item.name === FilingTypes.CHANGE_OF_ADDRESS)
   }
 
-  /** Returns True if filing is a Change of Directors. */
+  /** DEPRECATED Returns True if filing is a Change of Directors. */
   isTypeChangeOfDirectors (item: any): boolean {
     return (item.name === FilingTypes.CHANGE_OF_DIRECTORS)
   }
 
-  /** Returns True if filing is a Change of Name. */
+  /** DEPRECATED Returns True if filing is a Change of Name. */
   isTypeChangeOfName (item: any): boolean {
     return (item.name === FilingTypes.CHANGE_OF_NAME)
   }
 
-  /** Returns True if filing is a Change of Registration. */
+  /** DEPRECATED Returns True if filing is a Change of Registration. */
   isTypeChangeOfRegistration (item: any): boolean {
     return (item.name === FilingTypes.CHANGE_OF_REGISTRATION)
   }
 
-  /** Returns True if filing is a Consent to Continuation Out. */
+  /** DEPRECATED Returns True if filing is a Consent to Continuation Out. */
   isTypeConsentContinuationOut (item: any): boolean {
     return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
   }
 
-  /** Returns True if filing is a Conversion. */
+  /** DEPRECATED Returns True if filing is a Conversion. */
   isTypeConversion (item: any): boolean {
     return (item.name === FilingTypes.CONVERSION)
   }
 
-  /** Returns True if filing is a Correction. */
+  /** DEPRECATED Returns True if filing is a Correction. */
   isTypeCorrection (item: any): boolean {
     return (item.name === FilingTypes.CORRECTION)
   }
 
-  /** Returns True if filing is a Dissolution. */
+  /** DEPRECATED Returns True if filing is a Dissolution. */
   isTypeDissolution (item: any): boolean {
     return (item.name === FilingTypes.DISSOLUTION)
   }
 
-  /** Returns True if filing is an Incorporation Application. */
+  /** DEPRECATED Returns True if filing is an Incorporation Application. */
   isTypeIncorporationApplication (item: any): boolean {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
   }
 
-  /** Returns True if filing is a Registration. */
+  /** DEPRECATED Returns True if filing is a Registration. */
   isTypeRegistration (item: any): boolean {
     return (item.name === FilingTypes.REGISTRATION)
   }
 
-  /** Returns True if filing is a Restoration. */
+  /** DEPRECATED Returns True if filing is a Restoration. */
   isTypeRestoration (item: any): boolean {
     return (item.name === FilingTypes.RESTORATION)
   }
 
-  /** Returns True if filing is a Transition. */
+  /** DEPRECATED Returns True if filing is a Transition. */
   isTypeTransition (item: any): boolean {
     return (item.name === FilingTypes.TRANSITION)
   }
 
-  /** Returns True if filing is an Administrative Dissolution. */
+  /** DEPRECATED Returns True if filing is an Administrative Dissolution. */
   isTypeAdministrativeDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
+    return EnumUtilities.isTypeAdministrativeDissolution(item)
   }
 
-  /** Returns True if filing is a Put Back On. */
+  /** DEPRECATED Returns True if filing is a Put Back On. */
   isTypePutBackOn (item: any): boolean {
     return (item.name === FilingTypes.PUT_BACK_ON)
   }
 
-  /** Return True if the filing is a Admin Freeze */
+  /** DEPRECATED Return True if the filing is a Admin Freeze */
   isTypeAdminFreeze (item: any): boolean {
     return (item.name === FilingTypes.ADMIN_FREEZE)
   }
 
-  /** Returns True if filing is a Court Order. */
+  /** DEPRECATED Returns True if filing is a Court Order. */
   isTypeCourtOrder (item: any): boolean {
     return (item.name === FilingTypes.COURT_ORDER)
   }
 
-  /** Returns True if filing is a Special Resolution. */
+  /** DEPRECATED Returns True if filing is a Special Resolution. */
   isTypeSpecialResolution (item: any): boolean {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)
   }
 
-  /** Returns True if filing is a Limited Restoration. */
+  /** DEPRECATED Returns True if filing is a Limited Restoration. */
   isTypeLimitedRestoration (item: any): boolean {
-    return (item.name === FilingTypes.RESTORATION && item.data?.restoration?.type === RestorationTypes.LIMITED)
+    return EnumUtilities.isTypeLimitedRestoration(item)
   }
 
-  /** Returns True if filing is a Staff Only filing. */
+  /** DEPRECATED Returns True if filing is a Staff Only filing. */
   isTypeStaff (item: any): boolean {
-    const staffType = [
-      FilingTypes.REGISTRARS_NOTATION,
-      FilingTypes.REGISTRARS_ORDER,
-      FilingTypes.COURT_ORDER,
-      FilingTypes.PUT_BACK_ON,
-      FilingTypes.ADMIN_FREEZE
-    ].includes(item.name)
-    const adminDissolution = [
-      DissolutionTypes.ADMINISTRATIVE
-    ].includes(item?.data?.dissolution?.dissolutionType)
-    return staffType || adminDissolution
+    return EnumUtilities.isTypeStaff(item)
   }
 
   //
   // Payment Method helpers
   //
 
-  /** Returns True if payment method is Credit Card. */
+  /** DEPRECATED Returns True if payment method is Credit Card. */
   isPayMethodCreditCard (item: any): boolean {
     return (item.paymentMethod === PaymentMethod.CREDIT_CARD)
   }
 
-  /** Returns True if payment method is Direct Pay. */
+  /** DEPRECATED Returns True if payment method is Direct Pay. */
   isPayMethodDirectPay (item: any): boolean {
     return (item.paymentMethod === PaymentMethod.DIRECT_PAY)
   }
 
-  /** Returns True if payment method is Drawdown. */
+  /** DEPRECATED Returns True if payment method is Drawdown. */
   isPayMethodDrawdown (item: any): boolean {
     return (item.paymentMethod === PaymentMethod.DRAWDOWN)
   }
 
-  /** Returns True if payment method is Online Banking. */
+  /** DEPRECATED Returns True if payment method is Online Banking. */
   isPayMethodOnlineBanking (item: any): boolean {
     return (item.paymentMethod === PaymentMethod.ONLINE_BANKING)
   }
@@ -229,7 +217,7 @@ export default class EnumMixin extends Vue {
   // Effect of Order helpers
   //
 
-  /** Returns True if effect of order is Plan of Arrangement. */
+  /** DEPRECATED Returns True if effect of order is Plan of Arrangement. */
   isEffectOfOrderPlanOfArrangement (effectOfOrder: EffectOfOrderTypes): boolean {
     return (effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
   }
@@ -244,68 +232,35 @@ export default class EnumMixin extends Vue {
   getCorpTypeNumberedDescription = GetCorpNumberedDescription
 
   /**
+   * DEPRECATED - use enum-utilities instead
    * Converts the filing type to a filing name.
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
-   * @param alterationRequired A boolean indicating a required business type change
+   * @param subType
    * @returns the filing name
    */
   filingTypeToName (type: FilingTypes, agmYear = null as string, subType = null as any): string {
-    if (!type) return 'Unknown Type' // safety check
-    switch (type) {
-      case FilingTypes.ADMIN_FREEZE: return FilingNames.ADMIN_FREEZE
-      case FilingTypes.ALTERATION: return FilingNames.ALTERATION
-      case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
-      case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
-      case FilingTypes.CHANGE_OF_COMPANY_INFO: return FilingNames.CHANGE_OF_COMPANY_INFO
-      case FilingTypes.CHANGE_OF_DIRECTORS: return FilingNames.CHANGE_OF_DIRECTORS
-      case FilingTypes.CHANGE_OF_NAME: return FilingNames.CHANGE_OF_NAME
-      case FilingTypes.CHANGE_OF_REGISTRATION: return FilingNames.CHANGE_OF_REGISTRATION
-      case FilingTypes.CONVERSION: return FilingNames.CONVERSION
-      case FilingTypes.CORRECTION: return FilingNames.CORRECTION
-      case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER
-      case FilingTypes.DISSOLUTION: return FilingNames.DISSOLUTION
-      case FilingTypes.DISSOLVED: return FilingNames.DISSOLVED
-      case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
-      case FilingTypes.INVOLUNTARY_DISSOLUTION: return FilingNames.INVOLUNTARY_DISSOLUTION
-      case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
-      case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
-      case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
-      case FilingTypes.RESTORATION: return (subType === RestorationTypes.FULL)
-        ? FilingNames.RESTORATION_FULL
-        : FilingNames.RESTORATION_LIMITED
-      case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
-      case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
-      case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
-      case FilingTypes.PUT_BACK_ON: return FilingNames.PUT_BACK_ON
-    }
-    // fallback for unknown filings
-    return this.camelCaseToWords(type)
+    return EnumUtilities.filingTypeToName(type, agmYear, subType)
   }
 
   /**
+   * DEPRECATED - use enum-utilities instead
    * Converts a string in "camelCase" (or "PascalCase") to separate, title-case words,
    * suitable for a title or proper name.
    * @param s the string to convert
    * @returns the converted string
    */
   camelCaseToWords (s: string): string {
-    return s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
+    return EnumUtilities.camelCaseToWords(s)
   }
 
   /**
+   * DEPRECATED - use enum-utilities instead
    * Converts a dissolution type to its name.
    * @param type the dissolution type to convert
    * @returns the dissolution name
    */
   dissolutionTypeToName (type: DissolutionTypes): string {
-    switch (type) {
-      case DissolutionTypes.VOLUNTARY:
-        return this.isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
-      case DissolutionTypes.ADMINISTRATIVE:
-        return DissolutionNames.ADMINISTRATIVE
-    }
-    // fallback for unknown filings
-    return this.camelCaseToWords(type)
+    return EnumUtilities.dissolutionTypeToName(this.isFirm, type)
   }
 }

@@ -118,7 +118,7 @@
             <template v-if="isBenBcCccUlc && isHistorical">
               <v-list-item
                 data-type="restoration"
-                @click="goToRestorationFiling()"
+                @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, RestorationTypes.FULL)"
               >
                 <v-list-item-title>
                   <span class="app-blue">Restore Company</span>
@@ -146,7 +146,6 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
-
             <template v-if="isBenBcCccUlc && !isHistorical">
               <v-list-item
                 data-type="consent-continue-out"
@@ -158,6 +157,26 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
+            <v-list-item
+              v-if="isEntityInLimitedRestoration"
+              data-type="extend-limited-restoration"
+              :disabled="disabled  || isAdminFreeze"
+              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, RestorationTypes.LIMITED_EXTENSION)"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Extend Limited Restoration</span>
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              v-if="isEntityInLimitedRestoration"
+              data-type="convert-full-restoration"
+              :disabled="disabled  || isAdminFreeze"
+              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, RestorationTypes.LIMITED_TO_FULL)"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Convert to Full Restoration</span>
+              </v-list-item-title>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -167,16 +186,33 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { navigate } from '@/utils'
-import { DissolutionTypes, DissolutionNames, FilingTypes, FilingNames, Routes } from '@/enums'
+import {
+  ApplicationTypes,
+  DissolutionNames,
+  DissolutionTypes,
+  FilingNames,
+  FilingTypes,
+  RestorationTypes } from '@/enums'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'
+import { mapGetters } from 'vuex'
 
 @Component({
   components: { AddStaffNotationDialog },
+  computed: {
+    ...mapGetters([
+      'getIdentifier',
+      'isAdminFreeze',
+      'isBenBcCccUlc',
+      'isCoop',
+      'isEntityInLimitedRestoration',
+      'isFirm',
+      'isHistorical'
+    ])
+  },
   mixins: [FilingMixin]
 })
 export default class StaffNotation extends Vue {
@@ -193,19 +229,14 @@ export default class StaffNotation extends Vue {
   readonly FilingNames = FilingNames
   readonly DissolutionTypes = DissolutionTypes
   readonly DissolutionNames = DissolutionNames
+  readonly ApplicationTypes = ApplicationTypes
+  readonly RestorationTypes = RestorationTypes
 
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset!: string
 
   /** Prop for disabling the menu items. */
   @Prop({ default: false }) readonly disabled!: boolean
-
-  @Getter isFirm!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isCoop!: boolean
-  @Getter getIdentifier: string
-  @Getter isHistorical!: boolean
-  @Getter isAdminFreeze!: boolean
 
   /** The Create URL string. */
   get createUrl (): string {
@@ -263,20 +294,27 @@ export default class StaffNotation extends Vue {
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
   }
 
-  async goToRestorationFiling (): Promise<void> {
+  async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: RestorationTypes): Promise<void> {
+    let url: string
     try {
       // show spinner since the network calls below can take a few seconds
       this.$root.$emit('showSpinner', true)
 
       // create restoration draft filing
-      const restoration = this.buildRestorationFiling()
+      const restoration = this.buildRestorationFiling(restorationType)
       const filing = await LegalServices.createFiling(this.getIdentifier, restoration, true)
       const id = +filing?.header?.filingId
 
       if (isNaN(id)) throw new Error('Invalid API response')
 
-      // navigate to Create UI
-      const url = `${this.createUrl}?id=${this.getIdentifier}`
+      if (applicationName === ApplicationTypes.CREATE_UI) {
+        // navigate to Create UI
+        url = `${this.createUrl}?id=${this.getIdentifier}`
+      }
+      if (applicationName === ApplicationTypes.EDIT_UI) {
+        url = `${this.editUrl}${this.getIdentifier}/restoration` +
+          `?restoration-id=${id}`
+      }
       navigate(url)
     } catch (error) {
       // clear spinner on error

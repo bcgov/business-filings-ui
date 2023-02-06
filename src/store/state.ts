@@ -47,5 +47,6 @@ export const state: StateIF = {
   hasBlockerTask: false,
   hasBlockerFiling: false,
   isCoaPending: false,
-  coaEffectiveDate: null
+  coaEffectiveDate: null,
+  stateFiling: null
 }
