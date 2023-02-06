@@ -266,48 +266,113 @@ describe('EntityInfo - company info button and tooltip', () => {
   })
 })
 
+describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
+  const router = mockRouter.mock()
+
+  const variations = [
+    { // 0
+      stateFiling: null,
+      exists: false
+    },
+    { // 1
+      stateFiling: null,
+      exists: false
+    },
+    { // 2
+      stateFiling: { consentContinuationOut: {} },
+      exists: true
+    }
+  ]
+
+  beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  afterAll(() => {
+    sessionStorage.clear()
+  })
+
+  variations.forEach((_, index) => {
+    it(`conditionally displays continue out badge - variation #${index}`, async () => {
+      // init store
+      store.state.stateFiling = _.stateFiling
+
+      const wrapper = mount(EntityInfo, { vuetify, store, router })
+      await Vue.nextTick()
+
+      expect(wrapper.find('#authorized-to-continue-out-chip').exists()).toBe(_.exists)
+      if (_.exists) {
+        expect(wrapper.find('#authorized-to-continue-out-chip').text()).toBe('AUTHORIZED TO CONTINUE OUT')
+      }
+
+      // cleanup
+      store.state.stateFiling = null
+      wrapper.destroy()
+    })
+  })
+})
+
 describe('EntityInfo - Historical badge', () => {
   const router = mockRouter.mock()
 
   const variations = [
     { // 0
-      state: 'ACTIVE',
+      entityState: 'ACTIVE',
       exists: false
     },
     { // 1
-      state: 'LIQUIDATION',
+      entityState: 'LIQUIDATION',
       exists: false
     },
     { // 2
-      state: 'HISTORICAL',
+      entityState: 'HISTORICAL',
+      stateFiling: null,
       exists: true,
-      text: null
+      text: 'Unknown Reason'
     },
     { // 3
-      state: 'HISTORICAL',
+      entityState: 'HISTORICAL',
+      stateFiling: {
+        header: { name: 'dissolution' },
+        dissolution: {
+          dissolutionDate: '2020-01-01',
+          dissolutionType: 'voluntary'
+        }
+      },
       exists: true,
-      text: 'Some Reason Text'
+      text: 'Voluntary Dissolution – January 1, 2020'
+    },
+    { // 4
+      entityState: 'HISTORICAL',
+      stateFiling: {
+        header: {
+          name: 'involuntaryDissolution',
+          effectiveDate: '2020-01-01T08:01:00+00:00'
+        }
+      },
+      exists: true,
+      text: 'Involuntary Dissolution – January 1, 2020 at 12:01 am Pacific time'
     }
   ]
 
   variations.forEach((_, index) => {
     it(`conditionally displays historical badge - variation #${index}`, async () => {
       // init store
-      store.state.entityState = _.state
-      store.state.reasonText = _.text
+      store.state.entityState = _.entityState
+      store.state.stateFiling = _.stateFiling || null
 
       const wrapper = mount(EntityInfo, { vuetify, store, router })
       await Vue.nextTick()
 
-      expect(wrapper.find('.v-chip').exists()).toBe(_.exists)
+      expect(wrapper.find('#historical-chip').exists()).toBe(_.exists)
       if (_.exists) {
-        expect(wrapper.find('.v-chip__content').text()).toBe('HISTORICAL')
-        expect(wrapper.find('.v-chip + span').text()).toBe(_.text || 'Unknown Reason')
+        expect(wrapper.find('#historical-chip').text()).toBe('HISTORICAL')
+        expect(wrapper.find('#historical-chip + span').text()).toBe(_.text)
       }
 
       // cleanup
       store.state.entityState = null
-      store.state.reasonText = null
+      store.state.stateFiling = null
       wrapper.destroy()
     })
   })

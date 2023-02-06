@@ -66,9 +66,6 @@ export default {
   hasCourtOrders (state: StateIF, hasCourtOrders: boolean) {
     state.hasCourtOrders = hasCourtOrders
   },
-  reasonText (state: StateIF, text: string) {
-    state.reasonText = text
-  },
   businessEmail (state: StateIF, businessEmail: string) {
     state.businessEmail = businessEmail
   },
