@@ -990,7 +990,7 @@ export default class AnnualReport extends Vue {
 
     if (this.isCoop) {
       annualReport = {
-        annualReport: {
+        [FilingTypes.ANNUAL_REPORT]: {
           annualGeneralMeetingDate: this.agmDate || null, // API doesn't validate empty string
           // save AGM Extension as false if No AGM is true
           agmExtension: (!this.noAgm && this.agmExtension) || false,
@@ -1007,7 +1007,7 @@ export default class AnnualReport extends Vue {
 
     if (this.isBenBcCccUlc) {
       annualReport = {
-        annualReport: {
+        [FilingTypes.ANNUAL_REPORT]: {
           annualReportDate: this.asOfDate,
           nextARDate: this.nextARDate, // used by BEN/BC/CCC/ULC only
           // NB: there was an enrichment ticket to populate offices and directors here
@@ -1026,7 +1026,7 @@ export default class AnnualReport extends Vue {
       this.hasFilingCode(FilingCodes.FREE_DIRECTOR_CHANGE_OT)
     ) {
       changeOfDirectors = {
-        changeOfDirectors: {
+        [FilingTypes.CHANGE_OF_DIRECTORS]: {
           directors: this.updatedDirectors
         }
       }
@@ -1035,7 +1035,7 @@ export default class AnnualReport extends Vue {
     // non-BCOMP only
     if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
       changeOfAddress = {
-        changeOfAddress: {
+        [FilingTypes.CHANGE_OF_ADDRESS]: {
           legalType: this.getEntityType,
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice
@@ -1044,17 +1044,17 @@ export default class AnnualReport extends Vue {
       }
     }
 
-    // build filing data
-    const data = Object.assign({}, header, business, annualReport, changeOfAddress, changeOfDirectors)
+    // build filing
+    const filing = Object.assign({}, header, business, annualReport, changeOfAddress, changeOfDirectors)
 
     try {
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, data, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
     } catch (error) {

@@ -33,6 +33,7 @@ const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === 'incorporationApplication')
 const isBcompCoa = (filing) => false // FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === 'alteration')
+const isConsentContinuationOut = (filing) => (filing.name === 'consentContinuationOut')
 const isStaff = (filing) => (
   filing.name === 'registrarsNotation' ||
   filing.name === 'registrarsOrder' ||
@@ -126,13 +127,21 @@ filings.forEach((filing: any, index: number) => {
       expect(item.fromLegalType).toBeDefined() // FUTURE: test this more specifically
     })
 
+    itIf(isConsentContinuationOut(filing))('consent to continuation out filing', () => {
+      expect(vm.historyItems.length).toBe(1) // sanity check
+      const item = vm.historyItems[0]
+
+      expect(item.details).toBeDefined() // FUTURE: test this more specifically
+      expect(item.expiry).toBeDefined() // FUTURE: test this more specifically
+    })
+
     itIf(isStaff(filing))('staff filing', () => {
       expect(vm.historyItems.length).toBe(1) // sanity check
       const item = vm.historyItems[0]
 
       expect(item.fileNumber).toBeDefined() // FUTURE: test this more specifically
       expect(item.isTypeStaff).toBe(true)
-      // expect(item.notationOrOrder).toBeDefined() // FUTURE: test this more specifically
+      // expect(item.details).toBeDefined() // FUTURE: test this more specifically
       expect(item.planOfArrangement).toBeDefined() // FUTURE: test this more specifically
     })
 

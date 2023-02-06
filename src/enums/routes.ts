@@ -1,5 +1,6 @@
 export enum Routes {
   ANNUAL_REPORT = 'annual-report',
+  CONSENT_CONTINUATION_OUT = 'consent-continuation-out',
   CORRECTION = 'correction',
   DASHBOARD = 'dashboard',
   STANDALONE_ADDRESSES = 'standalone-addresses',

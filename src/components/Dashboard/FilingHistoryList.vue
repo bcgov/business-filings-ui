@@ -55,7 +55,7 @@
               <!-- the filing label (left side) -->
               <div class="item-header__label">
                 <h3 class="item-header__title">
-                  <v-icon v-if="filing.displayName==FilingNames.COURT_ORDER" class="pr-1">mdi-gavel</v-icon>
+                  <v-icon v-if="isTypeCourtOrder(filing)" class="pr-1">mdi-gavel</v-icon>
                   <span>{{filing.displayName}}</span>
                 </h3>
 
@@ -253,6 +253,7 @@
               <StaffFiling
                 class="mt-6"
                 :filing="filing"
+                :showDocumentsList="isTypeCourtOrder(filing)"
                 @downloadOne="downloadOne(...arguments)"
                 @downloadAll="downloadAll($event)"
               />
@@ -301,8 +302,7 @@
               <FutureEffective :filing=filing class="mt-6" />
             </template>
 
-            <template v-else-if="filing.isTypeLimitedRestoration"
-            >
+            <template v-else-if="filing.isTypeLimitedRestoration">
               <LimitedRestorationFiling :filing="filing" class="mt-6" />
             </template>
 
@@ -314,6 +314,14 @@
             <!-- is this a paper filing? -->
             <template v-else-if="filing.availableOnPaperOnly">
               <PaperFiling class="mt-6" />
+            </template>
+
+            <!-- is this a consent to continuation out filing? -->
+            <template v-else-if="isTypeConsentContinuationOut(filing)">
+              <p class="mt-4">
+                This consent is valid <strong>until {{filing.expiry}} at 12:01 am Pacific time</strong>.
+              </p>
+              <p class="mt-4">{{filing.comment}}</p>
             </template>
 
             <!-- else this must be a completed filing -->
@@ -383,7 +391,7 @@ import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import StaffFiling from './FilingHistoryList/StaffFiling.vue'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog } from '@/components/dialogs'
-import { AllowableActions, FilingTypes, Routes, CorrectionTypes, FilingNames } from '@/enums'
+import { AllowableActions, FilingTypes, Routes, CorrectionTypes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
@@ -445,7 +453,6 @@ export default class FilingHistoryList extends Vue {
 
   // enum for template
   readonly AllowableActions = AllowableActions
-  readonly FilingNames = FilingNames
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -645,15 +652,22 @@ export default class FilingHistoryList extends Vue {
         )
       }
 
+      // add properties for Consent to Continuation Outs
+      if (this.isTypeConsentContinuationOut(filing)) {
+        // FUTURE: expiry date may come from business object
+        item.expiry = filing.data.consentContinuationOut?.expiry
+        item.details = filing.data.consentContinuationOut?.orderDetails
+      }
+
       // add properties for staff filings
       if (this.isTypeStaff(filing)) {
         // court orders may have documents so leave property as null (they load on toggle)
         if (!this.isTypeCourtOrder(filing)) {
           item.documents = [] // no documents
         }
-        item.fileNumber = filing.data.order?.fileNumber || '' // may be falsy
+        item.fileNumber = filing.data.order?.fileNumber || '' // may be absent
         item.isTypeStaff = true
-        item.notationOrOrder = filing.data.order?.orderDetails // should not be falsy
+        item.details = filing.data.order?.orderDetails // should always be present
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
         item.putBackOnOrAdminDissolution = this.isTypePutBackOn({ name: filing.name }) ||
           this.isTypeAdministrativeDissolution({ name: filing.name,

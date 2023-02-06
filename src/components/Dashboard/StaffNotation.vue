@@ -107,7 +107,7 @@
               <v-list-item
                 data-type="administrative-dissolution"
                 @click="showAdministrativeDissolutionDialog()"
-                :disabled="disabled  || isAdminFreeze"
+                :disabled="disabled || isAdminFreeze"
               >
                 <v-list-item-title>
                   <span class="app-blue">Administrative Dissolution</span>
@@ -136,12 +136,25 @@
                 </v-list-item-title>
               </v-list-item>
             </template>
+
             <template v-if="!isHistorical">
               <v-list-item
                 data-type="admin-freeze"
                 @click="showAdministerFreezeDialog()">
                 <v-list-item-title>
                   <span class="app-blue">{{ isAdminFreeze ? 'Unfreeze Business' : 'Freeze Business' }}</span>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+
+            <template v-if="isBenBcCccUlc && !isHistorical">
+              <v-list-item
+                data-type="consent-continue-out"
+                @click="goToConsentContinuationOutFiling()"
+                :disabled="disabled || isAdminFreeze"
+              >
+                <v-list-item-title>
+                  <span class="app-blue">Consent to Continuation Out</span>
                 </v-list-item-title>
               </v-list-item>
             </template>
@@ -157,7 +170,7 @@ import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { navigate } from '@/utils'
-import { DissolutionTypes, DissolutionNames, FilingTypes, FilingNames } from '@/enums'
+import { DissolutionTypes, DissolutionNames, FilingTypes, FilingNames, Routes } from '@/enums'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'
@@ -243,6 +256,11 @@ export default class StaffNotation extends Vue {
   hideAdministrativeDissolutionDialog (needReload: boolean): void {
     this.isAddingAdministrativeDissolution = false
     this.close(needReload)
+  }
+
+  goToConsentContinuationOutFiling ():void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
   }
 
   async goToRestorationFiling (): Promise<void> {

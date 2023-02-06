@@ -1734,7 +1734,7 @@ describe('Filing History List - paper only and other filings', () => {
           order: {
             effectOfOrder: 'planOfArrangement',
             fileNumber: '#1234-5678/90',
-            notationOrOrder: 'A note about order'
+            orderDetails: 'A note about order'
           }
         }
       }
@@ -1791,7 +1791,7 @@ describe('Filing History List - paper only and other filings', () => {
           order: {
             effectOfOrder: 'planOfArrangement',
             fileNumber: '#1234-5678/90',
-            notationOrOrder: 'A note about order'
+            orderDetails: 'A note about order'
           }
         }
       }
@@ -1848,7 +1848,7 @@ describe('Filing History List - paper only and other filings', () => {
           order: {
             effectOfOrder: 'planOfArrangement',
             fileNumber: '#1234-5678/90',
-            notationOrOrder: 'A note about order'
+            orderDetails: 'A note about order'
           }
         }
       }

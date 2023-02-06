@@ -116,6 +116,11 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.CHANGE_OF_REGISTRATION)
   }
 
+  /** Returns True if filing is a Consent to Continuation Out. */
+  isTypeConsentContinuationOut (item: any): boolean {
+    return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
+  }
+
   /** Returns True if filing is a Conversion. */
   isTypeConversion (item: any): boolean {
     return (item.name === FilingTypes.CONVERSION)

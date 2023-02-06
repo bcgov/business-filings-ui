@@ -688,7 +688,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
 
     if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
       changeOfAddress = {
-        changeOfAddress: {
+        [FilingTypes.CHANGE_OF_ADDRESS]: {
           legalType: this.getEntityType,
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice
@@ -699,7 +699,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
 
     if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_BC)) {
       changeOfAddress = {
-        changeOfAddress: {
+        [FilingTypes.CHANGE_OF_ADDRESS]: {
           legalType: this.getEntityType,
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice,
@@ -709,17 +709,17 @@ export default class StandaloneOfficeAddressFiling extends Vue {
       }
     }
 
-    // build filing data
-    const data = Object.assign({}, header, business, changeOfAddress)
+    // build filing
+    const filing = Object.assign({}, header, business, changeOfAddress)
 
     try {
       let ret
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
-        ret = await LegalServices.updateFiling(this.getIdentifier, data, this.filingId, isDraft)
+        ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        ret = await LegalServices.createFiling(this.getIdentifier, data, isDraft)
+        ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
     } catch (error) {

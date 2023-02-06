@@ -174,6 +174,91 @@ describe('TodoList - common expansion panel header tests', () => {
     wrapper.destroy()
   })
 
+  it('displays draft consent to continuation out as staff', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        enabled: true,
+        order: 1,
+        task: {
+          filing: {
+            header: {
+              name: 'consentContinuationOut',
+              status: 'DRAFT',
+              filingId: 1,
+              comments: []
+            },
+            business: {},
+            consentContinuationOut: { comment: 'line1\nline2' }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(TodoList, {
+      store,
+      computed: { isRoleStaff: () => true },
+      vuetify
+    })
+    await Vue.nextTick()
+
+    // verify title
+    // verify sub-title
+    // verify resume button
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.find('.list-item__title').text()).toBe('Consent to Continuation Out')
+    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+    expect(wrapper.find('.btn-draft-resume').exists()).toBe(true)
+
+    // open dropdown menu and click Delete button
+    await wrapper.find('#menu-activator').trigger('click')
+    await wrapper.find('#btn-draft-delete').trigger('click')
+
+    // verify confirmation popup is showing
+    expect(wrapper.vm.$refs.confirm).toBeTruthy()
+
+    wrapper.destroy()
+  })
+
+  it('displays draft consent to continuation out as non-staff', async () => {
+    // init store
+    store.state.tasks = [
+      {
+        enabled: true,
+        order: 1,
+        task: {
+          filing: {
+            header: {
+              name: 'consentContinuationOut',
+              status: 'DRAFT',
+              filingId: 1,
+              comments: []
+            },
+            business: {},
+            consentContinuationOut: { comment: 'line1\nline2' }
+          }
+        }
+      }
+    ]
+
+    const wrapper = mount(TodoList, {
+      store,
+      computed: { isRoleStaff: () => false },
+      vuetify
+    })
+    await Vue.nextTick()
+
+    // verify title
+    // verify sub-title
+    // verify no resume button
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    expect(wrapper.find('.list-item__title').text()).toBe('Consent to Continuation Out')
+    expect(wrapper.find('.todo-subtitle').text()).toBe('DRAFT')
+    expect(wrapper.find('.btn-draft-resume').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
   xit('displays draft alteration without comments', async () => {
     // verify title
     // verify sub-title
