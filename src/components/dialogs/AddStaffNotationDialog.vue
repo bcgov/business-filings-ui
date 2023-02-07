@@ -230,7 +230,7 @@ export default class AddStaffNotationDialog extends Vue {
       // Administrative Dissolution, Put Back On, Freeze/Unfreeze Business require a detailed comment
       (v: string) => (
         !!v ||
-        (!this.isAdministrativeDissolution && !this.isPutBackOn & !this.isAdministerFreeze) ||
+        (!this.isAdministrativeDissolution && !this.isPutBackOn && !this.isAdministerFreeze) ||
         'Enter a detailed comment'
       ),
       // Court Order requires a file or a comment
