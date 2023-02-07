@@ -21,7 +21,6 @@ export const state: StateIF = {
   entityStatus: null,
   entityFoundingDate: null,
   goodStanding: null,
-  reasonText: null,
   lastAnnualReportDate: null,
   lastAddressChangeDate: null,
   lastDirectorChangeDate: null,

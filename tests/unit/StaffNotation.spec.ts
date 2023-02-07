@@ -94,7 +94,6 @@ describe('StaffNotation', () => {
     for (const menuItem of expectedStaffMenu) {
       const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
       expect(menuItemUnderTest.text()).toBe(menuItem.label)
-      console.log(menuItem)
       if (menuItem.disabled) {
         expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
       } else {
@@ -170,7 +169,6 @@ describe('StaffNotation', () => {
     for (const menuItem of expectedStaffMenu) {
       const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
       expect(menuItemUnderTest.text()).toBe(menuItem.label)
-      console.log(menuItem)
       if (menuItem.disabled) {
         expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
       } else {

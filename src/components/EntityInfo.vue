@@ -13,7 +13,16 @@
             </div>
 
             <!-- Description -->
-            <div v-if="businessId" id="business-subtitle">{{ businessDescription }}</div>
+            <div v-if="businessId">
+              <span id="business-subtitle">{{ businessDescription }}</span>
+              <v-chip
+                v-if="isAuthorizedToContinueOut"
+                id="authorized-to-continue-out-chip"
+                class="primary mt-n1 ml-3 pointer-events-none" small label text-color="white"
+              >
+                <strong>AUTHORIZED TO CONTINUE OUT</strong>
+              </v-chip>
+            </div>
             <div v-if="tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
           </header>
 
@@ -28,10 +37,13 @@
             </span>
 
             <span v-if="isHistorical">
-              <v-chip class="primary mt-n1 ml-4 pointer-events-none" small label text-color="white">
+              <v-chip
+                id="historical-chip"
+                class="primary mt-n1 ml-4 pointer-events-none" small label text-color="white"
+              >
                 <strong>HISTORICAL</strong>
               </v-chip>
-              <span class="font-14 mx-3">{{reasonText || 'Unknown Reason'}}</span>
+              <span class="font-14 mx-3">{{getReasonText || 'Unknown Reason'}}</span>
             </span>
 
             <template v-else>
@@ -217,15 +229,17 @@ export default class EntityInfo extends Vue {
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
-  @State reasonText!: string
 
   @Getter getBusinessNumber!: string
-  @Getter getIdentifier!: number
-  @Getter getEntityName!: string
-  @Getter getNameRequestNumber!: string
-  @Getter isAdminFreeze!: boolean
-  @Getter isPendingDissolution!: boolean
   @Getter getEntityFoundingDate!: Date
+  @Getter getEntityName!: string
+  @Getter getIdentifier!: number
+  @Getter getNameRequestNumber!: string
+  @Getter getReasonText!: string
+  @Getter isAdminFreeze!: boolean
+  @Getter isAuthorizedToContinueOut!: boolean
+  @Getter isHistorical!: boolean
+  @Getter isPendingDissolution!: boolean
 
   // enums for template
   readonly axios = axios

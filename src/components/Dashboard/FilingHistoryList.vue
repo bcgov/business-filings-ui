@@ -322,6 +322,8 @@
                 This consent is valid <strong>until {{filing.expiry}} at 12:01 am Pacific time</strong>.
               </p>
               <p class="mt-4">{{filing.comment}}</p>
+              <p v-if="filing.fileNumber" class="mt-4 mb-0">Court Order Number: {{filing.fileNumber}}</p>
+              <p v-if="filing.planOfArrangement" class="mt-0">{{filing.planOfArrangement}}</p>
             </template>
 
             <!-- else this must be a completed filing -->
@@ -657,6 +659,9 @@ export default class FilingHistoryList extends Vue {
         // FUTURE: expiry date may come from business object
         item.expiry = filing.data.consentContinuationOut?.expiry
         item.details = filing.data.consentContinuationOut?.orderDetails
+        // court order properties
+        item.fileNumber = filing.data.order?.fileNumber || '' // may be absent
+        item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
       }
 
       // add properties for staff filings

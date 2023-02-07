@@ -286,9 +286,14 @@ export default {
     return state.configObject?.todoList
   },
 
-  /** A formatted concatenation of the name and the effectiveDate of the filing  */
-  getReasonText (state: StateIF, getters): string {
-    const filingType: FilingTypes = state.stateFiling.header.name
+  /**
+   * A formatted concatenation of the name and the effective date of the filing.
+   * Only used when entity is historical.
+   */
+  getReasonText (state: StateIF, getters: any): string {
+    const filingType = state.stateFiling?.header?.name
+    if (!filingType) return null // safety check
+
     // create reason text to display in the info header
     let name: string
     let date: string
@@ -303,7 +308,7 @@ export default {
       date = DateUtilities.dateToPacificDate(dissolutionDate, true)
     } else {
       name = EnumUtilities.filingTypeToName(filingType)
-      const effectiveDate = this.apiToDate(state.stateFiling.header?.effectiveDate)
+      const effectiveDate = DateUtilities.apiToDate(state.stateFiling.header.effectiveDate)
       if (!effectiveDate) throw new Error('Invalid effective date')
       date = DateUtilities.dateToPacificDateTime(effectiveDate)
     }
@@ -312,8 +317,19 @@ export default {
     return `${name} ${enDash} ${date}`
   },
 
-  /** */
+  /**
+   * Is True if business is in Limited Restoration state, ie
+   * the last filing to change state was a Restoration filing.
+   */
   isEntityInLimitedRestoration (state: StateIF): boolean {
-    return (state.stateFiling?.business?.state === 'ACTIVE' && state.stateFiling.hasOwnProperty('restoration'))
+    return (state.stateFiling?.hasOwnProperty(FilingTypes.RESTORATION))
+  },
+
+  /**
+   * Is True if business is in Authorized to Continue Out state, ie
+   * the last filing to change state was a Consent to Continue Out filing.
+   */
+  isAuthorizedToContinueOut (state: StateIF): boolean {
+    return (state.stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT))
   }
 }
