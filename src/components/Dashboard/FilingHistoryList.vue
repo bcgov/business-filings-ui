@@ -55,7 +55,7 @@
               <!-- the filing label (left side) -->
               <div class="item-header__label">
                 <h3 class="item-header__title">
-                  <v-icon v-if="isTypeCourtOrder(filing)" class="pr-1">mdi-gavel</v-icon>
+                  <v-icon v-if="EnumUtilities.isTypeCourtOrder(filing)" class="pr-1">mdi-gavel</v-icon>
                   <span>{{filing.displayName}}</span>
                 </h3>
 
@@ -148,7 +148,7 @@
                 </div>
 
                 <!-- is this a generic paid (not yet completed) filing? -->
-                <div v-else-if="isStatusPaid(filing)" class="item-header__subtitle">
+                <div v-else-if="EnumUtilities.isStatusPaid(filing)" class="item-header__subtitle">
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
                   <span>PAID <FiledLabel :filing="filing" /></span>
@@ -253,7 +253,7 @@
               <StaffFiling
                 class="mt-6"
                 :filing="filing"
-                :showDocumentsList="isTypeCourtOrder(filing)"
+                :showDocumentsList="EnumUtilities.isTypeCourtOrder(filing)"
                 @downloadOne="downloadOne(...arguments)"
                 @downloadAll="downloadAll($event)"
               />
@@ -307,7 +307,7 @@
             </template>
 
             <!-- is this a generic paid (not yet completed) filing? -->
-            <template v-else-if="isStatusPaid(filing)">
+            <template v-else-if="EnumUtilities.isStatusPaid(filing)">
               <PendingFiling :filing=filing class="mt-6" />
             </template>
 
@@ -317,7 +317,7 @@
             </template>
 
             <!-- is this a consent to continuation out filing? -->
-            <template v-else-if="isTypeConsentContinuationOut(filing)">
+            <template v-else-if="EnumUtilities.isTypeConsentContinuationOut(filing)">
               <p class="mt-4">
                 This consent is valid <strong>until {{filing.expiry}} at 12:01 am Pacific time</strong>.
               </p>
@@ -332,7 +332,9 @@
             </template>
 
             <!-- the documents section -->
-            <template v-if="!isTypeCourtOrder(filing) && filing.documents && filing.documents.length > 0">
+            <template v-if="!EnumUtilities.isTypeCourtOrder(filing) && filing.documents &&
+              filing.documents.length > 0"
+            >
               <v-divider class="my-6" />
               <DocumentsList
                 :filing=filing
@@ -396,8 +398,8 @@ import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrec
 import { AllowableActions, FilingTypes, Routes, CorrectionTypes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
   from '@/interfaces'
-import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
+import { AllowableActionsMixin, DateMixin, FilingMixin } from '@/mixins'
+import { EnumUtilities, LegalServices } from '@/services/'
 
 @Component({
   components: {
@@ -424,7 +426,6 @@ import { LegalServices } from '@/services/'
   mixins: [
     AllowableActionsMixin,
     DateMixin,
-    EnumMixin,
     FilingMixin
   ]
 })
@@ -453,8 +454,9 @@ export default class FilingHistoryList extends Vue {
   protected loadingOneIndex = -1
   protected isBusy = false
 
-  // enum for template
+  // for template
   readonly AllowableActions = AllowableActions
+  readonly EnumUtilities = EnumUtilities
 
   /** The Edit URL string. */
   get editUrl (): string {
@@ -506,7 +508,7 @@ export default class FilingHistoryList extends Vue {
     let isCoaPending = false
     let coaEffectiveDate: Date = null
     const blockerFiling = this.historyItems.some(item => {
-      if (this.isStatusPaid(item)) {
+      if (EnumUtilities.isStatusPaid(item)) {
         if (item.isFutureEffectiveCoaPending) {
           isCoaPending = true
           coaEffectiveDate = item.effectiveDate
@@ -567,29 +569,29 @@ export default class FilingHistoryList extends Vue {
       }
 
       // add properties for BEN/BC/CCC/ULC COAs
-      if (this.isBenBcCccUlc && this.isTypeChangeOfAddress(filing)) {
+      if (this.isBenBcCccUlc && EnumUtilities.isTypeChangeOfAddress(filing)) {
         // is this a Future Effective COA pending (not yet completed)?
         // (NB: this is False after the effective date)
         item.isFutureEffectiveCoaPending = (
           filing.isFutureEffective &&
-          this.isStatusPaid(filing) &&
+          EnumUtilities.isStatusPaid(filing) &&
           this.isEffectiveDateFuture(effectiveDate)
         )
       }
 
       // add properties for IAs
-      if (this.isTypeIncorporationApplication(filing)) {
+      if (EnumUtilities.isTypeIncorporationApplication(filing)) {
         // is this a completed IA? (temp reg number mode only)
         item.isCompletedIa = (
           !!this.tempRegNumber &&
-          this.isStatusCompleted(filing)
+          EnumUtilities.isStatusCompleted(filing)
         )
 
         // is this a Future Effective IA (not yet completed)? (temp reg number mode only)
         item.isFutureEffectiveIa = (
           !!this.tempRegNumber &&
           filing.isFutureEffective &&
-          this.isStatusPaid(filing)
+          EnumUtilities.isStatusPaid(filing)
         )
 
         // is this a Future Effective IA pending (overdue)? (temp reg number mode only)
@@ -600,14 +602,14 @@ export default class FilingHistoryList extends Vue {
       }
 
       // add properties for Alterations
-      if (this.isTypeAlteration(filing)) {
+      if (EnumUtilities.isTypeAlteration(filing)) {
         // is this a completed alteration?
-        item.isCompletedAlteration = this.isStatusCompleted(filing)
+        item.isCompletedAlteration = EnumUtilities.isStatusCompleted(filing)
 
         // is this a Future Effective alteration (not yet completed)?
         item.isFutureEffectiveAlteration = (
           filing.isFutureEffective &&
-          this.isStatusPaid(filing)
+          EnumUtilities.isStatusPaid(filing)
         )
 
         // is this a Future Effective alteration pending (overdue)?
@@ -619,23 +621,23 @@ export default class FilingHistoryList extends Vue {
         // data is available only for a completed filing
         if (item.isCompletedAlteration) {
           item.courtOrderNumber = filing.data.order?.fileNumber || ''
-          item.isArrangement = this.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
+          item.isArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(filing.data.order?.effectOfOrder)
           item.toLegalType = filing.data.alteration?.toLegalType || null
           item.fromLegalType = filing.data.alteration?.fromLegalType || null
         }
       }
 
       // add properties for Voluntary Dissolutions
-      if (this.isTypeVoluntaryDissolution(filing)) {
+      if (EnumUtilities.isTypeVoluntaryDissolution(filing)) {
         item.dissolutionDate = filing.data.dissolution?.dissolutionDate || null
 
         // is this a completed dissolution?
-        item.isCompletedDissolution = this.isStatusCompleted(filing)
+        item.isCompletedDissolution = EnumUtilities.isStatusCompleted(filing)
 
         // is this a Future Effective dissolution (not yet completed)?
         item.isFutureEffectiveDissolution = (
           filing.isFutureEffective &&
-          this.isStatusPaid(filing)
+          EnumUtilities.isStatusPaid(filing)
         )
 
         // is this a Future Effective dissolution pending (overdue)?
@@ -646,16 +648,16 @@ export default class FilingHistoryList extends Vue {
       }
 
       // add properties for Registrations
-      if (this.isTypeRegistration(filing)) {
+      if (EnumUtilities.isTypeRegistration(filing)) {
         // is this a completed registration? (temp reg number mode only)
         item.isCompletedRegistration = (
           !!this.tempRegNumber &&
-          this.isStatusCompleted(filing)
+          EnumUtilities.isStatusCompleted(filing)
         )
       }
 
       // add properties for Consent to Continuation Outs
-      if (this.isTypeConsentContinuationOut(filing)) {
+      if (EnumUtilities.isTypeConsentContinuationOut(filing)) {
         // FUTURE: expiry date may come from business object
         item.expiry = filing.data.consentContinuationOut?.expiry
         item.details = filing.data.consentContinuationOut?.orderDetails
@@ -665,22 +667,22 @@ export default class FilingHistoryList extends Vue {
       }
 
       // add properties for staff filings
-      if (this.isTypeStaff(filing)) {
+      if (EnumUtilities.isTypeStaff(filing)) {
         // court orders may have documents so leave property as null (they load on toggle)
-        if (!this.isTypeCourtOrder(filing)) {
+        if (!EnumUtilities.isTypeCourtOrder(filing)) {
           item.documents = [] // no documents
         }
         item.fileNumber = filing.data.order?.fileNumber || '' // may be absent
         item.isTypeStaff = true
         item.details = filing.data.order?.orderDetails // should always be present
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
-        item.putBackOnOrAdminDissolution = this.isTypePutBackOn({ name: filing.name }) ||
-          this.isTypeAdministrativeDissolution({ name: filing.name,
+        item.putBackOnOrAdminDissolution = EnumUtilities.isTypePutBackOn({ name: filing.name }) ||
+          EnumUtilities.isTypeAdministrativeDissolution({ name: filing.name,
             dissolutionType: filing?.data?.dissolution?.dissolutionType })
       }
 
       // add properties for limited restorations
-      if (this.isTypeLimitedRestoration(filing)) {
+      if (EnumUtilities.isTypeLimitedRestoration(filing)) {
         item.isTypeLimitedRestoration = true
         item.legalName = filing.data.restoration?.legalName
         item.expiry = filing.data.restoration?.expiry
@@ -858,7 +860,7 @@ export default class FilingHistoryList extends Vue {
               let title
               // use display name for primary document's title
               if (prop === item.name) title = item.displayName
-              else title = this.filingTypeToName(prop as FilingTypes, null, true)
+              else title = EnumUtilities.filingTypeToName(prop as FilingTypes, null, true)
 
               const date = this.dateToYyyyMmDd(item.submittedDate)
               const filename = `${this.getIdentifier} ${title} - ${date}.pdf`
@@ -873,7 +875,7 @@ export default class FilingHistoryList extends Vue {
           pushDocument(title, filename, link)
         } else {
           // this is a submission level output
-          const title = this.camelCaseToWords(prop)
+          const title = EnumUtilities.camelCaseToWords(prop)
           const date = this.dateToYyyyMmDd(item.submittedDate)
           const filename = `${this.getIdentifier} ${title} - ${date}.pdf`
           const link = documents[prop] as string
@@ -932,11 +934,15 @@ export default class FilingHistoryList extends Vue {
     conditions[0] = () => !this.isAllowed(AllowableActions.FILE_CORRECTION)
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
-    conditions[3] = () => (item.isFutureEffective && !this.isStatusCompleted(item) && !this.isStatusCorrected(item))
-    conditions[4] = () => (this.isTypeIncorporationApplication(item) && !this.isBenBcCccUlc)
-    conditions[5] = () => (this.isTypeChangeOfRegistration(item) && !this.isFirm)
-    conditions[6] = () => (this.isTypeCorrection(item) && !this.isFirm && !this.isBenBcCccUlc)
-    conditions[7] = () => (this.isTypeRegistration(item) && !this.isFirm)
+    conditions[3] = () => (
+      item.isFutureEffective &&
+      !EnumUtilities.isStatusCompleted(item) &&
+      !EnumUtilities.isStatusCorrected(item)
+    )
+    conditions[4] = () => (EnumUtilities.isTypeIncorporationApplication(item) && !this.isBenBcCccUlc)
+    conditions[5] = () => (EnumUtilities.isTypeChangeOfRegistration(item) && !this.isFirm)
+    conditions[6] = () => (EnumUtilities.isTypeCorrection(item) && !this.isFirm && !this.isBenBcCccUlc)
+    conditions[7] = () => (EnumUtilities.isTypeRegistration(item) && !this.isFirm)
 
     return conditions.some(condition => condition())
   }

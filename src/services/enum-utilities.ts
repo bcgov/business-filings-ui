@@ -179,17 +179,15 @@ export default class EnumUtilities {
 
   /** Returns True if filing is a Staff Only filing. */
   static isTypeStaff (item: any): boolean {
-    const staffType = [
+    const isStaffType = [
       FilingTypes.REGISTRARS_NOTATION,
       FilingTypes.REGISTRARS_ORDER,
       FilingTypes.COURT_ORDER,
       FilingTypes.PUT_BACK_ON,
       FilingTypes.ADMIN_FREEZE
     ].includes(item.name)
-    const adminDissolution = [
-      DissolutionTypes.ADMINISTRATIVE
-    ].includes(item?.data?.dissolution?.dissolutionType)
-    return staffType || adminDissolution
+    const isAdminDissolution = (item?.data?.dissolution?.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
+    return (isStaffType || isAdminDissolution)
   }
 
   //
