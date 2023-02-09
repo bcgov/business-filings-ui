@@ -92,9 +92,9 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
-import { navigate, sleep, updateLdUser } from '@/utils'
+import { navigate, updateLdUser } from '@/utils'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
@@ -106,17 +106,7 @@ import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadc
   getStaffDashboardBreadcrumb } from '@/resources'
 import { CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, LegalServices } from '@/services/'
-import {
-  ApiFilingIF,
-  ApiTaskIF,
-  BreadcrumbIF,
-  BusinessIF,
-  CurrentAccountInterface,
-  DocumentIF,
-  NameRequestIF,
-  PartyIF,
-  TaskTodoIF
-}
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, NameRequestIF, PartyIF, TaskTodoIF }
   from '@/interfaces'
 import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
   NigsMessage, Routes } from '@/enums'
@@ -293,7 +283,7 @@ export default {
       'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
       'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
       'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
-      'setConfigObject', 'setEntityState', 'setAdminFreeze', 'setBusinessWarnings', 'loadCurrentAccount',
+      'setConfigObject', 'setEntityState', 'setAdminFreeze', 'setBusinessWarnings',
       'setGoodStanding', 'setHasCourtOrders', 'setUserKeycloakGuid', 'retrieveStateFiling']),
 
     /** Fetches business data / incorp app data. */
@@ -311,13 +301,6 @@ export default {
 
       // check authorizations
       try {
-        // load account information
-        await this.loadCurrentAccount()
-          .catch(error => {
-            console.log('Account info error =', error) // eslint-disable-line no-console
-            throw error // go to catch()
-          })
-
         // get Keycloak roles
         const jwt = this.getJWT()
         const keycloakRoles = this.getKeycloakRoles(jwt)
