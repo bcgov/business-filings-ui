@@ -1,9 +1,12 @@
-import {CurrentAccountInterface} from "@/interfaces";
-import {SessionStorageKeys} from "sbc-common-components/src/util/constants";
-import {sleep} from "@/utils";
-import currentAccount from "@/store/CurrentAccount/index";
+import { CurrentAccountInterface } from "@/interfaces";
+import { SessionStorageKeys } from "sbc-common-components/src/util/constants";
+import { sleep } from "@/utils";
 
 export default {
+  /**
+   * Gets account info and stores it in the CurrentAccount store.
+   * Among other things, this is how we find out if this is a staff account.
+   */
   async loadCurrentAccount (context): Promise<any> {
     return new Promise((resolve, reject) => {
       context.dispatch('waitForCurrentAccount')
@@ -23,6 +26,10 @@ export default {
     })
   },
 
+  /**
+   * Gets current account from object in session storage.
+   * Wait up to 5 sec for current account to be synced (typically by SbcHeader).
+   */
   async waitForCurrentAccount (): Promise<any> {
     return await new Promise((resolve, reject) => {
       let account = null

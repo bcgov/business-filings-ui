@@ -7,8 +7,8 @@ import { state } from './state'
  * Configures and returns Vuex Store.
  */
 export default {
-    actions,
-    getters,
-    mutations,
-    state
+  actions,
+  getters,
+  mutations,
+  state
 }
