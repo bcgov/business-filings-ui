@@ -267,7 +267,7 @@
                         @click.stop="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title v-if="isTypeDissolution(item)">
+                        <v-list-item-title v-if="isTypeVoluntaryDissolution(item)">
                           Delete {{ todoListTitle }}
                         </v-list-item-title>
                         <v-list-item-title v-else-if="isTypeSpecialResolution(item)">

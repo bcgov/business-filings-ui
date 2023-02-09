@@ -117,11 +117,6 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CORRECTION)
   }
 
-  /** Returns True if filing is a Dissolution. */
-  static isTypeDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION)
-  }
-
   /** Returns True if filing is an Incorporation Application. */
   static isTypeIncorporationApplication (item: any): boolean {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
@@ -145,6 +140,16 @@ export default class EnumUtilities {
   /** Returns True if filing is an Administrative Dissolution. */
   static isTypeAdministrativeDissolution (item: any): boolean {
     return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
+  }
+
+  /** Returns True if filing is an Involuntary Dissolution. */
+  static isTypeInvoluntaryDissolution (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.INVOLUNTARY)
+  }
+
+  /** Returns True if filing is a Voluntary Dissolution. */
+  static isTypeVoluntaryDissolution (item: any): boolean {
+    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.VOLUNTARY)
   }
 
   /** Returns True if filing is a Put Back On. */
@@ -174,17 +179,15 @@ export default class EnumUtilities {
 
   /** Returns True if filing is a Staff Only filing. */
   static isTypeStaff (item: any): boolean {
-    const staffType = [
+    const isStaffType = [
       FilingTypes.REGISTRARS_NOTATION,
       FilingTypes.REGISTRARS_ORDER,
       FilingTypes.COURT_ORDER,
       FilingTypes.PUT_BACK_ON,
       FilingTypes.ADMIN_FREEZE
     ].includes(item.name)
-    const adminDissolution = [
-      DissolutionTypes.ADMINISTRATIVE
-    ].includes(item?.data?.dissolution?.dissolutionType)
-    return staffType || adminDissolution
+    const isAdminDissolution = (item?.data?.dissolution?.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
+    return (isStaffType || isAdminDissolution)
   }
 
   //
@@ -251,7 +254,6 @@ export default class EnumUtilities {
       case FilingTypes.DISSOLUTION: return FilingNames.DISSOLUTION
       case FilingTypes.DISSOLVED: return FilingNames.DISSOLVED
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
-      case FilingTypes.INVOLUNTARY_DISSOLUTION: return FilingNames.INVOLUNTARY_DISSOLUTION
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
       case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
@@ -260,7 +262,6 @@ export default class EnumUtilities {
         : FilingNames.RESTORATION_LIMITED
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
-      case FilingTypes.VOLUNTARY_DISSOLUTION: return FilingNames.VOLUNTARY_DISSOLUTION
       case FilingTypes.PUT_BACK_ON: return FilingNames.PUT_BACK_ON
     }
     // fallback for unknown filings
@@ -285,10 +286,10 @@ export default class EnumUtilities {
    */
   static dissolutionTypeToName (isFirm: boolean, type: DissolutionTypes): string {
     switch (type) {
+      case DissolutionTypes.ADMINISTRATIVE: return DissolutionNames.ADMINISTRATIVE
+      case DissolutionTypes.INVOLUNTARY: return DissolutionNames.INVOLUNTARY
       case DissolutionTypes.VOLUNTARY:
         return isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
-      case DissolutionTypes.ADMINISTRATIVE:
-        return DissolutionNames.ADMINISTRATIVE
     }
     // fallback for unknown filings
     return this.camelCaseToWords(type)
