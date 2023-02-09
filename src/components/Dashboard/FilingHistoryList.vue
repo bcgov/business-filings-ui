@@ -625,8 +625,8 @@ export default class FilingHistoryList extends Vue {
         }
       }
 
-      // add properties for Dissolutions
-      if (this.isTypeDissolution(filing)) {
+      // add properties for Voluntary Dissolutions
+      if (this.isTypeVoluntaryDissolution(filing)) {
         item.dissolutionDate = filing.data.dissolution?.dissolutionDate || null
 
         // is this a completed dissolution?

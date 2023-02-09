@@ -129,11 +129,6 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.CORRECTION)
   }
 
-  /** DEPRECATED Returns True if filing is a Dissolution. */
-  isTypeDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION)
-  }
-
   /** DEPRECATED Returns True if filing is an Incorporation Application. */
   isTypeIncorporationApplication (item: any): boolean {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
@@ -157,6 +152,16 @@ export default class EnumMixin extends Vue {
   /** DEPRECATED Returns True if filing is an Administrative Dissolution. */
   isTypeAdministrativeDissolution (item: any): boolean {
     return EnumUtilities.isTypeAdministrativeDissolution(item)
+  }
+
+  /** DEPRECATED Returns True if filing is an Involuntary Dissolution. */
+  isTypeInvoluntaryDissolution (item: any): boolean {
+    return EnumUtilities.isTypeInvoluntaryDissolution(item)
+  }
+
+  /** DEPRECATED Returns True if filing is a Voluntary Dissolution. */
+  isTypeVoluntaryDissolution (item: any): boolean {
+    return EnumUtilities.isTypeVoluntaryDissolution(item)
   }
 
   /** DEPRECATED Returns True if filing is a Put Back On. */

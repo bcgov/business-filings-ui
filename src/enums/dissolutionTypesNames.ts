@@ -2,7 +2,7 @@
 export enum DissolutionTypes {
   ADMINISTRATIVE = 'administrative',
   // COURT_ORDER_LIQUIDATION = 'courtOrderedLiquidation',
-  // INVOLUNTARY = 'involuntary',
+  INVOLUNTARY = 'involuntary',
   VOLUNTARY = 'voluntary',
   // VOLUNTARY_LIQUIDATION = 'voluntaryLiquidation',
 
@@ -26,7 +26,7 @@ export enum DissolutionTypes {
 export enum DissolutionNames {
   ADMINISTRATIVE = 'Administrative Dissolution',
   // COURT_ORDER_LIQUIDATION = 'Court Ordered Liquidation',
-  // INVOLUNTARY = 'Involuntary Dissolution',
+  INVOLUNTARY = 'Involuntary Dissolution',
   VOLUNTARY = 'Voluntary Dissolution',
   FIRM_DISSOLUTION = 'Dissolution',
   // VOLUNTARY_LIQUIDATION = 'Voluntary Liquidation',
