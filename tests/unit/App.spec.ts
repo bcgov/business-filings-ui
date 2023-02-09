@@ -634,6 +634,7 @@ describe('App as a BCOMP', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -895,6 +896,7 @@ describe('App as a Draft IA with approved NR', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1020,6 +1022,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1126,6 +1129,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1232,6 +1236,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1338,6 +1343,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1488,6 +1494,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1637,6 +1644,7 @@ describe('App as an historical business', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1781,6 +1789,7 @@ describe('App as a Draft Registration with approved NR', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
@@ -1907,6 +1916,7 @@ describe('App as a COMPLETED Registration Application', () => {
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{}')
   })
 
   beforeEach(async () => {
