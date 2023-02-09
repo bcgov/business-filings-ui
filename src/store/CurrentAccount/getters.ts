@@ -1,6 +1,5 @@
-import { AccountTypes } from '@/enums'
+import { AccountTypes } from '@bcrs-shared-components/enums'
 import { CurrentAccountInterface } from '@/interfaces'
-
 
 export default {
 

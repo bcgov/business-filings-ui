@@ -1,4 +1,3 @@
-export * from './accountTypes'
 export * from './actions'
 export * from './allowableActions'
 export * from './applicationTypes'
@@ -22,4 +21,4 @@ export * from './digitalCredentialTypes'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
-export { FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
+export { AccountTypes, FilingCodes, FilingNames, FilingTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums'

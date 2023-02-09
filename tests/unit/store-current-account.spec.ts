@@ -1,6 +1,6 @@
 import LegalServices from '@/services/legal-services'
 import { getVuexStore } from '@/store'
-import Vue from "vue";
+import Vue from 'vue'
 
 describe('testing current account module', () => {
   const store = getVuexStore() as any // remove typings for unit tests
