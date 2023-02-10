@@ -1,4 +1,4 @@
-import { CurrentAccountInterface } from '@/interfaces'
+import { CurrentAccountIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { sleep } from '@/utils'
 
@@ -11,7 +11,7 @@ export default {
     return new Promise((resolve, reject) => {
       context.dispatch('waitForCurrentAccount')
         .then((currentAccount) => {
-          const accountInfo: CurrentAccountInterface = {
+          const accountInfo: CurrentAccountIF = {
             accountType: currentAccount.accountType,
             id: currentAccount.id,
             label: currentAccount.label,

@@ -1,15 +1,14 @@
 import { AccountTypes } from '@bcrs-shared-components/enums'
-import { CurrentAccountInterface } from '@/interfaces'
+import { CurrentAccountIF } from '@/interfaces'
 
 export default {
-
   /** Whether the current account is a premium account. */
-  isPremiumAccount (state: CurrentAccountInterface): boolean {
+  isPremiumAccount (state: CurrentAccountIF): boolean {
     return (state.accountType === AccountTypes.PREMIUM)
   },
 
   /** Whether the user is ServiceBC Staff (which is not the same as Staff). */
-  isSbcStaff (state: CurrentAccountInterface): boolean {
+  isSbcStaff (state: CurrentAccountIF): boolean {
     return (state.accountType === AccountTypes.SBC_STAFF)
   }
 }

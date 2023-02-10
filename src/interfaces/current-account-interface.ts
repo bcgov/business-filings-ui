@@ -1,5 +1,5 @@
 // Account information interface
-export interface CurrentAccountInterface {
+export interface CurrentAccountIF {
   accountType: string
   id: number
   label: string

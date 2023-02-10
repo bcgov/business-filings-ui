@@ -1,6 +1,6 @@
-import { CurrentAccountInterface, StateIF } from '@/interfaces'
+import { CurrentAccountIF } from '@/interfaces'
 
-export const state: CurrentAccountInterface = {
+export const state: CurrentAccountIF = {
   accountType: null,
   id: null,
   label: null,

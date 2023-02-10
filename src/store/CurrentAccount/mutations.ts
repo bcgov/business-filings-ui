@@ -1,7 +1,7 @@
-import { CurrentAccountInterface } from '@/interfaces'
+import { CurrentAccountIF } from '@/interfaces'
 
 export default {
-  setAccountInformation (state: CurrentAccountInterface, accountInfo: CurrentAccountInterface) {
+  setAccountInformation (state: CurrentAccountIF, accountInfo: CurrentAccountIF) {
     state.accountType = accountInfo.accountType
     state.id = accountInfo.id
     state.type = accountInfo.type
