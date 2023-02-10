@@ -1,8 +1,12 @@
-// Account information interface
+/** The ROOT state model interface. */
 export interface CurrentAccountIF {
+  accountStatus: string
   accountType: string
+  additionalLabel: string
   id: number
   label: string
+  productSettings: string
   type: string
-  // NB: there are other fields but we don't need them
+  urlorigin: string
+  urlpath: string
 }
