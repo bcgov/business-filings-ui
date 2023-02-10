@@ -11,6 +11,7 @@ export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 
+export * from './current-account-interface'
 export * from './action-interface'
 export * from './address-interfaces'
 export * from './alert-message-interface'

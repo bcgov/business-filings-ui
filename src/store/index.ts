@@ -4,6 +4,7 @@ import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 import { state } from './state'
+import CurrentAccount from '@/store/CurrentAccount'
 
 /**
  * Configures and returns Vuex Store.
@@ -11,12 +12,13 @@ import { state } from './state'
 export function getVuexStore () {
   Vue.use(Vuex)
 
-  const store = new Vuex.Store({
+  return new Vuex.Store({
     actions,
     getters,
     mutations,
-    state
+    state,
+    modules: {
+      currentAccount: CurrentAccount
+    }
   })
-
-  return store
 }
