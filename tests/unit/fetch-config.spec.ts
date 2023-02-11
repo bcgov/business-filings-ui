@@ -1,6 +1,7 @@
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import { fetchConfig } from '@/utils'
+import {setBaseRouteAndBusinessId, setSessionVariables} from '@/utils'
+import {getVuexStore} from '@/store'
 
 // mock the console.info function to hide the output
 console.info = jest.fn()
@@ -53,28 +54,37 @@ describe('Fetch Config', () => {
     } as any
 
     // call method
-    await fetchConfig()
+    const store = await getVuexStore() as any // remove typings for unit tests
+    const applicationUrl = 'http://localhost/business/'
+    store.dispatch('fetchConfiguration', applicationUrl)
+      .then((data) => {
+        store.commit('setConfiguration', data)
+        setSessionVariables(data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
 
     // verify data
-    expect(window['addressCompleteKey']).toBe('address complete key')
-    expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
-    expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
-    expect(sessionStorage.getItem('CREATE_URL')).toBe('business create url')
-    expect(sessionStorage.getItem('EDIT_URL')).toBe('business edit url')
-    expect(window['ldClientId']).toBe('business filing ld client id')
-    expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
-    // expect(sessionStorage.getItem('DASHBOARD_URL')).toBe('dashboard url')
-    expect(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH')).toBe('keycloak config path')
-    expect(axios.defaults.baseURL).toBe('legal api url/legal api version 2/')
-    expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
-    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
-    expect(window['sentryDsn']).toBe('sentry dsn')
-    expect(window['sentryEnable']).toBe('sentry enable')
-    expect(sessionStorage.getItem('SITEMINDER_LOGOUT_URL')).toBe('siteminder logout url')
-    expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
-
+    expect(store.getters.getAddressCompleteKey).toBe('address complete key')
+    expect(store.getters.getAuthApiUrl).toBe('auth api url/auth api version/')
+    expect(store.getters.getAuthWebUrl).toBe('auth web url')
+    expect(store.getters.getCreateUrl).toBe('business create url')
+    expect(store.getters.getEditUrl).toBe('business edit url')
+    expect(store.getters.getBusinessFilingLdClientId).toBe('business filing ld client id')
+    expect(store.getters.getBusinessUrl).toBe('businesses url')
+    expect(store.getters.getKeycloakConfigPath).toBe('keycloak config path')
+    expect(store.getters.getLegalApiUrl).toBe('legal api url/legal api version 2/')
+    expect(store.getters.getPayApiUrl).toBe('pay api url/pay api version/')
+    expect(store.getters.getRegHomeUrl).toBe('registry home url')
+    expect(store.getters.getSentryDsn).toBe('sentry dsn')
+    expect(store.getters.getSentryEnable).toBe('sentry enable')
+    expect(store.getters.getSiteminderLogoutUrl).toBe('siteminder logout url')
+    expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
+
   })
 
   const tests = [
@@ -94,7 +104,9 @@ describe('Fetch Config', () => {
       } as any
 
       // call method
-      await fetchConfig()
+      const store = await getVuexStore() as any // remove typings for unit tests
+      await store.dispatch('fetchConfiguration')
+      await setBaseRouteAndBusinessId(test.pathname, '', window.location.origin)
 
       // verify data
       expect(sessionStorage.getItem('BUSINESS_ID')).toBe(test.expected)
@@ -110,7 +122,9 @@ describe('Fetch Config', () => {
     } as any
 
     // call method
-    await fetchConfig()
+    const store = await getVuexStore() as any // remove typings for unit tests
+    await store.dispatch('fetchConfiguration')
+    await setSessionVariables()
 
     // verify data
     expect(sessionStorage.getItem('TEMP_REG_NUMBER')).toBe('T1234567')
@@ -125,7 +139,7 @@ describe('Fetch Config', () => {
     } as any
 
     // call method
-    const error = await fetchConfig().catch(error => error)
+    const error = await setSessionVariables().catch(error => error)
 
     // verify error
     expect(error.message).toBe('Missing or invalid Business ID or Temp Reg Number.')

@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { fetchConfig, initLdClient, navigate } from '@/utils'
+import {setSessionVariables, initLdClient, navigate, setBaseRouteAndBusinessId, setAxiosBaseUrl} from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -29,10 +29,23 @@ Vue.use(Affix)
 Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
 // main code
-async function start () {
-  // fetch config from environment and API
-  // must come first as inits below depend on config
-  await fetchConfig()
+async function start ()
+
+  // get config from environment
+  const processEnvBaseUrl: string = process.env.BASE_URL // eg, /business/
+  const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
+  const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
+  const applicationUrl = windowLocationOrigin + processEnvBaseUrl
+  setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // will throw error
+
+  // fetch the store first as it has no dependencies
+  const store = getVuexStore()
+  store.dispatch('fetchConfiguration', applicationUrl)
+    .then((data) => {
+      store.commit('setConfiguration', data)
+      setSessionVariables(data)
+      setAxiosBaseUrl(store.getters.getLegalApiUrl)
+    })
 
   if (window['sentryEnable'] === 'true') {
     // initialize Sentry
@@ -75,7 +88,6 @@ async function start () {
 
   // get Vue objects only after we have config
   const router = getVueRouter()
-  const store = getVuexStore()
 
   // start Vue application
   console.info('Starting app...') // eslint-disable-line no-console
