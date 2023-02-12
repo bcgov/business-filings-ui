@@ -1,5 +1,4 @@
-import axios from "@/axios-auth";
-
+import axios from '@/axios-auth'
 
 export default {
   /** Fetches stateFiling from the API and, if successful, triggers mutation. */
@@ -13,17 +12,19 @@ export default {
       'ResponseType': 'application/json',
       'Cache-Control': 'no-store'
     }
-    await axios.get(url, { headers })
-      .then((response) => {
-        if (!response?.data) {
-          return Promise.reject(new Error('Invalid configuration.json'))
-        } else {
-          return Promise.resolve(response.data)
-        }
-      })
-      .catch(() => {
-        return Promise.reject(new Error('Could not fetch configuration.json'))
-      })
-    return Promise.reject(new Error('No response from API: ' + url))
+    return new Promise((resolve, reject) => {
+      axios.get(url, { headers })
+        .then((response) => {
+          if (!response.data) {
+            reject(new Error('Invalid configuration.json'))
+          } else {
+            context.commit('setConfiguration', response.data)
+            resolve(response.data)
+          }
+        })
+        .catch(() => {
+          reject(new Error('Could not fetch configuration.json'))
+        })
+    })
   }
 }

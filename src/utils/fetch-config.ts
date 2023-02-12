@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import axios from "@/axios-auth";
+import axios from '@/axios-auth'
 
 /**
  * stores BUSINESS_ID, TEMP_REG_NUMBER, BASE_URL, VUE_ROUTER_BASE from initial route.
@@ -69,13 +69,12 @@ export function setSessionVariables (responseData: any): void {
   (<any>window).sentryEnable = sentryEnable
 }
 
-export function setAxiosBaseUrl(legalApiUrl: string) {
+export function setAxiosBaseUrl (legalApiUrl: string) {
   axios.defaults.baseURL = legalApiUrl
   console.info('Set Legal API URL to: ' + legalApiUrl)
 }
 
-export function setBaseRouteAndBusinessId(pathname: string, processEnvBaseUrl: string, rootUrl: string): Promise<any>{
-
+export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: string, rootUrl: string): Promise<any> {
   if (!processEnvBaseUrl || !pathname || !rootUrl) {
     return Promise.reject(new Error('Missing environment variables'))
   }

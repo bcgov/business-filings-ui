@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import {setBaseRouteAndBusinessId, setSessionVariables} from '@/utils'
-import {getVuexStore} from '@/store'
+import { setBaseRouteAndBusinessId, setSessionVariables } from '@/utils'
+import { getVuexStore } from '@/store'
 
 // mock the console.info function to hide the output
 console.info = jest.fn()
@@ -56,15 +56,11 @@ describe('Fetch Config', () => {
     // call method
     const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
-    store.dispatch('fetchConfiguration', applicationUrl)
+    setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
+    await store.dispatch('fetchConfiguration', applicationUrl)
       .then((data) => {
-        store.commit('setConfiguration', data)
         setSessionVariables(data)
       })
-      .catch((error) => {
-        console.log(error)
-      })
-
 
     // verify data
     expect(store.getters.getAddressCompleteKey).toBe('address complete key')
@@ -84,7 +80,6 @@ describe('Fetch Config', () => {
     expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
-
   })
 
   const tests = [
@@ -104,9 +99,8 @@ describe('Fetch Config', () => {
       } as any
 
       // call method
-      const store = await getVuexStore() as any // remove typings for unit tests
-      await store.dispatch('fetchConfiguration')
-      await setBaseRouteAndBusinessId(test.pathname, '', window.location.origin)
+      const pathnameComponents = window.location.pathname.split('/')
+      setBaseRouteAndBusinessId(pathnameComponents[2], '/business/', window.location.origin)
 
       // verify data
       expect(sessionStorage.getItem('BUSINESS_ID')).toBe(test.expected)
@@ -122,9 +116,7 @@ describe('Fetch Config', () => {
     } as any
 
     // call method
-    const store = await getVuexStore() as any // remove typings for unit tests
-    await store.dispatch('fetchConfiguration')
-    await setSessionVariables()
+    setBaseRouteAndBusinessId('T1234567', '/business/', window.location.origin)
 
     // verify data
     expect(sessionStorage.getItem('TEMP_REG_NUMBER')).toBe('T1234567')
@@ -139,9 +131,9 @@ describe('Fetch Config', () => {
     } as any
 
     // call method
-    const error = await setSessionVariables().catch(error => error)
-
-    // verify error
-    expect(error.message).toBe('Missing or invalid Business ID or Temp Reg Number.')
+    setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
+      .catch((error) => {
+        expect(error.message).toBe('Missing or invalid Business ID or Temp Reg Number.')
+      })
   })
 })

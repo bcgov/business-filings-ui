@@ -1,7 +1,7 @@
 import { ConfigurationStateIF } from '@/interfaces'
 
 export default {
-  getAuthWebUrl(state: ConfigurationStateIF): string {
+  getAuthWebUrl (state: ConfigurationStateIF): string {
     return state.configuration.AUTH_WEB_URL
   },
 
