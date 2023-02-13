@@ -2,7 +2,7 @@ import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { setBaseRouteAndBusinessId } from '@/utils'
 import { getVuexStore } from '@/store'
-import {nextTick} from "vue";
+import { nextTick } from 'vue'
 
 // mock the console.info function to hide the output
 console.info = jest.fn()
@@ -58,8 +58,8 @@ describe('Fetch Config', () => {
     const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('fetchConfiguration', applicationUrl).
-      then(() => {
+    await store.dispatch('fetchConfiguration', applicationUrl)
+      .then(() => {
         nextTick()
         // verify data
         expect(store.getters.getAddressCompleteKey).toBe('address complete key')
@@ -77,7 +77,7 @@ describe('Fetch Config', () => {
         expect(store.getters.getSentryEnable).toBe('sentry enable')
         expect(store.getters.getSiteminderLogoutUrl).toBe('siteminder logout url')
         expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
-    })
+      })
   })
 
   it('fetches and loads the configuration to session variables', async () => {

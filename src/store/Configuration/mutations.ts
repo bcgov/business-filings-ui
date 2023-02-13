@@ -1,5 +1,5 @@
 import { ConfigurationStateIF } from '@/interfaces'
-import axios from "@/axios-auth";
+import axios from '@/axios-auth'
 
 export default {
   setConfiguration (state: ConfigurationStateIF, data: any) {
