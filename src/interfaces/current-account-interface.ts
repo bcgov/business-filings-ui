@@ -1,4 +1,5 @@
-/** The ROOT state model interface. */
+/** The current account interface.
+ * A logged-in user can select between multiple accounts */
 export interface CurrentAccountIF {
   accountStatus: string
   accountType: string

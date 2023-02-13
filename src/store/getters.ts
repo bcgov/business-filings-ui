@@ -6,12 +6,6 @@ import {
 import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
-  /** The user's Keycloak GUID.
-   * DEPRECATED - use authentication/getKeycloakGuid() instead */
-  getUserKeycloakGuid (state: StateIF): string {
-    return state.userKeycloakGuid
-  },
-
   /** The list of filings from the API. */
   getFilings (state: StateIF): ApiFilingIF[] {
     return state.filings

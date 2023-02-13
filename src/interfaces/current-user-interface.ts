@@ -1,4 +1,4 @@
-/** The ROOT state model interface. */
+/** The Current User (aka: Keycloak) interface. */
 export interface CurrentUserIF {
   email: string
   firstName: string
