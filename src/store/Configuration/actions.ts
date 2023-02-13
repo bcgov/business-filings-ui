@@ -1,7 +1,7 @@
 import axios from '@/axios-auth'
 
 export default {
-  /** Fetches stateFiling from the API and, if successful, triggers mutation. */
+  /** Fetches the configuration from the API and, if successful, triggers some mutations. */
   fetchConfiguration (context, applicationUrl: string): Promise<any> {
     // fetch config from API
     // eg, http://localhost:8080/business/config/configuration.json

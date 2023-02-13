@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { setSessionVariables, initLdClient, navigate, setBaseRouteAndBusinessId, setAxiosBaseUrl } from '@/utils'
+import { initLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -35,7 +35,7 @@ async function start () {
   const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
   const applicationUrl = windowLocationOrigin + processEnvBaseUrl
-  await setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // will throw error
+  await setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
   // fetch the store first as it has no dependencies
   const store = getVuexStore()
