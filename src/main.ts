@@ -39,11 +39,7 @@ async function start () {
 
   // fetch the store first as it has no dependencies
   const store = getVuexStore()
-  store.dispatch('fetchConfiguration', applicationUrl)
-    .then((data) => {
-      setSessionVariables(data)
-      setAxiosBaseUrl(store.getters.getLegalApiUrl)
-    })
+  await store.dispatch('fetchConfiguration', applicationUrl)
 
   if (window['sentryEnable'] === 'true') {
     // initialize Sentry

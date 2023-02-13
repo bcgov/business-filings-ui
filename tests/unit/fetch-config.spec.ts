@@ -1,7 +1,8 @@
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import { setBaseRouteAndBusinessId, setSessionVariables } from '@/utils'
+import { setBaseRouteAndBusinessId } from '@/utils'
 import { getVuexStore } from '@/store'
+import {nextTick} from "vue";
 
 // mock the console.info function to hide the output
 console.info = jest.fn()
@@ -44,7 +45,42 @@ describe('Fetch Config', () => {
     sinon.restore()
   })
 
-  it('fetches and loads the configuration correctly', async () => {
+  it('fetches and loads the configuration to the store', async () => {
+    // mock window.location getters
+    delete window.location
+    window.location = {
+      origin: 'http://localhost',
+      pathname: '/business/CP1234567',
+      search: '?accountid=2288'
+    } as any
+
+    // call method
+    const store = await getVuexStore() as any // remove typings for unit tests
+    const applicationUrl = 'http://localhost/business/'
+    setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
+    await store.dispatch('fetchConfiguration', applicationUrl).
+      then(() => {
+        nextTick()
+        // verify data
+        expect(store.getters.getAddressCompleteKey).toBe('address complete key')
+        expect(store.getters.getAuthApiUrl).toBe('auth api url/auth api version/')
+        expect(store.getters.getAuthWebUrl).toBe('auth web url')
+        expect(store.getters.getCreateUrl).toBe('business create url')
+        expect(store.getters.getEditUrl).toBe('business edit url')
+        expect(store.getters.getBusinessFilingLdClientId).toBe('business filing ld client id')
+        expect(store.getters.getBusinessUrl).toBe('businesses url')
+        expect(store.getters.getKeycloakConfigPath).toBe('keycloak config path')
+        expect(store.getters.getLegalApiUrl).toBe('legal api url/legal api version 2/')
+        expect(store.getters.getPayApiUrl).toBe('pay api url/pay api version/')
+        expect(store.getters.getRegHomeUrl).toBe('registry home url')
+        expect(store.getters.getSentryDsn).toBe('sentry dsn')
+        expect(store.getters.getSentryEnable).toBe('sentry enable')
+        expect(store.getters.getSiteminderLogoutUrl).toBe('siteminder logout url')
+        expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
+    })
+  })
+
+  it('fetches and loads the configuration to session variables', async () => {
     // mock window.location getters
     delete window.location
     window.location = {
@@ -58,26 +94,22 @@ describe('Fetch Config', () => {
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
     await store.dispatch('fetchConfiguration', applicationUrl)
-      .then((data) => {
-        setSessionVariables(data)
-      })
 
     // verify data
-    expect(store.getters.getAddressCompleteKey).toBe('address complete key')
-    expect(store.getters.getAuthApiUrl).toBe('auth api url/auth api version/')
-    expect(store.getters.getAuthWebUrl).toBe('auth web url')
-    expect(store.getters.getCreateUrl).toBe('business create url')
-    expect(store.getters.getEditUrl).toBe('business edit url')
-    expect(store.getters.getBusinessFilingLdClientId).toBe('business filing ld client id')
-    expect(store.getters.getBusinessUrl).toBe('businesses url')
-    expect(store.getters.getKeycloakConfigPath).toBe('keycloak config path')
-    expect(store.getters.getLegalApiUrl).toBe('legal api url/legal api version 2/')
-    expect(store.getters.getPayApiUrl).toBe('pay api url/pay api version/')
-    expect(store.getters.getRegHomeUrl).toBe('registry home url')
-    expect(store.getters.getSentryDsn).toBe('sentry dsn')
-    expect(store.getters.getSentryEnable).toBe('sentry enable')
-    expect(store.getters.getSiteminderLogoutUrl).toBe('siteminder logout url')
-    expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
+    expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
+    expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
+    expect(sessionStorage.getItem('CREATE_URL')).toBe('business create url')
+    expect(sessionStorage.getItem('EDIT_URL')).toBe('business edit url')
+    expect(window['ldClientId']).toBe('business filing ld client id')
+    expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
+    expect(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH')).toBe('keycloak config path')
+    expect(axios.defaults.baseURL).toBe('legal api url/legal api version 2/')
+    expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
+    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
+    expect(window['sentryDsn']).toBe('sentry dsn')
+    expect(window['sentryEnable']).toBe('sentry enable')
+    expect(sessionStorage.getItem('SITEMINDER_LOGOUT_URL')).toBe('siteminder logout url')
+    expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
   })
