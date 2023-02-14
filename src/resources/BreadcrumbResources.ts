@@ -7,24 +7,24 @@ function getParams (): string {
   return accountId ? `?accountid=${accountId}` : ''
 }
 
-export function getRegistryDashboardBreadcrumb (): BreadcrumbIF {
+export function getRegistryDashboardBreadcrumb (registry_home_url: string): BreadcrumbIF {
   return {
     text: 'BC Registries Dashboard',
-    href: `${sessionStorage.getItem('REGISTRY_HOME_URL')}dashboard/${getParams()}`
+    href: `${registry_home_url}dashboard/${getParams()}`
   }
 }
 
-export function getMyBusinessRegistryBreadcrumb (): BreadcrumbIF {
+export function getMyBusinessRegistryBreadcrumb (business_url: string): BreadcrumbIF {
   return {
     text: 'My Business Registry',
-    href: `${sessionStorage.getItem('BUSINESSES_URL')}business/${getParams()}`
+    href: `${business_url}business/${getParams()}`
   }
 }
 
-export function getStaffDashboardBreadcrumb (): BreadcrumbIF {
+export function getStaffDashboardBreadcrumb (business_url: string): BreadcrumbIF {
   return {
     text: 'Staff Dashboard',
-    href: `${sessionStorage.getItem('BUSINESSES_URL')}staff/${getParams()}`
+    href: `${business_url}staff/${getParams()}`
   }
 }
 

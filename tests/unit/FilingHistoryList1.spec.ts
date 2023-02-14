@@ -777,6 +777,7 @@ describe('Filing History List - redirections', () => {
   })
 
   beforeEach(() => {
+    store.commit('setTestConfiguration', ['BUSINESS_EDIT_URL', 'https://edit.url/'])
     const get = sinon.stub(axios, 'get')
     const post = sinon.stub(axios, 'post')
 
@@ -834,7 +835,7 @@ describe('Filing History List - redirections', () => {
 
   it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
-    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
+    store.commit('setTestConfiguration', ['EDIT_URL', 'https://edit.url/'])
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.entityType = 'BEN'

@@ -28,9 +28,9 @@ describe('StaffNotation', () => {
     delete window.location
     window.location = { assign: jest.fn() } as any
 
-    // set necessary session variables
-    sessionStorage.setItem('CREATE_URL', 'https://create.url/')
-    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
+    // set necessary variables
+    store.commit('setTestConfiguration', ['BUSINESS_CREATE_URL', 'https://create.url/'])
+    store.commit('setTestConfiguration', ['BUSINESS_EDIT_URL', 'https://edit.url/'])
   })
 
   afterAll(() => {

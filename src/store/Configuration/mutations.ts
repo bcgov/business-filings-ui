@@ -1,44 +1,21 @@
 import { ConfigurationStateIF } from '@/interfaces'
+import Vue from "vue";
 import axios from '@/axios-auth'
 
 export default {
   setConfiguration (state: ConfigurationStateIF, data: any) {
     state.configuration = data
   },
-  setSessionVariables (state: ConfigurationStateIF, responseData: any) {
-    const authWebUrl: string = responseData['AUTH_WEB_URL']
-    sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)
-
-    const registryHomeUrl: string = responseData['REGISTRY_HOME_URL']
-    sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
-
-    const businessesUrl: string = responseData['BUSINESSES_URL']
-    sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
-
-    const createUrl: string = responseData['BUSINESS_CREATE_URL']
-    sessionStorage.setItem('CREATE_URL', createUrl)
-
-    const editUrl: string = responseData['BUSINESS_EDIT_URL']
-    sessionStorage.setItem('EDIT_URL', editUrl)
-
-    const authApiUrl: string = responseData['AUTH_API_URL'] + responseData['AUTH_API_VERSION'] + '/'
-    sessionStorage.setItem('AUTH_API_URL', authApiUrl)
-
-    const payApiUrl: string = responseData['PAY_API_URL'] + responseData['PAY_API_VERSION'] + '/'
-    sessionStorage.setItem('PAY_API_URL', payApiUrl)
-
-    // for system alert banner (sbc-common-components)
-    const statusApiUrl: string = responseData['STATUS_API_URL'] + responseData['STATUS_API_VERSION']
-    sessionStorage.setItem('STATUS_API_URL', statusApiUrl)
-
-    const keycloakConfigPath: string = responseData['KEYCLOAK_CONFIG_PATH']
-    sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
-
-    const siteminderLogoutUrl: string = responseData['SITEMINDER_LOGOUT_URL']
-    if (siteminderLogoutUrl) {
-      sessionStorage.setItem('SITEMINDER_LOGOUT_URL', siteminderLogoutUrl)
+  /** Use this mutator to set a specific attribute in unit testing.
+   * Like this: store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+   * */
+  setTestConfiguration (state: ConfigurationStateIF, payload: any) {
+    if (!state.configuration) {
+      Vue.set(state, "configuration", {})
     }
-
+    Vue.set(state.configuration, payload[0], payload[1])
+  },
+  setSessionVariables (state: ConfigurationStateIF, responseData: any) {
     const hotjarId: string = responseData['HOTJAR_ID'];
     (<any>window).hotjarId = hotjarId
 

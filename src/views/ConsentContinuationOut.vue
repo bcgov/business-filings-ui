@@ -101,7 +101,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="payApiUrl"
+                :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -184,6 +184,7 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import {mapGetters} from "vuex";
 
 @Component({
   components: {
@@ -202,7 +203,10 @@ import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
     EnumMixin,
     FilingMixin,
     ResourceLookupMixin
-  ]
+  ],
+  computed: {
+    ...mapGetters(['isRoleStaff', 'getEntityName', 'getAuthWebUrl', 'getPayApiUrl'])
+  }
 })
 export default class ConsentContinuationOut extends Vue {
   // Refs
@@ -212,9 +216,6 @@ export default class ConsentContinuationOut extends Vue {
 
   @State entityFoundingDate!: Date
   @State filingData!: Array<FilingDataIF>
-
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -266,16 +267,6 @@ export default class ConsentContinuationOut extends Vue {
   get maxDetailCommentLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
     return 4096 - this.defaultComment.length - 1
-  }
-
-  /** The Pay API URL string. */
-  get payApiUrl (): string {
-    return sessionStorage.getItem('PAY_API_URL')
-  }
-
-  /** The Auth URL string. */
-  get authUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL')
   }
 
   /** The Base URL string. */
@@ -542,7 +533,7 @@ export default class ConsentContinuationOut extends Vue {
       if (isPaymentActionRequired) {
         const paymentToken = this.savedFiling.header.paymentToken
         const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + this.filingId)
-        const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+        const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
         navigate(payUrl)

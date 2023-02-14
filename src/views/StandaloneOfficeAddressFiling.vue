@@ -123,7 +123,7 @@
             >
               <SbcFeeSummary
                 :filingData="filingData"
-                :payURL="payApiUrl"
+                :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
               />
             </affix>
@@ -203,6 +203,7 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import {mapGetters} from "vuex";
 
 @Component({
   components: {
@@ -221,7 +222,10 @@ import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
     DateMixin,
     FilingMixin,
     ResourceLookupMixin
-  ]
+  ],
+  computed: {
+    ...mapGetters(['getPayApiUrl', 'getAuthWebUrl', 'isCoop', 'isBenBcCccUlc', 'isRoleStaff', 'getEntityName'])
+  }
 })
 export default class StandaloneOfficeAddressFiling extends Vue {
   // Refs
@@ -232,11 +236,6 @@ export default class StandaloneOfficeAddressFiling extends Vue {
 
   @State entityFoundingDate!: Date
   @State filingData!: Array<FilingDataIF>
-
-  @Getter isCoop!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
 
   // variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
@@ -287,16 +286,6 @@ export default class StandaloneOfficeAddressFiling extends Vue {
   /** True when saving, saving and resuming, or filing and paying. */
   get busySaving (): boolean {
     return (this.saving || this.savingResuming || this.filingPaying)
-  }
-
-  /** The Pay API URL string. */
-  get payApiUrl (): string {
-    return sessionStorage.getItem('PAY_API_URL')
-  }
-
-  /** The Auth URL string. */
-  get authUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL')
   }
 
   /** The Base URL string. */
@@ -609,7 +598,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
       if (isPaymentActionRequired) {
         const paymentToken = this.savedFiling.header.paymentToken
         const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + this.filingId)
-        const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+        const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
         navigate(payUrl)

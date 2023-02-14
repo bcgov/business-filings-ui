@@ -19,7 +19,7 @@ export default {
             reject(new Error('Invalid configuration.json'))
           } else {
             context.commit('setConfiguration', response.data)
-            context.commit('setSessionVariables', response.data) // For backward compatibility
+            context.commit('setSessionVariables', response.data)
             context.commit('setAxiosBaseUrl', context.getters.getLegalApiUrl)
             resolve(response.data)
           }

@@ -31,6 +31,8 @@ describe('Correction - UI', () => {
   beforeEach(() => {
     sinonAxiosGet = sinon.stub(axios, 'get')
 
+    store.commit('setTestConfiguration', ['PAY_API_URL', 'https://pay.web.url/'])
+
     // mock "get orig filing" endpoint
     sinonAxiosGet
       .withArgs('businesses/CP1234567/filings/123')

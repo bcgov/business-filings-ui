@@ -19,14 +19,18 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { navigate } from '@/utils'
+import {mapGetters} from "vuex";
 
-@Component({})
+@Component({
+  computed: {
+    ...mapGetters(['getEntityName', 'getMyBusinessRegistryUrl'])
+  }
+})
 export default class CompletedIa extends Vue {
   @Getter readonly getEntityName!: string
 
   protected returnToMyBusinessRegistry (): void {
-    const myBusinessRegistryUrl = sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-    navigate(myBusinessRegistryUrl)
+    navigate(this.getMyBusinessRegistryUrl)
   }
 }
 </script>

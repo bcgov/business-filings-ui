@@ -70,8 +70,7 @@ async function start () {
 
   // configure Keycloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
-  const keycloakConfigPath = sessionStorage.getItem('KEYCLOAK_CONFIG_PATH')
-  await KeycloakService.setKeycloakConfigUrl(keycloakConfigPath)
+  await KeycloakService.setKeycloakConfigUrl(store.getters.getKeycloakConfigPath)
 
   // initialize token service which will do a check-sso to initiate session
   // don't start during Jest tests as it messes up the test JWT

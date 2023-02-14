@@ -5,12 +5,24 @@ export default {
     return state.configuration.AUTH_WEB_URL
   },
 
+  getMyBusinessRegistryUrl (state, getters): string {
+    return getters.getAuthWebUrl + 'business'
+  },
+
+  getBusinessProfileUrl (state, getters): string {
+    return getters.getAuthWebUrl + 'businessprofile'
+  },
+
   getRegHomeUrl (state: ConfigurationStateIF): string {
-    return state.configuration.REGISTRY_HOME_URL
+    return state.configuration?.REGISTRY_HOME_URL || ''
+  },
+
+  getLoginUrl (state, getters): string {
+    return getters.getRegHomeUrl + 'login'
   },
 
   getBusinessUrl (state: ConfigurationStateIF): string {
-    return state.configuration.BUSINESSES_URL
+    return state.configuration?.BUSINESSES_URL || ''
   },
 
   getCreateUrl (state: ConfigurationStateIF): string {
@@ -27,11 +39,17 @@ export default {
   },
 
   getAuthApiUrl (state: ConfigurationStateIF): string {
-    return state.configuration.AUTH_API_URL + state.configuration.AUTH_API_VERSION + '/'
+    if (state.configuration?.AUTH_API_URL && state.configuration?.AUTH_API_VERSION) {
+      return state.configuration.AUTH_API_URL + state.configuration.AUTH_API_VERSION + '/'
+    }
+    return ''
   },
 
   getPayApiUrl (state: ConfigurationStateIF): string {
-    return state.configuration.PAY_API_URL + state.configuration.PAY_API_VERSION + '/'
+    if (state.configuration?.PAY_API_URL && state.configuration?.PAY_API_VERSION) {
+      return state.configuration.PAY_API_URL + state.configuration.PAY_API_VERSION + '/'
+    }
+    return ''
   },
 
   getStatusApiUrl (state: ConfigurationStateIF): string {

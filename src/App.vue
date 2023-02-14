@@ -171,21 +171,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff']),
-
-    /** The BCROS Home URL string. */
-    bcrosHomeUrl (): string {
-      return sessionStorage.getItem('BUSINESSES_URL')
-    },
+    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff',
+      'getBusinessUrl', 'getCreateUrl', 'getAuthApiUrl', 'getRegHomeUrl']),
 
     /** The Business ID string. */
     businessId (): string {
       return sessionStorage.getItem('BUSINESS_ID')
-    },
-
-    /** The Create URL string. */
-    createUrl (): string {
-      return sessionStorage.getItem('CREATE_URL')
     },
 
     /** The Temporary Registration Number string. */
@@ -239,12 +230,13 @@ export default {
       // Staff don't want the home landing page and they can't access the Manage Business Dashboard
       if (this.isRoleStaff) {
         // If staff, set StaffDashboard as home crumb
-        crumbs.unshift(getStaffDashboardBreadcrumb())
+        crumbs.unshift(getStaffDashboardBreadcrumb(this.getBusinessUrl))
       } else {
         // For non-staff, set Home and Dashboard crumbs
-        crumbs.unshift(getRegistryDashboardBreadcrumb(), getMyBusinessRegistryBreadcrumb())
+        crumbs.unshift(
+          getRegistryDashboardBreadcrumb(this.getRegHomeUrl),
+          getMyBusinessRegistryBreadcrumb(this.getBusinessUrl))
       }
-
       return crumbs
     }
   },
@@ -312,7 +304,7 @@ export default {
         }
 
         // check if current user is authorized
-        const response = await AuthServices.fetchAuthorizations(this.businessId || this.tempRegNumber)
+        const response = await AuthServices.fetchAuthorizations(this.getAuthApiUrl, this.businessId || this.tempRegNumber)
         this.storeAuthorizations(response) // throws if no role
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -324,7 +316,7 @@ export default {
       // fetch user info and update Launch Darkly
       // and save user's Keycloak GUID
       try {
-        const userInfo = await AuthServices.fetchUserInfo().then(response => response?.data)
+        const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl).then(response => response?.data)
         await this.updateLaunchDarkly(userInfo)
         this.setUserKeycloakGuid(userInfo.keycloakGuid)
       } catch (error) {
@@ -363,7 +355,7 @@ export default {
     /** Fetches and stores the business data. */
     async fetchBusinessData (): Promise<void> {
       const data = await Promise.all([
-        AuthServices.fetchEntityInfo(this.businessId),
+        AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
         LegalServices.fetchBusinessInfo(this.businessId),
         LegalServices.fetchTasks(this.businessId),
         LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
@@ -740,13 +732,13 @@ export default {
         throw new Error('Invalid API response')
       }
 
-      const url = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
+      const url = `${this.getCreateUrl}define-dissolution?id=${this.getIdentifier}`
       navigate(url)
     },
 
     /** Handles Exit click event from dialogs. */
     onClickExit (): void {
-      navigate(this.bcrosHomeUrl)
+      navigate(this.getBusinessUrl)
     },
 
     /** Handles Retry click event from dialogs. */

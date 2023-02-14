@@ -214,6 +214,7 @@ import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
+import {mapGetters} from "vuex";
 
 @Component({
   components: { StaffComments },
@@ -222,24 +223,18 @@ import { navigate } from '@/utils'
     CommonMixin,
     DateMixin,
     EnumMixin
-  ]
+  ],
+  computed: {
+    ...mapGetters(['getEditUrl', 'getBusinessProfileUrl', 'getBusinessNumber', 'getEntityFoundingDate',
+      'getEntityName', 'getIdentifier', 'getNameRequestNumber', 'getReasonText', 'isAdminFreeze',
+      'isAuthorizedToContinueOut', 'isHistorical', 'isPendingDissolution'])
+  }
 })
 export default class EntityInfo extends Vue {
   @State ARFilingYear!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
-
-  @Getter getBusinessNumber!: string
-  @Getter getEntityFoundingDate!: Date
-  @Getter getEntityName!: string
-  @Getter getIdentifier!: number
-  @Getter getNameRequestNumber!: string
-  @Getter getReasonText!: string
-  @Getter isAdminFreeze!: boolean
-  @Getter isAuthorizedToContinueOut!: boolean
-  @Getter isHistorical!: boolean
-  @Getter isPendingDissolution!: boolean
 
   // enums for template
   readonly axios = axios
@@ -251,16 +246,6 @@ export default class EntityInfo extends Vue {
   /** The Business ID string. */
   get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
-  }
-
-  /** The Edit URL string. */
-  get editUrl (): string {
-    return sessionStorage.getItem('EDIT_URL')
-  }
-
-  /** The Business Profile URL string. */
-  get businessProfileUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL') + 'businessprofile'
   }
 
   /** The Temporary Registration Number string. */
@@ -304,7 +289,7 @@ export default class EntityInfo extends Vue {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
       const isFirm = (this.isSoleProp || this.isPartnership)
-      let url = `${this.editUrl}${this.getIdentifier}`
+      let url = `${this.getEditUrl}${this.getIdentifier}`
       // Append appropriate route based on entity type
       if (isFirm) {
         url += '/change'
@@ -330,7 +315,7 @@ export default class EntityInfo extends Vue {
 
   /** Navigates to the Auth UI to update business profile. */
   protected editBusinessProfile (): void {
-    navigate(this.businessProfileUrl)
+    navigate(this.getBusinessProfileUrl)
   }
 
   // Pass prompt downloads business summary event to parent. */
