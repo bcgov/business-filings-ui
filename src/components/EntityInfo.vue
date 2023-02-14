@@ -214,7 +214,7 @@ import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
 @Component({
   components: { StaffComments },

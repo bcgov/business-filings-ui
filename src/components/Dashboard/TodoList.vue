@@ -451,7 +451,7 @@ import { LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
 @Component({
   components: {

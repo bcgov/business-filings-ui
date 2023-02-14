@@ -6,7 +6,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { navigate } from '@/utils'
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
 @Component({
   computed: {

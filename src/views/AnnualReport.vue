@@ -334,7 +334,7 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
-import {mapGetters} from "vuex";
+import { mapGetters } from 'vuex'
 
 @Component({
   components: {

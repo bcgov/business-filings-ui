@@ -1,5 +1,5 @@
 import { ConfigurationStateIF } from '@/interfaces'
-import Vue from "vue";
+import Vue from 'vue'
 import axios from '@/axios-auth'
 
 export default {
@@ -11,7 +11,7 @@ export default {
    * */
   setTestConfiguration (state: ConfigurationStateIF, payload: any) {
     if (!state.configuration) {
-      Vue.set(state, "configuration", {})
+      Vue.set(state, 'configuration', {})
     }
     Vue.set(state.configuration, payload[0], payload[1])
   },

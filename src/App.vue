@@ -304,7 +304,9 @@ export default {
         }
 
         // check if current user is authorized
-        const response = await AuthServices.fetchAuthorizations(this.getAuthApiUrl, this.businessId || this.tempRegNumber)
+        const response = await AuthServices.fetchAuthorizations(
+          this.getAuthApiUrl, this.businessId || this.tempRegNumber
+        )
         this.storeAuthorizations(response) // throws if no role
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
