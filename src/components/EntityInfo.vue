@@ -214,7 +214,6 @@ import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
-import { mapGetters } from 'vuex'
 
 @Component({
   components: { StaffComments },
@@ -223,18 +222,25 @@ import { mapGetters } from 'vuex'
     CommonMixin,
     DateMixin,
     EnumMixin
-  ],
-  computed: {
-    ...mapGetters(['getEditUrl', 'getBusinessProfileUrl', 'getBusinessNumber', 'getEntityFoundingDate',
-      'getEntityName', 'getIdentifier', 'getNameRequestNumber', 'getReasonText', 'isAdminFreeze',
-      'isAuthorizedToContinueOut', 'isHistorical', 'isPendingDissolution'])
-  }
+  ]
 })
 export default class EntityInfo extends Vue {
   @State ARFilingYear!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
+  @Getter getEditUrl!: string
+  @Getter getBusinessProfileUrl!: string
+  @Getter getBusinessNumber!: string
+  @Getter getEntityFoundingDate!: Date
+  @Getter getEntityName!: string
+  @Getter getIdentifier!: number
+  @Getter getNameRequestNumber!: string
+  @Getter getReasonText!: string
+  @Getter isAdminFreeze!: boolean
+  @Getter isAuthorizedToContinueOut!: boolean
+  @Getter isHistorical!: boolean
+  @Getter isPendingDissolution!: boolean
 
   // enums for template
   readonly axios = axios

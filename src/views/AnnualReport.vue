@@ -334,7 +334,6 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
-import { mapGetters } from 'vuex'
 
 @Component({
   components: {
@@ -358,11 +357,7 @@ import { mapGetters } from 'vuex'
     DateMixin,
     FilingMixin,
     ResourceLookupMixin
-  ],
-  computed: {
-    ...mapGetters(['getAuthWebUrl', 'getPayApiUrl', 'isCoop', 'isBenBcCccUlc', 'isRoleStaff',
-      'isCurrentFilingEditable', 'getReportState', 'getCurrentYear', 'getEntityName'])
-  }
+  ]
 })
 export default class AnnualReport extends Vue {
   // Refs
@@ -371,7 +366,6 @@ export default class AnnualReport extends Vue {
     directorsComponent: Directors,
     officeAddressesComponent: OfficeAddresses
   }
-
   @State entityFoundingDate!: Date
   @State ARFilingYear!: number
   @State arMinDate!: string
@@ -381,6 +375,17 @@ export default class AnnualReport extends Vue {
   @State lastDirectorChangeDate!: string
   @State lastAnnualReportDate!: string
   @State filingData!: Array<FilingDataIF>
+
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
+  @Getter isCoop!: boolean
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isCurrentFilingEditable!: boolean
+  @Getter getReportState!: string
+  @Getter getCurrentYear!: number
+  @Getter getEntityName!: string
+
 
   // variables for AgmDate component
   private newAgmDate = null // for resuming draft

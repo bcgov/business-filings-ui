@@ -428,13 +428,17 @@ import { mapGetters } from 'vuex'
     AllowableActionsMixin,
     DateMixin,
     FilingMixin
-  ],
-  computed: {
-    ...mapGetters(['getEditUrl', 'getFilings', 'hasCourtOrders', 'isBenBcCccUlc', 'isFirm', 'isRoleStaff'])
-  }
+  ]
 })
 export default class FilingHistoryList extends Vue {
   @Prop({ default: null }) readonly highlightId!: number
+
+  @Getter getEditUrl!: string
+  @Getter getFilings!: Array<ApiFilingIF>
+  @Getter hasCourtOrders!: boolean
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isFirm!: boolean
+  @Getter isRoleStaff!: boolean
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF

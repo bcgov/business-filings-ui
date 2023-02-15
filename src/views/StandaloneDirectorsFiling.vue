@@ -312,7 +312,6 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { mapGetters } from 'vuex'
 
 @Component({
   components: {
@@ -333,10 +332,7 @@ import { mapGetters } from 'vuex'
     DateMixin,
     FilingMixin,
     ResourceLookupMixin
-  ],
-  computed: {
-    ...mapGetters(['getAuthWebUrl', 'isRoleStaff', 'getEntityName', 'isBenBcCccUlc', 'getPayApiUrl'])
-  }
+  ]
 })
 export default class StandaloneDirectorsFiling extends Vue {
   // Refs
@@ -347,6 +343,12 @@ export default class StandaloneDirectorsFiling extends Vue {
 
   @State entityFoundingDate!: Date
   @State filingData!: Array<FilingDataIF>
+
+  @Getter isRoleStaff!: boolean
+  @Getter getEntityName!: string
+  @Getter isBenBcCccUlc!: boolean
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
 
   // variables
   private updatedDirectors = []

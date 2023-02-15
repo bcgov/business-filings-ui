@@ -474,12 +474,7 @@ import { mapGetters } from 'vuex'
     AllowableActionsMixin,
     DateMixin,
     EnumMixin
-  ],
-  computed: {
-    ...mapGetters(['getCurrentYear', 'getTasks', 'getEntityName', 'isCoaPending', 'getTodoListResource',
-      'getBusinessWarnings', 'isBenBcCccUlc', 'getEntityType', 'getIdentifier', 'getEditUrl', 'getCreateUrl',
-      'getBusinessUrl', 'getAuthWebUrl', 'getPayApiUrl'])
-  }
+  ]
 })
 export default class TodoList extends Vue {
   // Refs
@@ -501,6 +496,20 @@ export default class TodoList extends Vue {
   protected inProcessFiling: number = null
 
   @Prop({ default: null }) readonly highlightId!: number
+  @Getter getCurrentYear!: number
+  @Getter getTasks!: Array<ApiTaskIF>
+  @Getter getEntityName!: string
+  @Getter isCoaPending!: boolean
+  @Getter getTodoListResource!: TodoListResourceIF
+  @Getter getBusinessWarnings!: BusinessWarningIF
+  @Getter isBenBcCccUlc!: boolean
+  @Getter getEntityType!: CorpTypeCd
+  @Getter getIdentifier!: string
+  @Getter getEditUrl!: string
+  @Getter getCreateUrl!: string
+  @Getter getBusinessUrl!: string
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string

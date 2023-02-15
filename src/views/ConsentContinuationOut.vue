@@ -184,7 +184,6 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
-import { mapGetters } from 'vuex'
 
 @Component({
   components: {
@@ -203,10 +202,7 @@ import { mapGetters } from 'vuex'
     EnumMixin,
     FilingMixin,
     ResourceLookupMixin
-  ],
-  computed: {
-    ...mapGetters(['isRoleStaff', 'getEntityName', 'getAuthWebUrl', 'getPayApiUrl'])
-  }
+  ]
 })
 export default class ConsentContinuationOut extends Vue {
   // Refs
@@ -216,6 +212,11 @@ export default class ConsentContinuationOut extends Vue {
 
   @State entityFoundingDate!: Date
   @State filingData!: Array<FilingDataIF>
+
+  @Getter isRoleStaff!: boolean
+  @Getter getEntityName!: string
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
 
   // enum for template
   readonly FilingCodes = FilingCodes

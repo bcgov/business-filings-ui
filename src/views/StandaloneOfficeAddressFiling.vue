@@ -203,7 +203,6 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
-import { mapGetters } from 'vuex'
 
 @Component({
   components: {
@@ -222,10 +221,7 @@ import { mapGetters } from 'vuex'
     DateMixin,
     FilingMixin,
     ResourceLookupMixin
-  ],
-  computed: {
-    ...mapGetters(['getPayApiUrl', 'getAuthWebUrl', 'isCoop', 'isBenBcCccUlc', 'isRoleStaff', 'getEntityName'])
-  }
+  ]
 })
 export default class StandaloneOfficeAddressFiling extends Vue {
   // Refs
@@ -237,6 +233,12 @@ export default class StandaloneOfficeAddressFiling extends Vue {
   @State entityFoundingDate!: Date
   @State filingData!: Array<FilingDataIF>
 
+  @Getter isCoop!: boolean
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter getEntityName!: string
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
   // variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   private filingId: number = null
