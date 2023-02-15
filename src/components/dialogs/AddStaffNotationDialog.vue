@@ -67,7 +67,7 @@
               :customErrorMSg="courtOrderCustomValidationMsg"
               :maxSize="MAX_FILE_SIZE"
               :pageSize="PageSizes.LETTER_PORTRAIT"
-              :userId="getUserKeycloakGuid"
+              :userId="getKeycloakGuid"
               :getPresignedUrl="LegalServices.getPresignedUrl"
               :uploadToUrl="LegalServices.uploadToUrl"
             />
@@ -173,7 +173,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter getEntityName!: string
   @Getter getEntityType!: string
   @Getter getIdentifier!: string
-  @Getter getUserKeycloakGuid!: string
+  @Getter getKeycloakGuid!: string
   @Getter isAdminFreeze!: boolean
 
   // Properties

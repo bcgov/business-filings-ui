@@ -6,11 +6,6 @@ import {
 import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
-  /** The user's Keycloak GUID. */
-  getUserKeycloakGuid (state: StateIF): string {
-    return state.userKeycloakGuid
-  },
-
   /** The list of filings from the API. */
   getFilings (state: StateIF): ApiFilingIF[] {
     return state.filings
@@ -139,7 +134,9 @@ export default {
     return (getters.isBComp || getters.isBcCompany || getters.isCcc || getters.isUlc)
   },
 
-  /** Is True if Staff role is set. */
+  /** Is True if Staff role is set.
+   * DEPRECATED - use authentication/isKeyCloakRoleStaff() instead
+   * */
   isRoleStaff (state: StateIF): boolean {
     return state.keycloakRoles.includes('staff')
   },

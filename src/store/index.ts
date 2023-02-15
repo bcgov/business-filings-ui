@@ -4,7 +4,7 @@ import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 import { state } from './state'
-import CurrentAccount from '@/store/CurrentAccount'
+import Authentication from '@/store/Authentication'
 
 /**
  * Configures and returns Vuex Store.
@@ -18,7 +18,7 @@ export function getVuexStore () {
     mutations,
     state,
     modules: {
-      currentAccount: CurrentAccount
+      authentication: Authentication
     }
   })
 }
