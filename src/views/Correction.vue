@@ -220,7 +220,7 @@ export default class Correction extends Vue {
 
   @State entityFoundingDate!: Date
   @State filingData!: Array<FilingDataIF>
-  
+
   @Getter isRoleStaff!: boolean
   @Getter getEntityName!: string
   @Getter getAuthWebUrl!: string

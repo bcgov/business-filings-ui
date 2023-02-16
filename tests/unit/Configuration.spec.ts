@@ -95,22 +95,6 @@ describe('Fetch Config', () => {
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
     await store.dispatch('fetchConfiguration', applicationUrl)
-
-    // verify data
-    // expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
-    // expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
-    // expect(sessionStorage.getItem('CREATE_URL')).toBe('business create url')
-    // expect(sessionStorage.getItem('EDIT_URL')).toBe('business edit url')
-    // expect(window['ldClientId']).toBe('business filing ld client id')
-    // expect(sessionStorage.getItem('BUSINESSES_URL')).toBe('businesses url')
-    // expect(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH')).toBe('keycloak config path')
-    // expect(axios.defaults.baseURL).toBe('legal api url/legal api version 2/')
-    // expect(sessionStorage.getItem('PAY_API_URL')).toBe('pay api url/pay api version/')
-    // expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
-    // expect(window['sentryDsn']).toBe('sentry dsn')
-    // expect(window['sentryEnable']).toBe('sentry enable')
-    // expect(sessionStorage.getItem('SITEMINDER_LOGOUT_URL')).toBe('siteminder logout url')
-    // expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
   })
