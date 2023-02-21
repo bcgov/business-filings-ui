@@ -400,7 +400,6 @@ import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryIt
   from '@/interfaces'
 import { AllowableActionsMixin, DateMixin, FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { mapGetters } from 'vuex'
 
 @Component({
   components: {

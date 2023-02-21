@@ -29,8 +29,8 @@ describe('StaffNotation', () => {
     window.location = { assign: jest.fn() } as any
 
     // set necessary variables
-    store.commit('setTestConfiguration', ['BUSINESS_CREATE_URL', 'https://create.url/'])
-    store.commit('setTestConfiguration', ['BUSINESS_EDIT_URL', 'https://edit.url/'])
+    store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+    store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://create.url/' })
   })
 
   afterAll(() => {

@@ -288,7 +288,7 @@ export default {
     },
 
     goToChangeFiling () {
-      const url = `${this.editUrl}${this.getIdentifier}/change`
+      const url = `${this.getEditUrl}${this.getIdentifier}/change`
       navigate(url)
     },
 
@@ -313,7 +313,7 @@ export default {
      */
     onAddressChangeClick () {
       if (this.isFirm) {
-        const url = `${this.editUrl}${this.getIdentifier}/change`
+        const url = `${this.getEditUrl}${this.getIdentifier}/change`
         navigate(url)
       } else if (this.isBenBcCccUlc) {
         this.toggleCoaWarning()

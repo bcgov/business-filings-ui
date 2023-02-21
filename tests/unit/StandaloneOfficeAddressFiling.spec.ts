@@ -55,7 +55,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // init store
     store.state.identifier = 'CP0001191'
     store.state.entityType = 'CP'
-    store.commit('setTestConfiguration', ['PAY_API_URL', 'https://pay.api.url/'])
+    store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://pay.api.url/' })
   })
 
   it('renders the filing sub-components properly', () => {
@@ -683,7 +683,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const localVue = createLocalVue()

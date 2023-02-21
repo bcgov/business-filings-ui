@@ -78,7 +78,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
     store.state.identifier = 'CP0001191'
     store.state.currentDate = '2019-07-15'
     // set Last Filing Date and verify new Min Date
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
     store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
   })
 
@@ -687,7 +687,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const $route = { params: { filingId: 0 } } // new filing id

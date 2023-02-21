@@ -2,11 +2,13 @@
 
 /**
  * stores BUSINESS_ID, TEMP_REG_NUMBER, BASE_URL, VUE_ROUTER_BASE from initial route.
+ * FUTURE - consider refactoring this and passing ids to routes.js and getting rid
+ * of session storage
  */
 
-export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: string, rootUrl: string): Promise<any> {
+export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: string, rootUrl: string): void {
   if (!processEnvBaseUrl || !pathname || !rootUrl) {
-    return Promise.reject(new Error('Missing environment variables'))
+    throw new Error('Missing environment variables')
   }
 
   // get Business ID / Temp Reg Number and validate that it looks OK
@@ -23,7 +25,7 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
     // ensure we don't already have a Business ID in scope
     sessionStorage.removeItem('BUSINESS_ID')
   } else {
-    return Promise.reject(new Error('Missing or invalid Business ID or Temp Reg Number.'))
+    throw new Error('Missing or invalid Business ID or Temp Reg Number.')
   }
 
   // set Base for Vue Router

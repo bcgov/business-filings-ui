@@ -1,4 +1,4 @@
-import { ConfigurationStateIF } from '@/interfaces'
+import {ConfigurationStateIF, SetConfigurationIF} from '@/interfaces'
 import Vue from 'vue'
 import axios from '@/axios-auth'
 
@@ -6,15 +6,17 @@ export default {
   setConfiguration (state: ConfigurationStateIF, data: any) {
     state.configuration = data
   },
+
   /** Use this mutator to set a specific attribute in unit testing.
-   * Like this: store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+   * Like this: store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
    * */
-  setTestConfiguration (state: ConfigurationStateIF, payload: any) {
+  setTestConfiguration (state: ConfigurationStateIF, payload: SetConfigurationIF) {
     if (!state.configuration) {
       Vue.set(state, 'configuration', {})
     }
-    Vue.set(state.configuration, payload[0], payload[1])
+    Vue.set(state.configuration, payload.key, payload.value)
   },
+
   setSessionVariables (state: ConfigurationStateIF, responseData: any) {
     const hotjarId: string = responseData['HOTJAR_ID'];
     (<any>window).hotjarId = hotjarId

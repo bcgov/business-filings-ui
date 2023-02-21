@@ -1739,7 +1739,7 @@ describe('TodoList - Click Tests', () => {
   it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
 
     // init store
     store.state.tasks = [
@@ -1789,7 +1789,7 @@ describe('TodoList - Click Tests', () => {
   it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
 
     // init store
     store.state.tasks = [
@@ -1838,7 +1838,7 @@ describe('TodoList - Click Tests', () => {
   it('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
 
     // init store
     store.state.tasks = [
@@ -2095,7 +2095,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
 
     // init store
     store.state.tasks = [
@@ -2146,7 +2146,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
   it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', ['AUTH_WEB_URL', 'https://auth.web.url/'])
+    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
 
     // init store
     store.state.tasks = [
@@ -2199,7 +2199,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
   beforeAll(() => {
     // init store
     sessionStorage.clear()
-    store.commit('setTestConfiguration', ['BUSINESS_CREATE_URL', 'https://create.url/'])
+    store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://create.url/' })
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.entityName = 'My Business Inc'
@@ -2333,7 +2333,7 @@ describe('TodoList - Click Tests - Corrections', () => {
     it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
       // init session storage and store
       sessionStorage.clear()
-      store.commit('setTestConfiguration', ['BUSINESS_EDIT_URL', 'https://edit.url/'])
+      store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
       sessionStorage.setItem('BUSINESS_ID', test.businessId)
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       store.state.identifier = test.businessId
@@ -2451,7 +2451,7 @@ describe('TodoList - Click Tests - Alterations', () => {
   it('redirects to Edit URL to resume a draft alteration', async () => {
     // init session storage and store
     sessionStorage.clear()
-    store.commit('setTestConfiguration', ['BUSINESS_CREATE_URL', 'https://edit.url/'])
+    store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.identifier = 'BC1234567'
