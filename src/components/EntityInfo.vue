@@ -229,7 +229,8 @@ export default class EntityInfo extends Vue {
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
-
+  @Getter getEditUrl!: string
+  @Getter getBusinessProfileUrl!: string
   @Getter getBusinessNumber!: string
   @Getter getEntityFoundingDate!: Date
   @Getter getEntityName!: string
@@ -251,16 +252,6 @@ export default class EntityInfo extends Vue {
   /** The Business ID string. */
   get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
-  }
-
-  /** The Edit URL string. */
-  get editUrl (): string {
-    return sessionStorage.getItem('EDIT_URL')
-  }
-
-  /** The Business Profile URL string. */
-  get businessProfileUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL') + 'businessprofile'
   }
 
   /** The Temporary Registration Number string. */
@@ -304,7 +295,7 @@ export default class EntityInfo extends Vue {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
       const isFirm = (this.isSoleProp || this.isPartnership)
-      let url = `${this.editUrl}${this.getIdentifier}`
+      let url = `${this.getEditUrl}${this.getIdentifier}`
       // Append appropriate route based on entity type
       if (isFirm) {
         url += '/change'
@@ -330,7 +321,7 @@ export default class EntityInfo extends Vue {
 
   /** Navigates to the Auth UI to update business profile. */
   protected editBusinessProfile (): void {
-    navigate(this.businessProfileUrl)
+    navigate(this.getBusinessProfileUrl)
   }
 
   // Pass prompt downloads business summary event to parent. */

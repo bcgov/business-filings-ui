@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "5.10.5",
+  "version": "5.11.0",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -52,6 +52,7 @@
   "devDependencies": {
     "@types/jest": "^29.0.3",
     "@types/lodash": "^4.14.185",
+    "@types/sinon": "^10.0.13",
     "@types/vuelidate": "^0.7.15",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",

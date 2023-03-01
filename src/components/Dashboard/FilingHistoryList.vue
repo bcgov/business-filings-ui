@@ -432,11 +432,13 @@ import { EnumUtilities, LegalServices } from '@/services/'
 export default class FilingHistoryList extends Vue {
   @Prop({ default: null }) readonly highlightId!: number
 
+  @Getter getEditUrl!: string
   @Getter getFilings!: Array<ApiFilingIF>
   @Getter hasCourtOrders!: boolean
   @Getter isBenBcCccUlc!: boolean
   @Getter isFirm!: boolean
   @Getter isRoleStaff!: boolean
+
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
   @Action setHasBlockerFiling!: ActionBindingIF
@@ -457,11 +459,6 @@ export default class FilingHistoryList extends Vue {
   // for template
   readonly AllowableActions = AllowableActions
   readonly EnumUtilities = EnumUtilities
-
-  /** The Edit URL string. */
-  get editUrl (): string {
-    return sessionStorage.getItem('EDIT_URL')
-  }
 
   /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
@@ -735,7 +732,7 @@ export default class FilingHistoryList extends Vue {
       // navigate to Edit UI to complete this correction
       // NB: no need to clear spinner
       const correctionUrl =
-        `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
+        `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${draftCorrectionId}`
       navigate(correctionUrl)
     } catch (error) {
       // clear spinner on error

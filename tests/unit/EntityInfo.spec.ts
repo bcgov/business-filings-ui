@@ -396,7 +396,7 @@ describe('EntityInfo - Click Tests - Alterations', () => {
   it('redirects to Edit URL to view/alter business info', async () => {
     // init session storage + store
     sessionStorage.clear()
-    sessionStorage.setItem('EDIT_URL', 'https://edit.url/')
+    store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.identifier = 'BC1234567'

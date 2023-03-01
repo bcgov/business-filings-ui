@@ -5,6 +5,7 @@ import getters from './getters'
 import mutations from './mutations'
 import { state } from './state'
 import Authentication from '@/store/Authentication'
+import Configuration from '@/store/Configuration'
 
 /**
  * Configures and returns Vuex Store.
@@ -18,7 +19,8 @@ export function getVuexStore () {
     mutations,
     state,
     modules: {
-      authentication: Authentication
+      authentication: Authentication,
+      configuration: Configuration
     }
   })
 }

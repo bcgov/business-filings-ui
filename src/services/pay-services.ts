@@ -9,10 +9,10 @@ export default class PayServices {
   /**
    * Fetches a payment error object (description) by its code.
    * @param code the error code to look up
+   * @param payApiUrl
    * @returns the payment error object
    */
-  static async getPayErrorObj (code: string): Promise<PaymentErrorIF> {
-    const payApiUrl = sessionStorage.getItem('PAY_API_URL') || ''
+  static async getPayErrorObj (payApiUrl: string, code: string): Promise<PaymentErrorIF> {
     const url = `${payApiUrl}codes/errors/${code}`
     return axios.get(url)
       .then(response => response?.data)

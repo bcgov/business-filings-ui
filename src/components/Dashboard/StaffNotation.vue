@@ -212,7 +212,9 @@ import { mapGetters } from 'vuex'
       'isCoop',
       'isEntityInLimitedRestoration',
       'isFirm',
-      'isHistorical'
+      'isHistorical',
+      'getCreateUrl',
+      'getEditUrl'
     ])
   },
   mixins: [FilingMixin]
@@ -239,16 +241,6 @@ export default class StaffNotation extends Vue {
 
   /** Prop for disabling the menu items. */
   @Prop({ default: false }) readonly disabled!: boolean
-
-  /** The Create URL string. */
-  get createUrl (): string {
-    return sessionStorage.getItem('CREATE_URL')
-  }
-
-  /** The Edit URL string. */
-  get editUrl (): string {
-    return sessionStorage.getItem('EDIT_URL')
-  }
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
@@ -278,7 +270,7 @@ export default class StaffNotation extends Vue {
   }
 
   goToConversionFiling ():void {
-    const url = `${this.editUrl}${this.getIdentifier}/conversion`
+    const url = `${this.getEditUrl}${this.getIdentifier}/conversion`
     navigate(url)
   }
 
@@ -311,10 +303,10 @@ export default class StaffNotation extends Vue {
 
       if (applicationName === ApplicationTypes.CREATE_UI) {
         // navigate to Create UI
-        url = `${this.createUrl}?id=${this.getIdentifier}`
+        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
       }
       if (applicationName === ApplicationTypes.EDIT_UI) {
-        url = `${this.editUrl}${this.getIdentifier}/restoration` +
+        url = `${this.getEditUrl}${this.getIdentifier}/restoration` +
           `?restoration-id=${id}`
       }
       navigate(url)

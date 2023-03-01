@@ -122,7 +122,7 @@
                 >
                   <SbcFeeSummary
                     :filingData="filingData"
-                    :payURL="payApiUrl"
+                    :payURL="getPayApiUrl"
                     @total-fee="totalFee=$event"
                   />
                 </affix>
@@ -231,7 +231,7 @@
                 >
                   <SbcFeeSummary
                     :filingData="filingData"
-                    :payURL="payApiUrl"
+                    :payURL="getPayApiUrl"
                   />
                 </affix>
               </aside>
@@ -347,6 +347,8 @@ export default class StandaloneDirectorsFiling extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter getEntityName!: string
   @Getter isBenBcCccUlc!: boolean
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
 
   // variables
   private updatedDirectors = []
@@ -405,16 +407,6 @@ export default class StandaloneDirectorsFiling extends Vue {
   /** True when saving, saving and resuming, or filing and paying. */
   get busySaving (): boolean {
     return (this.saving || this.savingResuming || this.filingPaying)
-  }
-
-  /** The Pay API URL string. */
-  get payApiUrl (): string {
-    return sessionStorage.getItem('PAY_API_URL')
-  }
-
-  /** The Auth URL string. */
-  get authUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL')
   }
 
   /** The Base URL string. */
@@ -731,7 +723,7 @@ export default class StandaloneDirectorsFiling extends Vue {
       if (isPaymentActionRequired) {
         const paymentToken = this.savedFiling.header.paymentToken
         const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + this.filingId)
-        const payUrl = this.authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+        const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise, user will have to retry payment later
         navigate(payUrl)

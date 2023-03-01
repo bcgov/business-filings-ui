@@ -495,7 +495,6 @@ export default class TodoList extends Vue {
   protected inProcessFiling: number = null
 
   @Prop({ default: null }) readonly highlightId!: number
-
   @Getter getCurrentYear!: number
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter getEntityName!: string
@@ -505,6 +504,11 @@ export default class TodoList extends Vue {
   @Getter isBenBcCccUlc!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getIdentifier!: string
+  @Getter getEditUrl!: string
+  @Getter getCreateUrl!: string
+  @Getter getBusinessUrl!: string
+  @Getter getAuthWebUrl!: string
+  @Getter getPayApiUrl!: string
 
   @State nameRequest!: any
   @State lastAnnualReportDate!: string
@@ -515,31 +519,6 @@ export default class TodoList extends Vue {
   @Action setNextARDate!: ActionBindingIF
   @Action setCurrentFilingStatus!: ActionBindingIF
   @Action setHasBlockerTask!: ActionBindingIF
-
-  /** The Auth Web URL string. */
-  get authWebUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL')
-  }
-
-  /** The Edit URL string. */
-  get editUrl (): string {
-    return sessionStorage.getItem('EDIT_URL')
-  }
-
-  /** The Create URL string. */
-  get createUrl (): string {
-    return sessionStorage.getItem('CREATE_URL')
-  }
-
-  /** The My Business Registry URL string. */
-  get myBusinessRegistryUrl (): string {
-    return sessionStorage.getItem('AUTH_WEB_URL') + 'business'
-  }
-
-  /** The BCROS Home URL string. */
-  get bcrosHomeUrl (): string {
-    return sessionStorage.getItem('BUSINESSES_URL')
-  }
 
   /** The Base URL string. */
   get baseUrl (): string {
@@ -859,7 +838,7 @@ export default class TodoList extends Vue {
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.DISSOLUTION,
@@ -911,7 +890,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.ALTERATION,
@@ -947,7 +926,7 @@ export default class TodoList extends Vue {
     if (annualReport && business && header) {
       const ARFilingYear = header.ARFilingYear
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.ANNUAL_REPORT,
@@ -980,7 +959,7 @@ export default class TodoList extends Vue {
     // NB: don't check "changeOfDirectors" as it may be empty
     if (business && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_DIRECTORS,
@@ -1009,7 +988,7 @@ export default class TodoList extends Vue {
 
     if (business && changeOfAddress && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_ADDRESS,
@@ -1038,7 +1017,7 @@ export default class TodoList extends Vue {
 
     if (business && correction && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CORRECTION,
@@ -1086,7 +1065,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       // NB: incorporationApplicationmay be undefined
       const haveData = Boolean(
@@ -1141,7 +1120,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       // NB: registration may be undefined
       const haveData = Boolean(
@@ -1192,7 +1171,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
@@ -1222,7 +1201,7 @@ export default class TodoList extends Vue {
 
     if (header && conversion) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CONVERSION,
@@ -1252,7 +1231,7 @@ export default class TodoList extends Vue {
 
     if (header && consentContinuationOut) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
@@ -1290,7 +1269,7 @@ export default class TodoList extends Vue {
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.SPECIAL_RESOLUTION,
@@ -1329,7 +1308,7 @@ export default class TodoList extends Vue {
       const title = this.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.RESTORATION,
@@ -1380,7 +1359,7 @@ export default class TodoList extends Vue {
         break
       case FilingTypes.CONVERSION:
         // go to conversion filing
-        const url = `${this.editUrl}${this.getIdentifier}/conversion`
+        const url = `${this.getEditUrl}${this.getIdentifier}/conversion`
         navigate(url)
         break
       default:
@@ -1430,7 +1409,7 @@ export default class TodoList extends Vue {
           case FilingNames.CORRECTION:
           case FilingNames.REGISTRATION:
             // resume correction via Edit UI
-            const correctionUrl = `${this.editUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+            const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
             navigate(correctionUrl)
             break
 
@@ -1451,42 +1430,42 @@ export default class TodoList extends Vue {
 
       case FilingTypes.INCORPORATION_APPLICATION: {
         // navigate to Create UI to resume this Incorporation Application
-        const incorpAppUrl = `${this.createUrl}?id=${this.tempRegNumber}`
+        const incorpAppUrl = `${this.getCreateUrl}?id=${this.tempRegNumber}`
         navigate(incorpAppUrl)
         break
       }
 
       case FilingTypes.REGISTRATION: {
         // navigate to Create UI to resume this Registration
-        const registrationAppUrl = `${this.createUrl}define-registration?id=${this.tempRegNumber}`
+        const registrationAppUrl = `${this.getCreateUrl}define-registration?id=${this.tempRegNumber}`
         navigate(registrationAppUrl)
         break
       }
 
       case FilingTypes.ALTERATION: {
         // navigate to Edit UI to resume this Alteration
-        const alterationUrl = `${this.editUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
+        const alterationUrl = `${this.getEditUrl}${this.getIdentifier}/alteration/?alteration-id=${item.filingId}`
         navigate(alterationUrl)
         break
       }
 
       case FilingTypes.DISSOLUTION: {
         // navigate to Create UI to resume this Dissolution
-        const dissolutionUrl = `${this.createUrl}define-dissolution?id=${this.getIdentifier}`
+        const dissolutionUrl = `${this.getCreateUrl}define-dissolution?id=${this.getIdentifier}`
         navigate(dissolutionUrl)
         break
       }
 
       case FilingTypes.CHANGE_OF_REGISTRATION: {
         // navigate to Edit UI to resume this Change of Registration
-        const changeUrl = `${this.editUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
+        const changeUrl = `${this.getEditUrl}${this.getIdentifier}/change/?change-id=${item.filingId}`
         navigate(changeUrl)
         break
       }
 
       case FilingTypes.CONVERSION: {
         // navigate to Edit UI to resume this Conversion
-        const conversionUrl = `${this.editUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
+        const conversionUrl = `${this.getEditUrl}${this.getIdentifier}/conversion/?conversion-id=${item.filingId}`
         navigate(conversionUrl)
         break
       }
@@ -1494,14 +1473,14 @@ export default class TodoList extends Vue {
       case FilingTypes.SPECIAL_RESOLUTION: {
         // navigate to Edit UI to resume this Special Resolution
         const specialResolutionUrl =
-          `${this.editUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
+          `${this.getEditUrl}${this.getIdentifier}/special-resolution/?special-resolution-id=${item.filingId}`
         navigate(specialResolutionUrl)
         break
       }
 
       case FilingTypes.RESTORATION: {
         // navigate to Create UI to resume this Restoration
-        const registrationAppUrl = `${this.createUrl}?id=${this.getIdentifier}`
+        const registrationAppUrl = `${this.getCreateUrl}?id=${this.getIdentifier}`
         navigate(registrationAppUrl)
         break
       }
@@ -1518,7 +1497,7 @@ export default class TodoList extends Vue {
     const paymentToken = item.paymentToken
 
     const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + item.filingId)
-    const payUrl = this.authWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+    const payUrl = this.getAuthWebUrl + 'makepayment/' + paymentToken + '/' + returnUrl
 
     navigate(payUrl)
     return true
@@ -1576,10 +1555,10 @@ export default class TodoList extends Vue {
 
         if (this.nameRequest) {
           // go to My Business Registry page
-          navigate(this.myBusinessRegistryUrl)
+          navigate(this.getAuthWebUrl)
         } else {
           // go to BCROS home page
-          navigate(this.bcrosHomeUrl)
+          navigate(this.getBusinessUrl)
         }
       } else {
         // do nothing

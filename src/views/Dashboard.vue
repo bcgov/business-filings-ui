@@ -231,7 +231,7 @@ export default {
   computed: {
     ...mapGetters(['isBenBcCccUlc', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
       'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier',
-      'hasMissingInfoWarning', 'hasComplianceWarning', 'isAdminFreeze']),
+      'hasMissingInfoWarning', 'hasComplianceWarning', 'isAdminFreeze', 'getEditUrl']),
 
     /** The Business ID string. */
     businessId (): string {
@@ -242,11 +242,6 @@ export default {
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
-    },
-
-    /** The Edit URL string. */
-    editUrl (): string {
-      return sessionStorage.getItem('EDIT_URL')
     },
 
     /** Whether to show Missing Information alert. */
@@ -293,7 +288,7 @@ export default {
     },
 
     goToChangeFiling () {
-      const url = `${this.editUrl}${this.getIdentifier}/change`
+      const url = `${this.getEditUrl}${this.getIdentifier}/change`
       navigate(url)
     },
 
@@ -318,7 +313,7 @@ export default {
      */
     onAddressChangeClick () {
       if (this.isFirm) {
-        const url = `${this.editUrl}${this.getIdentifier}/change`
+        const url = `${this.getEditUrl}${this.getIdentifier}/change`
         navigate(url)
       } else if (this.isBenBcCccUlc) {
         this.toggleCoaWarning()
