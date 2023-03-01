@@ -386,7 +386,6 @@ export default class AnnualReport extends Vue {
   @Getter getCurrentYear!: number
   @Getter getEntityName!: string
 
-
   // variables for AgmDate component
   private newAgmDate = null // for resuming draft
   private newAgmExtension = null // for resuming draft

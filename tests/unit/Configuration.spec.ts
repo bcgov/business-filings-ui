@@ -148,9 +148,8 @@ describe('Fetch Config', () => {
     } as any
 
     // call method
-    setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
-      .catch((error) => {
-        expect(error.message).toBe('Missing or invalid Business ID or Temp Reg Number.')
-      })
+    expect(() => {
+      setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
+    }).toThrow('Missing or invalid Business ID or Temp Reg Number.')
   })
 })

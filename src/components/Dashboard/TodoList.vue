@@ -838,7 +838,7 @@ export default class TodoList extends Vue {
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.DISSOLUTION,
@@ -890,7 +890,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.ALTERATION,
@@ -926,7 +926,7 @@ export default class TodoList extends Vue {
     if (annualReport && business && header) {
       const ARFilingYear = header.ARFilingYear
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.ANNUAL_REPORT,
@@ -959,7 +959,7 @@ export default class TodoList extends Vue {
     // NB: don't check "changeOfDirectors" as it may be empty
     if (business && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_DIRECTORS,
@@ -988,7 +988,7 @@ export default class TodoList extends Vue {
 
     if (business && changeOfAddress && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_ADDRESS,
@@ -1017,7 +1017,7 @@ export default class TodoList extends Vue {
 
     if (business && correction && header) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CORRECTION,
@@ -1065,7 +1065,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       // NB: incorporationApplicationmay be undefined
       const haveData = Boolean(
@@ -1120,7 +1120,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       // NB: registration may be undefined
       const haveData = Boolean(
@@ -1171,7 +1171,7 @@ export default class TodoList extends Vue {
       }
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
@@ -1201,7 +1201,7 @@ export default class TodoList extends Vue {
 
     if (header && conversion) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CONVERSION,
@@ -1231,7 +1231,7 @@ export default class TodoList extends Vue {
 
     if (header && consentContinuationOut) {
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
@@ -1269,7 +1269,7 @@ export default class TodoList extends Vue {
       const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.SPECIAL_RESOLUTION,
@@ -1308,7 +1308,7 @@ export default class TodoList extends Vue {
       const title = this.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)
 
       const paymentStatusCode = header.paymentStatusCode
-      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(paymentStatusCode, this.getPayApiUrl)
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
       const item: TodoItemIF = {
         name: FilingTypes.RESTORATION,

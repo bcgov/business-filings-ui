@@ -12,7 +12,7 @@ export default class PayServices {
    * @param payApiUrl
    * @returns the payment error object
    */
-  static async getPayErrorObj (code: string, payApiUrl: string = ''): Promise<PaymentErrorIF> {
+  static async getPayErrorObj (payApiUrl: string, code: string): Promise<PaymentErrorIF> {
     const url = `${payApiUrl}codes/errors/${code}`
     return axios.get(url)
       .then(response => response?.data)

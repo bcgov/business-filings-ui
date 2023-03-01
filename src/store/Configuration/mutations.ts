@@ -1,4 +1,4 @@
-import {ConfigurationStateIF, SetConfigurationIF} from '@/interfaces'
+import { ConfigurationStateIF, KeyValueIF } from '@/interfaces'
 import Vue from 'vue'
 import axios from '@/axios-auth'
 
@@ -10,7 +10,7 @@ export default {
   /** Use this mutator to set a specific attribute in unit testing.
    * Like this: store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
    * */
-  setTestConfiguration (state: ConfigurationStateIF, payload: SetConfigurationIF) {
+  setTestConfiguration (state: ConfigurationStateIF, payload: KeyValueIF) {
     if (!state.configuration) {
       Vue.set(state, 'configuration', {})
     }

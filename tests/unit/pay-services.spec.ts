@@ -27,7 +27,7 @@ describe('Pay Services', () => {
       })))
 
     // call method
-    const response = await PayServices.getPayErrorObj('123')
+    const response = await PayServices.getPayErrorObj('', '123')
 
     // verify data
     expect(response).toEqual({ ...paymentErrorObj })
