@@ -161,6 +161,7 @@ describe('Fetch Config', () => {
         expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
         expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
         expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
+        expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
       })
   })
 })
