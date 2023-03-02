@@ -95,6 +95,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import * as Sentry from '@sentry/browser'
 import { navigate, updateLdUser } from '@/utils'
+import { getVuexStore } from '@/store'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
@@ -138,6 +139,7 @@ export default {
       nigsMessage: null as NigsMessage,
       localNrNumber: null as string,
       corpTypeCd: null as CorpTypeCd,
+      store: getVuexStore(),
 
       /** Whether to show the alternate loading spinner. */
       showSpinner: false,
@@ -358,19 +360,20 @@ export default {
     async fetchBusinessData (): Promise<void> {
       const data = await Promise.all([
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
-        LegalServices.fetchBusinessInfo(this.businessId),
+        LegalServices.fetchBusinessInfo(this.businessId), // *** TODO: remove this
+        this.store.dispatch('loadBusinessInfo', this.businessId),
         LegalServices.fetchTasks(this.businessId),
         LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
       ])
 
-      if (!data || data.length !== 5) throw new Error('Incomplete business data')
+      if (!data || data.length !== 6) throw new Error('Incomplete business data')
 
       this.storeEntityInfo(data[0])
       await this.storeBusinessInfo(data[1])
-      this.storeTasks(data[2])
-      this.storeFilings(data[3])
-      this.storeParties(data[4])
+      this.storeTasks(data[3])
+      this.storeFilings(data[4])
+      this.storeParties(data[5])
     },
 
     async fetchStoreAddressData ():Promise<void> {
@@ -483,6 +486,7 @@ export default {
     },
 
     /** Stores business info from Legal API. */
+    // *** TODO: remove this
     async storeBusinessInfo (response: any): Promise<void> {
       const business = response?.data?.business as BusinessIF
 
@@ -502,19 +506,19 @@ export default {
       }
 
       // FUTURE: change this to a single setter/object?
-      this.setAdminFreeze(business.adminFreeze)
-      this.setEntityName(business.legalName)
-      this.setEntityState(business.state)
-      this.setEntityType(business.legalType)
-      this.setBusinessNumber(business.taxId || null) // may be empty
-      this.setIdentifier(business.identifier)
-      this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
-      this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
-      this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
-      this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
-      this.setBusinessWarnings(Array.isArray(business.warnings) ? business.warnings : [])
-      this.setGoodStanding(business.goodStanding)
-      this.setHasCourtOrders(business.hasCourtOrders)
+      // this.setAdminFreeze(business.adminFreeze)
+      // this.setEntityName(business.legalName)
+      // this.setEntityState(business.state)
+      // this.setEntityType(business.legalType)
+      // this.setBusinessNumber(business.taxId || null) // may be empty
+      // this.setIdentifier(business.identifier)
+      // this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
+      // this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
+      // this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
+      // this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
+      // this.setBusinessWarnings(Array.isArray(business.warnings) ? business.warnings : [])
+      // this.setGoodStanding(business.goodStanding)
+      // this.setHasCourtOrders(business.hasCourtOrders)
 
       // retrieve stateFiling if the URL is included in the business payload
       if (business.stateFiling) {

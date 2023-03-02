@@ -1,15 +1,5 @@
-import { EntityState, CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import {
-  ApiFilingIF,
-  ApiTaskIF,
-  BusinessWarningIF,
-  FilingDataIF,
-  OfficeAddressIF,
-  PartyIF,
-  ApiHeaderIF,
-  BusinessIF,
-  DissolutionFilingIF, RestorationFilingIF
-}
+import { EntityStatus, FilingStatus } from '@/enums'
+import { ApiFilingIF, ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF }
   from '@/interfaces'
 
 /** The state model interface. */
@@ -25,22 +15,7 @@ export interface StateIF {
   businessEmail: string
   businessPhone: string
   businessPhoneExtension: string
-
-  // business info
-  adminFreeze: boolean
-  identifier: string
-  businessNumber: string
-  businessWarnings: Array<BusinessWarningIF>
-  entityFoundingDate: Date
-  entityName: string
-  entityState: EntityState
   entityStatus: EntityStatus
-  entityType: CorpTypeCd
-  goodStanding: boolean
-  lastAnnualReportDate: string // YYYY-MM-DD
-  lastAddressChangeDate: string // YYYY-MM-DD
-  lastDirectorChangeDate: string // YYYY-MM-DD
-  hasCourtOrders: boolean
 
   // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only

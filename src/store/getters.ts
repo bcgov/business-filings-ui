@@ -1,8 +1,6 @@
-import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
-import {
-  ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific, BusinessWarningIF
-} from '@/interfaces'
+import { DissolutionTypes, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
+  StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
@@ -39,19 +37,24 @@ export default {
   },
 
   /** Is True if there are any blockers, eg, pending tasks or filings. */
-  hasBlockerExceptStaffApproval (state: StateIF): boolean {
-    return (state.hasBlockerTask || state.hasBlockerFiling || state.isCoaPending || state.adminFreeze)
+  hasBlockerExceptStaffApproval (state: StateIF, _getters, _rootState, rootGetters): boolean {
+    return (
+      state.hasBlockerTask ||
+      state.hasBlockerFiling ||
+      state.isCoaPending ||
+      rootGetters.isAdminFreeze
+    )
   },
 
   /** Is True if there is a blocker including firm compliance. */
-  hasBlocker (_state: StateIF, getters: any): boolean {
+  hasBlocker (_state: StateIF, _getters, _rootState, rootGetters): boolean {
     // check for compliance warning
-    if (getters.hasComplianceWarning) return true
+    if (rootGetters.hasComplianceWarning) return true
 
     // check for missing info warning
-    if (getters.hasMissingInfoWarning) return true
+    if (rootGetters.hasMissingInfoWarning) return true
 
-    return getters.hasBlockerExceptStaffApproval
+    return rootGetters.hasBlockerExceptStaffApproval
   },
 
   /** Is True if a COA filing is pending. */
@@ -62,76 +65,6 @@ export default {
   /** The COA effective date (valid if a COA is pending). */
   getCoaEffectiveDate (state: StateIF): Date {
     return state.coaEffectiveDate
-  },
-
-  /** The business identifier (aka Incorporation Number). */
-  getIdentifier (state: StateIF): string {
-    return state.identifier
-  },
-
-  /** The business number (aka Tax ID). */
-  getBusinessNumber (state: StateIF): string {
-    return state.businessNumber
-  },
-
-  /** Is true of the business has a court order filing */
-  hasCourtOrders (state: StateIF): boolean {
-    return state.hasCourtOrders
-  },
-
-  /** The entity name. */
-  getEntityName (state: StateIF): string {
-    return state.entityName
-  },
-
-  /** Is True if entity is a Benefit Company. */
-  isBComp (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.BENEFIT_COMPANY)
-  },
-
-  /** Is True if entity is a Cooperative. */
-  isCoop (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.COOP)
-  },
-
-  /** Is True if entity is a BC Corporation. */
-  isCorp (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_CORPORATION)
-  },
-
-  /** Is True if entity is a Sole Proprietorship or General Partnership. */
-  isFirm (_state: StateIF, getters: any): boolean {
-    return (getters.isSoleProp || getters.isPartnership)
-  },
-
-  /** Is True if entity is a Sole Proprietorship. */
-  isSoleProp (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.SOLE_PROP)
-  },
-
-  /** Is True if entity is a General Partnership. */
-  isPartnership (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.PARTNERSHIP)
-  },
-
-  /** Is True if entity is a BC Company. */
-  isBcCompany (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_COMPANY)
-  },
-
-  /** Is True if entity is a BC Community Contribution Company. */
-  isCcc (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_CCC)
-  },
-
-  /** Is True if entity is a BC ULC Company. */
-  isUlc (state: StateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_ULC_COMPANY)
-  },
-
-  /** Is True if entity is a BEN/BC/CCC/ULC. */
-  isBenBcCccUlc (_state: StateIF, getters: any): boolean {
-    return (getters.isBComp || getters.isBcCompany || getters.isCcc || getters.isUlc)
   },
 
   /** Is True if Staff role is set.
@@ -152,35 +85,8 @@ export default {
   },
 
   /** Is True if business is pending dissolution. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isPendingDissolution (state: StateIF): boolean {
+  isPendingDissolution (_state: StateIF): boolean {
     return false // FUTURE: implement this
-  },
-
-  /** Is True if business is in good standing. */
-  isGoodStanding (state: StateIF): boolean {
-    return state.goodStanding
-  },
-
-  /** The business warnings. */
-  getBusinessWarnings (state: StateIF): BusinessWarningIF[] {
-    return state.businessWarnings
-  },
-
-  /** Is True if a firm has at least one "compliance" warning. */
-  hasComplianceWarning (state: StateIF, getters: any): boolean {
-    return (
-      getters.isFirm &&
-      state.businessWarnings.some(item => item.warningType?.includes('COMPLIANCE'))
-    )
-  },
-
-  /** Is True if a firm has at least one "missing required business info" warning. */
-  hasMissingInfoWarning (state: StateIF, getters: any): boolean {
-    return (
-      getters.isFirm &&
-      state.businessWarnings.some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
-    )
   },
 
   /** Is True if this is a Draft Application. */
@@ -193,29 +99,9 @@ export default {
     return (state.entityStatus === EntityStatus.FILED_APP)
   },
 
-  /** Is True if business is active. */
-  isActive (state: StateIF): boolean {
-    return (state.entityState === EntityState.ACTIVE)
-  },
-
-  /** Is True if business is historical (ie, dissolved). */
-  isHistorical (state: StateIF): boolean {
-    return (state.entityState === EntityState.HISTORICAL)
-  },
-
-  /** Is True if the business is frozen */
-  isAdminFreeze (state: StateIF): boolean {
-    return state.adminFreeze
-  },
-
-  /** Is True if business is in liquidation. */
-  isLiquidation (state: StateIF): boolean {
-    return (state.entityState === EntityState.LIQUIDATION)
-  },
-
-  /** The Name Request number. */
-  getNameRequestNumber (state: StateIF): string {
-    return (state.nameRequest?.nrNum)
+  /** The Name Request (may be null). */
+  getNameRequest (state: StateIF): any {
+    return (state.nameRequest)
   },
 
   isCurrentFilingEditable (state: StateIF): boolean {
@@ -242,21 +128,6 @@ export default {
       state.filings.length === 1 &&
       [FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(state.filings[0].name)
     )
-  },
-
-  /** The Entity Type. */
-  getEntityType (state: StateIF): CorpTypeCd {
-    return state.entityType
-  },
-
-  /** The Entity Status. */
-  getEntityStatus (state: StateIF): EntityStatus {
-    return state.entityStatus
-  },
-
-  /** The Entity Founding Date. */
-  getEntityFoundingDate (state: StateIF): Date {
-    return state.entityFoundingDate
   },
 
   /** The entity registered office address. */
@@ -287,7 +158,7 @@ export default {
    * A formatted concatenation of the name and the effective date of the filing.
    * Only used when entity is historical.
    */
-  getReasonText (state: StateIF, getters: any): string {
+  getReasonText (state: StateIF, _getters, _rootState, rootGetters): string {
     const filingType = state.stateFiling?.header?.name
     if (!filingType) return null // safety check
 
@@ -296,7 +167,7 @@ export default {
     let date: string
 
     if (filingType === FilingTypes.DISSOLUTION) {
-      name = EnumUtilities.dissolutionTypeToName(getters.isFirm,
+      name = EnumUtilities.dissolutionTypeToName(rootGetters.isFirm,
         (state.stateFiling?.dissolution?.dissolutionType as DissolutionTypes) ||
         DissolutionTypes.UNKNOWN
       )

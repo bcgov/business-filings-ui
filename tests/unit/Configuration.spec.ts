@@ -59,7 +59,7 @@ describe('Fetch Config', () => {
     const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('fetchConfiguration', applicationUrl)
+    await store.dispatch('loadConfiguration', applicationUrl)
       .then(() => {
         nextTick()
         // verify data
@@ -94,7 +94,7 @@ describe('Fetch Config', () => {
     const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('fetchConfiguration', applicationUrl)
+    await store.dispatch('loadConfiguration', applicationUrl)
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
   })
@@ -156,7 +156,7 @@ describe('Fetch Config', () => {
   it('sessions variables correctly set for the SBC header', async () => {
     const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
-    await store.dispatch('fetchConfiguration', applicationUrl)
+    await store.dispatch('loadConfiguration', applicationUrl)
       .then(() => {
         expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
         expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')

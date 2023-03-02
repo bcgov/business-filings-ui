@@ -983,7 +983,7 @@ describe('App as a Draft IA with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1109,7 +1109,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
   })
 
   it('fetches conditional-not required NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Not Required')
   })
 })
@@ -1215,7 +1215,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
   })
 
   it('fetches conditional-received NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Received')
   })
 })
@@ -1321,7 +1321,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
   })
 
   it('fetches conditional-waived NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Waived')
   })
 })
@@ -1437,7 +1437,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1587,7 +1587,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -1869,7 +1869,7 @@ describe('App as a Draft Registration with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 
@@ -2006,7 +2006,7 @@ describe('App as a COMPLETED Registration Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNameRequestNumber).toBe('NR 1234567')
+    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
     expect(vm.$store.getters.getEntityName).toBe('My Name Request')
   })
 

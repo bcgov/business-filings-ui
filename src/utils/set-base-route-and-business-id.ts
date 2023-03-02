@@ -32,11 +32,9 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
   // eg, "/business/CPxxx/" or "/business/Txxx/"
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
-  console.info('Set Vue Router Base to: ' + vueRouterBase)
 
   // set Base URL for returning from redirects
   // eg, http://localhost:8080/business/CPxxx/
   const baseUrl = rootUrl + vueRouterBase
   sessionStorage.setItem('BASE_URL', baseUrl)
-  console.info('Set Base URL to: ' + baseUrl)
 }

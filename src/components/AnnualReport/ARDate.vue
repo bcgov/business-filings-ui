@@ -19,7 +19,9 @@ import { DateMixin } from '@/mixins'
   mixins: [DateMixin]
 })
 export default class ArDate extends Vue {
+  // FUTURE: change this to a getter
   @State nextARDate!: string
+
   @Getter isBenBcCccUlc!: boolean
   @Getter getCurrentDate!: string
 }

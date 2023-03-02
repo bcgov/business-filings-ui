@@ -1,6 +1,5 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, EntityState } from '@/enums'
-import { FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, BusinessWarningIF, PartyIF }
-  from '@/interfaces'
+import { EntityStatus, FilingStatus } from '@/enums'
+import { FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, PartyIF } from '@/interfaces'
 
 export default {
   keycloakRoles (state: StateIF, keycloakRoles: Array<string>) {
@@ -27,44 +26,14 @@ export default {
   ARFilingYear (state: StateIF, year: number) {
     state.ARFilingYear = year
   },
-  adminFreeze (state: StateIF, adminFreeze: boolean) {
-    state.adminFreeze = adminFreeze
-  },
   arMaxDate (state: StateIF, date: string) {
     state.arMaxDate = date
   },
   arMinDate (state: StateIF, date: string) {
     state.arMinDate = date
   },
-  identifier (state: StateIF, identifier: string) {
-    state.identifier = identifier
-  },
-  businessNumber (state: StateIF, businessNumber: string) {
-    state.businessNumber = businessNumber
-  },
-  businessWarnings (state: StateIF, warnings: Array<BusinessWarningIF>) {
-    state.businessWarnings = warnings
-  },
-  entityFoundingDate (state: StateIF, entityFoundingDate: Date) {
-    state.entityFoundingDate = entityFoundingDate
-  },
-  entityName (state: StateIF, entityName: string) {
-    state.entityName = entityName
-  },
-  entityState (state: StateIF, entityState: EntityState) {
-    state.entityState = entityState
-  },
   entityStatus (state: StateIF, entityStatus: EntityStatus) {
     state.entityStatus = entityStatus
-  },
-  entityType (state: StateIF, entityType: CorpTypeCd) {
-    state.entityType = entityType
-  },
-  goodStanding (state: StateIF, goodStanding: boolean) {
-    state.goodStanding = goodStanding
-  },
-  hasCourtOrders (state: StateIF, hasCourtOrders: boolean) {
-    state.hasCourtOrders = hasCourtOrders
   },
   businessEmail (state: StateIF, businessEmail: string) {
     state.businessEmail = businessEmail
@@ -95,15 +64,6 @@ export default {
   },
   parties (state: StateIF, parties: Array<PartyIF>) {
     state.parties = parties
-  },
-  lastAnnualReportDate (state: StateIF, date: string) {
-    state.lastAnnualReportDate = date
-  },
-  lastAddressChangeDate (state: StateIF, date: string) {
-    state.lastAddressChangeDate = date
-  },
-  lastDirectorChangeDate (state: StateIF, date: string) {
-    state.lastDirectorChangeDate = date
   },
   configObject (state: StateIF, configObject: any) {
     state.configObject = configObject

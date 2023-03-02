@@ -230,16 +230,18 @@ export default class StandaloneOfficeAddressFiling extends Vue {
     officeAddressesComponent: OfficeAddresses
   }
 
-  @State entityFoundingDate!: Date
+  // FUTURE: change this to a getter
   @State filingData!: Array<FilingDataIF>
 
-  @Getter isCoop!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
   @Getter getAuthWebUrl!: string
+  @Getter getEntityFoundingDate!: Date
+  @Getter getEntityName!: string
   @Getter getPayApiUrl!: string
-  // variables
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isCoop!: boolean
+  @Getter isRoleStaff!: boolean
+
+  // local variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   private filingId: number = null
   private savedFiling: any = null // filing during save
@@ -670,7 +672,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getEntityFoundingDate),
         identifier: this.getIdentifier,
         legalName: this.getEntityName,
         legalType: this.getEntityType

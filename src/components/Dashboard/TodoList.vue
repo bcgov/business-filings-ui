@@ -238,7 +238,7 @@
                     @click.native.stop="doResumeFiling(item)"
                   >
                     <template v-if="isTypeIncorporationApplication(item) && item.isEmptyFiling">
-                      <span v-if="nameRequest">Incorporate using this NR</span>
+                      <span v-if="getNameRequest">Incorporate using this NR</span>
                       <span v-else>Incorporate a Numbered Company</span>
                     </template>
                     <template v-else-if="isTypeRegistration(item) && item.isEmptyFiling">
@@ -434,7 +434,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
@@ -495,23 +495,22 @@ export default class TodoList extends Vue {
   protected inProcessFiling: number = null
 
   @Prop({ default: null }) readonly highlightId!: number
-  @Getter getCurrentYear!: number
-  @Getter getTasks!: Array<ApiTaskIF>
-  @Getter getEntityName!: string
-  @Getter isCoaPending!: boolean
-  @Getter getTodoListResource!: TodoListResourceIF
+
+  @Getter getAuthWebUrl!: string
+  @Getter getBusinessUrl!: string
   @Getter getBusinessWarnings!: BusinessWarningIF
-  @Getter isBenBcCccUlc!: boolean
+  @Getter getCreateUrl!: string
+  @Getter getCurrentYear!: number
+  @Getter getEditUrl!: string
+  @Getter getEntityName!: string
   @Getter getEntityType!: CorpTypeCd
   @Getter getIdentifier!: string
-  @Getter getEditUrl!: string
-  @Getter getCreateUrl!: string
-  @Getter getBusinessUrl!: string
-  @Getter getAuthWebUrl!: string
+  @Getter getNameRequest!: any
   @Getter getPayApiUrl!: string
-
-  @State nameRequest!: any
-  @State lastAnnualReportDate!: string
+  @Getter getTasks!: Array<ApiTaskIF>
+  @Getter getTodoListResource!: TodoListResourceIF
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isCoaPending!: boolean
 
   @Action setARFilingYear!: ActionBindingIF
   @Action setArMinDate!: ActionBindingIF
@@ -1057,8 +1056,8 @@ export default class TodoList extends Vue {
       // set subtitle only if DRAFT IA
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
-        if (this.nameRequest) {
-          subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+        if (this.getNameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
         } else {
           subtitle = 'DRAFT'
         }
@@ -1088,7 +1087,7 @@ export default class TodoList extends Vue {
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest
+        nameRequest: this.getNameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1112,8 +1111,8 @@ export default class TodoList extends Vue {
       // set subtitle only if DRAFT
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
-        if (this.nameRequest) {
-          subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+        if (this.getNameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
         } else {
           subtitle = 'DRAFT'
         }
@@ -1143,7 +1142,7 @@ export default class TodoList extends Vue {
         paymentToken: header.paymentToken || null,
         payErrorObj,
         isEmptyFiling: !haveData,
-        nameRequest: this.nameRequest
+        nameRequest: this.getNameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1163,8 +1162,8 @@ export default class TodoList extends Vue {
       // set subtitle only if DRAFT
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
-        if (this.nameRequest) {
-          subtitle = `NR APPROVED - ${this.expiresText(this.nameRequest)}`
+        if (this.getNameRequest) {
+          subtitle = `NR APPROVED - ${this.expiresText(this.getNameRequest)}`
         } else {
           subtitle = 'DRAFT'
         }
@@ -1185,7 +1184,7 @@ export default class TodoList extends Vue {
         paymentMethod: header.paymentMethod || null,
         paymentToken: header.paymentToken || null,
         payErrorObj,
-        nameRequest: this.nameRequest
+        nameRequest: this.getNameRequest
       }
       this.todoItems.push(item)
     } else {
@@ -1530,7 +1529,7 @@ export default class TodoList extends Vue {
   protected confirmDeleteApplication (item: TodoItemIF): void {
     const line1 = `Deleting this ${item.draftTitle} will remove this application and all information ` +
       'associated with this application.'
-    const line2 = this.nameRequest
+    const line2 = this.getNameRequest
       ? 'You will be returned to My Business Registry.'
       : 'You will be returned to the Business Registry page.'
 
@@ -1553,7 +1552,7 @@ export default class TodoList extends Vue {
         // a navigation will happen, taking the user off this page
         await this.doDeleteDraft(item, false)
 
-        if (this.nameRequest) {
+        if (this.getNameRequest) {
           // go to My Business Registry page
           navigate(this.getAuthWebUrl)
         } else {

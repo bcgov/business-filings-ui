@@ -145,9 +145,11 @@ export default class AgmDate extends Vue {
   /** Whether to allow changing the directors. */
   @Prop({ default: true }) readonly allowCod!: boolean
 
+  // FUTURE: change these to getters
   @State ARFilingYear!: number
   @State arMinDate!: string
   @State arMaxDate!: string
+
   @Getter isCoop!: boolean
   @Getter getCurrentDate!: string
 

@@ -5,11 +5,11 @@ export default {
     return state.configuration.AUTH_WEB_URL
   },
 
-  getMyBusinessRegistryUrl (state, getters): string {
+  getMyBusinessRegistryUrl (_state, getters): string {
     return getters.getAuthWebUrl + 'business'
   },
 
-  getBusinessProfileUrl (state, getters): string {
+  getBusinessProfileUrl (_state, getters): string {
     return getters.getAuthWebUrl + 'businessprofile'
   },
 
@@ -17,7 +17,7 @@ export default {
     return state.configuration?.REGISTRY_HOME_URL || ''
   },
 
-  getLoginUrl (state, getters): string {
+  getLoginUrl (_state, getters): string {
     return getters.getRegHomeUrl + 'login'
   },
 

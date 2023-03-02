@@ -341,14 +341,15 @@ export default class StandaloneDirectorsFiling extends Vue {
     directorsComponent: Directors
   }
 
-  @State entityFoundingDate!: Date
+  // FUTURE: change this to a getter
   @State filingData!: Array<FilingDataIF>
 
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
-  @Getter isBenBcCccUlc!: boolean
   @Getter getAuthWebUrl!: string
+  @Getter getEntityFoundingDate!: Date
+  @Getter getEntityName!: string
   @Getter getPayApiUrl!: string
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isRoleStaff!: boolean
 
   // variables
   private updatedDirectors = []
@@ -793,7 +794,7 @@ export default class StandaloneDirectorsFiling extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getEntityFoundingDate),
         identifier: this.getIdentifier,
         legalName: this.getEntityName,
         legalType: this.getEntityType

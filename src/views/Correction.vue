@@ -218,13 +218,14 @@ export default class Correction extends Vue {
     confirm: ConfirmDialogType
   }
 
-  @State entityFoundingDate!: Date
+  // FUTURE: change this to a getter
   @State filingData!: Array<FilingDataIF>
 
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
   @Getter getAuthWebUrl!: string
+  @Getter getEntityFoundingDate!: Date
+  @Getter getEntityName!: string
   @Getter getPayApiUrl!: string
+  @Getter isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -671,7 +672,7 @@ export default class Correction extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getEntityFoundingDate),
         identifier: this.getIdentifier,
         legalName: this.getEntityName,
         legalType: this.getEntityType

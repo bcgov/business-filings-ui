@@ -1,4 +1,3 @@
-
 /** The state model for the configuration store module. */
 export interface ConfigurationStateIF {
   configuration: {

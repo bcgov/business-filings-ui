@@ -154,9 +154,9 @@
             </template>
 
             <!-- NR Number -->
-            <template v-if="getNameRequestNumber">
+            <template v-if="nameRequestNumber">
               <dt class="mr-2">Name Request Number:</dt>
-              <dd id="nr-number">{{ getNameRequestNumber }}</dd>
+              <dd id="nr-number">{{ nameRequestNumber }}</dd>
             </template>
 
             <!-- Email -->
@@ -225,17 +225,19 @@ import { navigate } from '@/utils'
   ]
 })
 export default class EntityInfo extends Vue {
+  // FUTURE: change these to getters
   @State ARFilingYear!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
+
   @Getter getEditUrl!: string
   @Getter getBusinessProfileUrl!: string
   @Getter getBusinessNumber!: string
   @Getter getEntityFoundingDate!: Date
   @Getter getEntityName!: string
   @Getter getIdentifier!: number
-  @Getter getNameRequestNumber!: string
+  @Getter getNameRequest!: any
   @Getter getReasonText!: string
   @Getter isAdminFreeze!: boolean
   @Getter isAuthorizedToContinueOut!: boolean
@@ -248,6 +250,11 @@ export default class EntityInfo extends Vue {
 
   /** Whether to show the hover style. */
   protected showHoverStyle = false
+
+  /** The name request number. */
+  get nameRequestNumber (): string {
+    return this.getNameRequest?.nrNum
+  }
 
   /** The Business ID string. */
   get businessId (): string {

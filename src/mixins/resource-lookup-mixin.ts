@@ -9,7 +9,9 @@ import { FilingCodes } from '@/enums'
  */
 @Component({})
 export default class ResourceLookupMixin extends Vue {
+    // FUTURE: change this to a getter
     @State configObject!: any
+
     @Getter isBenBcCccUlc!: boolean
 
     /**

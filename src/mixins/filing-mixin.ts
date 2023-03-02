@@ -18,6 +18,7 @@ import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes
 export default class FilingMixin extends DateMixin {
   @Action setFilingData!: (x: any) => void
 
+  // FUTURE: change these to getters
   @State filingData!: Array<FilingDataIF>
   @State entityName!: string
 
