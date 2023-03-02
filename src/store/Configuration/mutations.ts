@@ -18,6 +18,12 @@ export default {
   },
 
   setSessionVariables (state: ConfigurationStateIF, responseData: any) {
+    // The following four session variables are used by SBC Header (a common component)
+    sessionStorage.setItem('AUTH_WEB_URL', responseData['AUTH_WEB_URL'])
+    sessionStorage.setItem('REGISTRY_HOME_URL', responseData['REGISTRY_HOME_URL'])
+    sessionStorage.setItem('AUTH_API_URL', responseData['AUTH_API_URL'] + responseData['AUTH_API_VERSION'] + '/')
+    sessionStorage.setItem('STATUS_API_URL', responseData['STATUS_API_URL'] + responseData['STATUS_API_VERSION'])
+
     const hotjarId: string = responseData['HOTJAR_ID'];
     (<any>window).hotjarId = hotjarId
 

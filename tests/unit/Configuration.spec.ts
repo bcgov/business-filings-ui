@@ -152,4 +152,16 @@ describe('Fetch Config', () => {
       setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
     }).toThrow('Missing or invalid Business ID or Temp Reg Number.')
   })
+
+  it('sessions variables correctly set for the SBC header', async () => {
+    const store = await getVuexStore() as any // remove typings for unit tests
+    const applicationUrl = 'http://localhost/business/'
+    await store.dispatch('fetchConfiguration', applicationUrl)
+      .then(() => {
+        expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
+        expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
+        expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
+        expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
+      })
+  })
 })
