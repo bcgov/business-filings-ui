@@ -48,8 +48,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and not limited restoration', async () => {
     // set store specifically for this test
-    store.state.entityType = 'CP'
-    store.state.entityState = 'ACTIVE'
+    store.state.business.entityType = 'CP'
+    store.state.business.entityState = 'ACTIVE'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -107,8 +107,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and limited restoration', async () => {
     // set store specifically for this test
-    store.state.entityType = CorpTypeCd.COOP
-    store.state.entityState = EntityState.ACTIVE
+    store.state.business.entityType = CorpTypeCd.COOP
+    store.state.business.entityState = EntityState.ACTIVE
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'
@@ -182,8 +182,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - historical', async () => {
     // set store specifically for this test
-    store.state.entityType = CorpTypeCd.SOLE_PROP
-    store.state.entityState = EntityState.HISTORICAL
+    store.state.business.entityType = CorpTypeCd.SOLE_PROP
+    store.state.business.entityState = EntityState.HISTORICAL
     store.state.stateFiling = {}
 
     const wrapper = mount(StaffNotation, { vuetify, store })
@@ -258,8 +258,8 @@ describe('StaffNotation', () => {
   for (const test of staffFilingTypes) {
     it(`renders the staff notation dialog correctly for ${test.name}`, async () => {
       // set store specifically for this test
-      store.state.entityType = 'SP'
-      store.state.entityState = 'ACTIVE'
+      store.state.business.entityType = 'SP'
+      store.state.business.entityState = 'ACTIVE'
 
       const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -322,8 +322,8 @@ describe('StaffNotation', () => {
 
   it('renders the staff notation dialog correction for Put Back On', async () => {
     // set store specifically for this test
-    store.state.entityType = 'SP'
-    store.state.entityState = 'HISTORICAL'
+    store.state.business.entityType = 'SP'
+    store.state.business.entityState = 'HISTORICAL'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -357,8 +357,8 @@ describe('StaffNotation', () => {
 
   it('renders the staff notation dialog for Admin Freeze', async () => {
     // set store specifically for this test
-    store.state.entityType = 'SP'
-    store.state.entityState = 'ACTIVE'
+    store.state.business.entityType = 'SP'
+    store.state.business.entityState = 'ACTIVE'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -392,9 +392,9 @@ describe('StaffNotation', () => {
 
   it('goes to conversion filing', async () => {
     // set store specifically for this test
-    store.state.entityType = 'SP'
-    store.state.entityState = 'ACTIVE'
-    store.state.identifier = 'SP1234567'
+    store.state.business.entityType = 'SP'
+    store.state.business.entityState = 'ACTIVE'
+    store.state.business.identifier = 'SP1234567'
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -416,9 +416,9 @@ describe('StaffNotation', () => {
 
   it('goes to restoration filing', async () => {
     // set store specifically for this test
-    store.state.entityType = 'BEN'
-    store.state.entityState = 'HISTORICAL'
-    store.state.identifier = 'BC1234567'
+    store.state.business.entityType = 'BEN'
+    store.state.business.entityState = 'HISTORICAL'
+    store.state.business.identifier = 'BC1234567'
 
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
@@ -456,10 +456,10 @@ describe('StaffNotation', () => {
 
   it('goes to limited restoration filing', async () => {
     // set store specifically for this test
-    store.state.identifier = 'BC1234567'
+    store.state.business.identifier = 'BC1234567'
     store.state.currentDate = '2022-12-31'
-    store.state.entityType = 'BEN'
-    store.state.entityState = 'ACTIVE'
+    store.state.business.entityType = 'BEN'
+    store.state.business.entityState = 'ACTIVE'
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'

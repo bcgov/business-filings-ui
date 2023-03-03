@@ -30,7 +30,7 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a COOP', async () => {
     // init store
-    store.state.entityType = 'CP'
+    store.state.business.entityType = 'CP'
     store.state.registeredAddress = {
       'deliveryAddress':
       {
@@ -71,7 +71,7 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a COOP', async () => {
     // init store
-    store.state.entityType = 'CP'
+    store.state.business.entityType = 'CP'
     store.state.registeredAddress = {
       'deliveryAddress':
       {
@@ -112,7 +112,7 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
     store.state.registeredAddress = {
       'deliveryAddress':
       {
@@ -203,7 +203,7 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
     store.state.registeredAddress = {
       'deliveryAddress':
       {
@@ -273,7 +273,7 @@ describe('AddressListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
 
     const wrapper = mount(AddressListSm,
       {
@@ -303,7 +303,7 @@ describe('AddressListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
     store.state.registeredAddress = {
       'deliveryAddress':
       {
@@ -367,7 +367,7 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a Firm', async () => {
     // init store
-    store.state.entityType = 'SP'
+    store.state.business.entityType = 'SP'
     store.state.businessAddress = {
       'deliveryAddress':
       {
@@ -404,7 +404,7 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a Firm', async () => {
     // init store
-    store.state.entityType = 'SP'
+    store.state.business.entityType = 'SP'
     store.state.businessAddress = {
       'deliveryAddress':
       {
@@ -441,7 +441,7 @@ describe('AddressListSm', () => {
 
   it('displays "complete your filing" message for firm registration', async () => {
     // init store
-    store.state.entityType = 'SP'
+    store.state.business.entityType = 'SP'
 
     const wrapper = mount(AddressListSm,
       {
@@ -468,7 +468,7 @@ describe('AddressListSm', () => {
 
   it('displays "(Not entered)" message for firm registration', async () => {
     // init store
-    store.state.entityType = 'SP'
+    store.state.business.entityType = 'SP'
     store.state.businessAddress = {
       'deliveryAddress': null,
       'mailingAddress': null

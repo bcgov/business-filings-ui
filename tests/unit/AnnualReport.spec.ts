@@ -33,12 +33,12 @@ const store = getVuexStore() as any // remove typings for unit tests
 describe('Annual Report - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.ARFilingYear = 2017
     store.state.arMinDate = '2017-01-01'
     store.state.arMaxDate = '2018-04-30'
     store.state.currentFilingStatus = 'NEW'
-    store.state.entityType = 'CP'
+    store.state.business.entityType = 'CP'
     store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
   })
 
@@ -57,8 +57,8 @@ describe('Annual Report - Part 1 - UI', () => {
   it('Verify AR Certify contains correct section codes', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route } })
-    store.state.entityType = 'CP'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
+    store.state.business.entityType = 'CP'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.entityType)
     await Vue.nextTick() // wait for DOM to update
 
     const certify: any = wrapper.findComponent(Certify)
@@ -149,7 +149,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables address component when AGM Date < Last COA Date', async () => {
-    store.state.lastAddressChangeDate = '2019-05-06'
+    store.state.business.lastAddressChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -170,7 +170,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('has no effect on address component when Last COA Date is null', async () => {
-    store.state.lastAddressChangeDate = null
+    store.state.business.lastAddressChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -191,7 +191,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables directors component when AGM Date < Last COD Date', async () => {
-    store.state.lastDirectorChangeDate = '2019-05-06'
+    store.state.business.lastDirectorChangeDate = '2019-05-06'
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -212,7 +212,7 @@ describe('Annual Report - Part 1 - UI', () => {
   })
 
   it('disables directors component when Last COD Date is null', async () => {
-    store.state.lastDirectorChangeDate = null
+    store.state.business.lastDirectorChangeDate = null
     const $route = { params: { filingId: '0' } } // new filing id
     const wrapper = shallowMount(AnnualReport, { store, mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
@@ -357,11 +357,11 @@ describe('Annual Report - Part 1 - UI', () => {
 describe('Annual Report - Part 1B - UI (BCOMP)', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'BC0007291'
+    store.state.business.identifier = 'BC0007291'
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
 
   it('renders the Annual Report sub-components properly when entity is a BCOMP', () => {
@@ -498,8 +498,8 @@ describe('Annual Report - Part 1B - UI (BCOMP)', () => {
 describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
     store.state.arMinDate = '2017-01-01'
@@ -578,8 +578,8 @@ describe('Annual Report - Part 2A - Resuming with FAS staff payment', () => {
 describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
     store.state.arMinDate = '2017-01-01'
@@ -662,8 +662,8 @@ describe('Annual Report - Part 2B - Resuming with BCOL staff payment', () => {
 describe('Annual Report - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'DRAFT'
     store.state.arMinDate = '2017-01-01'
@@ -752,9 +752,9 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityType = 'CP'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
     store.state.arMinDate = '2017-01-01'
@@ -1036,9 +1036,9 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'BC0007291'
-    store.state.entityName = 'Legal Name - BC0007291'
-    store.state.entityType = 'BEN'
+    store.state.business.identifier = 'BC0007291'
+    store.state.business.entityName = 'Legal Name - BC0007291'
+    store.state.business.entityType = 'BEN'
     store.state.ARFilingYear = 2018
     store.state.nextARDate = '2018-09-26'
     store.state.currentFilingStatus = 'NEW'
@@ -1161,9 +1161,9 @@ describe('Annual Report - Part 4 - Saving', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityType = 'CP'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
     store.state.arMinDate = '2017-01-01'
@@ -1315,9 +1315,9 @@ describe('Annual Report - Part 5 - Data', () => {
 
   beforeEach(async () => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityType = 'CP'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = currentFilingYear
     store.state.currentFilingStatus = 'NEW'
     store.state.arMinDate = '2017-01-01'
@@ -1590,9 +1590,9 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
 
   beforeEach(async () => {
     // init store
-    store.state.identifier = 'BC0007291'
-    store.state.entityName = 'Legal Name - BC0007291'
-    store.state.entityType = 'BEN'
+    store.state.business.identifier = 'BC0007291'
+    store.state.business.entityName = 'Legal Name - BC0007291'
+    store.state.business.entityType = 'BEN'
     store.state.ARFilingYear = 2018
     store.state.currentDate = '2018-09-26'
     store.state.nextARDate = '2018-09-26'
@@ -1753,9 +1753,9 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityType = 'CP'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
     store.state.arMinDate = '2017-01-01'
@@ -1957,11 +1957,11 @@ describe('Annual Report - Part 7 - Concurrent Saves', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
 
-  store.state.entityName = 'Legal Name - CP0001191'
-  store.state.entityType = 'CP'
+  store.state.business.entityName = 'Legal Name - CP0001191'
+  store.state.business.entityType = 'CP'
   store.state.ARFilingYear = 2017
   store.state.currentFilingStatus = 'NEW'
-  store.state.identifier = 'CP0001191'
+  store.state.business.identifier = 'CP0001191'
   store.state.arMinDate = '2017-01-01'
   store.state.arMaxDate = '2018-04-30'
 
@@ -2077,9 +2077,9 @@ describe('Annual Report - payment required error', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityType = 'CP'
+    store.state.business.entityName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 

@@ -14,7 +14,7 @@ describe('AnnualReport - UI', () => {
     store.state.currentJsDate = new Date('2019-07-15T12:00:00')
     store.state.currentDate = '2019-07-15'
     store.state.nextARDate = '2020-09-18'
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
 
   it('initializes the store variables properly', () => {

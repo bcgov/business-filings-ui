@@ -16,7 +16,7 @@ describe('DirectorListSm', () => {
   it('handles empty data as a COOP', async () => {
     // init store
     store.state.parties = []
-    store.state.entityType = 'CP'
+    store.state.business.entityType = 'CP'
 
     const wrapper = mount(DirectorListSm, { store, vuetify })
     const vm = wrapper.vm as any
@@ -31,7 +31,7 @@ describe('DirectorListSm', () => {
 
   it('displays multiple directors - as a COOP', async () => {
     // init store
-    store.state.entityType = 'CP'
+    store.state.business.entityType = 'CP'
     store.state.parties = [
       {
         'officer': {
@@ -100,7 +100,7 @@ describe('DirectorListSm', () => {
 
   it('displays multiple directors - as a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
     store.state.parties = [
       {
         'officer': {
@@ -172,7 +172,7 @@ describe('DirectorListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
 
     const wrapper = mount(DirectorListSm,
       {
@@ -192,7 +192,7 @@ describe('DirectorListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
     store.state.parties = [
       {
         'officer': {

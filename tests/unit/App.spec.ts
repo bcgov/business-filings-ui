@@ -590,10 +590,10 @@ describe('App as a COOP', () => {
   it('fetches Entity Info properly', () => {
     expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
     expect(vm.$store.getters.isGoodStanding).toBe(true)
-    expect(vm.$store.state.businessNumber).toBe('123456789')
+    expect(vm.$store.state.business.businessNumber).toBe('123456789')
     expect(vm.$store.getters.getIdentifier).toBe('CP0001191')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
+    expect(vm.$store.state.business.entityFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
@@ -844,10 +844,10 @@ describe('App as a BCOMP', () => {
   it('fetches Entity Info properly', () => {
     expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
     expect(vm.$store.getters.isGoodStanding).toBe(true)
-    expect(vm.$store.state.businessNumber).toBe('123456789')
+    expect(vm.$store.state.business.businessNumber).toBe('123456789')
     expect(vm.$store.getters.getIdentifier).toBe('BC0007291')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.state.entityFoundingDate).toEqual(entityFoundingDate)
+    expect(vm.$store.state.business.entityFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {

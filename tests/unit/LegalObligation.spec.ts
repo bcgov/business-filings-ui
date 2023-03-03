@@ -126,15 +126,15 @@ for (const test of obligationTestCases) {
   describe(`Legal Obligation for ${test.entityType}`, () => {
     beforeAll(() => {
       sessionStorage.setItem('BUSINESS_ID', test.identifier)
-      store.state.entityType = test.entityType
-      store.state.identifier = test.identifier
+      store.state.business.entityType = test.entityType
+      store.state.business.identifier = test.identifier
       store.state.configObject = ConfigJson[test.configKey]
     })
 
     afterAll(() => {
       sessionStorage.removeItem('BUSINESS_ID')
-      store.state.entityType = null
-      store.state.identifier = null
+      store.state.business.entityType = null
+      store.state.business.identifier = null
       store.state.tasks = []
     })
 

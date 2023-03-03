@@ -38,7 +38,7 @@ describe('TodoList - UI', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.entityType = 'CP'
+    store.state.business.entityType = 'CP'
   })
 
   it('handles empty data', async () => {
@@ -944,7 +944,7 @@ describe('TodoList - UI - BCOMPs', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
 
   it('handles empty data', async () => {
@@ -1414,7 +1414,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
 
   it('displays a DRAFT numbered company IA', async () => {
@@ -1468,7 +1468,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   it('displays a DRAFT named company IA', async () => {
     // init store
     store.state.nameRequest = {}
-    store.state.entityName = 'My Business Inc'
+    store.state.business.entityName = 'My Business Inc'
     store.state.tasks = [
       {
         task: {
@@ -1565,7 +1565,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   it('displays a PENDING named company IA', async () => {
     // init store
     store.state.nameRequest = {}
-    store.state.entityName = 'My Business Inc'
+    store.state.business.entityName = 'My Business Inc'
     store.state.tasks = [
       {
         task: {
@@ -1621,8 +1621,8 @@ describe('TodoList - Click Tests', () => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.entityType = 'CP'
 
     // mock the window.location.assign function
     delete window.location
@@ -1957,13 +1957,13 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     // init store
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.identifier = 'BC0007291'
+    store.state.business.identifier = 'BC0007291'
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
 
   afterAll(() => {
@@ -2202,8 +2202,8 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://create.url/' })
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.entityName = 'My Business Inc'
-    store.state.entityType = 'BEN'
+    store.state.business.entityName = 'My Business Inc'
+    store.state.business.entityType = 'BEN'
 
     // mock the window.location.assign function
     delete window.location
@@ -2336,7 +2336,7 @@ describe('TodoList - Click Tests - Corrections', () => {
       store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
       sessionStorage.setItem('BUSINESS_ID', test.businessId)
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-      store.state.identifier = test.businessId
+      store.state.business.identifier = test.businessId
       // init draft Correction filing task
       store.state.tasks = [
         {
@@ -2454,9 +2454,9 @@ describe('TodoList - Click Tests - Alterations', () => {
     store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.identifier = 'BC1234567'
-    store.state.goodStanding = true
-    store.state.entityType = 'BEN'
+    store.state.business.identifier = 'BC1234567'
+    store.state.business.goodStanding = true
+    store.state.business.entityType = 'BEN'
     store.state.tasks = [
       {
         task: {
@@ -2654,8 +2654,8 @@ describe('TodoList - Delete Draft', () => {
     // init session storage and store
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.identifier = 'T123456789'
-    store.state.entityType = 'BEN'
+    store.state.business.identifier = 'T123456789'
+    store.state.business.entityType = 'BEN'
     store.state.entityStatus = 'DRAFT_APP'
     store.state.tasks = [
       {

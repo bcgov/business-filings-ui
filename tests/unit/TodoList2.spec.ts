@@ -31,8 +31,8 @@ describe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.entityType = 'BEN'
-    store.state.goodStanding = true
+    store.state.business.entityType = 'BEN'
+    store.state.business.goodStanding = true
   })
 
   it('handles empty data', async () => {
@@ -380,7 +380,7 @@ xdescribe('TodoList - tests specific to Cooperatives', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
   //
   // FUTURE: add any Coop-specific tests here
@@ -394,7 +394,7 @@ xdescribe('TodoList - tests specific to corporations (BEN, etc)', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
 
   it('displays new AR header/checkbox', async () => {
@@ -412,7 +412,7 @@ xdescribe('TodoList - tests specific to Incorporation Applications', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'TaAbBcC123')
-    store.state.entityType = 'BEN'
+    store.state.business.entityType = 'BEN'
   })
   //
   // FUTURE: verify numbered vs named IAs (see also Filing History List unit tests)

@@ -8,6 +8,8 @@ import { nextTick } from 'vue'
 console.info = jest.fn()
 
 describe('Configuration Actions', () => {
+  const store = getVuexStore() as any // remove typings for unit tests
+
   // init environment variable
   process.env.BASE_URL = '/business/'
 
@@ -56,7 +58,6 @@ describe('Configuration Actions', () => {
     } as any
 
     // call method
-    const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
     await store.dispatch('loadConfiguration', applicationUrl)
@@ -91,7 +92,6 @@ describe('Configuration Actions', () => {
     } as any
 
     // call method
-    const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
     await store.dispatch('loadConfiguration', applicationUrl)
@@ -154,7 +154,6 @@ describe('Configuration Actions', () => {
   })
 
   it('sessions variables correctly set for the SBC header', async () => {
-    const store = await getVuexStore() as any // remove typings for unit tests
     const applicationUrl = 'http://localhost/business/'
     await store.dispatch('loadConfiguration', applicationUrl)
       .then(() => {

@@ -4,18 +4,36 @@ import { getVuexStore } from '@/store'
 describe('Business Actions', () => {
   const store = getVuexStore() as any // remove typings for unit tests
 
-  it('fetches dissolution state filing', async () => {
-    // init
-    store.state.corpTypeCd = 'BEN'
+  it('loads business info', async () => {
+    // init store properties we need
+    store.state.corpTypeCd = 'BC'
 
-    // arrange
+    // mock business data and services call
     const sampleBusinessInfo = {
       business: {
-        identifier: 'BC0871273',
-        legalType: 'BEN',
+        identifier: 'BC1234567',
+        legalType: 'BC',
         stateFiling: 'dummy_url'
       }
     }
+    jest.spyOn(LegalServices, 'fetchBusinessInfo').mockImplementation((): any => {
+      return Promise.resolve({ data: sampleBusinessInfo })
+    })
+
+    // call the action and verify the data in the store
+    await store.dispatch('loadBusinessInfo', 'BC1234567')
+    expect(LegalServices.fetchBusinessInfo).toHaveBeenCalled()
+    expect(store.state.business).toHaveProperty('businessInfo')
+    expect(store.state.business.identifier).toBe('BC1234567')
+    expect(store.state.business.entityType).toBe('BC')
+    expect(store.state.business.businessInfo.stateFiling).toBe('dummy_url')
+  })
+
+  it('loads dissolution state filing', async () => {
+    // init store properties we need
+    store.state.corpTypeCd = 'BEN'
+
+    // mock filing data and services call
     const sampleStateFiling = {
       business: {
         foundingDate: '2022-12-06T19:13:16.000+00:00',
@@ -111,34 +129,23 @@ describe('Business Actions', () => {
         submitter: 'bcsc/x5levvougen54gnvtvcyh7nrelqcyt4t'
       }
     }
-    // act
-    jest.spyOn(LegalServices, 'fetchBusinessInfo').mockImplementation((): any => {
-      return Promise.resolve({ data: sampleBusinessInfo })
-    })
     jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
-    await store.dispatch('loadBusinessInfo', 'BC0871273')
-      .then(() => {
-        expect(LegalServices.fetchFiling).toHaveBeenCalled()
-        expect(store.state.stateFiling).toHaveProperty('business')
-        expect(store.state.stateFiling).toHaveProperty('dissolution')
-        expect(store.state.stateFiling).toHaveProperty('header')
-      })
+
+    // call the action and verify the data in the store
+    await store.dispatch('loadStateFiling', 'dummy_url')
+    expect(LegalServices.fetchFiling).toHaveBeenCalled()
+    expect(store.state.stateFiling).toHaveProperty('business')
+    expect(store.state.stateFiling).toHaveProperty('dissolution')
+    expect(store.state.stateFiling).toHaveProperty('header')
   })
 
-  it('fetches consent to continuation out state filing', async () => {
-    // init
+  it('loads consent to continuation out state filing', async () => {
+    // init store properties we need
     store.state.corpTypeCd = 'BEN'
 
-    // arrange
-    const sampleBusinessInfo = {
-      business: {
-        identifier: 'BC0871273',
-        legalType: 'BEN',
-        stateFiling: 'dummy_url'
-      }
-    }
+    // mock filing data and services call
     const sampleStateFiling = {
       business: {
         foundingDate: '2022-12-06T19:13:16.000+00:00',
@@ -176,19 +183,15 @@ describe('Business Actions', () => {
         submitter: 'bcsc/x5levvougen54gnvtvcyh7nrelqcyt4t'
       }
     }
-    // act
-    jest.spyOn(LegalServices, 'fetchBusinessInfo').mockImplementation((): any => {
-      return Promise.resolve({ data: sampleBusinessInfo })
-    })
     jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
-    await store.dispatch('loadBusinessInfo', 'BC0871273')
-      .then(() => {
-        expect(LegalServices.fetchFiling).toHaveBeenCalled()
-        expect(store.state.stateFiling).toHaveProperty('business')
-        expect(store.state.stateFiling).toHaveProperty('consentContinuationOut')
-        expect(store.state.stateFiling).toHaveProperty('header')
-      })
+
+    // call the action and verify the data in the store
+    await store.dispatch('loadStateFiling', 'dummy_url')
+    expect(LegalServices.fetchFiling).toHaveBeenCalled()
+    expect(store.state.stateFiling).toHaveProperty('business')
+    expect(store.state.stateFiling).toHaveProperty('consentContinuationOut')
+    expect(store.state.stateFiling).toHaveProperty('header')
   })
 })

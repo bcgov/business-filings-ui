@@ -49,7 +49,7 @@ describe('Future Effective IA', () => {
   })
 
   it('Displays expected content with a FE named IA', () => {
-    store.state.entityName = 'My Incorporation'
+    store.state.business.entityName = 'My Incorporation'
     const wrapper = mount(FutureEffective, {
       vuetify,
       store,
@@ -77,7 +77,7 @@ describe('Future Effective IA', () => {
   })
 
   it('Displays expected content with a FE numbered IA', () => {
-    store.state.entityName = ''
+    store.state.business.entityName = ''
     const wrapper = mount(FutureEffective, {
       vuetify,
       store,
@@ -105,7 +105,7 @@ describe('Future Effective IA', () => {
   })
 
   it('Displays expected content with a FE alteration', () => {
-    store.state.entityName = 'My Alteration'
+    store.state.business.entityName = 'My Alteration'
     const wrapper = mount(FutureEffective, {
       vuetify,
       store,

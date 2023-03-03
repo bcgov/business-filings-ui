@@ -392,19 +392,21 @@ export default {
         // FUTURE: all of these should be store actions
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
         this.loadBusinessInfo(this.businessId),
-        this.loadStateFiling(this.getStateFilingUrl), // *** TODO: get param from store instead
         LegalServices.fetchTasks(this.businessId),
         LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
       ])
 
-      if (!data || data.length !== 6) throw new Error('Incomplete business data')
+      if (!data || data.length !== 5) throw new Error('Incomplete business data')
 
       // store data from calls above
       this.storeEntityInfo(data[0])
-      this.storeTasks(data[3])
-      this.storeFilings(data[4])
-      this.storeParties(data[5])
+      this.storeTasks(data[2])
+      this.storeFilings(data[3])
+      this.storeParties(data[4])
+
+      // if the URL was provided in business info, load state filing
+      if (this.getStateFilingUrl) await this.loadStateFiling(this.getStateFilingUrl)
 
       // now that we know entity type, store config object
       this.storeConfigObject()

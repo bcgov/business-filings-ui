@@ -83,7 +83,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = false
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
-    store.state.adminFreeze = false
+    store.state.business.adminFreeze = false
     expect(localVm.hasBlocker).toEqual(false)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(true)
@@ -217,8 +217,8 @@ describe('Dashboard - Click Tests', () => {
   it('routes to Standalone Office Address Filing page when EDIT is clicked', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.state.identifier = 'CP1234567'
-    store.state.entityType = 'CP'
+    store.state.business.identifier = 'CP1234567'
+    store.state.business.entityType = 'CP'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -243,8 +243,8 @@ describe('Dashboard - Click Tests', () => {
   it('displays the change of address warning dialog as a BCOMP', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     // init store
-    store.state.identifier = 'BC1234567'
-    store.state.entityType = 'BEN'
+    store.state.business.identifier = 'BC1234567'
+    store.state.business.entityType = 'BEN'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -276,7 +276,7 @@ describe('Dashboard - Click Tests', () => {
   it('routes to Standalone Directors Filing page when EDIT is clicked', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.state.identifier = 'CP1234567'
+    store.state.business.identifier = 'CP1234567'
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

@@ -72,21 +72,22 @@ export default {
     })
   },
 
-  /** Fetches stateFiling from the Legal API and, if successful, triggers mutation. */
+  /**
+   * Fetches the state filing from the Legal API and, if successful, triggers mutation.
+   * @param context the Vuex context (passed in automatically)
+   * @param stateFilingUrl the state filing url
+   */
   async loadStateFiling ({ commit }, stateFilingUrl: string): Promise<void> {
     // *** TODO: refactor this into then and catch as above (then remove async)
-    if (stateFilingUrl) {
-      const filing = await LegalServices.fetchFiling(stateFilingUrl)
-      const filingType = filing?.header?.name as FilingTypes
-      return new Promise((resolve, reject) => {
-        if (!filingType) {
-          reject(Error('Invalid state filing type'))
-        } else {
-          commit('setStateFiling', filing)
-          resolve(filing)
-        }
-      })
-    }
-    // *** TODO: need to resolve here?
+    const filing = await LegalServices.fetchFiling(stateFilingUrl)
+    const filingType = filing?.header?.name as FilingTypes
+    return new Promise((resolve, reject) => {
+      if (!filingType) {
+        reject(Error('Invalid state filing type'))
+      } else {
+        commit('setStateFiling', filing)
+        resolve(filing)
+      }
+    })
   }
 }

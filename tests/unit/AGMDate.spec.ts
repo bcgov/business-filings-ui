@@ -24,8 +24,8 @@ describe('AgmDate', () => {
     store.state.ARFilingYear = 2019
     store.state.arMinDate = '2019-01-01'
     store.state.arMaxDate = '2019-12-31'
-    store.state.entityType = 'CP'
-    store.state.lastAnnualReportDate = '2018-07-15'
+    store.state.business.entityType = 'CP'
+    store.state.business.lastAnnualReportDate = '2018-07-15'
 
     wrapper = mount(AgmDate, { store, vuetify })
     vm = wrapper.vm

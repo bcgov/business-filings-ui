@@ -12,8 +12,8 @@ const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   it('displays confirmation modal to users for Sole Proprietorship', () => {
-    store.state.entityType = 'SP'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
+    store.state.business.entityType = 'SP'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.entityType)
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
@@ -41,8 +41,8 @@ describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   })
 
   it('displays confirmation modal to users for General Partnership', () => {
-    store.state.entityType = 'GP'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
+    store.state.business.entityType = 'GP'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.entityType)
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
@@ -70,8 +70,8 @@ describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   })
 
   it('displays confirmation modal to users for Benefit Company', () => {
-    store.state.entityType = 'BEN'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
+    store.state.business.entityType = 'BEN'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.entityType)
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
