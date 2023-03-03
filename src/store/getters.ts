@@ -202,7 +202,6 @@ export default {
 
   /** The corp type code from Auth db (may be null). */
   getCorpTypeCd (state: StateIF): CorpTypeCd {
-    // *** TOOO: get from entity info object
     return state.corpTypeCd
   }
 }

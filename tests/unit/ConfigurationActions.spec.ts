@@ -7,7 +7,7 @@ import { nextTick } from 'vue'
 // mock the console.info function to hide the output
 console.info = jest.fn()
 
-describe('Fetch Config', () => {
+describe('Configuration Actions', () => {
   // init environment variable
   process.env.BASE_URL = '/business/'
 

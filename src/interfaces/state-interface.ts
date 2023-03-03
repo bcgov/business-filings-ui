@@ -10,15 +10,13 @@ export interface StateIF {
   authRoles: Array<string>
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
+  entityStatus: EntityStatus // for draft app only
 
-  // *** TODO: store entire entity info object instead
-  corpTypeCd: CorpTypeCd // from auth db (may be null)
-
-  // entity info
+  // entity info from auth db
   businessEmail: string
   businessPhone: string
   businessPhoneExtension: string
-  entityStatus: EntityStatus
+  corpTypeCd: CorpTypeCd
 
   // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only
