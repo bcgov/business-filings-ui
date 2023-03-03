@@ -3,6 +3,7 @@ import { BusinessWarningIF } from '@/interfaces'
 
 /** The state model for the business store module. */
 export interface BusinessStateIF {
+  businessInfo: any // *** TODO: use an interface for this
   adminFreeze: boolean
   businessNumber: string
   businessWarnings: Array<BusinessWarningIF>

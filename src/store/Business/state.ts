@@ -1,6 +1,7 @@
 import { BusinessStateIF } from '@/interfaces'
 
 export const state: BusinessStateIF = {
+  businessInfo: {}, // *** TODO: populate defaults as below
   adminFreeze: null,
   businessNumber: null,
   businessWarnings: [],

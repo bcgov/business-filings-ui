@@ -2,6 +2,10 @@ import { EntityState, CorpTypeCd } from '@/enums'
 import { BusinessStateIF, BusinessWarningIF } from '@/interfaces'
 
 export default {
+  setBusinessInfo (state: BusinessStateIF, val: any) {
+    state.businessInfo = val
+  },
+
   setAdminFreeze (state: BusinessStateIF, val: boolean) {
     state.adminFreeze = val
   },

@@ -52,6 +52,11 @@ export default {
     return state.lastDirectorChangeDate
   },
 
+  /** The state filing URL (may be null). */
+  getStateFilingUrl (state: BusinessStateIF): string {
+    return state.businessInfo.stateFiling
+  },
+
   /** Is true of the business has a court order filing */
   hasCourtOrders (state: BusinessStateIF): boolean {
     return state.hasCourtOrders

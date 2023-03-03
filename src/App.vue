@@ -95,7 +95,6 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import * as Sentry from '@sentry/browser'
 import { navigate, updateLdUser } from '@/utils'
-import { getVuexStore } from '@/store'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
@@ -138,7 +137,6 @@ export default {
       notInGoodStandingDialog: false,
       nigsMessage: null as NigsMessage,
       localNrNumber: null as string,
-      store: getVuexStore(),
 
       /** Whether to show the alternate loading spinner. */
       showSpinner: false,
@@ -180,6 +178,7 @@ export default {
       'getEntityType',
       'getIdentifier',
       'getRegHomeUrl',
+      'getStateFilingUrl',
       'isRoleStaff'
     ]),
 
@@ -282,6 +281,8 @@ export default {
 
   methods: {
     ...mapActions([
+      'loadBusinessInfo',
+      'loadStateFiling',
       'setAuthRoles',
       'setBusinessAddress',
       'setBusinessEmail',
@@ -388,20 +389,22 @@ export default {
     /** Fetches and stores the business data. */
     async fetchBusinessData (): Promise<void> {
       const data = await Promise.all([
+        // FUTURE: all of these should be store actions
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
-        this.store.dispatch('loadBusinessInfo', this.businessId),
+        this.loadBusinessInfo(this.businessId),
+        this.loadStateFiling(this.getStateFilingUrl), // *** TODO: get param from store instead
         LegalServices.fetchTasks(this.businessId),
         LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
       ])
 
-      if (!data || data.length !== 5) throw new Error('Incomplete business data')
+      if (!data || data.length !== 6) throw new Error('Incomplete business data')
 
       // store data from calls above
       this.storeEntityInfo(data[0])
-      this.storeTasks(data[2])
-      this.storeFilings(data[3])
-      this.storeParties(data[4])
+      this.storeTasks(data[3])
+      this.storeFilings(data[4])
+      this.storeParties(data[5])
 
       // now that we know entity type, store config object
       this.storeConfigObject()
