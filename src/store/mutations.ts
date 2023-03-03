@@ -1,4 +1,4 @@
-import { EntityStatus, FilingStatus } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
 import { FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, PartyIF } from '@/interfaces'
 
 export default {
@@ -82,6 +82,9 @@ export default {
   },
   coaEffectiveDate (state: StateIF, coaEffectiveDate: Date) {
     state.coaEffectiveDate = coaEffectiveDate
+  },
+  corpTypeCd (state: StateIF, val: CorpTypeCd) {
+    state.corpTypeCd = val
   },
   setStateFiling (state: StateIF, stateFilingResponse: any) {
     state.stateFiling = stateFilingResponse

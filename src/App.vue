@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import * as Sentry from '@sentry/browser'
 import { navigate, updateLdUser } from '@/utils'
 import { getVuexStore } from '@/store'
@@ -107,7 +107,7 @@ import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadc
   getStaffDashboardBreadcrumb } from '@/resources'
 import { CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, NameRequestMixin } from '@/mixins'
 import { AuthServices, LegalServices } from '@/services/'
-import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, BusinessIF, DocumentIF, NameRequestIF, PartyIF, TaskTodoIF }
+import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, DocumentIF, NameRequestIF, PartyIF, TaskTodoIF }
   from '@/interfaces'
 import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
   NigsMessage, Routes } from '@/enums'
@@ -138,7 +138,6 @@ export default {
       notInGoodStandingDialog: false,
       nigsMessage: null as NigsMessage,
       localNrNumber: null as string,
-      corpTypeCd: null as CorpTypeCd,
       store: getVuexStore(),
 
       /** Whether to show the alternate loading spinner. */
@@ -173,8 +172,16 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getIdentifier', 'getEntityName', 'getEntityType', 'isRoleStaff',
-      'getBusinessUrl', 'getCreateUrl', 'getAuthApiUrl', 'getRegHomeUrl']),
+    ...mapGetters([
+      'getAuthApiUrl',
+      'getBusinessUrl',
+      'getCreateUrl',
+      'getEntityName',
+      'getEntityType',
+      'getIdentifier',
+      'getRegHomeUrl',
+      'isRoleStaff'
+    ]),
 
     /** The Business ID string. */
     businessId (): string {
@@ -188,11 +195,13 @@ export default {
 
     /** True if loading container should be shown. */
     showLoadingContainer (): boolean {
-      return (!this.dataLoaded &&
+      return (
+        !this.dataLoaded &&
         !this.dashboardUnavailableDialog &&
         !this.businessAuthErrorDialog &&
         !this.nameRequestAuthErrorDialog &&
-        !this.nameRequestInvalidDialog)
+        !this.nameRequestInvalidDialog
+      )
     },
 
     /** True if route is Signin. */
@@ -272,13 +281,33 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setKeycloakRoles', 'setAuthRoles', 'setBusinessEmail', 'setBusinessPhone',
-      'setBusinessPhoneExtension', 'setCurrentJsDate', 'setCurrentDate', 'setEntityName', 'setEntityType',
-      'setEntityStatus', 'setBusinessNumber', 'setIdentifier', 'setEntityFoundingDate', 'setTasks',
-      'setFilings', 'setRegisteredAddress', 'setRecordsAddress', 'setBusinessAddress', 'setParties',
-      'setLastAnnualReportDate', 'setNameRequest', 'setLastAddressChangeDate', 'setLastDirectorChangeDate',
-      'setConfigObject', 'setEntityState', 'setAdminFreeze', 'setBusinessWarnings',
-      'setGoodStanding', 'setHasCourtOrders', 'setUserKeycloakGuid', 'retrieveStateFiling']),
+    ...mapActions([
+      'setAuthRoles',
+      'setBusinessAddress',
+      'setBusinessEmail',
+      'setBusinessPhone',
+      'setBusinessPhoneExtension',
+      'setConfigObject',
+      'setCorpTypeCd',
+      'setCurrentDate',
+      'setCurrentJsDate',
+      'setEntityStatus',
+      'setFilings',
+      'setKeycloakRoles',
+      'setNameRequest',
+      'setParties',
+      'setRecordsAddress',
+      'setRegisteredAddress',
+      'setTasks',
+      'setUserKeycloakGuid'
+    ]),
+
+    ...mapMutations([
+      'setEntityName',
+      'setEntityType',
+      'setGoodStanding',
+      'setIdentifier'
+    ]),
 
     /** Fetches business data / incorp app data. */
     async fetchData (): Promise<void> {
@@ -360,20 +389,22 @@ export default {
     async fetchBusinessData (): Promise<void> {
       const data = await Promise.all([
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
-        LegalServices.fetchBusinessInfo(this.businessId), // *** TODO: remove this
         this.store.dispatch('loadBusinessInfo', this.businessId),
         LegalServices.fetchTasks(this.businessId),
         LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
       ])
 
-      if (!data || data.length !== 6) throw new Error('Incomplete business data')
+      if (!data || data.length !== 5) throw new Error('Incomplete business data')
 
+      // store data from calls above
       this.storeEntityInfo(data[0])
-      await this.storeBusinessInfo(data[1])
-      this.storeTasks(data[3])
-      this.storeFilings(data[4])
-      this.storeParties(data[5])
+      this.storeTasks(data[2])
+      this.storeFilings(data[3])
+      this.storeParties(data[4])
+
+      // now that we know entity type, store config object
+      this.storeConfigObject()
     },
 
     async fetchStoreAddressData ():Promise<void> {
@@ -478,55 +509,12 @@ export default {
           this.setBusinessPhone(contact.phone)
           this.setBusinessPhoneExtension(contact.phoneExtension)
         }
-        // save Corp Type Code locally to compare with Legal Type below
-        this.corpTypeCd = response?.data?.corpType?.code
+        // store Corp Type Code to compare with Legal Type in business info
+        const corpTypeCd = response?.data?.corpType?.code
+        if (corpTypeCd) this.setCorpTypeCd(corpTypeCd)
       } else {
         throw new Error('Invalid entity contact info')
       }
-    },
-
-    /** Stores business info from Legal API. */
-    // *** TODO: remove this
-    async storeBusinessInfo (response: any): Promise<void> {
-      const business = response?.data?.business as BusinessIF
-
-      if (!business) {
-        throw new Error('Invalid business info')
-      }
-
-      if (this.businessId !== business.identifier) {
-        throw new Error('Business identifier mismatch')
-      }
-
-      // these should match, but don't error out if they don't
-      // hopefully ops will see this error in Sentry
-      if (this.corpTypeCd && business.legalType !== this.corpTypeCd) {
-        // eslint-disable-next-line no-console
-        console.error('WARNING: Legal Type in Legal db does not match Corp Type in Auth db!')
-      }
-
-      // FUTURE: change this to a single setter/object?
-      // this.setAdminFreeze(business.adminFreeze)
-      // this.setEntityName(business.legalName)
-      // this.setEntityState(business.state)
-      // this.setEntityType(business.legalType)
-      // this.setBusinessNumber(business.taxId || null) // may be empty
-      // this.setIdentifier(business.identifier)
-      // this.setEntityFoundingDate(this.apiToDate(business.foundingDate))
-      // this.setLastAnnualReportDate(business.lastAnnualReportDate) // may be empty
-      // this.setLastAddressChangeDate(business.lastAddressChangeDate) // may be empty
-      // this.setLastDirectorChangeDate(business.lastDirectorChangeDate) // may be empty
-      // this.setBusinessWarnings(Array.isArray(business.warnings) ? business.warnings : [])
-      // this.setGoodStanding(business.goodStanding)
-      // this.setHasCourtOrders(business.hasCourtOrders)
-
-      // retrieve stateFiling if the URL is included in the business payload
-      if (business.stateFiling) {
-        await this.retrieveStateFiling(business.stateFiling)
-      }
-
-      // store config object based on current entity type
-      this.storeConfigObject(business.legalType)
     },
 
     /** Verifies and stores a draft applications data. */
@@ -569,11 +557,11 @@ export default {
       // Draft Applications are always in good standing
       this.setGoodStanding(true)
 
-      // store NR Number if present
+      // save local NR Number if present
       this.localNrNumber = nameRequest.nrNumber || null
 
       // store Legal Name if present
-      this.setEntityName(nameRequest.legalName || null)
+      if (nameRequest.legalName) this.setEntityName(nameRequest.legalName)
 
       switch (status) {
         case FilingStatus.DRAFT:
@@ -723,8 +711,8 @@ export default {
     },
 
     /** Stores config object matching the specified entity type. */
-    storeConfigObject (entityType: string): void {
-      const configObject = ConfigJson.find(x => x.entityType === entityType)
+    storeConfigObject (): void {
+      const configObject = ConfigJson.find(x => x.entityType === this.getEntityType)
       this.setConfigObject(configObject)
     },
 

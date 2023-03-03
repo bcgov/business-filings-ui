@@ -6,6 +6,7 @@ export const state: StateIF = {
   authRoles: [],
   currentJsDate: null,
   currentDate: null,
+  corpTypeCd: null,
 
   businessEmail: null,
   businessPhone: null,

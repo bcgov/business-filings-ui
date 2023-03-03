@@ -1,4 +1,4 @@
-import { EntityStatus, FilingStatus } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
 import { ApiFilingIF, ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF }
   from '@/interfaces'
 
@@ -10,6 +10,9 @@ export interface StateIF {
   authRoles: Array<string>
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
+
+  // *** TODO: store entire entity info object instead
+  corpTypeCd: CorpTypeCd // from auth db (may be null)
 
   // entity info
   businessEmail: string

@@ -1,6 +1,5 @@
-import { EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
 import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, PartyIF } from '@/interfaces'
-import { LegalServices } from '@/services'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -84,18 +83,7 @@ export default {
   setCoaEffectiveDate ({ commit }, coaEffectiveDate: Date) {
     commit('coaEffectiveDate', coaEffectiveDate)
   },
-  /** Fetches stateFiling from the API and, if successful, triggers mutation. */
-  async retrieveStateFiling ({ commit }, stateFilingUrl: string): Promise<void> {
-    const filing = stateFilingUrl && await LegalServices.fetchFiling(stateFilingUrl)
-    const filingType = filing?.header?.name as FilingTypes
-    return new Promise((resolve, reject) => {
-      if (!filing || !filingType) {
-        console.log('Invalid state filing', filing, filingType) // eslint-disable-line no-console
-        reject(Error('Invalid state filing'))
-      } else {
-        commit('setStateFiling', filing)
-        resolve(filing)
-      }
-    })
+  setCorpTypeCd ({ commit }, val: CorpTypeCd) {
+    commit('corpTypeCd', val)
   }
 }

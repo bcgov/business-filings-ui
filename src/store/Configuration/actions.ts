@@ -3,7 +3,7 @@ import axios from '@/axios-auth'
 export default {
   /** Fetches the configuration from the web server and, if successful, triggers some mutations. */
   loadConfiguration (context, applicationUrl: string): Promise<any> {
-    // fetch config from API
+    // fetch config from server
     // eg, http://localhost:8080/business/config/configuration.json
     // eg, https://dev.bcregistry.ca/business/config/configuration.json
     const url = `${applicationUrl}config/configuration.json`

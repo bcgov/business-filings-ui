@@ -1,4 +1,4 @@
-import { DissolutionTypes, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, DissolutionTypes, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
   StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
@@ -169,8 +169,7 @@ export default {
     if (filingType === FilingTypes.DISSOLUTION) {
       name = EnumUtilities.dissolutionTypeToName(rootGetters.isFirm,
         (state.stateFiling?.dissolution?.dissolutionType as DissolutionTypes) ||
-        DissolutionTypes.UNKNOWN
-      )
+        DissolutionTypes.UNKNOWN)
       const dissolutionDate = DateUtilities.yyyyMmDdToDate(state.stateFiling.dissolution?.dissolutionDate)
       if (!dissolutionDate) throw new Error('Invalid dissolution date')
       date = DateUtilities.dateToPacificDate(dissolutionDate, true)
@@ -199,5 +198,11 @@ export default {
    */
   isAuthorizedToContinueOut (state: StateIF): boolean {
     return (state.stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT))
+  },
+
+  /** The corp type code from Auth db (may be null). */
+  getCorpTypeCd (state: StateIF): CorpTypeCd {
+    // *** TOOO: get from entity info object
+    return state.corpTypeCd
   }
 }
