@@ -357,9 +357,7 @@ describe('App as a COOP', () => {
     // GET business info from Legal API
     get.withArgs('businesses/CP0001191')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
-          // Legal API Business data
+        data: {
           business: {
             legalName: 'TEST NAME',
             goodStanding: true,
@@ -576,7 +574,7 @@ describe('App as a COOP', () => {
     expect(vm.$store.getters.isRoleView).toBe(true)
   })
 
-  it('fetches Business Info properly', () => {
+  it('fetches Entity Info properly', () => {
     expect(vm.$store.state.businessEmail).toEqual('name@mail.com')
     expect(vm.$store.state.businessPhone).toEqual('(111)-222-3333')
     expect(vm.$store.state.businessPhoneExtension).toEqual('999')
@@ -587,7 +585,7 @@ describe('App as a COOP', () => {
     expect(vm.$store.getters.getCurrentDate).toEqual(dateString)
   })
 
-  it('fetches Entity Info properly', () => {
+  it('fetches Business Info properly', () => {
     expect(vm.$store.getters.getLegalName).toBe('TEST NAME')
     expect(vm.$store.getters.isGoodStanding).toBe(true)
     expect(vm.$store.getters.getBusinessNumber).toBe('123456789')
@@ -672,9 +670,7 @@ describe('App as a BCOMP', () => {
     // GET business info from Legal API
     get.withArgs('businesses/BC0007291')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
-          // Legal API Business data
+        data: {
           business: {
             legalName: 'TEST NAME',
             goodStanding: true,
@@ -827,7 +823,7 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.getters.isRoleView).toBe(true)
   })
 
-  it('fetches Business Info properly', () => {
+  it('fetches Entity Info properly', () => {
     expect(vm.$store.state.businessEmail).toEqual('name@mail.com')
     expect(vm.$store.state.businessPhone).toEqual('(111)-222-3333')
     expect(vm.$store.state.businessPhoneExtension).toEqual('999')
@@ -838,7 +834,7 @@ describe('App as a BCOMP', () => {
     expect(vm.$store.getters.getCurrentDate).toEqual(dateString)
   })
 
-  it('fetches Entity Info properly', () => {
+  it('fetches Business Info properly', () => {
     expect(vm.$store.getters.getLegalName).toBe('TEST NAME')
     expect(vm.$store.getters.isGoodStanding).toBe(true)
     expect(vm.$store.getters.getBusinessNumber).toBe('123456789')
@@ -1673,9 +1669,7 @@ describe('App as an historical business', () => {
     // GET business info from Legal API
     get.withArgs('businesses/BC1234567')
       .returns(new Promise(resolve => resolve({
-        data:
-        {
-          // Legal API Business data
+        data: {
           business: {
             arMaxDate: '2021-12-10',
             arMinDate: '2022-12-02',

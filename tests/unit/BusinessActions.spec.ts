@@ -5,6 +5,9 @@ describe('Business Actions', () => {
   const store = getVuexStore() as any // remove typings for unit tests
 
   it('loads business info', async () => {
+    // set session storage we need
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+
     // init store properties we need
     store.state.corpTypeCd = 'BC'
 
@@ -19,7 +22,7 @@ describe('Business Actions', () => {
     })
 
     // call the action and verify the data in the store
-    await store.dispatch('loadBusinessInfo', 'BC1234567')
+    await store.dispatch('loadBusinessInfo')
     expect(LegalServices.fetchBusinessInfo).toHaveBeenCalled()
     expect(store.state.business.identifier).toBe('BC1234567')
     expect(store.state.business.legalType).toBe('BC')
