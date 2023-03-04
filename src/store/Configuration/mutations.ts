@@ -11,11 +11,11 @@ export default {
    * Use this mutator to set a specific attribute in unit testing. Eg,
    * store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
    */
-  setTestConfiguration (state: ConfigurationStateIF, payload: KeyValueIF) {
+  setTestConfiguration (state: ConfigurationStateIF, { key, value }: KeyValueIF) {
     if (!state.configuration) {
       Vue.set(state, 'configuration', {})
     }
-    Vue.set(state.configuration, payload.key, payload.value)
+    Vue.set(state.configuration, key, value)
   },
 
   setSessionVariables (_state: ConfigurationStateIF, responseData: any) {

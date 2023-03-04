@@ -1,4 +1,4 @@
 export interface KeyValueIF {
-  key: string,
+  key: string
   value: string
 }
