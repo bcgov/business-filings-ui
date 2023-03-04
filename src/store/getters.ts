@@ -209,5 +209,15 @@ export default {
   /** The corp type code from Auth db (may be null). */
   getCorpTypeCd (state: StateIF): CorpTypeCd {
     return state.corpTypeCd
+  },
+
+  /** The Business ID string. */
+  getBusinessId (_state: StateIF): string {
+    return sessionStorage.getItem('BUSINESS_ID')
+  },
+
+  /** The Temporary Registration Number string. */
+  getTempRegNumber (_state: StateIF): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 }

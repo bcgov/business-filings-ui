@@ -91,12 +91,15 @@ export default {
   /**
    * Fetches the state filing from the Legal API and, if successful, triggers mutation.
    * @param context the Vuex context (passed in automatically)
-   * @param stateFilingUrl the state filing url
    */
-  // *** TODO: get stateFilingUrl from store instead of passing it in
-  loadStateFiling ({ commit }, stateFilingUrl: string): Promise<void> {
+  loadStateFiling ({ commit, rootGetters }): Promise<void> {
     // need to return a promise because action is called via dispatch
     return new Promise((resolve, reject) => {
+      const stateFilingUrl = rootGetters.getStateFilingUrl
+
+      // if there is no state filing url, return null
+      if (!stateFilingUrl) resolve(null)
+
       LegalServices.fetchFiling(stateFilingUrl)
         .then(filing => {
           // commit data to store

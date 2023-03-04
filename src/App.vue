@@ -178,7 +178,6 @@ export default {
       'getLegalType',
       'getIdentifier',
       'getRegHomeUrl',
-      'getStateFilingUrl',
       'isRoleStaff'
     ]),
 
@@ -391,7 +390,7 @@ export default {
       const data = await Promise.all([
         // FUTURE: all of these should be store actions
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
-        this.loadBusinessInfo(this.businessId),
+        this.loadBusinessInfo(),
         LegalServices.fetchTasks(this.businessId),
         LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
@@ -405,9 +404,8 @@ export default {
       this.storeFilings(data[3])
       this.storeParties(data[4])
 
-      // if the URL was provided in business info, load state filing
-      // *** TODO: move logic to store action
-      if (this.getStateFilingUrl) await this.loadStateFiling(this.getStateFilingUrl)
+      // now that we have business info, load state filing
+      await this.loadStateFiling()
 
       // now that we know entity type, store config object
       this.storeConfigObject()
