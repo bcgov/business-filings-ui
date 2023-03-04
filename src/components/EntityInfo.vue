@@ -6,10 +6,10 @@
           <header>
             <!-- Entity Name / IA Title -->
             <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
-              <span>{{ getEntityName || 'Unknown Name' }}</span>
+              <span>{{ getLegalName || 'Unknown Name' }}</span>
             </div>
             <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ getEntityName || getCorpTypeNumberedDescription(getEntityType)}}</span>
+              <span>{{ getLegalName || getCorpTypeNumberedDescription(getLegalType)}}</span>
             </div>
 
             <!-- Description -->
@@ -132,7 +132,7 @@
             <template v-if="businessId && isFirm">
               <dt class="mr-2">Registration Date:</dt>
               <dd id="entity-business-registration-date">
-                {{ this.dateToPacificDate(getEntityFoundingDate, true) || 'Not Available' }}</dd>
+                {{ this.dateToPacificDate(getFoundingDate, true) || 'Not Available' }}</dd>
             </template>
 
             <!-- Registration Number -->
@@ -234,8 +234,8 @@ export default class EntityInfo extends Vue {
   @Getter getEditUrl!: string
   @Getter getBusinessProfileUrl!: string
   @Getter getBusinessNumber!: string
-  @Getter getEntityFoundingDate!: Date
-  @Getter getEntityName!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLegalName!: string
   @Getter getIdentifier!: number
   @Getter getNameRequest!: any
   @Getter getReasonText!: string
@@ -268,7 +268,7 @@ export default class EntityInfo extends Vue {
 
   /** The business description. */
   get businessDescription (): string {
-    const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
+    const corpTypeDescription = this.getCorpTypeDescription(this.getLegalType)
     if (this.isSoleProp && this.tempRegNumber) {
       return `${corpTypeDescription} / Doing Business As (DBA)`
     } else {
@@ -278,7 +278,7 @@ export default class EntityInfo extends Vue {
 
   /** The incorporation application or registration description. */
   get iaRegDescription (): string {
-    const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getEntityType)
+    const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getLegalType)
       ? FilingNames.REGISTRATION
       : FilingNames.INCORPORATION_APPLICATION
 

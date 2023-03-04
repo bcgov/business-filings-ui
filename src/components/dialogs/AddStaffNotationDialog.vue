@@ -14,18 +14,18 @@
 
       <v-card-text class="font-16">
         <p v-if="isAdministrativeDissolution">
-          You are about to dissolve <strong><span class="text-uppercase">{{getEntityName}}</span>,
+          You are about to dissolve <strong><span class="text-uppercase">{{getLegalName}}</span>,
           {{getIdentifier}}</strong>.
         </p>
 
         <p v-if="isPutBackOn">
-          You are about to put <strong><span class="text-uppercase">{{getEntityName}}</span>,
+          You are about to put <strong><span class="text-uppercase">{{getLegalName}}</span>,
           {{getIdentifier}}</strong> back on the register.
         </p>
 
         <p v-if="isAdministerFreeze">
           You are about to {{ !isAdminFreeze ? 'freeze' : 'unfreeze' }}
-          <span class="text-uppercase font-weight-bold">{{getEntityName}}</span>, {{getIdentifier}}.
+          <span class="text-uppercase font-weight-bold">{{getLegalName}}</span>, {{getIdentifier}}.
         </p>
 
         <v-form ref="notationFormRef" id="notation-form">
@@ -169,9 +169,9 @@ export default class AddStaffNotationDialog extends Vue {
   // Global getters
   @Getter getCurrentDate!: string
   @Getter getBusinessNumber!: string
-  @Getter getEntityFoundingDate!: Date
-  @Getter getEntityName!: string
-  @Getter getEntityType!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLegalName!: string
+  @Getter getLegalType!: string
   @Getter getIdentifier!: string
   @Getter getKeycloakGuid!: string
   @Getter isAdminFreeze!: boolean
@@ -323,9 +323,9 @@ export default class AddStaffNotationDialog extends Vue {
       },
       business: {
         identifier: this.getIdentifier,
-        legalType: this.getEntityType,
-        legalName: this.getEntityName,
-        foundingDate: this.getEntityFoundingDate
+        legalType: this.getLegalType,
+        legalName: this.getLegalName,
+        foundingDate: this.getFoundingDate
       }
     }
 

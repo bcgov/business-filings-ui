@@ -502,8 +502,8 @@ export default class TodoList extends Vue {
   @Getter getCreateUrl!: string
   @Getter getCurrentYear!: number
   @Getter getEditUrl!: string
-  @Getter getEntityName!: string
-  @Getter getEntityType!: CorpTypeCd
+  @Getter getLegalName!: string
+  @Getter getLegalType!: CorpTypeCd
   @Getter getIdentifier!: string
   @Getter getNameRequest!: any
   @Getter getPayApiUrl!: string
@@ -1051,7 +1051,7 @@ export default class TodoList extends Vue {
 
     // NB: don't check "incorporationApplication" as it may be empty
     if (header) {
-      const title = `${this.getCorpTypeDescription(this.getEntityType)} Incorporation Application`
+      const title = `${this.getCorpTypeDescription(this.getLegalType)} Incorporation Application`
 
       // set subtitle only if DRAFT IA
       let subtitle: string = null
@@ -1103,7 +1103,7 @@ export default class TodoList extends Vue {
 
     // NB: don't check "registration" as it may be empty
     if (header) {
-      const corpTypeDescription = this.getCorpTypeDescription(this.getEntityType)
+      const corpTypeDescription = this.getCorpTypeDescription(this.getLegalType)
       const title = this.isSoleProp
         ? `${corpTypeDescription} / Doing Business As (DBA) ${FilingNames.REGISTRATION}`
         : `${corpTypeDescription} ${FilingNames.REGISTRATION}`
@@ -1157,7 +1157,7 @@ export default class TodoList extends Vue {
     const changeOfRegistration = filing.changeOfRegistration
 
     if (header && changeOfRegistration) {
-      const title = `Change to ${this.getCorpTypeDescription(this.getEntityType)} Registration`
+      const title = `Change to ${this.getCorpTypeDescription(this.getLegalType)} Registration`
 
       // set subtitle only if DRAFT
       let subtitle: string = null

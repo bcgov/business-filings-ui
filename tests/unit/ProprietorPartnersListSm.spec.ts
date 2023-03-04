@@ -93,7 +93,7 @@ const PARTIES = [
 describe('ProprietorPartnersListSm', () => {
   it('displays proprietor (SP filing)', async () => {
     // init store
-    store.state.business.entityType = 'SP'
+    store.state.business.legalType = 'SP'
     store.state.parties = PARTIES
 
     const wrapper = mount(ProprietorPartnersListSm, { store, vuetify })
@@ -109,7 +109,7 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays partners (GP filing)', async () => {
     // init store
-    store.state.business.entityType = 'GP'
+    store.state.business.legalType = 'GP'
     store.state.parties = PARTIES
 
     const wrapper = mount(ProprietorPartnersListSm, { store, vuetify })
@@ -126,7 +126,7 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.state.business.entityType = 'SP'
+    store.state.business.legalType = 'SP'
 
     const wrapper = mount(ProprietorPartnersListSm,
       {
@@ -146,7 +146,7 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.state.business.entityType = 'GP'
+    store.state.business.legalType = 'GP'
     store.state.parties = PARTIES
 
     const wrapper = mount(ProprietorPartnersListSm,
@@ -175,7 +175,7 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "(Not entered)" message for firm registration', async () => {
     // init store
-    store.state.business.entityType = 'GP'
+    store.state.business.legalType = 'GP'
     store.state.parties = [
       {
         officer: {
@@ -249,7 +249,7 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "Complete your filing..." for no parties', async () => {
     // init store
-    store.state.business.entityType = 'GP'
+    store.state.business.legalType = 'GP'
     store.state.parties = []
 
     const wrapper = mount(ProprietorPartnersListSm,

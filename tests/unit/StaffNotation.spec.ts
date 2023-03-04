@@ -48,8 +48,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and not limited restoration', async () => {
     // set store specifically for this test
-    store.state.business.entityType = 'CP'
-    store.state.business.entityState = 'ACTIVE'
+    store.state.business.legalType = 'CP'
+    store.state.business.state = 'ACTIVE'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -107,8 +107,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and limited restoration', async () => {
     // set store specifically for this test
-    store.state.business.entityType = CorpTypeCd.COOP
-    store.state.business.entityState = EntityState.ACTIVE
+    store.state.business.legalType = CorpTypeCd.COOP
+    store.state.business.state = EntityState.ACTIVE
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'
@@ -182,8 +182,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - historical', async () => {
     // set store specifically for this test
-    store.state.business.entityType = CorpTypeCd.SOLE_PROP
-    store.state.business.entityState = EntityState.HISTORICAL
+    store.state.business.legalType = CorpTypeCd.SOLE_PROP
+    store.state.business.state = EntityState.HISTORICAL
     store.state.stateFiling = {}
 
     const wrapper = mount(StaffNotation, { vuetify, store })
@@ -258,8 +258,8 @@ describe('StaffNotation', () => {
   for (const test of staffFilingTypes) {
     it(`renders the staff notation dialog correctly for ${test.name}`, async () => {
       // set store specifically for this test
-      store.state.business.entityType = 'SP'
-      store.state.business.entityState = 'ACTIVE'
+      store.state.business.legalType = 'SP'
+      store.state.business.state = 'ACTIVE'
 
       const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -322,8 +322,8 @@ describe('StaffNotation', () => {
 
   it('renders the staff notation dialog correction for Put Back On', async () => {
     // set store specifically for this test
-    store.state.business.entityType = 'SP'
-    store.state.business.entityState = 'HISTORICAL'
+    store.state.business.legalType = 'SP'
+    store.state.business.state = 'HISTORICAL'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -357,8 +357,8 @@ describe('StaffNotation', () => {
 
   it('renders the staff notation dialog for Admin Freeze', async () => {
     // set store specifically for this test
-    store.state.business.entityType = 'SP'
-    store.state.business.entityState = 'ACTIVE'
+    store.state.business.legalType = 'SP'
+    store.state.business.state = 'ACTIVE'
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -392,8 +392,8 @@ describe('StaffNotation', () => {
 
   it('goes to conversion filing', async () => {
     // set store specifically for this test
-    store.state.business.entityType = 'SP'
-    store.state.business.entityState = 'ACTIVE'
+    store.state.business.legalType = 'SP'
+    store.state.business.state = 'ACTIVE'
     store.state.business.identifier = 'SP1234567'
 
     const localVue = createLocalVue()
@@ -416,8 +416,8 @@ describe('StaffNotation', () => {
 
   it('goes to restoration filing', async () => {
     // set store specifically for this test
-    store.state.business.entityType = 'BEN'
-    store.state.business.entityState = 'HISTORICAL'
+    store.state.business.legalType = 'BEN'
+    store.state.business.state = 'HISTORICAL'
     store.state.business.identifier = 'BC1234567'
 
     // stub "create draft" endpoint
@@ -458,8 +458,8 @@ describe('StaffNotation', () => {
     // set store specifically for this test
     store.state.business.identifier = 'BC1234567'
     store.state.currentDate = '2022-12-31'
-    store.state.business.entityType = 'BEN'
-    store.state.business.entityState = 'ACTIVE'
+    store.state.business.legalType = 'BEN'
+    store.state.business.state = 'ACTIVE'
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'

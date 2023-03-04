@@ -38,7 +38,7 @@ describe('TodoList - UI', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.business.entityType = 'CP'
+    store.state.business.legalType = 'CP'
   })
 
   it('handles empty data', async () => {
@@ -944,7 +944,7 @@ describe('TodoList - UI - BCOMPs', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
   })
 
   it('handles empty data', async () => {
@@ -1414,7 +1414,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
   })
 
   it('displays a DRAFT numbered company IA', async () => {
@@ -1468,7 +1468,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   it('displays a DRAFT named company IA', async () => {
     // init store
     store.state.nameRequest = {}
-    store.state.business.entityName = 'My Business Inc'
+    store.state.business.legalName = 'My Business Inc'
     store.state.tasks = [
       {
         task: {
@@ -1565,7 +1565,7 @@ describe('TodoList - UI - Incorp Apps', () => {
   it('displays a PENDING named company IA', async () => {
     // init store
     store.state.nameRequest = {}
-    store.state.business.entityName = 'My Business Inc'
+    store.state.business.legalName = 'My Business Inc'
     store.state.tasks = [
       {
         task: {
@@ -1622,7 +1622,7 @@ describe('TodoList - Click Tests', () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.business.identifier = 'CP0001191'
-    store.state.business.entityType = 'CP'
+    store.state.business.legalType = 'CP'
 
     // mock the window.location.assign function
     delete window.location
@@ -1963,7 +1963,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
   })
 
   afterAll(() => {
@@ -2202,8 +2202,8 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://create.url/' })
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.business.entityName = 'My Business Inc'
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalName = 'My Business Inc'
+    store.state.business.legalType = 'BEN'
 
     // mock the window.location.assign function
     delete window.location
@@ -2456,7 +2456,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.state.business.identifier = 'BC1234567'
     store.state.business.goodStanding = true
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.tasks = [
       {
         task: {
@@ -2655,7 +2655,7 @@ describe('TodoList - Delete Draft', () => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.business.identifier = 'T123456789'
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.entityStatus = 'DRAFT_APP'
     store.state.tasks = [
       {

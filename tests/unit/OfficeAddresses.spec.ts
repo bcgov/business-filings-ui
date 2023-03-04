@@ -29,7 +29,7 @@ function getAddressX (x: number, type: string): any {
 
 describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
-    store.state.business.entityType = 'CP'
+    store.state.business.legalType = 'CP'
     store.state.business.identifier = 'CP0000841'
   })
 
@@ -195,7 +195,7 @@ describe('OfficeAddresses as a COOP', () => {
 describe('OfficeAddresses as a BCOMP', () => {
   beforeAll(() => {
     // init store
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.business.identifier = 'BC1218881'
   })
 

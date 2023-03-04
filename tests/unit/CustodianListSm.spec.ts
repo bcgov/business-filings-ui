@@ -16,7 +16,7 @@ describe('CustodianListSm', () => {
   it('handles empty data as a COOP', async () => {
     // init store
     store.state.custodians = []
-    store.state.business.entityType = 'CP'
+    store.state.business.legalType = 'CP'
 
     const wrapper = mount(CustodianListSm, { store, vuetify })
     const vm = wrapper.vm as any
@@ -31,7 +31,7 @@ describe('CustodianListSm', () => {
 
   it('displays multiple custodians as a COOP', async () => {
     // init store
-    store.state.business.entityType = 'CP'
+    store.state.business.legalType = 'CP'
     const custodians = [
       {
         'officer': {
@@ -88,7 +88,7 @@ describe('CustodianListSm', () => {
 
   it('displays multiple custodians as a BCOMP', async () => {
     // init store
-    store.state.business.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     const custodians = [
       {
         'officer': {

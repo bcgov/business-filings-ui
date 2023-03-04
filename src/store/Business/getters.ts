@@ -13,24 +13,14 @@ export default {
     return state.warnings
   },
 
-  /** The entity founding date. */
-  getEntityFoundingDate (state: BusinessIF): Date {
-    return DateUtilities.apiToDate(state.foundingDate)
-  },
-
-  /** The entity name. */
-  getEntityName (state: BusinessIF): string {
-    return state.legalName
-  },
-
-  /** The entity state. */
-  getEntityState (state: BusinessIF): EntityState {
+  /** The business state. */
+  getBusinessState (state: BusinessIF): EntityState {
     return state.state
   },
 
-  /** The entity type. */
-  getEntityType (state: BusinessIF): CorpTypeCd {
-    return state.legalType
+  /** The founding date. */
+  getFoundingDate (state: BusinessIF): Date {
+    return DateUtilities.apiToDate(state.foundingDate)
   },
 
   /** The business identifier (aka Incorporation Number). */
@@ -51,6 +41,16 @@ export default {
   /** The last director change date. */
   getLastDirectorChangeDate (state: BusinessIF): string {
     return state.lastDirectorChangeDate
+  },
+
+  /** The legal name. */
+  getLegalName (state: BusinessIF): string {
+    return state.legalName
+  },
+
+  /** The legal type. */
+  getLegalType (state: BusinessIF): CorpTypeCd {
+    return state.legalType
   },
 
   /** The state filing URL (may be null). */
@@ -81,7 +81,7 @@ export default {
 
   /** Is True if business is active. */
   isActive (_state: BusinessIF, getters): boolean {
-    return (getters.getEntityState === EntityState.ACTIVE)
+    return (getters.getBusinessState === EntityState.ACTIVE)
   },
 
   /** Is True if the business is frozen. */
@@ -136,26 +136,26 @@ export default {
 
   /** Is True if business is historical (ie, dissolved). */
   isHistorical (_state: BusinessIF, getters): boolean {
-    return (getters.getEntityState === EntityState.HISTORICAL)
+    return (getters.getBusinessState === EntityState.HISTORICAL)
   },
 
   /** Is True if business is in liquidation. */
   isLiquidation (_state: BusinessIF, getters): boolean {
-    return (getters.getEntityState === EntityState.LIQUIDATION)
+    return (getters.getBusinessState === EntityState.LIQUIDATION)
   },
 
   /** Is True if entity is a General Partnership. */
   isPartnership (_state: BusinessIF, getters): boolean {
-    return (getters.getEntityType === CorpTypeCd.PARTNERSHIP)
+    return (getters.getLegalType === CorpTypeCd.PARTNERSHIP)
   },
 
   /** Is True if entity is a Sole Proprietorship. */
   isSoleProp (_state: BusinessIF, getters): boolean {
-    return (getters.getEntityType === CorpTypeCd.SOLE_PROP)
+    return (getters.getLegalType === CorpTypeCd.SOLE_PROP)
   },
 
   /** Is True if entity is a BC ULC Company. */
   isUlc (_state: BusinessIF, getters): boolean {
-    return (getters.getEntityType === CorpTypeCd.BC_ULC_COMPANY)
+    return (getters.getLegalType === CorpTypeCd.BC_ULC_COMPANY)
   }
 }

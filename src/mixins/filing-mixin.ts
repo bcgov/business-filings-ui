@@ -23,9 +23,9 @@ export default class FilingMixin extends DateMixin {
   @State entityName!: string
 
   @Getter getCurrentDate!: string
-  @Getter getEntityType!: CorpTypeCd
+  @Getter getLegalType!: CorpTypeCd
   @Getter getIdentifier!: string
-  @Getter getEntityFoundingDate!: Date
+  @Getter getFoundingDate!: Date
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
   @Getter getBusinessAddress!: OfficeAddressIF
 
@@ -73,7 +73,7 @@ export default class FilingMixin extends DateMixin {
       if (action === 'add') {
         myFilingData.push({
           filingTypeCode: filingCode,
-          entityType: this.getEntityType,
+          entityType: this.getLegalType,
           priority: priority,
           waiveFees: waiveFees
         })
@@ -112,7 +112,7 @@ export default class FilingMixin extends DateMixin {
       business: {
         identifier: this.getIdentifier,
         legalName: this.entityName, // may be undefined
-        legalType: this.getEntityType
+        legalType: this.getLegalType
       },
       correction: {
         comment: '',
@@ -137,10 +137,10 @@ export default class FilingMixin extends DateMixin {
         name: FilingTypes.DISSOLUTION
       },
       business: {
-        foundingDate: this.dateToApi(this.getEntityFoundingDate),
+        foundingDate: this.dateToApi(this.getFoundingDate),
         identifier: this.getIdentifier,
         legalName: this.entityName,
-        legalType: this.getEntityType
+        legalType: this.getLegalType
       },
       dissolution: {
         custodialOffice: this.getRegisteredOfficeAddress,
@@ -149,7 +149,7 @@ export default class FilingMixin extends DateMixin {
     }
 
     // Conditionally add the entity-specific sections.
-    switch (this.getEntityType) {
+    switch (this.getLegalType) {
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP:
         dissolutionFiling.dissolution = {
@@ -173,10 +173,10 @@ export default class FilingMixin extends DateMixin {
         name: FilingTypes.RESTORATION
       },
       business: {
-        foundingDate: this.dateToApi(this.getEntityFoundingDate),
+        foundingDate: this.dateToApi(this.getFoundingDate),
         identifier: this.getIdentifier,
         legalName: this.entityName,
-        legalType: this.getEntityType
+        legalType: this.getLegalType
       },
       restoration: {
         type: restorationType

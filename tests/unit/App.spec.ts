@@ -588,12 +588,12 @@ describe('App as a COOP', () => {
   })
 
   it('fetches Entity Info properly', () => {
-    expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
+    expect(vm.$store.getters.getLegalName).toBe('TEST NAME')
     expect(vm.$store.getters.isGoodStanding).toBe(true)
-    expect(vm.$store.state.business.businessNumber).toBe('123456789')
+    expect(vm.$store.getters.getBusinessNumber).toBe('123456789')
     expect(vm.$store.getters.getIdentifier).toBe('CP0001191')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.state.business.entityFoundingDate).toEqual(entityFoundingDate)
+    expect(vm.$store.getters.getFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
@@ -839,12 +839,12 @@ describe('App as a BCOMP', () => {
   })
 
   it('fetches Entity Info properly', () => {
-    expect(vm.$store.getters.getEntityName).toBe('TEST NAME')
+    expect(vm.$store.getters.getLegalName).toBe('TEST NAME')
     expect(vm.$store.getters.isGoodStanding).toBe(true)
-    expect(vm.$store.state.business.businessNumber).toBe('123456789')
+    expect(vm.$store.getters.getBusinessNumber).toBe('123456789')
     expect(vm.$store.getters.getIdentifier).toBe('BC0007291')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.state.business.entityFoundingDate).toEqual(entityFoundingDate)
+    expect(vm.$store.getters.getFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
@@ -981,13 +981,13 @@ describe('App as a Draft IA with approved NR', () => {
 
   it('fetches approved NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
   })
 
   it('fetches IA filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getEntityType).toBe('BEN')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalType).toBe('BEN')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
     expect(vm.$store.getters.isAppTask).toBe(true)
 
     // verify loaded task
@@ -1107,7 +1107,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
 
   it('fetches conditional-not required NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Not Required')
+    expect(vm.$store.getters.getLegalName).toBe('My Conditional NR With Consent Not Required')
   })
 })
 
@@ -1213,7 +1213,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
 
   it('fetches conditional-received NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Received')
+    expect(vm.$store.getters.getLegalName).toBe('My Conditional NR With Consent Received')
   })
 })
 
@@ -1319,7 +1319,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
 
   it('fetches conditional-waived NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Conditional NR With Consent Waived')
+    expect(vm.$store.getters.getLegalName).toBe('My Conditional NR With Consent Waived')
   })
 })
 
@@ -1435,13 +1435,13 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
   it('fetches NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
   })
 
   it('fetches IA filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getEntityType).toBe('BEN')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalType).toBe('BEN')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
     expect(vm.$store.getters.isAppFiling).toBe(true)
 
     // spot check addresses and directors
@@ -1585,13 +1585,13 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
   it('fetches NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
   })
 
   it('fetches IA filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getEntityType).toBe('BEN')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalType).toBe('BEN')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
     expect(vm.$store.getters.isAppFiling).toBe(true)
 
     // spot check addresses and directors
@@ -1863,13 +1863,13 @@ describe('App as a Draft Registration with approved NR', () => {
 
   it('fetches approved NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
   })
 
   it('fetches Registration filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getEntityType).toBe('SP')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalType).toBe('SP')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
     expect(vm.$store.getters.isAppTask).toBe(true)
 
     // verify loaded task
@@ -2000,13 +2000,13 @@ describe('App as a COMPLETED Registration Application', () => {
 
   it('fetches NR data properly', () => {
     expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
   })
 
   it('fetches Registration filing properly', () => {
     expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getEntityType).toBe('SP')
-    expect(vm.$store.getters.getEntityName).toBe('My Name Request')
+    expect(vm.$store.getters.getLegalType).toBe('SP')
+    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
     expect(vm.$store.getters.isAppFiling).toBe(true)
 
     // verify loaded filing

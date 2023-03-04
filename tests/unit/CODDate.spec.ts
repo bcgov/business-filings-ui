@@ -24,8 +24,8 @@ describe('COD Date - COOPs', () => {
     store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
-    store.state.business.entityFoundingDate = new Date('2018-03-01T12:00:00')
-    store.state.business.entityType = 'CP'
+    store.state.business.foundingDate = '2018-03-01T12:00:00'
+    store.state.business.legalType = 'CP'
 
     wrapper = mount(CodDate, { store, vuetify })
     vm = wrapper.vm
@@ -33,7 +33,6 @@ describe('COD Date - COOPs', () => {
 
   afterEach(() => {
     wrapper.destroy()
-    wrapper = null
   })
 
   it('loads variables properly when initial COD Date is set', async () => {
@@ -191,8 +190,8 @@ describe('COD Date - BCOMPs', () => {
     store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
-    store.state.business.entityFoundingDate = new Date('2018-03-01T12:00:00')
-    store.state.business.entityType = 'BEN'
+    store.state.business.foundingDate = '2018-03-01T12:00:00'
+    store.state.business.legalType = 'BEN'
 
     wrapper = mount(CodDate, { store, vuetify })
     vm = wrapper.vm
@@ -200,7 +199,6 @@ describe('COD Date - BCOMPs', () => {
 
   afterEach(() => {
     wrapper.destroy()
-    wrapper = null
   })
 
   it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {

@@ -174,8 +174,8 @@ export default {
       'getAuthApiUrl',
       'getBusinessUrl',
       'getCreateUrl',
-      'getEntityName',
-      'getEntityType',
+      'getLegalName',
+      'getLegalType',
       'getIdentifier',
       'getRegHomeUrl',
       'getStateFilingUrl',
@@ -230,7 +230,7 @@ export default {
       const breadcrumbs = this.$route?.meta?.breadcrumb
       const crumbs: Array<BreadcrumbIF> = [
         {
-          text: this.getEntityName || this.getCorpTypeNumberedDescription(this.getEntityType),
+          text: this.getLegalName || this.getCorpTypeNumberedDescription(this.getLegalType),
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])
@@ -304,8 +304,8 @@ export default {
     ]),
 
     ...mapMutations([
-      'setEntityName',
-      'setEntityType',
+      'setLegalName',
+      'setLegalType',
       'setGoodStanding',
       'setIdentifier'
     ]),
@@ -558,7 +558,7 @@ export default {
 
       // store business info
       this.setIdentifier(this.tempRegNumber)
-      this.setEntityType(legalType)
+      this.setLegalType(legalType)
 
       // Draft Applications are always in good standing
       this.setGoodStanding(true)
@@ -567,7 +567,7 @@ export default {
       this.localNrNumber = nameRequest.nrNumber || null
 
       // store Legal Name if present
-      if (nameRequest.legalName) this.setEntityName(nameRequest.legalName)
+      if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
 
       switch (status) {
         case FilingStatus.DRAFT:
@@ -646,7 +646,7 @@ export default {
       }
 
       // verify that NR type matches entity type from application
-      if (nr.legalType !== this.getEntityType) {
+      if (nr.legalType !== this.getLegalType) {
         this.nameRequestInvalidDialog = true
         throw new Error('Invalid NR request type')
       }
@@ -667,7 +667,7 @@ export default {
 
       // save the approved name
       const entityName = this.getNrApprovedName(nr) || ''
-      this.setEntityName(entityName || 'Unknown Name')
+      this.setLegalName(entityName || 'Unknown Name')
     },
 
     storeTasks (response: any): void {
@@ -718,7 +718,7 @@ export default {
 
     /** Stores config object matching the specified entity type. */
     storeConfigObject (): void {
-      const configObject = ConfigJson.find(x => x.entityType === this.getEntityType)
+      const configObject = ConfigJson.find(x => x.entityType === this.getLegalType)
       this.setConfigObject(configObject)
     },
 

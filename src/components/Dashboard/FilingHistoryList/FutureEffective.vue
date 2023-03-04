@@ -3,7 +3,7 @@
     <h4>{{_.subtitle}}</h4>
 
     <p>
-      The {{_.filingLabel}} date and time for {{this.getEntityName || 'this company'}}
+      The {{_.filingLabel}} date and time for {{this.getLegalName || 'this company'}}
       will be <strong>{{effectiveDateTime}}</strong>.
     </p>
 
@@ -36,7 +36,7 @@ import { HistoryItemIF } from '@/interfaces'
   mixins: [DateMixin]
 })
 export default class FutureEffective extends Vue {
-  @Getter getEntityName!: string
+  @Getter getLegalName!: string
 
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: HistoryItemIF

@@ -583,7 +583,7 @@ export default class Directors extends Vue {
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
   @Getter getCurrentDate!: string
-  @Getter getEntityFoundingDate!: Date
+  @Getter getFoundingDate!: Date
   @Getter getIdentifier!: string
   @Getter getLastAnnualReportDate!: string
   @Getter getLastDirectorChangeDate!: string
@@ -765,7 +765,7 @@ export default class Directors extends Vue {
     if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {
       date = this.latestYyyyMmDd(this.getLastDirectorChangeDate, this.getLastAnnualReportDate)
     } else {
-      date = this.dateToYyyyMmDd(this.getEntityFoundingDate)
+      date = this.dateToYyyyMmDd(this.getFoundingDate)
     }
 
     // when earliest date is calculated, inform parent component
