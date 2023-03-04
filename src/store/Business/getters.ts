@@ -1,69 +1,70 @@
 import { CorpTypeCd, EntityState } from '@/enums'
-import { BusinessStateIF, BusinessWarningIF } from '@/interfaces'
+import { BusinessIF, BusinessWarningIF } from '@/interfaces'
+import { DateUtilities } from '@/services/'
 
 export default {
   /** The business number (aka Tax ID). */
-  getBusinessNumber (state: BusinessStateIF): string {
-    return state.businessNumber
+  getBusinessNumber (state: BusinessIF): string {
+    return state.taxId
   },
 
   /** The business warnings list. */
-  getBusinessWarnings (state: BusinessStateIF): Array<BusinessWarningIF> {
-    return state.businessWarnings
+  getBusinessWarnings (state: BusinessIF): Array<BusinessWarningIF> {
+    return state.warnings
   },
 
   /** The entity founding date. */
-  getEntityFoundingDate (state: BusinessStateIF): Date {
-    return state.entityFoundingDate
+  getEntityFoundingDate (state: BusinessIF): Date {
+    return DateUtilities.apiToDate(state.foundingDate)
   },
 
   /** The entity name. */
-  getEntityName (state: BusinessStateIF): string {
-    return state.entityName
+  getEntityName (state: BusinessIF): string {
+    return state.legalName
   },
 
   /** The entity state. */
-  getEntityState (state: BusinessStateIF): EntityState {
-    return state.entityState
+  getEntityState (state: BusinessIF): EntityState {
+    return state.state
   },
 
   /** The entity type. */
-  getEntityType (state: BusinessStateIF): CorpTypeCd {
-    return state.entityType
+  getEntityType (state: BusinessIF): CorpTypeCd {
+    return state.legalType
   },
 
   /** The business identifier (aka Incorporation Number). */
-  getIdentifier (state: BusinessStateIF): string {
+  getIdentifier (state: BusinessIF): string {
     return state.identifier
   },
 
   /** The last address change date. */
-  getLastAddressChangeDate (state: BusinessStateIF): string {
+  getLastAddressChangeDate (state: BusinessIF): string {
     return state.lastAddressChangeDate
   },
 
   /** The last annual report change date. */
-  getLastAnnualReportDate (state: BusinessStateIF): string {
+  getLastAnnualReportDate (state: BusinessIF): string {
     return state.lastAnnualReportDate
   },
 
   /** The last director change date. */
-  getLastDirectorChangeDate (state: BusinessStateIF): string {
+  getLastDirectorChangeDate (state: BusinessIF): string {
     return state.lastDirectorChangeDate
   },
 
   /** The state filing URL (may be null). */
-  getStateFilingUrl (state: BusinessStateIF): string {
-    return state.businessInfo.stateFiling
+  getStateFilingUrl (state: BusinessIF): string {
+    return state.stateFiling
   },
 
   /** Is true of the business has a court order filing */
-  hasCourtOrders (state: BusinessStateIF): boolean {
+  hasCourtOrders (state: BusinessIF): boolean {
     return state.hasCourtOrders
   },
 
   /** Is True if a firm has at least one "compliance" warning. */
-  hasComplianceWarning (_state: BusinessStateIF, getters): boolean {
+  hasComplianceWarning (_state: BusinessIF, getters): boolean {
     return (
       getters.isFirm &&
       getters.getBusinessWarnings.some(item => item.warningType?.includes('COMPLIANCE'))
@@ -71,7 +72,7 @@ export default {
   },
 
   /** Is True if a firm has at least one "missing required business info" warning. */
-  hasMissingInfoWarning (_state: BusinessStateIF, getters): boolean {
+  hasMissingInfoWarning (_state: BusinessIF, getters): boolean {
     return (
       getters.isFirm &&
       getters.getBusinessWarnings.some(item => item.warningType === 'MISSING_REQUIRED_BUSINESS_INFO')
@@ -79,27 +80,27 @@ export default {
   },
 
   /** Is True if business is active. */
-  isActive (_state: BusinessStateIF, getters): boolean {
+  isActive (_state: BusinessIF, getters): boolean {
     return (getters.getEntityState === EntityState.ACTIVE)
   },
 
   /** Is True if the business is frozen. */
-  isAdminFreeze (state: BusinessStateIF): boolean {
+  isAdminFreeze (state: BusinessIF): boolean {
     return state.adminFreeze
   },
 
   /** Is True if entity is a Benefit Company. */
-  isBComp (state: BusinessStateIF): boolean {
-    return (state.entityType === CorpTypeCd.BENEFIT_COMPANY)
+  isBComp (state: BusinessIF): boolean {
+    return (state.legalType === CorpTypeCd.BENEFIT_COMPANY)
   },
 
   /** Is True if entity is a BC Company. */
-  isBcCompany (state: BusinessStateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_COMPANY)
+  isBcCompany (state: BusinessIF): boolean {
+    return (state.legalType === CorpTypeCd.BC_COMPANY)
   },
 
   /** Is True if entity is a BEN/BC/CCC/ULC. */
-  isBenBcCccUlc (_state: BusinessStateIF, getters): boolean {
+  isBenBcCccUlc (_state: BusinessIF, getters): boolean {
     return (
       getters.isBComp ||
       getters.isBcCompany ||
@@ -109,52 +110,52 @@ export default {
   },
 
   /** Is True if entity is a BC Community Contribution Company. */
-  isCcc (state: BusinessStateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_CCC)
+  isCcc (state: BusinessIF): boolean {
+    return (state.legalType === CorpTypeCd.BC_CCC)
   },
 
   /** Is True if entity is a Cooperative. */
-  isCoop (state: BusinessStateIF): boolean {
-    return (state.entityType === CorpTypeCd.COOP)
+  isCoop (state: BusinessIF): boolean {
+    return (state.legalType === CorpTypeCd.COOP)
   },
 
   /** Is True if entity is a BC Corporation. */
-  isCorp (state: BusinessStateIF): boolean {
-    return (state.entityType === CorpTypeCd.BC_CORPORATION)
+  isCorp (state: BusinessIF): boolean {
+    return (state.legalType === CorpTypeCd.BC_CORPORATION)
   },
 
   /** Is True if entity is a Sole Proprietorship or General Partnership. */
-  isFirm (_state: BusinessStateIF, getters): boolean {
+  isFirm (_state: BusinessIF, getters): boolean {
     return (getters.isSoleProp || getters.isPartnership)
   },
 
   /** Is True if business is in good standing. */
-  isGoodStanding (state: BusinessStateIF): boolean {
+  isGoodStanding (state: BusinessIF): boolean {
     return state.goodStanding
   },
 
   /** Is True if business is historical (ie, dissolved). */
-  isHistorical (_state: BusinessStateIF, getters): boolean {
+  isHistorical (_state: BusinessIF, getters): boolean {
     return (getters.getEntityState === EntityState.HISTORICAL)
   },
 
   /** Is True if business is in liquidation. */
-  isLiquidation (_state: BusinessStateIF, getters): boolean {
+  isLiquidation (_state: BusinessIF, getters): boolean {
     return (getters.getEntityState === EntityState.LIQUIDATION)
   },
 
   /** Is True if entity is a General Partnership. */
-  isPartnership (_state: BusinessStateIF, getters): boolean {
+  isPartnership (_state: BusinessIF, getters): boolean {
     return (getters.getEntityType === CorpTypeCd.PARTNERSHIP)
   },
 
   /** Is True if entity is a Sole Proprietorship. */
-  isSoleProp (_state: BusinessStateIF, getters): boolean {
+  isSoleProp (_state: BusinessIF, getters): boolean {
     return (getters.getEntityType === CorpTypeCd.SOLE_PROP)
   },
 
   /** Is True if entity is a BC ULC Company. */
-  isUlc (_state: BusinessStateIF, getters): boolean {
+  isUlc (_state: BusinessIF, getters): boolean {
     return (getters.getEntityType === CorpTypeCd.BC_ULC_COMPANY)
   }
 }

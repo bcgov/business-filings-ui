@@ -406,6 +406,7 @@ export default {
       this.storeParties(data[4])
 
       // if the URL was provided in business info, load state filing
+      // *** TODO: move logic to store action
       if (this.getStateFilingUrl) await this.loadStateFiling(this.getStateFilingUrl)
 
       // now that we know entity type, store config object

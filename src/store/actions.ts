@@ -1,5 +1,6 @@
 import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
 import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, PartyIF } from '@/interfaces'
+import { LegalServices } from '@/services/'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -85,5 +86,27 @@ export default {
   },
   setCorpTypeCd ({ commit }, val: CorpTypeCd) {
     commit('corpTypeCd', val)
+  },
+
+  /**
+   * Fetches the state filing from the Legal API and, if successful, triggers mutation.
+   * @param context the Vuex context (passed in automatically)
+   * @param stateFilingUrl the state filing url
+   */
+  // *** TODO: get stateFilingUrl from store instead of passing it in
+  loadStateFiling ({ commit }, stateFilingUrl: string): Promise<void> {
+    // need to return a promise because action is called via dispatch
+    return new Promise((resolve, reject) => {
+      LegalServices.fetchFiling(stateFilingUrl)
+        .then(filing => {
+          // commit data to store
+          commit('setStateFiling', filing)
+          // return the filing object
+          resolve(filing)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
 }

@@ -18,7 +18,7 @@ export default {
     Vue.set(state.configuration, payload.key, payload.value)
   },
 
-  setSessionVariables (state: ConfigurationStateIF, responseData: any) {
+  setSessionVariables (_state: ConfigurationStateIF, responseData: any) {
     // The following four session variables are used by SBC Header (a common component):
     sessionStorage.setItem('AUTH_WEB_URL', responseData['AUTH_WEB_URL'])
     sessionStorage.setItem('REGISTRY_HOME_URL', responseData['REGISTRY_HOME_URL'])
@@ -41,7 +41,7 @@ export default {
     (<any>window).sentryEnable = sentryEnable
   },
 
-  setAxiosBaseUrl (state, legalApiUrl: string) {
+  setAxiosBaseUrl (_state: ConfigurationStateIF, legalApiUrl: string) {
     axios.defaults.baseURL = legalApiUrl
   }
 }

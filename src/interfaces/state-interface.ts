@@ -2,6 +2,14 @@ import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
 import { ApiFilingIF, ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF }
   from '@/interfaces'
 
+export interface StateFilingIF {
+  business: any
+  header: ApiHeaderIF
+  dissolution?: any
+  restoration?: any
+  putBackOn?: any
+}
+
 /** The state model interface. */
 export interface StateIF {
   // tombstone data
@@ -11,6 +19,7 @@ export interface StateIF {
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
   entityStatus: EntityStatus // for draft app only
+  stateFiling: StateFilingIF // the state filing object
 
   // entity info from auth db
   businessEmail: string
@@ -40,12 +49,5 @@ export interface StateIF {
   hasBlockerTask: boolean
   hasBlockerFiling: boolean
   isCoaPending: boolean
-  coaEffectiveDate: Date,
-  stateFiling: {
-    business: any,
-    header: ApiHeaderIF,
-    dissolution?: any,
-    restoration?: any
-    putBackOn?: any
-  }
+  coaEffectiveDate: Date
 }

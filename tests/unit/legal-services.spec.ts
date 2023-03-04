@@ -21,23 +21,21 @@ describe('Legal Services', () => {
     sinon.restore()
   })
 
-  it('fetches entity info correctly', async () => {
-    const ENTITY_INFO = {
-      business: {
-        identifier: 'CP1234567',
-        legalType: 'CP'
-      }
+  it('fetches business info correctly', async () => {
+    const BUSINESS_INFO = {
+      identifier: 'CP1234567',
+      legalType: 'CP'
     }
 
     // mock endpoint
     get.withArgs('businesses/CP1234567')
-      .returns(new Promise(resolve => resolve({ data: ENTITY_INFO })))
+      .returns(new Promise(resolve => resolve({ data: { business: BUSINESS_INFO } })))
 
     // call method
     const entityInfo = await LegalServices.fetchBusinessInfo('CP1234567')
 
     // verify data
-    expect(entityInfo).toEqual({ data: ENTITY_INFO })
+    expect(entityInfo).toEqual(BUSINESS_INFO)
   })
 
   it('fetches tasks correctly', async () => {

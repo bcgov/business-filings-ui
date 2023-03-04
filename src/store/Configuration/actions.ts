@@ -13,7 +13,6 @@ export default {
       'Cache-Control': 'no-store'
     }
     // need to return a promise because action is called via dispatch
-    // needs more research to understand fully
     return new Promise((resolve, reject) => {
       axios.get(url, { headers })
         .then((response) => {

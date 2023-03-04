@@ -1,18 +1,25 @@
-import { BusinessStateIF } from '@/interfaces'
+import { BusinessIF } from '@/interfaces'
 
-export const state: BusinessStateIF = {
-  businessInfo: {}, // *** TODO: populate defaults as below
+export const state: BusinessIF = {
   adminFreeze: null,
-  businessNumber: null,
-  businessWarnings: [],
-  entityFoundingDate: null,
-  entityName: null,
-  entityState: null,
-  entityType: null,
+  allowableActions: [],
+  associationType: null,
+  foundingDate: null,
   goodStanding: null,
+  hasCorrections: null,
   hasCourtOrders: null,
+  hasRestrictions: null,
   identifier: null,
   lastAddressChangeDate: null,
   lastAnnualReportDate: null,
-  lastDirectorChangeDate: null
+  lastDirectorChangeDate: null,
+  legalName: null,
+  legalType: null,
+  naicsCode: null,
+  naicsDescription: null,
+  naicsKey: null,
+  nextAnnualReport: null,
+  state: null,
+  stateFiling: null,
+  warnings: []
 }

@@ -1,7 +1,19 @@
 import { EntityState, CorpTypeCd } from '@/enums'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
-/** The Business Warning object. */
+/** The Allowable Action object from the Legal API. */
+export interface AllowableActionIF {
+  filing: {
+    filingSubmissionLink: string
+    filingTypes: [{
+      displayName: string
+      feeCode: string
+      name: string
+    }]
+  }
+}
+
+/** The Business Warning object from the Legal API. */
 export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
   filing?: string // not used
@@ -9,31 +21,38 @@ export interface BusinessWarningIF {
   warningType: string // FUTURE: use an enum
 }
 
-/** The Business object from the API. */
+/** The Business object from the Legal API. */
+// FUTURE: verify/indicate unused properties
 export interface BusinessIF {
   adminFreeze: boolean
-  arMaxDate: IsoDatePacific // not used
-  arMinDate: IsoDatePacific // not used
-  dissolutionDate: IsoDatePacific // not used
-  fiscalYearEndDate: IsoDatePacific // not used
+  allowableActions: Array<AllowableActionIF>
+  arMaxDate?: IsoDatePacific // not used
+  arMinDate?: IsoDatePacific // not used
+  associationType: string // COOP only
+  complianceWarnings?: Array<any> // not used
+  dissolutionDate?: IsoDatePacific // not used
+  fiscalYearEndDate?: IsoDatePacific // not used
   foundingDate: ApiDateTimeUtc
   goodStanding: boolean
+  hasCorrections: boolean
   hasCourtOrders: boolean
-  hasRestrictions: boolean // FUTURE: is this obsolete???
-  identifier: string
+  hasRestrictions: boolean
+  identifier: string // eg, BC1234567
   lastAddressChangeDate: IsoDatePacific
-  lastAnnualGeneralMeetingDate: IsoDatePacific // not used
+  lastAnnualGeneralMeetingDate?: IsoDatePacific // not used
   lastAnnualReportDate: IsoDatePacific
   lastDirectorChangeDate: IsoDatePacific
-  lastLedgerTimestamp: ApiDateTimeUtc // not used
-  lastModified: ApiDateTimeUtc // not used
+  lastLedgerTimestamp?: ApiDateTimeUtc // not used
+  lastModified?: ApiDateTimeUtc // not used
   legalName: string
   legalType: CorpTypeCd
-  nextAnnualReport: ApiDateTimeUtc // used for BCOMP only
-  startDate: IsoDatePacific // not used
+  naicsCode: string // firm only
+  naicsDescription: string // firm only
+  naicsKey: string // firm only
+  nextAnnualReport: ApiDateTimeUtc // BCOMP only
   state: EntityState
-  stateFiling?: string
-  submitter: string // not used
-  taxId?: string // aka Business Number // may be undefined
-  warnings?: Array<BusinessWarningIF>
+  stateFiling: string // the state filing URL
+  submitter?: string // not used
+  taxId?: string // aka Business Number // may be absent
+  warnings: Array<BusinessWarningIF>
 }

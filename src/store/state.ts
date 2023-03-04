@@ -7,6 +7,7 @@ export const state: StateIF = {
   currentJsDate: null,
   currentDate: null,
   entityStatus: null,
+  stateFiling: null,
 
   businessEmail: null,
   businessPhone: null,
@@ -33,6 +34,5 @@ export const state: StateIF = {
   hasBlockerTask: false,
   hasBlockerFiling: false,
   isCoaPending: false,
-  coaEffectiveDate: null,
-  stateFiling: null
+  coaEffectiveDate: null
 }

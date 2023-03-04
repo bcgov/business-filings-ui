@@ -808,10 +808,7 @@ describe('App as a BCOMP', () => {
       localVue,
       router,
       store,
-      vuetify,
-      destroyed () {
-        get()
-      }
+      vuetify
     })
     vm = wrapper.vm
 
@@ -1683,17 +1680,13 @@ describe('App as an historical business', () => {
             arMaxDate: '2021-12-10',
             arMinDate: '2022-12-02',
             dissolutionDate: '2021-12-06',
-            fiscalYearEndDate: '2021-12-02',
             foundingDate: '2021-12-02T20:15:00+00:00',
             goodStanding: true,
             hasRestrictions: false,
             identifier: 'BC1234567',
             lastAddressChangeDate: '2021-12-02',
-            lastAnnualGeneralMeetingDate: '',
             lastAnnualReportDate: '',
             lastDirectorChangeDate: '2021-12-02',
-            lastLedgerTimestamp: '2021-12-02T21:00:36.895648+00:00',
-            lastModified: '2021-12-06T19:58:53.878809+00:00',
             legalName: 'HISTORICAL CORP.',
             legalType: 'BEN',
             nextAnnualReport: '2022-12-02T08:00:00+00:00',
