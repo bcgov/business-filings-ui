@@ -7,7 +7,6 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import LegalServices from '@/services/legal-services'
-import { CorpTypeCd, EntityState } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -48,8 +47,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and not limited restoration', async () => {
     // set store specifically for this test
-    store.state.business.legalType = 'CP'
-    store.state.business.state = 'ACTIVE'
+    store.commit('setLegalType', 'CP')
+    store.commit('setState', 'ACTIVE')
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -107,8 +106,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and limited restoration', async () => {
     // set store specifically for this test
-    store.state.business.legalType = CorpTypeCd.COOP
-    store.state.business.state = EntityState.ACTIVE
+    store.commit('setLegalType', 'CP')
+    store.commit('setState', 'ACTIVE')
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'
@@ -182,8 +181,8 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - historical', async () => {
     // set store specifically for this test
-    store.state.business.legalType = CorpTypeCd.SOLE_PROP
-    store.state.business.state = EntityState.HISTORICAL
+    store.commit('setLegalType', 'SP')
+    store.commit('setState', 'HISTORICAL')
     store.state.stateFiling = {}
 
     const wrapper = mount(StaffNotation, { vuetify, store })
@@ -258,8 +257,8 @@ describe('StaffNotation', () => {
   for (const test of staffFilingTypes) {
     it(`renders the staff notation dialog correctly for ${test.name}`, async () => {
       // set store specifically for this test
-      store.state.business.legalType = 'SP'
-      store.state.business.state = 'ACTIVE'
+      store.commit('setLegalType', 'SP')
+      store.commit('setState', 'ACTIVE')
 
       const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -322,8 +321,8 @@ describe('StaffNotation', () => {
 
   it('renders the staff notation dialog correction for Put Back On', async () => {
     // set store specifically for this test
-    store.state.business.legalType = 'SP'
-    store.state.business.state = 'HISTORICAL'
+    store.commit('setLegalType', 'SP')
+    store.commit('setState', 'HISTORICAL')
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -357,8 +356,8 @@ describe('StaffNotation', () => {
 
   it('renders the staff notation dialog for Admin Freeze', async () => {
     // set store specifically for this test
-    store.state.business.legalType = 'SP'
-    store.state.business.state = 'ACTIVE'
+    store.commit('setLegalType', 'SP')
+    store.commit('setState', 'ACTIVE')
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -392,9 +391,9 @@ describe('StaffNotation', () => {
 
   it('goes to conversion filing', async () => {
     // set store specifically for this test
-    store.state.business.legalType = 'SP'
-    store.state.business.state = 'ACTIVE'
-    store.state.business.identifier = 'SP1234567'
+    store.commit('setLegalType', 'SP')
+    store.commit('setState', 'ACTIVE')
+    store.commit('setIdentifier', 'SP1234567')
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -416,9 +415,9 @@ describe('StaffNotation', () => {
 
   it('goes to restoration filing', async () => {
     // set store specifically for this test
-    store.state.business.legalType = 'BEN'
-    store.state.business.state = 'HISTORICAL'
-    store.state.business.identifier = 'BC1234567'
+    store.commit('setLegalType', 'BEN')
+    store.commit('setState', 'HISTORICAL')
+    store.commit('setIdentifier', 'BC1234567')
 
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
@@ -456,10 +455,10 @@ describe('StaffNotation', () => {
 
   it('goes to limited restoration filing', async () => {
     // set store specifically for this test
-    store.state.business.identifier = 'BC1234567'
+    store.commit('setIdentifier', 'BC1234567')
     store.state.currentDate = '2022-12-31'
-    store.state.business.legalType = 'BEN'
-    store.state.business.state = 'ACTIVE'
+    store.commit('setLegalType', 'BEN')
+    store.commit('setState', 'ACTIVE')
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'

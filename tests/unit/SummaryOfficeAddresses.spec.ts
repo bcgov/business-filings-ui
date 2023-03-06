@@ -15,7 +15,7 @@ describe('Summary Office Addresses (BCOMP)', () => {
 
   beforeAll(() => {
     // init store
-    store.state.business.legalType = 'BEN'
+    store.commit('setLegalType', 'BEN')
     store.state.registeredAddress = {
       deliveryAddress: {
         addressCity: 'delCity',

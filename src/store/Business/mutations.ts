@@ -1,33 +1,57 @@
-// import Vue from 'vue'
-import { BusinessIF } from '@/interfaces'
+import { EntityState } from '@/enums'
+import { ApiBusinessIF, BusinessStateIF } from '@/interfaces'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 export default {
-  // *** TODO: discuss this with Jonathan
-  setBusinessInfo (state: BusinessIF, val: BusinessIF) {
-    // state = val // doesn't work
-
-    // Vue.set(state, 'business', val) // doesn't work
-
-    Object.keys(val).forEach(key => {
-      // Vue.set(state, key, val[key]) // works but more complex than necessary
-      state[key] = val[key]
-    })
+  setAdminFreeze (state: BusinessStateIF, val: boolean) {
+    state.businessInfo.adminFreeze = val
   },
 
-  setGoodStanding (state: BusinessIF, val: boolean) {
-    state.goodStanding = val
+  setBusinessInfo (state: BusinessStateIF, val: ApiBusinessIF) {
+    state.businessInfo = val
   },
 
-  setIdentifier (state: BusinessIF, val: string) {
-    state.identifier = val
+  setFoundingDate (state: BusinessStateIF, val: string) {
+    state.businessInfo.foundingDate = val
   },
 
-  setLegalName (state: BusinessIF, val: string) {
-    state.legalName = val
+  setGoodStanding (state: BusinessStateIF, val: boolean) {
+    state.businessInfo.goodStanding = val
   },
 
-  setLegalType (state: BusinessIF, val: CorpTypeCd) {
-    state.legalType = val
+  setIdentifier (state: BusinessStateIF, val: string) {
+    state.businessInfo.identifier = val
+  },
+
+  setLastAddressChangeDate (state: BusinessStateIF, val: string) {
+    state.businessInfo.lastAddressChangeDate = val
+  },
+
+  setLastAnnualReportDate (state: BusinessStateIF, val: string) {
+    state.businessInfo.lastAnnualReportDate = val
+  },
+
+  setLastDirectorChangeDate (state: BusinessStateIF, val: string) {
+    state.businessInfo.lastDirectorChangeDate = val
+  },
+
+  setLegalName (state: BusinessStateIF, val: string) {
+    state.businessInfo.legalName = val
+  },
+
+  setLegalType (state: BusinessStateIF, val: CorpTypeCd) {
+    state.businessInfo.legalType = val
+  },
+
+  setState (state: BusinessStateIF, val: EntityState) {
+    state.businessInfo.state = val
+  },
+
+  setStateFiling (state: BusinessStateIF, val: string) {
+    state.businessInfo.stateFiling = val
+  },
+
+  setTaxId (state: BusinessStateIF, val: string) {
+    state.businessInfo.taxId = val
   }
 }

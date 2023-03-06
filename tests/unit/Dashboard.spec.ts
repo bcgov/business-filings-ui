@@ -83,7 +83,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = false
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
-    store.state.business.adminFreeze = false
+    store.commit('setAdminFreeze', false)
     expect(localVm.hasBlocker).toEqual(false)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(true)
@@ -170,7 +170,7 @@ describe('Dashboard - UI', () => {
 
   it('Alert does not display by default, and does display for business not in good standing', async () => {
     expect(wrapper.find('#dashboard-alerts-section').exists()).toBe(false)
-    wrapper.vm.isInGoodStanding = false
+    wrapper.setData({ isInGoodStanding: false })
     await Vue.nextTick()
 
     expect(wrapper.find('#dashboard-alerts-section').exists()).toBe(true)
@@ -217,8 +217,8 @@ describe('Dashboard - Click Tests', () => {
   it('routes to Standalone Office Address Filing page when EDIT is clicked', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.state.business.identifier = 'CP1234567'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP1234567')
+    store.commit('setLegalType', 'CP')
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -243,8 +243,8 @@ describe('Dashboard - Click Tests', () => {
   it('displays the change of address warning dialog as a BCOMP', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     // init store
-    store.state.business.identifier = 'BC1234567'
-    store.state.business.legalType = 'BEN'
+    store.commit('setIdentifier', 'BC1234567')
+    store.commit('setLegalType', 'BEN')
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -276,7 +276,7 @@ describe('Dashboard - Click Tests', () => {
   it('routes to Standalone Directors Filing page when EDIT is clicked', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.state.business.identifier = 'CP1234567'
+    store.commit('setIdentifier', 'CP1234567')
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

@@ -60,7 +60,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Dissolve Company for BC is allowed', () => {
-    store.state.business.legalType = 'BC'
+    store.commit('setLegalType', 'BC')
 
     const tests = [
       // no conditions:
@@ -78,7 +78,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -88,7 +88,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Dissolve Company for SP is allowed', () => {
-    store.state.business.legalType = 'SP'
+    store.commit('setLegalType', 'SP')
 
     const tests = [
       // no conditions:
@@ -106,7 +106,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -131,7 +131,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.legalType = test.entityType
+      store.commit('setLegalType', test.entityType)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
       getFeatureFlag.mockReturnValue(test.flag)
@@ -164,7 +164,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -187,7 +187,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -212,7 +212,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -236,7 +236,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -264,7 +264,7 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       jest.spyOn(vm, 'hasBlocker', 'get').mockReturnValue(test.hasBlocker)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
@@ -302,10 +302,10 @@ describe('Allowable Actions Mixin', () => {
     ]
 
     for (const test of tests) {
-      store.state.business.state = test.entityState
+      store.commit('setState', test.entityState)
       if (test.businessId) sessionStorage.setItem('BUSINESS_ID', test.businessId)
       else sessionStorage.removeItem('BUSINESS_ID')
-      store.state.business.legalType = test.entityType
+      store.commit('setLegalType', test.entityType)
       expect(vm.isAllowed('viewChangeCompanyInfo')).toBe(test.expected)
     }
   })

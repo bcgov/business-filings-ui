@@ -1,7 +1,7 @@
-import { AlterationIF, BusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
+import { AlterationIF, ApiBusinessIF, RestorationIF, SpecialResolutionIF } from '@/interfaces'
 import { FilingStatus, FilingTypes } from '@/enums'
 
-/** A filing's header object from the API. */
+/** A filing's header object from the Legal API. */
 export interface ApiHeaderIF {
   accountId?: number // NOT USED
   ARFilingYear?: number // ARs only
@@ -32,12 +32,12 @@ export interface ApiHeaderIF {
 }
 
 /**
- * A task todo (or filing) object from the API.
+ * A task todo (or filing) object.
  * Note that only `business` and `header` are required.
  */
 export interface TaskTodoIF {
   annualReport?: any
-  business: BusinessIF
+  business: ApiBusinessIF
   changeOfAddress?: any
   changeOfDirectors?: any
   correction?: any
@@ -57,7 +57,7 @@ export interface TaskTodoIF {
 }
 
 /**
- * A list item from the API "tasks" call (ie, API object).
+ * A task object from the Legal API ("tasks" call).
  * See also Todo Item interface.
  */
 export interface ApiTaskIF {

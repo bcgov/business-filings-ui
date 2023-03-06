@@ -126,15 +126,15 @@ for (const test of obligationTestCases) {
   describe(`Legal Obligation for ${test.entityType}`, () => {
     beforeAll(() => {
       sessionStorage.setItem('BUSINESS_ID', test.identifier)
-      store.state.business.legalType = test.entityType
-      store.state.business.identifier = test.identifier
+      store.commit('setLegalType', test.entityType)
+      store.commit('setIdentifier', test.identifier)
       store.state.configObject = ConfigJson[test.configKey]
     })
 
     afterAll(() => {
       sessionStorage.removeItem('BUSINESS_ID')
-      store.state.business.legalType = null
-      store.state.business.identifier = null
+      store.commit('setLegalType', null)
+      store.commit('setIdentifier', null)
       store.state.tasks = []
     })
 

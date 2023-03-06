@@ -1,19 +1,19 @@
-import { EntityState, CorpTypeCd } from '@/enums'
+import { EntityState, CorpTypeCd, FilingTypes } from '@/enums'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
-/** The Allowable Action object from the Legal API. */
-export interface AllowableActionIF {
+export interface FilingTypeIF {
+  displayName: string
+  feeCode: string
+  name: FilingTypes
+}
+
+export interface AllowedActionsIF {
   filing: {
     filingSubmissionLink: string
-    filingTypes: [{
-      displayName: string
-      feeCode: string
-      name: string
-    }]
+    filingTypes: Array<FilingTypeIF>
   }
 }
 
-/** The Business Warning object from the Legal API. */
 export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
   filing?: string // not used
@@ -23,9 +23,9 @@ export interface BusinessWarningIF {
 
 /** The Business object from the Legal API. */
 // FUTURE: verify/indicate unused properties
-export interface BusinessIF {
+export interface ApiBusinessIF {
   adminFreeze: boolean
-  allowableActions: Array<AllowableActionIF>
+  allowedActions: AllowedActionsIF
   arMaxDate?: IsoDatePacific // not used
   arMinDate?: IsoDatePacific // not used
   associationType: string // COOP only
@@ -55,4 +55,9 @@ export interface BusinessIF {
   submitter?: string // not used
   taxId?: string // aka Business Number // may be absent
   warnings: Array<BusinessWarningIF>
+}
+
+/** The business module state interface. */
+export interface BusinessStateIF {
+  businessInfo: ApiBusinessIF
 }

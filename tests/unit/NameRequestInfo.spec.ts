@@ -75,7 +75,7 @@ const conditionalSpNamerequest = {
 
 describe('NameRequestInfo component', () => {
   it('renders an approved coop namerequest correctly', async () => {
-    store.state.business.legalType = 'CP'
+    store.commit('setLegalType', 'CP')
     const wrapper = mount(NameRequestInfo,
       {
         propsData: { nameRequest: approvedCpNamerequest },
@@ -126,7 +126,7 @@ describe('NameRequestInfo component', () => {
   })
 
   it('renders a conditional sole prop namerequest correctly', async () => {
-    store.state.business.legalType = 'SP'
+    store.commit('setLegalType', 'SP')
     const wrapper = mount(NameRequestInfo,
       {
         propsData: { nameRequest: conditionalSpNamerequest },

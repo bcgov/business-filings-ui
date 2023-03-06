@@ -2,7 +2,7 @@ import { LegalServices } from '@/services/'
 
 export default {
   /**
-   * Fetches the business info from the Legal API and, if successful, triggers some mutations.
+   * Fetches the business object from the Legal API and, if successful, triggers some mutations.
    * @param context the Vuex context (passed in automatically)
    */
   loadBusinessInfo ({ commit }): Promise<any> {
@@ -13,7 +13,7 @@ export default {
       // if there is no business id, return error
       if (!businessId) reject(new Error('Missing business id'))
 
-      LegalServices.fetchBusinessInfo(businessId)
+      LegalServices.fetchBusiness(businessId)
         .then(businessInfo => {
           // commit data to store
           commit('setBusinessInfo', businessInfo)

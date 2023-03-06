@@ -17,15 +17,15 @@ describe('Business Actions', () => {
       legalType: 'BC',
       stateFiling: 'dummy_url'
     }
-    jest.spyOn(LegalServices, 'fetchBusinessInfo').mockImplementation((): any => {
+    jest.spyOn(LegalServices, 'fetchBusiness').mockImplementation((): any => {
       return Promise.resolve(sampleBusinessInfo)
     })
 
     // call the action and verify the data in the store
     await store.dispatch('loadBusinessInfo')
-    expect(LegalServices.fetchBusinessInfo).toHaveBeenCalled()
-    expect(store.state.business.identifier).toBe('BC1234567')
-    expect(store.state.business.legalType).toBe('BC')
-    expect(store.state.business.stateFiling).toBe('dummy_url')
+    expect(LegalServices.fetchBusiness).toHaveBeenCalled()
+    expect(store.getters.getIdentifier).toBe('BC1234567')
+    expect(store.getters.getLegalType).toBe('BC')
+    expect(store.getters.getStateFilingUrl).toBe('dummy_url')
   })
 })
