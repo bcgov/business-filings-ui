@@ -6,7 +6,7 @@ import { AllowableActions, CorpTypeCd, Routes } from '@/enums'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
-  @Getter getEntityType!: CorpTypeCd
+  @Getter getLegalType!: CorpTypeCd
   @Getter hasBlocker!: boolean
   @Getter hasBlockerExceptStaffApproval!: boolean
   @Getter isBComp!: boolean
@@ -38,7 +38,7 @@ export default class AllowableActionsMixin extends Vue {
         const isDissolveAllowed = (
           !this.isHistorical &&
           !!businessId &&
-          !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getEntityType)
+          !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getLegalType)
         )
 
         // if it's not SP/GP then consider hasBlocker flag
@@ -51,7 +51,7 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.DOWNLOAD_BUSINESS_SUMMARY: {
         return (!!businessId &&
-          !!getFeatureFlag('supported-business-summary-entities')?.includes(this.getEntityType))
+          !!getFeatureFlag('supported-business-summary-entities')?.includes(this.getLegalType))
       }
 
       case AllowableActions.EDIT_BUSINESS_PROFILE: {

@@ -24,8 +24,8 @@ describe('COD Date - COOPs', () => {
     store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
-    store.state.entityFoundingDate = new Date('2018-03-01T12:00:00')
-    store.state.entityType = 'CP'
+    store.state.business.foundingDate = '2018-03-01T12:00:00'
+    store.state.business.legalType = 'CP'
 
     wrapper = mount(CodDate, { store, vuetify })
     vm = wrapper.vm
@@ -33,7 +33,6 @@ describe('COD Date - COOPs', () => {
 
   afterEach(() => {
     wrapper.destroy()
-    wrapper = null
   })
 
   it('loads variables properly when initial COD Date is set', async () => {
@@ -59,7 +58,7 @@ describe('COD Date - COOPs', () => {
     expect(vm.minDate).toBe('2018-03-01')
 
     // set Last COD Filing Date and verify new Min Date
-    store.state.lastDirectorChangeDate = '2019-03-01'
+    store.state.business.lastDirectorChangeDate = '2019-03-01'
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
@@ -67,7 +66,7 @@ describe('COD Date - COOPs', () => {
   })
 
   it('sets Min Date to entity founding date if no filings are present', () => {
-    store.state.lastDirectorChangeDate = null
+    store.state.business.lastDirectorChangeDate = null
     expect(vm.minDate).toBe('2018-03-01')
   })
 
@@ -191,8 +190,8 @@ describe('COD Date - BCOMPs', () => {
     store.state.currentDate = '2019-07-15'
 
     // set Last Filing Date and verify new Min Date
-    store.state.entityFoundingDate = new Date('2018-03-01T12:00:00')
-    store.state.entityType = 'BEN'
+    store.state.business.foundingDate = '2018-03-01T12:00:00'
+    store.state.business.legalType = 'BEN'
 
     wrapper = mount(CodDate, { store, vuetify })
     vm = wrapper.vm
@@ -200,12 +199,11 @@ describe('COD Date - BCOMPs', () => {
 
   afterEach(() => {
     wrapper.destroy()
-    wrapper = null
   })
 
   it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {
     // set Last COD Filing Date and verify new Min Date
-    store.state.lastDirectorChangeDate = '2019-03-01'
+    store.state.business.lastDirectorChangeDate = '2019-03-01'
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
@@ -213,7 +211,7 @@ describe('COD Date - BCOMPs', () => {
   })
 
   it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
-    store.state.lastDirectorChangeDate = null
+    store.state.business.lastDirectorChangeDate = null
     expect(vm.minDate).toBe('2018-03-01')
   })
 })

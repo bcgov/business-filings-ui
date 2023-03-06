@@ -379,7 +379,7 @@ describe('AddStaffNotationDialog', () => {
 
   it('saves notation filing when user clicks Save button', async () => {
     // init store
-    store.state.identifier = 'BC0870669'
+    store.state.business.identifier = 'BC0870669'
 
     sinon
       .stub(axios, 'post')

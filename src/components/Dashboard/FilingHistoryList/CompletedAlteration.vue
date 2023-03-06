@@ -3,7 +3,7 @@
     <h4>Alteration Complete</h4>
 
     <p v-if="filing.toLegalType !== filing.fromLegalType">
-      {{getEntityName || 'This company'}} was successfully altered
+      {{getLegalName || 'This company'}} was successfully altered
       from a {{fromLegalType}} to a {{toLegalType}}
       on <DateTooltip :date="filing.effectiveDate" />.
     </p>
@@ -27,7 +27,7 @@ import { EnumMixin } from '@/mixins'
   mixins: [EnumMixin]
 })
 export default class CompletedAlteration extends Vue {
-  @Getter getEntityName!: string
+  @Getter getLegalName!: string
 
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: HistoryItemIF

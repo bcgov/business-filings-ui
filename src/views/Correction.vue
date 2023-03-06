@@ -218,13 +218,14 @@ export default class Correction extends Vue {
     confirm: ConfirmDialogType
   }
 
-  @State entityFoundingDate!: Date
+  // FUTURE: change this to a getter
   @State filingData!: Array<FilingDataIF>
 
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
   @Getter getAuthWebUrl!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLegalName!: string
   @Getter getPayApiUrl!: string
+  @Getter isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
@@ -399,7 +400,7 @@ export default class Correction extends Vue {
       if (filing.header.name !== FilingTypes.CORRECTION) throw new Error('Invalid filing type')
       if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
+      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
 
       // load Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
@@ -451,7 +452,7 @@ export default class Correction extends Vue {
       if (!this.origFiling.business) throw new Error('Missing business')
       if (this.origFiling.header.status !== FilingStatus.COMPLETED) throw new Error('Invalid filing status')
       if (this.origFiling.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (this.origFiling.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
+      if (this.origFiling.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
 
       // FUTURE:
       // use original Certified By name
@@ -671,10 +672,10 @@ export default class Correction extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getFoundingDate),
         identifier: this.getIdentifier,
-        legalName: this.getEntityName,
-        legalType: this.getEntityType
+        legalName: this.getLegalName,
+        legalType: this.getLegalType
       }
     }
 

@@ -2,7 +2,7 @@
   <div class="completed-ia-details body-2">
     <h4>Incorporation Complete</h4>
 
-    <p>{{getEntityName || 'A Numbered Benefit Company'}} has been successfully incorporated.</p>
+    <p>{{getLegalName || 'A Numbered Benefit Company'}} has been successfully incorporated.</p>
 
     <p>Return to My Business Registry to access your business and file changes.</p>
 
@@ -22,7 +22,7 @@ import { navigate } from '@/utils'
 
 @Component({})
 export default class CompletedIa extends Vue {
-  @Getter readonly getEntityName!: string
+  @Getter readonly getLegalName!: string
   @Getter readonly getMyBusinessRegistryUrl!: string
 
   protected returnToMyBusinessRegistry (): void {

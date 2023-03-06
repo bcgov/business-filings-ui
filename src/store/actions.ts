@@ -1,8 +1,6 @@
-import { EntityStatus, CorpTypeCd, FilingStatus, EntityState, FilingTypes, DissolutionTypes, Routes } from '@/enums'
-import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, BusinessWarningIF, PartyIF }
-  from '@/interfaces'
-import { LegalServices } from '@/services'
-import { getVueRouter } from '@/router'
+import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
+import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, PartyIF } from '@/interfaces'
+import { LegalServices } from '@/services/'
 
 export default {
   setKeycloakRoles ({ commit }, keycloakRoles: Array<string>) {
@@ -29,44 +27,14 @@ export default {
   setARFilingYear ({ commit }, year: number) {
     commit('ARFilingYear', year)
   },
-  setAdminFreeze ({ commit }, adminFreeze: boolean) {
-    commit('adminFreeze', adminFreeze)
-  },
   setArMaxDate ({ commit }, date: string) {
     commit('arMaxDate', date)
   },
   setArMinDate ({ commit }, date: string) {
     commit('arMinDate', date)
   },
-  setIdentifier ({ commit }, identifier: string) {
-    commit('identifier', identifier)
-  },
-  setBusinessNumber ({ commit }, businessNumber: string) {
-    commit('businessNumber', businessNumber)
-  },
-  setBusinessWarnings ({ commit }, businessWarnings: Array<BusinessWarningIF>) {
-    commit('businessWarnings', businessWarnings)
-  },
-  setEntityFoundingDate ({ commit }, entityFoundingDate: Date) {
-    commit('entityFoundingDate', entityFoundingDate)
-  },
-  setEntityName ({ commit }, entityName: string) {
-    commit('entityName', entityName)
-  },
-  setEntityState ({ commit }, entityState: EntityState) {
-    commit('entityState', entityState)
-  },
   setEntityStatus ({ commit }, entityStatus: EntityStatus) {
     commit('entityStatus', entityStatus)
-  },
-  setEntityType ({ commit }, entityType: CorpTypeCd) {
-    commit('entityType', entityType)
-  },
-  setGoodStanding ({ commit }, goodStanding: boolean) {
-    commit('goodStanding', goodStanding)
-  },
-  setHasCourtOrders ({ commit }, setHasCourtOrders: boolean) {
-    commit('hasCourtOrders', setHasCourtOrders)
   },
   setBusinessEmail ({ commit }, businessEmail: string) {
     commit('businessEmail', businessEmail)
@@ -98,15 +66,6 @@ export default {
   setParties ({ commit }, parties: Array<PartyIF>) {
     commit('parties', parties)
   },
-  setLastAnnualReportDate ({ commit }, date: string) {
-    commit('lastAnnualReportDate', date)
-  },
-  setLastAddressChangeDate ({ commit }, date: string) {
-    commit('lastAddressChangeDate', date)
-  },
-  setLastDirectorChangeDate ({ commit }, date: string) {
-    commit('lastDirectorChangeDate', date)
-  },
   setConfigObject ({ commit }, configObject: any) {
     commit('configObject', configObject)
   },
@@ -125,18 +84,32 @@ export default {
   setCoaEffectiveDate ({ commit }, coaEffectiveDate: Date) {
     commit('coaEffectiveDate', coaEffectiveDate)
   },
-  /** Fetches stateFiling from the API and, if successful, triggers mutation. */
-  async retrieveStateFiling ({ commit }, stateFilingUrl: string): Promise<void> {
-    const filing = stateFilingUrl && await LegalServices.fetchFiling(stateFilingUrl)
-    const filingType = filing?.header?.name as FilingTypes
+  setCorpTypeCd ({ commit }, val: CorpTypeCd) {
+    commit('corpTypeCd', val)
+  },
+
+  /**
+   * Fetches the state filing from the Legal API and, if successful, triggers mutation.
+   * @param context the Vuex context (passed in automatically)
+   */
+  loadStateFiling ({ commit, rootGetters }): Promise<void> {
+    // need to return a promise because action is called via dispatch
     return new Promise((resolve, reject) => {
-      if (!filing || !filingType) {
-        console.log('Invalid state filing', filing, filingType) // eslint-disable-line no-console
-        reject(Error('Invalid state filing'))
-      } else {
-        commit('setStateFiling', filing)
-        resolve(filing)
-      }
+      const stateFilingUrl = rootGetters.getStateFilingUrl
+
+      // if there is no state filing url, return null
+      if (!stateFilingUrl) resolve(null)
+
+      LegalServices.fetchFiling(stateFilingUrl)
+        .then(filing => {
+          // commit data to store
+          commit('setStateFiling', filing)
+          // return the filing object
+          resolve(filing)
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   }
 }

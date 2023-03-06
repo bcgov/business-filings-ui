@@ -230,16 +230,18 @@ export default class StandaloneOfficeAddressFiling extends Vue {
     officeAddressesComponent: OfficeAddresses
   }
 
-  @State entityFoundingDate!: Date
+  // FUTURE: change this to a getter
   @State filingData!: Array<FilingDataIF>
 
-  @Getter isCoop!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
   @Getter getAuthWebUrl!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLegalName!: string
   @Getter getPayApiUrl!: string
-  // variables
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isCoop!: boolean
+  @Getter isRoleStaff!: boolean
+
+  // local variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
   private filingId: number = null
   private savedFiling: any = null // filing during save
@@ -383,7 +385,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
       if (!filing.business) throw new Error('Missing business')
       if (filing.header.name !== FilingTypes.CHANGE_OF_ADDRESS) throw new Error('Invalid filing type')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
+      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
 
       // restore Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
@@ -670,17 +672,17 @@ export default class StandaloneOfficeAddressFiling extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getFoundingDate),
         identifier: this.getIdentifier,
-        legalName: this.getEntityName,
-        legalType: this.getEntityType
+        legalName: this.getLegalName,
+        legalType: this.getLegalType
       }
     }
 
     if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
       changeOfAddress = {
         [FilingTypes.CHANGE_OF_ADDRESS]: {
-          legalType: this.getEntityType,
+          legalType: this.getLegalType,
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice
           }
@@ -691,7 +693,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
     if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_BC)) {
       changeOfAddress = {
         [FilingTypes.CHANGE_OF_ADDRESS]: {
-          legalType: this.getEntityType,
+          legalType: this.getLegalType,
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice,
             recordsOffice: this.updatedAddresses.recordsOffice

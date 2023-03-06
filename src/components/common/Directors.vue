@@ -536,7 +536,7 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -582,12 +582,12 @@ export default class Directors extends Vue {
    */
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
-  @Getter getIdentifier!: string
   @Getter getCurrentDate!: string
+  @Getter getFoundingDate!: Date
+  @Getter getIdentifier!: string
+  @Getter getLastAnnualReportDate!: string
+  @Getter getLastDirectorChangeDate!: string
   @Getter isBenBcCccUlc!: boolean
-  @State lastAnnualReportDate!: string
-  @State entityFoundingDate!: Date
-  @State lastDirectorChangeDate!: string
 
   /** Effective date for fetching and appointing/ceasing directors. */
   private asOfDate: string
@@ -762,10 +762,10 @@ export default class Directors extends Vue {
   get earliestDateToSet (): string {
     let date: string = null
 
-    if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
-      date = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+    if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {
+      date = this.latestYyyyMmDd(this.getLastDirectorChangeDate, this.getLastAnnualReportDate)
     } else {
-      date = this.dateToYyyyMmDd(this.entityFoundingDate)
+      date = this.dateToYyyyMmDd(this.getFoundingDate)
     }
 
     // when earliest date is calculated, inform parent component

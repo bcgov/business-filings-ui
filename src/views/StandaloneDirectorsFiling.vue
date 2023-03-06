@@ -341,14 +341,15 @@ export default class StandaloneDirectorsFiling extends Vue {
     directorsComponent: Directors
   }
 
-  @State entityFoundingDate!: Date
+  // FUTURE: change this to a getter
   @State filingData!: Array<FilingDataIF>
 
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityName!: string
-  @Getter isBenBcCccUlc!: boolean
   @Getter getAuthWebUrl!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLegalName!: string
   @Getter getPayApiUrl!: string
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isRoleStaff!: boolean
 
   // variables
   private updatedDirectors = []
@@ -505,7 +506,7 @@ export default class StandaloneDirectorsFiling extends Vue {
       if (!filing.business) throw new Error('Missing business')
       if (filing.header.name !== FilingTypes.CHANGE_OF_DIRECTORS) throw new Error('Invalid filing type')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
+      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
 
       // restore Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
@@ -793,10 +794,10 @@ export default class StandaloneDirectorsFiling extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getFoundingDate),
         identifier: this.getIdentifier,
-        legalName: this.getEntityName,
-        legalType: this.getEntityType
+        legalName: this.getLegalName,
+        legalType: this.getLegalType
       }
     }
 

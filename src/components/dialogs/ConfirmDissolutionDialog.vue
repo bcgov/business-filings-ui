@@ -13,7 +13,7 @@
           {{getModalTitle}}
         </p>
         <p class="warning-text" id="dialog-text">
-          You are about to {{ dissolutionType }} <strong>{{ getEntityName }}</strong>;
+          You are about to {{ dissolutionType }} <strong>{{ getLegalName }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be {{ subEntityTitle }} under the
           {{ entityAct }} Act.
@@ -65,8 +65,8 @@ export default class ConfirmDissolutionDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Global getters
-  @Getter getEntityName!: string
-  @Getter getEntityType!: string
+  @Getter getLegalName!: string
+  @Getter getLegalType!: string
   @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** The entity title to display. */

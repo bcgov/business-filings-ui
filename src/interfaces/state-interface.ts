@@ -1,16 +1,14 @@
-import { EntityState, CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import {
-  ApiFilingIF,
-  ApiTaskIF,
-  BusinessWarningIF,
-  FilingDataIF,
-  OfficeAddressIF,
-  PartyIF,
-  ApiHeaderIF,
-  BusinessIF,
-  DissolutionFilingIF, RestorationFilingIF
-}
+import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
+import { ApiFilingIF, ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF }
   from '@/interfaces'
+
+export interface StateFilingIF {
+  business: any
+  header: ApiHeaderIF
+  dissolution?: any
+  restoration?: any
+  putBackOn?: any
+}
 
 /** The state model interface. */
 export interface StateIF {
@@ -20,27 +18,14 @@ export interface StateIF {
   authRoles: Array<string>
   currentJsDate: Date // 'now' as of dashboard loading in UTC
   currentDate: string // 'today' as YYYY-MM-DD in Pacific timezone
+  entityStatus: EntityStatus // for draft app only
+  stateFiling: StateFilingIF // the state filing object
 
-  // entity info
+  // entity info from auth db
   businessEmail: string
   businessPhone: string
   businessPhoneExtension: string
-
-  // business info
-  adminFreeze: boolean
-  identifier: string
-  businessNumber: string
-  businessWarnings: Array<BusinessWarningIF>
-  entityFoundingDate: Date
-  entityName: string
-  entityState: EntityState
-  entityStatus: EntityStatus
-  entityType: CorpTypeCd
-  goodStanding: boolean
-  lastAnnualReportDate: string // YYYY-MM-DD
-  lastAddressChangeDate: string // YYYY-MM-DD
-  lastDirectorChangeDate: string // YYYY-MM-DD
-  hasCourtOrders: boolean
+  corpTypeCd: CorpTypeCd
 
   // set by Todo List
   nextARDate: string // YYYY-MM-DD // BCOMPs only
@@ -64,12 +49,5 @@ export interface StateIF {
   hasBlockerTask: boolean
   hasBlockerFiling: boolean
   isCoaPending: boolean
-  coaEffectiveDate: Date,
-  stateFiling: {
-    business: any,
-    header: ApiHeaderIF,
-    dissolution?: any,
-    restoration?: any
-    putBackOn?: any
-  }
+  coaEffectiveDate: Date
 }

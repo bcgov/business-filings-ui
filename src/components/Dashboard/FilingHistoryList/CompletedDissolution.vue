@@ -3,7 +3,7 @@
     <h4>Dissolution Complete</h4>
 
     <p v-if="isFirm">
-      The statement of dissolution for {{entityTitle}} {{getEntityName || ''}} was successfully
+      The statement of dissolution for {{entityTitle}} {{getLegalName || ''}} was successfully
       submitted on <strong>{{dissolutionDateSubmitted}}</strong>
       with dissolution date of <strong>{{dissolutionDate}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
@@ -12,7 +12,7 @@
     </p>
 
     <p v-if="!isFirm">
-      The {{entityTitle}} {{getEntityName || ''}} was successfully
+      The {{entityTitle}} {{getLegalName || ''}} was successfully
       <strong>dissolved on {{dissolutionDateTime}}</strong>.
       The {{entityTitle}} has been struck from the register and dissolved,
       and ceased to be an incorporated {{entityTitle.toLowerCase()}}
@@ -42,7 +42,7 @@ export default class CompletedDissolution extends Vue {
 
   @Getter isCoop!: boolean
   @Getter isFirm!: boolean
-  @Getter getEntityName!: string
+  @Getter getLegalName!: string
   @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** The entity title to display. */

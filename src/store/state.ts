@@ -6,25 +6,13 @@ export const state: StateIF = {
   authRoles: [],
   currentJsDate: null,
   currentDate: null,
+  entityStatus: null,
+  stateFiling: null,
 
   businessEmail: null,
   businessPhone: null,
   businessPhoneExtension: null,
-
-  adminFreeze: null,
-  identifier: null,
-  businessNumber: null,
-  businessWarnings: [],
-  entityName: null,
-  entityType: null,
-  entityState: null,
-  entityStatus: null,
-  entityFoundingDate: null,
-  goodStanding: null,
-  lastAnnualReportDate: null,
-  lastAddressChangeDate: null,
-  lastDirectorChangeDate: null,
-  hasCourtOrders: null,
+  corpTypeCd: null,
 
   nextARDate: null,
   ARFilingYear: null,
@@ -46,6 +34,5 @@ export const state: StateIF = {
   hasBlockerTask: false,
   hasBlockerFiling: false,
   isCoaPending: false,
-  coaEffectiveDate: null,
-  stateFiling: null
+  coaEffectiveDate: null
 }

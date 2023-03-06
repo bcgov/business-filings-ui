@@ -52,7 +52,7 @@
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
-import { State, Getter } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { DateMixin } from '@/mixins'
 
 @Component({
@@ -65,11 +65,11 @@ export default class CodDate extends Vue {
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialCodDate!: string
 
-  @State lastAnnualReportDate!: string
-  @State entityFoundingDate!: Date
-  @State lastDirectorChangeDate!: string
-  @Getter isBenBcCccUlc!: boolean
   @Getter getCurrentDate!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLastAnnualReportDate!: string
+  @Getter getLastDirectorChangeDate!: string
+  @Getter isBenBcCccUlc!: boolean
 
   // Local properties.
   protected date = '' // bound to date picker
@@ -94,15 +94,15 @@ export default class CodDate extends Vue {
 
     if (this.isBenBcCccUlc) {
       // For BEN/BC/CCC/ULC, use the last COD filing in filing history.
-      date = (this.lastDirectorChangeDate || this.dateToYyyyMmDd(this.entityFoundingDate))
-    } else if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
+      date = (this.getLastDirectorChangeDate || this.dateToYyyyMmDd(this.getFoundingDate))
+    } else if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {
       // For Coops, use the latest of the following dates:
       // - the last COD filing in filing history
       // - the last AR filing in filing history
-      date = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+      date = this.latestYyyyMmDd(this.getLastDirectorChangeDate, this.getLastAnnualReportDate)
     } else {
       // If the entity has no filing history then use the founding date.
-      date = this.dateToYyyyMmDd(this.entityFoundingDate)
+      date = this.dateToYyyyMmDd(this.getFoundingDate)
     }
 
     return date

@@ -22,11 +22,11 @@ describe('EntityInfo - data', () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
 
     // set store properties
-    store.state.entityName = 'My Business'
-    store.state.goodStanding = true
-    store.state.entityType = 'CP'
-    store.state.businessNumber = '123456789'
-    store.state.identifier = 'CP0001191'
+    store.state.business.legalName = 'My Business'
+    store.state.business.goodStanding = true
+    store.state.business.legalType = 'CP'
+    store.state.business.taxId = '123456789'
+    store.state.business.identifier = 'CP0001191'
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
     store.state.businessPhoneExtension = '444'
@@ -49,9 +49,9 @@ describe('EntityInfo - data', () => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
-    store.state.entityName = 'My Named Company'
+    store.state.business.legalName = 'My Named Company'
     store.state.entityStatus = 'DRAFT_APP'
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.nameRequest = { nrNum: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
@@ -71,9 +71,9 @@ describe('EntityInfo - data', () => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
-    store.state.entityName = null
+    store.state.business.legalName = null
     store.state.entityStatus = 'DRAFT_APP'
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.nameRequest = null
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
@@ -93,9 +93,9 @@ describe('EntityInfo - data', () => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
-    store.state.entityName = 'My Future Company'
+    store.state.business.legalName = 'My Future Company'
     store.state.entityStatus = 'FILED_APP'
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.nameRequest = { nrNum: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
@@ -114,11 +114,11 @@ describe('EntityInfo - data', () => {
   it('handles empty data', async () => {
     sessionStorage.clear()
 
-    store.state.entityName = null
-    store.state.entityType = null
+    store.state.business.legalName = null
+    store.state.business.legalType = null
     store.state.entityStatus = null
-    store.state.businessNumber = null
-    store.state.identifier = null
+    store.state.business.taxId = null
+    store.state.business.identifier = null
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
@@ -246,8 +246,8 @@ describe('EntityInfo - company info button and tooltip', () => {
       if (_.businessId) sessionStorage.setItem('BUSINESS_ID', _.businessId)
       if (_.tempRegNumber) sessionStorage.setItem('TEMP_REG_NUMBER', _.tempRegNumber)
 
-      store.state.entityType = _.entityType
-      store.state.goodStanding = _.goodStanding || false
+      store.state.business.legalType = _.entityType
+      store.state.business.goodStanding = _.goodStanding || false
       store.state.entityStatus = _.entityStatus || null
 
       const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
@@ -358,7 +358,7 @@ describe('EntityInfo - Historical badge', () => {
   variations.forEach((_, index) => {
     it(`conditionally displays historical badge - variation #${index}`, async () => {
       // init store
-      store.state.entityState = _.entityState
+      store.state.business.state = _.entityState
       store.state.stateFiling = _.stateFiling || null
 
       const wrapper = mount(EntityInfo, { vuetify, store, router })
@@ -371,7 +371,7 @@ describe('EntityInfo - Historical badge', () => {
       }
 
       // cleanup
-      store.state.entityState = null
+      store.state.business.state = null
       store.state.stateFiling = null
       wrapper.destroy()
     })
@@ -399,10 +399,10 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.identifier = 'BC1234567'
-    store.state.goodStanding = true
-    store.state.entityType = 'BEN'
-    // store.state.entityType = 'LTD' // FUTURE: uncomment this
+    store.state.business.identifier = 'BC1234567'
+    store.state.business.goodStanding = true
+    store.state.business.legalType = 'BEN'
+    // store.state.business.legalType = 'LTD' // FUTURE: uncomment this
 
     const wrapper = mount(EntityInfo, { vuetify, store, router })
     await Vue.nextTick()
@@ -441,7 +441,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
   })
 
   it('prompts the Confirm Dissolution dialog if in good standing', async () => {
-    store.state.goodStanding = true
+    store.state.business.goodStanding = true
 
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
@@ -459,7 +459,7 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
   })
 
   it('prompts the Not In Good Standing dialog', async () => {
-    store.state.goodStanding = false
+    store.state.business.goodStanding = false
 
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {

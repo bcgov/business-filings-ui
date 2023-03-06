@@ -15,8 +15,8 @@ export default class CommonMixin extends Vue {
   /**
    * Removes the specified properties from nested objects.
    * @param baseObj the base object
-   * @param keys    the nested object keys which to omit properties from
-   * @param prop    the properties to be removed
+   * @param keys the nested object keys which to omit properties from
+   * @param prop the properties to be removed
    */
   omitProps (baseObj: any, keys: Array<string>, prop: Array<string>): any {
     const parsedObj: any = {}

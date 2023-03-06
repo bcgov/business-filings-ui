@@ -75,11 +75,11 @@ const sampleDirectors = [
 describe('Standalone Directors Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.currentDate = '2019-07-15'
     // set Last Filing Date and verify new Min Date
     store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
-    store.state.entityFoundingDate = new Date('2018-03-01T00:00:00')
+    store.state.business.foundingDate = '2018-03-01T00:00:00'
   })
 
   it('renders the filing sub-components properly', () => {
@@ -156,8 +156,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   it('Verify COD Certify contains correct section codes', async () => {
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = shallowMount(StandaloneDirectorsFiling, { store, mocks: { $route } })
-    store.state.entityType = 'CP'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.entityType)
+    store.state.business.legalType = 'CP'
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.legalType)
     await Vue.nextTick()
 
     const certify = wrapper.findComponent(Certify)
@@ -282,8 +282,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
 describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
@@ -369,8 +369,8 @@ describe('Standalone Directors Filing - Part 2A - Resuming with FAS staff paymen
 describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
@@ -460,8 +460,8 @@ describe('Standalone Directors Filing - Part 2B - Resuming with BCOL staff payme
 describe('Standalone Directors Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     // mock "fetch a draft filing" endpoint
@@ -557,10 +557,10 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
-    store.state.entityFoundingDate = new Date('2000-01-01')
+    store.state.business.foundingDate = '2000-01-01T00:00:00'
 
     const get = sinon.stub(axios, 'get')
 
@@ -683,7 +683,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a COOP', async () => {
     // init store
-    store.state.entityType = 'CP'
+    store.state.business.legalType = 'CP'
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
@@ -753,7 +753,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a BCOMP', async () => {
     // init store
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
 
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
@@ -890,8 +890,8 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
 describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'t need to be paid', () => {
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     // mock "save and file" endpoint
@@ -1000,8 +1000,8 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     // mock "save draft" endpoint
@@ -1147,8 +1147,8 @@ describe('Standalone Directors Filing - Part 5 - Data', () => {
 
   beforeEach(async () => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
@@ -1307,8 +1307,8 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
 
   beforeEach(() => {
     // init store
-    store.state.identifier = 'CP0001191'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.currentDate = '2019-07-15'
 
     const get = sinon.stub(axios, 'get')
@@ -1535,9 +1535,9 @@ describe('Standalone Directors Filing - payment required error', () => {
   beforeEach(() => {
     // init store
     store.state.currentDate = '2019-07-15'
-    store.state.identifier = 'CP0001191'
-    store.state.entityType = 'CP'
-    store.state.entityName = 'Legal Name - CP0001191'
+    store.state.business.identifier = 'CP0001191'
+    store.state.business.legalType = 'CP'
+    store.state.business.legalName = 'Legal Name - CP0001191'
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 

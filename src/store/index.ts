@@ -5,6 +5,7 @@ import getters from './getters'
 import mutations from './mutations'
 import { state } from './state'
 import Authentication from '@/store/Authentication'
+import Business from '@/store/Business'
 import Configuration from '@/store/Configuration'
 
 /**
@@ -20,6 +21,7 @@ export function getVuexStore () {
     state,
     modules: {
       authentication: Authentication,
+      business: Business,
       configuration: Configuration
     }
   })

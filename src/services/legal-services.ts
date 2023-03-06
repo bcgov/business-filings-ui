@@ -1,7 +1,7 @@
 // Libraries
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
-import { CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF, PresignedUrlIF } from '@/interfaces'
+import { BusinessIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF, PresignedUrlIF } from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
@@ -11,11 +11,20 @@ export default class LegalServices {
   /**
    * Fetches business info.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns the axios response
+   * @returns the business info object
    */
-  static async fetchBusinessInfo (businessId: string): Promise<AxiosResponse> {
+  static async fetchBusinessInfo (businessId: string): Promise<BusinessIF> {
     const url = `businesses/${businessId}`
     return axios.get(url)
+      .then(response => {
+        const businessInfo = response?.data?.business as BusinessIF
+        if (!businessInfo) {
+          // eslint-disable-next-line no-console
+          console.log('fetchBusinessInfo() error - invalid response =', response)
+          throw new Error('Invalid business info')
+        }
+        return businessInfo
+      })
   }
 
   /**
@@ -99,7 +108,7 @@ export default class LegalServices {
         if (!filing) {
           // eslint-disable-next-line no-console
           console.log('fetchFiling() error - invalid response =', response)
-          throw new Error('Invalid API response')
+          throw new Error('Invalid filing')
         }
         return filing
       })
@@ -123,7 +132,7 @@ export default class LegalServices {
         if (!filing) {
           // eslint-disable-next-line no-console
           console.log('createFiling() error - invalid response =', response)
-          throw new Error('Invalid API response')
+          throw new Error('Invalid filing')
         }
         return filing
       })
@@ -148,7 +157,7 @@ export default class LegalServices {
         if (!filing) {
           // eslint-disable-next-line no-console
           console.log('updateFiling() error - invalid response =', response)
-          throw new Error('Invalid API response')
+          throw new Error('Invalid filing')
         }
         return filing
       })
@@ -166,7 +175,7 @@ export default class LegalServices {
         if (!comments) {
           // eslint-disable-next-line no-console
           console.log('fetchComments() error - invalid response =', response)
-          throw new Error('Invalid API response')
+          throw new Error('Invalid comments')
         }
         return comments
       })
@@ -184,7 +193,7 @@ export default class LegalServices {
         if (!documents) {
           // eslint-disable-next-line no-console
           console.log('fetchDocuments() error - invalid response =', response)
-          throw new Error('Invalid API response')
+          throw new Error('Invalid documents')
         }
         return documents
       })
@@ -197,7 +206,9 @@ export default class LegalServices {
    */
   static async fetchDocument (document: DocumentIF): Promise<AxiosResponse> {
     // safety checks
-    if (!document?.link || !document?.filename) throw new Error('Invalid parameters')
+    if (!document?.link || !document?.filename) {
+      throw new Error('Invalid parameters')
+    }
 
     const config = {
       headers: { 'Accept': 'application/pdf' },

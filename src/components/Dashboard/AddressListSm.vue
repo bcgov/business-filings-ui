@@ -236,6 +236,8 @@ export default class AddressListSm extends Vue {
   @Getter isFirm!: boolean
   @Getter isCoaPending!: boolean
   @Getter isHistorical!: boolean
+
+  // FUTURE: change these to getters
   @State registeredAddress!: OfficeAddressIF
   @State recordsAddress!: OfficeAddressIF
 

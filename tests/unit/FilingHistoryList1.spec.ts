@@ -66,7 +66,7 @@ describe('Filing History List - misc functionality', () => {
   it('handles empty data', async () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { dissolutionType: 'administrative' }, vuetify })
@@ -85,7 +85,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = SAMPLE_FILINGS
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 222 }, vuetify })
@@ -100,7 +100,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('displays multiple filing items', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -197,7 +197,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a paper-only filing', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: true,
@@ -248,7 +248,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a regular filing', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -303,7 +303,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a full restoration filing', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -360,7 +360,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a limited restoration filing', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -438,8 +438,8 @@ describe('Filing History List - misc functionality', () => {
   // FUTURE: show and verify the tooltip
   xit('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
     // init store
-    store.state.entityType = 'BEN'
-    store.state.identifier = 'BC0007291'
+    store.state.business.legalType = 'BEN'
+    store.state.business.identifier = 'BC0007291'
     store.state.filings = SAMPLE_FILINGS
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { highlightId: 666 }, vuetify })
@@ -460,7 +460,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('returns correct values for the date comparison methods', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store, vuetify })
@@ -480,7 +480,7 @@ describe('Filing History List - misc functionality', () => {
 
   it('disables corrections when "disable changes" prop is set', async () => {
     // init store
-    store.state.identifier = 'CP0001191'
+    store.state.business.identifier = 'CP0001191'
     store.state.filings = []
 
     const wrapper = mount(FilingHistoryList, { store, propsData: { disableChanges: true }, vuetify })
@@ -520,25 +520,25 @@ describe('Filing History List - misc functionality', () => {
 
     // conditions[6]: IA as a BEN/BC/CC/ULC
     for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
-      store.state.entityType = entityType
+      store.state.business.legalType = entityType
       expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
     }
 
     // conditions[7]: Change of Registration as a firm
     for (const entityType of ['SP', 'GP']) {
-      store.state.entityType = entityType
+      store.state.business.legalType = entityType
       expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
     }
 
     // conditions[8]: Correction as a firm or BEN/BC/CC/ULC
     for (const entityType of ['SP', 'GP', 'BEN', 'BC', 'CC', 'ULC']) {
-      store.state.entityType = entityType
+      store.state.business.legalType = entityType
       expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
     }
 
     // conditions[9]: Registration as a firm
     for (const entityType of ['SP', 'GP']) {
-      store.state.entityType = entityType
+      store.state.business.legalType = entityType
       expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
     }
 
@@ -569,19 +569,19 @@ describe('Filing History List - misc functionality', () => {
     }
 
     // only conditions[4]: IA as not a BEN/BC/CC/ULC
-    store.state.entityType = 'CP'
+    store.state.business.legalType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
     // only conditions[5]: Change of Registration as not a firm
-    store.state.entityType = 'CP'
+    store.state.business.legalType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
     // only conditions[6]: Correction as not a firm nor BEN/BC/CC/ULC
-    store.state.entityType = 'CP'
+    store.state.business.legalType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
 
     // only conditions[7]: Registration as not a firm
-    store.state.entityType = 'CP'
+    store.state.business.legalType = 'CP'
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
   })
 })
@@ -838,9 +838,9 @@ describe('Filing History List - redirections', () => {
     store.commit('setTestConfiguration', { key: 'EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.keycloakRoles = ['staff']
-    store.state.identifier = 'BC1234567'
+    store.state.business.identifier = 'BC1234567'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -927,7 +927,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     store.state.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -969,7 +969,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays default title for a numbered company IA', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1011,7 +1011,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays a "future effective" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1075,7 +1075,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1139,7 +1139,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1202,7 +1202,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays a Completed IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1265,7 +1265,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1328,7 +1328,7 @@ describe('Filing History List - incorporation applications', () => {
   it('displays a Completed IA (business mode)', async () => {
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
     store.state.filings = [
       {
         availableOnPaperOnly: false,
@@ -1399,7 +1399,7 @@ describe('Filing History List - paper only and other filings', () => {
   beforeEach(() => {
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.state.entityType = 'BEN'
+    store.state.business.legalType = 'BEN'
   })
 
   afterEach(() => {

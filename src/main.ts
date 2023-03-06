@@ -39,7 +39,7 @@ async function start () {
 
   // fetch the store first as it has no dependencies
   const store = getVuexStore()
-  await store.dispatch('fetchConfiguration', applicationUrl)
+  await store.dispatch('loadConfiguration', applicationUrl)
 
   if (window['sentryEnable'] === 'true') {
     // initialize Sentry

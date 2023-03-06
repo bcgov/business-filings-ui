@@ -366,25 +366,27 @@ export default class AnnualReport extends Vue {
     directorsComponent: Directors,
     officeAddressesComponent: OfficeAddresses
   }
-  @State entityFoundingDate!: Date
+
+  // FUTURE: change these to getters
   @State ARFilingYear!: number
   @State arMinDate!: string
   @State arMaxDate!: string
   @State nextARDate!: string
-  @State lastAddressChangeDate!: string
-  @State lastDirectorChangeDate!: string
-  @State lastAnnualReportDate!: string
   @State filingData!: Array<FilingDataIF>
 
-  @Getter getAuthWebUrl!: string
-  @Getter getPayApiUrl!: string
-  @Getter isCoop!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isCurrentFilingEditable!: boolean
-  @Getter getReportState!: string
   @Getter getCurrentYear!: number
-  @Getter getEntityName!: string
+  @Getter getAuthWebUrl!: string
+  @Getter getFoundingDate!: Date
+  @Getter getLegalName!: string
+  @Getter getLastAddressChangeDate!: string
+  @Getter getLastAnnualReportDate!: string
+  @Getter getLastDirectorChangeDate!: string
+  @Getter getPayApiUrl!: string
+  @Getter getReportState!: string
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isCoop!: boolean
+  @Getter isCurrentFilingEditable!: boolean
+  @Getter isRoleStaff!: boolean
 
   // variables for AgmDate component
   private newAgmDate = null // for resuming draft
@@ -598,7 +600,7 @@ export default class AnnualReport extends Vue {
       if (header.name !== FilingTypes.ANNUAL_REPORT) throw new Error('Invalid filing type')
       if (header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
       if (business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (business.legalName !== this.getEntityName) throw new Error('Invalid business legal name')
+      if (business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
 
       // restore Certified By (but not Date)
       this.certifiedBy = header.certifiedBy
@@ -972,10 +974,10 @@ export default class AnnualReport extends Vue {
 
     const business: any = {
       business: {
-        foundingDate: this.dateToApi(this.entityFoundingDate),
+        foundingDate: this.dateToApi(this.getFoundingDate),
         identifier: this.getIdentifier,
-        legalName: this.getEntityName,
-        legalType: this.getEntityType
+        legalName: this.getLegalName,
+        legalType: this.getLegalType
       }
     }
 
@@ -1027,7 +1029,7 @@ export default class AnnualReport extends Vue {
     if (this.hasFilingCode(FilingCodes.ADDRESS_CHANGE_OT)) {
       changeOfAddress = {
         [FilingTypes.CHANGE_OF_ADDRESS]: {
-          legalType: this.getEntityType,
+          legalType: this.getLegalType,
           offices: {
             registeredOffice: this.updatedAddresses.registeredOffice
           }
@@ -1101,17 +1103,17 @@ export default class AnnualReport extends Vue {
     let earliestAllowedDate: string = null
 
     if (type === 'coa') {
-      if (this.lastAddressChangeDate || this.lastAnnualReportDate) {
-        earliestAllowedDate = this.latestYyyyMmDd(this.lastAddressChangeDate, this.lastAnnualReportDate)
+      if (this.getLastAddressChangeDate || this.getLastAnnualReportDate) {
+        earliestAllowedDate = this.latestYyyyMmDd(this.getLastAddressChangeDate, this.getLastAnnualReportDate)
       } else {
-        earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
+        earliestAllowedDate = this.dateToYyyyMmDd(this.getFoundingDate)
       }
     }
     if (type === 'cod') {
-      if (this.lastDirectorChangeDate || this.lastAnnualReportDate) {
-        earliestAllowedDate = this.latestYyyyMmDd(this.lastDirectorChangeDate, this.lastAnnualReportDate)
+      if (this.getLastDirectorChangeDate || this.getLastAnnualReportDate) {
+        earliestAllowedDate = this.latestYyyyMmDd(this.getLastDirectorChangeDate, this.getLastAnnualReportDate)
       } else {
-        earliestAllowedDate = this.dateToYyyyMmDd(this.entityFoundingDate)
+        earliestAllowedDate = this.dateToYyyyMmDd(this.getFoundingDate)
       }
     }
 

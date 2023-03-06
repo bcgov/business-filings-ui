@@ -7,18 +7,19 @@ export default {
     state.configuration = data
   },
 
-  /** Use this mutator to set a specific attribute in unit testing.
-   * Like this: store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
-   * */
-  setTestConfiguration (state: ConfigurationStateIF, payload: KeyValueIF) {
+  /**
+   * Use this mutator to set a specific attribute in unit testing. Eg,
+   * store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
+   */
+  setTestConfiguration (state: ConfigurationStateIF, { key, value }: KeyValueIF) {
     if (!state.configuration) {
       Vue.set(state, 'configuration', {})
     }
-    Vue.set(state.configuration, payload.key, payload.value)
+    Vue.set(state.configuration, key, value)
   },
 
-  setSessionVariables (state: ConfigurationStateIF, responseData: any) {
-    // The following four session variables are used by SBC Header (a common component)
+  setSessionVariables (_state: ConfigurationStateIF, responseData: any) {
+    // The following four session variables are used by SBC Header (a common component):
     sessionStorage.setItem('AUTH_WEB_URL', responseData['AUTH_WEB_URL'])
     sessionStorage.setItem('REGISTRY_HOME_URL', responseData['REGISTRY_HOME_URL'])
     sessionStorage.setItem('AUTH_API_URL', responseData['AUTH_API_URL'] + responseData['AUTH_API_VERSION'] + '/')
@@ -40,7 +41,7 @@ export default {
     (<any>window).sentryEnable = sentryEnable
   },
 
-  setAxiosBaseUrl (state, legalApiUrl: string) {
+  setAxiosBaseUrl (_state: ConfigurationStateIF, legalApiUrl: string) {
     axios.defaults.baseURL = legalApiUrl
   }
 }
