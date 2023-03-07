@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes, PaymentMethod } from '@/enums'
+import { EffectOfOrderTypes, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.

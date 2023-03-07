@@ -46,8 +46,6 @@ export interface StateIF {
   configObject: any
   filingData: Array<FilingDataIF>
 
-  hasBlockerTask: boolean
-  hasBlockerFiling: boolean
   isCoaPending: boolean
   coaEffectiveDate: Date
 }

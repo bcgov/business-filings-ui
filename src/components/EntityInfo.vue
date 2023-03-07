@@ -4,10 +4,12 @@
       <v-row no-gutters class="pt-3 pb-4">
         <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
           <header>
-            <!-- Entity Name / IA Title -->
+            <!-- Entity Name -->
             <div v-if="!!businessId" id="entity-legal-name" aria-label="Business Legal Name">
               <span>{{ getLegalName || 'Unknown Name' }}</span>
             </div>
+
+            <!-- IA Title -->
             <div v-if="!!tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
               <span>{{ getLegalName || GetCorpNumberedDescription(getLegalType)}}</span>
             </div>
@@ -42,7 +44,7 @@
 
           <menu class="mt-4 ml-n4">
             <!-- Staff Comments -->
-            <span v-if="!!businessId && isAllowed(AllowableActions.ADD_STAFF_COMMENT)">
+            <span v-if="isAllowed(AllowableActions.STAFF_COMMENT)">
               <StaffComments
                 :axios="axios"
                 :businessId="businessId"
@@ -60,50 +62,48 @@
               <span class="font-14 mx-3">{{getReasonText || 'Unknown Reason'}}</span>
             </span>
 
-            <template v-else>
-              <!-- View and Change Company Information -->
-              <span v-if="isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)">
-                <v-btn
-                  small text color="primary"
-                  id="company-information-button"
-                  :disabled="hasBlocker"
-                  @click="promptChangeCompanyInfo()"
-                >
-                  <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                  <span class="font-13 ml-1">View and Change Business Information</span>
-                </v-btn>
+            <!-- View and Change Business Information -->
+            <span v-if="!!businessId && !isHistorical">
+              <v-btn
+                small text color="primary"
+                id="company-information-button"
+                :disabled="!isAllowed(AllowableActions.BUSINESS_INFORMATION)"
+                @click="promptChangeCompanyInfo()"
+              >
+                <v-icon medium>mdi-file-document-edit-outline</v-icon>
+                <span class="font-13 ml-1">View and Change Business Information</span>
+              </v-btn>
 
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition" v-if="isPendingDissolution">
-                  <template v-slot:activator="{ on }">
-                    <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
-                  </template>
-                  You cannot view or change business information while the business is pending dissolution.
-                </v-tooltip>
-              </span>
+              <v-tooltip top content-class="top-tooltip" transition="fade-transition" v-if="isPendingDissolution">
+                <template v-slot:activator="{ on }">
+                  <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
+                </template>
+                You cannot view or change business information while the business is pending dissolution.
+              </v-tooltip>
+            </span>
 
-              <!-- Dissolve Company -->
-              <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+            <!-- Dissolve Business -->
+            <span v-if="!!businessId && !isHistorical">
+              <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     small text color="primary"
                     id="dissolution-button"
-                    :disabled="hasBlocker"
+                    :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
                     @click="promptDissolve()"
                     v-on="on"
                   >
                     <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
                     <span class="font-13 ml-1">Dissolve this Business</span>
                   </v-btn>
-                 </template>
-                    Dissolving the business will make this business historical
-                    and it will be struck from the corporate registry.
-                  </v-tooltip>
-              </span>
-            </template>
+                </template>
+                Dissolving the business will make this business historical
+                and it will be struck from the corporate registry.
+              </v-tooltip>
+            </span>
 
             <!-- Download Business Summary -->
-            <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
+            <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
               <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -121,7 +121,7 @@
             </span>
 
             <!-- View/Add Digital Credentials -->
-            <span v-if="isAllowed(AllowableActions.VIEW_ADD_DIGITAL_CREDENTIALS)">
+            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
               <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -168,7 +168,7 @@
             </template>
 
             <!-- NR Number -->
-            <template v-if="nameRequestNumber">
+            <template v-if="!!nameRequestNumber">
               <dt class="mr-2">Name Request Number:</dt>
               <dd id="nr-number">{{ nameRequestNumber }}</dd>
             </template>
@@ -214,6 +214,7 @@ import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
 import { GetCorpFullDescription, GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
+import { EnumUtilities } from '@/services'
 
 @Component({
   components: { StaffComments },
@@ -226,7 +227,6 @@ import { GetCorpFullDescription, GetCorpNumberedDescription } from '@bcrs-shared
 })
 export default class EntityInfo extends Vue {
   // FUTURE: change these to getters
-  @State ARFilingYear!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
@@ -241,12 +241,12 @@ export default class EntityInfo extends Vue {
   @Getter getNameRequest!: any
   @Getter getReasonText!: string
   @Getter getStateFiling!: StateFilingIF
-  @Getter isAdminFreeze!: boolean
   @Getter isAuthorizedToContinueOut!: boolean
   @Getter isFirm!: boolean
   @Getter isHistorical!: boolean
   @Getter isInLimitedRestoration!: boolean
   @Getter isPendingDissolution!: boolean
+  @Getter isRoleStaff!: boolean
   @Getter isSoleProp!: boolean
 
   // enums for template
@@ -272,13 +272,19 @@ export default class EntityInfo extends Vue {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
+  /** The limited restoration active-until date, if it exists, otherwise null. */
+  get activeUntil (): string {
+    const date = this.yyyyMmDdToDate(this.getStateFiling?.restoration?.expiry)
+    return this.dateToPacificDate(date, true)
+  }
+
   /** The business description. */
   get businessDescription (): string {
-    const corpTypeDescription = GetCorpFullDescription(this.getLegalType)
-    if (this.isSoleProp && this.tempRegNumber) {
-      return `${corpTypeDescription} / Doing Business As (DBA)`
+    const corpFullDescription = GetCorpFullDescription(this.getLegalType)
+    if (this.isSoleProp && !!this.tempRegNumber) {
+      return `${corpFullDescription} / Doing Business As (DBA)`
     } else {
-      return corpTypeDescription
+      return corpFullDescription
     }
   }
 

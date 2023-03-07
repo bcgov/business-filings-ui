@@ -451,8 +451,8 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
-  TodoListResourceIF } from '@/interfaces'
+import { ActionBindingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
+  from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
@@ -520,7 +520,6 @@ export default class TodoList extends Vue {
   @Action setArMaxDate!: ActionBindingIF
   @Action setNextARDate!: ActionBindingIF
   @Action setCurrentFilingStatus!: ActionBindingIF
-  @Action setHasBlockerTask!: ActionBindingIF
 
   // for template
   readonly EnumUtilities = EnumUtilities
@@ -577,7 +576,7 @@ export default class TodoList extends Vue {
     return (
       !item.enabled ||
       (this.isBenBcCccUlc && !this.enableCheckbox[index]) ||
-      !this.isAllowed(AllowableActions.FILE_ANNUAL_REPORT)
+      !this.isAllowed(AllowableActions.ANNUAL_REPORT)
     )
   }
 
@@ -620,18 +619,6 @@ export default class TodoList extends Vue {
 
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', this.todoItems.length)
-
-    // Check if there is a draft/pending/error/paid/correction/alteration task.
-    // This is a blocker because it needs to be completed first.
-    const hasBlockerTask = this.todoItems.some(task => (
-      this.isStatusDraft(task) ||
-      this.isStatusPending(task) ||
-      this.isStatusError(task) ||
-      this.isStatusPaid(task) ||
-      this.isTypeCorrection(task) ||
-      this.isTypeAlteration(task)
-    ))
-    this.setHasBlockerTask(hasBlockerTask)
 
     // if needed, highlight a specific task
     if (this.highlightId) this.highlightTask(this.highlightId)
@@ -707,7 +694,7 @@ export default class TodoList extends Vue {
   /** Loads a NEW Annual Report todo. */
   private loadAnnualReportTodo (task: ApiTaskIF): void {
     const todo = task.task.todo
-    const business = todo.business as ApiBusinessIF
+    const business = todo.business
     const header = todo.header
 
     if (business && header) {
@@ -747,7 +734,7 @@ export default class TodoList extends Vue {
     if (!this.isRoleStaff) return // regular users can't file a new conversion
 
     const todo = task.task.todo
-    const business = todo.business as ApiBusinessIF
+    const business = todo.business
     const header = todo.header
 
     if (business && header) {

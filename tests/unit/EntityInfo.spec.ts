@@ -197,78 +197,51 @@ describe('EntityInfo - View and Change Business Information', () => {
 
   const variations = [
     { // 0
-      businessId: 'CP1234567',
-      entityType: 'CP',
-      goodStanding: true,
-      buttonExists: false,
-      tooltip: null
+      businessId: 'BC1234567',
+      state: 'ACTIVE',
+      buttonExists: true
     },
     { // 1
       businessId: 'BC1234567',
-      entityType: 'BEN',
-      goodStanding: true,
-      buttonExists: true,
-      tooltip: null
+      state: 'HISTORICAL',
+      buttonExists: false
     },
     { // 2
-      businessId: 'BC1234567',
-      entityType: 'BC',
-      goodStanding: true,
-      buttonExists: true,
-      tooltip: null
+      tempRegNumber: 'T123456789',
+      state: 'DRAFT_APP',
+      buttonExists: false
     },
     { // 3
-      businessId: 'BC1234567',
-      entityType: 'ULC',
-      goodStanding: true,
-      buttonExists: true,
-      tooltip: null
+      tempRegNumber: 'T123456789',
+      state: 'FILED_APP',
+      buttonExists: false
     },
     { // 4
-      tempRegNumber: 'T123456789',
-      entityType: 'BEN',
-      entityStatus: 'DRAFT_APP',
-      buttonExists: false
-    },
-    { // 5
-      tempRegNumber: 'T123456789',
-      entityType: 'BEN',
-      entityStatus: 'FILED_APP',
-      buttonExists: false
-    },
-    { // 6
       businessId: null,
       tempRegNumber: null,
-      entityType: null,
-      goodStanding: false,
-      entityStatus: null,
-      buttonExists: false,
-      tooltip: null
+      state: null,
+      buttonExists: false
     }
   ]
 
   variations.forEach((_, index) => {
-    it(`displays company info button and tooltips properly - variation #${index}`, async () => {
+    it(`displays company info button properly - variation #${index}`, () => {
       sessionStorage.clear()
       if (_.businessId) sessionStorage.setItem('BUSINESS_ID', _.businessId)
       if (_.tempRegNumber) sessionStorage.setItem('TEMP_REG_NUMBER', _.tempRegNumber)
 
-      store.commit('setLegalType', _.entityType)
-      store.commit('setGoodStanding', _.goodStanding || false)
-      store.state.entityStatus = _.entityStatus || null
+      store.commit('setState', _.state || null)
 
-      const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
-      await Vue.nextTick()
+      const wrapper = shallowMount(EntityInfo, {
+        store,
+        vuetify,
+        router,
+        mixins: [AllowableActionsMixin]
+      })
 
       // verify button
       const companyInformationButton = wrapper.find('#company-information-button')
       expect(companyInformationButton.exists()).toBe(_.buttonExists)
-
-      // verify tooltip
-      // expect index = 4 to display compliance warning
-      const vTooltipStub = wrapper.find('v-tooltip-stub')
-      expect(vTooltipStub.exists()).toBe(index === 4 ? !!_.tooltip : false)
-      if (_.tooltip) expect(vTooltipStub.text()).toContain(_.tooltip)
     })
   })
 })
@@ -429,8 +402,6 @@ describe('EntityInfo - HISTORICAL badge', () => {
 })
 
 describe('EntityInfo - Click Tests - Alterations', () => {
-  const router = mockRouter.mock()
-
   const { assign } = window.location
 
   beforeAll(() => {
@@ -453,7 +424,11 @@ describe('EntityInfo - Click Tests - Alterations', () => {
     store.commit('setGoodStanding', true)
     store.commit('setLegalType', 'BEN')
 
-    const wrapper = mount(EntityInfo, { vuetify, store, router })
+    const wrapper = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [AllowableActionsMixin]
+    })
     await Vue.nextTick()
 
     await wrapper.find('#company-information-button').trigger('click')
@@ -473,16 +448,57 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
     store.commit('setState', 'ACTIVE')
   })
 
-  it('displays the Dissolve this Company button', async () => {
+  it('displays the Dissolve this Business button', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityInfo, {
       store,
       vuetify,
       mixins: [AllowableActionsMixin]
     })
-    await Vue.nextTick()
 
-    expect(wrapper.find('#dissolution-button').exists()).toBe(true)
+    const button = wrapper.find('#dissolution-button')
+    expect(button.exists()).toBe(true)
+    expect(button.text()).toBe('Dissolve this Business')
+    expect(button.classes()).not.toContain('v-btn--disabled') // enabled
+  })
+
+  it('does not display the button if no business id', () => {
+    sessionStorage.removeItem('BUSINESS_ID')
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [AllowableActionsMixin]
+    })
+
+    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
+  })
+
+  it('does not display the button if historical', () => {
+    store.commit('setState', 'HISTORICAL')
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [AllowableActionsMixin]
+    })
+
+    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
+  })
+
+  it('displays the button as disabled if action is not allowed', () => {
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => false } }]
+    })
+
+    const button = wrapper.find('#dissolution-button')
+    expect(button.exists()).toBe(true)
+    expect(button.classes()).toContain('v-btn--disabled')
   })
 
   it('emits Confirm Dissolution event if in good standing', async () => {
@@ -494,7 +510,6 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
       vuetify,
       mixins: [AllowableActionsMixin]
     })
-    await Vue.nextTick()
 
     // click the button and verify emitted event
     await wrapper.find('#dissolution-button').trigger('click')
@@ -510,7 +525,6 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
       vuetify,
       mixins: [AllowableActionsMixin]
     })
-    await Vue.nextTick()
 
     // click the button and verify emitted event
     await wrapper.find('#dissolution-button').trigger('click')
@@ -519,19 +533,17 @@ describe('EntityInfo - Click Tests - Dissolutions', () => {
 })
 
 describe('EntityInfo - Click Tests - Business Summary', () => {
-  const router = mockRouter.mock()
-
-  it('displays the Business Summary button', async () => {
+  it('displays the Business Summary button', () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityInfo, {
       store,
       vuetify,
-      router,
       mixins: [AllowableActionsMixin]
     })
-    await Vue.nextTick()
 
-    expect(wrapper.find('#download-summary-button').exists()).toBe(true)
+    const button = wrapper.find('#download-summary-button')
+    expect(button.exists()).toBe(true)
+    expect(button.text()).toBe('Business Summary')
   })
 
   it('emits Download Business Summary event', async () => {
@@ -539,10 +551,8 @@ describe('EntityInfo - Click Tests - Business Summary', () => {
     const wrapper: any = mount(EntityInfo, {
       store,
       vuetify,
-      router,
       mixins: [AllowableActionsMixin]
     })
-    await Vue.nextTick()
 
     // click the button and verify emitted event
     await wrapper.find('#download-summary-button').trigger('click')
