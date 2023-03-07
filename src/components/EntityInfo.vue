@@ -69,7 +69,6 @@ export default class EntityInfo extends Vue {
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNotInGoodStanding (message: NigsMessage): void {}
 
   /** Emits an event to view / add digital credentials. */

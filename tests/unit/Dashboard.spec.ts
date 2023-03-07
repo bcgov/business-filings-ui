@@ -28,8 +28,6 @@ describe('Dashboard - UI', () => {
 
   beforeEach(() => {
     // init store
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
 
     // create wrapper for Dashboard
@@ -74,62 +72,48 @@ describe('Dashboard - UI', () => {
     expect(vm.historyCount).toEqual(3)
   })
 
-  it('enables standalone filing buttons when there are no blockers', async () => {
+  it('enables standalone filing buttons when actions are allowed', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = false
+    jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
+    store.commit('setAllowedActions', {
+      filing: {
+        filingTypes: [
+          { name: 'changeOfAddress' },
+          { name: 'changeOfDirectors' }
+        ]
+      }
+    })
     store.state.isCoaPending = false
-    store.commit('setAdminFreeze', false)
     await Vue.nextTick()
 
-    expect(localVm.hasBlocker).toEqual(false)
-
-    expect(localVm.isAllowed('fileAddressChange')).toBe(true)
-    expect(localVm.isAllowed('fileDirectorChange')).toBe(true)
+    expect(localVm.isAllowed('addressChange')).toBe(true)
+    expect(localVm.isAllowed('directorChange')).toBe(true)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
   })
 
-  it('disables standalone filing buttons when there is a blocker task', async () => {
+  it('disables standalone filing buttons when actions are not allowed', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    store.state.hasBlockerTask = true
-    store.state.hasBlockerFiling = false
+    jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
+    store.commit('setAllowedActions', {
+      filing: {
+        filingTypes: []
+      }
+    })
     store.state.isCoaPending = false
     await Vue.nextTick()
 
-    expect(localVm.hasBlocker).toEqual(true)
-
-    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
-    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
-
-    expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
-    expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
-  })
-
-  it('disables standalone filing buttons when there is a blocker filing', async () => {
-    // re-mount the component since setting session storage is not reactive
-    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
-    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
-    const localVm: any = localWrapper.vm
-
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = true
-    store.state.isCoaPending = false
-    await Vue.nextTick()
-
-    expect(localVm.hasBlocker).toEqual(true)
-
-    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
-    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+    expect(localVm.isAllowed('addressChange')).toBe(false)
+    expect(localVm.isAllowed('directorChange')).toBe(false)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
@@ -141,15 +125,11 @@ describe('Dashboard - UI', () => {
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = false
     store.state.isCoaPending = true
     await Vue.nextTick()
 
-    expect(localVm.hasBlocker).toEqual(true)
-
-    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
-    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+    expect(localVm.isAllowed('addressChange')).toBe(false)
+    expect(localVm.isAllowed('directorChange')).toBe(false)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
@@ -161,15 +141,10 @@ describe('Dashboard - UI', () => {
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
-    await Vue.nextTick()
 
-    expect(localVm.hasBlocker).toEqual(false)
-
-    expect(localVm.isAllowed('fileAddressChange')).toBe(false)
-    expect(localVm.isAllowed('fileDirectorChange')).toBe(false)
+    expect(localVm.isAllowed('addressChange')).toBe(false)
+    expect(localVm.isAllowed('directorChange')).toBe(false)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
@@ -187,8 +162,6 @@ describe('Dashboard - UI', () => {
 describe('Dashboard - Route Parameter Tests', () => {
   beforeAll(() => {
     // init store
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
   })
 
@@ -216,8 +189,6 @@ describe('Dashboard - Route Parameter Tests', () => {
 describe('Dashboard - Click Tests', () => {
   beforeAll(() => {
     // init store
-    store.state.hasBlockerTask = false
-    store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
   })
 

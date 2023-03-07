@@ -34,6 +34,13 @@ document.body.setAttribute('data-app', 'true')
 // Prevent the warning "[Vuetify] Unable to locate target #staff-notation"
 document.body.setAttribute('id', 'todo-list')
 
+// mock the mixin to always return True
+const AllowableActionsMixin: any = {
+  methods: {
+    isAllowed: () => true
+  }
+}
+
 describe('TodoList - UI', () => {
   beforeAll(() => {
     sessionStorage.clear()
@@ -45,14 +52,13 @@ describe('TodoList - UI', () => {
     // init store
     store.state.tasks = []
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(0)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
     expect(wrapper.emitted('todo-count')).toEqual([[0]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).not.toBeNull()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
 
@@ -115,14 +121,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
     expect(wrapper.emitted('todo-count')).toEqual([[3]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     // verify that first task is enabled and other 2 are disabled
@@ -164,7 +169,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -195,14 +200,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -241,14 +245,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -283,14 +286,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -325,14 +327,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -379,14 +380,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -435,14 +435,13 @@ describe('TodoList - UI', () => {
     // Only staff may resume drafts
     store.state.keycloakRoles = ['staff']
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -494,14 +493,13 @@ describe('TodoList - UI', () => {
     // Only staff may resume drafts
     store.state.keycloakRoles = ['user']
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -557,14 +555,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -609,14 +606,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -671,14 +667,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -727,14 +722,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -784,14 +778,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -834,14 +827,13 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -882,7 +874,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -921,7 +913,7 @@ describe('TodoList - UI', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -951,14 +943,13 @@ describe('TodoList - UI - BCOMPs', () => {
     // init store
     store.state.tasks = []
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(0)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(0)
     expect(wrapper.emitted('todo-count')).toEqual([[0]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).not.toBeNull()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
 
@@ -1018,14 +1009,13 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(3)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(3)
     expect(wrapper.emitted('todo-count')).toEqual([[3]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     // verify that first task is enabled and other 2 are disabled
@@ -1075,14 +1065,13 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1122,14 +1111,13 @@ describe('TodoList - UI - BCOMPs', () => {
     ]
     store.state.isCoaPending = true // normally set by FilingHistoryList
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1173,14 +1161,13 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(false)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1221,14 +1208,13 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1269,14 +1255,13 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1311,14 +1296,13 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1352,7 +1336,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1391,7 +1375,7 @@ describe('TodoList - UI - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1439,14 +1423,13 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1488,14 +1471,13 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1536,14 +1518,13 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1586,14 +1567,13 @@ describe('TodoList - UI - Incorp Apps', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
     expect(wrapper.emitted('todo-count')).toEqual([[1]])
-    expect(store.state.hasBlockerTask).toEqual(true)
     expect(vm.$el.querySelector('.no-results')).toBeNull()
 
     const item = vm.$el.querySelector('.list-item')
@@ -1660,7 +1640,7 @@ describe('TodoList - Click Tests', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1711,7 +1691,7 @@ describe('TodoList - Click Tests', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1767,7 +1747,7 @@ describe('TodoList - Click Tests', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1817,7 +1797,7 @@ describe('TodoList - Click Tests', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1867,7 +1847,7 @@ describe('TodoList - Click Tests', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1921,7 +1901,7 @@ describe('TodoList - Click Tests', () => {
         }
       })))
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await flushPromises() // wait for pay error to finish loading
 
@@ -1996,7 +1976,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2070,7 +2050,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+    const wrapper = mount(TodoList, { localVue, store, router, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2123,7 +2103,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2174,7 +2154,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2244,7 +2224,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     store.state.nameRequest = { nrNum: 'NR 1234567' }
     store.state.entityStatus = 'DRAFT_APP'
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2288,7 +2268,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     store.state.nameRequest = null
     store.state.entityStatus = 'DRAFT_APP'
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2360,7 +2340,7 @@ describe('TodoList - Click Tests - Corrections', () => {
       ]
       store.state.keycloakRoles = ['staff'] // only staff may resume draft corrections
 
-      const wrapper = mount(TodoList, { store, vuetify })
+      const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
       const vm = wrapper.vm as any
       await Vue.nextTick()
 
@@ -2413,7 +2393,7 @@ describe('TodoList - Click Tests - Corrections', () => {
       localVue.use(VueRouter)
       const router = mockRouter.mock()
 
-      const wrapper = mount(TodoList, { localVue, store, router, vuetify })
+      const wrapper = mount(TodoList, { localVue, store, router, vuetify, mixins: [AllowableActionsMixin] })
       const vm = wrapper.vm as any
       await Vue.nextTick()
 
@@ -2477,7 +2457,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     ]
     store.state.keycloakRoles = ['staff'] // only staff may resume draft alterations
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2545,7 +2525,7 @@ describe('TodoList - Delete Draft', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     await Vue.nextTick()
 
     // open dropdown menu and click Delete button
@@ -2584,7 +2564,7 @@ describe('TodoList - Delete Draft', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2630,7 +2610,7 @@ describe('TodoList - Delete Draft', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2675,7 +2655,7 @@ describe('TodoList - Delete Draft', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     await Vue.nextTick()
 
     // open dropdown menu and click Delete button
@@ -2738,7 +2718,7 @@ describe('TodoList - Cancel Payment', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     await Vue.nextTick()
 
     // open dropdown menu and click Cancel button
@@ -2778,7 +2758,7 @@ describe('TodoList - Cancel Payment', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -2825,7 +2805,7 @@ describe('TodoList - Cancel Payment', () => {
       }
     ]
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { store, vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
