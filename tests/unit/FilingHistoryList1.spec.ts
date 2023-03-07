@@ -430,10 +430,10 @@ describe('Filing History List - misc functionality', () => {
     expect(wrapper.findComponent(StaffFiling).exists()).toBe(false)
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
     expect(wrapper.findComponent(LimitedRestorationFiling).exists()).toBe(true)
-    expect(wrapper.find('.limited-restoration-period').text())
+    expect(wrapper.find('.limited-restoration-filing p').text())
       .toContain('The Company BC1234567 LTD. was successfully')
-    expect(wrapper.find('.limited-restoration-period').text())
-      .toContain('restored and is active until Apr 1, 2021')
+    expect(wrapper.find('.limited-restoration-filing p').text())
+      .toContain('until April 1, 2021. At the end of the')
 
     wrapper.destroy()
   })
@@ -521,25 +521,25 @@ describe('Filing History List - misc functionality', () => {
       expect(vm.disableCorrection({ ...item, isFutureEffective: true, status })).toBe(false)
     }
 
-    // conditions[6]: IA as a BEN/BC/CC/ULC
+    // conditions[4]: IA as a BEN/BC/CC/ULC
     for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
       store.commit('setLegalType', entityType)
       expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
     }
 
-    // conditions[7]: Change of Registration as a firm
+    // conditions[5]: Change of Registration as a firm
     for (const entityType of ['SP', 'GP']) {
       store.commit('setLegalType', entityType)
       expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
     }
 
-    // conditions[8]: Correction as a firm or BEN/BC/CC/ULC
+    // conditions[6]: Correction as a firm or BEN/BC/CC/ULC
     for (const entityType of ['SP', 'GP', 'BEN', 'BC', 'CC', 'ULC']) {
       store.commit('setLegalType', entityType)
       expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
     }
 
-    // conditions[9]: Registration as a firm
+    // conditions[7]: Registration as a firm
     for (const entityType of ['SP', 'GP']) {
       store.commit('setLegalType', entityType)
       expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)

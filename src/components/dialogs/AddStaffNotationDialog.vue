@@ -6,7 +6,7 @@
           <template v-if="isPutBackOn" >Correction - {{displayName}}</template>
           <template v-else-if="isAdministrativeDissolution">{{displayName}}</template>
           <template v-else-if="isAdministerFreeze">
-            {{!isAdminFreeze ? displayName : displayName.replace('Freeze', 'Unfreeze')}}
+            {{!isAdminFrozen ? displayName : displayName.replace('Freeze', 'Unfreeze')}}
           </template>
           <template v-else >Add a {{displayName}}</template>
         </span>
@@ -24,7 +24,7 @@
         </p>
 
         <p v-if="isAdministerFreeze">
-          You are about to {{ !isAdminFreeze ? 'freeze' : 'unfreeze' }}
+          You are about to {{ !isAdminFrozen ? 'freeze' : 'unfreeze' }}
           <span class="text-uppercase font-weight-bold">{{getLegalName}}</span>, {{getIdentifier}}.
         </p>
 
@@ -136,8 +136,7 @@ import { EnumUtilities, LegalServices } from '@/services'
     FileUploadPdf
   },
   mixins: [
-    DateMixin,
-    EnumMixin
+    DateMixin
   ]
 })
 export default class AddStaffNotationDialog extends Vue {
@@ -180,7 +179,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter getLegalType!: string
   @Getter getIdentifier!: string
   @Getter getKeycloakGuid!: string
-  @Getter isAdminFreeze!: boolean
+  @Getter isAdminFrozen!: boolean
 
   // Properties
   protected customErrorMsg = ''
@@ -200,17 +199,17 @@ export default class AddStaffNotationDialog extends Vue {
 
   /** Whether this filing is a Put Back On. */
   get isPutBackOn (): boolean {
-    return this.isTypePutBackOn({ name: this.name })
+    return EnumUtilities.isTypePutBackOn({ name: this.name })
   }
 
-  /** Whether this filing is a admin freeze. */
+  /** Whether this filing is an Admin Freeze or Unfreeze. */
   get isAdministerFreeze (): boolean {
-    return this.isTypeAdminFreeze({ name: this.name })
+    return EnumUtilities.isTypeAdminFreeze({ name: this.name })
   }
 
   /** Whether this filing is a Court Order. */
   get isCourtOrder (): boolean {
-    return this.isTypeCourtOrder({ name: this.name })
+    return EnumUtilities.isTypeCourtOrder({ name: this.name })
   }
 
   get courtOrderCustomValidationMsg (): string {
@@ -384,7 +383,7 @@ export default class AddStaffNotationDialog extends Vue {
     } else if (this.isAdministerFreeze) {
       filing[FilingTypes.ADMIN_FREEZE] = {
         details: this.notation,
-        freeze: !this.isAdminFreeze
+        freeze: !this.isAdminFrozen
       }
     } else {
       // this may be a Registrar's Notation or a Registrar's Order filing

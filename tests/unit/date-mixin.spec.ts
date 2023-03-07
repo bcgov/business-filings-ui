@@ -1,12 +1,8 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import MixinTester from '@/mixin-tester.vue'
 
-Vue.use(Vuetify)
-
-const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Date Mixin', () => {
@@ -14,7 +10,7 @@ describe('Date Mixin', () => {
 
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(MixinTester, { store, vuetify })
+    const wrapper = shallowMount(MixinTester, { store })
     vm = wrapper.vm
     await Vue.nextTick()
   })

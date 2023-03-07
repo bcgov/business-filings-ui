@@ -5,11 +5,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
+import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 
 @Component({
   mixins: [
     AllowableActionsMixin,
+    CommonMixin,
     DateMixin,
     EnumMixin
   ]

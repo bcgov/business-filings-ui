@@ -42,7 +42,7 @@ export default {
       state.hasBlockerTask ||
       state.hasBlockerFiling ||
       state.isCoaPending ||
-      rootGetters.isAdminFreeze
+      !!rootGetters.isAdminFreeze
     )
   },
 
@@ -55,6 +55,22 @@ export default {
     if (rootGetters.hasMissingInfoWarning) return true
 
     return rootGetters.hasBlockerExceptStaffApproval
+  },
+
+  /** The business email. */
+  getBusinessEmail (state: StateIF): string {
+    return state.businessEmail
+  },
+
+  /** The business phone number and optional extension. */
+  getFullPhoneNumber (state: StateIF): string {
+    const phone = state.businessPhone
+    const ext = state.businessPhoneExtension
+
+    if (phone) {
+      return (phone + `${ext ? (' x' + ext) : ''}`)
+    }
+    return null
   },
 
   /** Is True if a COA filing is pending. */

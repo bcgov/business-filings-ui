@@ -87,8 +87,15 @@
                 <!-- or a completed Dissolution? -->
                 <!-- or a completed Registration? -->
                 <!-- or a Limited Restoration? -->
-                <div v-else-if="filing.isCompletedIa || filing.isCompletedAlteration || filing.isCompletedDissolution ||
-                  filing.isCompletedRegistration || filing.isTypeLimitedRestoration" class="item-header__subtitle"
+                <!-- or a Limited Restoration Extension? -->
+                <div
+                  v-else-if="filing.isCompletedIa ||
+                    filing.isCompletedAlteration ||
+                    filing.isCompletedDissolution ||
+                    filing.isCompletedRegistration ||
+                    filing.isTypeLimitedRestoration ||
+                    filing.isTypeLimitedRestorationExtension"
+                  class="item-header__subtitle"
                 >
                   <span>FILED AND PAID <FiledLabel :filing="filing" /></span>
                   <v-btn
@@ -106,8 +113,11 @@
                 <!-- is this a FE IA pending (overdue)? -->
                 <!-- or a FE Alteration pending (overdue)? -->
                 <!-- or a FE Dissolution pending (overdue)? -->
-                <div v-else-if="filing.isFutureEffectiveIaPending || filing.isFutureEffectiveAlterationPending ||
-                  filing.isFutureEffectiveDissolutionPending" class="item-header__subtitle"
+                <div
+                  v-else-if="filing.isFutureEffectiveIaPending ||
+                    filing.isFutureEffectiveAlterationPending ||
+                    filing.isFutureEffectiveDissolutionPending"
+                  class="item-header__subtitle"
                 >
                   <span class="orange--text text--darken-2">FILED AND PENDING</span>
                   <span class="vert-pipe" />
@@ -127,8 +137,11 @@
                 <!-- is this a FE IA still waiting for effective date/time? -->
                 <!-- is this a FE Alteration still waiting for effective date/time? -->
                 <!-- is this a FE Dissolution still waiting for effective date/time? -->
-                <div v-else-if="filing.isFutureEffectiveIa || filing.isFutureEffectiveAlteration ||
-                  filing.isFutureEffectiveDissolution" class="item-header__subtitle"
+                <div
+                  v-else-if="filing.isFutureEffectiveIa ||
+                    filing.isFutureEffectiveAlteration ||
+                    filing.isFutureEffectiveDissolution"
+                  class="item-header__subtitle"
                 >
                   <span v-if="filing.isFutureEffectiveIa">FUTURE EFFECTIVE INCORPORATION</span>
                   <span v-if="filing.isFutureEffectiveAlteration">FUTURE EFFECTIVE ALTERATION</span>
@@ -287,8 +300,10 @@
             <!-- is this a FE IA pending (overdue)? -->
             <!-- or a FE Alteration pending (overdue)? -->
             <!-- or a FE Dissolution pending (overdue)? -->
-            <template v-else-if="filing.isFutureEffectiveIaPending || filing.isFutureEffectiveAlterationPending ||
-              filing.isFutureEffectiveDissolutionPending"
+            <template
+              v-else-if="filing.isFutureEffectiveIaPending ||
+                filing.isFutureEffectiveAlterationPending ||
+                filing.isFutureEffectiveDissolutionPending"
             >
               <FutureEffectivePending :filing=filing class="mt-6" />
             </template>
@@ -296,14 +311,20 @@
             <!-- is this a FE IA still waiting for effective date/time? -->
             <!-- or a FE Alteration still waiting for effective date/time?  -->
             <!-- or a FE Dissolution still waiting for effective date/time?  -->
-            <template v-else-if="filing.isFutureEffectiveIa || filing.isFutureEffectiveAlteration ||
-              filing.isFutureEffectiveDissolution"
+            <template
+              v-else-if="filing.isFutureEffectiveIa ||
+                filing.isFutureEffectiveAlteration ||
+                filing.isFutureEffectiveDissolution"
             >
               <FutureEffective :filing=filing class="mt-6" />
             </template>
 
             <template v-else-if="filing.isTypeLimitedRestoration">
               <LimitedRestorationFiling :filing="filing" class="mt-6" />
+            </template>
+
+            <template v-else-if="filing.isTypeLimitedRestorationExtension">
+              <LimitedRestorationExtensionFiling :filing="filing" class="mt-6" />
             </template>
 
             <!-- is this a generic paid (not yet completed) filing? -->
@@ -381,6 +402,13 @@ import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { navigate } from '@/utils'
+import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog }
+  from '@/components/dialogs'
+import { AllowableActions, FilingTypes, Routes, CorrectionTypes } from '@/enums'
+import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
+  from '@/interfaces'
+import { AllowableActionsMixin, DateMixin, FilingMixin } from '@/mixins'
+import { EnumUtilities, LegalServices } from '@/services/'
 import CompletedAlteration from './FilingHistoryList/CompletedAlteration.vue'
 import CompletedDissolution from './FilingHistoryList/CompletedDissolution.vue'
 import CompletedIa from './FilingHistoryList/CompletedIa.vue'
@@ -390,16 +418,11 @@ import DocumentsList from './FilingHistoryList/DocumentsList.vue'
 import FiledLabel from './FilingHistoryList/FiledLabel.vue'
 import FutureEffective from './FilingHistoryList/FutureEffective.vue'
 import FutureEffectivePending from './FilingHistoryList/FutureEffectivePending.vue'
-import LimitedRestorationFiling from '@/components/Dashboard/FilingHistoryList/LimitedRestorationFiling.vue'
+import LimitedRestorationFiling from './FilingHistoryList/LimitedRestorationFiling.vue'
+import LimitedRestorationExtensionFiling from './FilingHistoryList/LimitedRestorationExtensionFiling.vue'
 import PaperFiling from './FilingHistoryList/PaperFiling.vue'
 import PendingFiling from './FilingHistoryList/PendingFiling.vue'
 import StaffFiling from './FilingHistoryList/StaffFiling.vue'
-import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog } from '@/components/dialogs'
-import { AllowableActions, FilingTypes, Routes, CorrectionTypes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF, DocumentIF, HistoryItemIF, LegalFilingIF }
-  from '@/interfaces'
-import { AllowableActionsMixin, DateMixin, FilingMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
 
 @Component({
   components: {
@@ -414,6 +437,7 @@ import { EnumUtilities, LegalServices } from '@/services/'
     FutureEffective,
     FutureEffectivePending,
     LimitedRestorationFiling,
+    LimitedRestorationExtensionFiling,
     PaperFiling,
     PendingFiling,
     StaffFiling,
@@ -683,6 +707,12 @@ export default class FilingHistoryList extends Vue {
       if (EnumUtilities.isTypeRestorationLimited(filing)) {
         item.isTypeLimitedRestoration = true
         item.legalName = filing.data.restoration?.legalName
+        item.expiry = filing.data.restoration?.expiry
+      }
+
+      // add properties for limited restoration extensions
+      if (EnumUtilities.isTypeRestorationExtension(filing)) {
+        item.isTypeLimitedRestorationExtension = true
         item.expiry = filing.data.restoration?.expiry
       }
 

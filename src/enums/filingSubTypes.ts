@@ -1,5 +1,7 @@
 // FUTURE: move these to shared enum and import that instead
 export enum FilingSubTypes {
+  ADMIN_FREEZE = 'adminFreeze',
+  ADMIN_UNFREEZE = 'adminUnfreeze',
   COURT_ORDERED_LIQUIDATION = 'courtOrderedLiquidation',
   DISSOLUTION_ADMINISTRATIVE = 'administrative',
   DISSOLUTION_INVOLUNTARY = 'involuntary',

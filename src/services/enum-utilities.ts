@@ -177,7 +177,7 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.PUT_BACK_ON)
   }
 
-  /** Return True if the filing is a Admin Freeze */
+  /** Return True if the filing is an Admin Freeze or Unfreeze. */
   static isTypeAdminFreeze (item: any): boolean {
     return (item.name === FilingTypes.ADMIN_FREEZE)
   }
@@ -235,12 +235,12 @@ export default class EnumUtilities {
   /** Returns True if filing is a Staff filing. */
   static isTypeStaff (item: any): boolean {
     return (
-      this.isTypeRegistrarsNotation(item) ||
-      this.isTypeRegistarsOrder(item) ||
-      this.isTypeCourtOrder(item) ||
-      this.isTypePutBackOn(item) ||
       this.isTypeAdminFreeze(item) ||
-      this.isTypeDissolutionAdministrative(item)
+      this.isTypeCourtOrder(item) ||
+      this.isTypeDissolutionAdministrative(item) ||
+      this.isTypePutBackOn(item) ||
+      this.isTypeRegistarsOrder(item) ||
+      this.isTypeRegistrarsNotation(item)
     )
   }
 
@@ -291,7 +291,9 @@ export default class EnumUtilities {
   static filingTypeToName (type: FilingTypes, agmYear = null as string, subType: FilingSubTypes = null): string {
     if (!type) return 'Unknown Type' // safety check
     switch (type) {
-      case FilingTypes.ADMIN_FREEZE: return FilingNames.ADMIN_FREEZE
+      case FilingTypes.ADMIN_FREEZE:
+        // FUTURE: add freeze/unfreeze checks here
+        return FilingNames.ADMIN_FREEZE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS

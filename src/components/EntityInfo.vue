@@ -4,40 +4,40 @@
       <v-row no-gutters class="pt-3 pb-4">
         <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
           <header>
-            <!-- Entity Name / IA Title -->
-            <div v-if="!!businessId" id="entity-legal-name" aria-label="Business Legal Name">
-              <span>{{ getLegalName || 'Unknown Name' }}</span>
-            </div>
-            <div v-if="!!tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ getLegalName || GetCorpNumberedDescription(getLegalType)}}</span>
-            </div>
+            <template v-if="!!businessId">
+              <!-- First line -->
+              <div id="entity-legal-name" aria-label="Entity Legal Name">
+                {{ getEntityName || 'Unknown Name' }}
+              </div>
 
-            <!-- Business Description -->
-            <div v-if="!!businessId">
-              <span id="business-subtitle">{{ businessDescription }}</span>
+              <!-- Second line -->
+              <div>
+                <span id="business-description">{{ businessDescription }}</span>
 
-              <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
-                <span class="ml-3">Active until {{ getLimitedreRestorationActiveUntil || 'Unknown' }}</span>
-                <v-chip
-                  class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
-                  small label text-color="white"
-                >
-                  LIMITED RESTORATION
-                </v-chip>
-              </span>
+                <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
+                  <span class="ml-3">Active until {{ getLimitedreRestorationActiveUntil || 'Unknown' }}</span>
+                  <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+                    small label text-color="white">LIMITED RESTORATION</v-chip>
+                </span>
 
-              <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
-                <v-chip
-                  class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
-                  small label text-color="white"
-                >
-                  AUTHORIZED TO CONTINUE OUT
-                </v-chip>
-              </span>
-            </div>
+                <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
+                  <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+                    small label text-color="white">AUTHORIZED TO CONTINUE OUT</v-chip>
+                </span>
+              </div>
+            </template>
 
-            <!-- IA/Registration Description -->
-            <div v-if="!!tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
+            <template v-if="!!tempRegNumber">
+              <!-- First line -->
+              <div id="ia-reg-name" aria-label="Incorporation Application or Registration Entity Name">
+                {{ getEntityName || 'Unknown Name' }}
+              </div>
+
+              <!-- Second line -->
+              <div id="ia-reg-description" aria-label="Incorporation Application or Registration Description">
+                {{ iaRegDescription }}
+              </div>
+            </template>
           </header>
 
           <menu class="mt-4 ml-n4">
@@ -109,7 +109,7 @@
                   <v-btn
                     small text color="primary"
                     id="download-summary-button"
-                    @click="downloadBusinessSummary()"
+                    @click="emitDownloadBusinessSummary()"
                     v-on="on"
                   >
                     <img src="@/assets/images/business_summary_icon.svg" alt="" class="pa-1">
@@ -127,7 +127,7 @@
                   <v-btn
                     small text color="primary"
                     id="view-add-digital-credentials-button"
-                    @click="viewAddDigitalCredentials()"
+                    @click="emitViewAddDigitalCredentials()"
                     v-on="on"
                   >
                     <v-icon medium>mdi-file-certificate-outline</v-icon>
@@ -141,62 +141,7 @@
         </v-col>
 
         <v-col cols="12" md="3">
-          <dl>
-            <!-- Registration Date -->
-            <template v-if="!!businessId && isFirm">
-              <dt class="mr-2">Registration Date:</dt>
-              <dd id="entity-business-registration-date">
-                {{ this.dateToPacificDate(getFoundingDate, true) || 'Not Available' }}</dd>
-            </template>
-
-            <!-- Registration Number -->
-            <template v-if="!!businessId && isFirm">
-              <dt class="mr-2">Registration Number:</dt>
-              <dd id="entity-business-registration-number">{{ getIdentifier || 'Not Available' }}</dd>
-            </template>
-
-            <!-- Business Number -->
-            <template v-if="!!businessId">
-              <dt class="mr-2">Business Number:</dt>
-              <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
-            </template>
-
-            <!-- Incorporation Number -->
-            <template v-if="!!businessId && !isFirm">
-              <dt class="mr-2">Incorporation Number:</dt>
-              <dd id="entity-incorporation-number">{{ getIdentifier || 'Not Available' }}</dd>
-            </template>
-
-            <!-- NR Number -->
-            <template v-if="nameRequestNumber">
-              <dt class="mr-2">Name Request Number:</dt>
-              <dd id="nr-number">{{ nameRequestNumber }}</dd>
-            </template>
-
-            <!-- Email -->
-            <template v-if="!!businessId">
-              <dt class="mr-2">Email:</dt>
-              <dd id="entity-business-email" class="cursor-pointer" @click="editBusinessProfile()">
-                <span>{{businessEmail || 'Not Available'}}</span>
-                <v-btn id="change-email-button" small text color="primary">
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span>Change</span>
-                </v-btn>
-              </dd>
-            </template>
-
-            <!-- Phone -->
-            <template v-if="!!businessId">
-              <dt class="mr-2">Phone:</dt>
-              <dd id="entity-business-phone" class="cursor-pointer" @click="editBusinessProfile()">
-                <span>{{fullPhoneNumber || 'Not Available'}}</span>
-                <v-btn id="change-phone-button" small text color="primary">
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span>Change</span>
-                </v-btn>
-              </dd>
-            </template>
-          </dl>
+          <Tombstone />
         </v-col>
       </v-row>
     </v-container>
@@ -206,61 +151,47 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
-import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, CorpTypeCd, FilingNames, FilingTypes, NigsMessage } from '@/enums'
-import { StateFilingIF } from '@/interfaces'
-import { StaffComments } from '@bcrs-shared-components/staff-comments'
+import { Getter } from 'vuex-class'
 import axios from '@/axios-auth'
+import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
+import { StateFilingIF } from '@/interfaces'
+import { AllowableActionsMixin } from '@/mixins'
+import { DateUtilities } from '@/services'
 import { navigate } from '@/utils'
-import { GetCorpFullDescription, GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
+import { StaffComments } from '@bcrs-shared-components/staff-comments'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
+import Tombstone from './Tombstone.vue'
 
 @Component({
-  components: { StaffComments },
+  components: {
+    StaffComments,
+    Tombstone
+  },
   mixins: [
-    AllowableActionsMixin,
-    CommonMixin,
-    DateMixin,
-    EnumMixin
+    AllowableActionsMixin
   ]
 })
 export default class EntityInfo extends Vue {
-  // FUTURE: change these to getters
-  @State ARFilingYear!: string
-  @State businessEmail!: string
-  @State businessPhone!: string
-  @State businessPhoneExtension!: string
-
   @Getter getEditUrl!: string
-  @Getter getBusinessProfileUrl!: string
-  @Getter getBusinessNumber!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getIdentifier!: number
+  @Getter getEntityName!: string
+  @Getter getIdentifier!: string
   @Getter getLimitedreRestorationActiveUntil!: string
-  @Getter getNameRequest!: any
   @Getter getReasonText!: string
   @Getter getStateFiling!: StateFilingIF
-  @Getter isAdminFreeze!: boolean
   @Getter isAuthorizedToContinueOut!: boolean
   @Getter isFirm!: boolean
   @Getter isHistorical!: boolean
   @Getter isInLimitedRestoration!: boolean
   @Getter isPendingDissolution!: boolean
+  @Getter isRoleStaff!: boolean
   @Getter isSoleProp!: boolean
 
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
-  readonly GetCorpNumberedDescription = GetCorpNumberedDescription
 
   /** Whether to show the hover style. */
   protected showHoverStyle = false
-
-  /** The name request number. */
-  get nameRequestNumber (): string {
-    return this.getNameRequest?.nrNum
-  }
 
   /** The Business ID string. */
   get businessId (): string {
@@ -274,11 +205,11 @@ export default class EntityInfo extends Vue {
 
   /** The business description. */
   get businessDescription (): string {
-    const corpTypeDescription = GetCorpFullDescription(this.getLegalType)
-    if (this.isSoleProp && this.tempRegNumber) {
-      return `${corpTypeDescription} / Doing Business As (DBA)`
+    const corpFullDescription = GetCorpFullDescription(this.getLegalType)
+    if (this.isSoleProp && !!this.tempRegNumber) {
+      return `${corpFullDescription} / Doing Business As (DBA)`
     } else {
-      return corpTypeDescription
+      return corpFullDescription
     }
   }
 
@@ -289,14 +220,6 @@ export default class EntityInfo extends Vue {
       : FilingNames.INCORPORATION_APPLICATION
 
     return `${this.businessDescription} ${filingName}`
-  }
-
-  /** The business phone number and optional extension. */
-  get fullPhoneNumber (): string {
-    if (this.businessPhone) {
-      return `${this.businessPhone}${this.businessPhoneExtension ? (' x' + this.businessPhoneExtension) : ''}`
-    }
-    return ''
   }
 
   /**
@@ -331,27 +254,22 @@ export default class EntityInfo extends Vue {
     this.emitConfirmDissolution()
   }
 
-  /** Navigates to the Auth UI to update business profile. */
-  protected editBusinessProfile (): void {
-    navigate(this.getBusinessProfileUrl)
-  }
-
-  // Pass prompt downloads business summary event to parent. */
+  // Pass Download Business Summary event to parent. */
   @Emit('downloadBusinessSummary')
-  private downloadBusinessSummary (): void {}
+  private emitDownloadBusinessSummary (): void {}
 
-  // Pass confirm dissolution event to parent.
+  // Pass Confirm Dissolution event to parent.
   @Emit('confirmDissolution')
   private emitConfirmDissolution (): void {}
 
-  // Pass not in good standing event to parent.
+  // Pass Not In Good Standing event to parent.
   @Emit('notInGoodStanding')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNotInGoodStanding (message: NigsMessage): void {}
 
-  // Pass prompt to view / add digital credentials event to parent. */
+  // Pass View / Add Digital Credentials event to parent. */
   @Emit('viewAddDigitalCredentials')
-  private viewAddDigitalCredentials (): void {}
+  private emitViewAddDigitalCredentials (): void {}
 }
 </script>
 
@@ -378,7 +296,7 @@ export default class EntityInfo extends Vue {
 }
 
 #entity-legal-name,
-#incorp-app-title {
+#ia-reg-name {
   display: inline-block;
   color: $gray9;
   letter-spacing: -0.01rem;
@@ -387,15 +305,9 @@ export default class EntityInfo extends Vue {
   text-transform: uppercase;
 }
 
-#entity-status {
-  margin-top: 5px;
-  margin-left: 0.5rem;
-  vertical-align: top;
-}
-
-#business-subtitle,
+#business-description,
 #limited-restoration,
-#ia-reg-subtitle {
+#ia-reg-description {
   font-size: $px-14;
   color: $gray7;
 }
@@ -404,32 +316,6 @@ export default class EntityInfo extends Vue {
 #limited-restoration,
 menu > span + span {
   border-left: 1px solid $gray3;
-}
-
-dl {
-  font-size: $px-14;
-  line-height: 1.5rem;
-}
-
-dt {
-  color: $gray9;
-  font-weight: bold;
-  float: left;
-  clear: left;
-  margin-right: 0.5rem;
-}
-
-// hide change buttons when not hovering on value:
-dd:not(:hover) > button {
-  display: none;
-}
-
-#change-email-button,
-#change-phone-button {
-  height: 1.125rem;
-  padding: 0.25rem 0.5rem;
-  margin-top: -0.125rem;
-  margin-left: 0.125rem;
 }
 
 // Disable btn and tooltip overrides
