@@ -5,6 +5,7 @@ export interface FilingTypeIF {
   displayName: string
   feeCode: string
   name: FilingTypes
+  type?: string // FUTURE: use an enum
 }
 
 export interface AllowedActionsIF {

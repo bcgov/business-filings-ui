@@ -66,7 +66,7 @@
             <v-list-item
               data-type="registrars-notation"
               @click="showRegistrarsNotationDialog()"
-              :disabled="disabled"
+              :disabled="!isAllowed(AllowableActions.REGISTRARS_NOTATION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Notation</span>
@@ -76,7 +76,7 @@
             <v-list-item
               data-type="registrars-order"
               @click="showRegistrarsOrderDialog()"
-              :disabled="disabled || isAdminFreeze"
+              :disabled="!isAllowed(AllowableActions.REGISTRARS_ORDER)"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Order</span>
@@ -86,7 +86,7 @@
             <v-list-item
               data-type="court-order"
               @click="showCourtOrderDialog()"
-              :disabled="disabled || isAdminFreeze"
+              :disabled="!isAllowed(AllowableActions.COURT_ORDER)"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Court Order</span>
@@ -94,83 +94,80 @@
             </v-list-item>
 
             <v-list-item
+              v-if="isFirm"
               data-type="record-conversion"
               @click="goToConversionFiling()"
-              :disabled="disabled || !isFirm || isAdminFreeze"
+              :disabled="!isAllowed(AllowableActions.RECORD_CONVERSION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
               </v-list-item-title>
             </v-list-item>
 
-            <template v-if="(isFirm || isCoop || isBenBcCccUlc) && !isHistorical">
-              <v-list-item
-                data-type="administrative-dissolution"
-                @click="showAdministrativeDissolutionDialog()"
-                :disabled="disabled || isAdminFreeze"
-              >
-                <v-list-item-title>
-                  <span class="app-blue">Administrative Dissolution</span>
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-
-            <template v-if="isBenBcCccUlc && isHistorical">
-              <v-list-item
-                data-type="restoration"
-                @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, RestorationTypes.FULL)"
-              >
-                <v-list-item-title>
-                  <span class="app-blue">Restore Company</span>
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-
-            <template v-if="(isFirm || isCoop || isBenBcCccUlc) && isHistorical">
-              <v-list-item
-                data-type="put-back-on"
-                @click="showPutBackOnDialog()"
-              >
-                <v-list-item-title>
-                  <span class="app-blue">Put Back On</span>
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-
-            <template v-if="!isHistorical">
-              <v-list-item
-                data-type="admin-freeze"
-                @click="showAdministerFreezeDialog()">
-                <v-list-item-title>
-                  <span class="app-blue">{{ isAdminFreeze ? 'Unfreeze Business' : 'Freeze Business' }}</span>
-                </v-list-item-title>
-              </v-list-item>
-            </template>
-            <template v-if="isBenBcCccUlc && !isHistorical">
-              <v-list-item
-                data-type="consent-continue-out"
-                @click="goToConsentContinuationOutFiling()"
-                :disabled="disabled || isAdminFreeze"
-              >
-                <v-list-item-title>
-                  <span class="app-blue">Consent to Continuation Out</span>
-                </v-list-item-title>
-              </v-list-item>
-            </template>
             <v-list-item
-              v-if="isEntityInLimitedRestoration"
+              v-if="!isHistorical"
+              data-type="administrative-dissolution"
+              @click="showAdministrativeDissolutionDialog()"
+              :disabled="!isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Administrative Dissolution</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              v-if="isAllowed(AllowableActions.RESTORATION)"
+              data-type="restoration"
+              @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, RestorationTypes.FULL)"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Restore Company</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              v-if="isAllowed(AllowableActions.PUT_BACK_ON)"
+              data-type="put-back-on"
+              @click="showPutBackOnDialog()"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Put Back On</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              v-if="isAllowed(AllowableActions.FREEZE_UNFREEZE)"
+              data-type="admin-freeze"
+              @click="showAdministerFreezeDialog()"
+            >
+              <v-list-item-title>
+                <span class="app-blue">{{ isAdminFreeze ? 'Unfreeze Business' : 'Freeze Business' }}</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              data-type="consent-continue-out"
+              @click="goToConsentContinuationOutFiling()"
+              :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Consent to Continuation Out</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              v-if="isAllowed(AllowableActions.LIMITED_RESTO_EXTEND)"
               data-type="extend-limited-restoration"
-              :disabled="disabled  || isAdminFreeze"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, RestorationTypes.LIMITED_EXTENSION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Extend Limited Restoration</span>
               </v-list-item-title>
             </v-list-item>
+
             <v-list-item
-              v-if="isEntityInLimitedRestoration"
+              v-if="isAllowed(AllowableActions.LIMITED_RESTO_CONVERT)"
               data-type="convert-full-restoration"
-              :disabled="disabled  || isAdminFreeze"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, RestorationTypes.LIMITED_TO_FULL)"
             >
               <v-list-item-title>
@@ -189,6 +186,7 @@ import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { navigate } from '@/utils'
 import {
+  AllowableActions,
   ApplicationTypes,
   DissolutionNames,
   DissolutionTypes,
@@ -198,7 +196,7 @@ import {
   Routes
 } from '@/enums'
 import { AddStaffNotationDialog } from '@/components/dialogs'
-import { FilingMixin } from '@/mixins'
+import { AllowableActionsMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'
 import { mapGetters } from 'vuex'
 
@@ -208,39 +206,37 @@ import { mapGetters } from 'vuex'
     ...mapGetters([
       'getIdentifier',
       'isAdminFreeze',
-      'isBenBcCccUlc',
-      'isCoop',
-      'isEntityInLimitedRestoration',
       'isFirm',
       'isHistorical',
       'getCreateUrl',
       'getEditUrl'
     ])
   },
-  mixins: [FilingMixin]
+  mixins: [
+    AllowableActionsMixin,
+    FilingMixin
+  ]
 })
 export default class StaffNotation extends Vue {
-  private isAddingRegistrarsNotation = false
-  private isAddingRegistrarsOrder = false
+  private isAddingAdministerFreeze = false
+  private isAddingAdministrativeDissolution = false
   private isAddingCourtOrder = false
   private isAddingPutBackOn = false
-  private isAddingAdministrativeDissolution = false
-  private isAddingAdministerFreeze = false
+  private isAddingRegistrarsNotation = false
+  private isAddingRegistrarsOrder = false
   private expand = false
 
   // enum for template
-  readonly FilingTypes = FilingTypes
-  readonly FilingNames = FilingNames
-  readonly DissolutionTypes = DissolutionTypes
-  readonly DissolutionNames = DissolutionNames
+  readonly AllowableActions = AllowableActions
   readonly ApplicationTypes = ApplicationTypes
+  readonly DissolutionNames = DissolutionNames
+  readonly DissolutionTypes = DissolutionTypes
+  readonly FilingNames = FilingNames
+  readonly FilingTypes = FilingTypes
   readonly RestorationTypes = RestorationTypes
 
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset!: string
-
-  /** Prop for disabling the menu items. */
-  @Prop({ default: false }) readonly disabled!: boolean
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true

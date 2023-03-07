@@ -29,7 +29,7 @@ export function getVueRouter () {
     // check if we need to authenticate
     if (requiresAuth(to) && !isAuthenticated()) {
       next({ name: Routes.SIGNIN })
-    } else if (isProtectedCredentialRoute(to)) {
+    } else if (isRedirectDigitalCredentialRoute(to)) {
       next({ name: Routes.DASHBOARD })
     } else {
       next()
@@ -47,12 +47,17 @@ export function getVueRouter () {
     return !!sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
   }
 
-  /** Returns True when a digital credential route and the credentials feature flag is off. */
-  function isProtectedCredentialRoute (route: Route): boolean {
-    // Initially this is going to be the case for all but a few select users.
-    // User selection is handled in LD with a few stipulations: See VIEW_ADD_DIGITAL_CREDENTIALS in AllowableActions
-    return !getFeatureFlag('enable-digital-credentials') &&
+  /**
+   * Returns True when this is a digital credential route and the credentials
+   * feature flag is OFF (for the current user).
+   */
+  function isRedirectDigitalCredentialRoute (route: Route): boolean {
+    // Initially this is True for all but a few select users.
+    // See DIGITAL_CREDENTIALS in Allowable Actions Mixin.
+    return (
+      !getFeatureFlag('enable-digital-credentials') &&
       [Routes.DIGITAL_CREDENTIALS].includes(route.name as Routes)
+    )
   }
 
   return router

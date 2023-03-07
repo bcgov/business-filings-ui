@@ -5,7 +5,7 @@
         <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
           <header>
             <!-- Entity Name / IA Title -->
-            <div v-if="businessId" id="entity-legal-name" aria-label="Business Legal Name">
+            <div v-if="!!businessId" id="entity-legal-name" aria-label="Business Legal Name">
               <span>{{ getLegalName || 'Unknown Name' }}</span>
             </div>
             <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
@@ -13,7 +13,7 @@
             </div>
 
             <!-- Description -->
-            <div v-if="businessId">
+            <div v-if="!!businessId">
               <span id="business-subtitle">{{ businessDescription }}</span>
               <v-chip
                 v-if="isAuthorizedToContinueOut"
@@ -28,7 +28,7 @@
 
           <menu class="mt-4 ml-n4">
             <!-- Staff Comments -->
-            <span v-if="businessId && isAllowed(AllowableActions.ADD_STAFF_COMMENT)">
+            <span v-if="isAllowed(AllowableActions.STAFF_COMMENT)">
               <StaffComments
                 :axios="axios"
                 :businessId="businessId"
@@ -46,50 +46,48 @@
               <span class="font-14 mx-3">{{getReasonText || 'Unknown Reason'}}</span>
             </span>
 
-            <template v-else>
-              <!-- View and Change Company Information -->
-              <span v-if="isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)">
-                <v-btn
-                  small text color="primary"
-                  id="company-information-button"
-                  :disabled="hasBlocker"
-                  @click="promptChangeCompanyInfo()"
-                >
-                  <v-icon medium>mdi-file-document-edit-outline</v-icon>
-                  <span class="font-13 ml-1">View and Change Business Information</span>
-                </v-btn>
+            <!-- View and Change Business Information -->
+            <span v-if="!!businessId && !isHistorical">
+              <v-btn
+                small text color="primary"
+                id="company-information-button"
+                :disabled="!isAllowed(AllowableActions.BUSINESS_INFORMATION)"
+                @click="promptChangeCompanyInfo()"
+              >
+                <v-icon medium>mdi-file-document-edit-outline</v-icon>
+                <span class="font-13 ml-1">View and Change Business Information</span>
+              </v-btn>
 
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition" v-if="isPendingDissolution">
-                  <template v-slot:activator="{ on }">
-                    <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
-                  </template>
-                  You cannot view or change business information while the business is pending dissolution.
-                </v-tooltip>
-              </span>
+              <v-tooltip top content-class="top-tooltip" transition="fade-transition" v-if="isPendingDissolution">
+                <template v-slot:activator="{ on }">
+                  <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
+                </template>
+                You cannot view or change business information while the business is pending dissolution.
+              </v-tooltip>
+            </span>
 
-              <!-- Dissolve Company -->
-              <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+            <!-- Dissolve Business -->
+            <span v-if="!!businessId && !isHistorical">
+              <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     small text color="primary"
                     id="dissolution-button"
-                    :disabled="hasBlocker"
+                    :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
                     @click="promptDissolve()"
                     v-on="on"
                   >
                     <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
                     <span class="font-13 ml-1">Dissolve this Business</span>
                   </v-btn>
-                 </template>
-                    Dissolving the business will make this business historical
-                    and it will be struck from the corporate registry.
-                  </v-tooltip>
-              </span>
-            </template>
+                </template>
+                Dissolving the business will make this business historical
+                and it will be struck from the corporate registry.
+              </v-tooltip>
+            </span>
 
             <!-- Download Business Summary -->
-            <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
+            <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
               <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -106,8 +104,8 @@
               </v-tooltip>
             </span>
 
-            <!-- View Add Digital Credentials -->
-            <span v-if="isAllowed(AllowableActions.VIEW_ADD_DIGITAL_CREDENTIALS)">
+            <!-- View/Add Digital Credentials -->
+            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
               <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -129,50 +127,46 @@
         <v-col cols="12" md="3">
           <dl>
             <!-- Registration Date -->
-            <template v-if="businessId && isFirm">
+            <template v-if="!!businessId && isFirm">
               <dt class="mr-2">Registration Date:</dt>
               <dd id="entity-business-registration-date">
                 {{ this.dateToPacificDate(getFoundingDate, true) || 'Not Available' }}</dd>
             </template>
 
             <!-- Registration Number -->
-            <template v-if="businessId && isFirm">
+            <template v-if="!!businessId && isFirm">
               <dt class="mr-2">Registration Number:</dt>
               <dd id="entity-business-registration-number">{{ getIdentifier || 'Not Available' }}</dd>
             </template>
 
             <!-- Business Number -->
-            <template v-if="businessId">
+            <template v-if="!!businessId">
               <dt class="mr-2">Business Number:</dt>
               <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
             </template>
 
             <!-- Incorporation Number -->
-            <template v-if="businessId && !isFirm">
+            <template v-if="!!businessId && !isFirm">
               <dt class="mr-2">Incorporation Number:</dt>
               <dd id="entity-incorporation-number">{{ getIdentifier || 'Not Available' }}</dd>
             </template>
 
             <!-- NR Number -->
-            <template v-if="nameRequestNumber">
+            <template v-if="!!nameRequestNumber">
               <dt class="mr-2">Name Request Number:</dt>
               <dd id="nr-number">{{ nameRequestNumber }}</dd>
             </template>
 
             <!-- Email -->
-            <template v-if="businessId">
+            <template v-if="!!businessId">
               <dt class="mr-2">Email:</dt>
               <dd
                 id="entity-business-email"
-                :class="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE) ? 'cursor-pointer' : 'pointer-events-none'"
+                class="cursor-pointer"
                 @click="editBusinessProfile()"
               >
                 <span>{{businessEmail || 'Not Available'}}</span>
-                <v-btn
-                  v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
-                  small text color="primary"
-                  id="change-email-button"
-                >
+                <v-btn id="change-email-button" small text color="primary">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -180,19 +174,15 @@
             </template>
 
             <!-- Phone -->
-            <template v-if="businessId">
+            <template v-if="!!businessId">
               <dt class="mr-2">Phone:</dt>
               <dd
                 id="entity-business-phone"
-                :class="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE) ? 'cursor-pointer' : 'pointer-events-none'"
+                class="cursor-pointer"
                 @click="editBusinessProfile()"
               >
                 <span>{{fullPhoneNumber || 'Not Available'}}</span>
-                <v-btn
-                  v-if="isAllowed(AllowableActions.EDIT_BUSINESS_PROFILE)"
-                  small text color="primary"
-                  id="change-phone-button"
-                >
+                <v-btn id="change-phone-button" small text color="primary">
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Change</span>
                 </v-btn>
@@ -226,7 +216,6 @@ import { navigate } from '@/utils'
 })
 export default class EntityInfo extends Vue {
   // FUTURE: change these to getters
-  @State ARFilingYear!: string
   @State businessEmail!: string
   @State businessPhone!: string
   @State businessPhoneExtension!: string
@@ -239,10 +228,12 @@ export default class EntityInfo extends Vue {
   @Getter getIdentifier!: number
   @Getter getNameRequest!: any
   @Getter getReasonText!: string
-  @Getter isAdminFreeze!: boolean
   @Getter isAuthorizedToContinueOut!: boolean
+  @Getter isFirm!: boolean
   @Getter isHistorical!: boolean
   @Getter isPendingDissolution!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isSoleProp!: boolean
 
   // enums for template
   readonly axios = axios
@@ -301,10 +292,9 @@ export default class EntityInfo extends Vue {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
-      const isFirm = (this.isSoleProp || this.isPartnership)
       let url = `${this.getEditUrl}${this.getIdentifier}`
       // Append appropriate route based on entity type
-      if (isFirm) {
+      if (this.isFirm) {
         url += '/change'
       } else if (this.isCoop) {
         url += '/special-resolution'

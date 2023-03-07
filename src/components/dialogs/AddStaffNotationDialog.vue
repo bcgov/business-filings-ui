@@ -131,8 +131,14 @@ import { EffectOfOrderTypes, FilingTypes, DissolutionTypes, PageSizes } from '@/
 import { LegalServices } from '@/services'
 
 @Component({
-  components: { CourtOrderPoa, FileUploadPdf },
-  mixins: [ DateMixin, EnumMixin ]
+  components: {
+    CourtOrderPoa,
+    FileUploadPdf
+  },
+  mixins: [
+    DateMixin,
+    EnumMixin
+  ]
 })
 export default class AddStaffNotationDialog extends Vue {
   $refs!: Vue['$refs'] & {

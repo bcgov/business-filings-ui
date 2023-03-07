@@ -36,27 +36,6 @@ export default {
     return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
   },
 
-  /** Is True if there are any blockers, eg, pending tasks or filings. */
-  hasBlockerExceptStaffApproval (state: StateIF, _getters, _rootState, rootGetters): boolean {
-    return (
-      state.hasBlockerTask ||
-      state.hasBlockerFiling ||
-      state.isCoaPending ||
-      rootGetters.isAdminFreeze
-    )
-  },
-
-  /** Is True if there is a blocker including firm compliance. */
-  hasBlocker (_state: StateIF, _getters, _rootState, rootGetters): boolean {
-    // check for compliance warning
-    if (rootGetters.hasComplianceWarning) return true
-
-    // check for missing info warning
-    if (rootGetters.hasMissingInfoWarning) return true
-
-    return rootGetters.hasBlockerExceptStaffApproval
-  },
-
   /** Is True if a COA filing is pending. */
   isCoaPending (state: StateIF): boolean {
     return state.isCoaPending
