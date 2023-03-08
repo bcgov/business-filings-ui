@@ -32,7 +32,7 @@ describe('Legal Services', () => {
       .returns(new Promise(resolve => resolve({ data: { business: BUSINESS_INFO } })))
 
     // call method
-    const entityInfo = await LegalServices.fetchBusinessInfo('CP1234567')
+    const entityInfo = await LegalServices.fetchBusiness('CP1234567')
 
     // verify data
     expect(entityInfo).toEqual(BUSINESS_INFO)

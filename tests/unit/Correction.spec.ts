@@ -59,10 +59,10 @@ describe('Correction - UI', () => {
 
     // init store
     store.state.currentDate = '2020-03-04'
-    store.state.business.legalType = 'CP'
-    store.state.business.legalName = 'My Test Entity'
-    store.state.business.identifier = 'CP1234567'
-    store.state.business.foundingDate = '1971-05-12T00:00:00-00:00'
+    store.commit('setLegalType', 'CP')
+    store.commit('setLegalName', 'My Test Entity')
+    store.commit('setIdentifier', 'CP1234567')
+    store.commit('setFoundingDate', '1971-05-12T00:00:00-00:00')
     store.state.filingData = []
     store.state.keycloakRoles = ['staff'] // corrections currently apply to staff only
   })

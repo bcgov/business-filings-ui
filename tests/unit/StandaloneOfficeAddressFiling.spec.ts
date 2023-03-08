@@ -53,8 +53,8 @@ const sampleMailingAddress = {
 describe('Standalone Office Address Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalType', 'CP')
     store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://pay.api.url/' })
   })
 
@@ -235,8 +235,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       vuetify
     })
 
-    store.state.business.legalType = 'BEN'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.legalType)
+    store.commit('setLegalType', 'BEN')
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
     await Vue.nextTick()
 
     const certify: any = wrapper.findComponent(Certify)
@@ -251,9 +251,9 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
 describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
@@ -322,9 +322,9 @@ describe('Standalone Office Address Filing - Part 2A - Resuming with FAS staff p
 describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
@@ -397,9 +397,9 @@ describe('Standalone Office Address Filing - Part 2B - Resuming with BCOL staff 
 describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staff payment', () => {
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/123')
@@ -466,9 +466,9 @@ describe('Standalone Office Address Filing - Part 2C - Resuming with No Fee staf
 describe('Standalone Office Address Filing - Part 2D - Resuming (BCOMP)', () => {
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'BC0007291'
-    store.state.business.legalName = 'Legal Name - BC0001191'
-    store.state.business.legalType = 'BEN'
+    store.commit('setIdentifier', 'BC0007291')
+    store.commit('setLegalName', 'Legal Name - BC0001191')
+    store.commit('setLegalType', 'BEN')
 
     // mock "fetch a draft filing" endpoint
     sinon.stub(axios, 'get').withArgs('businesses/BC0007291/filings/123')
@@ -546,9 +546,9 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -822,9 +822,9 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'BC0007291'
-    store.state.business.legalName = 'Legal Name - BC0001191'
-    store.state.business.legalType = 'BEN'
+    store.commit('setIdentifier', 'BC0007291')
+    store.commit('setLegalName', 'Legal Name - BC0001191')
+    store.commit('setLegalType', 'BEN')
 
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -1110,9 +1110,9 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/CP0001191/filings?draft=true')
@@ -1240,9 +1240,9 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'BC0007291'
-    store.state.business.legalName = 'Legal Name - BC0001191'
-    store.state.business.legalType = 'BEN'
+    store.commit('setIdentifier', 'BC0007291')
+    store.commit('setLegalName', 'Legal Name - BC0001191')
+    store.commit('setLegalType', 'BEN')
 
     // mock "save draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC0007291/filings?draft=true')
@@ -1370,9 +1370,9 @@ describe('Standalone Office Address Filing - Part 5 - Data', () => {
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
@@ -1458,9 +1458,9 @@ describe('Standalone Office Address Filing - Part 5B - Data (BCOMP)', () => {
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'BC0007291'
-    store.state.business.legalName = 'Legal Name - BC0001191'
-    store.state.business.legalType = 'BEN'
+    store.commit('setIdentifier', 'BC0007291')
+    store.commit('setLegalName', 'Legal Name - BC0001191')
+    store.commit('setLegalType', 'BEN')
 
     // mock "get tasks" endpoint - needed for hasPendingTasks()
     sinon
@@ -1562,9 +1562,9 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalName = 'Legal Name - CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
+    store.commit('setLegalType', 'CP')
 
     const sinonAxiosGet = sinon.stub(axios, 'get')
 
@@ -1804,9 +1804,9 @@ describe('Standalone Office Address Filing - payment required error', () => {
 
   beforeEach(() => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalType = 'CP'
-    store.state.business.legalName = 'Legal Name - CP0001191'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalType', 'CP')
+    store.commit('setLegalName', 'Legal Name - CP0001191')
     store.state.ARFilingYear = 2017
     store.state.currentFilingStatus = 'NEW'
 

@@ -449,7 +449,7 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiTaskIF, BusinessIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
+import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
 
 @Component({
@@ -701,7 +701,7 @@ export default class TodoList extends Vue {
   /** Loads a NEW Annual Report todo. */
   private loadAnnualReportTodo (task: ApiTaskIF): void {
     const todo = task.task.todo
-    const business = todo.business as BusinessIF
+    const business = todo.business as ApiBusinessIF
     const header = todo.header
 
     if (business && header) {
@@ -741,7 +741,7 @@ export default class TodoList extends Vue {
     if (!this.isRoleStaff) return // regular users can't file a new conversion
 
     const todo = task.task.todo
-    const business = todo.business as BusinessIF
+    const business = todo.business as ApiBusinessIF
     const header = todo.header
 
     if (business && header) {

@@ -1,7 +1,8 @@
 // Libraries
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
-import { BusinessIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF, PresignedUrlIF } from '@/interfaces'
+import { ApiBusinessIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF, PresignedUrlIF }
+  from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
@@ -9,18 +10,18 @@ import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
  */
 export default class LegalServices {
   /**
-   * Fetches business info.
+   * Fetches business object.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns the business info object
+   * @returns the business object
    */
-  static async fetchBusinessInfo (businessId: string): Promise<BusinessIF> {
+  static async fetchBusiness (businessId: string): Promise<ApiBusinessIF> {
     const url = `businesses/${businessId}`
     return axios.get(url)
       .then(response => {
-        const businessInfo = response?.data?.business as BusinessIF
+        const businessInfo = response?.data?.business as ApiBusinessIF
         if (!businessInfo) {
           // eslint-disable-next-line no-console
-          console.log('fetchBusinessInfo() error - invalid response =', response)
+          console.log('fetchBusiness() error - invalid response =', response)
           throw new Error('Invalid business info')
         }
         return businessInfo

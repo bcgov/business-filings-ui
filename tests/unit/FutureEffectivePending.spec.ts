@@ -47,7 +47,7 @@ describe('Future Effective Pending', () => {
   })
 
   it('Displays expected content with a FE named IA', () => {
-    store.state.business.legalName = 'My Incorporation'
+    store.commit('setLegalName', 'My Incorporation')
 
     const wrapper = mount(FutureEffectivePending, {
       vuetify,
@@ -74,7 +74,7 @@ describe('Future Effective Pending', () => {
   })
 
   it('Displays expected content with a FE numbered IA', () => {
-    store.state.business.legalName = ''
+    store.commit('setLegalName', null)
 
     const wrapper = mount(FutureEffectivePending, {
       vuetify,
@@ -101,7 +101,7 @@ describe('Future Effective Pending', () => {
   })
 
   it('Displays expected content with a FE Alteration', () => {
-    store.state.business.legalName = 'My Alteration'
+    store.commit('setLegalName', 'My Alteration')
 
     const wrapper = mount(FutureEffectivePending, {
       vuetify,

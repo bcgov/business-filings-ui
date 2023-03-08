@@ -27,9 +27,9 @@ describe('Dissolution Filing', () => {
 
   it('Displays expected content with a valid Coop filing', () => {
     // init store
-    store.state.business.legalName = 'MY COMPANY'
-    store.state.business.legalType = 'CP'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.legalType)
+    store.commit('setLegalName', 'MY COMPANY')
+    store.commit('setLegalType', 'CP')
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
 
     const wrapper = mount(CompletedDissolution, {
       store,
@@ -57,9 +57,9 @@ describe('Dissolution Filing', () => {
 
   it('Displays expected content with a valid corp filing', () => {
     // init store
-    store.state.business.legalName = 'MY COMPANY'
-    store.state.business.legalType = 'BEN'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.legalType)
+    store.commit('setLegalName', 'MY COMPANY')
+    store.commit('setLegalType', 'BEN')
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
 
     const wrapper = mount(CompletedDissolution, {
       store,
@@ -87,9 +87,9 @@ describe('Dissolution Filing', () => {
 
   it('Displays expected content with a valid SP filing', () => {
     // init store
-    store.state.business.legalName = 'MY COMPANY'
-    store.state.business.legalType = 'SP'
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.state.business.legalType)
+    store.commit('setLegalName', 'MY COMPANY')
+    store.commit('setLegalType', 'SP')
+    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
 
     const wrapper = mount(CompletedDissolution, {
       store,

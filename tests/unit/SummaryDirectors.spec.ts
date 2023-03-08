@@ -24,8 +24,8 @@ describe('Directors as a COOP', () => {
 
   beforeEach(done => {
     // init store
-    store.state.business.identifier = 'CP0001191'
-    store.state.business.legalType = 'CP'
+    store.commit('setIdentifier', 'CP0001191')
+    store.commit('setLegalType', 'CP')
     const directors = [
       {
         'id': 1,
@@ -161,8 +161,8 @@ describe('Directors as a BCOMP', () => {
 
   beforeEach(done => {
     // init store
-    store.state.business.identifier = 'BC0007291'
-    store.state.business.legalType = 'BEN'
+    store.commit('setIdentifier', 'BC0007291')
+    store.commit('setLegalType', 'BEN')
     const directors = [
       {
         'id': 1,

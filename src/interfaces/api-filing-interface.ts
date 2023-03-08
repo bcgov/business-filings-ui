@@ -2,7 +2,7 @@ import { CorpTypeCd, DissolutionTypes, EffectOfOrderTypes, FilingStatus, FilingT
 import { ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF } from '@/interfaces'
 
 /**
- * A list item from the API "filings" call (ie, API object).
+ * A filing object from the Legal API ("filings" call).
  * See also History Item interface.
  */
 export interface ApiFilingIF {

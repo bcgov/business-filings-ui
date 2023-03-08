@@ -11,7 +11,7 @@ const store = getVuexStore() as any // remove typings for unit tests
 
 describe('Complete Filing', () => {
   it('Displays expected content with entityName', () => {
-    store.state.business.legalName = 'My Firm'
+    store.commit('setLegalName', 'My Firm')
 
     const wrapper = shallowMount(CompletedRegistration, { store, vuetify })
 

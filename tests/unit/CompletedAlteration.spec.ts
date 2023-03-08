@@ -40,7 +40,7 @@ describe('Alteration Filing', () => {
 
   it('Displays expected content with a valid filing', () => {
     // init store
-    store.state.business.legalName = 'MY COMPANY'
+    store.commit('setLegalName', 'MY COMPANY')
 
     const wrapper = mount(CompletedAlteration, {
       store,
