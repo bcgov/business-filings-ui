@@ -189,7 +189,7 @@
 
                 <!-- draft correction or conversion or restoration or consent to continuation Out (staff only) -->
                 <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item) ||
-                  isTypeRestoration(item) || isTypeConsentContinuationOut(item)) && isRoleStaff"
+                  EnumUtilities.isTypeRestoration(item) || isTypeConsentContinuationOut(item)) && isRoleStaff"
                 >
                   <v-btn
                     class="btn-draft-resume"
@@ -223,8 +223,8 @@
                 </template>
 
                 <!-- other correction or conversion or restoration or consent to continuation out -->
-                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) || isTypeRestoration(item) ||
-                  isTypeConsentContinuationOut(item)"
+                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) ||
+                  EnumUtilities.isTypeRestoration(item) || isTypeConsentContinuationOut(item)"
                 >
                   <!-- no action button in this case -->
                 </template>
@@ -267,7 +267,7 @@
                         @click.stop="confirmDeleteDraft(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title v-if="isTypeVoluntaryDissolution(item)">
+                        <v-list-item-title v-if="EnumUtilities.isTypeDissolutionVoluntary(item)">
                           Delete {{ todoListTitle }}
                         </v-list-item-title>
                         <v-list-item-title v-else-if="isTypeSpecialResolution(item)">
@@ -287,7 +287,9 @@
                         @click.stop="confirmDeleteApplication(item)"
                       >
                         <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete {{filingTypeToName(item.name)}}</v-list-item-title>
+                        <v-list-item-title>
+                          Delete {{EnumUtilities.filingTypeToName(item.name)}}
+                        </v-list-item-title>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -447,10 +449,11 @@ import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
-import { LegalServices, PayServices } from '@/services/'
+import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -517,6 +520,9 @@ export default class TodoList extends Vue {
   @Action setArMaxDate!: ActionBindingIF
   @Action setNextARDate!: ActionBindingIF
   @Action setCurrentFilingStatus!: ActionBindingIF
+
+  // for template
+  readonly EnumUtilities = EnumUtilities
 
   /** The Base URL string. */
   get baseUrl (): string {
@@ -821,7 +827,7 @@ export default class TodoList extends Vue {
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+      const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
@@ -829,9 +835,9 @@ export default class TodoList extends Vue {
       const item: TodoItemIF = {
         name: FilingTypes.DISSOLUTION,
         filingId: header.filingId,
-        legalType: corpTypeDescription,
+        legalType: corpFullDescription,
         title: this.getTodoListResource?.title,
-        draftTitle: this.filingTypeToName(FilingTypes.DISSOLUTION),
+        draftTitle: EnumUtilities.filingTypeToName(FilingTypes.DISSOLUTION),
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -865,14 +871,14 @@ export default class TodoList extends Vue {
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+      const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       let title = header.priority ? 'Priority ' : ''
       if (isAlteringToBen) {
-        title += this.filingTypeToName(FilingTypes.CHANGE_OF_COMPANY_INFO)
-        title += ` - ${corpTypeDescription} to a BC Benefit Company`
+        title += EnumUtilities.filingTypeToName(FilingTypes.CHANGE_OF_COMPANY_INFO)
+        title += ` - ${corpFullDescription} to a BC Benefit Company`
       } else {
-        title += this.filingTypeToName(FilingTypes.ALTERATION)
+        title += EnumUtilities.filingTypeToName(FilingTypes.ALTERATION)
       }
 
       const paymentStatusCode = header.paymentStatusCode
@@ -881,10 +887,10 @@ export default class TodoList extends Vue {
       const item: TodoItemIF = {
         name: FilingTypes.ALTERATION,
         filingId: header.filingId,
-        legalType: corpTypeDescription,
+        legalType: corpFullDescription,
         isAlteringToBen,
         title,
-        draftTitle: this.filingTypeToName(FilingTypes.ALTERATION),
+        draftTitle: EnumUtilities.filingTypeToName(FilingTypes.ALTERATION),
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -1012,10 +1018,10 @@ export default class TodoList extends Vue {
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
         // Corrections on Alterations always have a correctedFilingType of Alteration -> alterationRequired = true
-        correctedFilingType: this.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true),
+        correctedFilingType: EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true),
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
-          this.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true)),
-        draftTitle: this.filingTypeToName(FilingTypes.CORRECTION),
+          EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true)),
+        draftTitle: EnumUtilities.filingTypeToName(FilingTypes.CORRECTION),
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -1038,7 +1044,7 @@ export default class TodoList extends Vue {
 
     // NB: don't check "incorporationApplication" as it may be empty
     if (header) {
-      const title = `${this.getCorpTypeDescription(this.getLegalType)} Incorporation Application`
+      const title = `${GetCorpFullDescription(this.getLegalType)} Incorporation Application`
 
       // set subtitle only if DRAFT IA
       let subtitle: string = null
@@ -1090,10 +1096,10 @@ export default class TodoList extends Vue {
 
     // NB: don't check "registration" as it may be empty
     if (header) {
-      const corpTypeDescription = this.getCorpTypeDescription(this.getLegalType)
+      const corpFullDescription = GetCorpFullDescription(this.getLegalType)
       const title = this.isSoleProp
-        ? `${corpTypeDescription} / Doing Business As (DBA) ${FilingNames.REGISTRATION}`
-        : `${corpTypeDescription} ${FilingNames.REGISTRATION}`
+        ? `${corpFullDescription} / Doing Business As (DBA) ${FilingNames.REGISTRATION}`
+        : `${corpFullDescription} ${FilingNames.REGISTRATION}`
 
       // set subtitle only if DRAFT
       let subtitle: string = null
@@ -1144,7 +1150,7 @@ export default class TodoList extends Vue {
     const changeOfRegistration = filing.changeOfRegistration
 
     if (header && changeOfRegistration) {
-      const title = `Change to ${this.getCorpTypeDescription(this.getLegalType)} Registration`
+      const title = `Change to ${GetCorpFullDescription(this.getLegalType)} Registration`
 
       // set subtitle only if DRAFT
       let subtitle: string = null
@@ -1252,7 +1258,7 @@ export default class TodoList extends Vue {
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+      const corpFullDescription = GetCorpFullDescription(business.legalType)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
@@ -1260,9 +1266,9 @@ export default class TodoList extends Vue {
       const item: TodoItemIF = {
         name: FilingTypes.SPECIAL_RESOLUTION,
         filingId: header.filingId,
-        legalType: corpTypeDescription,
+        legalType: corpFullDescription,
         title: this.specialResolutionTitle(header.priority),
-        draftTitle: this.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION),
+        draftTitle: EnumUtilities.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION),
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -1289,9 +1295,9 @@ export default class TodoList extends Vue {
         task.enabled = false
       }
 
-      const corpTypeDescription = this.getCorpTypeDescription(business.legalType)
+      const corpFullDescription = GetCorpFullDescription(business.legalType)
 
-      const title = this.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)
+      const title = EnumUtilities.filingTypeToName(FilingTypes.RESTORATION, null, restoration.type)
 
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
@@ -1299,7 +1305,7 @@ export default class TodoList extends Vue {
       const item: TodoItemIF = {
         name: FilingTypes.RESTORATION,
         filingId: header.filingId,
-        legalType: corpTypeDescription,
+        legalType: corpFullDescription,
         title,
         draftTitle: title,
         status: header.status,
@@ -1522,7 +1528,7 @@ export default class TodoList extends Vue {
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
-      `Delete ${this.filingTypeToName(item.name)}?`,
+      `Delete ${EnumUtilities.filingTypeToName(item.name)}?`,
       `${line1}\n\n${line2}`,
       {
         width: '40rem',
@@ -1641,13 +1647,13 @@ export default class TodoList extends Vue {
 
   private priorityCorrectionTitle (priority: boolean): string {
     let title = priority ? 'Priority ' : ''
-    title += this.filingTypeToName(FilingTypes.CORRECTION)
+    title += EnumUtilities.filingTypeToName(FilingTypes.CORRECTION)
     return title
   }
 
   private specialResolutionTitle (priority: boolean): string {
     let title = priority ? 'Priority ' : ''
-    title += this.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION)
+    title += EnumUtilities.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION)
     return title
   }
 

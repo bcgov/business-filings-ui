@@ -74,6 +74,7 @@ import { capitalize, formatPhoneNumber } from '@/utils'
 import { NameRequestStates } from '@/enums'
 import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   mixins: [
@@ -99,11 +100,11 @@ export default class NameRequestInfo extends Vue {
 
   /** The entity type description. */
   get entityTypeDescription (): string {
-    const corpTypeDescription = this.getCorpTypeDescription(this.nameRequest.legalType)
+    const corpFullDescription = GetCorpFullDescription(this.nameRequest.legalType)
     if (this.isSoleProp) {
-      return `${corpTypeDescription} or Doing Business As (DBA)`
+      return `${corpFullDescription} or Doing Business As (DBA)`
     }
-    return corpTypeDescription
+    return corpFullDescription
   }
 
   /** The request type. */

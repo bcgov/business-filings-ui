@@ -1,5 +1,5 @@
 import { OfficeAddressIF } from '@/interfaces/address-interfaces'
-import { DissolutionTypes } from '@/enums'
+import { FilingSubTypes } from '@/enums'
 
 /** Dissolution filing interface. */
 export interface DissolutionFilingIF {
@@ -23,6 +23,6 @@ export interface DissolutionFilingIF {
   }
   dissolution: {
     custodialOffice: OfficeAddressIF,
-    dissolutionType: DissolutionTypes
+    dissolutionType: FilingSubTypes
   }
 }

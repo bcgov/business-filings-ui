@@ -127,8 +127,8 @@ import { DateMixin, EnumMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF } from '@/interfaces'
-import { EffectOfOrderTypes, FilingTypes, DissolutionTypes, PageSizes } from '@/enums'
-import { LegalServices } from '@/services'
+import { EffectOfOrderTypes, FilingSubTypes, FilingTypes, PageSizes } from '@/enums'
+import { EnumUtilities, LegalServices } from '@/services'
 
 @Component({
   components: {
@@ -167,7 +167,7 @@ export default class AddStaffNotationDialog extends Vue {
   @Prop({ required: true }) readonly name!: FilingTypes
 
   /** Prop for the item's dissolution type. */
-  @Prop({ default: null }) readonly dissolutionType!: DissolutionTypes
+  @Prop({ default: null }) readonly dissolutionType!: FilingSubTypes
 
   /** Prop to require court order number regardless the plan of arrangement. */
   @Prop({ default: false }) readonly courtOrderNumberRequired!: boolean
@@ -195,7 +195,7 @@ export default class AddStaffNotationDialog extends Vue {
 
   /** Whether this filing is an Administrative Dissolution. */
   get isAdministrativeDissolution (): boolean {
-    return this.isTypeAdministrativeDissolution({ name: this.name, dissolutionType: this.dissolutionType })
+    return EnumUtilities.isTypeDissolutionAdministrative({ name: this.name, dissolutionType: this.dissolutionType })
   }
 
   /** Whether this filing is a Put Back On. */
@@ -351,7 +351,7 @@ export default class AddStaffNotationDialog extends Vue {
       }
     } else if (this.isAdministrativeDissolution) {
       filing[FilingTypes.DISSOLUTION] = {
-        dissolutionType: DissolutionTypes.ADMINISTRATIVE,
+        dissolutionType: FilingSubTypes.DISSOLUTION_ADMINISTRATIVE,
         dissolutionDate: this.getCurrentDate,
         details: this.notation
       }

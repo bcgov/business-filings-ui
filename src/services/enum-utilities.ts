@@ -1,16 +1,11 @@
 import {
-  DissolutionNames,
-  DissolutionTypes,
   EffectOfOrderTypes,
   FilingNames,
   FilingStatus,
+  FilingSubTypes,
   FilingTypes,
-  PaymentMethod,
-  RestorationTypes
+  PaymentMethod
 } from '@/enums'
-import {
-  GetCorpNumberedDescription
-} from '@bcrs-shared-components/corp-type-module'
 
 export default class EnumUtilities {
   /** Returns True if item status is Cancelled. */
@@ -138,18 +133,37 @@ export default class EnumUtilities {
   }
 
   /** Returns True if filing is an Administrative Dissolution. */
-  static isTypeAdministrativeDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
+  static isTypeDissolutionAdministrative (item: any): boolean {
+    return (
+      item.dissolutionType === FilingSubTypes.DISSOLUTION_ADMINISTRATIVE ||
+      item.data?.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_ADMINISTRATIVE
+    )
   }
 
   /** Returns True if filing is an Involuntary Dissolution. */
-  static isTypeInvoluntaryDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.INVOLUNTARY)
+  static isTypeDissolutionInvoluntary (item: any): boolean {
+    return (
+      item.dissolutionType === FilingSubTypes.DISSOLUTION_INVOLUNTARY ||
+      item.data?.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_INVOLUNTARY
+    )
   }
 
   /** Returns True if filing is a Voluntary Dissolution. */
-  static isTypeVoluntaryDissolution (item: any): boolean {
-    return (item.name === FilingTypes.DISSOLUTION && item.dissolutionType === DissolutionTypes.VOLUNTARY)
+  static isTypeDissolutionVoluntary (item: any): boolean {
+    return (
+      item.dissolutionType === FilingSubTypes.DISSOLUTION_VOLUNTARY ||
+      item.data?.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_VOLUNTARY
+    )
+  }
+
+  /** Returns True if filing is a Registrar's Notation. */
+  static isTypeRegistrarsNotation (item: any): boolean {
+    return (item.name === FilingTypes.REGISTRARS_NOTATION)
+  }
+
+  /** Returns True if filing is a Registrar's Order. */
+  static isTypeRegistarsOrder (item: any): boolean {
+    return (item.name === FilingTypes.REGISTRARS_ORDER)
   }
 
   /** Returns True if filing is a Put Back On. */
@@ -172,22 +186,48 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)
   }
 
-  /** Returns True if filing is a Limited Restoration. */
-  static isTypeLimitedRestoration (item: any): boolean {
-    return (item.name === FilingTypes.RESTORATION && item.data?.restoration?.type === RestorationTypes.LIMITED)
+  /** Returns True if filing is a (Limited) Restoration Conversion. */
+  static isTypeRestorationConversion (item: any): boolean {
+    return (
+      item.filingSubType === FilingSubTypes.RESTORATION_CONVERSION ||
+      item.data?.restoration?.type === FilingSubTypes.RESTORATION_CONVERSION
+    )
   }
 
-  /** Returns True if filing is a Staff Only filing. */
+  /** Returns True if filing is a (Limited) Restoration Extension. */
+  static isTypeRestorationExtension (item: any): boolean {
+    return (
+      item.filingSubType === FilingSubTypes.RESTORATION_EXTENSION ||
+      item.data?.restoration?.type === FilingSubTypes.RESTORATION_EXTENSION
+    )
+  }
+
+  /** Returns True if filing is a Full Restoration. */
+  static isTypeRestorationFull (item: any): boolean {
+    return (
+      item.filingSubType === FilingSubTypes.RESTORATION_FULL ||
+      item.data?.restoration?.type === FilingSubTypes.RESTORATION_FULL
+    )
+  }
+
+  /** Returns True if filing is a Limited Restoration. */
+  static isTypeRestorationLimited (item: any): boolean {
+    return (
+      item.filingSubType === FilingSubTypes.RESTORATION_LIMITED ||
+      item.data?.restoration?.type === FilingSubTypes.RESTORATION_LIMITED
+    )
+  }
+
+  /** Returns True if filing is a Staff filing. */
   static isTypeStaff (item: any): boolean {
-    const isStaffType = [
-      FilingTypes.REGISTRARS_NOTATION,
-      FilingTypes.REGISTRARS_ORDER,
-      FilingTypes.COURT_ORDER,
-      FilingTypes.PUT_BACK_ON,
-      FilingTypes.ADMIN_FREEZE
-    ].includes(item.name)
-    const isAdminDissolution = (item?.data?.dissolution?.dissolutionType === DissolutionTypes.ADMINISTRATIVE)
-    return (isStaffType || isAdminDissolution)
+    return (
+      this.isTypeRegistrarsNotation(item) ||
+      this.isTypeRegistarsOrder(item) ||
+      this.isTypeCourtOrder(item) ||
+      this.isTypePutBackOn(item) ||
+      this.isTypeAdminFreeze(item) ||
+      this.isTypeDissolutionAdministrative(item)
+    )
   }
 
   //
@@ -227,14 +267,11 @@ export default class EnumUtilities {
   // Conversion helpers
   //
 
-  // from external module
-  getCorpTypeNumberedDescription = GetCorpNumberedDescription
-
   /**
    * Converts the filing type to a filing name.
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
-   * @param subType
+   * @param subType the filing subtype (optional)
    * @returns the filing name
    */
   static filingTypeToName (type: FilingTypes, agmYear = null as string, subType = null as any): string {
@@ -251,15 +288,20 @@ export default class EnumUtilities {
       case FilingTypes.CONVERSION: return FilingNames.CONVERSION
       case FilingTypes.CORRECTION: return FilingNames.CORRECTION
       case FilingTypes.COURT_ORDER: return FilingNames.COURT_ORDER
-      case FilingTypes.DISSOLUTION: return FilingNames.DISSOLUTION
+      case FilingTypes.DISSOLUTION:
+        // FUTURE: move dissolution subtype checks here
+        return FilingNames.DISSOLUTION
       case FilingTypes.DISSOLVED: return FilingNames.DISSOLVED
       case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
       case FilingTypes.REGISTRARS_NOTATION: return FilingNames.REGISTRARS_NOTATION
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
       case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
-      case FilingTypes.RESTORATION: return (subType === RestorationTypes.FULL)
-        ? FilingNames.RESTORATION_FULL
-        : FilingNames.RESTORATION_LIMITED
+      case FilingTypes.RESTORATION:
+        if (subType === FilingSubTypes.RESTORATION_CONVERSION) return FilingNames.RESTORATION_CONVERSION
+        if (subType === FilingSubTypes.RESTORATION_EXTENSION) return FilingNames.RESTORATION_EXTENSION
+        if (subType === FilingSubTypes.RESTORATION_FULL) return FilingNames.RESTORATION_FULL
+        if (subType === FilingSubTypes.RESTORATION_LIMITED) return FilingNames.RESTORATION_LIMITED
+        return FilingNames.UNKNOWN
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.PUT_BACK_ON: return FilingNames.PUT_BACK_ON
@@ -279,19 +321,19 @@ export default class EnumUtilities {
   }
 
   /**
-   * Converts a dissolution type to its name.
-   * @param isFirm
-   * @param type the dissolution type to convert
-   * @returns the dissolution name
+   * Converts a dissolution subtype to a filing name.
+   * @param isFirm whether this entity is a firm
+   * @param subType the dissolution subtype
+   * @returns the filing name
    */
-  static dissolutionTypeToName (isFirm: boolean, type: DissolutionTypes): string {
-    switch (type) {
-      case DissolutionTypes.ADMINISTRATIVE: return DissolutionNames.ADMINISTRATIVE
-      case DissolutionTypes.INVOLUNTARY: return DissolutionNames.INVOLUNTARY
-      case DissolutionTypes.VOLUNTARY:
-        return isFirm ? DissolutionNames.FIRM_DISSOLUTION : DissolutionNames.VOLUNTARY
+  static dissolutionTypeToName (isFirm: boolean, subType: FilingSubTypes): string {
+    switch (subType) {
+      case FilingSubTypes.DISSOLUTION_ADMINISTRATIVE: return FilingNames.DISSOLUTION_ADMINISTRATIVE
+      case FilingSubTypes.DISSOLUTION_INVOLUNTARY: return FilingNames.DISSOLUTION_INVOLUNTARY
+      case FilingSubTypes.DISSOLUTION_VOLUNTARY: return (
+        isFirm ? FilingNames.DISSOLUTION_FIRM : FilingNames.DISSOLUTION_VOLUNTARY
+      )
     }
-    // fallback for unknown filings
-    return this.camelCaseToWords(type)
+    return FilingNames.UNKNOWN
   }
 }

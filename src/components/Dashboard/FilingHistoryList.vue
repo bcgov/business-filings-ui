@@ -613,7 +613,7 @@ export default class FilingHistoryList extends Vue {
       }
 
       // add properties for Voluntary Dissolutions
-      if (EnumUtilities.isTypeVoluntaryDissolution(filing)) {
+      if (EnumUtilities.isTypeDissolutionVoluntary(filing)) {
         item.dissolutionDate = filing.data.dissolution?.dissolutionDate || null
 
         // is this a completed dissolution?
@@ -661,13 +661,15 @@ export default class FilingHistoryList extends Vue {
         item.isTypeStaff = true
         item.details = filing.data.order?.orderDetails // should always be present
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
-        item.putBackOnOrAdminDissolution = EnumUtilities.isTypePutBackOn({ name: filing.name }) ||
-          EnumUtilities.isTypeAdministrativeDissolution({ name: filing.name,
+        item.putBackOnOrAdminDissolution = (
+          EnumUtilities.isTypePutBackOn({ name: filing.name }) ||
+          EnumUtilities.isTypeDissolutionAdministrative({ name: filing.name,
             dissolutionType: filing?.data?.dissolution?.dissolutionType })
+        )
       }
 
       // add properties for limited restorations
-      if (EnumUtilities.isTypeLimitedRestoration(filing)) {
+      if (EnumUtilities.isTypeRestorationLimited(filing)) {
         item.isTypeLimitedRestoration = true
         item.legalName = filing.data.restoration?.legalName
         item.expiry = filing.data.restoration?.expiry

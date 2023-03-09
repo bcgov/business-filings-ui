@@ -1,4 +1,4 @@
-import { CorpTypeCd, DissolutionTypes, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
   StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
@@ -148,9 +148,10 @@ export default {
     let date: string
 
     if (filingType === FilingTypes.DISSOLUTION) {
-      name = EnumUtilities.dissolutionTypeToName(rootGetters.isFirm,
-        (stateFiling?.dissolution?.dissolutionType as DissolutionTypes) ||
-        DissolutionTypes.UNKNOWN)
+      name = EnumUtilities.dissolutionTypeToName(
+        rootGetters.isFirm,
+        (stateFiling?.dissolution?.dissolutionType as FilingSubTypes)
+      )
       const dissolutionDate = DateUtilities.yyyyMmDdToDate(stateFiling.dissolution?.dissolutionDate)
       if (!dissolutionDate) throw new Error('Invalid dissolution date')
       date = DateUtilities.dateToPacificDate(dissolutionDate, true)

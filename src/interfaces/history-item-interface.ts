@@ -67,6 +67,6 @@ export interface HistoryItemIF {
 
   // limited restorations only
   isTypeLimitedRestoration?: boolean
-  expiry?: Date // also used for consent to continuation out
+  expiry?: string // also used for consent to continuation out
   legalName?: string
 }

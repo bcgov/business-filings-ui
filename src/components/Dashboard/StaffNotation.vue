@@ -29,9 +29,9 @@
       :dialog="isAddingAdministrativeDissolution"
       @close="hideAdministrativeDissolutionDialog($event)"
       attach="#staff-notation"
-      :displayName="DissolutionNames.ADMINISTRATIVE"
+      :displayName="FilingNames.DISSOLUTION_ADMINISTRATIVE"
       :name="FilingTypes.DISSOLUTION"
-      :dissolutionType="DissolutionTypes.ADMINISTRATIVE"
+      :dissolutionType="FilingSubTypes.DISSOLUTION_ADMINISTRATIVE"
     />
 
     <AddStaffNotationDialog
@@ -118,7 +118,7 @@
             <v-list-item
               v-if="isAllowed(AllowableActions.RESTORATION)"
               data-type="restoration"
-              @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, RestorationTypes.FULL)"
+              @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, FilingSubTypes.RESTORATION_FULL)"
             >
               <v-list-item-title>
                 <span class="app-blue">Restore Company</span>
@@ -158,7 +158,7 @@
             <v-list-item
               v-if="isAllowed(AllowableActions.LIMITED_RESTO_EXTEND)"
               data-type="extend-limited-restoration"
-              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, RestorationTypes.LIMITED_EXTENSION)"
+              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.RESTORATION_EXTENSION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Extend Limited Restoration</span>
@@ -168,7 +168,7 @@
             <v-list-item
               v-if="isAllowed(AllowableActions.LIMITED_RESTO_CONVERT)"
               data-type="convert-full-restoration"
-              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, RestorationTypes.LIMITED_TO_FULL)"
+              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.RESTORATION_CONVERSION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Convert to Full Restoration</span>
@@ -188,11 +188,9 @@ import { navigate } from '@/utils'
 import {
   AllowableActions,
   ApplicationTypes,
-  DissolutionNames,
-  DissolutionTypes,
   FilingNames,
+  FilingSubTypes,
   FilingTypes,
-  RestorationTypes,
   Routes
 } from '@/enums'
 import { AddStaffNotationDialog } from '@/components/dialogs'
@@ -229,11 +227,9 @@ export default class StaffNotation extends Vue {
   // enum for template
   readonly AllowableActions = AllowableActions
   readonly ApplicationTypes = ApplicationTypes
-  readonly DissolutionNames = DissolutionNames
-  readonly DissolutionTypes = DissolutionTypes
   readonly FilingNames = FilingNames
+  readonly FilingSubTypes = FilingSubTypes
   readonly FilingTypes = FilingTypes
-  readonly RestorationTypes = RestorationTypes
 
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset!: string
@@ -284,7 +280,7 @@ export default class StaffNotation extends Vue {
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
   }
 
-  async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: RestorationTypes): Promise<void> {
+  async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: FilingSubTypes): Promise<void> {
     let url: string
     try {
       // show spinner since the network calls below can take a few seconds

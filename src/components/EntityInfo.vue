@@ -9,7 +9,7 @@
               <span>{{ getLegalName || 'Unknown Name' }}</span>
             </div>
             <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ getLegalName || getCorpTypeNumberedDescription(getLegalType)}}</span>
+              <span>{{ getLegalName || GetCorpNumberedDescription(getLegalType)}}</span>
             </div>
 
             <!-- Description -->
@@ -204,6 +204,10 @@ import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
+import {
+  GetCorpFullDescription,
+  GetCorpNumberedDescription
+} from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: { StaffComments },
@@ -238,6 +242,7 @@ export default class EntityInfo extends Vue {
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
+  readonly GetCorpNumberedDescription = GetCorpNumberedDescription
 
   /** Whether to show the hover style. */
   protected showHoverStyle = false
@@ -259,11 +264,11 @@ export default class EntityInfo extends Vue {
 
   /** The business description. */
   get businessDescription (): string {
-    const corpTypeDescription = this.getCorpTypeDescription(this.getLegalType)
+    const corpFullDescription = GetCorpFullDescription(this.getLegalType)
     if (this.isSoleProp && this.tempRegNumber) {
-      return `${corpTypeDescription} / Doing Business As (DBA)`
+      return `${corpFullDescription} / Doing Business As (DBA)`
     } else {
-      return corpTypeDescription
+      return corpFullDescription
     }
   }
 
