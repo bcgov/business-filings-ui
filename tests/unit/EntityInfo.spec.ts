@@ -266,6 +266,53 @@ describe('EntityInfo - company info button and tooltip', () => {
   })
 })
 
+describe('EntityInfo - LIMITED RESTORATION badge', () => {
+  const router = mockRouter.mock()
+
+  const variations = [
+    { // 0
+      stateFiling: null,
+      exists: false
+    },
+    { // 1
+      stateFiling: { restoration: { type: 'limitedRestoration' } },
+      exists: true
+    },
+    { // 2
+      stateFiling: { restoration: { type: 'limitedRestorationExtension' } },
+      exists: true
+    }
+  ]
+
+  beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  afterAll(() => {
+    sessionStorage.clear()
+  })
+
+  variations.forEach((_, index) => {
+    it(`conditionally displays limited restoration badge - variation #${index}`, async () => {
+      // init store
+      store.state.stateFiling = _.stateFiling
+
+      const wrapper = mount(EntityInfo, { vuetify, store, router })
+      await Vue.nextTick()
+
+      expect(wrapper.find('#limited-restoration').exists()).toBe(_.exists)
+      if (_.exists) {
+        expect(wrapper.find('#limited-restoration').text()).toContain('Active until')
+        expect(wrapper.find('#limited-restoration').text()).toContain('LIMITED RESTORATION')
+      }
+
+      // cleanup
+      store.state.stateFiling = null
+      wrapper.destroy()
+    })
+  })
+})
+
 describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
   const router = mockRouter.mock()
 
@@ -275,10 +322,6 @@ describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
       exists: false
     },
     { // 1
-      stateFiling: null,
-      exists: false
-    },
-    { // 2
       stateFiling: { consentContinuationOut: {} },
       exists: true
     }
@@ -300,9 +343,9 @@ describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
       const wrapper = mount(EntityInfo, { vuetify, store, router })
       await Vue.nextTick()
 
-      expect(wrapper.find('#authorized-to-continue-out-chip').exists()).toBe(_.exists)
+      expect(wrapper.find('#authorized-to-continue-out').exists()).toBe(_.exists)
       if (_.exists) {
-        expect(wrapper.find('#authorized-to-continue-out-chip').text()).toBe('AUTHORIZED TO CONTINUE OUT')
+        expect(wrapper.find('#authorized-to-continue-out').text()).toBe('AUTHORIZED TO CONTINUE OUT')
       }
 
       // cleanup

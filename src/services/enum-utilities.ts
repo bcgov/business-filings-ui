@@ -132,26 +132,38 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.TRANSITION)
   }
 
-  /** Returns True if filing is an Administrative Dissolution. */
+  /**
+   * Returns True if filing is an Administrative Dissolution.
+   * @param item a todo item, state filing or filing item
+   */
   static isTypeDissolutionAdministrative (item: any): boolean {
     return (
-      item.dissolutionType === FilingSubTypes.DISSOLUTION_ADMINISTRATIVE ||
+      item.filingSubType === FilingSubTypes.DISSOLUTION_ADMINISTRATIVE ||
+      item.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_ADMINISTRATIVE ||
       item.data?.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_ADMINISTRATIVE
     )
   }
 
-  /** Returns True if filing is an Involuntary Dissolution. */
+  /**
+   * Returns True if filing is an Involuntary Dissolution.
+   * @param item a todo item, state filing or filing item
+   */
   static isTypeDissolutionInvoluntary (item: any): boolean {
     return (
-      item.dissolutionType === FilingSubTypes.DISSOLUTION_INVOLUNTARY ||
+      item.filingSubType === FilingSubTypes.DISSOLUTION_INVOLUNTARY ||
+      item.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_INVOLUNTARY ||
       item.data?.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_INVOLUNTARY
     )
   }
 
-  /** Returns True if filing is a Voluntary Dissolution. */
+  /**
+   * Returns True if filing is a Voluntary Dissolution.
+   * @param item a todo item, state filing or filing item
+   */
   static isTypeDissolutionVoluntary (item: any): boolean {
     return (
-      item.dissolutionType === FilingSubTypes.DISSOLUTION_VOLUNTARY ||
+      item.filingSubType === FilingSubTypes.DISSOLUTION_VOLUNTARY ||
+      item.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_VOLUNTARY ||
       item.data?.dissolution?.dissolutionType === FilingSubTypes.DISSOLUTION_VOLUNTARY
     )
   }
@@ -186,35 +198,47 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)
   }
 
-  /** Returns True if filing is a (Limited) Restoration Conversion. */
+  /**
+   * Returns True if filing is a (Limited) Restoration Conversion.
+   * @param item a todo item, filing item or state filing
+   */
   static isTypeRestorationConversion (item: any): boolean {
     return (
       item.filingSubType === FilingSubTypes.RESTORATION_CONVERSION ||
-      item.data?.restoration?.type === FilingSubTypes.RESTORATION_CONVERSION
+      item.restoration?.type === FilingSubTypes.RESTORATION_CONVERSION
     )
   }
 
-  /** Returns True if filing is a (Limited) Restoration Extension. */
+  /**
+   * Returns True if filing is a (Limited) Restoration Extension.
+   * @param item a todo item, filing item or state filing
+   */
   static isTypeRestorationExtension (item: any): boolean {
     return (
       item.filingSubType === FilingSubTypes.RESTORATION_EXTENSION ||
-      item.data?.restoration?.type === FilingSubTypes.RESTORATION_EXTENSION
+      item.restoration?.type === FilingSubTypes.RESTORATION_EXTENSION
     )
   }
 
-  /** Returns True if filing is a Full Restoration. */
+  /**
+   * Returns True if filing is a Full Restoration.
+   * @param item a todo item, filing item or state filing
+   */
   static isTypeRestorationFull (item: any): boolean {
     return (
       item.filingSubType === FilingSubTypes.RESTORATION_FULL ||
-      item.data?.restoration?.type === FilingSubTypes.RESTORATION_FULL
+      item.restoration?.type === FilingSubTypes.RESTORATION_FULL
     )
   }
 
-  /** Returns True if filing is a Limited Restoration. */
+  /**
+   * Returns True if filing is a Limited Restoration.
+   * @param item a todo item, filing item or state filing
+   */
   static isTypeRestorationLimited (item: any): boolean {
     return (
       item.filingSubType === FilingSubTypes.RESTORATION_LIMITED ||
-      item.data?.restoration?.type === FilingSubTypes.RESTORATION_LIMITED
+      item.restoration?.type === FilingSubTypes.RESTORATION_LIMITED
     )
   }
 

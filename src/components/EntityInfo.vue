@@ -8,22 +8,36 @@
             <div v-if="!!businessId" id="entity-legal-name" aria-label="Business Legal Name">
               <span>{{ getLegalName || 'Unknown Name' }}</span>
             </div>
-            <div v-if="tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
+            <div v-if="!!tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
               <span>{{ getLegalName || GetCorpNumberedDescription(getLegalType)}}</span>
             </div>
 
-            <!-- Description -->
+            <!-- Business Description -->
             <div v-if="!!businessId">
               <span id="business-subtitle">{{ businessDescription }}</span>
-              <v-chip
-                v-if="isAuthorizedToContinueOut"
-                id="authorized-to-continue-out-chip"
-                class="primary mt-n1 ml-3 pointer-events-none" small label text-color="white"
-              >
-                <strong>AUTHORIZED TO CONTINUE OUT</strong>
-              </v-chip>
+
+              <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
+                <span class="ml-3">Active until {{ activeUntil || 'Unknown' }}</span>
+                <v-chip
+                  class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+                  small label text-color="white"
+                >
+                  LIMITED RESTORATION
+                </v-chip>
+              </span>
+
+              <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
+                <v-chip
+                  class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+                  small label text-color="white"
+                >
+                  AUTHORIZED TO CONTINUE OUT
+                </v-chip>
+              </span>
             </div>
-            <div v-if="tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
+
+            <!-- IA/Registration Description -->
+            <div v-if="!!tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
           </header>
 
           <menu class="mt-4 ml-n4">
@@ -200,14 +214,12 @@ import Vue from 'vue'
 import { Component, Emit } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { AllowableActions, CorpTypeCd, FilingNames, NigsMessage } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingNames, FilingTypes, NigsMessage } from '@/enums'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
-import {
-  GetCorpFullDescription,
-  GetCorpNumberedDescription
-} from '@bcrs-shared-components/corp-type-module'
+import { GetCorpFullDescription, GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
+import { EnumUtilities } from '@/services'
 
 @Component({
   components: { StaffComments },
@@ -232,7 +244,7 @@ export default class EntityInfo extends Vue {
   @Getter getIdentifier!: number
   @Getter getNameRequest!: any
   @Getter getReasonText!: string
-  @Getter isAuthorizedToContinueOut!: boolean
+  @Getter getStateFiling!: StateFilingIF
   @Getter isFirm!: boolean
   @Getter isHistorical!: boolean
   @Getter isPendingDissolution!: boolean
@@ -262,10 +274,37 @@ export default class EntityInfo extends Vue {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
   }
 
+  /**
+   * True if the business is in limited restoration, ie, the state filing is a
+   * Limited Restoration filing or Limited Restoration Extension filing.
+   */
+  get isInLimitedRestoration (): boolean {
+    return (
+      !!this.getStateFiling && (
+        EnumUtilities.isTypeRestorationLimited(this.getStateFiling) ||
+        EnumUtilities.isTypeRestorationExtension(this.getStateFiling)
+      )
+    )
+  }
+
+  /** The limited restoration active-until date, if it exists, otherwise null. */
+  get activeUntil (): string {
+    const date = this.yyyyMmDdToDate(this.getStateFiling?.restoration?.expiry)
+    return this.dateToPacificDate(date, true)
+  }
+
+  /**
+   * True if the business is authorized to continue out, ie, the state filing is a
+   * Consent to Continuation Out filing.
+   */
+  get isAuthorizedToContinueOut (): boolean {
+    return (this.getStateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT) || false)
+  }
+
   /** The business description. */
   get businessDescription (): string {
     const corpFullDescription = GetCorpFullDescription(this.getLegalType)
-    if (this.isSoleProp && this.tempRegNumber) {
+    if (this.isSoleProp && !!this.tempRegNumber) {
       return `${corpFullDescription} / Doing Business As (DBA)`
     } else {
       return corpFullDescription
@@ -384,15 +423,19 @@ export default class EntityInfo extends Vue {
 }
 
 #business-subtitle,
+#limited-restoration,
 #ia-reg-subtitle {
   font-size: $px-14;
   color: $gray7;
 }
 
-// vertical lines between buttons:
+#limited-restoration {
+  border-left: 1px solid $gray3;
+}
+
+// vertical lines between menu items:
 menu > span + span {
   border-left: 1px solid $gray3;
-  border-radius: 0;
 }
 
 dl {

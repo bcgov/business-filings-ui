@@ -1,6 +1,6 @@
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
+  StateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
@@ -166,24 +166,9 @@ export default {
     return `${name} ${enDash} ${date}`
   },
 
-  /**
-   * Is True if business is in Limited Restoration state, ie
-   * the last filing to change state was a Restoration filing.
-   */
-  isEntityInLimitedRestoration (_state: StateIF, _getters, rootState): boolean {
-    const stateFiling = rootState.stateFiling // may be null
-
-    return (stateFiling?.hasOwnProperty(FilingTypes.RESTORATION))
-  },
-
-  /**
-   * Is True if business is in Authorized to Continue Out state, ie
-   * the last filing to change state was a Consent to Continue Out filing.
-   */
-  isAuthorizedToContinueOut (_state: StateIF, _getters, rootState): boolean {
-    const stateFiling = rootState.stateFiling // may be null
-
-    return (stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT))
+  /** The filing that changed the business state, if there is one. */
+  getStateFiling (state: StateIF): StateFilingIF {
+    return state.stateFiling
   },
 
   /** The corp type code from Auth db (may be null). */

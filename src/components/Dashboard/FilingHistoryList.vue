@@ -662,9 +662,8 @@ export default class FilingHistoryList extends Vue {
         item.details = filing.data.order?.orderDetails // should always be present
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
         item.putBackOnOrAdminDissolution = (
-          EnumUtilities.isTypePutBackOn({ name: filing.name }) ||
-          EnumUtilities.isTypeDissolutionAdministrative({ name: filing.name,
-            dissolutionType: filing?.data?.dissolution?.dissolutionType })
+          EnumUtilities.isTypePutBackOn(filing) ||
+          EnumUtilities.isTypeDissolutionAdministrative(filing)
         )
       }
 

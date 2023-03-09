@@ -195,7 +195,7 @@ export default class AddStaffNotationDialog extends Vue {
 
   /** Whether this filing is an Administrative Dissolution. */
   get isAdministrativeDissolution (): boolean {
-    return EnumUtilities.isTypeDissolutionAdministrative({ name: this.name, dissolutionType: this.dissolutionType })
+    return EnumUtilities.isTypeDissolutionAdministrative({ filingSubType: this.dissolutionType })
   }
 
   /** Whether this filing is a Put Back On. */
