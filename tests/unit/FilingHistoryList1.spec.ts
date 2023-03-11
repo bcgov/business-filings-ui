@@ -366,15 +366,7 @@ describe('Filing History List - misc functionality', () => {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
         commentsCount: 0,
-        displayName: 'Limited Restoration Application',
-        effectiveDate: '2019-11-20 22:17:54 GMT',
-        filingId: 111,
-        isFutureEffective: false,
-        name: 'restoration',
-        status: 'COMPLETED',
-        submittedDate: '2019-06-02',
-        submitter: 'Cameron',
-        documentsLink: 'http://test',
+        commentsLink: null,
         data: {
           restoration: {
             date: '2021-01-01',
@@ -382,7 +374,18 @@ describe('Filing History List - misc functionality', () => {
             expiry: '2021-04-01',
             legalName: 'BC1234567 LTD.'
           }
-        }
+        },
+        displayName: 'Limited Restoration Application',
+        documentsLink: 'http://test',
+        effectiveDate: '2019-11-20 22:17:54 GMT',
+        filingId: 111,
+        filingSubType: 'limitedRestoration',
+        isFutureEffective: false,
+        name: 'restoration',
+        paymentStatusCode: 'COMPLETED',
+        status: 'COMPLETED',
+        submittedDate: '2019-06-02',
+        submitter: 'Cameron'
       }
     ]
 

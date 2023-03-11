@@ -9,7 +9,13 @@ import {
   OfficeAddressIF,
   RestorationFilingIF
 } from '@/interfaces'
-import { CorpTypeCd, CorrectionTypes, DissolutionTypes, FilingCodes, FilingTypes, RestorationTypes } from '@/enums'
+import {
+  CorpTypeCd,
+  CorrectionTypes,
+  FilingCodes,
+  FilingSubTypes,
+  FilingTypes
+} from '@/enums'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -144,7 +150,8 @@ export default class FilingMixin extends DateMixin {
       },
       dissolution: {
         custodialOffice: this.getRegisteredOfficeAddress,
-        dissolutionType: DissolutionTypes.VOLUNTARY // FUTURE: apply dynamically when we have dissolution variations
+        // FUTURE: apply type dynamically when we have dissolution variations
+        dissolutionType: FilingSubTypes.DISSOLUTION_VOLUNTARY
       }
     }
 
@@ -166,7 +173,7 @@ export default class FilingMixin extends DateMixin {
    * Builds a Restoration filing body.
    * @returns the filing body
    */
-  buildRestorationFiling (restorationType = RestorationTypes.FULL): RestorationFilingIF {
+  buildRestorationFiling (restorationType = FilingSubTypes.RESTORATION_FULL): RestorationFilingIF {
     const restoration: RestorationFilingIF = {
       header: {
         date: this.getCurrentDate,

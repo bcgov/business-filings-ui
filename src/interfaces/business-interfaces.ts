@@ -1,10 +1,11 @@
-import { EntityState, CorpTypeCd, FilingTypes } from '@/enums'
+import { EntityState, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { IsoDatePacific, ApiDateTimeUtc } from '@bcrs-shared-components/interfaces'
 
 export interface FilingTypeIF {
   displayName: string
   feeCode: string
   name: FilingTypes
+  type?: FilingSubTypes
 }
 
 export interface AllowedActionsIF {

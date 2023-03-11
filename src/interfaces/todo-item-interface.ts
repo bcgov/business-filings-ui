@@ -1,4 +1,4 @@
-import { FilingTypes, PaymentMethod } from '@/enums'
+import { FilingSubTypes, FilingTypes, PaymentMethod } from '@/enums'
 import { PaymentErrorIF } from '@/interfaces'
 
 /**
@@ -49,4 +49,7 @@ export interface TodoItemIF {
   // alterations only
   legalType?: string
   isAlteringToBen?: boolean
+
+  // dissolutions and restorations only
+  filingSubType?: FilingSubTypes
 }

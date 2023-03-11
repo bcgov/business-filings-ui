@@ -13,6 +13,13 @@ Vue.use(VueRouter)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
+// mock the mixin to always return True
+const AllowableActionsMixin: any = {
+  methods: {
+    isAllowed: () => true
+  }
+}
+
 describe('EntityInfo - data', () => {
   const router = mockRouter.mock()
 
@@ -185,7 +192,7 @@ describe('EntityInfo - Staff Comments', () => {
   })
 })
 
-describe('EntityInfo - company info button and tooltip', () => {
+describe('EntityInfo - View and Change Business Information', () => {
   const router = mockRouter.mock()
 
   const variations = [
@@ -266,6 +273,53 @@ describe('EntityInfo - company info button and tooltip', () => {
   })
 })
 
+describe('EntityInfo - LIMITED RESTORATION badge', () => {
+  const router = mockRouter.mock()
+
+  const variations = [
+    { // 0
+      stateFiling: null,
+      exists: false
+    },
+    { // 1
+      stateFiling: { restoration: { type: 'limitedRestoration' } },
+      exists: true
+    },
+    { // 2
+      stateFiling: { restoration: { type: 'limitedRestorationExtension' } },
+      exists: true
+    }
+  ]
+
+  beforeAll(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+  })
+
+  afterAll(() => {
+    sessionStorage.clear()
+  })
+
+  variations.forEach((_, index) => {
+    it(`conditionally displays limited restoration badge - variation #${index}`, async () => {
+      // init store
+      store.state.stateFiling = _.stateFiling
+
+      const wrapper = mount(EntityInfo, { vuetify, store, router })
+      await Vue.nextTick()
+
+      expect(wrapper.find('#limited-restoration').exists()).toBe(_.exists)
+      if (_.exists) {
+        expect(wrapper.find('#limited-restoration').text()).toContain('Active until')
+        expect(wrapper.find('#limited-restoration').text()).toContain('LIMITED RESTORATION')
+      }
+
+      // cleanup
+      store.state.stateFiling = null
+      wrapper.destroy()
+    })
+  })
+})
+
 describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
   const router = mockRouter.mock()
 
@@ -275,10 +329,6 @@ describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
       exists: false
     },
     { // 1
-      stateFiling: null,
-      exists: false
-    },
-    { // 2
       stateFiling: { consentContinuationOut: {} },
       exists: true
     }
@@ -300,9 +350,9 @@ describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
       const wrapper = mount(EntityInfo, { vuetify, store, router })
       await Vue.nextTick()
 
-      expect(wrapper.find('#authorized-to-continue-out-chip').exists()).toBe(_.exists)
+      expect(wrapper.find('#authorized-to-continue-out').exists()).toBe(_.exists)
       if (_.exists) {
-        expect(wrapper.find('#authorized-to-continue-out-chip').text()).toBe('AUTHORIZED TO CONTINUE OUT')
+        expect(wrapper.find('#authorized-to-continue-out').text()).toBe('AUTHORIZED TO CONTINUE OUT')
       }
 
       // cleanup
@@ -312,7 +362,7 @@ describe('EntityInfo - AUTHORIZED TO CONTINUE OUT badge', () => {
   })
 })
 
-describe('EntityInfo - Historical badge', () => {
+describe('EntityInfo - HISTORICAL badge', () => {
   const router = mockRouter.mock()
 
   const variations = [
@@ -418,73 +468,58 @@ describe('EntityInfo - Click Tests - Alterations', () => {
 })
 
 describe('EntityInfo - Click Tests - Dissolutions', () => {
-  const router = mockRouter.mock()
-
-  // mock the mixin to always return True
-  const AllowableActionsMixin: any = {
-    methods: {
-      isAllowed: () => true
-    }
-  }
+  beforeEach(() => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
+    store.commit('setState', 'ACTIVE')
+  })
 
   it('displays the Dissolve this Company button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityInfo, {
       store,
       vuetify,
-      router,
       mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
+
     expect(wrapper.find('#dissolution-button').exists()).toBe(true)
   })
 
-  it('prompts the Confirm Dissolution dialog if in good standing', async () => {
+  it('emits Confirm Dissolution event if in good standing', async () => {
     store.commit('setGoodStanding', true)
 
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
       store,
       vuetify,
-      router,
       mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
 
+    // click the button and verify emitted event
     await wrapper.find('#dissolution-button').trigger('click')
-
-    // verify emit event
     expect(wrapper.emitted().confirmDissolution).toEqual([[]])
   })
 
-  it('prompts the Not In Good Standing dialog', async () => {
+  it('emits Not In Good Standing event if not in good standing', async () => {
     store.commit('setGoodStanding', false)
 
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
       store,
       vuetify,
-      router,
       mixins: [AllowableActionsMixin]
     })
     await Vue.nextTick()
 
+    // click the button and verify emitted event
     await wrapper.find('#dissolution-button').trigger('click')
-
-    // verify emit event
     expect(wrapper.emitted().notInGoodStanding).toEqual([['dissolve']])
   })
 })
 
 describe('EntityInfo - Click Tests - Business Summary', () => {
   const router = mockRouter.mock()
-
-  // mock the mixin to always return True
-  const AllowableActionsMixin: any = {
-    methods: {
-      isAllowed: () => true
-    }
-  }
 
   it('displays the Business Summary button', async () => {
     // mount the component and wait for everything to stabilize
@@ -499,7 +534,7 @@ describe('EntityInfo - Click Tests - Business Summary', () => {
     expect(wrapper.find('#download-summary-button').exists()).toBe(true)
   })
 
-  it('emits the download business summary event', async () => {
+  it('emits Download Business Summary event', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper: any = mount(EntityInfo, {
       store,
@@ -509,9 +544,36 @@ describe('EntityInfo - Click Tests - Business Summary', () => {
     })
     await Vue.nextTick()
 
+    // click the button and verify emitted event
     await wrapper.find('#download-summary-button').trigger('click')
-
-    // verify emit event
     expect(wrapper.emitted().downloadBusinessSummary).toEqual([[]])
+  })
+})
+
+describe('EntityInfo - Click Tests - Business Digital Credentials', () => {
+  it('displays the Business Digital Credentials button', () => {
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [AllowableActionsMixin]
+    })
+
+    const button = wrapper.find('#view-add-digital-credentials-button')
+    expect(button.exists()).toBe(true)
+    expect(button.text()).toBe('Business Digital Credentials')
+  })
+
+  it('emits View Add Digital Credentials event', async () => {
+    // mount the component and wait for everything to stabilize
+    const wrapper: any = mount(EntityInfo, {
+      store,
+      vuetify,
+      mixins: [AllowableActionsMixin]
+    })
+
+    // click the button and verify emitted event
+    await wrapper.find('#view-add-digital-credentials-button').trigger('click')
+    expect(wrapper.emitted().viewAddDigitalCredentials).toEqual([[]])
   })
 })

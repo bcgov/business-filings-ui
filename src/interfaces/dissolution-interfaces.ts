@@ -1,5 +1,14 @@
 import { OfficeAddressIF } from '@/interfaces/address-interfaces'
-import { DissolutionTypes } from '@/enums'
+import { FilingSubTypes } from '@/enums'
+
+/**
+ * A filing's dissolution object from the API. See:
+ * https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/dissolution.json
+ */
+export interface DissolutionIF {
+  custodialOffice: OfficeAddressIF
+  dissolutionType: FilingSubTypes
+}
 
 /** Dissolution filing interface. */
 export interface DissolutionFilingIF {
@@ -21,8 +30,5 @@ export interface DissolutionFilingIF {
     identifier: string
     foundingDate: string
   }
-  dissolution: {
-    custodialOffice: OfficeAddressIF,
-    dissolutionType: DissolutionTypes
-  }
+  dissolution: DissolutionIF
 }

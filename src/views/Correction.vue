@@ -187,7 +187,7 @@ import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, LoadCorrectionDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog,
   StaffPaymentDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
+import { EnumUtilities, LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
@@ -274,7 +274,7 @@ export default class Correction extends Vue {
   /** Title of original filing. */
   get title (): string {
     if (this.origFiling?.header?.name) {
-      return this.filingTypeToName(this.origFiling.header.name as FilingTypes, this.agmYear)
+      return EnumUtilities.filingTypeToName(this.origFiling.header.name as FilingTypes, this.agmYear)
     }
     return ''
   }
