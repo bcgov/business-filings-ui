@@ -163,8 +163,8 @@ export default {
    * A formatted concatenation of the name and the effective date of the filing.
    * Only used when entity is historical.
    */
-  getReasonText (_state: StateIF, _getters: any, rootState: any, rootGetters: any): string {
-    const stateFiling = rootState.stateFiling // may be null
+  getReasonText (_state: StateIF, getters: any, _rootState: any, rootGetters: any): string {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
     const filingType = stateFiling?.header?.name
     if (!filingType) return null // safety check
@@ -193,19 +193,19 @@ export default {
   },
 
   /** The limited restoration active-until date, if it exists, otherwise null. */
-  getLimitedreRestorationActiveUntil (_state: StateIF, _getters: any, rootState: any): string {
-    const stateFiling = rootState.stateFiling // may be null
+  getLimitedreRestorationActiveUntil (_state: StateIF, getters: any): string {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
-    const date = this.yyyyMmDdToDate(stateFiling?.restoration?.expiry)
-    return this.dateToPacificDate(date, true)
+    const date = DateUtilities.yyyyMmDdToDate(stateFiling?.restoration?.expiry)
+    return DateUtilities.dateToPacificDate(date, true)
   },
 
   /**
    * True if the business is in limited restoration, ie, the state filing is a
    * Limited Restoration filing or Limited Restoration Extension filing.
    */
-  isInLimitedRestoration (_state: StateIF, _getters: any, rootState: any): boolean {
-    const stateFiling = rootState.stateFiling // may be null
+  isInLimitedRestoration (_state: StateIF, getters: any): boolean {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
     return (
       !!stateFiling && (
@@ -219,8 +219,8 @@ export default {
    * True if the business is authorized to continue out, ie, the state filing is a
    * Consent to Continuation Out filing.
    */
-  isAuthorizedToContinueOut (_state: StateIF, _getters: any, rootState: any): boolean {
-    const stateFiling = rootState.stateFiling // may be null
+  isAuthorizedToContinueOut (_state: StateIF, getters: any): boolean {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
     return (stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT) || false)
   },
