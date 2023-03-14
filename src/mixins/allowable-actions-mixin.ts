@@ -54,10 +54,6 @@ export default class AllowableActionsMixin extends Vue {
           !!getFeatureFlag('supported-business-summary-entities')?.includes(this.getLegalType))
       }
 
-      case AllowableActions.EDIT_BUSINESS_PROFILE: {
-        return !!businessId // FUTURE: disable for staff? see #14314
-      }
-
       case AllowableActions.FILE_ADDRESS_CHANGE: {
         return (!this.isHistorical && !this.hasBlocker && !!businessId)
       }

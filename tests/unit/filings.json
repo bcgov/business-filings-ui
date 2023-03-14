@@ -522,6 +522,7 @@
       "effectiveDate": "Sun, 01 Apr 2018 00:02:26 GMT",
       "filingId": 112751,
       "filingLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756",
+      "filingSubType": "administrative",
       "isFutureEffective": false,
       "name": "dissolution",
       "paymentStatusCode": null,

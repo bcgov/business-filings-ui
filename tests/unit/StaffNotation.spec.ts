@@ -47,7 +47,7 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and not limited restoration', async () => {
     // set store specifically for this test
-    store.commit('setLegalType', 'CP')
+    store.commit('setLegalType', 'BC')
     store.commit('setState', 'ACTIVE')
 
     const wrapper = mount(StaffNotation, { vuetify, store })
@@ -86,6 +86,11 @@ describe('StaffNotation', () => {
       {
         'type': 'admin-freeze',
         'label': 'Freeze Business',
+        'disabled': false
+      },
+      {
+        'type': 'consent-continue-out',
+        'label': 'Consent to Continuation Out',
         'disabled': false
       }
     ]
@@ -106,13 +111,15 @@ describe('StaffNotation', () => {
 
   it('renders drop-down menu correctly - active and limited restoration', async () => {
     // set store specifically for this test
-    store.commit('setLegalType', 'CP')
+    store.commit('setLegalType', 'BC')
     store.commit('setState', 'ACTIVE')
     store.state.stateFiling = {
       business: {
         state: 'ACTIVE'
       },
-      restoration: {}
+      restoration: {
+        type: 'limitedRestoration'
+      }
     }
 
     const wrapper = mount(StaffNotation, { vuetify, store })
@@ -151,6 +158,11 @@ describe('StaffNotation', () => {
       {
         'type': 'admin-freeze',
         'label': 'Freeze Business',
+        'disabled': false
+      },
+      {
+        'type': 'consent-continue-out',
+        'label': 'Consent to Continuation Out',
         'disabled': false
       },
       {
@@ -463,7 +475,9 @@ describe('StaffNotation', () => {
       business: {
         state: 'ACTIVE'
       },
-      restoration: {}
+      restoration: {
+        type: 'limitedRestoration'
+      }
     }
 
     // stub "create draft" endpoint

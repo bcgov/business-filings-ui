@@ -86,7 +86,7 @@
                 <!-- or a completed Alteration? -->
                 <!-- or a completed Dissolution? -->
                 <!-- or a completed Registration? -->
-                <!-- or a limited Restoration? -->
+                <!-- or a Limited Restoration? -->
                 <div v-else-if="filing.isCompletedIa || filing.isCompletedAlteration || filing.isCompletedDissolution ||
                   filing.isCompletedRegistration || filing.isTypeLimitedRestoration" class="item-header__subtitle"
                 >
@@ -625,7 +625,7 @@ export default class FilingHistoryList extends Vue {
       }
 
       // add properties for Voluntary Dissolutions
-      if (EnumUtilities.isTypeVoluntaryDissolution(filing)) {
+      if (EnumUtilities.isTypeDissolutionVoluntary(filing)) {
         item.dissolutionDate = filing.data.dissolution?.dissolutionDate || null
 
         // is this a completed dissolution?
@@ -673,13 +673,14 @@ export default class FilingHistoryList extends Vue {
         item.isTypeStaff = true
         item.details = filing.data.order?.orderDetails // should always be present
         item.planOfArrangement = filing.data.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : ''
-        item.putBackOnOrAdminDissolution = EnumUtilities.isTypePutBackOn({ name: filing.name }) ||
-          EnumUtilities.isTypeAdministrativeDissolution({ name: filing.name,
-            dissolutionType: filing?.data?.dissolution?.dissolutionType })
+        item.putBackOnOrAdminDissolution = (
+          EnumUtilities.isTypePutBackOn(filing) ||
+          EnumUtilities.isTypeDissolutionAdministrative(filing)
+        )
       }
 
       // add properties for limited restorations
-      if (EnumUtilities.isTypeLimitedRestoration(filing)) {
+      if (EnumUtilities.isTypeRestorationLimited(filing)) {
         item.isTypeLimitedRestoration = true
         item.legalName = filing.data.restoration?.legalName
         item.expiry = filing.data.restoration?.expiry
@@ -926,8 +927,8 @@ export default class FilingHistoryList extends Vue {
   protected disableCorrection (item: HistoryItemIF): boolean {
     const conditions: Array<() => boolean> = []
 
-    // list of cases to disable correction
-    // (any case not listed below is ALLOWED)
+    // list of conditions to disable correction
+    // (any condition not listed below is ALLOWED)
     conditions[0] = () => !this.isAllowed(AllowableActions.FILE_CORRECTION)
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff

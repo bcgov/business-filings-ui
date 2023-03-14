@@ -53,7 +53,7 @@ export default class DocumentsList extends Vue {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected downloadOne (document: DocumentIF, index: number): void {}
 
-  /** Emits an event to download all. */
+  /** Emits an event to download all documents. */
   @Emit('downloadAll')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected downloadAll (filing: any): void {}

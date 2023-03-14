@@ -100,17 +100,44 @@ import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
 import EntityInfo from '@/components/EntityInfo.vue'
-import { BusinessAuthErrorDialog, ConfirmDissolutionDialog, DashboardUnavailableDialog, DownloadErrorDialog,
-  NameRequestAuthErrorDialog, NameRequestInvalidDialog, NotInGoodStandingDialog } from '@/components/dialogs'
-import { ConfigJson, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb } from '@/resources'
+import {
+  BusinessAuthErrorDialog,
+  ConfirmDissolutionDialog,
+  DashboardUnavailableDialog,
+  DownloadErrorDialog,
+  NameRequestAuthErrorDialog,
+  NameRequestInvalidDialog,
+  NotInGoodStandingDialog
+} from '@/components/dialogs'
+import {
+  ConfigJson,
+  getMyBusinessRegistryBreadcrumb,
+  getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb
+} from '@/resources'
 import { CommonMixin, DateMixin, DirectorMixin, EnumMixin, FilingMixin, NameRequestMixin } from '@/mixins'
-import { AuthServices, LegalServices } from '@/services/'
-import { ApiFilingIF, ApiTaskIF, BreadcrumbIF, DocumentIF, NameRequestIF, PartyIF, TaskTodoIF }
-  from '@/interfaces'
-import { CorpTypeCd, DissolutionTypes, EntityState, EntityStatus, FilingStatus, FilingTypes, NameRequestStates,
-  NigsMessage, Routes } from '@/enums'
+import { AuthServices, EnumUtilities, LegalServices } from '@/services/'
+import {
+  ApiFilingIF,
+  ApiTaskIF,
+  BreadcrumbIF,
+  DocumentIF,
+  NameRequestIF,
+  PartyIF,
+  TaskTodoIF
+} from '@/interfaces'
+import {
+  CorpTypeCd,
+  EntityState,
+  EntityStatus,
+  FilingStatus,
+  FilingTypes,
+  NameRequestStates,
+  NigsMessage,
+  Routes
+} from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 
 export default {
   name: 'App',
@@ -229,7 +256,7 @@ export default {
       const breadcrumbs = this.$route?.meta?.breadcrumb
       const crumbs: Array<BreadcrumbIF> = [
         {
-          text: this.getLegalName || this.getCorpTypeNumberedDescription(this.getLegalType),
+          text: this.getLegalName || GetCorpNumberedDescription(this.getLegalType),
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])
@@ -617,7 +644,7 @@ export default {
         businessIdentifier: this.getIdentifier,
         commentsCount: filedApplication.commentsCount,
         commentsLink: filedApplication.commentsLink,
-        displayName: this.filingTypeToName(header.name),
+        displayName: EnumUtilities.filingTypeToName(header.name),
         documentsLink: filedApplication.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,

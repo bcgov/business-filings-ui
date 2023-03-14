@@ -139,16 +139,6 @@ describe('Allowable Actions Mixin', () => {
     }
   })
 
-  it('identifies whether Edit Business Profile is allowed', () => {
-    // no conditions:
-    sessionStorage.removeItem('BUSINESS_ID')
-    expect(vm.isAllowed('editBusinessProfile')).toBe(false)
-
-    // all conditions:
-    sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
-    expect(vm.isAllowed('editBusinessProfile')).toBe(true)
-  })
-
   it('identifies whether File Address Change is allowed', () => {
     const tests = [
       // no conditions:

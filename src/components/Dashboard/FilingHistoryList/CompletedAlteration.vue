@@ -20,11 +20,10 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DateTooltip } from '@/components/common'
 import { HistoryItemIF } from '@/interfaces'
-import { EnumMixin } from '@/mixins'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
-  components: { DateTooltip },
-  mixins: [EnumMixin]
+  components: { DateTooltip }
 })
 export default class CompletedAlteration extends Vue {
   @Getter getLegalName!: string
@@ -33,11 +32,11 @@ export default class CompletedAlteration extends Vue {
   @Prop({ required: true }) readonly filing!: HistoryItemIF
 
   get fromLegalType (): string {
-    return this.getCorpTypeDescription(this.filing?.fromLegalType)
+    return GetCorpFullDescription(this.filing?.fromLegalType)
   }
 
   get toLegalType (): string {
-    return this.getCorpTypeDescription(this.filing?.toLegalType)
+    return GetCorpFullDescription(this.filing?.toLegalType)
   }
 }
 </script>

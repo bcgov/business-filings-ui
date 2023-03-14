@@ -1,30 +1,12 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import {
-  DissolutionTypes,
-  EffectOfOrderTypes,
-  FilingStatus,
-  FilingTypes,
-  PaymentMethod
-} from '@/enums'
-import {
-  GetCorpFullDescription,
-  GetCorpInfoObject,
-  GetCorpNumberedDescription
-} from '@bcrs-shared-components/corp-type-module'
-import EnumUtilities from '@/services/enum-utilities'
-import { Getter } from 'vuex-class'
+import { EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes, PaymentMethod } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.
  */
 @Component({})
 export default class EnumMixin extends Vue {
-  //
-  // Filing Status helpers
-  //
-  @Getter isFirm!: boolean
-
   /** DEPRECATED Returns True if item status is Cancelled. */
   isStatusCancelled (item: any): boolean {
     return (item.status === FilingStatus.CANCELLED)
@@ -139,29 +121,9 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.REGISTRATION)
   }
 
-  /** DEPRECATED Returns True if filing is a Restoration. */
-  isTypeRestoration (item: any): boolean {
-    return (item.name === FilingTypes.RESTORATION)
-  }
-
   /** DEPRECATED Returns True if filing is a Transition. */
   isTypeTransition (item: any): boolean {
     return (item.name === FilingTypes.TRANSITION)
-  }
-
-  /** DEPRECATED Returns True if filing is an Administrative Dissolution. */
-  isTypeAdministrativeDissolution (item: any): boolean {
-    return EnumUtilities.isTypeAdministrativeDissolution(item)
-  }
-
-  /** DEPRECATED Returns True if filing is an Involuntary Dissolution. */
-  isTypeInvoluntaryDissolution (item: any): boolean {
-    return EnumUtilities.isTypeInvoluntaryDissolution(item)
-  }
-
-  /** DEPRECATED Returns True if filing is a Voluntary Dissolution. */
-  isTypeVoluntaryDissolution (item: any): boolean {
-    return EnumUtilities.isTypeVoluntaryDissolution(item)
   }
 
   /** DEPRECATED Returns True if filing is a Put Back On. */
@@ -182,16 +144,6 @@ export default class EnumMixin extends Vue {
   /** DEPRECATED Returns True if filing is a Special Resolution. */
   isTypeSpecialResolution (item: any): boolean {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)
-  }
-
-  /** DEPRECATED Returns True if filing is a Limited Restoration. */
-  isTypeLimitedRestoration (item: any): boolean {
-    return EnumUtilities.isTypeLimitedRestoration(item)
-  }
-
-  /** DEPRECATED Returns True if filing is a Staff Only filing. */
-  isTypeStaff (item: any): boolean {
-    return EnumUtilities.isTypeStaff(item)
   }
 
   //
@@ -225,47 +177,5 @@ export default class EnumMixin extends Vue {
   /** DEPRECATED Returns True if effect of order is Plan of Arrangement. */
   isEffectOfOrderPlanOfArrangement (effectOfOrder: EffectOfOrderTypes): boolean {
     return (effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
-  }
-
-  //
-  // Conversion helpers
-  //
-
-  // from external module
-  getCorpTypeInfo = GetCorpInfoObject
-  getCorpTypeDescription = GetCorpFullDescription
-  getCorpTypeNumberedDescription = GetCorpNumberedDescription
-
-  /**
-   * DEPRECATED - use enum-utilities instead
-   * Converts the filing type to a filing name.
-   * @param type the filing type to convert
-   * @param agmYear the AGM Year to be appended to the filing name (optional)
-   * @param subType
-   * @returns the filing name
-   */
-  filingTypeToName (type: FilingTypes, agmYear = null as string, subType = null as any): string {
-    return EnumUtilities.filingTypeToName(type, agmYear, subType)
-  }
-
-  /**
-   * DEPRECATED - use enum-utilities instead
-   * Converts a string in "camelCase" (or "PascalCase") to separate, title-case words,
-   * suitable for a title or proper name.
-   * @param s the string to convert
-   * @returns the converted string
-   */
-  camelCaseToWords (s: string): string {
-    return EnumUtilities.camelCaseToWords(s)
-  }
-
-  /**
-   * DEPRECATED - use enum-utilities instead
-   * Converts a dissolution type to its name.
-   * @param type the dissolution type to convert
-   * @returns the dissolution name
-   */
-  dissolutionTypeToName (type: DissolutionTypes): string {
-    return EnumUtilities.dissolutionTypeToName(this.isFirm, type)
   }
 }

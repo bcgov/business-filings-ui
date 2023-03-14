@@ -1,6 +1,6 @@
-import { CorpTypeCd, DissolutionTypes, EntityStatus, FilingStatus, FilingTypes } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
 import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific } from '@/interfaces'
+  StateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
@@ -37,7 +37,7 @@ export default {
   },
 
   /** Is True if there are any blockers, eg, pending tasks or filings. */
-  hasBlockerExceptStaffApproval (state: StateIF, _getters, _rootState, rootGetters): boolean {
+  hasBlockerExceptStaffApproval (state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
     return (
       state.hasBlockerTask ||
       state.hasBlockerFiling ||
@@ -47,7 +47,7 @@ export default {
   },
 
   /** Is True if there is a blocker including firm compliance. */
-  hasBlocker (_state: StateIF, _getters, _rootState, rootGetters): boolean {
+  hasBlocker (_state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
     // check for compliance warning
     if (rootGetters.hasComplianceWarning) return true
 
@@ -154,12 +154,17 @@ export default {
     return state.configObject?.todoList
   },
 
+  /** The filing that changed the business state, if there is one. */
+  getStateFiling (state: StateIF): StateFilingIF {
+    return state.stateFiling
+  },
+
   /**
    * A formatted concatenation of the name and the effective date of the filing.
    * Only used when entity is historical.
    */
-  getReasonText (_state: StateIF, _getters, rootState, rootGetters): string {
-    const stateFiling = rootState.stateFiling // may be null
+  getReasonText (_state: StateIF, getters: any, _rootState: any, rootGetters: any): string {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
     const filingType = stateFiling?.header?.name
     if (!filingType) return null // safety check
@@ -169,9 +174,10 @@ export default {
     let date: string
 
     if (filingType === FilingTypes.DISSOLUTION) {
-      name = EnumUtilities.dissolutionTypeToName(rootGetters.isFirm,
-        (stateFiling?.dissolution?.dissolutionType as DissolutionTypes) ||
-        DissolutionTypes.UNKNOWN)
+      name = EnumUtilities.dissolutionTypeToName(
+        rootGetters.isFirm,
+        (stateFiling?.dissolution?.dissolutionType as FilingSubTypes)
+      )
       const dissolutionDate = DateUtilities.yyyyMmDdToDate(stateFiling.dissolution?.dissolutionDate)
       if (!dissolutionDate) throw new Error('Invalid dissolution date')
       date = DateUtilities.dateToPacificDate(dissolutionDate, true)
@@ -186,24 +192,37 @@ export default {
     return `${name} ${enDash} ${date}`
   },
 
-  /**
-   * Is True if business is in Limited Restoration state, ie
-   * the last filing to change state was a Restoration filing.
-   */
-  isEntityInLimitedRestoration (_state: StateIF, _getters, rootState): boolean {
-    const stateFiling = rootState.stateFiling // may be null
+  /** The limited restoration active-until date, if it exists, otherwise null. */
+  getLimitedreRestorationActiveUntil (_state: StateIF, getters: any): string {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
-    return (stateFiling?.hasOwnProperty(FilingTypes.RESTORATION))
+    const date = DateUtilities.yyyyMmDdToDate(stateFiling?.restoration?.expiry)
+    return DateUtilities.dateToPacificDate(date, true)
   },
 
   /**
-   * Is True if business is in Authorized to Continue Out state, ie
-   * the last filing to change state was a Consent to Continue Out filing.
+   * True if the business is in limited restoration, ie, the state filing is a
+   * Limited Restoration filing or Limited Restoration Extension filing.
    */
-  isAuthorizedToContinueOut (_state: StateIF, _getters, rootState): boolean {
-    const stateFiling = rootState.stateFiling // may be null
+  isInLimitedRestoration (_state: StateIF, getters: any): boolean {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
-    return (stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT))
+    return (
+      !!stateFiling && (
+        EnumUtilities.isTypeRestorationLimited(stateFiling) ||
+        EnumUtilities.isTypeRestorationExtension(stateFiling)
+      )
+    )
+  },
+
+  /**
+   * True if the business is authorized to continue out, ie, the state filing is a
+   * Consent to Continuation Out filing.
+   */
+  isAuthorizedToContinueOut (_state: StateIF, getters: any): boolean {
+    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
+
+    return (stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT) || false)
   },
 
   /** The corp type code from Auth db (may be null). */
