@@ -192,6 +192,14 @@ export default {
     return `${name} ${enDash} ${date}`
   },
 
+  /** The limited restoration active-until date, if it exists, otherwise null. */
+  getLimitedreRestorationActiveUntil (_state: StateIF, _getters: any, rootState: any): string {
+    const stateFiling = rootState.stateFiling // may be null
+
+    const date = this.yyyyMmDdToDate(stateFiling?.restoration?.expiry)
+    return this.dateToPacificDate(date, true)
+  },
+
   /**
    * True if the business is in limited restoration, ie, the state filing is a
    * Limited Restoration filing or Limited Restoration Extension filing.

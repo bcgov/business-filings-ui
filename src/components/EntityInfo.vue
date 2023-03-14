@@ -17,7 +17,7 @@
               <span id="business-subtitle">{{ businessDescription }}</span>
 
               <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
-                <span class="ml-3">Active until {{ activeUntil || 'Unknown' }}</span>
+                <span class="ml-3">Active until {{ getLimitedreRestorationActiveUntil || 'Unknown' }}</span>
                 <v-chip
                   class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
                   small label text-color="white"
@@ -237,6 +237,7 @@ export default class EntityInfo extends Vue {
   @Getter getFoundingDate!: Date
   @Getter getLegalName!: string
   @Getter getIdentifier!: number
+  @Getter getLimitedreRestorationActiveUntil!: string
   @Getter getNameRequest!: any
   @Getter getReasonText!: string
   @Getter getStateFiling!: StateFilingIF
@@ -269,12 +270,6 @@ export default class EntityInfo extends Vue {
   /** The Temporary Registration Number string. */
   get tempRegNumber (): string {
     return sessionStorage.getItem('TEMP_REG_NUMBER')
-  }
-
-  /** The limited restoration active-until date, if it exists, otherwise null. */
-  get activeUntil (): string {
-    const date = this.yyyyMmDdToDate(this.getStateFiling?.restoration?.expiry)
-    return this.dateToPacificDate(date, true)
   }
 
   /** The business description. */
