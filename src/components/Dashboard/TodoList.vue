@@ -454,6 +454,7 @@ import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, R
 import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
+import { RestorationTypes } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
@@ -1378,6 +1379,7 @@ export default class TodoList extends Vue {
 
   /** Resumes a draft filing. */
   protected doResumeFiling (item: TodoItemIF): void {
+    console.log('item', item)
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
@@ -1486,9 +1488,16 @@ export default class TodoList extends Vue {
       }
 
       case FilingTypes.RESTORATION: {
-        // navigate to Create UI to resume this Restoration
-        const registrationAppUrl = `${this.getCreateUrl}?id=${this.getIdentifier}`
-        navigate(registrationAppUrl)
+        let restorationAppUrl = null
+        // navigate to Create UI to resume if Full/Limited Restoration and to Edit UI for Extension/Conversion
+        if (item.filingSubType === RestorationTypes.FULL || item.filingSubType === RestorationTypes.LIMITED) {
+          restorationAppUrl = `${this.getCreateUrl}?id=${this.getIdentifier}`
+        } else if (item.filingSubType === RestorationTypes.LTD_EXTEND ||
+          item.filingSubType === RestorationTypes.LTD_TO_FULL) {
+          restorationAppUrl = `${this.getEditUrl}${this.getIdentifier}/restoration/?restoration-id=${item.filingId}`
+        }
+        navigate(restorationAppUrl)
+
         break
       }
 
