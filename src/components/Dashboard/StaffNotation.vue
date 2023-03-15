@@ -307,8 +307,7 @@ export default class StaffNotation extends Vue {
         url = `${this.getCreateUrl}?id=${this.getIdentifier}`
       }
       if (applicationName === ApplicationTypes.EDIT_UI) {
-        url = `${this.getEditUrl}${this.getIdentifier}/restoration` +
-          `?restoration-id=${id}`
+        url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${id}`
       }
       navigate(url)
     } catch (error) {

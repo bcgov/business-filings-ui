@@ -509,7 +509,7 @@ describe('StaffNotation', () => {
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(
-      'https://edit.url/BC1234567/restoration?restoration-id=1234')
+      'https://edit.url/BC1234567/limitedRestorationExtension?restoration-id=1234')
 
     wrapper.destroy()
     sinon.restore()
