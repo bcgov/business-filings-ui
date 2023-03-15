@@ -36,6 +36,22 @@ export default {
     return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
   },
 
+  /** The business email. */
+  getBusinessEmail (state: StateIF): string {
+    return state.businessEmail
+  },
+
+  /** The business phone number and optional extension. */
+  getFullPhoneNumber (state: StateIF): string {
+    const phone = state.businessPhone
+    const ext = state.businessPhoneExtension
+
+    if (phone) {
+      return (phone + `${ext ? (' x' + ext) : ''}`)
+    }
+    return null
+  },
+
   /** Is True if a COA filing is pending. */
   isCoaPending (state: StateIF): boolean {
     return state.isCoaPending

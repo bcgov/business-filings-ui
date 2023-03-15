@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { EffectOfOrderTypes, FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
+import { FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
 
 /**
  * Mixin that provides some useful enum-related utilities.
@@ -168,14 +168,5 @@ export default class EnumMixin extends Vue {
   /** DEPRECATED Returns True if payment method is Online Banking. */
   isPayMethodOnlineBanking (item: any): boolean {
     return (item.paymentMethod === PaymentMethod.ONLINE_BANKING)
-  }
-
-  //
-  // Effect of Order helpers
-  //
-
-  /** DEPRECATED Returns True if effect of order is Plan of Arrangement. */
-  isEffectOfOrderPlanOfArrangement (effectOfOrder: EffectOfOrderTypes): boolean {
-    return (effectOfOrder === EffectOfOrderTypes.PLAN_OF_ARRANGEMENT)
   }
 }

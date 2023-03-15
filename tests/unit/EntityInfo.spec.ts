@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import { mount, shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import EntityInfo from '@/components/EntityInfo.vue'
+import Tombstone from '@/components/Tombstone.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
 
@@ -23,6 +24,25 @@ const AllowableActionsMixin: any = {
 describe('EntityInfo - data', () => {
   const router = mockRouter.mock()
 
+  it('handles empty data', async () => {
+    // session storage must be set before mounting component
+    sessionStorage.clear()
+
+    // set store properties
+    store.commit('setLegalName', null)
+    store.commit('setLegalType', null)
+    store.state.entityStatus = null
+    store.commit('setTaxId', null)
+
+    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#entity-legal-name').exists()).toBe(false)
+    expect(wrapper.find('#ia-reg-description').exists()).toBe(false)
+
+    expect(wrapper.findComponent(Tombstone).exists()).toBe(true)
+  })
+
   it('displays Business entity info properly', async () => {
     // session storage must be set before mounting component
     sessionStorage.clear()
@@ -33,10 +53,6 @@ describe('EntityInfo - data', () => {
     store.commit('setGoodStanding', true)
     store.commit('setLegalType', 'CP')
     store.commit('setTaxId', '123456789')
-    store.commit('setIdentifier', 'CP0001191')
-    store.state.businessEmail = 'business@mail.zzz'
-    store.state.businessPhone = '(111)222-3333'
-    store.state.businessPhoneExtension = '444'
 
     // mount the component and wait for everything to stabilize
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
@@ -44,104 +60,58 @@ describe('EntityInfo - data', () => {
 
     // verify displayed text
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
-    expect(wrapper.find('#entity-business-number').text()).toBe('123456789')
-    expect(wrapper.find('#entity-incorporation-number').text()).toBe('CP0001191')
-    expect(wrapper.find('#entity-business-email span').text()).toBe('business@mail.zzz')
-    expect(wrapper.find('#entity-business-phone span').text()).toBe('(111)222-3333 x444')
-    expect(wrapper.find('#ia-reg-description').exists()).toBeFalsy()
-    expect(wrapper.find('#nr-number').exists()).toBeFalsy()
+    expect(wrapper.find('#ia-reg-description').exists()).toBe(false)
   })
 
   it('displays Draft Incorp App entity info properly - Named Company', async () => {
+    // session storage must be set before mounting component
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
+    // set store properties
     store.commit('setLegalName', 'My Named Company')
     store.state.entityStatus = 'DRAFT_APP'
     store.commit('setLegalType', 'BEN')
-    store.state.nameRequest = { nrNum: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#ia-reg-name').text()).toBe('My Named Company')
-    expect(wrapper.find('#entity-status').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
     expect(wrapper.find('#ia-reg-description').text()).toBe('BC Benefit Company Incorporation Application')
-    expect(wrapper.find('#nr-number').text()).toBe('NR 1234567')
   })
 
   it('displays Draft Incorp App entity info properly - Numbered Company', async () => {
+    // session storage must be set before mounting component
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
+    // set store properties
     store.commit('setLegalName', null)
     store.state.entityStatus = 'DRAFT_APP'
     store.commit('setLegalType', 'BEN')
-    store.state.nameRequest = null
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#ia-reg-name').text()).toBe('Numbered Benefit Company')
-    expect(wrapper.find('#entity-status').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
     expect(wrapper.find('#ia-reg-description').text()).toBe('BC Benefit Company Incorporation Application')
-    expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
 
   it('displays Paid (Named) Incorp App entity info properly', async () => {
+    // session storage must be set before mounting component
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
 
+    // set store properties
     store.commit('setLegalName', 'My Future Company')
     store.state.entityStatus = 'FILED_APP'
     store.commit('setLegalType', 'BEN')
-    store.state.nameRequest = { nrNum: 'NR 1234567' }
 
     const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.find('#ia-reg-name').text()).toBe('My Future Company')
-    expect(wrapper.find('#entity-status').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
     expect(wrapper.find('#ia-reg-description').text()).toBe('BC Benefit Company Incorporation Application')
-    expect(wrapper.find('#nr-number').text()).toBe('NR 1234567')
-  })
-
-  it('handles empty data', async () => {
-    sessionStorage.clear()
-
-    store.commit('setLegalName', null)
-    store.commit('setLegalType', null)
-    store.state.entityStatus = null
-    store.commit('setTaxId', null)
-    store.commit('setIdentifier', null)
-    store.state.businessEmail = null
-    store.state.businessPhone = null
-    store.state.businessPhoneExtension = null
-    store.state.nameRequest = null
-
-    const wrapper = shallowMount(EntityInfo, { store, vuetify, router })
-    await Vue.nextTick()
-
-    expect(wrapper.find('#entity-legal-name').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-status').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-incorporation-number').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-email').exists()).toBeFalsy()
-    expect(wrapper.find('#entity-business-phone').exists()).toBeFalsy()
-    expect(wrapper.find('#ia-reg-description').exists()).toBeFalsy()
-    expect(wrapper.find('#nr-number').exists()).toBeFalsy()
   })
 })
 
