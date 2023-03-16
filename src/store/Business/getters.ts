@@ -1,6 +1,7 @@
 import { CorpTypeCd, EntityState } from '@/enums'
 import { AllowedActionsIF, BusinessStateIF, BusinessWarningIF } from '@/interfaces'
 import { DateUtilities } from '@/services/'
+import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 
 export default {
   /** The allowed actions object. */
@@ -56,6 +57,14 @@ export default {
   /** The legal type. */
   getLegalType (state: BusinessStateIF): CorpTypeCd {
     return state.businessInfo.legalType
+  },
+
+  /** The entity name, or numbered description, or empty string. */
+  getEntityName (_state: BusinessStateIF, getters): string {
+    return (
+      getters.getLegalName ||
+      GetCorpNumberedDescription(getters.getLegalType)
+    )
   },
 
   /** The state filing URL (may be null). */

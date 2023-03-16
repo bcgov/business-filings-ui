@@ -4,42 +4,41 @@
       <v-row no-gutters class="pt-3 pb-4">
         <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
           <header>
-            <!-- Entity Name -->
-            <div v-if="!!businessId" id="entity-legal-name" aria-label="Business Legal Name">
-              <span>{{ getLegalName || 'Unknown Name' }}</span>
-            </div>
+            <template v-if="!!businessId">
+              <!-- First line -->
+              <div id="entity-legal-name" aria-label="Entity Legal Name">
+                {{ getEntityName || 'Unknown Name' }}
+              </div>
 
-            <!-- IA Title -->
-            <div v-if="!!tempRegNumber" id="incorp-app-title" aria-label="Incorporation Application Title">
-              <span>{{ getLegalName || GetCorpNumberedDescription(getLegalType)}}</span>
-            </div>
+              <!-- Second line -->
+              <div>
+                <span id="business-description">{{ businessDescription }}</span>
 
-            <!-- Business Description -->
-            <div v-if="!!businessId">
-              <span id="business-subtitle">{{ businessDescription }}</span>
+                <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
+                  <span class="ml-3">Active until {{ getLimitedreRestorationActiveUntil || 'Unknown' }}</span>
+                  <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+                    small label text-color="white">LIMITED RESTORATION</v-chip>
+                </span>
 
-              <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
-                <span class="ml-3">Active until {{ getLimitedreRestorationActiveUntil || 'Unknown' }}</span>
-                <v-chip
-                  class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
-                  small label text-color="white"
-                >
-                  LIMITED RESTORATION
-                </v-chip>
-              </span>
+                <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
+                  <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+                    small label text-color="white">AUTHORIZED TO CONTINUE OUT</v-chip>
+                </span>
+              </div>
+            </template>
 
-              <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
-                <v-chip
-                  class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
-                  small label text-color="white"
-                >
-                  AUTHORIZED TO CONTINUE OUT
-                </v-chip>
-              </span>
-            </div>
+            <template v-if="!!tempRegNumber">
+              <!-- First line -->
+              <div id="ia-reg-name" aria-label="Incorporation Application or Registration Entity Name">
+                {{ getEntityName || 'Unknown Name' }}
+              </div>
 
-            <!-- IA/Registration Description -->
-            <div v-if="!!tempRegNumber" id="ia-reg-subtitle">{{ iaRegDescription }}</div>
+              <!-- Second line -->
+              <div id="ia-reg-description" aria-label="Incorporation Application or Registration Description">
+                {{ iaRegDescription }}
+              </div>
+            </template>
+
           </header>
 
           <menu class="mt-4 ml-n4">
@@ -213,7 +212,7 @@ import { StateFilingIF } from '@/interfaces'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
-import { GetCorpFullDescription, GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { EnumUtilities } from '@/services'
 
 @Component({
@@ -234,8 +233,8 @@ export default class EntityInfo extends Vue {
   @Getter getEditUrl!: string
   @Getter getBusinessProfileUrl!: string
   @Getter getBusinessNumber!: string
+  @Getter getEntityName!: string
   @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
   @Getter getIdentifier!: number
   @Getter getLimitedreRestorationActiveUntil!: string
   @Getter getNameRequest!: any
@@ -252,7 +251,6 @@ export default class EntityInfo extends Vue {
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
-  readonly GetCorpNumberedDescription = GetCorpNumberedDescription
 
   /** Whether to show the hover style. */
   protected showHoverStyle = false
@@ -384,7 +382,7 @@ export default class EntityInfo extends Vue {
 }
 
 #entity-legal-name,
-#incorp-app-title {
+#ia-reg-name {
   display: inline-block;
   color: $gray9;
   letter-spacing: -0.01rem;
@@ -399,9 +397,9 @@ export default class EntityInfo extends Vue {
   vertical-align: top;
 }
 
-#business-subtitle,
+#business-description,
 #limited-restoration,
-#ia-reg-subtitle {
+#ia-reg-description {
   font-size: $px-14;
   color: $gray7;
 }

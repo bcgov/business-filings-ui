@@ -503,9 +503,7 @@ export default class TodoList extends Vue {
   @Getter getBusinessUrl!: string
   @Getter getBusinessWarnings!: BusinessWarningIF
   @Getter getCreateUrl!: string
-  @Getter getCurrentYear!: number
   @Getter getEditUrl!: string
-  @Getter getLegalName!: string
   @Getter getLegalType!: CorpTypeCd
   @Getter getIdentifier!: string
   @Getter getNameRequest!: any
