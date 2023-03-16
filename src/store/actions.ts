@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { FilingDataIF, ApiFilingIF, OfficeAddressIF, ApiTaskIF, PartyIF } from '@/interfaces'
+import { FilingDataIF, OfficeAddressIF, ApiTaskIF, PartyIF } from '@/interfaces'
 import { LegalServices } from '@/services/'
 
 export default {
@@ -48,11 +48,11 @@ export default {
   setCurrentFilingStatus ({ commit }, currentFilingStatus: FilingStatus) {
     commit('currentFilingStatus', currentFilingStatus)
   },
+  setFetchingDataSpinner ({ commit }, val: boolean) {
+    commit('fetchingDataSpinner', val)
+  },
   setTasks ({ commit }, tasks: Array<ApiTaskIF>) {
     commit('tasks', tasks)
-  },
-  setFilings ({ commit }, filings: Array<ApiFilingIF>) {
-    commit('filings', filings)
   },
   setRegisteredAddress ({ commit }, registeredAddress: OfficeAddressIF) {
     commit('registeredAddress', registeredAddress)
@@ -71,12 +71,6 @@ export default {
   },
   setFilingData ({ commit }, filingData: Array<FilingDataIF>) {
     commit('filingData', filingData)
-  },
-  setIsCoaPending ({ commit }, isCoaPending: boolean) {
-    commit('isCoaPending', isCoaPending)
-  },
-  setCoaEffectiveDate ({ commit }, coaEffectiveDate: Date) {
-    commit('coaEffectiveDate', coaEffectiveDate)
   },
   setCorpTypeCd ({ commit }, val: CorpTypeCd) {
     commit('corpTypeCd', val)
@@ -97,7 +91,7 @@ export default {
       LegalServices.fetchFiling(stateFilingUrl)
         .then(filing => {
           // commit data to store
-          commit('setStateFiling', filing)
+          commit('stateFiling', filing)
           // return the filing object
           resolve(filing)
         })

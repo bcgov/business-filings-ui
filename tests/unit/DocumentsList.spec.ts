@@ -102,6 +102,7 @@ describe('Documents List', () => {
     }
 
     const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const vm = wrapper.vm as any
     await Vue.nextTick()
 
     const documentBtns = wrapper.findAll('.download-one-btn')
@@ -114,8 +115,10 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
-    // set the props
-    await wrapper.setProps({ loadingOne: true, loadingOneIndex: 1 })
+    // set the flags
+    vm.mutateLoadingOne(true)
+    vm.mutateLoadingOneIndex(1)
+    await Vue.nextTick()
 
     // verify that all buttons are disabled and that only button 1 is loading
     expect(documentBtns.at(0).attributes('disabled')).toBe('disabled')
@@ -125,6 +128,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
+    vm.mutateLoadingOne(false)
     wrapper.destroy()
   })
 
@@ -138,6 +142,7 @@ describe('Documents List', () => {
     }
 
     const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const vm = wrapper.vm as any
     await Vue.nextTick()
 
     const documentBtns = wrapper.findAll('.download-one-btn')
@@ -150,8 +155,9 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
-    // set the prop
-    await wrapper.setProps({ loadingAll: true })
+    // set the flag
+    vm.mutateLoadingAll(true)
+    await Vue.nextTick()
 
     // verify that all buttons are disabled and that only button 1 is loading
     expect(documentBtns.at(0).attributes('disabled')).toBe('disabled')
@@ -161,6 +167,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(true)
 
+    vm.mutateLoadingAll(false)
     wrapper.destroy()
   })
 })

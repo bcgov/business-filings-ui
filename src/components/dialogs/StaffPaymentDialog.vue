@@ -106,7 +106,6 @@ export default class StaffPaymentDialog extends Vue {
 
   // Pass updated staff payment data to parent.
   @Emit('update:staffPaymentData')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
 }
 </script>

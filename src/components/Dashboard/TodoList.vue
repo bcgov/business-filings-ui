@@ -452,7 +452,7 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
+import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { RestorationTypes } from '@bcrs-shared-components/enums'
@@ -510,10 +510,10 @@ export default class TodoList extends Vue {
   @Getter getIdentifier!: string
   @Getter getNameRequest!: any
   @Getter getPayApiUrl!: string
+  @Getter getPendingCoa!: ApiFilingIF
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter getTodoListResource!: TodoListResourceIF
   @Getter isBenBcCccUlc!: boolean
-  @Getter isCoaPending!: boolean
 
   @Action setARFilingYear!: ActionBindingIF
   @Action setArMinDate!: ActionBindingIF
@@ -523,6 +523,11 @@ export default class TodoList extends Vue {
 
   // for template
   readonly EnumUtilities = EnumUtilities
+
+  /** Whether a COA is pending. */
+  get isCoaPending (): boolean {
+    return !!this.getPendingCoa
+  }
 
   /** The Base URL string. */
   get baseUrl (): string {
@@ -1395,7 +1400,7 @@ export default class TodoList extends Vue {
         break
 
       case FilingTypes.CORRECTION:
-        // see also FilingHistoryList.vue:correctThisFiling()
+        // see also ItemHeaderActions.vue:correctThisFiling()
         switch (item.correctedFilingType) {
           case FilingNames.ALTERATION:
           case FilingNames.INCORPORATION_APPLICATION:

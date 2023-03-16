@@ -72,7 +72,7 @@ export default class EntityDefinitions extends Vue {
   @Getter getBusinessNumber!: string
   @Getter getFoundingDate!: Date
   @Getter getFullPhoneNumber!: string
-  @Getter getIdentifier!: number
+  @Getter getIdentifier!: string
   @Getter getNameRequest!: any
   @Getter isFirm!: boolean
 

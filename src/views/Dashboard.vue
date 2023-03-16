@@ -32,7 +32,7 @@
                   <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
                 </h2>
               </header>
-              <LegalObligation/>
+              <LegalObligation />
               <TodoList
                 :highlightId="filingId"
                 @todo-count="todoCount = $event"
@@ -43,7 +43,7 @@
             <section id="dashboard-filing-history-section">
               <header>
                 <h2>
-                  <span>Recent Filing History</span>&nbsp;<span class="gray6">({{historyCount}})</span>
+                  <span>Recent Filing History</span>&nbsp;<span class="gray6">({{getHistoryCount}})</span>
                 </h2>
                 <StaffNotation
                   v-if="isRoleStaff && !!businessId"
@@ -54,7 +54,6 @@
               <FilingHistoryList
                 class="mt-3"
                 :highlightId="filingId"
-                @history-count="historyCount = $event"
               />
             </section>
           </v-col>
@@ -91,7 +90,7 @@
                       </v-chip>
                     </template>
                     The updated office addresses will be legally effective on
-                    {{dateToPacificDateTime(getCoaEffectiveDate)}}.
+                    {{dateToPacificDateTime(coaEffectiveDate)}}.
                     No other filings are allowed until then.
                   </v-tooltip>
                 </v-scale-transition>
@@ -224,7 +223,6 @@ export default {
   data () {
     return {
       todoCount: 0,
-      historyCount: 0,
       coaWarningDialog: false,
 
       // enum in template
@@ -234,23 +232,35 @@ export default {
 
   computed: {
     ...mapGetters([
-      'getCoaEffectiveDate',
       'getEditUrl',
       'getIdentifier',
+      'getFilings',
       'getParties',
+      'getPendingCoa',
       'hasComplianceWarning',
       'hasMissingInfoWarning',
       'isAdminFrozen',
       'isAppFiling',
       'isAppTask',
       'isBenBcCccUlc',
-      'isCoaPending',
       'isFirm',
       'isHistorical',
       'isPartnership',
       'isRoleStaff',
       'isSoleProp'
     ]),
+
+    /** Whether a COA is pending. */
+    isCoaPending (): boolean {
+      return !!this.getPendingCoa
+    },
+
+    /** The COA effective date, if a COA is pending, else null. */
+    coaEffectiveDate (): Date {
+      return this.getPendingCoa
+        ? new Date(this.getPendingCoa.effectiveDate)
+        : null
+    },
 
     /** The Business ID string. */
     businessId (): string {
@@ -261,6 +271,11 @@ export default {
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
+    },
+
+    /** The count of filings in the Filing History List. */
+    getHistoryCount (): number {
+      return this.getFilings.length
     },
 
     /** Whether to show Missing Information alert. */

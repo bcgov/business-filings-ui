@@ -6,7 +6,7 @@ describe('Business Actions', () => {
 
   it('loads dissolution state filing', async () => {
     // init store properties we need
-    store.commit('setStateFiling', 'dummy_url')
+    store.commit('stateFiling', 'dummy_url')
     store.state.corpTypeCd = 'BEN'
 
     // mock filing data and services call
@@ -35,7 +35,7 @@ describe('Business Actions', () => {
 
   it('loads consent to continuation out state filing', async () => {
     // init store properties we need
-    store.commit('setStateFiling', 'dummy_url')
+    store.commit('stateFiling', 'dummy_url')
     store.state.corpTypeCd = 'BEN'
 
     // mock filing data and services call

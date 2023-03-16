@@ -50,9 +50,9 @@
       attach="#app"
     />
 
-    <!-- Initial Page Load Transition -->
+    <!-- Loading Dashboard spinner -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div class="loading-container" v-show="showLoadingDashboardSpinner">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
           <div class="loading-msg" v-if="!isSignoutRoute">Loading Dashboard</div>
@@ -60,11 +60,12 @@
       </div>
     </v-fade-transition>
 
-    <!-- Alternate Loading Spinner -->
+    <!-- Fetching Data spinner -->
     <v-fade-transition>
-      <div class="loading-container grayed-out" v-show="showSpinner">
+      <div class="loading-container grayed-out" v-show="showFetchingDataSpinner">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
+          <div class="loading-msg white--text">Fetching Data</div>
         </div>
       </div>
     </v-fade-transition>
@@ -134,7 +135,6 @@ import {
 } from '@/interfaces'
 import {
   CorpTypeCd,
-  EntityState,
   EntityStatus,
   FilingStatus,
   FilingTypes,
@@ -169,9 +169,6 @@ export default {
       notInGoodStandingDialog: false,
       nigsMessage: null as NigsMessage,
       localNrNumber: null as string,
-
-      /** Whether to show the alternate loading spinner. */
-      showSpinner: false,
 
       /** Currently supported entity types in Filings UI. */
       supportedEntityTypes: [
@@ -209,7 +206,8 @@ export default {
       'getLegalType',
       'getIdentifier',
       'getRegHomeUrl',
-      'isRoleStaff'
+      'isRoleStaff',
+      'showFetchingDataSpinner'
     ]),
 
     /** The Business ID string. */
@@ -222,8 +220,8 @@ export default {
       return sessionStorage.getItem('TEMP_REG_NUMBER')
     },
 
-    /** True if loading container should be shown. */
-    showLoadingContainer (): boolean {
+    /** True if "Loading Dashboard" spinner should be shown. */
+    showLoadingDashboardSpinner (): boolean {
       return (
         !this.dataLoaded &&
         !this.dashboardUnavailableDialog &&
@@ -292,9 +290,6 @@ export default {
   created (): void {
     // listen for reload data events
     this.$root.$on('reloadData', () => this.fetchData())
-
-    // listen for spinner show/hide events
-    this.$root.$on('showSpinner', (flag = false) => { this.showSpinner = flag })
   },
 
   /** Called when component is mounted. */
@@ -311,14 +306,12 @@ export default {
   beforeDestroy (): void {
     // stop listening for reload data events
     this.$root.$off('reloadData')
-
-    // stop listening for spinner show/hide events
-    this.$root.$off('showSpinner')
   },
 
   methods: {
     ...mapActions([
       'loadBusinessInfo',
+      'loadFilings',
       'loadStateFiling',
       'setAuthRoles',
       'setBusinessAddress',
@@ -330,6 +323,7 @@ export default {
       'setCurrentDate',
       'setCurrentJsDate',
       'setEntityStatus',
+      'setFetchingDataSpinner',
       'setFilings',
       'setKeycloakRoles',
       'setNameRequest',
@@ -430,7 +424,7 @@ export default {
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
         this.loadBusinessInfo(),
         LegalServices.fetchTasks(this.businessId),
-        LegalServices.fetchFilings(this.businessId || this.tempRegNumber),
+        this.loadFilings(),
         LegalServices.fetchParties(this.businessId)
       ])
 
@@ -439,7 +433,6 @@ export default {
       // store data from calls above
       this.storeEntityInfo(data[0])
       this.storeTasks(data[2])
-      this.storeFilings(data[3])
       this.storeParties(data[4])
 
       // now that we have business info, load state filing
@@ -715,15 +708,6 @@ export default {
       }
     },
 
-    storeFilings (response: any): void {
-      const filings = response?.data?.filings as ApiFilingIF[]
-      if (filings) {
-        this.setFilings(filings)
-      } else {
-        throw new Error('Invalid filings')
-      }
-    },
-
     storeAddresses (response: any): void {
       if (response?.data) {
         if (response.data.registeredOffice) {
@@ -796,7 +780,7 @@ export default {
 
     /** Request and Download Business Summary Document. */
     async downloadBusinessSummary (): Promise<void> {
-      this.showSpinner = true
+      this.setFetchingDataSpinner(true)
       const summaryDocument: DocumentIF = {
         title: 'Summary',
         filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
@@ -808,7 +792,7 @@ export default {
         console.log('fetchDocument() error =', error)
         this.downloadErrorDialog = true
       })
-      this.showSpinner = false
+      this.setFetchingDataSpinner(false)
     },
 
     /** Direct to Digital Credentials. **/

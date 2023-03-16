@@ -1,8 +1,6 @@
 import getters from './getters'
 
-/**
- * Configures and returns Vuex Store.
- */
+/** The store Authentication module. */
 export default {
   getters
 }

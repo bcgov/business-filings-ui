@@ -12,20 +12,18 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { DateMixin } from '@/mixins'
+import { DateUtilities } from '@/services'
 
-@Component({
-  mixins: [DateMixin]
-})
+@Component({})
 export default class DateTooltip extends Vue {
   @Prop({ default: null }) readonly date!: Date
 
   get dateString (): string {
-    return (this.dateToPacificDate(this.date) || 'Unknown')
+    return (DateUtilities.dateToPacificDate(this.date) || '[unknown]')
   }
 
   get dateTimeString (): string {
-    return (this.dateToPacificDateTime(this.date) || 'Unknown')
+    return (DateUtilities.dateToPacificDateTime(this.date) || '[unknown]')
   }
 }
 </script>

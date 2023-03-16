@@ -11,7 +11,10 @@ export default {
       const businessId = sessionStorage.getItem('BUSINESS_ID')
 
       // if there is no business id, return error
-      if (!businessId) reject(new Error('Missing business id'))
+      if (!businessId) {
+        reject(new Error('Missing business id'))
+        return
+      }
 
       LegalServices.fetchBusiness(businessId)
         .then(businessInfo => {

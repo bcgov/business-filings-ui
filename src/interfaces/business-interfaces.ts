@@ -58,7 +58,7 @@ export interface ApiBusinessIF {
   warnings: Array<BusinessWarningIF>
 }
 
-/** The business module state interface. */
+/** The Business module state interface. */
 export interface BusinessStateIF {
   businessInfo: ApiBusinessIF
 }

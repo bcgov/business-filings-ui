@@ -139,7 +139,7 @@ for (const test of obligationTestCases) {
     })
 
     it('do not show the legal obligation section if there are no filings', async () => {
-      store.state.filings = []
+      store.commit('mutateFilings', [])
 
       const wrapper = mount(LegalObligation, { store, vuetify })
       await Vue.nextTick()
@@ -150,7 +150,7 @@ for (const test of obligationTestCases) {
     })
 
     it('shows the legal obligation section if it is a new business with no maintenance filing', async () => {
-      store.state.filings = test.filingBody
+      store.commit('mutateFilings', test.filingBody)
 
       const wrapper = mount(LegalObligation, { store, vuetify })
       await Vue.nextTick()
@@ -161,7 +161,7 @@ for (const test of obligationTestCases) {
     })
 
     it('do not show the legal obligation section if the business has maintenance filings', async () => {
-      store.state.filings = businessWithMaintenanceFiling
+      store.commit('mutateFilings', businessWithMaintenanceFiling)
 
       const wrapper = mount(LegalObligation, { store, vuetify })
       await Vue.nextTick()
@@ -172,7 +172,7 @@ for (const test of obligationTestCases) {
     })
 
     it('hides the legal obligation section on clicking dismiss button', async () => {
-      store.state.filings = test.filingBody
+      store.commit('mutateFilings', test.filingBody)
 
       const wrapper = mount(LegalObligation, { store, vuetify })
       await Vue.nextTick()
@@ -188,8 +188,8 @@ for (const test of obligationTestCases) {
     })
 
     it('hides the legal obligation section if there is a task', async () => {
-      store.state.filings = test.filingBody
-      store.state.tasks = taskList
+      store.commit('mutateFilings', test.filingBody)
+      store.commit('tasks', taskList)
 
       const wrapper = mount(LegalObligation, { store, vuetify })
       await Vue.nextTick()
@@ -204,7 +204,7 @@ for (const test of obligationTestCases) {
 describe('Legal Obligation - temp reg number', () => {
   it('hides the legal obligation section for temp reg number', async () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
-    store.state.filings = newIncorporationFiling
+    store.commit('mutateFilings', newIncorporationFiling)
 
     const wrapper = mount(LegalObligation, { store, vuetify })
     await Vue.nextTick()

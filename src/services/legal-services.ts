@@ -1,8 +1,8 @@
 // Libraries
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
-import { ApiBusinessIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF, PresignedUrlIF }
-  from '@/interfaces'
+import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF,
+  PresignedUrlIF } from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
@@ -41,11 +41,20 @@ export default class LegalServices {
   /**
    * Fetches filings list.
    * @param businessId the business identifier (aka entity inc no)
-   * @returns the axios response
+   * @returns the filings list
    */
-  static async fetchFilings (businessId: string): Promise<AxiosResponse> {
+  static async fetchFilings (businessId: string): Promise<ApiFilingIF[]> {
     const url = `businesses/${businessId}/filings`
     return axios.get(url)
+      .then(response => {
+        const filings = response?.data?.filings as ApiFilingIF[]
+        if (!filings) {
+          // eslint-disable-next-line no-console
+          console.log('fetchFilings() error - invalid response =', response)
+          throw new Error('Invalid filings list')
+        }
+        return filings
+      })
   }
 
   /**

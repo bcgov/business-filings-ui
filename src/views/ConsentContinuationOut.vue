@@ -268,7 +268,7 @@ export default class ConsentContinuationOut extends Vue {
   /** Maximum length of detail comment. */
   get maxDetailCommentLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
-    return 4096 - this.defaultComment.length - 1
+    return 2000 - this.defaultComment.length - 1
   }
 
   /** The Base URL string. */
@@ -612,7 +612,7 @@ export default class ConsentContinuationOut extends Vue {
     const data: any = {
       [FilingTypes.CONSENT_CONTINUATION_OUT]: {
         // FUTURE: add more filing properties below
-        comment: `${this.defaultComment}\n${this.detailComment}`
+        details: `${this.defaultComment}\n${this.detailComment}`
       }
     }
 
