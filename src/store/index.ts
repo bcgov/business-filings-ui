@@ -7,6 +7,7 @@ import { state } from './state'
 import Authentication from '@/store/Authentication'
 import Business from '@/store/Business'
 import Configuration from '@/store/Configuration'
+import FilingHistoryList from '@/store/FilingHistoryList'
 
 /**
  * Configures and returns Vuex Store.
@@ -22,7 +23,8 @@ export function getVuexStore () {
     modules: {
       authentication: Authentication,
       business: Business,
-      configuration: Configuration
+      configuration: Configuration,
+      filingHistoryList: FilingHistoryList
     }
   })
 }

@@ -1,5 +1,6 @@
 import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF } from '@/interfaces'
+import { ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
+  from '@/interfaces'
 
 /**
  * A filing object from the Legal API ("filings" call).
@@ -15,6 +16,7 @@ export interface ApiFilingIF {
   effectiveDate: FormattedDateTimeGmt
   filingId: number
   filingLink: string // URL to fetch this filing
+  filingSubType: FilingSubTypes
   isFutureEffective: boolean
   name: FilingTypes
   status: FilingStatus
@@ -29,10 +31,15 @@ export interface ApiFilingIF {
   correctionFilingId?: string // ID of this filing's correction
   correctionLink?: string // URL to fetch this filing's correction
 
-  // filing-specific data
-  data: {
+  // filing-specific data (not always present)
+  data?: {
     applicationDate: ApiDateTimeUtc
     legalFilings: Array<string>
+
+    // admin freeze filings only
+    adminFreeze?: {
+      freeze: boolean
+    }
 
     // alteration filings only
     alteration?: {
@@ -87,7 +94,10 @@ export interface ApiFilingIF {
     registrarsOrder?: any // some object
 
     // restorations filings only
-    restoration?: any // some object
+    restoration?: {
+      expiry: IsoDatePacific,
+      legalName: string
+    }
 
     // special resolution filings only
     specialResolution?: SpecialResolutionIF
@@ -95,4 +105,8 @@ export interface ApiFilingIF {
     // transition filings only
     transition?: any // some object
   }
+
+  // properties added by the UI
+  comments?: Array<CommentIF>
+  documents?: Array<DocumentIF>
 }

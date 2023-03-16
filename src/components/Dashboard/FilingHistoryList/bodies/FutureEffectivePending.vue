@@ -1,15 +1,19 @@
 <template>
-  <div v-if="filing" class="future-effective-pending-details body-2">
+  <div class="future-effective-pending body-2">
     <h4>{{_.subtitle}}</h4>
 
     <p>
-      The {{_.filingLabel}} date and time for {{this.getLegalName || 'this company'}}
+      The {{_.filingLabel}} date and time for {{getLegalName || 'this company'}}
       has been recorded as <strong>{{effectiveDateTime}}</strong>.
     </p>
 
-    <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
+    <p v-if="filing.courtOrderNumber">
+      Court Order Number: {{filing.courtOrderNumber}}
+    </p>
 
-    <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
+    <p v-if="filing.isArrangement">
+      Pursuant to a Plan of Arrangement
+    </p>
 
     <p>
       It may take up to one hour to process this filing. If this issue persists,
@@ -24,32 +28,37 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DateMixin } from '@/mixins'
 import { ContactInfo } from '@/components/common'
-import { HistoryItemIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
+import { DateUtilities, EnumUtilities } from '@/services'
 
 @Component({
-  components: { ContactInfo },
-  mixins: [DateMixin]
+  components: { ContactInfo }
 })
 export default class FutureEffectivePending extends Vue {
   @Getter getLegalName!: string
 
   /** The subject filing. */
-  @Prop({ required: true }) readonly filing!: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: ApiFilingIF
 
   /** Data for the subject filing. */
   get _ (): any {
-    if (this.filing.isFutureEffectiveIaPending) {
+    if (EnumUtilities.isTypeIncorporationApplication(this.filing)) {
       return {
         subtitle: 'Incorporation Pending',
         filingLabel: 'incorporation'
       }
     }
-    if (this.filing.isFutureEffectiveAlterationPending) {
+    if (EnumUtilities.isTypeAlteration(this.filing)) {
       return {
         subtitle: 'Alteration Pending',
         filingLabel: 'alteration'
+      }
+    }
+    if (EnumUtilities.isTypeDissolutionVoluntary(this.filing)) {
+      return {
+        subtitle: 'Voluntary Dissolution Pending',
+        filingLabel: 'dissolution'
       }
     }
     return {
@@ -58,15 +67,20 @@ export default class FutureEffectivePending extends Vue {
     }
   }
 
-  /** The future effective datetime of the subject filing. */
+  /** The effective date-time of this filing. */
   get effectiveDateTime (): string {
-    return (this.dateToPacificDateTime(this.filing.effectiveDate) || 'Unknown')
+    return this.filing.effectiveDate
+      ? DateUtilities.dateToPacificDateTime(new Date(this.filing.effectiveDate))
+      : '[unknown]'
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
 p {
-  margin-top: 1rem !important;
+  font-size: $px-15;
+  margin-top: 1rem;
 }
 </style>

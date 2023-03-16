@@ -231,15 +231,20 @@ export default class AddressListSm extends Vue {
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
+  @Getter getPendingCoa!: ApiFilingIF
   @Getter isBenBcCccUlc!: boolean
   @Getter isCorp!: boolean
   @Getter isFirm!: boolean
-  @Getter isCoaPending!: boolean
   @Getter isHistorical!: boolean
 
   // FUTURE: change these to getters
   @State registeredAddress!: OfficeAddressIF
   @State recordsAddress!: OfficeAddressIF
+
+  /** Whether a COA is pending. */
+  get isCoaPending (): boolean {
+    return !!this.getPendingCoa
+  }
 
   /** Whether to appear disabled. */
   get disabled (): boolean {

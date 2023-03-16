@@ -10,7 +10,7 @@
         color="primary"
         v-if="isRoleStaff"
         :disabled ="!filing.filingId"
-        @click.stop="showCommentDialog(filing)"
+        @click="showCommentDialog(filing)"
       >
         <span>Add Detail</span>
       </v-btn>
@@ -23,7 +23,7 @@
           <v-list-item-title class="body-2">
             <strong v-if="!isRoleStaff">BC Registries Staff</strong>
             <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
-            ({{apiToPacificDateTime(comment.timestamp)}})
+            ({{DateUtilities.apiToPacificDateTime(comment.timestamp)}})
           </v-list-item-title>
           <v-list-item-subtitle class="body-2">
             <div class="pre-line">{{comment.comment}}</div>
@@ -36,15 +36,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { DateMixin } from '@/mixins'
-import { HistoryItemIF } from '@/interfaces'
+import { Component, Prop } from 'vue-property-decorator'
+import { Action, Getter } from 'vuex-class'
+import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
+import { DateUtilities } from '@/services'
 
-@Component({
-  mixins: [DateMixin]
-})
+@Component({})
 export default class DetailsList extends Vue {
+  readonly DateUtilities = DateUtilities
+
   /** The filing containing comments. */
   @Prop({ default: () =>
     ({
@@ -52,15 +52,12 @@ export default class DetailsList extends Vue {
       filingId: null
     })
   })
-  readonly filing!: HistoryItemIF
+  readonly filing!: ApiFilingIF
 
   /** Whether current user has staff role. */
   @Getter isRoleStaff!: boolean
 
-  /** Emits an event to trigger the comment dialog. */
-  @Emit('showCommentDialog')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected showCommentDialog (filing: HistoryItemIF): void {}
+  @Action showCommentDialog!: ActionBindingIF
 }
 </script>
 

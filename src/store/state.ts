@@ -1,36 +1,32 @@
 import { StateIF } from '@/interfaces'
 
 export const state: StateIF = {
-  keycloakRoles: [],
-  userKeycloakGuid: null,
   authRoles: [],
-  currentJsDate: null,
   currentDate: null,
+  currentJsDate: null,
   entityStatus: null,
+  keycloakRoles: [],
   stateFiling: null,
+  userKeycloakGuid: null,
 
   businessEmail: null,
   businessPhone: null,
   businessPhoneExtension: null,
   corpTypeCd: null,
 
-  nextARDate: null,
   ARFilingYear: null,
   arMaxDate: null,
   arMinDate: null,
+  nextARDate: null,
 
-  tasks: [],
-  filings: [],
-  registeredAddress: null,
-  recordsAddress: null,
   businessAddress: null,
-  parties: [],
-  nameRequest: null,
-
-  currentFilingStatus: null,
   configObject: null,
+  currentFilingStatus: null,
+  fetchingDataSpinner: false,
   filingData: [],
-
-  isCoaPending: false,
-  coaEffectiveDate: null
+  nameRequest: null,
+  parties: [],
+  recordsAddress: null,
+  registeredAddress: null,
+  tasks: []
 }

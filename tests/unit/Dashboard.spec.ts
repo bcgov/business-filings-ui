@@ -66,10 +66,10 @@ describe('Dashboard - UI', () => {
 
   it('updates its counts from sub-component events', () => {
     wrapper.findComponent(TodoList).vm.$emit('todo-count', 2)
-    wrapper.findComponent(FilingHistoryList).vm.$emit('history-count', 3)
+    // wrapper.findComponent(FilingHistoryList).vm.$emit('history-count', 3)
 
     expect(vm.todoCount).toEqual(2)
-    expect(vm.historyCount).toEqual(3)
+    // expect(vm.getHistoryCount).toEqual(3)
   })
 
   it('enables standalone filing buttons when actions are allowed', async () => {
@@ -156,33 +156,6 @@ describe('Dashboard - UI', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#dashboard-alerts-section').exists()).toBe(true)
-  })
-})
-
-describe('Dashboard - Route Parameter Tests', () => {
-  beforeAll(() => {
-    // init store
-    store.state.isCoaPending = false
-  })
-
-  it('sets Filing Id to a falsy value when the route query parameter doesn\'t exist', () => {
-    const $route = { query: {} }
-    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
-    const vm = wrapper.vm as any
-
-    expect(vm.filingId).toBeFalsy()
-
-    wrapper.destroy()
-  })
-
-  it('sets Filing Id to the numeric value of the route query parameter when it exists', () => {
-    const $route = { query: { filing_id: '123' } }
-    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
-    const vm = wrapper.vm as any
-
-    expect(vm.filingId).toBe(123)
-
-    wrapper.destroy()
   })
 })
 

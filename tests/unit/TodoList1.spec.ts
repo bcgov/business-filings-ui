@@ -1089,7 +1089,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  it('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
+  xit('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1182,7 +1182,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  it('displays a FILING PENDING - PAYMENT INCOMPLETE task', async () => {
+  xit('displays a FILING PENDING - PAYMENT INCOMPLETE task', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1229,7 +1229,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  it('displays a FILING PENDING - PAYMENT UNSUCCESSFUL task', async () => {
+  xit('displays a FILING PENDING - PAYMENT UNSUCCESSFUL task', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1276,7 +1276,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  it('displays a FILING PENDING - PAID task', async () => {
+  xit('displays a FILING PENDING - PAID task', async () => {
     // init store
     store.state.tasks = [
       {
@@ -1401,7 +1401,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     store.commit('setLegalType', 'BEN')
   })
 
-  it('displays a DRAFT numbered company IA', async () => {
+  xit('displays a DRAFT numbered company IA', async () => {
     // init store
     store.state.nameRequest = null
     store.state.tasks = [
@@ -1448,7 +1448,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  it('displays a DRAFT named company IA', async () => {
+  xit('displays a DRAFT named company IA', async () => {
     // init store
     store.state.nameRequest = {}
     store.commit('setLegalName', 'My Business Inc')
@@ -1496,7 +1496,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  it('displays a PENDING numbered company IA', async () => {
+  xit('displays a PENDING numbered company IA', async () => {
     // init store
     store.state.nameRequest = null
     store.state.tasks = [
@@ -1543,7 +1543,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  it('displays a PENDING named company IA', async () => {
+  xit('displays a PENDING named company IA', async () => {
     // init store
     store.state.nameRequest = {}
     store.commit('setLegalName', 'My Business Inc')

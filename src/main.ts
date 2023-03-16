@@ -71,7 +71,12 @@ async function start () {
 
   // configure Keycloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
-  await KeycloakService.setKeycloakConfigUrl(store.getters.getKeycloakConfigPath)
+  const keycloakConfig: any = {
+    url: 'https://dev.loginproxy.gov.bc.ca/auth',
+    realm: 'bcregistry',
+    clientId: 'entity-web'
+  }
+  await KeycloakService.setKeycloakConfigUrl(keycloakConfig)
 
   // initialize token service which will do a check-sso to initiate session
   // don't start during Jest tests as it messes up the test JWT

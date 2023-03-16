@@ -13,7 +13,7 @@
           {{getModalTitle}}
         </p>
         <p class="warning-text" id="dialog-text">
-          You are about to {{ dissolutionType }} <strong>{{ getLegalName ||'this company' }}</strong>;
+          You are about to {{ dissolutionType }} <strong>{{ getLegalName || 'this company' }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be {{ subEntityTitle }} under the
           {{ entityAct }} Act.

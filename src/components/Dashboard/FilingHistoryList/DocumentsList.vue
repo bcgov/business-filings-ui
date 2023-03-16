@@ -5,8 +5,8 @@
         <v-btn text color="primary"
           class="download-one-btn"
           @click="downloadOne(document, index)"
-          :disabled="loadingOne || loadingAll"
-          :loading="loadingOne && (index === loadingOneIndex)"
+          :disabled="isLoadingOne || isLoadingAll"
+          :loading="isLoadingOne && (index === getLoadingOneIndex)"
         >
           <v-icon>mdi-file-pdf-outline</v-icon>
           <span>{{document.title}}</span>
@@ -17,8 +17,8 @@
         <v-btn text color="primary"
           class="download-all-btn"
           @click="downloadAll(filing)"
-          :disabled="loadingOne || loadingAll"
-          :loading="loadingAll"
+          :disabled="isLoadingOne || isLoadingAll"
+          :loading="isLoadingAll"
         >
           <v-icon>mdi-download</v-icon>
           <span>Download All</span>
@@ -31,32 +31,56 @@
 <script lang="ts">
 // Libraries
 import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
-import { DocumentIF } from '@/interfaces'
+import { Component, Prop } from 'vue-property-decorator'
+import { Getter, Mutation } from 'vuex-class'
+import { ApiFilingIF, DocumentIF } from '@/interfaces'
+import { LegalServices } from '@/services'
 
 @Component({})
 export default class DocumentsList extends Vue {
   /** The filing containing documents. */
-  @Prop({ required: true }) readonly filing!: any
+  @Prop({ required: true }) readonly filing!: ApiFilingIF
 
-  /** Whether one document is currently loading. */
-  @Prop({ default: false }) readonly loadingOne!: boolean
+  @Getter getLoadingOneIndex!: number
+  @Getter isLoadingAll!: boolean
+  @Getter isLoadingOne!: boolean
 
-  /** Whether all documents are currently loading. */
-  @Prop({ default: false }) readonly loadingAll!: boolean
+  @Mutation mutateDownloadErrorDialog!: (x: boolean) => void
+  @Mutation mutateLoadingAll!: (x: boolean) => void
+  @Mutation mutateLoadingOne!: (x: boolean) => void
+  @Mutation mutateLoadingOneIndex!: (x: number) => void
 
-  /** The index of the currently-downloading doc. */
-  @Prop({ default: -1 }) readonly loadingOneIndex!: boolean
+  async downloadOne (document: DocumentIF, index: number): Promise<void> {
+    if (document && index >= 0) { // safety check
+      this.mutateLoadingOne(true)
+      this.mutateLoadingOneIndex(index)
 
-  /** Emits an event to download the subject document. */
-  @Emit('downloadOne')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected downloadOne (document: DocumentIF, index: number): void {}
+      await LegalServices.fetchDocument(document).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('fetchDocument() error =', error)
+        this.mutateDownloadErrorDialog(true)
+      })
 
-  /** Emits an event to download all documents. */
-  @Emit('downloadAll')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected downloadAll (filing: any): void {}
+      this.mutateLoadingOne(false)
+      this.mutateLoadingOneIndex(-1)
+    }
+  }
+
+  async downloadAll (filing: ApiFilingIF): Promise<void> {
+    if (filing?.documents) { // safety check
+      this.mutateLoadingAll(true)
+
+      for (const document of filing.documents) {
+        await LegalServices.fetchDocument(document).catch(error => {
+          // eslint-disable-next-line no-console
+          console.log('fetchDocument() error =', error)
+          this.mutateDownloadErrorDialog(true)
+        })
+      }
+
+      this.mutateLoadingAll(false)
+    }
+  }
 }
 </script>
 

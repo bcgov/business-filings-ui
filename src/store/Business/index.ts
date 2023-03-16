@@ -3,7 +3,7 @@ import getters from './getters'
 import mutations from './mutations'
 import { state } from './state'
 
-/** The store business module. */
+/** The store Business module. */
 export default {
   actions,
   getters,

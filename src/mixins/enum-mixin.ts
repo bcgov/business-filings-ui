@@ -7,26 +7,6 @@ import { FilingStatus, FilingTypes, PaymentMethod } from '@/enums'
  */
 @Component({})
 export default class EnumMixin extends Vue {
-  /** DEPRECATED Returns True if item status is Cancelled. */
-  isStatusCancelled (item: any): boolean {
-    return (item.status === FilingStatus.CANCELLED)
-  }
-
-  /** DEPRECATED Returns True if item status is Completed. */
-  isStatusCompleted (item: any): boolean {
-    return (item.status === FilingStatus.COMPLETED)
-  }
-
-  /** DEPRECATED Returns True if item status is Corrected. */
-  isStatusCorrected (item: any): boolean {
-    return (item.status === FilingStatus.CORRECTED)
-  }
-
-  /** DEPRECATED Returns True if item status is Deleted. */
-  isStatusDeleted (item: any): boolean {
-    return (item.status === FilingStatus.DELETED)
-  }
-
   /** DEPRECATED Returns True if item status is Draft. */
   isStatusDraft (item: any): boolean {
     return (item.status === FilingStatus.DRAFT)
@@ -57,11 +37,6 @@ export default class EnumMixin extends Vue {
     return (item.status === FilingStatus.PENDING_CORRECTION)
   }
 
-  /** DEPRECATED Returns True if item status is Withdrawn. */
-  isStatusWithdrawn (item: any): boolean {
-    return (item.status === FilingStatus.WITHDRAWN)
-  }
-
   //
   // Filing Type helpers
   //
@@ -74,26 +49,6 @@ export default class EnumMixin extends Vue {
   /** DEPRECATED Returns True if filing is an Annual Report. */
   isTypeAnnualReport (item: any): boolean {
     return (item.name === FilingTypes.ANNUAL_REPORT)
-  }
-
-  /** DEPRECATED Returns True if filing is a Change of Address. */
-  isTypeChangeOfAddress (item: any): boolean {
-    return (item.name === FilingTypes.CHANGE_OF_ADDRESS)
-  }
-
-  /** DEPRECATED Returns True if filing is a Change of Directors. */
-  isTypeChangeOfDirectors (item: any): boolean {
-    return (item.name === FilingTypes.CHANGE_OF_DIRECTORS)
-  }
-
-  /** DEPRECATED Returns True if filing is a Change of Name. */
-  isTypeChangeOfName (item: any): boolean {
-    return (item.name === FilingTypes.CHANGE_OF_NAME)
-  }
-
-  /** DEPRECATED Returns True if filing is a Change of Registration. */
-  isTypeChangeOfRegistration (item: any): boolean {
-    return (item.name === FilingTypes.CHANGE_OF_REGISTRATION)
   }
 
   /** DEPRECATED Returns True if filing is a Consent to Continuation Out. */
@@ -121,52 +76,8 @@ export default class EnumMixin extends Vue {
     return (item.name === FilingTypes.REGISTRATION)
   }
 
-  /** DEPRECATED Returns True if filing is a Transition. */
-  isTypeTransition (item: any): boolean {
-    return (item.name === FilingTypes.TRANSITION)
-  }
-
-  /** DEPRECATED Returns True if filing is a Put Back On. */
-  isTypePutBackOn (item: any): boolean {
-    return (item.name === FilingTypes.PUT_BACK_ON)
-  }
-
-  /** DEPRECATED Return True if the filing is a Admin Freeze */
-  isTypeAdminFreeze (item: any): boolean {
-    return (item.name === FilingTypes.ADMIN_FREEZE)
-  }
-
-  /** DEPRECATED Returns True if filing is a Court Order. */
-  isTypeCourtOrder (item: any): boolean {
-    return (item.name === FilingTypes.COURT_ORDER)
-  }
-
   /** DEPRECATED Returns True if filing is a Special Resolution. */
   isTypeSpecialResolution (item: any): boolean {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)
-  }
-
-  //
-  // Payment Method helpers
-  //
-
-  /** DEPRECATED Returns True if payment method is Credit Card. */
-  isPayMethodCreditCard (item: any): boolean {
-    return (item.paymentMethod === PaymentMethod.CREDIT_CARD)
-  }
-
-  /** DEPRECATED Returns True if payment method is Direct Pay. */
-  isPayMethodDirectPay (item: any): boolean {
-    return (item.paymentMethod === PaymentMethod.DIRECT_PAY)
-  }
-
-  /** DEPRECATED Returns True if payment method is Drawdown. */
-  isPayMethodDrawdown (item: any): boolean {
-    return (item.paymentMethod === PaymentMethod.DRAWDOWN)
-  }
-
-  /** DEPRECATED Returns True if payment method is Online Banking. */
-  isPayMethodOnlineBanking (item: any): boolean {
-    return (item.paymentMethod === PaymentMethod.ONLINE_BANKING)
   }
 }

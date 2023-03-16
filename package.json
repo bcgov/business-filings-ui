@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "5.12.0",
+  "version": "5.12.1",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -45,7 +45,7 @@
     "vue-router": "^3.6.5",
     "vue2-filters": "^0.14.0",
     "vuelidate": "^0.7.7",
-    "vuetify": "^2.6.10",
+    "vuetify": "^2.6.14",
     "vuex": "^3.6.2",
     "webpack-remove-serviceworker-plugin": "^1.0.0"
   },

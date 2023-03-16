@@ -99,7 +99,7 @@ export default {
   },
 
   /** Is True if the business is frozen. */
-  isAdminFreeze (state: BusinessStateIF): boolean {
+  isAdminFrozen (state: BusinessStateIF): boolean {
     return state.businessInfo.adminFreeze
   },
 

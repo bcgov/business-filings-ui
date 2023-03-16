@@ -1,14 +1,9 @@
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF,
-  StateIF, TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
+import { ApiTaskIF, DissolutionConfirmationResourceIF, OfficeAddressIF, PartyIF, StateIF,
+  TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 
 export default {
-  /** The list of filings from the API. */
-  getFilings (state: StateIF): ApiFilingIF[] {
-    return state.filings
-  },
-
   /** The list of tasks from the API. */
   getTasks (state: StateIF): ApiTaskIF[] {
     return state.tasks
@@ -50,16 +45,6 @@ export default {
       return (phone + `${ext ? (' x' + ext) : ''}`)
     }
     return null
-  },
-
-  /** Is True if a COA filing is pending. */
-  isCoaPending (state: StateIF): boolean {
-    return state.isCoaPending
-  },
-
-  /** The COA effective date (valid if a COA is pending). */
-  getCoaEffectiveDate (state: StateIF): Date {
-    return state.coaEffectiveDate
   },
 
   /** Is True if Staff role is set.
@@ -111,17 +96,24 @@ export default {
     return state.currentFilingStatus
   },
 
+  /** Whether to show the Fetching Data spinner. */
+  showFetchingDataSpinner (state: StateIF): boolean {
+    return state.fetchingDataSpinner
+  },
+
   /**
    * This is used to show Legal Obligations only for a new business
    * that has no tasks and hasn't filed anything yet (except their IA).
    **/
-  isBusinessWithNoMaintenanceFilings (state: StateIF): boolean {
+  isBusinessWithNoMaintenanceFilings (state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
     return (
       // no todo items
-      state.tasks.length === 0 &&
-      // only the IA filing history item
-      state.filings.length === 1 &&
-      [FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(state.filings[0].name)
+      (state.tasks.length === 0) &&
+      // only the IA or Registraion filing history item
+      (rootGetters.getFilings.length === 1) && (
+        EnumUtilities.isTypeIncorporationApplication(rootGetters.getFilings[0]) ||
+        EnumUtilities.isTypeRegistration(rootGetters.getFilings[0])
+      )
     )
   },
 
@@ -148,6 +140,15 @@ export default {
   getTodoListResource (state: StateIF): TodoListResourceIF {
     return state.configObject?.todoList
   },
+
+  /** The corp type code from Auth db (may be null). */
+  getCorpTypeCd (state: StateIF): CorpTypeCd {
+    return state.corpTypeCd
+  },
+
+  //
+  // State Filing getters
+  //
 
   /** The filing that changed the business state, if there is one. */
   getStateFiling (state: StateIF): StateFilingIF {
@@ -218,10 +219,5 @@ export default {
     const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
     return (stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT) || false)
-  },
-
-  /** The corp type code from Auth db (may be null). */
-  getCorpTypeCd (state: StateIF): CorpTypeCd {
-    return state.corpTypeCd
   }
 }

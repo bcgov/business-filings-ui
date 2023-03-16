@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="showLegalObligation && !!getObligations && isBusinessWithNoMaintenanceFilings && !!businessId"
+    v-if="showLegalObligation && !!getObligations && isBusinessWithNoMaintenanceFilings && isBusiness"
     class="legal-obligation-container"
   >
     <v-card flat class="legal-obligation-section">
@@ -57,9 +57,9 @@ export default class LegalObligation extends Vue {
   protected readMoreFlag = false
   protected showLegalObligation = true
 
-  /** The Business ID string. */
-  get businessId (): string {
-    return sessionStorage.getItem('BUSINESS_ID')
+  /** Whether this entity is a business (and not a temporary registration). */
+  get isBusiness (): string {
+    return !!sessionStorage.getItem('BUSINESS_ID')
   }
 }
 </script>

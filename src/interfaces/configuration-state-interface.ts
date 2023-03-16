@@ -1,4 +1,4 @@
-/** The state model for the configuration store module. */
+/** The Configuration module state interface. */
 export interface ConfigurationStateIF {
   configuration: {
     ADDRESS_COMPLETE_KEY: string,

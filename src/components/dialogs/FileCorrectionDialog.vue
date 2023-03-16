@@ -43,8 +43,8 @@ export default class FileCorrectionDialog extends Vue {
   readonly CorrectionTypes = CorrectionTypes
 
   // local variables
-  protected hasChosenCorrection = true
-  protected correctionType = null as CorrectionTypes
+  hasChosenCorrection = true
+  correctionType = null as CorrectionTypes
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean
@@ -90,7 +90,6 @@ export default class FileCorrectionDialog extends Vue {
    * Redirect to start correction.
    */
   @Emit('redirect')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitRedirect (correctionType: CorrectionTypes): void {}
 }
 </script>

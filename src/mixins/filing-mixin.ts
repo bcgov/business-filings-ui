@@ -2,7 +2,6 @@ import { Component } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { Action, Getter, State } from 'vuex-class'
 import {
-  CommentIF,
   CorrectionFilingIF,
   DissolutionFilingIF,
   FilingDataIF,
@@ -34,23 +33,6 @@ export default class FilingMixin extends DateMixin {
   @Getter getFoundingDate!: Date
   @Getter getRegisteredOfficeAddress!: OfficeAddressIF
   @Getter getBusinessAddress!: OfficeAddressIF
-
-  /**
-   * Flattens and sorts an array of comments.
-   * @param comments the array of comments to sort and deconstruct
-   * @returns the sorted and flattened array of comments
-   */
-  flattenAndSortComments (comments: Array<CommentIF>): Array<CommentIF> {
-    if (comments && comments.length > 0) {
-      // first use map to change comment.comment to comment
-      const temp: Array<any> = comments.map(c => c.comment)
-      // then sort newest to oldest
-      // NB: these `new Date()` are safe because we're comparing like units
-      temp.sort((a, b) => new Date(a.timestamp) < new Date(b.timestamp) ? 1 : -1)
-      return temp
-    }
-    return []
-  }
 
   /**
    * Adds/removes filing code and/or sets flags in the Filing Data object.

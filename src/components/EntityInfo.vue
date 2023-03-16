@@ -172,7 +172,7 @@ import Tombstone from './Tombstone.vue'
 export default class EntityInfo extends Vue {
   @Getter getEditUrl!: string
   @Getter getEntityName!: string
-  @Getter getIdentifier!: number
+  @Getter getIdentifier!: string
   @Getter getLimitedreRestorationActiveUntil!: string
   @Getter getReasonText!: string
   @Getter getStateFiling!: StateFilingIF

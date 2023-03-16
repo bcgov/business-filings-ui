@@ -89,6 +89,7 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.FREEZE_UNFREEZE: {
+        // this covers both Freeze and Unfreeze
         return this.isAllowedFiling(FilingTypes.ADMIN_FREEZE)
       }
 
