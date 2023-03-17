@@ -438,7 +438,7 @@ import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import axios from '@/axios-auth'
-import { navigate } from '@/utils'
+import { navigate, buildRestorationUrl } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
 import { NameRequestInfo, ContactInfo } from '@/components/common'
 import ConversionDetails from './TodoList/ConversionDetails.vue'
@@ -450,7 +450,7 @@ import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
-import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, ApplicationTypes, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
   TodoListResourceIF } from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
@@ -1488,14 +1488,34 @@ export default class TodoList extends Vue {
       }
 
       case FilingTypes.RESTORATION: {
-        let restorationAppUrl = null
-        // navigate to Create UI to resume if Full/Limited Restoration and to Edit UI for Extension/Conversion
-        if (item.filingSubType === RestorationTypes.FULL || item.filingSubType === RestorationTypes.LIMITED) {
-          restorationAppUrl = `${this.getCreateUrl}?id=${this.getIdentifier}`
-        } else if (item.filingSubType === RestorationTypes.LTD_EXTEND ||
-          item.filingSubType === RestorationTypes.LTD_TO_FULL) {
-          restorationAppUrl = `${this.getEditUrl}${this.getIdentifier}/restoration/?restoration-id=${item.filingId}`
+        let restorationAppUrl: string
+        let applicationName: string
+        let restorationType: string
+        const createUrl = this.getCreateUrl
+        const editUrl = this.getEditUrl
+
+        if (item.filingSubType === RestorationTypes.FULL) {
+          applicationName = ApplicationTypes.CREATE_UI
+          restorationType = RestorationTypes.FULL
         }
+
+        if (item.filingSubType === RestorationTypes.LIMITED) {
+          applicationName = ApplicationTypes.CREATE_UI
+          restorationType = RestorationTypes.LIMITED
+        }
+
+        if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
+          applicationName = ApplicationTypes.EDIT_UI
+          restorationType = RestorationTypes.LTD_EXTEND
+        }
+
+        if (item.filingSubType === RestorationTypes.LIMITED) {
+          applicationName = ApplicationTypes.EDIT_UI
+          restorationType = RestorationTypes.LTD_TO_FULL
+        }
+
+        restorationAppUrl = buildRestorationUrl(
+          applicationName, restorationType, item.filingId, this.getIdentifier, createUrl, editUrl)
         navigate(restorationAppUrl)
 
         break
