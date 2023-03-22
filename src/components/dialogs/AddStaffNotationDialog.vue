@@ -135,9 +135,7 @@ import { EnumUtilities, LegalServices } from '@/services'
     CourtOrderPoa,
     FileUploadPdf
   },
-  mixins: [
-    DateMixin
-  ]
+  mixins: [DateMixin]
 })
 export default class AddStaffNotationDialog extends Vue {
   $refs!: Vue['$refs'] & {
@@ -173,7 +171,6 @@ export default class AddStaffNotationDialog extends Vue {
 
   // Global getters
   @Getter getCurrentDate!: string
-  @Getter getBusinessNumber!: string
   @Getter getFoundingDate!: Date
   @Getter getLegalName!: string
   @Getter getLegalType!: string

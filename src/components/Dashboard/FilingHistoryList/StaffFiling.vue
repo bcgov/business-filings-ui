@@ -23,9 +23,7 @@ import { DocumentIF, HistoryItemIF } from '@/interfaces'
 import DocumentsList from './DocumentsList.vue'
 
 @Component({
-  components: {
-    DocumentsList
-  }
+  components: { DocumentsList }
 })
 export default class StaffFiling extends Vue {
   /** The subject filing. */

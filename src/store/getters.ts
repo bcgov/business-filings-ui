@@ -209,7 +209,7 @@ export default {
   },
 
   /** The limited restoration active-until date, if it exists, otherwise null. */
-  getLimitedreRestorationActiveUntil (_state: StateIF, getters: any): string {
+  getLimitedRestorationActiveUntil (_state: StateIF, getters: any): string {
     const stateFiling = getters.getStateFiling as StateFilingIF // may be null
 
     const date = DateUtilities.yyyyMmDdToDate(stateFiling?.restoration?.expiry)

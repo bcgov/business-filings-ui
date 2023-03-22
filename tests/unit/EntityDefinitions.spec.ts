@@ -2,18 +2,15 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import Tombstone from '@/components/Tombstone.vue'
+import EntityDefinitions from '@/components/EntityInfo/EntityDefinitions.vue'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-describe('Tombstone', () => {
+describe('Entity Definitions component', () => {
   it('handles empty data', async () => {
-    // session storage must be set before mounting component
-    sessionStorage.clear()
-
     // set empty store properties
     store.state.businessEmail = null
     store.state.businessPhone = null
@@ -25,7 +22,7 @@ describe('Tombstone', () => {
     store.state.nameRequest = null
     store.commit('setTaxId', null) // aka business number
 
-    const wrapper = shallowMount(Tombstone, { store, vuetify })
+    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: null } })
     await Vue.nextTick()
 
     // verify getter and elements
@@ -40,10 +37,6 @@ describe('Tombstone', () => {
   })
 
   it('displays Business info properly - Coop', async () => {
-    // session storage must be set before mounting component
-    sessionStorage.clear()
-    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-
     // set store properties
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
@@ -56,7 +49,7 @@ describe('Tombstone', () => {
     store.commit('setTaxId', '123456789')
 
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(Tombstone, { store, vuetify })
+    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: 'CP0001191' } })
     await Vue.nextTick()
 
     // verify displayed text
@@ -70,10 +63,6 @@ describe('Tombstone', () => {
   })
 
   it('displays Business info properly - Firm', async () => {
-    // session storage must be set before mounting component
-    sessionStorage.clear()
-    sessionStorage.setItem('BUSINESS_ID', 'FM0001191')
-
     // set store properties
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
@@ -85,7 +74,7 @@ describe('Tombstone', () => {
     store.commit('setTaxId', '123456789')
 
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(Tombstone, { store, vuetify })
+    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: 'FM0001191' } })
     await Vue.nextTick()
 
     // verify displayed text
@@ -99,10 +88,6 @@ describe('Tombstone', () => {
   })
 
   it('displays IA info properly - Named Benefit Company', async () => {
-    // session storage must be set before mounting component
-    sessionStorage.clear()
-    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-
     // set store properties
     store.state.businessEmail = null
     store.state.businessPhone = null
@@ -114,7 +99,7 @@ describe('Tombstone', () => {
     store.state.nameRequest = { nrNum: 'NR 1234567' }
     store.commit('setTaxId', null) // aka business number
 
-    const wrapper = shallowMount(Tombstone, { store, vuetify })
+    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: null } })
     await Vue.nextTick()
 
     // verify displayed text
@@ -128,10 +113,6 @@ describe('Tombstone', () => {
   })
 
   it('displays IA info properly - Numbered Benefit Company', async () => {
-    // session storage must be set before mounting component
-    sessionStorage.clear()
-    sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-
     // set store properties
     store.state.businessEmail = null
     store.state.businessPhone = null
@@ -143,7 +124,7 @@ describe('Tombstone', () => {
     store.state.nameRequest = null
     store.commit('setTaxId', null) // aka business number
 
-    const wrapper = shallowMount(Tombstone, { store, vuetify })
+    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: null } })
     await Vue.nextTick()
 
     // verify displayed text

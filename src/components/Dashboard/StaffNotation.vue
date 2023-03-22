@@ -219,9 +219,7 @@ import { mapGetters } from 'vuex'
       'isInLimitedRestoration'
     ])
   },
-  mixins: [
-    FilingMixin
-  ]
+  mixins: [FilingMixin]
 })
 export default class StaffNotation extends Vue {
   private isAddingAdministerFreeze = false

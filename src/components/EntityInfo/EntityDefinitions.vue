@@ -1,5 +1,5 @@
 <template>
-  <dl id="tombstone">
+  <dl id="entity-definitions">
     <!-- Registration Date -->
     <template v-if="!!registrationDate">
       <dt class="mr-2">Registration Date:</dt>
@@ -58,13 +58,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { navigate } from '@/utils'
 import { DateUtilities } from '@/services'
+import { navigate } from '@/utils'
 
 @Component({})
-export default class Tombstone extends Vue {
+export default class EntityDefinitions extends Vue {
+  @Prop({ required: true }) readonly businessId!: string // may be null
+
   @Getter getBusinessEmail!: string
   @Getter getBusinessProfileUrl!: string
   @Getter getBusinessNumber!: string
@@ -73,11 +75,6 @@ export default class Tombstone extends Vue {
   @Getter getIdentifier!: number
   @Getter getNameRequest!: any
   @Getter isFirm!: boolean
-
-  /** The Business ID string, if available. */
-  get businessId (): string {
-    return sessionStorage.getItem('BUSINESS_ID')
-  }
 
   /** The registration date, if applicable. */
   get registrationDate (): string {
