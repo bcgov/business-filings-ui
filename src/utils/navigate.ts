@@ -1,5 +1,3 @@
-import { ApplicationTypes } from '@/enums'
-
 /**
  * Navigates to the specified URL, including Account ID param if available.
  * This function may or may not return. The caller should account for this!
@@ -24,18 +22,4 @@ export function navigate (url: string): boolean {
 
     return false
   }
-}
-
-export function buildRestorationUrl (
-  applicationName:string, restorationType: string, id: number,
-  businessIdentifier: string, createUrlDomain: string, editUrlDomain: string):string {
-  let url: string
-  if (applicationName === ApplicationTypes.CREATE_UI) {
-    // navigate to Create UI
-    url = createUrlDomain + `?id=` + businessIdentifier
-  }
-  if (applicationName === ApplicationTypes.EDIT_UI) {
-    url = editUrlDomain + businessIdentifier + `/` + restorationType + `?restoration-id=` + id
-  }
-  return url
 }

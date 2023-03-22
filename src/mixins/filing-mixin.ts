@@ -10,6 +10,7 @@ import {
   RestorationFilingIF
 } from '@/interfaces'
 import {
+  ApplicationTypes,
   CorpTypeCd,
   CorrectionTypes,
   FilingCodes,
@@ -190,5 +191,19 @@ export default class FilingMixin extends DateMixin {
       }
     }
     return restoration
+  }
+
+  buildRestorationUrl (applicationName:string, restorationType: string, id: number,
+    businessIdentifier: string, createUrlDomain: string, editUrlDomain: string): string {
+    let url: string
+    if (applicationName === ApplicationTypes.CREATE_UI) {
+      // navigate to Create UI
+      url = createUrlDomain + `?id=` + businessIdentifier
+    }
+    if (applicationName === ApplicationTypes.EDIT_UI) {
+      // navigate to Edit UI
+      url = editUrlDomain + businessIdentifier + `/` + restorationType + `?restoration-id=` + id
+    }
+    return url
   }
 }

@@ -190,7 +190,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { navigate, buildRestorationUrl } from '@/utils'
+import { navigate } from '@/utils'
 import {
   ApplicationTypes,
   FilingNames,
@@ -301,7 +301,7 @@ export default class StaffNotation extends Vue {
       const id = +filing?.header?.filingId
 
       if (isNaN(id)) throw new Error('Invalid API response')
-      url = buildRestorationUrl(
+      url = this.buildRestorationUrl(
         applicationName, restorationType, item.filingId, this.getIdentifier, createUrl, editUrl)
       navigate(url)
     } catch (error) {

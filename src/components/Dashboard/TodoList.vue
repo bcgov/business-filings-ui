@@ -438,7 +438,7 @@ import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import axios from '@/axios-auth'
-import { navigate, buildRestorationUrl } from '@/utils'
+import { navigate } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
 import { NameRequestInfo, ContactInfo } from '@/components/common'
 import ConversionDetails from './TodoList/ConversionDetails.vue'
@@ -448,7 +448,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, ApplicationTypes, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
@@ -476,7 +476,8 @@ import { RestorationTypes } from '@bcrs-shared-components/enums'
   mixins: [
     AllowableActionsMixin,
     DateMixin,
-    EnumMixin
+    EnumMixin,
+    FilingMixin
   ]
 })
 export default class TodoList extends Vue {
@@ -1509,12 +1510,12 @@ export default class TodoList extends Vue {
           restorationType = RestorationTypes.LTD_EXTEND
         }
 
-        if (item.filingSubType === RestorationTypes.LIMITED) {
+        if (item.filingSubType === RestorationTypes.LTD_TO_FULL) {
           applicationName = ApplicationTypes.EDIT_UI
           restorationType = RestorationTypes.LTD_TO_FULL
         }
 
-        restorationAppUrl = buildRestorationUrl(
+        restorationAppUrl = this.buildRestorationUrl(
           applicationName, restorationType, item.filingId, this.getIdentifier, createUrl, editUrl)
         navigate(restorationAppUrl)
 
