@@ -4,6 +4,8 @@
  */
 export function navigate (url: string): boolean {
   try {
+    if (!url) throw new Error('empty URL')
+
     // get account id and set in params
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     if (accountId) {
