@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 /**
  * stores BUSINESS_ID, TEMP_REG_NUMBER, BASE_URL, VUE_ROUTER_BASE from initial route.
  * FUTURE - consider refactoring this and passing ids to routes.js and getting rid
