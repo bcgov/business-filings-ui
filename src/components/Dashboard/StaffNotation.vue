@@ -301,8 +301,16 @@ export default class StaffNotation extends Vue {
       const id = +filing?.header?.filingId
 
       if (isNaN(id)) throw new Error('Invalid API response')
-      url = this.buildRestorationUrl(
-        applicationName, restorationType, item.filingId, this.getIdentifier, createUrl, editUrl)
+
+      // navigate to Create UI if Full/Limited restoration
+      // navigate to Edit UI if Limited extension/Full to Limited conversion
+      if (applicationName === ApplicationTypes.CREATE_UI) {
+        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+      }
+      if (applicationName === ApplicationTypes.EDIT_UI) {
+        url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${id}`
+      }
+
       navigate(url)
     } catch (error) {
       // clear spinner on error

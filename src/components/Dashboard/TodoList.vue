@@ -1489,36 +1489,7 @@ export default class TodoList extends Vue {
       }
 
       case FilingTypes.RESTORATION: {
-        let restorationAppUrl: string
-        let applicationName: string
-        let restorationType: string
-        const createUrl = this.getCreateUrl
-        const editUrl = this.getEditUrl
-
-        if (item.filingSubType === RestorationTypes.FULL) {
-          applicationName = ApplicationTypes.CREATE_UI
-          restorationType = RestorationTypes.FULL
-        }
-
-        if (item.filingSubType === RestorationTypes.LIMITED) {
-          applicationName = ApplicationTypes.CREATE_UI
-          restorationType = RestorationTypes.LIMITED
-        }
-
-        if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
-          applicationName = ApplicationTypes.EDIT_UI
-          restorationType = RestorationTypes.LTD_EXTEND
-        }
-
-        if (item.filingSubType === RestorationTypes.LTD_TO_FULL) {
-          applicationName = ApplicationTypes.EDIT_UI
-          restorationType = RestorationTypes.LTD_TO_FULL
-        }
-
-        restorationAppUrl = this.buildRestorationUrl(
-          applicationName, restorationType, item.filingId, this.getIdentifier, createUrl, editUrl)
-        navigate(restorationAppUrl)
-
+        navigate(this.buildRestorationUrl(item))
         break
       }
 
@@ -1527,6 +1498,29 @@ export default class TodoList extends Vue {
         console.log('doResumeFiling(), invalid type for item =', item)
         break
     }
+  }
+
+  // navigate to Create UI if Full/Limited restoration or to Edit UI if Limited extension/Full to Limited conversion
+  buildRestorationUrl (item: TodoItemIF): string {
+    let url: string
+    let restorationType: string
+
+    if (item.filingSubType === RestorationTypes.FULL || item.filingSubType === RestorationTypes.LIMITED) {
+      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+    }
+
+    if (item.filingSubType === RestorationTypes.LTD_EXTEND || item.filingSubType === RestorationTypes.LTD_TO_FULL) {
+      if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
+        restorationType = RestorationTypes.LTD_EXTEND
+      }
+
+      if (item.filingSubType === RestorationTypes.FULL) {
+        restorationType = RestorationTypes.FULL
+      }
+
+      url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
+    }
+    return url
   }
 
   // this is called for both Resume Payment and Retry Payment
