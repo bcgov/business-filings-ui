@@ -74,11 +74,6 @@ describe('StaffNotation', () => {
         'disabled': false
       },
       {
-        'type': 'record-conversion',
-        'label': 'Record Conversion',
-        'disabled': true
-      },
-      {
         'type': 'administrative-dissolution',
         'label': 'Administrative Dissolution',
         'disabled': false
@@ -144,11 +139,6 @@ describe('StaffNotation', () => {
         'type': 'court-order',
         'label': 'Add Court Order',
         'disabled': false
-      },
-      {
-        'type': 'record-conversion',
-        'label': 'Record Conversion',
-        'disabled': true
       },
       {
         'type': 'administrative-dissolution',

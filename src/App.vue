@@ -137,7 +137,6 @@ import {
   Routes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 
 export default {
   name: 'App',
@@ -201,7 +200,7 @@ export default {
       'getAuthApiUrl',
       'getBusinessUrl',
       'getCreateUrl',
-      'getLegalName',
+      'getEntityName',
       'getLegalType',
       'getIdentifier',
       'getRegHomeUrl',
@@ -256,7 +255,7 @@ export default {
       const breadcrumbs = this.$route?.meta?.breadcrumb
       const crumbs: Array<BreadcrumbIF> = [
         {
-          text: this.getLegalName || GetCorpNumberedDescription(this.getLegalType),
+          text: this.getEntityName || 'Unknown Name',
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])

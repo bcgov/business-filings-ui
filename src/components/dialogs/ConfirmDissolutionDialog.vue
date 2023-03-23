@@ -13,7 +13,7 @@
           {{getModalTitle}}
         </p>
         <p class="warning-text" id="dialog-text">
-          You are about to {{ dissolutionType }} <strong>{{ getLegalName }}</strong>;
+          You are about to {{ dissolutionType }} <strong>{{ getLegalName || 'this company' }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be {{ subEntityTitle }} under the
           {{ entityAct }} Act.
@@ -105,8 +105,8 @@ export default class ConfirmDissolutionDialog extends Vue {
   }
 
   // Pass click events to parent.
-  @Emit() protected close () {}
-  @Emit() protected proceed () {}
+  @Emit() close () {}
+  @Emit() proceed () {}
 }
 </script>
 

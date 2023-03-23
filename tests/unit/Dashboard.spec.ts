@@ -74,7 +74,7 @@ describe('Dashboard - UI', () => {
     expect(vm.historyCount).toEqual(3)
   })
 
-  it('enables standalone filing buttons when there are no blockers', () => {
+  it('enables standalone filing buttons when there are no blockers', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
@@ -84,6 +84,8 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
     store.commit('setAdminFreeze', false)
+    await Vue.nextTick()
+
     expect(localVm.hasBlocker).toEqual(false)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(true)
@@ -103,6 +105,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
     await Vue.nextTick()
+
     expect(localVm.hasBlocker).toEqual(true)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)
@@ -122,6 +125,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerFiling = true
     store.state.isCoaPending = false
     await Vue.nextTick()
+
     expect(localVm.hasBlocker).toEqual(true)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)
@@ -141,6 +145,7 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = true
     await Vue.nextTick()
+
     expect(localVm.hasBlocker).toEqual(true)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)
@@ -150,7 +155,7 @@ describe('Dashboard - UI', () => {
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
   })
 
-  it('disables standalone filing buttons when there is no Business ID', () => {
+  it('disables standalone filing buttons when there is no Business ID', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.removeItem('BUSINESS_ID')
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
@@ -159,6 +164,8 @@ describe('Dashboard - UI', () => {
     store.state.hasBlockerTask = false
     store.state.hasBlockerFiling = false
     store.state.isCoaPending = false
+    await Vue.nextTick()
+
     expect(localVm.hasBlocker).toEqual(false)
 
     expect(localVm.isAllowed('fileAddressChange')).toBe(false)

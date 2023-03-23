@@ -2,7 +2,7 @@
   <div class="completed-ia-details body-2">
     <h4>Registration Complete</h4>
 
-    <p>{{getLegalName}} has been successfully registered.</p>
+    <p>{{getLegalName || 'This company'}} has been successfully registered.</p>
 
     <p>Return to My Business Registry to access your business and file changes.</p>
 
