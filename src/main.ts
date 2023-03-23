@@ -28,6 +28,8 @@ Vue.use(Vuelidate)
 Vue.use(Affix)
 Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
+const store = getVuexStore()
+
 // main code
 async function start () {
   // get config from environment
@@ -35,11 +37,10 @@ async function start () {
   const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
   const applicationUrl = windowLocationOrigin + processEnvBaseUrl
-  setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
-  // fetch the store first as it has no dependencies
-  const store = getVuexStore()
+  // first load the configuration, then set base route and check business id
   await store.dispatch('loadConfiguration', applicationUrl)
+  setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
   if (window['sentryEnable'] === 'true') {
     // initialize Sentry
