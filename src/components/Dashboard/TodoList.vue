@@ -1378,7 +1378,6 @@ export default class TodoList extends Vue {
 
   /** Resumes a draft filing. */
   protected doResumeFiling (item: TodoItemIF): void {
-    console.log('item', item)
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
