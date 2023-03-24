@@ -449,9 +449,9 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
-import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
+import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
-import { AllowableActions, ApplicationTypes, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
@@ -477,8 +477,7 @@ import { RestorationTypes } from '@bcrs-shared-components/enums'
   mixins: [
     AllowableActionsMixin,
     DateMixin,
-    EnumMixin,
-    FilingMixin
+    EnumMixin
   ]
 })
 export default class TodoList extends Vue {
