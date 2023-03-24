@@ -5,9 +5,9 @@ import { FilingSubTypes } from '@/enums'
  * https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/restoration.json
  */
 export interface RestorationIF {
-  type: FilingSubTypes
-  expiry?: string // FUTURE: describe format here
+  expiry?: string // FUTURE: describe date format here
   legalName?: string
+  type: FilingSubTypes
 }
 
 /** Restoration filing interface. */

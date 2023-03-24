@@ -37,7 +37,7 @@ export interface HistoryItemIF {
   isFutureEffectiveIa?: boolean
   isFutureEffectiveIaPending?: boolean
 
-  // Registrations only
+  // registrations only
   isCompletedRegistration?: boolean
 
   // BEN/BC/CCC/ULC COAs only
@@ -67,6 +67,7 @@ export interface HistoryItemIF {
 
   // limited restorations only
   isTypeLimitedRestoration?: boolean
+  isTypeLimitedRestorationExtension?: boolean
   expiry?: string // also used for consent to continuation out
   legalName?: string
 }

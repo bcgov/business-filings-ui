@@ -46,17 +46,17 @@ export default class DocumentsList extends Vue {
   @Prop({ default: false }) readonly loadingAll!: boolean
 
   /** The index of the currently-downloading doc. */
-  @Prop({ default: -1 }) readonly loadingOneIndex!: boolean
+  @Prop({ default: -1 }) readonly loadingOneIndex!: number
 
   /** Emits an event to download the subject document. */
   @Emit('downloadOne')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected downloadOne (document: DocumentIF, index: number): void {}
+  downloadOne (document: DocumentIF, index: number): void {}
 
   /** Emits an event to download all documents. */
   @Emit('downloadAll')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected downloadAll (filing: any): void {}
+  downloadAll (filing: any): void {}
 }
 </script>
 

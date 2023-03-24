@@ -19,13 +19,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { HistoryItemIF } from '@/interfaces'
-import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
+import { DocumentIF, HistoryItemIF } from '@/interfaces'
+import DocumentsList from './DocumentsList.vue'
 
 @Component({
-  components: {
-    DocumentsList
-  }
+  components: { DocumentsList }
 })
 export default class StaffFiling extends Vue {
   /** The subject filing. */

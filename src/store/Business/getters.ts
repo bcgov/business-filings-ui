@@ -1,6 +1,7 @@
 import { CorpTypeCd, EntityState } from '@/enums'
 import { AllowedActionsIF, BusinessStateIF, BusinessWarningIF } from '@/interfaces'
 import { DateUtilities } from '@/services/'
+import { GetCorpNumberedDescription } from '@bcrs-shared-components/corp-type-module'
 
 export default {
   /** The allowed actions object. */
@@ -58,6 +59,14 @@ export default {
     return state.businessInfo.legalType
   },
 
+  /** The entity name, or numbered description, or empty string. */
+  getEntityName (_state: BusinessStateIF, getters): string {
+    return (
+      getters.getLegalName ||
+      GetCorpNumberedDescription(getters.getLegalType)
+    )
+  },
+
   /** The state filing URL (may be null). */
   getStateFilingUrl (state: BusinessStateIF): string {
     return state.businessInfo.stateFiling
@@ -90,7 +99,7 @@ export default {
   },
 
   /** Is True if the business is frozen. */
-  isAdminFreeze (state: BusinessStateIF): boolean {
+  isAdminFrozen (state: BusinessStateIF): boolean {
     return state.businessInfo.adminFreeze
   },
 

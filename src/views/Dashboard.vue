@@ -79,6 +79,7 @@
                 <h2 data-test-id="dashboard-addresses-subtitle">
                   {{ isFirm ? 'Business Addresses' : 'Office Addresses' }}
                 </h2>
+
                 <v-scale-transition>
                   <v-tooltip top content-class="pending-tooltip">
                     <template v-slot:activator="{ on }">
@@ -95,10 +96,11 @@
                     No other filings are allowed until then.
                   </v-tooltip>
                 </v-scale-transition>
-                <v-btn text small color="primary"
+
+                <v-btn v-if="!isHistorical"
+                  text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
-                  v-if="!isHistorical"
                   :disabled="!isAllowed(AllowableActions.FILE_ADDRESS_CHANGE)"
                   @click.native.stop="onAddressChangeClick()"
                 >
@@ -106,6 +108,7 @@
                   <span>Change</span>
                 </v-btn>
               </header>
+
               <v-card flat>
                 <AddressListSm
                   :showCompleteYourFilingMessage="isAppTask"
@@ -114,33 +117,8 @@
               </v-card>
             </section>
 
-            <!-- Current Directors-->
-            <section v-if="!isSoleProp && !isPartnership">
-              <header class="aside-header mb-3">
-                <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
-                <v-btn text small color="primary"
-                  id="standalone-directors-button"
-                  class="change-btn"
-                  v-if="!isHistorical"
-                  :disabled="!isAllowed(AllowableActions.FILE_DIRECTOR_CHANGE)"
-                  @click.native.stop="goToStandaloneDirectors()"
-                >
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span>Change</span>
-                </v-btn>
-              </header>
-              <div class="scrollable-container" style="max-height: 49rem">
-                <v-card flat>
-                  <DirectorListSm
-                    :showCompleteYourFilingMessage="isAppTask"
-                    :showGrayedOut="isAppFiling"
-                  />
-                </v-card>
-              </div>
-            </section>
-
             <!-- Proprietor / Partners -->
-            <section v-else-if="isSoleProp || isPartnership">
+            <section v-if="isSoleProp || isPartnership">
               <header class="aside-header mb-3">
                 <h2 v-if="isSoleProp" data-test-id="dashboard-proprietor-subtitle">Proprietor</h2>
                 <h2 v-if="isPartnership" data-test-id="dashboard-partners-subtitle">Partners</h2>
@@ -155,9 +133,36 @@
                   <span>Change</span>
                 </v-btn>
               </header>
+
               <div class="scrollable-container" style="max-height: 49rem">
                 <v-card flat>
                   <ProprietorPartnersListSm
+                    :showCompleteYourFilingMessage="isAppTask"
+                    :showGrayedOut="isAppFiling"
+                  />
+                </v-card>
+              </div>
+            </section>
+
+            <!-- Current Directors-->
+            <section v-else>
+              <header class="aside-header mb-3">
+                <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
+                <v-btn v-if="!isHistorical"
+                  text small color="primary"
+                  id="standalone-directors-button"
+                  class="change-btn"
+                  :disabled="!isAllowed(AllowableActions.FILE_DIRECTOR_CHANGE)"
+                  @click.native.stop="goToStandaloneDirectors()"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Change</span>
+                </v-btn>
+              </header>
+
+              <div class="scrollable-container" style="max-height: 49rem">
+                <v-card flat>
+                  <DirectorListSm
                     :showCompleteYourFilingMessage="isAppTask"
                     :showGrayedOut="isAppFiling"
                   />
@@ -229,9 +234,25 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isBenBcCccUlc', 'isHistorical', 'isRoleStaff', 'isCoaPending', 'getCoaEffectiveDate',
-      'isAppTask', 'isAppFiling', 'getParties', 'isFirm', 'isSoleProp', 'isPartnership', 'getIdentifier',
-      'hasMissingInfoWarning', 'hasComplianceWarning', 'isAdminFreeze', 'getEditUrl']),
+    ...mapGetters([
+      'getCoaEffectiveDate',
+      'getEditUrl',
+      'getIdentifier',
+      'getParties',
+      'hasBlocker',
+      'hasComplianceWarning',
+      'hasMissingInfoWarning',
+      'isAdminFrozen',
+      'isAppFiling',
+      'isAppTask',
+      'isBenBcCccUlc',
+      'isCoaPending',
+      'isFirm',
+      'isHistorical',
+      'isPartnership',
+      'isRoleStaff',
+      'isSoleProp'
+    ]),
 
     /** The Business ID string. */
     businessId (): string {
@@ -251,7 +272,7 @@ export default {
 
     /** Whether to show Missing Information alert. */
     isFrozenInformationAlert (): boolean {
-      return this.isAdminFreeze
+      return this.isAdminFrozen
     },
 
     /** Whether to show Not In Compliance alert. */

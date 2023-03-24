@@ -126,7 +126,7 @@
                     <span>FILING PENDING</span>
                     <span class="vert-pipe"></span>
                     <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
-                    <span v-else-if="isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
+                    <span v-else-if="EnumUtilities.isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
                     <span v-else>PAYMENT INCOMPLETE</span>
                   </template>
                 </div>
@@ -297,7 +297,7 @@
 
                 <!-- pending filing -->
                 <template v-else-if="isStatusPending(item)">
-                  <v-btn v-if="isPayMethodOnlineBanking(item)"
+                  <v-btn v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
                     class="btn-change-payment-type"
                     color="primary"
                     :disabled="!item.enabled"
@@ -406,7 +406,8 @@
 
           <!-- does this item have a pending payment? -->
           <template v-else-if="isStatusPending(item)">
-            <PaymentPendingOnlineBanking v-if="isPayMethodOnlineBanking(item)" :filing=item class="mb-6" />
+            <PaymentPendingOnlineBanking v-if="EnumUtilities.isPayMethodOnlineBanking(item)" :filing=item
+              class="mb-6" />
             <PaymentPending v-else />
           </template>
 
@@ -451,8 +452,8 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import { AllowableActionsMixin, DateMixin, EnumMixin, FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, ApplicationTypes, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiBusinessIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF,
-  TodoListResourceIF } from '@/interfaces'
+import { ActionBindingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
+  from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { RestorationTypes } from '@bcrs-shared-components/enums'
 
@@ -505,9 +506,7 @@ export default class TodoList extends Vue {
   @Getter getBusinessUrl!: string
   @Getter getBusinessWarnings!: BusinessWarningIF
   @Getter getCreateUrl!: string
-  @Getter getCurrentYear!: number
   @Getter getEditUrl!: string
-  @Getter getLegalName!: string
   @Getter getLegalType!: CorpTypeCd
   @Getter getIdentifier!: string
   @Getter getNameRequest!: any
@@ -709,7 +708,7 @@ export default class TodoList extends Vue {
   /** Loads a NEW Annual Report todo. */
   private loadAnnualReportTodo (task: ApiTaskIF): void {
     const todo = task.task.todo
-    const business = todo.business as ApiBusinessIF
+    const business = todo.business
     const header = todo.header
 
     if (business && header) {
@@ -749,7 +748,7 @@ export default class TodoList extends Vue {
     if (!this.isRoleStaff) return // regular users can't file a new conversion
 
     const todo = task.task.todo
-    const business = todo.business as ApiBusinessIF
+    const business = todo.business
     const header = todo.header
 
     if (business && header) {

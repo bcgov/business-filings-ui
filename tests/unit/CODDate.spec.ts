@@ -113,15 +113,9 @@ describe('COD Date - COOPs', () => {
       store,
       vuetify,
       computed: {
-        minDate () {
-          return '2019-05-05'
-        },
-        maxDate () {
-          return '2019-05-10'
-        },
-        codDateRules () {
-          return []
-        }
+        minDate: () => '2019-05-05',
+        maxDate: () => '2019-05-10',
+        codDateRules: () => []
       }
     })
 
@@ -150,12 +144,8 @@ describe('COD Date - COOPs', () => {
       store,
       vuetify,
       computed: {
-        minDate () {
-          return '2019-05-05'
-        },
-        maxDate () {
-          return '2019-05-10'
-        }
+        minDate: () => '2019-05-05',
+        maxDate: () => '2019-05-10'
       }
     })
 

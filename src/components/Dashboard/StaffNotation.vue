@@ -76,7 +76,7 @@
             <v-list-item
               data-type="registrars-order"
               @click="showRegistrarsOrderDialog()"
-              :disabled="disabled || isAdminFreeze"
+              :disabled="disabled || isAdminFrozen"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Order</span>
@@ -86,7 +86,7 @@
             <v-list-item
               data-type="court-order"
               @click="showCourtOrderDialog()"
-              :disabled="disabled || isAdminFreeze"
+              :disabled="disabled || isAdminFrozen"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Court Order</span>
@@ -94,9 +94,10 @@
             </v-list-item>
 
             <v-list-item
+              v-if="isFirm"
               data-type="record-conversion"
               @click="goToConversionFiling()"
-              :disabled="disabled || !isFirm || isAdminFreeze"
+              :disabled="disabled || !isFirm || isAdminFrozen"
             >
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
@@ -107,7 +108,7 @@
               <v-list-item
                 data-type="administrative-dissolution"
                 @click="showAdministrativeDissolutionDialog()"
-                :disabled="disabled || isAdminFreeze"
+                :disabled="disabled || isAdminFrozen"
               >
                 <v-list-item-title>
                   <span class="app-blue">Administrative Dissolution</span>
@@ -142,7 +143,7 @@
                 data-type="admin-freeze"
                 @click="showAdministerFreezeDialog()">
                 <v-list-item-title>
-                  <span class="app-blue">{{ isAdminFreeze ? 'Unfreeze Business' : 'Freeze Business' }}</span>
+                  <span class="app-blue">{{ isAdminFrozen ? 'Unfreeze Business' : 'Freeze Business' }}</span>
                 </v-list-item-title>
               </v-list-item>
             </template>
@@ -151,7 +152,7 @@
               <v-list-item
                 data-type="consent-continue-out"
                 @click="goToConsentContinuationOutFiling()"
-                :disabled="disabled || isAdminFreeze"
+                :disabled="disabled || isAdminFrozen"
               >
                 <v-list-item-title>
                   <span class="app-blue">Consent to Continuation Out</span>
@@ -162,7 +163,7 @@
             <v-list-item
               v-if="isInLimitedRestoration"
               data-type="extend-limited-restoration"
-              :disabled="disabled  || isAdminFreeze"
+              :disabled="disabled  || isAdminFrozen"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.RESTORATION_EXTENSION)"
             >
               <v-list-item-title>
@@ -173,7 +174,7 @@
             <v-list-item
               v-if="isInLimitedRestoration"
               data-type="convert-full-restoration"
-              :disabled="disabled  || isAdminFreeze"
+              :disabled="disabled  || isAdminFrozen"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.RESTORATION_CONVERSION)"
             >
               <v-list-item-title>
@@ -210,7 +211,7 @@ import { mapGetters } from 'vuex'
       'getCreateUrl',
       'getEditUrl',
       'getIdentifier',
-      'isAdminFreeze',
+      'isAdminFrozen',
       'isBenBcCccUlc',
       'isCoop',
       'isFirm',
@@ -218,9 +219,7 @@ import { mapGetters } from 'vuex'
       'isInLimitedRestoration'
     ])
   },
-  mixins: [
-    FilingMixin
-  ]
+  mixins: [FilingMixin]
 })
 export default class StaffNotation extends Vue {
   private isAddingAdministerFreeze = false
