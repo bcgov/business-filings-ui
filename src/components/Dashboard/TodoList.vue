@@ -1486,7 +1486,17 @@ export default class TodoList extends Vue {
       }
 
       case FilingTypes.RESTORATION: {
-        navigate(this.buildRestorationUrl(item))
+        let restorationType: string
+
+        if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
+          restorationType = RestorationTypes.LTD_EXTEND
+        }
+
+        if (item.filingSubType === RestorationTypes.FULL) {
+          restorationType = RestorationTypes.FULL
+        }
+
+        navigate(this.buildRestorationUrl(item, restorationType))
         break
       }
 
@@ -1498,23 +1508,14 @@ export default class TodoList extends Vue {
   }
 
   // navigate to Create UI if Full/Limited restoration or to Edit UI if Limited extension/Full to Limited conversion
-  buildRestorationUrl (item: TodoItemIF): string {
+  buildRestorationUrl (item: TodoItemIF, restorationType:string): string {
     let url: string
-    let restorationType: string
 
     if (item.filingSubType === RestorationTypes.FULL || item.filingSubType === RestorationTypes.LIMITED) {
       url = `${this.getCreateUrl}?id=${this.getIdentifier}`
     }
 
     if (item.filingSubType === RestorationTypes.LTD_EXTEND || item.filingSubType === RestorationTypes.LTD_TO_FULL) {
-      if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
-        restorationType = RestorationTypes.LTD_EXTEND
-      }
-
-      if (item.filingSubType === RestorationTypes.FULL) {
-        restorationType = RestorationTypes.FULL
-      }
-
       url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
     }
     return url
