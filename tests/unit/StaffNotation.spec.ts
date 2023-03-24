@@ -495,7 +495,6 @@ describe('StaffNotation', () => {
 
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
-    // expect(buildRestorationUrl).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
 
     // verify redirection
