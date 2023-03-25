@@ -1488,12 +1488,20 @@ export default class TodoList extends Vue {
       case FilingTypes.RESTORATION: {
         let restorationType: string
 
+        if (item.filingSubType === RestorationTypes.FULL) {
+          restorationType = RestorationTypes.FULL
+        }
+
+        if (item.filingSubType === RestorationTypes.LIMITED) {
+          restorationType = RestorationTypes.LIMITED
+        }
+
         if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
           restorationType = RestorationTypes.LTD_EXTEND
         }
 
-        if (item.filingSubType === RestorationTypes.FULL) {
-          restorationType = RestorationTypes.FULL
+        if (item.filingSubType === RestorationTypes.LTD_TO_FULL) {
+          restorationType = RestorationTypes.LTD_TO_FULL
         }
 
         navigate(this.buildRestorationUrl(item, restorationType))
@@ -1511,13 +1519,19 @@ export default class TodoList extends Vue {
   buildRestorationUrl (item: TodoItemIF, restorationType:string): string {
     let url: string
 
-    if (item.filingSubType === RestorationTypes.FULL || item.filingSubType === RestorationTypes.LIMITED) {
-      url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+    switch (restorationType) {
+      case RestorationTypes.FULL:
+      case RestorationTypes.LIMITED: {
+        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+        break
+      }
+      case RestorationTypes.LTD_EXTEND:
+      case RestorationTypes.LTD_TO_FULL: {
+        url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
+        break
+      }
     }
 
-    if (item.filingSubType === RestorationTypes.LTD_EXTEND || item.filingSubType === RestorationTypes.LTD_TO_FULL) {
-      url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
-    }
     return url
   }
 

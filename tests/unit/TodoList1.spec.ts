@@ -2845,3 +2845,155 @@ describe('TodoList - Cancel Payment', () => {
     wrapper.destroy()
   })
 })
+
+describe('TodoList - Click Tests - Full and Limited Restoration', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  const fullAndLtdRestorationTests = [
+    { businessId: 'BC1234567', restorationType: 'fullRestoration' },
+    { businessId: 'BC1234568', restorationType: 'limitedRestoration' }
+  ]
+
+  for (const test of fullAndLtdRestorationTests) {
+    it(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
+      // init store
+      sessionStorage.clear()
+      store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://create.url/' })
+      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+      store.state.currentDate = '2022-12-31'
+      store.commit('setIdentifier', test.businessId)
+      store.commit('setLegalType', 'BEN')
+      store.commit('setState', 'HISTORICAL')
+      store.state.tasks = [
+        {
+          task: {
+            filing: {
+              business: {
+                identifier: test.businessId,
+                legalType: 'BEN'
+              },
+              header: {
+                date: '2020-05-21T00:11:55.887740+00:00',
+                name: 'restoration',
+                status: 'DRAFT',
+                filingId: 789
+              },
+              restoration: {
+                type: test.restorationType
+              }
+            }
+          },
+          enabled: true,
+          order: 1
+        }
+      ]
+
+      store.state.keycloakRoles = ['staff']
+      store.state.entityStatus = 'DRAFT_APP'
+
+      const wrapper = mount(TodoList, { store, vuetify })
+      const vm = wrapper.vm as any
+      await Vue.nextTick()
+
+      expect(vm.todoItems.length).toEqual(1)
+      expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
+
+      const button = wrapper.find('.list-item__actions .v-btn')
+      expect(button.find('.v-btn__content').text()).toContain('Resume')
+      await button.trigger('click')
+
+      // verify redirection
+      const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+      const createUrl = `https://create.url/?id=${test.businessId}`
+      expect(window.location.assign).toHaveBeenCalledWith(createUrl + '&accountid=' + accountId)
+
+      wrapper.destroy()
+    })
+  }
+})
+
+describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  const extensionAndConversionTests = [
+    { businessId: 'BC1234569', restorationType: 'limitedRestorationExtension' },
+    { businessId: 'BC1234569', restorationType: 'limitedRestorationToFull' }
+  ]
+
+  for (const test of extensionAndConversionTests) {
+    it(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
+      // init store
+      sessionStorage.clear()
+      store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+      store.state.currentDate = '2022-12-31'
+      store.commit('setIdentifier', test.businessId)
+      store.commit('setLegalType', 'BEN')
+      store.commit('setState', 'ACTIVE')
+      store.state.tasks = [
+        {
+          task: {
+            filing: {
+              business: {
+                identifier: test.businessId,
+                legalType: 'BEN'
+              },
+              header: {
+                date: '2020-05-21T00:11:55.887740+00:00',
+                name: 'restoration',
+                status: 'DRAFT',
+                filingId: 123
+              },
+              restoration: {
+                type: test.restorationType
+              }
+            }
+          },
+          enabled: true,
+          order: 1
+        }
+      ]
+
+      store.state.keycloakRoles = ['staff']
+      store.state.entityStatus = 'DRAFT_APP'
+
+      const wrapper = mount(TodoList, { store, vuetify })
+      const vm = wrapper.vm as any
+      await Vue.nextTick()
+
+      expect(vm.todoItems.length).toEqual(1)
+      expect(wrapper.find('.todo-subtitle span').text()).toBe('DRAFT')
+
+      const button = wrapper.find('.list-item__actions .v-btn')
+      expect(button.find('.v-btn__content').text()).toContain('Resume')
+      await button.trigger('click')
+
+      // verify redirection
+      const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+      const editUrl = `https://edit.url/${test.businessId}/${test.restorationType}?restoration-id=123`
+      expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
+
+      wrapper.destroy()
+    })
+  }
+})
