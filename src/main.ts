@@ -40,8 +40,6 @@ async function start () {
   // first load the configuration, then set base route and check business id
   await store.dispatch('loadConfiguration')
 
-  console.info('loadConfiguration done...')
-
   setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
   // initialize Launch Darkly
