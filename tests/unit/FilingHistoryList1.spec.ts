@@ -780,7 +780,7 @@ describe('Filing History List - redirections', () => {
   })
 
   beforeEach(() => {
-    store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+    store.commit('setTestConfiguration', { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     const get = sinon.stub(axios, 'get')
     const post = sinon.stub(axios, 'post')
 
@@ -838,7 +838,7 @@ describe('Filing History List - redirections', () => {
 
   it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
-    store.commit('setTestConfiguration', { key: 'EDIT_URL', value: 'https://edit.url/' })
+    store.commit('setTestConfiguration', { key: 'VUE_APP_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     store.commit('setLegalType', 'BEN')

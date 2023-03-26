@@ -39,7 +39,7 @@ describe('Annual Report - Part 1 - UI', () => {
     store.state.arMaxDate = '2018-04-30'
     store.state.currentFilingStatus = 'NEW'
     store.commit('setLegalType', 'CP')
-    store.commit('setTestConfiguration', { key: 'PAY_API_URL', value: 'https://auth.web.url/' })
+    store.commit('setTestConfiguration', { key: 'VUE_APP_PAY_API_URL', value: 'https://auth.web.url/' })
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {
@@ -875,7 +875,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    store.commit('setTestConfiguration', { key: 'AUTH_WEB_URL', value: 'https://auth.web.url/' })
+    store.commit('setTestConfiguration', { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const localVue = createLocalVue()

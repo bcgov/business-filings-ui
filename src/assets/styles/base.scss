@@ -75,7 +75,7 @@ h1 {
 h4 {
   @extend .font-15;
   letter-spacing: 0;
-  font-weight: 700; 
+  font-weight: 700;
 }
 
 p {
@@ -317,4 +317,8 @@ ul.list {
   margin-right: 0.5rem;
   height: 1rem;
   border-left: 1px solid $gray6;
+}
+
+.colour-dk-text {
+  color: $gray9 !important;
 }

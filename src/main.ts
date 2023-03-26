@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { initLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
+import { getFeatureFlag, initLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -36,13 +36,21 @@ async function start () {
   const processEnvBaseUrl: string = process.env.BASE_URL // eg, /business/
   const windowLocationPathname = window.location.pathname // eg, /business/CP1234567/...
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
-  const applicationUrl = windowLocationOrigin + processEnvBaseUrl
 
   // first load the configuration, then set base route and check business id
-  await store.dispatch('loadConfiguration', applicationUrl)
+  await store.dispatch('loadConfiguration')
+
+  console.info('loadConfiguration done...')
+
   setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
-  if (window['sentryEnable'] === 'true') {
+  // initialize Launch Darkly
+  if (window['ldClientId']) {
+    console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
+    await initLdClient()
+  }
+
+  if (getFeatureFlag('sentry-enable')) {
     // initialize Sentry
     const sentryDsn = window['sentryDsn']
     if (sentryDsn) {
@@ -63,15 +71,15 @@ async function start () {
     Vue.use(Hotjar, { id: window['hotjarId'], isProduction: true })
   }
 
-  // initialize Launch Darkly
-  if (window['ldClientId']) {
-    console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
-    await initLdClient()
-  }
-
   // configure Keycloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
-  await KeycloakService.setKeycloakConfigUrl(store.getters.getKeycloakConfigPath)
+  const keycloakConfig: any = {
+    url: `${window['keycloakAuthUrl']}`,
+    realm: `${window['keycloakRealm']}`,
+    clientId: `${window['keycloakClientId']}`
+  }
+
+  await KeycloakService.setKeycloakConfigUrl(keycloakConfig)
 
   // initialize token service which will do a check-sso to initiate session
   // don't start during Jest tests as it messes up the test JWT

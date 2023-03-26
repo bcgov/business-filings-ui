@@ -70,7 +70,14 @@
     </v-fade-transition>
 
     <SbcHeader />
-    <PaySystemAlert />
+
+    <!-- Alert banner -->
+    <v-alert
+      tile dense
+      type="warning"
+      v-if="bannerText">
+      <div v-html="bannerText" class="mb-0 text-center colour-dk-text"></div>
+    </v-alert>
 
     <div class="app-body">
       <!-- only show pages while signing in or once the data is loaded -->
@@ -94,8 +101,7 @@
 <script lang="ts">
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import * as Sentry from '@sentry/browser'
-import { navigate, updateLdUser } from '@/utils'
-import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
+import { getFeatureFlag, navigate, updateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -189,7 +195,6 @@ export default {
     NameRequestAuthErrorDialog,
     NameRequestInvalidDialog,
     NotInGoodStandingDialog,
-    PaySystemAlert,
     SbcHeader,
     SbcFooter,
     EntityInfo
@@ -248,6 +253,13 @@ export default {
     /** The About text. */
     aboutText (): string {
       return process.env.ABOUT_TEXT
+    },
+
+    /** Get banner text. */
+    bannerText (): string {
+      const bannerText: string = getFeatureFlag('banner-text')
+      // remove spaces so that " " becomes falsy
+      return bannerText?.trim() || null
     },
 
     /** The route breadcrumbs list. */

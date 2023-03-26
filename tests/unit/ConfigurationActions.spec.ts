@@ -1,5 +1,3 @@
-import sinon from 'sinon'
-import axios from '@/axios-auth'
 import { setBaseRouteAndBusinessId } from '@/utils'
 import { getVuexStore } from '@/store'
 import { nextTick } from 'vue'
@@ -12,41 +10,28 @@ describe('Configuration Actions', () => {
 
   // init environment variable
   process.env.BASE_URL = '/business/'
-
-  beforeEach(() => {
-    // stub config endpoint
-    sinon.stub(axios, 'get')
-      .withArgs('http://localhost/business/config/configuration.json')
-      .returns(Promise.resolve({
-        data: {
-          ADDRESS_COMPLETE_KEY: 'address complete key',
-          AUTH_API_URL: 'auth api url',
-          AUTH_API_VERSION: '/auth api version',
-          AUTH_WEB_URL: 'auth web url',
-          BUSINESS_CREATE_URL: 'business create url',
-          BUSINESS_EDIT_URL: 'business edit url',
-          BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
-          BUSINESSES_URL: 'businesses url',
-          DASHBOARD_URL: 'dashboard url',
-          HOTJAR_ID: 'hot jar',
-          KEYCLOAK_CONFIG_PATH: 'keycloak config path',
-          LEGAL_API_URL: 'legal api url',
-          LEGAL_API_VERSION_2: '/legal api version 2',
-          PAY_API_URL: 'pay api url',
-          PAY_API_VERSION: '/pay api version',
-          REGISTRY_HOME_URL: 'registry home url',
-          SENTRY_DSN: 'sentry dsn',
-          SENTRY_ENABLE: 'sentry enable',
-          SITEMINDER_LOGOUT_URL: 'siteminder logout url',
-          STATUS_API_URL: 'status api url',
-          STATUS_API_VERSION: '/status api version'
-        }
-      }))
-  })
-
-  afterEach(() => {
-    sinon.restore()
-  })
+  process.env.VUE_APP_PATH = 'business'
+  process.env.VUE_APP_ADDRESS_COMPLETE_KEY = 'address complete key'
+  process.env.VUE_APP_AUTH_API_URL = 'auth api url'
+  process.env.VUE_APP_AUTH_API_VERSION = '/auth api version'
+  process.env.VUE_APP_AUTH_WEB_URL = 'auth web url'
+  process.env.VUE_APP_BUSINESSES_URL = 'businesses url'
+  process.env.VUE_APP_BUSINESS_CREATE_URL = 'business create url'
+  process.env.VUE_APP_BUSINESS_EDIT_URL = 'business edit url'
+  process.env.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID = 'business filing ld client id'
+  process.env.VUE_APP_DASHBOARD_URL = 'dashboard url'
+  process.env.VUE_APP_LEGAL_API_URL = 'legal api url'
+  process.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal api version 2'
+  process.env.VUE_APP_PAY_API_URL = 'pay api url'
+  process.env.VUE_APP_PAY_API_VERSION = '/pay api version'
+  process.env.VUE_APP_REGISTRY_HOME_URL = 'registry home url'
+  process.env.VUE_APP_SENTRY_DSN = 'sentry dsn'
+  process.env.VUE_APP_SITEMINDER_LOGOUT_URL = 'siteminder logout url'
+  process.env.VUE_APP_STATUS_API_URL = 'status api url'
+  process.env.VUE_APP_STATUS_API_VERSION = '/status api version'
+  process.env.VUE_APP_KEYCLOAK_AUTH_URL = 'keycloak url'
+  process.env.VUE_APP_KEYCLOAK_REALM = 'keycloak realm'
+  process.env.VUE_APP_KEYCLOAK_CLIENTID = 'keycloak clientid'
 
   it('fetches and loads the configuration to the store', async () => {
     // mock window.location getters
@@ -58,9 +43,8 @@ describe('Configuration Actions', () => {
     } as any
 
     // call method
-    const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('loadConfiguration', applicationUrl)
+    await store.dispatch('loadConfiguration')
       .then(() => {
         nextTick()
         // verify data
@@ -71,12 +55,10 @@ describe('Configuration Actions', () => {
         expect(store.getters.getEditUrl).toBe('business edit url')
         expect(store.getters.getBusinessFilingLdClientId).toBe('business filing ld client id')
         expect(store.getters.getBusinessUrl).toBe('businesses url')
-        expect(store.getters.getKeycloakConfigPath).toBe('keycloak config path')
         expect(store.getters.getLegalApiUrl).toBe('legal api url/legal api version 2/')
         expect(store.getters.getPayApiUrl).toBe('pay api url/pay api version/')
         expect(store.getters.getRegHomeUrl).toBe('registry home url')
         expect(store.getters.getSentryDsn).toBe('sentry dsn')
-        expect(store.getters.getSentryEnable).toBe('sentry enable')
         expect(store.getters.getSiteminderLogoutUrl).toBe('siteminder logout url')
         expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
       })
@@ -92,9 +74,8 @@ describe('Configuration Actions', () => {
     } as any
 
     // call method
-    const applicationUrl = 'http://localhost/business/'
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('loadConfiguration', applicationUrl)
+    await store.dispatch('loadConfiguration')
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
   })
@@ -154,8 +135,7 @@ describe('Configuration Actions', () => {
   })
 
   it('sessions variables correctly set for the SBC header', async () => {
-    const applicationUrl = 'http://localhost/business/'
-    await store.dispatch('loadConfiguration', applicationUrl)
+    await store.dispatch('loadConfiguration')
       .then(() => {
         expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
         expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
