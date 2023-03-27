@@ -455,6 +455,7 @@ import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, R
 import { ActionBindingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
+import { RestorationTypes } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
@@ -1485,9 +1486,25 @@ export default class TodoList extends Vue {
       }
 
       case FilingTypes.RESTORATION: {
-        // navigate to Create UI to resume this Restoration
-        const registrationAppUrl = `${this.getCreateUrl}?id=${this.getIdentifier}`
-        navigate(registrationAppUrl)
+        let restorationType: string
+
+        if (item.filingSubType === RestorationTypes.FULL) {
+          restorationType = RestorationTypes.FULL
+        }
+
+        if (item.filingSubType === RestorationTypes.LIMITED) {
+          restorationType = RestorationTypes.LIMITED
+        }
+
+        if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
+          restorationType = RestorationTypes.LTD_EXTEND
+        }
+
+        if (item.filingSubType === RestorationTypes.LTD_TO_FULL) {
+          restorationType = RestorationTypes.LTD_TO_FULL
+        }
+
+        navigate(this.buildRestorationUrl(item, restorationType))
         break
       }
 
@@ -1496,6 +1513,26 @@ export default class TodoList extends Vue {
         console.log('doResumeFiling(), invalid type for item =', item)
         break
     }
+  }
+
+  // navigate to Create UI if Full/Limited restoration or to Edit UI if Limited extension/Full to Limited conversion
+  buildRestorationUrl (item: TodoItemIF, restorationType:string): string {
+    let url: string
+
+    switch (restorationType) {
+      case RestorationTypes.FULL:
+      case RestorationTypes.LIMITED: {
+        url = `${this.getCreateUrl}?id=${this.getIdentifier}`
+        break
+      }
+      case RestorationTypes.LTD_EXTEND:
+      case RestorationTypes.LTD_TO_FULL: {
+        url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
+        break
+      }
+    }
+
+    return url
   }
 
   // this is called for both Resume Payment and Retry Payment

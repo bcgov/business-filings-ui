@@ -28,12 +28,12 @@ export default class FilingMixin extends DateMixin {
   @State filingData!: Array<FilingDataIF>
   @State entityName!: string
 
-  @Getter getCurrentDate!: string
-  @Getter getLegalType!: CorpTypeCd
-  @Getter getIdentifier!: string
-  @Getter getFoundingDate!: Date
-  @Getter getRegisteredOfficeAddress!: OfficeAddressIF
   @Getter getBusinessAddress!: OfficeAddressIF
+  @Getter getCurrentDate!: string
+  @Getter getFoundingDate!: Date
+  @Getter getIdentifier!: string
+  @Getter getLegalType!: CorpTypeCd
+  @Getter getRegisteredOfficeAddress!: OfficeAddressIF
 
   /**
    * Flattens and sorts an array of comments.

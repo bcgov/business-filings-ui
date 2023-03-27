@@ -455,7 +455,7 @@ describe('StaffNotation', () => {
     sinon.restore()
   })
 
-  it('goes to limited restoration filing', async () => {
+  it('goes to limited restoration extension filing', async () => {
     // set store specifically for this test
     store.commit('setIdentifier', 'BC1234567')
     store.state.currentDate = '2022-12-31'
@@ -500,6 +500,56 @@ describe('StaffNotation', () => {
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(
       'https://edit.url/BC1234567/limitedRestorationExtension?restoration-id=1234')
+
+    wrapper.destroy()
+    sinon.restore()
+  })
+
+  it('goes to limited restoration conversion filing', async () => {
+    // set store specifically for this test
+    store.commit('setIdentifier', 'BC1234567')
+    store.state.currentDate = '2022-12-31'
+    store.commit('setLegalType', 'BEN')
+    store.commit('setState', 'ACTIVE')
+    store.state.stateFiling = {
+      business: {
+        state: 'ACTIVE'
+      },
+      restoration: {
+        type: 'limitedRestoration'
+      }
+    }
+
+    // stub "create draft" endpoint
+    sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(
+      new Promise(resolve =>
+        resolve({ data: { filing: { header: { filingId: 1234 } } } })
+      )
+    )
+
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const wrapper = mount(StaffNotation, { vuetify, store, localVue })
+
+    // spy on build and create methods
+    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // find and click respective item
+    await wrapper.find('.v-list-item[data-type="convert-full-restoration"]').trigger('click')
+    await Vue.nextTick()
+
+    // verify that build and create methods were called
+    expect(buildRestorationFiling).toHaveBeenCalled()
+    expect(createFiling).toHaveBeenCalled()
+
+    // verify redirection
+    expect(window.location.assign).toHaveBeenCalledWith(
+      'https://edit.url/BC1234567/limitedRestorationToFull?restoration-id=1234')
 
     wrapper.destroy()
     sinon.restore()
