@@ -2868,7 +2868,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
     it(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       // init store
       sessionStorage.clear()
-      store.commit('setTestConfiguration', { key: 'BUSINESS_CREATE_URL', value: 'https://create.url/' })
+      store.commit('setTestConfiguration', { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://create.url/' })
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       store.state.currentDate = '2022-12-31'
       store.commit('setIdentifier', test.businessId)
@@ -2944,7 +2944,7 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
     it(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       // init store
       sessionStorage.clear()
-      store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+      store.commit('setTestConfiguration', { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       store.state.currentDate = '2022-12-31'
       store.commit('setIdentifier', test.businessId)
