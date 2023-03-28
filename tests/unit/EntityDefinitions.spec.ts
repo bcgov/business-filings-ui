@@ -15,7 +15,7 @@ describe('Entity Definitions component', () => {
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
-    store.commit('setConfiguration', { AUTH_WEB_URL: 'auth-web-url/' })
+    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
     store.commit('setFoundingDate', null)
     store.commit('setIdentifier', null)
     store.commit('setLegalType', null)
@@ -41,7 +41,7 @@ describe('Entity Definitions component', () => {
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
     store.state.businessPhoneExtension = '444'
-    store.commit('setConfiguration', { AUTH_WEB_URL: 'auth-web-url/' })
+    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
     store.commit('setFoundingDate', null)
     store.commit('setIdentifier', 'CP0001191')
     store.commit('setLegalType', 'CP')
@@ -67,7 +67,7 @@ describe('Entity Definitions component', () => {
     store.state.businessEmail = 'business@mail.zzz'
     store.state.businessPhone = '(111)222-3333'
     store.state.businessPhoneExtension = '444'
-    store.commit('setConfiguration', { AUTH_WEB_URL: 'auth-web-url/' })
+    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
     store.commit('setFoundingDate', '2023-01-06T22:21:35.965694+00:00')
     store.commit('setIdentifier', 'FM0001191')
     store.commit('setLegalType', 'GP')
@@ -92,7 +92,7 @@ describe('Entity Definitions component', () => {
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
-    store.commit('setConfiguration', { AUTH_WEB_URL: 'auth-web-url/' })
+    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
     store.commit('setFoundingDate', null)
     store.commit('setIdentifier', null)
     store.commit('setLegalType', 'BEN')
@@ -117,7 +117,7 @@ describe('Entity Definitions component', () => {
     store.state.businessEmail = null
     store.state.businessPhone = null
     store.state.businessPhoneExtension = null
-    store.commit('setConfiguration', { AUTH_WEB_URL: 'auth-web-url/' })
+    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
     store.commit('setFoundingDate', null)
     store.commit('setIdentifier', null)
     store.commit('setLegalType', 'BEN')

@@ -11,7 +11,9 @@ const defaultFlagSet: LDFlagSet = {
   'supported-dissolution-entities': [],
   'supported-business-summary-entities': [],
   'enable-digital-credentials': false,
-  'show-alert-phone-numbers-firm': false
+  'show-alert-phone-numbers-firm': false,
+  'sentry-enable': false, // by default, no sentry logs
+  'banner-text': '' // by default, there is no banner text
 }
 
 /**

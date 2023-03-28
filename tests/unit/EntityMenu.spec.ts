@@ -244,7 +244,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   it('redirects to Edit URL to view/alter business info', async () => {
     // init session storage
     sessionStorage.clear()
-    store.commit('setTestConfiguration', { key: 'BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+    store.commit('setTestConfiguration', { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     // init store
