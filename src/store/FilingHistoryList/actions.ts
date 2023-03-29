@@ -1,4 +1,3 @@
-import { FilingSubTypes } from '@/enums'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { ApiFilingIF, CommentIF, DocumentIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services/'
@@ -131,7 +130,7 @@ export default {
 
               const date = DateUtilities.dateToYyyyMmDd(new Date(filing.submittedDate))
               const filename = `${getters.getIdentifier} ${title} - ${date}.pdf`
-              const link = legalFiling[prop] as string
+              const link = legalFiling[prop]
               pushDocument(title, filename, link)
             }
           }

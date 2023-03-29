@@ -52,15 +52,23 @@
         <div v-if="isStatusPaid || true" class="body-2 mt-4">
           <h4>Filing Pending</h4>
 
-          <p class="my-4">This {{ title }} is paid, but the filing has not been completed by the
-            Business Registry yet. Some filings may take longer than expected.</p>
+          <p class="my-4">
+            This {{ title }} is paid, but the filing has not been completed by the Business Registry
+            yet. Some filings may take longer than expected.
+          </p>
 
-          <p v-if="fileNumber">Court Order Number: {{ fileNumber }}</p>
+          <p v-if="fileNumber">
+            Court Order Number: {{ fileNumber }}
+          </p>
 
-          <p v-if="isPlanOfArrangement || true">Pursuant to a Plan of Arrangement</p>
+          <p v-if="hasEffectOfOrder || true">
+            Pursuant to a Plan of Arrangement
+          </p>
 
-          <p>Refresh this screen in a few minutes or you can come back later to check on the progress.
-            If this issue persists, please contact us.</p>
+          <p>
+            Refresh this screen in a few minutes or you can come back later to check on the progress.
+            If this issue persists, please contact us.
+          </p>
 
           <ContactInfo class="mt-4" />
         </div>
@@ -89,7 +97,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action } from 'vuex-class'
 import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import { FilingNames } from '@/enums'
@@ -134,7 +142,7 @@ export default class FilingTemplate extends Vue {
   }
 
   /** Whether the court order has an effect of order. */
-  get isPlanOfArrangement (): boolean {
+  get hasEffectOfOrder (): boolean {
     return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 

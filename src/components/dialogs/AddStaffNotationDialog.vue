@@ -3,34 +3,34 @@
     <v-card>
       <v-card-title>
         <span id="dialog-title" class="font-weight-bold">
-          <template v-if="isPutBackOn" >Correction - {{ displayName }}</template>
-          <template v-else-if="isAdministrativeDissolution">{{ displayName }}</template>
+          <template v-if="isPutBackOn" >Correction - {{displayName}}</template>
+          <template v-else-if="isAdministrativeDissolution">{{displayName}}</template>
           <template v-else-if="isAdministerFreeze">
-            {{ !isAdminFrozen ? displayName : displayName.replace('Freeze', 'Unfreeze') }}
+            {{!isAdminFrozen ? displayName : displayName.replace('Freeze', 'Unfreeze')}}
           </template>
-          <template v-else >Add a {{ displayName }}</template>
+          <template v-else >Add a {{displayName}}</template>
         </span>
       </v-card-title>
 
       <v-card-text class="font-16">
         <p v-if="isAdministrativeDissolution">
-          You are about to dissolve <strong><span class="text-uppercase">{{ getLegalName }}</span>,
-          {{ getIdentifier }}</strong>.
+          You are about to dissolve <strong><span class="text-uppercase">{{getLegalName}}</span>,
+          {{getIdentifier}}</strong>.
         </p>
 
         <p v-if="isPutBackOn">
-          You are about to put <strong><span class="text-uppercase">{{ getLegalName }}</span>,
-          {{ getIdentifier }}</strong> back on the register.
+          You are about to put <strong><span class="text-uppercase">{{getLegalName}}</span>,
+          {{getIdentifier}}</strong> back on the register.
         </p>
 
         <p v-if="isAdministerFreeze">
-          You are about to {{ !isAdminFrozen ? 'freeze' : 'unfreeze' }}
-          <span class="text-uppercase font-weight-bold">{{ getLegalName }}</span>, {{ getIdentifier }}.
+          You are about to {{!isAdminFrozen ? 'freeze' : 'unfreeze'}}
+          <span class="text-uppercase font-weight-bold">{{getLegalName}}</span>, {{getIdentifier}}.
         </p>
 
         <v-form ref="notationFormRef" id="notation-form">
           <p id="notation-text" :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }">
-            Enter a {{ (isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'detail' : displayName }}
+            Enter a {{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'detail' : displayName}}
             that will appear on the ledger for this entity:
           </p>
 
@@ -53,7 +53,7 @@
 
           <ul class="ml-2">
             <li>Use a white background and a legible font with contrasting font colour</li>
-            <li>PDF file type (maximum {{ MAX_FILE_SIZE }} MB file size)</li>
+            <li>PDF file type (maximum {{MAX_FILE_SIZE}} MB file size)</li>
           </ul>
 
           <div class="d-flex mt-4">
@@ -104,7 +104,7 @@
             :loading="saving"
             @click.native="onSave()"
           >
-            <span>{{ (isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'File' : 'Save' }}</span>
+            <span>{{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'File' : 'Save'}}</span>
           </v-btn>
           <v-btn text color="primary"
             id="dialog-cancel-button"
@@ -123,7 +123,7 @@
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DateMixin, EnumMixin } from '@/mixins'
+import { DateMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF } from '@/interfaces'

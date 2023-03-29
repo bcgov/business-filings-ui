@@ -159,6 +159,33 @@ describe('Dashboard - UI', () => {
   })
 })
 
+describe('Dashboard - Route Parameter Tests', () => {
+  beforeAll(() => {
+    // init store
+    store.state.isCoaPending = false
+  })
+
+  it('sets Filing Id to a falsy value when the route query parameter doesn\'t exist', () => {
+    const $route = { query: {} }
+    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+
+    expect(vm.filingId).toBeFalsy()
+
+    wrapper.destroy()
+  })
+
+  it('sets Filing Id to the numeric value of the route query parameter when it exists', () => {
+    const $route = { query: { filing_id: '123' } }
+    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
+    const vm = wrapper.vm as any
+
+    expect(vm.filingId).toBe(123)
+
+    wrapper.destroy()
+  })
+})
+
 describe('Dashboard - Click Tests', () => {
   beforeAll(() => {
     // init store

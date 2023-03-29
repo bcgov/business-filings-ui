@@ -19,6 +19,7 @@ export default {
     })
   },
 
+  /** The count of filings in the Filing History List. */
   getHistoryCount (_state: FilingHistoryListStateIF, getters: any): number {
     const filings = getters.getFilings as ApiFilingIF[]
     return filings.length
@@ -48,6 +49,26 @@ export default {
     })
   },
 
+  /** Whether the Add Comment dialog should be displayed. */
+  isAddCommentDialog (state: FilingHistoryListStateIF): boolean {
+    return state.addCommentDialog
+  },
+
+  /** Whether the Download Error dialog should be displayed. */
+  isDownloadErrorDialog (state: FilingHistoryListStateIF): boolean {
+    return state.downloadErrorDialog
+  },
+
+  /** Whether the File Correction dialog should be displayed. */
+  isFileCorrectionDialog (state: FilingHistoryListStateIF): boolean {
+    return state.fileCorrectionDialog
+  },
+
+  /** Whether the Load Correction dialog should be displayed. */
+  isLoadCorrectionDialog (state: FilingHistoryListStateIF): boolean {
+    return state.loadCorrectionDialog
+  },
+
   /** Whether all documents are downloading. */
   isLoadingAll (state: FilingHistoryListStateIF): boolean {
     return state.loadingAll
@@ -56,25 +77,5 @@ export default {
   /** Whether one document is downloading. */
   isLoadingOne (state: FilingHistoryListStateIF): boolean {
     return state.loadingOne
-  },
-
-  /** Whether to show the Add Comment dialog. */
-  showAddCommentDialog (state: FilingHistoryListStateIF): boolean {
-    return state.addCommentDialog
-  },
-
-  /** Whether to show the Download Error dialog. */
-  showDownloadErrorDialog (state: FilingHistoryListStateIF): boolean {
-    return state.downloadErrorDialog
-  },
-
-  /** Whether to show the File Correction dialog. */
-  showFileCorrectionDialog (state: FilingHistoryListStateIF): boolean {
-    return state.fileCorrectionDialog
-  },
-
-  /** Whether to show the Load Correction dialog. */
-  showLoadCorrectionDialog (state: FilingHistoryListStateIF): boolean {
-    return state.loadCorrectionDialog
   }
 }

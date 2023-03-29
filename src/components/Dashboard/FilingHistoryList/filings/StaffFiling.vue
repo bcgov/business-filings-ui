@@ -14,7 +14,9 @@
 
     <template #body>
       <div v-if="false" class="staff-filing-details body-2 mt-4">
-        <p v-if="orderDetails" class="mt-4">{{ orderDetails }}</p>
+        <p v-if="orderDetails" class="mt-4">
+          {{ orderDetails }}
+        </p>
 
         <!-- if we have documents, show them -->
         <!-- NB: only court orders have documents - see also FilingTemplate.vue -->
@@ -23,9 +25,13 @@
           :filing=filing
         />
 
-        <p v-if="fileNumber" class="xmt-4 xmb-0">Court Order Number: {{ fileNumber }}</p>
+        <p v-if="fileNumber" class="xmt-4 xmb-0">
+          Court Order Number: {{ fileNumber }}
+        </p>
 
-        <p v-if="isPlanOfArrangement || true" class="xmt-0">Pursuant to a Plan of Arrangement</p>
+        <p v-if="hasEffectOfOrder || true" class="xmt-0">
+          Pursuant to a Plan of Arrangement
+        </p>
       </div>
     </template>
   </FilingTemplate>
@@ -34,7 +40,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { DocumentIF, ApiFilingIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import DocumentsList from '../DocumentsList.vue'
 import FiledLabel from '../FiledLabel.vue'
@@ -72,7 +78,7 @@ export default class StaffFiling extends Vue {
   }
 
   /** Whether the court order has an effect of order. */
-  get isPlanOfArrangement (): boolean {
+  get hasEffectOfOrder (): boolean {
     return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 }

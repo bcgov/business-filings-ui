@@ -7,11 +7,11 @@
       has been recorded as <strong>{{effectiveDateTime}}</strong>.
     </p>
 
-    <p v-if="filing.courtOrderNumber">
+    <p v-if="fileNumber">
       Court Order Number: {{filing.courtOrderNumber}}
     </p>
 
-    <p v-if="filing.isArrangement">
+    <p v-if="hasEffectOfOrder">
       Pursuant to a Plan of Arrangement
     </p>
 
@@ -72,6 +72,16 @@ export default class FutureEffectivePending extends Vue {
     return this.filing.effectiveDate
       ? DateUtilities.dateToPacificDateTime(new Date(this.filing.effectiveDate))
       : '[unknown]'
+  }
+
+  /** The court order file number. */
+  get fileNumber (): string {
+    return this.filing.data?.order?.fileNumber
+  }
+
+  /** Whether the court order has an effect of order. */
+  get hasEffectOfOrder (): boolean {
+    return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 }
 </script>

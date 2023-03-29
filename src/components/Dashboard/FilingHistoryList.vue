@@ -1,26 +1,26 @@
 <template>
   <div id="filing-history-list">
     <AddCommentDialog
-      :dialog="showAddCommentDialog"
+      :dialog="isAddCommentDialog"
       :filing="getCurrentFiling"
       @close="hideCommentDialog($event)"
       attach="#filing-history-list"
     />
 
     <DownloadErrorDialog
-      :dialog="showDownloadErrorDialog"
+      :dialog="isDownloadErrorDialog"
       @close="mutateDownloadErrorDialog(false)"
       attach="#filing-history-list"
     />
 
     <LoadCorrectionDialog
-      :dialog="showLoadCorrectionDialog"
+      :dialog="isLoadCorrectionDialog"
       @exit="mutateLoadCorrectionDialog(false)"
       attach="#filing-history-list"
     />
 
     <FileCorrectionDialog
-      :dialog="showFileCorrectionDialog"
+      :dialog="isFileCorrectionDialog"
       @exit="mutateFileCorrectionDialog(false)"
       @redirect="redirectFiling($event)"
       attach="#filing-history-list"
@@ -96,10 +96,10 @@ export default class FilingHistoryList extends Vue {
   @Getter isFirm!: boolean
   @Getter isRoleStaff!: boolean
   @Getter hasCourtOrders!: boolean
-  @Getter showAddCommentDialog!: boolean
-  @Getter showDownloadErrorDialog!: boolean
-  @Getter showLoadCorrectionDialog!: boolean
-  @Getter showFileCorrectionDialog!: boolean
+  @Getter isAddCommentDialog!: boolean
+  @Getter isDownloadErrorDialog!: boolean
+  @Getter isLoadCorrectionDialog!: boolean
+  @Getter isFileCorrectionDialog!: boolean
 
   @Action hideCommentDialog!: ActionBindingIF
   @Action toggleFilingHistoryItem!: ActionBindingIF
@@ -182,12 +182,12 @@ export default class FilingHistoryList extends Vue {
   }
 
   @Watch('getFilings', { immediate: true })
-  private async onFilingsChange (): Promise<void> {
+  private onFilingsChange (): void {
     // if needed, highlight a specific filing
     if (this.highlightId) {
       const index = this.getFilings.findIndex(f => (f.filingId === this.highlightId))
       if (index >= 0) { // safety check
-        await this.toggleFilingHistoryItem(index, this.getFilings[index])
+        this.toggleFilingHistoryItem(index, this.getFilings[index])
       }
     }
   }
