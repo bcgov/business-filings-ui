@@ -62,7 +62,7 @@ export default {
     state.currentFilingStatus = currentFilingStatus
   },
 
-  fetchingDataSpinner (state: StateIF, val: boolean) {
+  mutateFetchingDataSpinner (state: StateIF, val: boolean) {
     state.fetchingDataSpinner = val
   },
 

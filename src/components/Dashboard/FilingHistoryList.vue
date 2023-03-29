@@ -102,10 +102,10 @@ export default class FilingHistoryList extends Vue {
   @Getter showFileCorrectionDialog!: boolean
 
   @Action hideCommentDialog!: ActionBindingIF
-  @Action setFetchingDataSpinner!: ActionBindingIF
   @Action toggleFilingHistoryItem!: ActionBindingIF
 
   @Mutation mutateDownloadErrorDialog!: (x: boolean) => void
+  @Mutation mutateFetchingDataSpinner!: (x: boolean) => void
   @Mutation mutateFileCorrectionDialog!: (x: boolean) => void
   @Mutation mutateLoadCorrectionDialog!: (x: boolean) => void
 
@@ -149,7 +149,7 @@ export default class FilingHistoryList extends Vue {
   protected async redirectFiling (correctionType: CorrectionTypes): Promise<void> {
     try {
       // show spinner since the network calls below can take a few seconds
-      this.setFetchingDataSpinner(true)
+      this.mutateFetchingDataSpinner(true)
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
@@ -173,7 +173,7 @@ export default class FilingHistoryList extends Vue {
       navigate(correctionUrl)
     } catch (error) {
       // clear spinner on error
-      this.setFetchingDataSpinner(false)
+      this.mutateFetchingDataSpinner(false)
 
       // eslint-disable-next-line no-console
       console.log('Error creating correction =', error)

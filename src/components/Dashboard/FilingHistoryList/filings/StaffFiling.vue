@@ -13,19 +13,19 @@
     </template>
 
     <template #body>
-      <div v-if="filing" class="staff-filing-details body-2">
+      <div v-if="false" class="staff-filing-details body-2 mt-4">
         <p v-if="orderDetails" class="mt-4">{{ orderDetails }}</p>
 
         <!-- if we have documents, show them -->
-        <!-- NB: except for court orders, documents list is displayed in Filing Template -->
+        <!-- NB: only court orders have documents - see also FilingTemplate.vue -->
         <DocumentsList
           v-if="isTypeCourtOrder && filing.documents && filing.documents.length > 0"
           :filing=filing
         />
 
-        <p v-if="fileNumber" class="mt-4 mb-0">Court Order Number: {{ fileNumber }}</p>
+        <p v-if="fileNumber" class="xmt-4 xmb-0">Court Order Number: {{ fileNumber }}</p>
 
-        <p v-if="planOfArrangement" class="mt-0">{{ planOfArrangement }}</p>
+        <p v-if="isPlanOfArrangement || true" class="xmt-0">Pursuant to a Plan of Arrangement</p>
       </div>
     </template>
   </FilingTemplate>
@@ -71,9 +71,9 @@ export default class StaffFiling extends Vue {
     return this.filing.data?.order?.fileNumber
   }
 
-  /** The court order plan of arrangement. */
-  get planOfArrangement (): string {
-    return this.filing.data?.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : null
+  /** Whether the court order has an effect of order. */
+  get isPlanOfArrangement (): boolean {
+    return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 }
 </script>
@@ -89,6 +89,5 @@ export default class StaffFiling extends Vue {
 p {
   color: $gray7;
   font-size: $px-15;
-  margin-top: 1rem !important;
 }
 </style>

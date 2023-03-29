@@ -22,10 +22,10 @@
             />
           </slot>
 
-          <slot name="details-button mb-n2">
+          <slot name="details-button">
             <v-btn
               v-if="filing.commentsCount > 0"
-              class="comments-btn mt-n1"
+              class="comments-btn mt-1"
               outlined
               color="primary"
               :ripple=false
@@ -47,20 +47,17 @@
     </v-expansion-panel-header>
 
     <v-expansion-panel-content>
-      <!-- only show margin if we have a body -->
-      <div v-if="$slots.body" class="mt-6"></div>
-
-      <slot name="body" class="body-2">
+      <slot name="body">
         <!-- is this a generic paid (not yet completed) filing? -->
-        <div v-if="isStatusPaid" class="mt-6">
+        <div v-if="isStatusPaid || true" class="body-2 mt-4">
           <h4>Filing Pending</h4>
 
-          <p>This {{title}} is paid, but the filing has not been completed by the Business Registry
-            yet. Some filings may take longer than expected.</p>
+          <p class="my-4">This {{ title }} is paid, but the filing has not been completed by the
+            Business Registry yet. Some filings may take longer than expected.</p>
 
-          <p v-if="filing.courtOrderNumber">Court Order Number: {{filing.courtOrderNumber}}</p>
+          <p v-if="fileNumber">Court Order Number: {{ fileNumber }}</p>
 
-          <p v-if="filing.isArrangement">Pursuant to a Plan of Arrangement</p>
+          <p v-if="isPlanOfArrangement || true">Pursuant to a Plan of Arrangement</p>
 
           <p>Refresh this screen in a few minutes or you can come back later to check on the progress.
             If this issue persists, please contact us.</p>
@@ -71,19 +68,19 @@
 
       <slot name="documents">
         <!-- if we have documents, show them -->
-        <!-- NB: court orders display their own documents list - see StaffFiling.vue -->
-        <template v-if="!isTypeCourtOrder && filing.documents && filing.documents.length > 0">
+        <!-- NB: staff filings don't have documents - see StaffFiling.vue for an exception -->
+        <template v-if="!isTypeStaff && filing.documents && filing.documents.length > 0">
           <v-divider class="my-6" />
           <DocumentsList :filing=filing />
         </template>
       </slot>
 
-      <slot name="detail-comments mb-n2">
+      <slot name="detail-comments">
         <!-- if we have detail comments, show them -->
-        <template v-if="filing.comments && filing.commentsCount > 0">
+        <div v-if="filing.comments && filing.commentsCount > 0" class="mb-n2">
           <v-divider class="my-6" />
           <DetailsList :filing=filing />
-        </template>
+        </div>
       </slot>
     </v-expansion-panel-content>
   </v-expansion-panel>
@@ -101,7 +98,6 @@ import DetailsList from './DetailsList.vue'
 import DocumentsList from './DocumentsList.vue'
 import FiledAndPaid from './subtitles/FiledAndPaid.vue'
 import FiledAndPendingPaid from './subtitles/FiledAndPendingPaid.vue'
-import FiledLabel from './FiledLabel.vue'
 import HeaderActions from './HeaderActions.vue'
 
 @Component({
@@ -111,7 +107,6 @@ import HeaderActions from './HeaderActions.vue'
     DocumentsList,
     FiledAndPaid,
     FiledAndPendingPaid,
-    FiledLabel,
     HeaderActions
   }
 })
@@ -133,9 +128,19 @@ export default class FilingTemplate extends Vue {
     return 'Filing'
   }
 
-  /** Whether this filing is a Court Order. */
-  get isTypeCourtOrder (): boolean {
-    return EnumUtilities.isTypeCourtOrder(this.filing)
+  /** The court order file number. */
+  get fileNumber (): string {
+    return this.filing.data?.order?.fileNumber
+  }
+
+  /** Whether the court order has an effect of order. */
+  get isPlanOfArrangement (): boolean {
+    return Boolean(this.filing.data?.order?.effectOfOrder)
+  }
+
+  /** Whether this is a staff filing. */
+  get isTypeStaff (): boolean {
+    return EnumUtilities.isTypeStaff(this.filing)
   }
 }
 </script>

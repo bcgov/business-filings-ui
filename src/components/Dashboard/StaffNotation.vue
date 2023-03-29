@@ -184,7 +184,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
+import { Mutation } from 'vuex-class'
 import { navigate } from '@/utils'
 import {
   AllowableActions,
@@ -236,7 +236,7 @@ export default class StaffNotation extends Vue {
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset!: string
 
-  @Action setFetchingDataSpinner!: ActionBindingIF
+  @Mutation mutateFetchingDataSpinner!: ActionBindingIF
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
@@ -288,7 +288,7 @@ export default class StaffNotation extends Vue {
     let url: string
     try {
       // show spinner since the network calls below can take a few seconds
-      this.setFetchingDataSpinner(true)
+      this.mutateFetchingDataSpinner(true)
 
       // create restoration draft filing
       const restoration = this.buildRestorationFiling(restorationType)
@@ -307,7 +307,7 @@ export default class StaffNotation extends Vue {
       navigate(url)
     } catch (error) {
       // clear spinner on error
-      this.setFetchingDataSpinner(false)
+      this.mutateFetchingDataSpinner(false)
 
       alert(`Could not create restoration filing. Please try again or cancel.`)
     }
