@@ -36,24 +36,25 @@ export interface ApiHeaderIF {
  * Note that only `business` and `header` are required.
  */
 export interface TaskTodoIF {
+  alteration?: AlterationIF
   annualReport?: any
   business: ApiBusinessIF
   changeOfAddress?: any
   changeOfDirectors?: any
+  changeOfRegistration?: any
+  consentContinuationOut?: any
+  conversion?: any
   correction?: any
+  courtOrder?: any
   dissolution?: any
   documents?: Array<any>
   header: ApiHeaderIF
   incorporationApplication?: any
-  alteration?: AlterationIF
   registrarsNotation?: any
   registrarsOrder?: any
-  courtOrder?: any
   registration?: any
-  changeOfRegistration?: any
-  conversion?: any
-  specialResolution?: SpecialResolutionIF
   restoration?: RestorationIF
+  specialResolution?: SpecialResolutionIF
 }
 
 /**

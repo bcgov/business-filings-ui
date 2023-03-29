@@ -1,10 +1,14 @@
 import { EntityState } from '@/enums'
-import { ApiBusinessIF, BusinessStateIF } from '@/interfaces'
+import { AllowedActionsIF, ApiBusinessIF, BusinessStateIF } from '@/interfaces'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 export default {
   setAdminFreeze (state: BusinessStateIF, val: boolean) {
     state.businessInfo.adminFreeze = val
+  },
+
+  setAllowedActions (state: BusinessStateIF, val: AllowedActionsIF) {
+    state.businessInfo.allowedActions = val
   },
 
   setBusinessInfo (state: BusinessStateIF, val: ApiBusinessIF) {

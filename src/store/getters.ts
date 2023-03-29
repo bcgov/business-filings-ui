@@ -36,25 +36,20 @@ export default {
     return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
   },
 
-  /** Is True if there are any blockers, eg, pending tasks or filings. */
-  hasBlockerExceptStaffApproval (state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
-    return (
-      state.hasBlockerTask ||
-      state.hasBlockerFiling ||
-      state.isCoaPending ||
-      rootGetters.isAdminFreeze
-    )
+  /** The business email. */
+  getBusinessEmail (state: StateIF): string {
+    return state.businessEmail
   },
 
-  /** Is True if there is a blocker including firm compliance. */
-  hasBlocker (_state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
-    // check for compliance warning
-    if (rootGetters.hasComplianceWarning) return true
+  /** The business phone number and optional extension. */
+  getFullPhoneNumber (state: StateIF): string {
+    const phone = state.businessPhone
+    const ext = state.businessPhoneExtension
 
-    // check for missing info warning
-    if (rootGetters.hasMissingInfoWarning) return true
-
-    return rootGetters.hasBlockerExceptStaffApproval
+    if (phone) {
+      return (phone + `${ext ? (' x' + ext) : ''}`)
+    }
+    return null
   },
 
   /** Is True if a COA filing is pending. */

@@ -94,14 +94,6 @@ export default {
     state.filingData = filingData
   },
 
-  hasBlockerTask (state: StateIF, hasBlockerTask: boolean) {
-    state.hasBlockerTask = hasBlockerTask
-  },
-
-  hasBlockerFiling (state: StateIF, hasBlockerFiling: boolean) {
-    state.hasBlockerFiling = hasBlockerFiling
-  },
-
   isCoaPending (state: StateIF, isCoaPending: boolean) {
     state.isCoaPending = isCoaPending
   },

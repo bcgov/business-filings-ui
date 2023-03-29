@@ -227,7 +227,7 @@
                         </v-list-item-title>
                       </v-list-item>
 
-                      <v-list-item :disabled="!isAllowed(AllowableActions.ADD_DETAIL_COMMENT)">
+                      <v-list-item :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)">
                         <v-list-item-icon>
                           <v-icon color="primary">mdi-comment-plus</v-icon>
                         </v-list-item-icon>
@@ -441,7 +441,6 @@ export default class FilingHistoryList extends Vue {
 
   @Action setIsCoaPending!: ActionBindingIF
   @Action setCoaEffectiveDate!: ActionBindingIF
-  @Action setHasBlockerFiling!: ActionBindingIF
 
   // local properties
   protected addCommentDialog = false
@@ -504,19 +503,8 @@ export default class FilingHistoryList extends Vue {
     // Also update pending COA data.
     let isCoaPending = false
     let coaEffectiveDate: Date = null
-    const blockerFiling = this.historyItems.some(item => {
-      if (EnumUtilities.isStatusPaid(item)) {
-        if (item.isFutureEffectiveCoaPending) {
-          isCoaPending = true
-          coaEffectiveDate = item.effectiveDate
-        }
-        return true
-      }
-      return false
-    })
     this.setIsCoaPending(isCoaPending)
     this.setCoaEffectiveDate(coaEffectiveDate)
-    this.setHasBlockerFiling(blockerFiling)
 
     // if needed, highlight a specific filing
     if (this.highlightId) this.highlightFiling(this.highlightId)
@@ -929,7 +917,7 @@ export default class FilingHistoryList extends Vue {
 
     // list of conditions to disable correction
     // (any condition not listed below is ALLOWED)
-    conditions[0] = () => !this.isAllowed(AllowableActions.FILE_CORRECTION)
+    conditions[0] = () => !this.isAllowed(AllowableActions.CORRECTION)
     conditions[1] = () => item.availableOnPaperOnly
     conditions[2] = () => item.isTypeStaff
     conditions[3] = () => (
