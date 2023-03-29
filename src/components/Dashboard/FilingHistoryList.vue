@@ -181,6 +181,10 @@ export default class FilingHistoryList extends Vue {
     }
   }
 
+  /**
+   * This is called when filings are initially fetched.
+   * If there is a filing ID to highlight then it finds it and expands its panel.
+   */
   @Watch('getFilings', { immediate: true })
   private onFilingsChange (): void {
     // if needed, highlight a specific filing

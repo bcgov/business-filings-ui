@@ -267,7 +267,11 @@ export default {
       return sessionStorage.getItem('BUSINESS_ID')
     },
 
-    /** The Filing ID route query parameter. May be NaN (which is falsy). */
+    /**
+     * The Filing ID route query parameter. May be NaN (which is falsy).
+     * This is sometimes provided on the URL to highlight a filing, for example
+     * when returning from saving/filing it.
+     */
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
