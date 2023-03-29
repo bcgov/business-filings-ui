@@ -323,7 +323,6 @@ export default {
       'setCurrentDate',
       'setCurrentJsDate',
       'setEntityStatus',
-      'setFetchingDataSpinner',
       'setFilings',
       'setKeycloakRoles',
       'setNameRequest',
@@ -335,6 +334,7 @@ export default {
     ]),
 
     ...mapMutations([
+      'mutateFetchingDataSpinner',
       'setLegalName',
       'setLegalType',
       'setGoodStanding',
@@ -780,7 +780,7 @@ export default {
 
     /** Request and Download Business Summary Document. */
     async downloadBusinessSummary (): Promise<void> {
-      this.setFetchingDataSpinner(true)
+      this.mutateFetchingDataSpinner(true)
       const summaryDocument: DocumentIF = {
         title: 'Summary',
         filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
@@ -792,7 +792,7 @@ export default {
         console.log('fetchDocument() error =', error)
         this.downloadErrorDialog = true
       })
-      this.setFetchingDataSpinner(false)
+      this.mutateFetchingDataSpinner(false)
     },
 
     /** Direct to Digital Credentials. **/

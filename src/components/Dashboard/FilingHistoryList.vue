@@ -1,26 +1,26 @@
 <template>
   <div id="filing-history-list">
     <AddCommentDialog
-      :dialog="showAddCommentDialog"
+      :dialog="isAddCommentDialog"
       :filing="getCurrentFiling"
       @close="hideCommentDialog($event)"
       attach="#filing-history-list"
     />
 
     <DownloadErrorDialog
-      :dialog="showDownloadErrorDialog"
+      :dialog="isDownloadErrorDialog"
       @close="mutateDownloadErrorDialog(false)"
       attach="#filing-history-list"
     />
 
     <LoadCorrectionDialog
-      :dialog="showLoadCorrectionDialog"
+      :dialog="isLoadCorrectionDialog"
       @exit="mutateLoadCorrectionDialog(false)"
       attach="#filing-history-list"
     />
 
     <FileCorrectionDialog
-      :dialog="showFileCorrectionDialog"
+      :dialog="isFileCorrectionDialog"
       @exit="mutateFileCorrectionDialog(false)"
       @redirect="redirectFiling($event)"
       attach="#filing-history-list"
@@ -96,16 +96,16 @@ export default class FilingHistoryList extends Vue {
   @Getter isFirm!: boolean
   @Getter isRoleStaff!: boolean
   @Getter hasCourtOrders!: boolean
-  @Getter showAddCommentDialog!: boolean
-  @Getter showDownloadErrorDialog!: boolean
-  @Getter showLoadCorrectionDialog!: boolean
-  @Getter showFileCorrectionDialog!: boolean
+  @Getter isAddCommentDialog!: boolean
+  @Getter isDownloadErrorDialog!: boolean
+  @Getter isLoadCorrectionDialog!: boolean
+  @Getter isFileCorrectionDialog!: boolean
 
   @Action hideCommentDialog!: ActionBindingIF
-  @Action setFetchingDataSpinner!: ActionBindingIF
   @Action toggleFilingHistoryItem!: ActionBindingIF
 
   @Mutation mutateDownloadErrorDialog!: (x: boolean) => void
+  @Mutation mutateFetchingDataSpinner!: (x: boolean) => void
   @Mutation mutateFileCorrectionDialog!: (x: boolean) => void
   @Mutation mutateLoadCorrectionDialog!: (x: boolean) => void
 
@@ -149,7 +149,7 @@ export default class FilingHistoryList extends Vue {
   protected async redirectFiling (correctionType: CorrectionTypes): Promise<void> {
     try {
       // show spinner since the network calls below can take a few seconds
-      this.setFetchingDataSpinner(true)
+      this.mutateFetchingDataSpinner(true)
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
@@ -173,7 +173,7 @@ export default class FilingHistoryList extends Vue {
       navigate(correctionUrl)
     } catch (error) {
       // clear spinner on error
-      this.setFetchingDataSpinner(false)
+      this.mutateFetchingDataSpinner(false)
 
       // eslint-disable-next-line no-console
       console.log('Error creating correction =', error)
@@ -182,12 +182,12 @@ export default class FilingHistoryList extends Vue {
   }
 
   @Watch('getFilings', { immediate: true })
-  private async onFilingsChange (): Promise<void> {
+  private onFilingsChange (): void {
     // if needed, highlight a specific filing
     if (this.highlightId) {
       const index = this.getFilings.findIndex(f => (f.filingId === this.highlightId))
       if (index >= 0) { // safety check
-        await this.toggleFilingHistoryItem(index, this.getFilings[index])
+        this.toggleFilingHistoryItem(index, this.getFilings[index])
       }
     }
   }

@@ -2,7 +2,7 @@
   <div class="filed-label d-inline">
     <template v-if="isTypeStaff">
       <template v-if="putBackOnOrAdminDissolution">
-       <span> (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
+        <span> (filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" />)</span>
         <span class="vert-pipe" />
         <span>EFFECTIVE as of <DateTooltip :date="effectiveDate" /></span>
       </template>

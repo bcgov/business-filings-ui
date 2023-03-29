@@ -61,14 +61,14 @@ export default {
         if (filing.documentsLink && !filing.documents) promises.push(dispatch('loadDocuments', filing))
 
         if (promises.length > 0) {
-          commit('fetchingDataSpinner', true)
+          commit('mutateFetchingDataSpinner', true)
 
           // NB: errors are handled in loadComments() and loadDocuments()
           await Promise.all(promises)
 
           // leave busy spinner displayed another 250ms
           // (to mitigate flashing when the promises are resolved quickly)
-          setTimeout(() => { commit('fetchingDataSpinner', false) }, 250)
+          setTimeout(() => { commit('mutateFetchingDataSpinner', false) }, 250)
         }
       }
 
@@ -130,7 +130,7 @@ export default {
 
               const date = DateUtilities.dateToYyyyMmDd(new Date(filing.submittedDate))
               const filename = `${getters.getIdentifier} ${title} - ${date}.pdf`
-              const link = legalFiling[prop] as string
+              const link = legalFiling[prop]
               pushDocument(title, filename, link)
             }
           }
@@ -180,12 +180,12 @@ export default {
       // if needed, reload comments for current filing
       if (needReload) {
         if (getters.getCurrentFiling?.commentsLink) { // safety check
-          commit('fetchingDataSpinner', true)
+          commit('mutateFetchingDataSpinner', true)
           dispatch('loadComments', getters.getCurrentFiling)
             .finally(() => {
               // leave busy spinner displayed another 250ms
               // (to mitigate flashing when the promises are resolved quickly)
-              setTimeout(() => { commit('fetchingDataSpinner', false) }, 250)
+              setTimeout(() => { commit('mutateFetchingDataSpinner', false) }, 250)
             })
         }
       }

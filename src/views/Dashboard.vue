@@ -233,8 +233,8 @@ export default {
   computed: {
     ...mapGetters([
       'getEditUrl',
+      'getHistoryCount',
       'getIdentifier',
-      'getFilings',
       'getParties',
       'getPendingCoa',
       'hasComplianceWarning',
@@ -271,11 +271,6 @@ export default {
     filingId (): number {
       // NB: use unary plus operator to cast string to number
       return +this.$route.query.filing_id
-    },
-
-    /** The count of filings in the Filing History List. */
-    getHistoryCount (): number {
-      return this.getFilings.length
     },
 
     /** Whether to show Missing Information alert. */

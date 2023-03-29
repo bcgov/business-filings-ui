@@ -48,9 +48,6 @@ export default {
   setCurrentFilingStatus ({ commit }, currentFilingStatus: FilingStatus) {
     commit('currentFilingStatus', currentFilingStatus)
   },
-  setFetchingDataSpinner ({ commit }, val: boolean) {
-    commit('fetchingDataSpinner', val)
-  },
   setTasks ({ commit }, tasks: Array<ApiTaskIF>) {
     commit('tasks', tasks)
   },
