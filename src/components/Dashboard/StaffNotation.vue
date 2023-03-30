@@ -146,6 +146,7 @@
             </v-list-item>
 
             <v-list-item
+              v-if="isBenBcCccUlc || isCoop"
               data-type="consent-continue-out"
               @click="goToConsentContinuationOutFiling()"
               :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
@@ -206,6 +207,8 @@ import { mapGetters } from 'vuex'
       'getEditUrl',
       'getIdentifier',
       'isAdminFrozen',
+      'isBenBcCccUlc',
+      'isCoop',
       'isFirm',
       'isHistorical',
       'isInLimitedRestoration'

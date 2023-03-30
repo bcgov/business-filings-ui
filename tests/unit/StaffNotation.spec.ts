@@ -120,11 +120,12 @@ describe('StaffNotation', () => {
         label: 'Freeze Business',
         disabled: false
       },
-      {
-        type: 'consent-continue-out',
-        label: 'Consent to Continuation Out',
-        disabled: false
-      },
+      // only displayed for corps and coops (not firms)
+      // {
+      //   type: 'consent-continue-out',
+      //   label: 'Consent to Continuation Out',
+      //   disabled: false
+      // },
       {
         type: 'extend-limited-restoration',
         label: 'Extend Limited Restoration',
@@ -236,12 +237,13 @@ describe('StaffNotation', () => {
         type: 'administrative-dissolution',
         label: 'Administrative Dissolution',
         disabled: true
-      },
-      {
-        type: 'consent-continue-out',
-        label: 'Consent to Continuation Out',
-        disabled: true
       }
+      // only displayed for corps and coops (not firms
+      // {
+      //   type: 'consent-continue-out',
+      //   label: 'Consent to Continuation Out',
+      //   disabled: true
+      // }
     ]
 
     // verify menu items
