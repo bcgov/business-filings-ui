@@ -25,7 +25,7 @@ export default class CompletedIa extends Vue {
   @Getter readonly getLegalName!: string
   @Getter readonly getMyBusinessRegistryUrl!: string
 
-  protected returnToMyBusinessRegistry (): void {
+  returnToMyBusinessRegistry (): void {
     navigate(this.getMyBusinessRegistryUrl)
   }
 }

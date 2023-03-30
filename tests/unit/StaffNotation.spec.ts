@@ -36,6 +36,32 @@ describe('StaffNotation', () => {
     window.location.assign = assign
   })
 
+  beforeEach(() => {
+    // allow all filings referenced in this component
+    // some of these are normally mutually exclusive, but that's OK for testing
+    store.commit('setAllowedActions', {
+      filing: {
+        filingTypes: [
+          { name: 'registrarsNotation' },
+          { name: 'registrarsOrder' },
+          { name: 'courtOrder' },
+          { name: 'conversion' },
+          { name: 'dissolution' }, // FUTURE: add dissolution type
+          { name: 'restoration', type: 'fullRestoration' },
+          { name: 'putBackOn' },
+          { name: 'adminFreeze' },
+          { name: 'consentContinuationOut' },
+          { name: 'restoration', type: 'limitedRestorationExtension' },
+          { name: 'restoration', type: 'limitedRestorationToFull' }
+        ]
+      }
+    })
+    store.commit('setLegalType', 'SP') // firm
+    store.commit('setState', 'ACTIVE') // not historical
+    store.commit('setAdminFreeze', false) // not frozen
+    store.commit('setIdentifier', 'SP1234567') // business id
+  })
+
   it('renders menu button correctly', () => {
     const wrapper = mount(StaffNotation, { store, vuetify })
 
@@ -45,11 +71,7 @@ describe('StaffNotation', () => {
     wrapper.destroy()
   })
 
-  it('renders drop-down menu correctly - active and not limited restoration', async () => {
-    // set store specifically for this test
-    store.commit('setLegalType', 'BC')
-    store.commit('setState', 'ACTIVE')
-
+  it('renders drop-down menu correctly - full list, all allowed actions', async () => {
     const wrapper = mount(StaffNotation, { vuetify, store })
 
     // open menu
@@ -57,40 +79,67 @@ describe('StaffNotation', () => {
     expect(wrapper.vm.$data.expand).toBe(true)
 
     // menu items expected as follows
-    const expectedStaffMenu = [
+    const menuItems = [
       {
-        'type': 'registrars-notation',
-        'label': 'Add Registrar\'s Notation',
-        'disabled': false
+        type: 'registrars-notation',
+        label: 'Add Registrar\'s Notation',
+        disabled: false
       },
       {
-        'type': 'registrars-order',
-        'label': 'Add Registrar\'s Order',
-        'disabled': false
+        type: 'registrars-order',
+        label: 'Add Registrar\'s Order',
+        disabled: false
       },
       {
-        'type': 'court-order',
-        'label': 'Add Court Order',
-        'disabled': false
+        type: 'court-order',
+        label: 'Add Court Order',
+        disabled: false
       },
       {
-        'type': 'administrative-dissolution',
-        'label': 'Administrative Dissolution',
-        'disabled': false
+        type: 'record-conversion',
+        label: 'Record Conversion',
+        disabled: false
       },
       {
-        'type': 'admin-freeze',
-        'label': 'Freeze Business',
-        'disabled': false
+        type: 'administrative-dissolution',
+        label: 'Administrative Dissolution',
+        disabled: false
       },
       {
-        'type': 'consent-continue-out',
-        'label': 'Consent to Continuation Out',
-        'disabled': false
+        type: 'restoration',
+        label: 'Restore Company',
+        disabled: false
+      },
+      {
+        type: 'put-back-on',
+        label: 'Put Back On',
+        disabled: false
+      },
+      {
+        type: 'admin-freeze',
+        label: 'Freeze Business',
+        disabled: false
+      },
+      // only displayed for corps and coops (not firms)
+      // {
+      //   type: 'consent-continue-out',
+      //   label: 'Consent to Continuation Out',
+      //   disabled: false
+      // },
+      {
+        type: 'extend-limited-restoration',
+        label: 'Extend Limited Restoration',
+        disabled: false
+      },
+      {
+        type: 'convert-full-restoration',
+        label: 'Convert to Full Restoration',
+        disabled: false
       }
     ]
 
-    for (const menuItem of expectedStaffMenu) {
+    // verify menu items
+    for (const menuItem of menuItems) {
       const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
       expect(menuItemUnderTest.text()).toBe(menuItem.label)
       if (menuItem.disabled) {
@@ -99,23 +148,14 @@ describe('StaffNotation', () => {
         expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
       }
     }
-    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(expectedStaffMenu.length)
+    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(menuItems.length)
 
     wrapper.destroy()
   })
 
-  it('renders drop-down menu correctly - active and limited restoration', async () => {
+  it('renders drop-down menu correctly - not firm', async () => {
     // set store specifically for this test
-    store.commit('setLegalType', 'BC')
-    store.commit('setState', 'ACTIVE')
-    store.state.stateFiling = {
-      business: {
-        state: 'ACTIVE'
-      },
-      restoration: {
-        type: 'limitedRestoration'
-      }
-    }
+    store.commit('setLegalType', 'BC') // not firm
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -123,69 +163,47 @@ describe('StaffNotation', () => {
     await wrapper.find('.menu-btn').trigger('click')
     expect(wrapper.vm.$data.expand).toBe(true)
 
-    // menu items expected as follows
-    const expectedStaffMenu = [
-      {
-        'type': 'registrars-notation',
-        'label': 'Add Registrar\'s Notation',
-        'disabled': false
-      },
-      {
-        'type': 'registrars-order',
-        'label': 'Add Registrar\'s Order',
-        'disabled': false
-      },
-      {
-        'type': 'court-order',
-        'label': 'Add Court Order',
-        'disabled': false
-      },
-      {
-        'type': 'administrative-dissolution',
-        'label': 'Administrative Dissolution',
-        'disabled': false
-      },
-      {
-        'type': 'admin-freeze',
-        'label': 'Freeze Business',
-        'disabled': false
-      },
-      {
-        'type': 'consent-continue-out',
-        'label': 'Consent to Continuation Out',
-        'disabled': false
-      },
-      {
-        'type': 'extend-limited-restoration',
-        'label': 'Extend Limited Restoration',
-        'disabled': false
-      },
-      {
-        'type': 'convert-full-restoration',
-        'label': 'Convert to Full Restoration',
-        'disabled': false
-      }
-    ]
-
-    for (const menuItem of expectedStaffMenu) {
-      const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
-      expect(menuItemUnderTest.text()).toBe(menuItem.label)
-      if (menuItem.disabled) {
-        expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
-      } else {
-        expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
-      }
-    }
-    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(expectedStaffMenu.length)
+    // verify item
+    expect(wrapper.find('[data-type="record-conversion"]').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
   it('renders drop-down menu correctly - historical', async () => {
     // set store specifically for this test
-    store.commit('setLegalType', 'SP')
-    store.commit('setState', 'HISTORICAL')
-    store.state.stateFiling = {}
+    store.commit('setState', 'HISTORICAL') // historical
+
+    const wrapper = mount(StaffNotation, { vuetify, store })
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // verify item
+    expect(wrapper.find('[data-type="administrative-dissolution"]').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('renders drop-down menu correctly - frozen', async () => {
+    // set store specifically for this test
+    store.commit('setAdminFreeze', true) // frozen
+
+    const wrapper = mount(StaffNotation, { vuetify, store })
+
+    // open menu
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.vm.$data.expand).toBe(true)
+
+    // verify item
+    expect(wrapper.find('[data-type="admin-freeze"]').text()).toBe('Unfreeze Business')
+
+    wrapper.destroy()
+  })
+
+  it('renders drop-down menu correctly - full list, no allowed actions', async () => {
+    // set store specifically for this test
+    store.commit('setAllowedActions', null) // no allowed filings
 
     const wrapper = mount(StaffNotation, { vuetify, store })
 
@@ -194,45 +212,51 @@ describe('StaffNotation', () => {
     expect(wrapper.vm.$data.expand).toBe(true)
 
     // menu items expected as follows
-    const expectedStaffMenu = [
+    const menuItems = [
       {
-        'type': 'registrars-notation',
-        'label': 'Add Registrar\'s Notation',
-        'disabled': false
+        type: 'registrars-notation',
+        label: 'Add Registrar\'s Notation',
+        disabled: true
       },
       {
-        'type': 'registrars-order',
-        'label': 'Add Registrar\'s Order',
-        'disabled': false
+        type: 'registrars-order',
+        label: 'Add Registrar\'s Order',
+        disabled: true
       },
       {
-        'type': 'court-order',
-        'label': 'Add Court Order',
-        'disabled': false
+        type: 'court-order',
+        label: 'Add Court Order',
+        disabled: true
       },
       {
-        'type': 'record-conversion',
-        'label': 'Record Conversion',
-        'disabled': false
+        type: 'record-conversion',
+        label: 'Record Conversion',
+        disabled: true
       },
       {
-        'type': 'put-back-on',
-        'label': 'Put Back On',
-        'disabled': false
+        type: 'administrative-dissolution',
+        label: 'Administrative Dissolution',
+        disabled: true
       }
+      // only displayed for corps and coops (not firms
+      // {
+      //   type: 'consent-continue-out',
+      //   label: 'Consent to Continuation Out',
+      //   disabled: true
+      // }
     ]
 
-    for (const menuItem of expectedStaffMenu) {
+    // verify menu items
+    for (const menuItem of menuItems) {
       const menuItemUnderTest = wrapper.find('[data-type="' + menuItem.type + '"]')
       expect(menuItemUnderTest.text()).toBe(menuItem.label)
       if (menuItem.disabled) {
         expect(menuItemUnderTest.classes()).toContain('v-list-item--disabled')
-      }
-      if (!menuItem.disabled) {
+      } else {
         expect(menuItemUnderTest.classes()).not.toContain('v-list-item--disabled')
       }
     }
-    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(expectedStaffMenu.length)
+    expect(wrapper.findAll('.v-list-item__title')).toHaveLength(menuItems.length)
 
     wrapper.destroy()
   })
@@ -258,10 +282,6 @@ describe('StaffNotation', () => {
 
   for (const test of staffFilingTypes) {
     it(`renders the staff notation dialog correctly for ${test.name}`, async () => {
-      // set store specifically for this test
-      store.commit('setLegalType', 'SP')
-      store.commit('setState', 'ACTIVE')
-
       const wrapper = mount(StaffNotation, { vuetify, store })
 
       // open menu
@@ -322,10 +342,6 @@ describe('StaffNotation', () => {
   }
 
   it('renders the staff notation dialog correction for Put Back On', async () => {
-    // set store specifically for this test
-    store.commit('setLegalType', 'SP')
-    store.commit('setState', 'HISTORICAL')
-
     const wrapper = mount(StaffNotation, { vuetify, store })
 
     // open menu
@@ -357,10 +373,6 @@ describe('StaffNotation', () => {
   })
 
   it('renders the staff notation dialog for Admin Freeze', async () => {
-    // set store specifically for this test
-    store.commit('setLegalType', 'SP')
-    store.commit('setState', 'ACTIVE')
-
     const wrapper = mount(StaffNotation, { vuetify, store })
 
     // open menu
@@ -392,11 +404,6 @@ describe('StaffNotation', () => {
   })
 
   it('goes to conversion filing', async () => {
-    // set store specifically for this test
-    store.commit('setLegalType', 'SP')
-    store.commit('setState', 'ACTIVE')
-    store.commit('setIdentifier', 'SP1234567')
-
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const wrapper = mount(StaffNotation, { vuetify, store, localVue })
@@ -417,8 +424,7 @@ describe('StaffNotation', () => {
 
   it('goes to restoration filing', async () => {
     // set store specifically for this test
-    store.commit('setLegalType', 'BEN')
-    store.commit('setState', 'HISTORICAL')
+    store.commit('setLegalType', 'BC') // corp
     store.commit('setIdentifier', 'BC1234567')
 
     // stub "create draft" endpoint
@@ -457,18 +463,8 @@ describe('StaffNotation', () => {
 
   it('goes to limited restoration extension filing', async () => {
     // set store specifically for this test
+    store.commit('setLegalType', 'BC') // corp
     store.commit('setIdentifier', 'BC1234567')
-    store.state.currentDate = '2022-12-31'
-    store.commit('setLegalType', 'BEN')
-    store.commit('setState', 'ACTIVE')
-    store.state.stateFiling = {
-      business: {
-        state: 'ACTIVE'
-      },
-      restoration: {
-        type: 'limitedRestoration'
-      }
-    }
 
     // stub "create draft" endpoint
     sinon.stub(axios, 'post').withArgs('businesses/BC1234567/filings?draft=true').returns(

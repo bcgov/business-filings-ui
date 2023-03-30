@@ -48,7 +48,6 @@
                 <StaffNotation
                   v-if="isRoleStaff && !!businessId"
                   addScrollbarOffset="true"
-                  :disabled="!isAllowed(AllowableActions.FILE_STAFF_NOTATION)"
                   @close="reloadDataIfNeeded($event)"
                 />
               </header>
@@ -101,7 +100,7 @@
                   text small color="primary"
                   id="standalone-addresses-button"
                   class="change-btn"
-                  :disabled="!isAllowed(AllowableActions.FILE_ADDRESS_CHANGE)"
+                  :disabled="!isAllowed(AllowableActions.ADDRESS_CHANGE)"
                   @click.native.stop="onAddressChangeClick()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -118,7 +117,7 @@
             </section>
 
             <!-- Proprietor / Partners -->
-            <section v-if="isSoleProp || isPartnership">
+            <section v-if="isFirm">
               <header class="aside-header mb-3">
                 <h2 v-if="isSoleProp" data-test-id="dashboard-proprietor-subtitle">Proprietor</h2>
                 <h2 v-if="isPartnership" data-test-id="dashboard-partners-subtitle">Partners</h2>
@@ -126,7 +125,7 @@
                   id="change-proprietor-partners-button"
                   class="change-btn"
                   v-if="!isHistorical"
-                  :disabled="hasBlocker || !isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)"
+                  :disabled="!isAllowed(AllowableActions.DIRECTOR_CHANGE)"
                   @click.native.stop="goToChangeFiling()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -152,7 +151,7 @@
                   text small color="primary"
                   id="standalone-directors-button"
                   class="change-btn"
-                  :disabled="!isAllowed(AllowableActions.FILE_DIRECTOR_CHANGE)"
+                  :disabled="!isAllowed(AllowableActions.DIRECTOR_CHANGE)"
                   @click.native.stop="goToStandaloneDirectors()"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -239,7 +238,6 @@ export default {
       'getEditUrl',
       'getIdentifier',
       'getParties',
-      'hasBlocker',
       'hasComplianceWarning',
       'hasMissingInfoWarning',
       'isAdminFrozen',

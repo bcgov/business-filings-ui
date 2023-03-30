@@ -13,14 +13,7 @@ Vue.use(VueRouter)
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-// mock the mixin to always return True
-const AllowableActionsMixin: any = {
-  methods: {
-    isAllowed: () => true
-  }
-}
-
-describe('Entity Menu - items', () => {
+describe('Entity Menu - entities', () => {
   const router = mockRouter.mock()
 
   it('handles empty data', async () => {
@@ -32,7 +25,13 @@ describe('Entity Menu - items', () => {
     store.commit('setState', null)
     store.state.keycloakRoles = []
 
-    const wrapper = shallowMount(EntityMenu, { store, vuetify, router, propsData: { businessId: null } })
+    const wrapper = mount(EntityMenu, {
+      store,
+      vuetify,
+      router,
+      mixins: [{ methods: { isAllowed: () => false } }],
+      propsData: { businessId: null }
+    })
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
@@ -45,35 +44,67 @@ describe('Entity Menu - items', () => {
     wrapper.destroy()
   })
 
-  it('displays Business entity info properly', async () => {
+  it('displays entity info properly for a business', async () => {
     // set store properties
     store.commit('setGoodStanding', true)
     store.commit('setLegalName', 'My Business')
     store.commit('setLegalType', 'CP')
     store.state.keycloakRoles = ['staff']
 
+    // mock isAllowed mixin method
+    function isAllowed (action: string): boolean {
+      if (action === 'staffComment') return true
+      if (action === 'businessInformation') return true
+      if (action === 'voluntaryDissolution') return true
+      if (action === 'businessSummary') return true
+      if (action === 'digitalCredentials') return false
+      return false
+    }
+
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(EntityMenu, { store, vuetify, router, propsData: { businessId: 'CP0001191' } })
+    const wrapper = mount(EntityMenu, {
+      store,
+      vuetify,
+      router,
+      mixins: [{ methods: { isAllowed } }],
+      propsData: { businessId: 'CP0001191' }
+    })
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(true)
     expect(wrapper.find('#historical-chip').exists()).toBe(false)
-    expect(wrapper.find('#company-information-button').exists()).toBe(false)
-    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
-    expect(wrapper.find('#download-summary-button').exists()).toBe(false)
+    expect(wrapper.find('#company-information-button').exists()).toBe(true)
+    expect(wrapper.find('#dissolution-button').exists()).toBe(true)
+    expect(wrapper.find('#download-summary-button').exists()).toBe(true)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
-  it('displays Draft Incorp App entity info properly', async () => {
+  it('displays entity info properly for a draft IA', async () => {
     // set store properties
     store.commit('setLegalName', 'My Named Company')
     store.commit('setLegalType', 'BEN')
     store.state.entityStatus = 'DRAFT_APP'
     store.state.keycloakRoles = ['staff']
 
-    const wrapper = shallowMount(EntityMenu, { store, vuetify, router, propsData: { businessId: null } })
+    // mock isAllowed mixin method
+    function isAllowed (action: string): boolean {
+      if (action === 'staffComment') return false
+      if (action === 'businessInformation') return false
+      if (action === 'voluntaryDissolution') return false
+      if (action === 'businessSummary') return false
+      if (action === 'digitalCredentials') return false
+      return false
+    }
+
+    const wrapper = mount(EntityMenu, {
+      store,
+      vuetify,
+      router,
+      mixins: [{ methods: { isAllowed } }],
+      propsData: { businessId: null }
+    })
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
@@ -86,14 +117,30 @@ describe('Entity Menu - items', () => {
     wrapper.destroy()
   })
 
-  it('displays Filed Incorp App entity info properly', async () => {
+  it('displays entity info properly for a filed IA', async () => {
     // set store properties
     store.commit('setLegalName', 'My Future Company')
     store.commit('setLegalType', 'BEN')
     store.state.entityStatus = 'FILED_APP'
     store.state.keycloakRoles = ['staff']
 
-    const wrapper = shallowMount(EntityMenu, { store, vuetify, router, propsData: { businessId: null } })
+    // mock isAllowed mixin method
+    function isAllowed (action: string): boolean {
+      if (action === 'staffComment') return false
+      if (action === 'businessInformation') return false
+      if (action === 'voluntaryDissolution') return false
+      if (action === 'businessSummary') return false
+      if (action === 'digitalCredentials') return false
+      return false
+    }
+
+    const wrapper = mount(EntityMenu, {
+      store,
+      vuetify,
+      router,
+      mixins: [{ methods: { isAllowed } }],
+      propsData: { businessId: null }
+    })
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
@@ -215,7 +262,7 @@ describe('Entity Menu - View and Change Business Information button', () => {
         store,
         vuetify,
         router,
-        mixins: [{ methods: { isAllowed: () => _.isAllowed } }],
+        mixins: [{ methods: { isAllowed: () => true } }],
         propsData: { businessId: _.businessId }
       })
 
@@ -293,15 +340,15 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     wrapper.destroy()
   })
 
-  it('does not display the button if not allowed', async () => {
+  it('does not display the button if not a business', async () => {
     store.commit('setState', 'ACTIVE')
 
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       store,
       vuetify,
-      mixins: [{ methods: { isAllowed: () => false } }],
-      propsData: { businessId: 'BC1234567' }
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: null }
     })
     await Vue.nextTick()
 
@@ -327,16 +374,15 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
     wrapper.destroy()
   })
 
-  it('displays the button as disabled if there is a blocker', async () => {
+  it('displays the button as disabled if not allowed', async () => {
     store.commit('setState', 'ACTIVE')
 
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       store,
       vuetify,
-      mixins: [{ methods: { isAllowed: () => true } }],
-      propsData: { businessId: 'BC1234567' },
-      computed: { hasBlocker: () => true }
+      mixins: [{ methods: { isAllowed: () => false } }],
+      propsData: { businessId: 'BC1234567' }
     })
     await Vue.nextTick()
 

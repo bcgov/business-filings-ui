@@ -36,27 +36,6 @@ export default {
     return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
   },
 
-  /** Is True if there are any blockers, eg, pending tasks or filings. */
-  hasBlockerExceptStaffApproval (state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
-    return (
-      state.hasBlockerTask ||
-      state.hasBlockerFiling ||
-      state.isCoaPending ||
-      !!rootGetters.isAdminFreeze
-    )
-  },
-
-  /** Is True if there is a blocker including firm compliance. */
-  hasBlocker (_state: StateIF, _getters: any, _rootState: any, rootGetters: any): boolean {
-    // check for compliance warning
-    if (rootGetters.hasComplianceWarning) return true
-
-    // check for missing info warning
-    if (rootGetters.hasMissingInfoWarning) return true
-
-    return rootGetters.hasBlockerExceptStaffApproval
-  },
-
   /** The business email. */
   getBusinessEmail (state: StateIF): string {
     return state.businessEmail
@@ -156,7 +135,7 @@ export default {
     return state.parties
   },
 
-  /** The entity busness address. */
+  /** The entity business address. */
   getBusinessAddress (state: StateIF): OfficeAddressIF {
     return state.businessAddress
   },

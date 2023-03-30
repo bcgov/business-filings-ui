@@ -1,7 +1,7 @@
 <template>
   <menu id="entity-menu">
     <!-- Staff Comments -->
-    <span v-if="!!businessId && isAllowed(AllowableActions.ADD_STAFF_COMMENT)">
+    <span v-if="isAllowed(AllowableActions.STAFF_COMMENT)">
       <StaffComments
         :axios="axios"
         :businessId="businessId"
@@ -19,50 +19,48 @@
       <span class="font-14 mx-3">{{ getReasonText || 'Unknown Reason' }}</span>
     </span>
 
-    <template v-else>
-      <!-- View and Change Company Information -->
-      <span v-if="isAllowed(AllowableActions.VIEW_CHANGE_COMPANY_INFO)">
-        <v-btn
-          small text color="primary"
-          id="company-information-button"
-          :disabled="hasBlocker"
-          @click="promptChangeCompanyInfo()"
-        >
-          <v-icon medium>mdi-file-document-edit-outline</v-icon>
-          <span class="font-13 ml-1">View and Change Business Information</span>
-        </v-btn>
+    <!-- View and Change Business Information -->
+    <span v-if="isBusiness && !isHistorical">
+      <v-btn
+        small text color="primary"
+        id="company-information-button"
+        :disabled="!isAllowed(AllowableActions.BUSINESS_INFORMATION)"
+        @click="promptChangeCompanyInfo()"
+      >
+        <v-icon medium>mdi-file-document-edit-outline</v-icon>
+        <span class="font-13 ml-1">View and Change Business Information</span>
+      </v-btn>
 
-        <v-tooltip v-if="isPendingDissolution" top content-class="top-tooltip" transition="fade-transition">
-          <template v-slot:activator="{ on }">
-            <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
-          </template>
-          You cannot view or change business information while the business is pending dissolution.
-        </v-tooltip>
-      </span>
+      <v-tooltip v-if="isPendingDissolution" top content-class="top-tooltip" transition="fade-transition">
+        <template v-slot:activator="{ on }">
+          <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
+        </template>
+        You cannot view or change business information while the business is pending dissolution.
+      </v-tooltip>
+    </span>
 
-      <!-- Dissolve Company -->
-      <span v-if="isAllowed(AllowableActions.DISSOLVE_COMPANY)">
-        <v-tooltip top content-class="top-tooltip" transition="fade-transition">
-          <template v-slot:activator="{ on }">
-            <v-btn
-              small text color="primary"
-              id="dissolution-button"
-              :disabled="hasBlocker"
-              @click="promptDissolve()"
-              v-on="on"
-            >
-              <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
-              <span class="font-13 ml-1">Dissolve this Business</span>
-            </v-btn>
-          </template>
-          Dissolving the business will make this business historical
-          and it will be struck from the corporate registry.
-        </v-tooltip>
-      </span>
-    </template>
+    <!-- Dissolve Business -->
+    <span v-if="isBusiness && !isHistorical">
+      <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            small text color="primary"
+            id="dissolution-button"
+            :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
+            @click="promptDissolve()"
+            v-on="on"
+          >
+            <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
+            <span class="font-13 ml-1">Dissolve this Business</span>
+          </v-btn>
+        </template>
+        Dissolving the business will make this business historical
+        and it will be struck from the corporate registry.
+      </v-tooltip>
+    </span>
 
     <!-- Download Business Summary -->
-    <span v-if="isAllowed(AllowableActions.DOWNLOAD_BUSINESS_SUMMARY)">
+    <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip top content-class="top-tooltip" transition="fade-transition">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -80,7 +78,7 @@
     </span>
 
     <!-- View/Add Digital Credentials -->
-    <span v-if="isAllowed(AllowableActions.VIEW_ADD_DIGITAL_CREDENTIALS)">
+    <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
       <v-tooltip top content-class="top-tooltip" transition="fade-transition">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -119,7 +117,6 @@ export default class EntityMenu extends Vue {
   @Getter getEditUrl!: string
   @Getter getIdentifier!: string
   @Getter getReasonText!: string
-  @Getter hasBlocker!: boolean
   @Getter isFirm!: boolean
   @Getter isHistorical!: boolean
   @Getter isPendingDissolution!: boolean
@@ -127,6 +124,11 @@ export default class EntityMenu extends Vue {
   // enums for template
   readonly axios = axios
   readonly AllowableActions = AllowableActions
+
+  /** Whether this entity is a business (and not a draft IA/Registration). */
+  get isBusiness (): boolean {
+    return !!this.businessId
+  }
 
   /**
    * Emits an event to display NIGS dialog if company is not in good standing.
