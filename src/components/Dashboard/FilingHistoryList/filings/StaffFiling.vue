@@ -13,7 +13,7 @@
     </template>
 
     <template #body>
-      <div class="staff-filing-details body-2 mt-4">
+      <div class="staff-filing-details body-2">
         <p v-if="orderDetails" class="mt-4">
           {{ orderDetails }}
         </p>
@@ -22,14 +22,15 @@
         <!-- NB: only court orders have documents - see also FilingTemplate.vue -->
         <DocumentsList
           v-if="isTypeCourtOrder && filing.documents && filing.documents.length > 0"
+          class="mt-4"
           :filing=filing
         />
 
-        <p v-if="fileNumber" class="xmt-4 xmb-0">
+        <p v-if="fileNumber" class="mt-4">
           Court Order Number: {{ fileNumber }}
         </p>
 
-        <p v-if="hasEffectOfOrder" class="xmt-0">
+        <p v-if="hasEffectOfOrder" class="mt-4">
           Pursuant to a Plan of Arrangement
         </p>
       </div>
@@ -95,5 +96,6 @@ export default class StaffFiling extends Vue {
 p {
   color: $gray7;
   font-size: $px-15;
+  margin-bottom: 0 !important;
 }
 </style>

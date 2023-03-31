@@ -49,23 +49,23 @@
     <v-expansion-panel-content>
       <slot name="body">
         <!-- is this a generic paid (not yet completed) filing? -->
-        <div v-if="isStatusPaid" class="body-2 mt-4">
-          <h4>Filing Pending</h4>
+        <div v-if="isStatusPaid" class="body-2">
+          <h4 class="mt-4">Filing Pending</h4>
 
-          <p class="my-4">
+          <p class="mt-4">
             This {{ title }} is paid, but the filing has not been completed by the Business Registry
             yet. Some filings may take longer than expected.
           </p>
 
-          <p v-if="fileNumber">
+          <p v-if="fileNumber" class="mt-4">
             Court Order Number: {{ fileNumber }}
           </p>
 
-          <p v-if="hasEffectOfOrder">
+          <p v-if="hasEffectOfOrder" class="mt-4">
             Pursuant to a Plan of Arrangement
           </p>
 
-          <p>
+          <p class="mt-4">
             Refresh this screen in a few minutes or you can come back later to check on the progress.
             If this issue persists, please contact us.
           </p>
@@ -181,5 +181,6 @@ export default class FilingTemplate extends Vue {
 p {
   color: $gray7;
   font-size: $px-15;
+  margin-bottom: 0 !important;
 }
 </style>
