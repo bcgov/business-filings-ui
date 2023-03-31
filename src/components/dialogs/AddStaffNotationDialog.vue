@@ -123,7 +123,7 @@
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DateMixin, EnumMixin } from '@/mixins'
+import { DateMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF } from '@/interfaces'

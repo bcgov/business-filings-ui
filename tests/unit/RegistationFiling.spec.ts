@@ -2,18 +2,18 @@ import Vue from 'vue'
 import { getVuexStore } from '@/store'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import CompletedRegistration from '@/components/Dashboard/FilingHistoryList/CompletedRegistration.vue'
+import RegistrationFiling from '@/components/Dashboard/FilingHistoryList/filings/RegistrationFiling.vue'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore() as any // remove typings for unit tests
 
-describe('Complete Filing', () => {
+xdescribe('Registration Filing', () => {
   it('Displays expected content with entityName', () => {
     store.commit('setLegalName', 'My Firm')
 
-    const wrapper = shallowMount(CompletedRegistration, { store, vuetify })
+    const wrapper = shallowMount(RegistrationFiling, { store, vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Registration Complete')

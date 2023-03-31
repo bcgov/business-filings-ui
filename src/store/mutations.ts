@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { FilingDataIF, ApiFilingIF, OfficeAddressIF, StateIF, ApiTaskIF, PartyIF } from '@/interfaces'
+import { FilingDataIF, OfficeAddressIF, StateIF, ApiTaskIF, PartyIF } from '@/interfaces'
 
 export default {
   keycloakRoles (state: StateIF, keycloakRoles: Array<string>) {
@@ -62,12 +62,12 @@ export default {
     state.currentFilingStatus = currentFilingStatus
   },
 
-  tasks (state: StateIF, tasks: Array<ApiTaskIF>) {
-    state.tasks = tasks
+  mutateFetchingDataSpinner (state: StateIF, val: boolean) {
+    state.fetchingDataSpinner = val
   },
 
-  filings (state: StateIF, filings: Array<ApiFilingIF>) {
-    state.filings = filings
+  tasks (state: StateIF, tasks: Array<ApiTaskIF>) {
+    state.tasks = tasks
   },
 
   registeredAddress (state: StateIF, registeredAddress: OfficeAddressIF) {
@@ -94,19 +94,11 @@ export default {
     state.filingData = filingData
   },
 
-  isCoaPending (state: StateIF, isCoaPending: boolean) {
-    state.isCoaPending = isCoaPending
-  },
-
-  coaEffectiveDate (state: StateIF, coaEffectiveDate: Date) {
-    state.coaEffectiveDate = coaEffectiveDate
-  },
-
   corpTypeCd (state: StateIF, val: CorpTypeCd) {
     state.corpTypeCd = val
   },
 
-  setStateFiling (state: StateIF, stateFilingResponse: any) {
+  stateFiling (state: StateIF, stateFilingResponse: any) {
     state.stateFiling = stateFilingResponse
   }
 }

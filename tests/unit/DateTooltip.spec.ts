@@ -14,8 +14,8 @@ describe('Date Tooltip', () => {
     const vm: any = wrapper.vm
 
     // verify content
-    expect(wrapper.find('span').text()).toBe('Unknown')
-    expect(vm.dateTimeString).toBe('Unknown')
+    expect(wrapper.find('span').text()).toBe('[unknown]')
+    expect(vm.dateTimeString).toBe('[unknown]')
 
     wrapper.destroy()
   })

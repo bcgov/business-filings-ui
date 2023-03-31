@@ -184,7 +184,6 @@
       "commentsLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112756/comments",
       "correctionFilingId": 112757,
       "correctionFilingStatus": "COMPLETED",
-      "correctionLink": "https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v2/businesses/CP0000840/filings/112757",
       "data": {
         "annualReport": {
           "annualGeneralMeetingDate": "2018-10-01",

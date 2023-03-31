@@ -47,13 +47,13 @@ describe('Legal Services', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/tasks')
-      .returns(new Promise(resolve => resolve({ data: TASKS })))
+      .returns(new Promise(resolve => resolve({ data: { tasks: TASKS } })))
 
     // call method
     const tasks = await LegalServices.fetchTasks('CP1234567')
 
     // verify data
-    expect(tasks).toEqual({ data: TASKS })
+    expect(tasks).toEqual({ data: { tasks: TASKS } })
   })
 
   it('fetches filings correctly', async () => {
@@ -65,13 +65,13 @@ describe('Legal Services', () => {
 
     // mock endpoint
     get.withArgs('businesses/CP1234567/filings')
-      .returns(new Promise(resolve => resolve({ data: FILINGS })))
+      .returns(new Promise(resolve => resolve({ data: { filings: FILINGS } })))
 
     // call method
     const filings = await LegalServices.fetchFilings('CP1234567')
 
     // verify data
-    expect(filings).toEqual({ data: FILINGS })
+    expect(filings).toEqual(FILINGS)
   })
 
   it('fetches addresses correctly', async () => {

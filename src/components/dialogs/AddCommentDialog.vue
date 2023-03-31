@@ -39,7 +39,7 @@ import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
-import { HistoryItemIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
 
 @Component({
   components: { DetailComment }
@@ -52,7 +52,7 @@ export default class AddCommentDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   /** The filing to add a comment to. */
-  @Prop({ default: null }) readonly filing!: HistoryItemIF
+  @Prop({ default: null }) readonly filing!: ApiFilingIF
 
   /** The comment text. */
   protected comment = ''

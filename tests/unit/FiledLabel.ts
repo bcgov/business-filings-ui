@@ -34,8 +34,8 @@ describe('Filed Label', () => {
     })
 
     // verify content
-    expect(wrapper.find('.filed-label > span').text()).toBe('Filed by Submitter on May 15, 2020')
-    expect(wrapper.findAllComponents(DateTooltip).length).toBe(1)
+    expect(wrapper.find('.filed-label > span').text()).toBe('(filed by Submitter on May 15, 2020)')
+    expect(wrapper.findAllComponents(DateTooltip).length).toBe(2)
 
     wrapper.destroy()
   })

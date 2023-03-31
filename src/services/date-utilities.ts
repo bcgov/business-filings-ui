@@ -1,5 +1,5 @@
 import { isDate } from 'lodash'
-import { ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
+import { ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 
 const MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
@@ -349,5 +349,15 @@ export default class DateUtilities {
     // (result should be a whole number)
     const diff = (date.valueOf() - today.valueOf()) / MS_IN_A_DAY
     return Math.round(diff)
+  }
+
+  /** Whether the subject date string is in the past. */
+  static isDatePast (date: FormattedDateTimeGmt): boolean {
+    return (new Date(date) <= new Date())
+  }
+
+  /** Whether the subject date string is in the future. */
+  static isDateFuture (date: FormattedDateTimeGmt): boolean {
+    return (new Date(date) > new Date())
   }
 }

@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
+import FiledAndPendingPaid from '@/components/Dashboard/FilingHistoryList/subtitles/FiledAndPendingPaid.vue'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-describe('Pending Filing', () => {
+describe('Filed And Pending Paid', () => {
   it('Displays expected content with a null filing', () => {
-    const wrapper = mount(PendingFiling, {
+    const wrapper = mount(FiledAndPendingPaid, {
       vuetify,
       propsData: { filing: null }
     })
@@ -22,7 +22,7 @@ describe('Pending Filing', () => {
   })
 
   it('Displays expected content with an empty filing', () => {
-    const wrapper = mount(PendingFiling, {
+    const wrapper = mount(FiledAndPendingPaid, {
       vuetify,
       propsData: { filing: {} }
     })
@@ -40,7 +40,7 @@ describe('Pending Filing', () => {
   })
 
   it('Displays expected content with an alteration filing', () => {
-    const wrapper = mount(PendingFiling, {
+    const wrapper = mount(FiledAndPendingPaid, {
       vuetify,
       propsData: {
         filing: {
@@ -66,7 +66,7 @@ describe('Pending Filing', () => {
   })
 
   it('Displays expected content with a filing', () => {
-    const wrapper = mount(PendingFiling, {
+    const wrapper = mount(FiledAndPendingPaid, {
       vuetify,
       propsData: {
         filing: {

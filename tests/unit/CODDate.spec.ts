@@ -61,7 +61,7 @@ describe('COD Date - COOPs', () => {
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
-    store.state.filings = []
+    store.commit('mutateFilings', [])
   })
 
   it('sets Min Date to entity founding date if no filings are present', () => {
@@ -194,7 +194,7 @@ describe('COD Date - BCOMPs', () => {
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
-    store.state.filings = []
+    store.commit('mutateFilings', [])
   })
 
   it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
