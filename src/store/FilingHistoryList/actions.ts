@@ -4,22 +4,15 @@ import { DateUtilities, EnumUtilities, LegalServices } from '@/services/'
 
 export default {
   /**
-   * Fetches the filings list from the Legal API and, if successful, triggers some mutations.
+   * Fetches the filings list for the specified id from the Legal API and,
+   * if successful, saves it in the store.
    * @param context the Vuex context (passed in automatically)
+   * @param id a business id or temporary registration number
    */
-  loadFilings ({ dispatch }): Promise<any> {
+  loadFilings ({ dispatch }, id: string): Promise<any> {
     // need to return a promise because action is called via dispatch
     return new Promise((resolve, reject) => {
-      const businessId = sessionStorage.getItem('BUSINESS_ID')
-      const tempRegNumber = sessionStorage.getItem('TEMP_REG_NUMBER')
-
-      // if there is no business id, return error
-      if (!businessId && !tempRegNumber) {
-        reject(new Error('Missing business id or temp reg number'))
-        return
-      }
-
-      LegalServices.fetchFilings(businessId || tempRegNumber)
+      LegalServices.fetchFilings(id)
         .then(filings => {
           dispatch('setFilings', filings)
           // return the filings list

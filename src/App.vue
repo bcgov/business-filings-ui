@@ -424,7 +424,7 @@ export default {
         AuthServices.fetchEntityInfo(this.getAuthApiUrl, this.businessId),
         this.loadBusinessInfo(),
         LegalServices.fetchTasks(this.businessId),
-        this.loadFilings(),
+        this.loadFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
       ])
 
