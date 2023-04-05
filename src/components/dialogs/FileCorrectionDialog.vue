@@ -21,7 +21,7 @@
           color="primary"
           id="dialog-exit-button"
           @click="exit()"
-          >Cancel</v-btn>
+        >Cancel</v-btn>
         <v-btn depressed large
           color="primary"
           id="dialog-start-button"
