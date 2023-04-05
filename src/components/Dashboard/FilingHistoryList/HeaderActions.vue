@@ -123,7 +123,7 @@ export default class HeaderActions extends Vue {
       case FilingTypes.CORRECTION:
       case FilingTypes.REGISTRATION:
         // correction via Edit UI
-        this.mutateCurrentFiling(filing.filingId)
+        this.mutateCurrentFiling(filing)
         this.mutateFileCorrectionDialog(true)
         break
 
