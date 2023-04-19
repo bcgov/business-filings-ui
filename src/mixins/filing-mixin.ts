@@ -155,7 +155,7 @@ export default class FilingMixin extends DateMixin {
    * Builds a Restoration filing body.
    * @returns the filing body
    */
-  buildRestorationFiling (restorationType = FilingSubTypes.RESTORATION_FULL): RestorationFilingIF {
+  buildRestorationFiling (restorationType = FilingSubTypes.FULL_RESTORATION): RestorationFilingIF {
     const restoration: RestorationFilingIF = {
       header: {
         date: this.getCurrentDate,

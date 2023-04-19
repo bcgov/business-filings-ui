@@ -134,8 +134,8 @@ export default class FilingHistoryList extends Vue {
       case EnumUtilities.isTypeDissolutionVoluntary(filing): return 'dissolution-voluntary'
       case EnumUtilities.isTypeIncorporationApplication(filing): return 'incorporation-application'
       case EnumUtilities.isTypeRestorationLimited(filing): return 'limited-restoration'
-      case EnumUtilities.isTypeRestorationConversion(filing): return 'limited-restoration-conversion'
-      case EnumUtilities.isTypeRestorationExtension(filing): return 'limited-restoration-extension'
+      case EnumUtilities.isTypeRestorationLimitedExtension(filing): return 'limited-restoration-extension'
+      case EnumUtilities.isTypeRestorationLimitedToFull(filing): return 'limited-restoration-conversion'
       case EnumUtilities.isTypeRegistration(filing): return 'registration-filing'
       case EnumUtilities.isTypeStaff(filing): return 'staff-filing' // includes several filing types
       default: return 'default-filing'

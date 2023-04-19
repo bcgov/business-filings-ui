@@ -192,33 +192,13 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.SPECIAL_RESOLUTION)
   }
 
-  /** Returns True if filing is a (Limited) Restoration Conversion. */
-  static isTypeRestorationConversion (item: any): boolean {
-    return (
-      // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.RESTORATION_CONVERSION ||
-      // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.RESTORATION_CONVERSION
-    )
-  }
-
-  /** Returns True if filing is a (Limited) Restoration Extension. */
-  static isTypeRestorationExtension (item: any): boolean {
-    return (
-      // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.RESTORATION_EXTENSION ||
-      // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.RESTORATION_EXTENSION
-    )
-  }
-
   /** Returns True if filing is a Full Restoration. */
   static isTypeRestorationFull (item: any): boolean {
     return (
       // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.RESTORATION_FULL ||
+      item.filingSubType === FilingSubTypes.FULL_RESTORATION ||
       // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.RESTORATION_FULL
+      item.restoration?.type === FilingSubTypes.FULL_RESTORATION
     )
   }
 
@@ -226,9 +206,29 @@ export default class EnumUtilities {
   static isTypeRestorationLimited (item: any): boolean {
     return (
       // the property in a todo item or filing item:
-      item.filingSubType === FilingSubTypes.RESTORATION_LIMITED ||
+      item.filingSubType === FilingSubTypes.LIMITED_RESTORATION ||
       // the property in a state filing:
-      item.restoration?.type === FilingSubTypes.RESTORATION_LIMITED
+      item.restoration?.type === FilingSubTypes.LIMITED_RESTORATION
+    )
+  }
+
+  /** Returns True if filing is a Limited Restoration Extension. */
+  static isTypeRestorationLimitedExtension (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION ||
+      // the property in a state filing:
+      item.restoration?.type === FilingSubTypes.LIMITED_RESTORATION_EXTENSION
+    )
+  }
+
+  /** Returns True if filing is a Limited Restoration To Full. */
+  static isTypeRestorationLimitedToFull (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL ||
+      // the property in a state filing:
+      item.restoration?.type === FilingSubTypes.LIMITED_RESTORATION_TO_FULL
     )
   }
 
@@ -313,10 +313,10 @@ export default class EnumUtilities {
       case FilingTypes.REGISTRARS_ORDER: return FilingNames.REGISTRARS_ORDER
       case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
       case FilingTypes.RESTORATION:
-        if (subType === FilingSubTypes.RESTORATION_CONVERSION) return FilingNames.RESTORATION_CONVERSION
-        if (subType === FilingSubTypes.RESTORATION_EXTENSION) return FilingNames.RESTORATION_EXTENSION
-        if (subType === FilingSubTypes.RESTORATION_FULL) return FilingNames.RESTORATION_FULL
-        if (subType === FilingSubTypes.RESTORATION_LIMITED) return FilingNames.RESTORATION_LIMITED
+        if (subType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) return FilingNames.RESTORATION_CONVERSION
+        if (subType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) return FilingNames.RESTORATION_EXTENSION
+        if (subType === FilingSubTypes.FULL_RESTORATION) return FilingNames.RESTORATION_FULL
+        if (subType === FilingSubTypes.LIMITED_RESTORATION) return FilingNames.RESTORATION_LIMITED
         return FilingNames.UNKNOWN
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION

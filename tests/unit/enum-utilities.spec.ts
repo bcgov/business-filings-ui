@@ -39,13 +39,13 @@ describe('Enum Utilities', () => {
     expect(EnumUtilities.isTypeRegistarsOrder({ name: 'registrarsOrder' })).toBe(true)
     expect(EnumUtilities.isTypeRegistration({ name: 'registration' })).toBe(true)
     expect(EnumUtilities.isTypeRestoration({ name: 'restoration' })).toBe(true)
-    expect(EnumUtilities.isTypeRestorationConversion({ name: 'restoration',
-      filingSubType: 'limitedRestorationToFull' })).toBe(true)
-    expect(EnumUtilities.isTypeRestorationExtension({ name: 'restoration',
-      filingSubType: 'limitedRestorationExtension' })).toBe(true)
     expect(EnumUtilities.isTypeRestorationFull({ name: 'restoration', filingSubType: 'fullRestoration' })).toBe(true)
     expect(EnumUtilities.isTypeRestorationLimited({ name: 'restoration', filingSubType: 'limitedRestoration' }))
       .toBe(true)
+    expect(EnumUtilities.isTypeRestorationLimitedExtension({ name: 'restoration',
+      filingSubType: 'limitedRestorationExtension' })).toBe(true)
+    expect(EnumUtilities.isTypeRestorationLimitedToFull({ name: 'restoration',
+      filingSubType: 'limitedRestorationToFull' })).toBe(true)
     expect(EnumUtilities.isTypeSpecialResolution({ name: 'specialResolution' })).toBe(true)
     expect(EnumUtilities.isTypeStaff({ name: 'registrarsNotation' })).toBe(true)
     expect(EnumUtilities.isTypeStaff({ name: 'registrarsOrder' })).toBe(true)

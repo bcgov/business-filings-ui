@@ -118,7 +118,7 @@
             <v-list-item
               v-if="isAllowed(AllowableActions.RESTORATION)"
               data-type="restoration"
-              @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, FilingSubTypes.RESTORATION_FULL)"
+              @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, FilingSubTypes.FULL_RESTORATION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Restore Company</span>
@@ -157,9 +157,9 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isAllowed(AllowableActions.LIMITED_RESTO_EXTEND)"
+              v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)"
               data-type="extend-limited-restoration"
-              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.RESTORATION_EXTENSION)"
+              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)"
             >
               <v-list-item-title>
                 <span class="app-blue">Extend Limited Restoration</span>
@@ -167,9 +167,9 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isAllowed(AllowableActions.LIMITED_RESTO_CONVERT)"
+              v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_TO_FULL)"
               data-type="convert-full-restoration"
-              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.RESTORATION_CONVERSION)"
+              @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)"
             >
               <v-list-item-title>
                 <span class="app-blue">Convert to Full Restoration</span>

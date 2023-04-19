@@ -7,7 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { getFeatureFlag, initLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
+import { GetFeatureFlag, InitLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
 import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import '@/registerServiceWorker'
@@ -45,10 +45,10 @@ async function start () {
   // initialize Launch Darkly
   if (window['ldClientId']) {
     console.info('Initializing LaunchDarkly...') // eslint-disable-line no-console
-    await initLdClient()
+    await InitLdClient()
   }
 
-  if (getFeatureFlag('sentry-enable')) {
+  if (GetFeatureFlag('sentry-enable')) {
     // initialize Sentry
     const sentryDsn = window['sentryDsn']
     if (sentryDsn) {
