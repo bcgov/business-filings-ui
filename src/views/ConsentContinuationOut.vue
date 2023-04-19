@@ -73,7 +73,7 @@
                     <strong>Detail</strong>
                   </v-col>
                   <v-col cols="12" sm="9">
-                    <p class="black--text">{{defaultComment}}</p>
+                    <p class="detail-text">{{defaultComment}}</p>
                     <DetailComment
                       v-model="detailComment"
                       placeholder="Add a Detail that will appear on the ledger for this entity."
@@ -276,20 +276,20 @@ export default class ConsentContinuationOut extends Vue {
 
   // variables for DetailComment component
   private detailComment = ''
-  private detailCommentValid: boolean = null
+  private detailCommentValid = false
 
   // variables for Certify component
   private certifiedBy = ''
   private isCertified = false
-  private certifyFormValid: boolean = null
+  private certifyFormValid = false
 
   // variables for Courder Order POA component
   private fileNumber = ''
-  private hasPlanOfArrangement: boolean = null
-  private courtOrderValid: boolean = null
+  private hasPlanOfArrangement = false
+  private courtOrderValid = true
 
   // variables for Document Delivery component
-  private documentDeliveryValid: boolean = true
+  private documentDeliveryValid = true
   private documentOptionalEmail = ''
 
   // variables for staff payment
@@ -328,7 +328,8 @@ export default class ConsentContinuationOut extends Vue {
 
   /** Maximum length of detail comment. */
   get maxDetailCommentLength (): number {
-    return 1000
+    // = (max size in db) - (default comment length) - (Carriage Return)
+    return 1000 - this.defaultComment.length - 1
   }
 
   /** The Base URL string. */
@@ -449,7 +450,7 @@ export default class ConsentContinuationOut extends Vue {
       this.detailComment = comment.split('\n').slice(1).join('\n')
 
       if (filing.consentContinuationOut.courtOrder) {
-        const courtOrder: CourtOrderIF = filing.consentContinuationOut.courtOrder
+        const courtOrder = filing.consentContinuationOut.courtOrder
         this.fileNumber = courtOrder.fileNumber
         this.hasPlanOfArrangement = courtOrder.hasPlanOfArrangement
       }
@@ -811,23 +812,11 @@ export default class ConsentContinuationOut extends Vue {
     }
   }
 
-  @Watch('detailCommentValid')
-  onDetailCommentValidChanged (): void {
-    this.haveChanges = true
-  }
-
-  @Watch('documentDeliveryValid')
-  onDocumentDeliveryValidChanged (): void {
-    this.haveChanges = true
-  }
-
   @Watch('certifyFormValid')
-  onCertifyFormValidChanged (): void {
-    this.haveChanges = true
-  }
-
   @Watch('courtOrderValid')
-  onCourtOrderValidChanged (): void {
+  @Watch('detailCommentValid')
+  @Watch('documentDeliveryValid')
+  onHaveChanges (): void {
     this.haveChanges = true
   }
 
@@ -851,8 +840,15 @@ export default class ConsentContinuationOut extends Vue {
   counter-reset: header-counter;
 }
 
-.text-black {
-  color: rgba(0,0,0,.87);
+h2::before {
+  /* Increment "header-counter" by 1 */
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
+
+.detail-text {
+  color: $gray7;
+  font-weight: bold;
 }
 
 article {
@@ -881,12 +877,6 @@ h2 {
   margin-bottom: 0.25rem;
   margin-top: 3rem;
   font-size: 1.125rem;
-}
-
-h2::before {
-  /* Increment "header-counter" by 1 */
-  counter-increment: header-counter;
-  content: counter(header-counter) '. ';
 }
 
 // Save & Filing Buttons
