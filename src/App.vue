@@ -102,7 +102,7 @@
 <script lang="ts">
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import * as Sentry from '@sentry/browser'
-import { getFeatureFlag, navigate, updateLdUser } from '@/utils'
+import { GetFeatureFlag, navigate, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Breadcrumb } from '@/components/common'
@@ -255,7 +255,7 @@ export default {
 
     /** Get banner text. */
     bannerText (): string {
-      const bannerText: string = getFeatureFlag('banner-text')
+      const bannerText: string = GetFeatureFlag('banner-text')
       // remove spaces so that " " becomes falsy
       return bannerText?.trim() || null
     },
@@ -528,7 +528,7 @@ export default {
       // remove leading { and trailing } and tokenize string
       const custom: any = { roles: userInfo.roles?.slice(1, -1).split(',') }
 
-      await updateLdUser(key, email, firstName, lastName, custom)
+      await UpdateLdUser(key, email, firstName, lastName, custom)
     },
 
     /** Stores entity info from Auth API. */

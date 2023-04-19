@@ -1,3 +1,4 @@
+/** Filing sub-types used by Legal API. */
 // FUTURE: move these to shared enum and import that instead
 export enum FilingSubTypes {
   ADMIN_FREEZE = 'adminFreeze',
@@ -6,10 +7,10 @@ export enum FilingSubTypes {
   DISSOLUTION_ADMINISTRATIVE = 'administrative',
   DISSOLUTION_INVOLUNTARY = 'involuntary',
   DISSOLUTION_VOLUNTARY = 'voluntary',
-  RESTORATION_CONVERSION = 'limitedRestorationToFull',
-  RESTORATION_EXTENSION = 'limitedRestorationExtension',
-  RESTORATION_FULL = 'fullRestoration',
-  RESTORATION_LIMITED = 'limitedRestoration',
+  FULL_RESTORATION = 'fullRestoration',
+  LIMITED_RESTORATION = 'limitedRestoration',
+  LIMITED_RESTORATION_EXTENSION = 'limitedRestorationExtension',
+  LIMITED_RESTORATION_TO_FULL = 'limitedRestorationToFull',
   VOLUNTARY_LIQUIDATION = 'voluntaryLiquidation',
 
   // FUTURE: add these dissolution names as needed

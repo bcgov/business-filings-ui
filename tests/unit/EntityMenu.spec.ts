@@ -6,6 +6,7 @@ import { getVuexStore } from '@/store'
 import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
+import { AllowableActions } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -52,12 +53,12 @@ describe('Entity Menu - entities', () => {
     store.state.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
-    function isAllowed (action: string): boolean {
-      if (action === 'staffComment') return true
-      if (action === 'businessInformation') return true
-      if (action === 'voluntaryDissolution') return true
-      if (action === 'businessSummary') return true
-      if (action === 'digitalCredentials') return false
+    function isAllowed (action: AllowableActions): boolean {
+      if (action === AllowableActions.STAFF_COMMENT) return true
+      if (action === AllowableActions.BUSINESS_INFORMATION) return true
+      if (action === AllowableActions.VOLUNTARY_DISSOLUTION) return true
+      if (action === AllowableActions.BUSINESS_SUMMARY) return true
+      if (action === AllowableActions.DIGITAL_CREDENTIALS) return false
       return false
     }
 
@@ -89,12 +90,12 @@ describe('Entity Menu - entities', () => {
     store.state.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
-    function isAllowed (action: string): boolean {
-      if (action === 'staffComment') return false
-      if (action === 'businessInformation') return false
-      if (action === 'voluntaryDissolution') return false
-      if (action === 'businessSummary') return false
-      if (action === 'digitalCredentials') return false
+    function isAllowed (action: AllowableActions): boolean {
+      if (action === AllowableActions.STAFF_COMMENT) return false
+      if (action === AllowableActions.BUSINESS_INFORMATION) return false
+      if (action === AllowableActions.VOLUNTARY_DISSOLUTION) return false
+      if (action === AllowableActions.BUSINESS_SUMMARY) return false
+      if (action === AllowableActions.DIGITAL_CREDENTIALS) return false
       return false
     }
 
@@ -125,12 +126,12 @@ describe('Entity Menu - entities', () => {
     store.state.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
-    function isAllowed (action: string): boolean {
-      if (action === 'staffComment') return false
-      if (action === 'businessInformation') return false
-      if (action === 'voluntaryDissolution') return false
-      if (action === 'businessSummary') return false
-      if (action === 'digitalCredentials') return false
+    function isAllowed (action: AllowableActions): boolean {
+      if (action === AllowableActions.STAFF_COMMENT) return false
+      if (action === AllowableActions.BUSINESS_INFORMATION) return false
+      if (action === AllowableActions.VOLUNTARY_DISSOLUTION) return false
+      if (action === AllowableActions.BUSINESS_SUMMARY) return false
+      if (action === AllowableActions.DIGITAL_CREDENTIALS) return false
       return false
     }
 
@@ -262,7 +263,7 @@ describe('Entity Menu - View and Change Business Information button', () => {
         store,
         vuetify,
         router,
-        mixins: [{ methods: { isAllowed: () => true } }],
+        mixins: [{ methods: { isAllowed: () => _.isAllowed } }],
         propsData: { businessId: _.businessId }
       })
 

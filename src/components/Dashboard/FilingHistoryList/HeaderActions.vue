@@ -32,7 +32,7 @@
 
       <v-list dense>
         <v-list-item-group color="primary">
-          <v-list-item :disabled="!isAllowed(AllowableActions.CORRECTION) || disableCorrection">
+          <v-list-item :disabled="disableCorrection()">
             <v-list-item-icon>
               <v-icon color="primary">mdi-file-document-edit-outline</v-icon>
             </v-list-item-icon>
@@ -92,11 +92,17 @@ export default class HeaderActions extends Vue {
     return EnumUtilities.isTypeStaff(this.filing)
   }
 
-  /** Whether to disable correction for this filing. */
-  get disableCorrection (): boolean {
+  /**
+   * Whether to disable correction for THIS filing.
+   * This is function instead of a getter so that we always query the realtime FF.
+   */
+  disableCorrection (): boolean {
+    // first check allowable actions
+    if (!this.isAllowed(AllowableActions.CORRECTION)) return true
+
     const conditions: Array<() => boolean> = []
 
-    // list of conditions to disable correction
+    // list of conditions to DISABLE correction
     // (any condition not listed below is ALLOWED)
     conditions[0] = () => this.filing.availableOnPaperOnly
     conditions[1] = () => this.isTypeStaff
@@ -110,6 +116,7 @@ export default class HeaderActions extends Vue {
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm && !this.isBenBcCccUlc)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
 
+    // check if any condition is True
     return conditions.some(condition => condition())
   }
 

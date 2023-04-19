@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
+import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Routes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 
@@ -42,7 +42,7 @@ export default class AllowableActionsMixin extends Vue {
       case AllowableActions.BUSINESS_INFORMATION: {
         if (this.isCoop) {
           // NB: this feature is targeted via LaunchDarkly
-          const ff = !!getFeatureFlag('special-resolution-ui-enabled')
+          const ff = !!GetFeatureFlag('special-resolution-ui-enabled')
           return (ff && this.isAllowedFiling(FilingTypes.SPECIAL_RESOLUTION))
         }
         if (this.isFirm) {
@@ -53,7 +53,7 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.BUSINESS_SUMMARY: {
         // NB: specific entities are targeted via LaunchDarkly
-        const ff = !!getFeatureFlag('supported-business-summary-entities')?.includes(this.getLegalType)
+        const ff = !!GetFeatureFlag('supported-business-summary-entities')?.includes(this.getLegalType)
         return (ff && isBusiness)
       }
 
@@ -62,7 +62,9 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.CORRECTION: {
-        return this.isAllowedFiling(FilingTypes.CORRECTION)
+        // NB: specific entities are targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('supported-correction-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.CORRECTION))
       }
 
       case AllowableActions.COURT_ORDER: {
@@ -74,10 +76,9 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DIGITAL_CREDENTIALS: {
-        // NB: specific Benefit Companies are targeted via LaunchDarkly
-        const ff = !!getFeatureFlag('enable-digital-credentials')
+        // NB: this feature is targeted via LaunchDarkly
+        const ff = !!GetFeatureFlag('enable-digital-credentials')
         const isNotaDcRoute = !(this.$route.matched.some(route => route.name === Routes.DIGITAL_CREDENTIALS))
-
         return (ff && isNotaDcRoute && this.isGoodStanding && this.isBComp && !this.isRoleStaff)
       }
 
@@ -93,12 +94,12 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.ADMIN_FREEZE)
       }
 
-      case AllowableActions.LIMITED_RESTO_CONVERT: {
-        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.RESTORATION_CONVERSION)
+      case AllowableActions.LIMITED_RESTORATION_EXTENSION: {
+        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
       }
 
-      case AllowableActions.LIMITED_RESTO_EXTEND: {
-        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.RESTORATION_EXTENSION)
+      case AllowableActions.LIMITED_RESTORATION_TO_FULL: {
+        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
       }
 
       case AllowableActions.PUT_BACK_ON: {
@@ -118,9 +119,11 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.RESTORATION: {
+        // full restoration or limited restoration
+        // but not limited restoration extension or limited restoration to full
         return (
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.RESTORATION_FULL) ||
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.RESTORATION_LIMITED)
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)
         )
       }
 
@@ -134,7 +137,7 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.VOLUNTARY_DISSOLUTION: {
         // NB: specific entities are targeted via LaunchDarkly
-        const ff = !!getFeatureFlag('supported-dissolution-entities')?.includes(this.getLegalType)
+        const ff = !!GetFeatureFlag('supported-dissolution-entities')?.includes(this.getLegalType)
         // FUTURE: check dissolution type
         return (ff && this.isAllowedFiling(FilingTypes.DISSOLUTION))
       }

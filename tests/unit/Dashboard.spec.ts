@@ -6,6 +6,7 @@ import VueRouter from 'vue-router'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import { getVuexStore } from '@/store'
+import { AllowableActions } from '@/enums'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -90,8 +91,8 @@ describe('Dashboard - UI', () => {
     store.state.isCoaPending = false
     await Vue.nextTick()
 
-    expect(localVm.isAllowed('addressChange')).toBe(true)
-    expect(localVm.isAllowed('directorChange')).toBe(true)
+    expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(true)
+    expect(localVm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(true)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBeUndefined()
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBeUndefined()
@@ -112,8 +113,8 @@ describe('Dashboard - UI', () => {
     store.state.isCoaPending = false
     await Vue.nextTick()
 
-    expect(localVm.isAllowed('addressChange')).toBe(false)
-    expect(localVm.isAllowed('directorChange')).toBe(false)
+    expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
+    expect(localVm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(false)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
@@ -128,8 +129,8 @@ describe('Dashboard - UI', () => {
     store.state.isCoaPending = true
     await Vue.nextTick()
 
-    expect(localVm.isAllowed('addressChange')).toBe(false)
-    expect(localVm.isAllowed('directorChange')).toBe(false)
+    expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
+    expect(localVm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(false)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')
@@ -143,8 +144,8 @@ describe('Dashboard - UI', () => {
 
     store.state.isCoaPending = false
 
-    expect(localVm.isAllowed('addressChange')).toBe(false)
-    expect(localVm.isAllowed('directorChange')).toBe(false)
+    expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
+    expect(localVm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(false)
 
     expect(localWrapper.find('#standalone-addresses-button').attributes('disabled')).toBe('true')
     expect(localWrapper.find('#standalone-directors-button').attributes('disabled')).toBe('true')

@@ -206,7 +206,7 @@ export default {
     return (
       !!stateFiling && (
         EnumUtilities.isTypeRestorationLimited(stateFiling) ||
-        EnumUtilities.isTypeRestorationExtension(stateFiling)
+        EnumUtilities.isTypeRestorationLimitedExtension(stateFiling)
       )
     )
   },

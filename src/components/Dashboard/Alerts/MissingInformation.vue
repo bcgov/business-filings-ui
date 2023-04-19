@@ -39,7 +39,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ContactInfo } from '@/components/common'
-import { getFeatureFlag } from '@/utils'
+import { GetFeatureFlag } from '@/utils'
 
 @Component({
   components: { ContactInfo }
@@ -55,7 +55,7 @@ export default class MissingInformation extends Vue {
 
   get hidePhoneNumbers (): boolean {
     // hide for firms without FF
-    return (this.isFirm && !getFeatureFlag('show-alert-phone-numbers-firm'))
+    return (this.isFirm && !GetFeatureFlag('show-alert-phone-numbers-firm'))
   }
 }
 </script>

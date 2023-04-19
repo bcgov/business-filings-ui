@@ -4,6 +4,8 @@ import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import * as FeatureFlags from '@/utils/feature-flags'
 import MixinTester from '@/mixin-tester.vue'
+import { AllowableActions, FilingSubTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
@@ -18,7 +20,7 @@ describe('Allowable Actions Mixin', () => {
   }
 
   function setFeatureFlag (val: any) {
-    jest.spyOn((FeatureFlags as any), 'getFeatureFlag').mockReturnValue(val)
+    jest.spyOn((FeatureFlags as any), 'GetFeatureFlag').mockReturnValue(val)
   }
 
   beforeAll(async () => {
@@ -33,6 +35,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(undefined)).toBe(false)
     expect(vm.isAllowed(null)).toBe(false)
     expect(vm.isAllowed('')).toBe(false)
+    expect(vm.isAllowed(0)).toBe(false)
   })
 
   it('identifies whether Address Change is allowed - firm', () => {
@@ -40,11 +43,11 @@ describe('Allowable Actions Mixin', () => {
 
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('addressChange')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'changeOfRegistration' })
-    expect(vm.isAllowed('addressChange')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CHANGE_OF_REGISTRATION })
+    expect(vm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(true)
   })
 
   it('identifies whether Address Change is allowed - other', () => {
@@ -52,31 +55,31 @@ describe('Allowable Actions Mixin', () => {
 
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('addressChange')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'changeOfAddress' })
-    expect(vm.isAllowed('addressChange')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CHANGE_OF_ADDRESS })
+    expect(vm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(true)
   })
 
   it('identifies whether Administrative Dissolution is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('administrativeDissolution')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'dissolution' })
-    expect(vm.isAllowed('administrativeDissolution')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
+    expect(vm.isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)).toBe(true)
   })
 
   it('identifies whether Annual Report is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('annualReport')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.ANNUAL_REPORT)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'annualReport' })
-    expect(vm.isAllowed('annualReport')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.ANNUAL_REPORT })
+    expect(vm.isAllowed(AllowableActions.ANNUAL_REPORT)).toBe(true)
   })
 
   it('identifies whether Business Information is allowed - Coop', () => {
@@ -84,19 +87,19 @@ describe('Allowable Actions Mixin', () => {
     jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
     // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: 'specialResolution' })
+    setAllowedFilingType({ name: FilingTypes.SPECIAL_RESOLUTION })
     setFeatureFlag(false)
-    expect(vm.isAllowed('businessInformation')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(false)
 
     // verify feature flag but no allowed filing type
     setFeatureFlag(true)
     setAllowedFilingType()
-    expect(vm.isAllowed('businessInformation')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(false)
 
     // verify both feature flag and allowed filing type
     setFeatureFlag(true)
-    setAllowedFilingType({ name: 'specialResolution' })
-    expect(vm.isAllowed('businessInformation')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.SPECIAL_RESOLUTION })
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(true)
   })
 
   it('identifies whether Business Information is allowed - firm', () => {
@@ -105,11 +108,11 @@ describe('Allowable Actions Mixin', () => {
 
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('businessInformation')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'changeOfRegistration' })
-    expect(vm.isAllowed('businessInformation')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CHANGE_OF_REGISTRATION })
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(true)
   })
 
   it('identifies whether Business Information is allowed - other', () => {
@@ -118,77 +121,86 @@ describe('Allowable Actions Mixin', () => {
 
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('businessInformation')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'alteration' })
-    expect(vm.isAllowed('businessInformation')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.ALTERATION })
+    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(true)
   })
 
   it('identifies whether Business Summary is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue('BC')
+    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify business but no feature flag
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     setFeatureFlag([])
-    expect(vm.isAllowed('businessSummary')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(false)
 
     // verify feature flag but no business
-    setFeatureFlag(['BC'])
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
     sessionStorage.removeItem('BUSINESS_ID')
-    expect(vm.isAllowed('businessSummary')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(false)
 
     // verify both feature flag and business
-    setFeatureFlag(['BC'])
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    expect(vm.isAllowed('businessSummary')).toBe(true)
+    expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(true)
   })
 
   it('identifies whether Consent Continuation Out is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('consentContinuationOut')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'consentContinuationOut' })
-    expect(vm.isAllowed('consentContinuationOut')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
+    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
   })
 
   it('identifies whether Correction is allowed', () => {
-    // verify no allowed filing type
-    setAllowedFilingType()
-    expect(vm.isAllowed('correction')).toBe(false)
+    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 
-    // verify allowed filing type
-    setAllowedFilingType({ name: 'correction' })
-    expect(vm.isAllowed('correction')).toBe(true)
+    // verify allowed filing type but no feature flag
+    setAllowedFilingType({ name: FilingTypes.CORRECTION })
+    setFeatureFlag([])
+    expect(vm.isAllowed(AllowableActions.CORRECTION)).toBe(false)
+
+    // verify feature flag but no allowed filing type
+    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    setAllowedFilingType()
+    expect(vm.isAllowed(AllowableActions.CORRECTION)).toBe(false)
+
+    // verify both feature flag and allowed filing type
+    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    setAllowedFilingType({ name: FilingTypes.CORRECTION })
+    expect(vm.isAllowed(AllowableActions.CORRECTION)).toBe(true)
   })
 
   it('identifies whether Court Order is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('courtOrder')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.COURT_ORDER)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'courtOrder' })
-    expect(vm.isAllowed('courtOrder')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.COURT_ORDER })
+    expect(vm.isAllowed(AllowableActions.COURT_ORDER)).toBe(true)
   })
 
   it('identifies whether Detail Comment allowed', () => {
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
-    expect(vm.isAllowed('detailComment')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify staff but no business
     jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
-    expect(vm.isAllowed('detailComment')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify both staff and business
     jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    expect(vm.isAllowed('detailComment')).toBe(true)
+    expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(true)
   })
 
   xit('identifies whether Digital Credentials is allowed', () => {
@@ -200,11 +212,11 @@ describe('Allowable Actions Mixin', () => {
 
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('directorChange')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'changeOfRegistration' })
-    expect(vm.isAllowed('directorChange')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CHANGE_OF_REGISTRATION })
+    expect(vm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(true)
   })
 
   it('identifies whether Director Change is allowed - other', () => {
@@ -212,140 +224,140 @@ describe('Allowable Actions Mixin', () => {
 
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('directorChange')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'changeOfDirectors' })
-    expect(vm.isAllowed('directorChange')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CHANGE_OF_DIRECTORS })
+    expect(vm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(true)
   })
 
   it('identifies whether Freeze/Unfreeze is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('freezeUnfreeze')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.FREEZE_UNFREEZE)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'adminFreeze' })
-    expect(vm.isAllowed('freezeUnfreeze')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.ADMIN_FREEZE })
+    expect(vm.isAllowed(AllowableActions.FREEZE_UNFREEZE)).toBe(true)
   })
 
-  it('identifies whether Limited Resto Convert is allowed', () => {
+  it('identifies whether Limited Restoration Extension is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('limitedRestoConvert')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'restoration', type: 'limitedRestorationToFull' })
-    expect(vm.isAllowed('limitedRestoConvert')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_EXTENSION })
+    expect(vm.isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)).toBe(true)
   })
 
-  it('identifies whether Limited Resto Extend is allowed', () => {
+  it('identifies whether Limited Restoration To Full is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('limitedRestoExtend')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.LIMITED_RESTORATION_TO_FULL)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'restoration', type: 'limitedRestorationExtension' })
-    expect(vm.isAllowed('limitedRestoExtend')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION_TO_FULL })
+    expect(vm.isAllowed(AllowableActions.LIMITED_RESTORATION_TO_FULL)).toBe(true)
   })
 
   it('identifies whether Put Back On is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('putBackOn')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.PUT_BACK_ON)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'putBackOn' })
-    expect(vm.isAllowed('putBackOn')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.PUT_BACK_ON })
+    expect(vm.isAllowed(AllowableActions.PUT_BACK_ON)).toBe(true)
   })
 
   it('identifies whether Record Conversion is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('recordConversion')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.RECORD_CONVERSION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'conversion' })
-    expect(vm.isAllowed('recordConversion')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.CONVERSION })
+    expect(vm.isAllowed(AllowableActions.RECORD_CONVERSION)).toBe(true)
   })
 
   it('identifies whether Registrars Notation is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('registrarsNotation')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.REGISTRARS_NOTATION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'registrarsNotation' })
-    expect(vm.isAllowed('registrarsNotation')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.REGISTRARS_NOTATION })
+    expect(vm.isAllowed(AllowableActions.REGISTRARS_NOTATION)).toBe(true)
   })
 
   it('identifies whether Registrars Order is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('registrarsOrder')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.REGISTRARS_ORDER)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'registrarsOrder' })
-    expect(vm.isAllowed('registrarsOrder')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.REGISTRARS_ORDER })
+    expect(vm.isAllowed(AllowableActions.REGISTRARS_ORDER)).toBe(true)
   })
 
   it('identifies whether Restoration is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('restoration')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.RESTORATION)).toBe(false)
 
     // verify full restoration
-    setAllowedFilingType({ name: 'restoration', type: 'fullRestoration' })
-    expect(vm.isAllowed('restoration')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.RESTORATION, type: FilingSubTypes.FULL_RESTORATION })
+    expect(vm.isAllowed(AllowableActions.RESTORATION)).toBe(true)
 
     // verify limited restoration
-    setAllowedFilingType({ name: 'restoration', type: 'limitedRestoration' })
-    expect(vm.isAllowed('restoration')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.RESTORATION, type: FilingSubTypes.LIMITED_RESTORATION })
+    expect(vm.isAllowed(AllowableActions.RESTORATION)).toBe(true)
   })
 
   it('identifies whether Staff Comment allowed', () => {
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
-    expect(vm.isAllowed('staffComment')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify staff but no business
     jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
-    expect(vm.isAllowed('staffComment')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify both staff and business
     jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    expect(vm.isAllowed('staffComment')).toBe(true)
+    expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(true)
   })
 
   it('identifies whether Transition is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
-    expect(vm.isAllowed('transition')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.TRANSITION)).toBe(false)
 
     // verify allowed filing type
-    setAllowedFilingType({ name: 'transition' })
-    expect(vm.isAllowed('transition')).toBe(true)
+    setAllowedFilingType({ name: FilingTypes.TRANSITION })
+    expect(vm.isAllowed(AllowableActions.TRANSITION)).toBe(true)
   })
 
   it('identifies whether Voluntary Dissolution is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue('BC')
+    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify allowed filing type but no feature flag
-    setAllowedFilingType({ name: 'transition' })
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
     setFeatureFlag([])
-    expect(vm.isAllowed('voluntaryDissolution')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)).toBe(false)
 
     // verify feature flag but no allowed filing type
-    setFeatureFlag(['BC'])
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
     setAllowedFilingType()
-    expect(vm.isAllowed('voluntaryDissolution')).toBe(false)
+    expect(vm.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)).toBe(false)
 
     // verify both feature flag and allowed filing type
-    setFeatureFlag(['BC'])
-    setAllowedFilingType({ name: 'dissolution' })
-    expect(vm.isAllowed('voluntaryDissolution')).toBe(true)
+    setFeatureFlag([CorpTypeCd.BC_COMPANY])
+    setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
+    expect(vm.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)).toBe(true)
   })
 })
