@@ -52,8 +52,8 @@
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="correction-container" class="view-container" v-show="dataLoaded">
-      <v-row>
+    <v-container id="correction-container" class="view-container" v-if="dataLoaded">
+      <v-row no-gutters>
         <v-col cols="12" lg="9">
           <article id="correction-article">
             <!-- Page Title -->
@@ -61,25 +61,52 @@
               <h1 id="correction-header">Six-Month Consent to Continue Out</h1>
             </header>
 
-            <!-- Detail -->
+            <!-- Ledger Detail -->
             <section>
               <header>
-                <h2 id="correction-step-1-header">1. Detail</h2>
+                <h2>Ledger Detail</h2>
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
-                <p class="black--text mb-0">{{defaultComment}}</p>
               </header>
-              <DetailComment
-                v-model="detailComment"
-                placeholder="Add a Detail that will appear on the ledger for this entity."
-                :maxLength="maxDetailCommentLength"
-                @valid="detailCommentValid=$event"
-              />
+              <v-card flat class="py-8 px-5">
+                <v-row no-gutters>
+                  <v-col cols="12" sm="3" class="pr-4">
+                    <strong>Detail</strong>
+                  </v-col>
+                  <v-col cols="12" sm="9">
+                    <p class="black--text">{{defaultComment}}</p>
+                    <DetailComment
+                      v-model="detailComment"
+                      placeholder="Add a Detail that will appear on the ledger for this entity."
+                      :maxLength="maxDetailCommentLength"
+                      @valid="detailCommentValid=$event"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card>
+            </section>
+
+            <!-- Documents Delivery -->
+            <section>
+              <header>
+                <h2>Documents Delivery</h2>
+                <p>Copies of the consent to continue out documents will be sent to the email addresses listed below.</p>
+              </header>
+              <v-card flat class="py-8 px-5">
+                <DocumentDelivery
+                  :editableCompletingParty="isRoleStaff"
+                  :contactValue="getBusinessEmail"
+                  contactLabel="Business Office"
+                  :documentOptionalEmail="documentOptionalEmail"
+                  @update:optionalEmail="documentOptionalEmail=$event"
+                  @valid="documentDeliveryValid=$event"
+                />
+              </v-card>
             </section>
 
             <!-- Certify -->
             <section>
               <header>
-                <h2 id="correction-step-2-header">2. Certify</h2>
+                <h2>Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
               <Certify
@@ -90,6 +117,26 @@
                 @valid="certifyFormValid=$event"
               />
             </section>
+
+            <!-- Court Order and Plan of Arrangement -->
+            <section>
+              <header>
+                <h2>Court Order and Plan of Arrangement</h2>
+                <p>If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
+                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.</p>
+              </header>
+              <v-card flat class="py-8 px-5">
+                <CourtOrderPoa
+                  :draftCourtOrderNumber="fileNumber"
+                  :hasDraftPlanOfArrangement="hasPlanOfArrangement"
+                  :courtOrderNumberRequired="false"
+                  @emitCourtNumber="fileNumber=$event"
+                  @emitPoa="hasPlanOfArrangement=$event"
+                  @emitValid="courtOrderValid=$event"
+                />
+              </v-card>
+            </section>
+
           </article>
         </v-col>
 
@@ -183,13 +230,17 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, CourtOrderIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
+import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 
 @Component({
   components: {
     Certify,
     ConfirmDialog,
+    CourtOrderPoa,
     DetailComment,
+    DocumentDelivery,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -214,6 +265,7 @@ export default class ConsentContinuationOut extends Vue {
   @State filingData!: Array<FilingDataIF>
 
   @Getter getAuthWebUrl!: string
+  @Getter getBusinessEmail!: string
   @Getter getFoundingDate!: Date
   @Getter getLegalName!: string
   @Getter getPayApiUrl!: string
@@ -230,6 +282,15 @@ export default class ConsentContinuationOut extends Vue {
   private certifiedBy = ''
   private isCertified = false
   private certifyFormValid: boolean = null
+
+  // variables for Courder Order POA component
+  private fileNumber = ''
+  private hasPlanOfArrangement: boolean = null
+  private courtOrderValid: boolean = null
+
+  // variables for Document Delivery component
+  private documentDeliveryValid: boolean = true
+  private documentOptionalEmail = ''
 
   // variables for staff payment
   private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
@@ -267,8 +328,7 @@ export default class ConsentContinuationOut extends Vue {
 
   /** Maximum length of detail comment. */
   get maxDetailCommentLength (): number {
-    // = (max size in db) - (default comment length) - (Carriage Return)
-    return 2000 - this.defaultComment.length - 1
+    return 1000
   }
 
   /** The Base URL string. */
@@ -278,7 +338,7 @@ export default class ConsentContinuationOut extends Vue {
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.certifyFormValid)
+    return (this.detailCommentValid && this.certifyFormValid && this.documentDeliveryValid && this.courtOrderValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -385,8 +445,18 @@ export default class ConsentContinuationOut extends Vue {
       }
 
       // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.consentContinuationOut.comment || ''
+      const comment: string = filing.consentContinuationOut.details || ''
       this.detailComment = comment.split('\n').slice(1).join('\n')
+
+      if (filing.consentContinuationOut.courtOrder) {
+        const courtOrder: CourtOrderIF = filing.consentContinuationOut.courtOrder
+        this.fileNumber = courtOrder.fileNumber
+        this.hasPlanOfArrangement = courtOrder.hasPlanOfArrangement
+      }
+
+      if (filing.header.documentOptionalEmail) {
+        this.documentOptionalEmail = filing.header.documentOptionalEmail
+      }
     }).catch(error => {
       // eslint-disable-next-line no-console
       console.log('fetchDraftFiling() error =', error)
@@ -574,9 +644,13 @@ export default class ConsentContinuationOut extends Vue {
       header: {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
         certifiedBy: this.certifiedBy || '',
-        email: 'no_one@never.get',
+        email: this.getBusinessEmail,
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
+    }
+
+    if (this.documentOptionalEmail !== '') {
+      header.header.documentOptionalEmail = this.documentOptionalEmail
     }
 
     switch (this.staffPaymentData.option) {
@@ -613,6 +687,13 @@ export default class ConsentContinuationOut extends Vue {
       [FilingTypes.CONSENT_CONTINUATION_OUT]: {
         // FUTURE: add more filing properties below
         details: `${this.defaultComment}\n${this.detailComment}`
+      }
+    }
+
+    if (this.fileNumber !== '') {
+      data[FilingTypes.CONSENT_CONTINUATION_OUT].courtOrder = {
+        fileNumber: this.fileNumber,
+        hasPlanOfArrangement: this.hasPlanOfArrangement || false
       }
     }
 
@@ -735,18 +816,24 @@ export default class ConsentContinuationOut extends Vue {
     this.haveChanges = true
   }
 
+  @Watch('documentDeliveryValid')
+  onDocumentDeliveryValidChanged (): void {
+    this.haveChanges = true
+  }
+
   @Watch('certifyFormValid')
   onCertifyFormValidChanged (): void {
+    this.haveChanges = true
+  }
+
+  @Watch('courtOrderValid')
+  onCourtOrderValidChanged (): void {
     this.haveChanges = true
   }
 
   @Watch('staffPaymentData')
   onStaffPaymentDataChanged (val: StaffPaymentIF): void {
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
-
-    // apply Priority flag to CRCTN filing code only
-    // simply re-add the CRCTN code with the updated Priority flag and existing Waive Fees flag
-    this.updateFilingData('add', FilingCodes.CORRECTION, val.isPriority, waiveFees)
 
     // add/remove Waive Fees flag to all filing codes
     this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
@@ -758,6 +845,11 @@ export default class ConsentContinuationOut extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+#consent-continuation-out {
+  /* Set "header-counter" to 0 */
+  counter-reset: header-counter;
+}
 
 .text-black {
   color: rgba(0,0,0,.87);
@@ -791,6 +883,12 @@ h2 {
   font-size: 1.125rem;
 }
 
+h2::before {
+  /* Increment "header-counter" by 1 */
+  counter-increment: header-counter;
+  content: counter(header-counter) '. ';
+}
+
 // Save & Filing Buttons
 #correction-buttons-container {
   padding-top: 2rem;
@@ -810,6 +908,17 @@ h2 {
 
   #correction-cancel-btn {
     margin-left: 0.5rem;
+  }
+}
+
+// Fix font size to stay consistent between all components.
+:deep(){
+  #document-delivery, #court-order-label, #poa-label {
+    font-size: $px-14;
+  }
+
+  .value.certifiedby {
+    padding-left: 3rem;
   }
 }
 </style>
