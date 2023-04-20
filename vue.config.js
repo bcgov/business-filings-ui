@@ -34,16 +34,5 @@ module.exports = {
     'vue-plugin-helper-decorator',
     'vuetify'
   ],
-  publicPath: `${process.env.VUE_APP_PATH}`,
-  devServer: {
-    proxy: {
-      // this is needed to avoid a PAYBC Not Found error when running locally
-      '/status/PAYBC': {
-        target: 'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1/status/PAYBC',
-        pathRewrite: {
-          '/status/PAYBC': ''
-        }
-      }
-    }
-  }
+  publicPath: `${process.env.VUE_APP_PATH}`
 }
