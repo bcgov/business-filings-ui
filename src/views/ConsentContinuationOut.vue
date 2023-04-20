@@ -824,8 +824,8 @@ export default class ConsentContinuationOut extends Vue {
   onStaffPaymentDataChanged (val: StaffPaymentIF): void {
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
-    // add/remove Waive Fees flag to all filing codes
-    this.updateFilingData(waiveFees ? 'add' : 'remove', undefined, undefined, true)
+    // add Waive Fees flag to all filing codes
+    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
 
     this.haveChanges = true
   }
