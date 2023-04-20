@@ -2,7 +2,6 @@
   <v-card flat id="detail-comment-container">
     <v-textarea
       ref="textarea"
-      outlined
       auto-grow
       rows="5"
       id="detail-comment-textarea"
@@ -85,5 +84,15 @@ export default class DetailComment extends Vue {
 #detail-comment-container {
   line-height: 1.2rem;
   font-size: $px-14;
+
+  // Setting the backgroud color of text area to stay consistent between all components.
+  // Move the placeholder and input text from the edges.
+  :deep() {
+    .theme--light.v-input input, .theme--light.v-input textarea {
+      background-color: $gray1;
+      padding-top: 0.5rem;
+      padding-left: 0.5rem;
+    }
+  }
 }
 </style>
