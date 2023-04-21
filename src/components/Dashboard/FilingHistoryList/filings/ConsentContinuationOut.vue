@@ -16,6 +16,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { ApiFilingIF } from '@/interfaces'
 import FilingTemplate from '../FilingTemplate.vue'
+import { DateUtilities } from '@/services'
 
 @Component({
   components: { FilingTemplate }
@@ -26,7 +27,11 @@ export default class ConsentContinuationOut extends Vue {
 
   get expiry (): string {
     // FUTURE: expiry date may come from business object
-    return this.filing.data?.consentContinuationOut?.expiry || '[unknown]'
+    const expiry = this.filing.data?.consentContinuationOut?.expiry
+    if (expiry) {
+      return DateUtilities.apiToPacificDate(expiry, true)
+    }
+    return '[unknown]'
   }
 
   get orderDetails (): string {

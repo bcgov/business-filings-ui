@@ -211,12 +211,12 @@ export default class DateUtilities {
    * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020" (PST example)
    * @example "2021-07-01T00:00:00.000000+00:00" -> "Jun 30, 2021" (PDT example)
    */
-  static apiToPacificDate (dateTimeString: ApiDateTimeUtc): string {
+  static apiToPacificDate (dateTimeString: ApiDateTimeUtc, longMonth = false): string {
     if (!dateTimeString) return null // safety check
 
     const date = this.apiToDate(dateTimeString)
 
-    return this.dateToPacificDate(date)
+    return this.dateToPacificDate(date, longMonth)
   }
 
   /**
