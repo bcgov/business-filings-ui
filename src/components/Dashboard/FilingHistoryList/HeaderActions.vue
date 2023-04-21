@@ -125,9 +125,11 @@ export default class HeaderActions extends Vue {
     // see also TodoList.vue:doResumeFiling()
     switch (filing?.name) {
       case FilingTypes.ALTERATION:
-      case FilingTypes.INCORPORATION_APPLICATION:
+      case FilingTypes.CHANGE_OF_ADDRESS:
+      case FilingTypes.CHANGE_OF_DIRECTORS:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.CORRECTION:
+      case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.REGISTRATION:
         // correction via Edit UI
         this.mutateCurrentFiling(filing)
@@ -135,8 +137,6 @@ export default class HeaderActions extends Vue {
         break
 
       case FilingTypes.ANNUAL_REPORT:
-      case FilingTypes.CHANGE_OF_ADDRESS:
-      case FilingTypes.CHANGE_OF_DIRECTORS:
       case FilingTypes.CONVERSION:
       default:
         // local correction for all other filings
