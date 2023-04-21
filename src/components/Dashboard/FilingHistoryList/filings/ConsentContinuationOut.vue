@@ -29,7 +29,7 @@ export default class ConsentContinuationOut extends Vue {
     // FUTURE: expiry date may come from business object
     const expiry = this.filing.data?.consentContinuationOut?.expiry
     if (expiry) {
-      return DateUtilities.apiToPacificDate(expiry)
+      return DateUtilities.apiToPacificDate(expiry, true)
     }
     return '[unknown]'
   }

@@ -49,7 +49,7 @@ describe('Display ConsentContinuationOut component', () => {
       }
     })
     // verify content
-    expect(wrapper.vm.expiry).toEqual('Aug 17, 2023')
+    expect(wrapper.vm.expiry).toEqual('August 17, 2023')
     wrapper.destroy()
   })
 })
