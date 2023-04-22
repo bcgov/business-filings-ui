@@ -115,6 +115,8 @@ export default class HeaderActions extends Vue {
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm && !this.isBenBcCccUlc)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
+    conditions[7] = () => (EnumUtilities.isTypeChangeOfAddress(this.filing) && !this.isBenBcCccUlc)
+    conditions[8] = () => (EnumUtilities.isTypeChangeOfDirectors(this.filing) && !this.isBenBcCccUlc)
 
     // check if any condition is True
     return conditions.some(condition => condition())
