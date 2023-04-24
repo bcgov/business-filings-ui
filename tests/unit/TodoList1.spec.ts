@@ -2406,9 +2406,16 @@ describe('TodoList - Click Tests - Corrections', () => {
       // await flushPromises()
 
       // verify routing to Correction page with filing id = 123 and corrected filing id = 456
-      expect(vm.$route.name).toBe('correction')
-      expect(vm.$route.params.filingId).toBe('123')
-      expect(vm.$route.params.correctedFilingId).toBe('456')
+      if (test !== 'changeOfAddress' && test !== 'changeOfDirectors') {
+        expect(vm.$route.name).toBe('correction')
+        expect(vm.$route.params.filingId).toBe('123')
+        expect(vm.$route.params.correctedFilingId).toBe('456')
+      } else {
+        // verify redirection if correction of change of Address/Directors
+        const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+        const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=123'
+        expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
+      }
 
       wrapper.destroy()
     })
