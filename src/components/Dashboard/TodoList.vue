@@ -1403,8 +1403,6 @@ export default class TodoList extends Vue {
         // see also ItemHeaderActions.vue:correctThisFiling()
         switch (item.correctedFilingType) {
           case FilingNames.ALTERATION:
-          case FilingNames.CHANGE_OF_ADDRESS:
-          case FilingNames.CHANGE_OF_DIRECTORS:
           case FilingNames.CHANGE_OF_REGISTRATION:
           case FilingNames.CORRECTION:
           case FilingNames.INCORPORATION_APPLICATION:
@@ -1413,6 +1411,23 @@ export default class TodoList extends Vue {
             const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
             navigate(correctionUrl)
             break
+
+          case FilingNames.CHANGE_OF_ADDRESS:
+          case FilingNames.CHANGE_OF_DIRECTORS:
+            if (this.isBenBcCccUlc) {
+              // resume correction via Edit UI if current type is BC, CC, ULC, or BEN
+              const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
+              navigate(correctionUrl)
+              break
+            } else {
+              // resume local correction otherwise
+              this.setCurrentFilingStatus(FilingStatus.DRAFT)
+              this.$router.push({
+                name: Routes.CORRECTION,
+                params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
+              })
+              break
+            }
 
           case FilingTypes.ANNUAL_REPORT:
           case FilingTypes.CONVERSION:

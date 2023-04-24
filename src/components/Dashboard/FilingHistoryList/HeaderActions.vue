@@ -115,8 +115,6 @@ export default class HeaderActions extends Vue {
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm && !this.isBenBcCccUlc)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
-    conditions[7] = () => (EnumUtilities.isTypeChangeOfAddress(this.filing) && !this.isBenBcCccUlc)
-    conditions[8] = () => (EnumUtilities.isTypeChangeOfDirectors(this.filing) && !this.isBenBcCccUlc)
 
     // check if any condition is True
     return conditions.some(condition => condition())
@@ -127,8 +125,6 @@ export default class HeaderActions extends Vue {
     // see also TodoList.vue:doResumeFiling()
     switch (filing?.name) {
       case FilingTypes.ALTERATION:
-      case FilingTypes.CHANGE_OF_ADDRESS:
-      case FilingTypes.CHANGE_OF_DIRECTORS:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.CORRECTION:
       case FilingTypes.INCORPORATION_APPLICATION:
@@ -137,6 +133,22 @@ export default class HeaderActions extends Vue {
         this.mutateCurrentFiling(filing)
         this.mutateFileCorrectionDialog(true)
         break
+
+      case FilingTypes.CHANGE_OF_ADDRESS:
+      case FilingTypes.CHANGE_OF_DIRECTORS:
+        if (this.isBenBcCccUlc) {
+          // correction via Edit UI if current type is BC, CC, ULC, or BEN
+          this.mutateCurrentFiling(filing)
+          this.mutateFileCorrectionDialog(true)
+          break
+        } else {
+          // Local correction otherwise
+          this.$router.push({
+            name: Routes.CORRECTION,
+            params: { correctedFilingId: filing.filingId.toString() }
+          })
+          break
+        }
 
       case FilingTypes.ANNUAL_REPORT:
       case FilingTypes.CONVERSION:
