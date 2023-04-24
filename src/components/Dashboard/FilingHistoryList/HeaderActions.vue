@@ -138,6 +138,7 @@ export default class HeaderActions extends Vue {
       case FilingTypes.CHANGE_OF_DIRECTORS:
         if (this.isBenBcCccUlc) {
           // correction via Edit UI if current type is BC, CC, ULC, or BEN
+          // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
           this.mutateCurrentFiling(filing)
           this.mutateFileCorrectionDialog(true)
           break

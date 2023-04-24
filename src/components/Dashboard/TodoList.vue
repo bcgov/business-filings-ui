@@ -1414,6 +1414,7 @@ export default class TodoList extends Vue {
           case FilingNames.CHANGE_OF_ADDRESS:
           case FilingNames.CHANGE_OF_DIRECTORS:
             if (this.isBenBcCccUlc) {
+              // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
               navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
               break
             } else {
