@@ -449,6 +449,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
+import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
@@ -1407,37 +1408,25 @@ export default class TodoList extends Vue {
           case FilingNames.CORRECTION:
           case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.REGISTRATION:
-            // resume correction via Edit UI
-            const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-            navigate(correctionUrl)
+            navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
             break
 
           case FilingNames.CHANGE_OF_ADDRESS:
           case FilingNames.CHANGE_OF_DIRECTORS:
             if (this.isBenBcCccUlc) {
-              // resume correction via Edit UI if current type is BC, CC, ULC, or BEN
-              const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-              navigate(correctionUrl)
+              navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
               break
             } else {
-              // resume local correction otherwise
               this.setCurrentFilingStatus(FilingStatus.DRAFT)
-              this.$router.push({
-                name: Routes.CORRECTION,
-                params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
-              })
+              routeToLocalCorrection(this.$router)
               break
             }
 
           case FilingTypes.ANNUAL_REPORT:
           case FilingTypes.CONVERSION:
           default:
-            // resume local correction for all other filings
             this.setCurrentFilingStatus(FilingStatus.DRAFT)
-            this.$router.push({
-              name: Routes.CORRECTION,
-              params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
-            })
+            routeToLocalCorrection(this.$router)
             break
         }
         break
@@ -1519,6 +1508,20 @@ export default class TodoList extends Vue {
         // eslint-disable-next-line no-console
         console.log('doResumeFiling(), invalid type for item =', item)
         break
+    }
+
+    function navigateToCorrectionEditUi (editUrl: string, identifier: string): void {
+      // resume correction via Edit UI
+      const correctionUrl = `${editUrl}${identifier}/correction/?correction-id=${item.filingId}`
+      navigate(correctionUrl)
+    }
+
+    function routeToLocalCorrection (router: VueRouter): void {
+      // resume local correction
+      router.push({
+        name: Routes.CORRECTION,
+        params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
+      })
     }
   }
 
