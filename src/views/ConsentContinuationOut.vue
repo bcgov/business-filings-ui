@@ -67,22 +67,24 @@
                 <h2>Ledger Detail</h2>
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
               </header>
-              <v-card flat class="py-8 px-5">
-                <v-row no-gutters>
-                  <v-col cols="12" sm="3" class="pr-4">
-                    <strong>Detail</strong>
-                  </v-col>
-                  <v-col cols="12" sm="9">
-                    <p class="detail-text">{{defaultComment}}</p>
-                    <DetailComment
-                      v-model="detailComment"
-                      placeholder="Add a Detail that will appear on the ledger for this entity."
-                      :maxLength="maxDetailCommentLength"
-                      @valid="detailCommentValid=$event"
-                    />
-                  </v-col>
-                </v-row>
-              </v-card>
+              <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment">
+                <v-card flat class="py-8 px-5">
+                  <v-row no-gutters>
+                    <v-col cols="12" sm="3" class="pr-4">
+                      <strong>Detail</strong>
+                    </v-col>
+                    <v-col cols="12" sm="9">
+                      <p class="detail-text">{{defaultComment}}</p>
+                      <DetailComment
+                        v-model="detailComment"
+                        placeholder="Add a Detail that will appear on the ledger for this entity."
+                        :maxLength="maxDetailCommentLength"
+                        @valid="detailCommentValid=$event"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </div>
             </section>
 
             <!-- Documents Delivery -->
@@ -91,16 +93,19 @@
                 <h2>Documents Delivery</h2>
                 <p>Copies of the consent to continue out documents will be sent to the email addresses listed below.</p>
               </header>
-              <v-card flat class="py-8 px-5">
-                <DocumentDelivery
-                  :editableCompletingParty="isRoleStaff"
-                  :contactValue="getBusinessEmail"
-                  contactLabel="Business Office"
-                  :documentOptionalEmail="documentOptionalEmail"
-                  @update:optionalEmail="documentOptionalEmail=$event"
-                  @valid="documentDeliveryValid=$event"
-                />
-              </v-card>
+              <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery">
+                <v-card flat class="py-8 px-5">
+                  <DocumentDelivery
+                    id="document-delivery"
+                    :editableCompletingParty="isRoleStaff"
+                    :contactValue="getBusinessEmail"
+                    contactLabel="Business Office"
+                    :documentOptionalEmail="documentOptionalEmail"
+                    @update:optionalEmail="documentOptionalEmail=$event"
+                    @valid="documentDeliveryValid=$event"
+                  />
+                </v-card>
+              </div>
             </section>
 
             <!-- Certify -->
@@ -109,13 +114,16 @@
                 <h2>Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
-              <Certify
-                :isCertified.sync="isCertified"
-                :certifiedBy.sync="certifiedBy"
-                :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
-                @valid="certifyFormValid=$event"
-              />
+              <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form">
+                <Certify
+                  id="certify-form"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
+                  :entityDisplay="displayName()"
+                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  @valid="certifyFormValid=$event"
+                />
+              </div>
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
@@ -125,16 +133,19 @@
                 <p>If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
                   to a plan of arrangement, enter the court order number and select Plan of Arrangement.</p>
               </header>
-              <v-card flat class="py-8 px-5">
-                <CourtOrderPoa
-                  :draftCourtOrderNumber="fileNumber"
-                  :hasDraftPlanOfArrangement="hasPlanOfArrangement"
-                  :courtOrderNumberRequired="false"
-                  @emitCourtNumber="fileNumber=$event"
-                  @emitPoa="hasPlanOfArrangement=$event"
-                  @emitValid="courtOrderValid=$event"
-                />
-              </v-card>
+              <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order">
+                <v-card flat class="py-8 px-5">
+                  <CourtOrderPoa
+                    :autoValidation="showErrors"
+                    :courtOrderNumberRequired="false"
+                    :draftCourtOrderNumber="fileNumber"
+                    :hasDraftPlanOfArrangement="hasPlanOfArrangement"
+                    @emitCourtNumber="fileNumber=$event"
+                    @emitPoa="hasPlanOfArrangement=$event"
+                    @emitValid="courtOrderValid=$event"
+                  />
+                </v-card>
+              </div>
             </section>
 
           </article>
@@ -147,6 +158,7 @@
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
+                class="ml-4"
                 :filingData="filingData"
                 :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
@@ -191,7 +203,7 @@
                 id="correction-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -309,6 +321,7 @@ export default class ConsentContinuationOut extends Vue {
   private savedFiling: any = null // filing during save
   private saving = false // true only when saving
   private savingResuming = false // true only when saving and resuming
+  private showErrors = false // true when we press on File and Pay (trigger validation)
   private filingPaying = false // true only when filing and paying
   private haveChanges = false
   private saveErrors = []
@@ -553,6 +566,13 @@ export default class ConsentContinuationOut extends Vue {
    * or when user submits from Staff Payment dialog.
    */
   async onClickFilePay (fromStaffPayment = false): Promise<void> {
+    // if there is an invalid component, scroll to it
+    if (!this.isPageValid) {
+      this.showErrors = true
+      this.scrollToInvalidComponent()
+      return
+    }
+
     // prevent double saving
     if (this.busySaving) return
 
@@ -810,6 +830,30 @@ export default class ConsentContinuationOut extends Vue {
         this.onClickFilePayFinish()
         break
     }
+  }
+
+  /** Array of valid components. Must match validFlags. */
+  readonly validComponents = [
+    'detail-comment',
+    'document-delivery',
+    'certify-form',
+    'court-order'
+  ]
+
+  /** Object of valid flags. Must match validComponents. */
+  get validFlags (): object {
+    return {
+      detailComment: this.detailCommentValid,
+      documentDelivery: this.documentDeliveryValid,
+      certifyForm: this.certifyFormValid,
+      courtOrder: this.courtOrderValid
+    }
+  }
+
+  private async scrollToInvalidComponent (): Promise<void> {
+    // scroll to invalid components
+    await Vue.nextTick()
+    await this.validateAndScroll(this.validFlags, this.validComponents)
   }
 
   @Watch('certifyFormValid')
