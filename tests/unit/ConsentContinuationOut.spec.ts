@@ -28,36 +28,8 @@ const localVue = createLocalVue()
 localVue.use(VueRouter)
 
 describe('Consent to Continuation Out view', () => {
-  let sinonAxiosGet: any
-
   beforeEach(() => {
-    sinonAxiosGet = sinon.stub(axios, 'get')
-
     store.commit('setTestConfiguration', { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
-
-    // mock "get orig filing" endpoint
-    sinonAxiosGet
-      .withArgs('businesses/CP1234567/filings/123')
-      .returns(new Promise(resolve =>
-        resolve({
-          data: {
-            filing: {
-              business: {
-                identifier: 'CP1234567',
-                legalName: 'My Test Entity'
-              },
-              header: {
-                name: 'annualReport',
-                status: 'COMPLETED',
-                date: '2018-12-24T00:00:00+00:00'
-              },
-              annualReport: {
-                annualReportDate: '2018-06-26'
-              }
-            }
-          }
-        })
-      ))
 
     // init store
     store.state.currentDate = '2020-03-04'
@@ -180,11 +152,6 @@ describe('Consent to Continuation Out view', () => {
   })
 
   it('saves draft consent to continuation out properly', async () => {
-    // mock "get tasks" endpoint - needed for hasPendingTasks()
-    sinonAxiosGet
-      .withArgs('businesses/CP1234567/tasks')
-      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
-
     // mock "save draft" endpoint (garbage response data - we aren't testing that)
     sinon.stub(axios, 'post')
       .withArgs('businesses/CP1234567/filings?draft=true')
@@ -243,7 +210,7 @@ describe('Consent to Continuation Out view', () => {
 
   it('resumes draft consent to continuation out properly with FAS staff payment', async () => {
     // mock "get draft consent to continue out" endpoint
-    sinonAxiosGet
+    sinon.stub(axios, 'get')
       .withArgs('businesses/CP1234567/filings/456')
       .returns(new Promise(resolve =>
         resolve({
