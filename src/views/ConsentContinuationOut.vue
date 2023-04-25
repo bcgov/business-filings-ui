@@ -7,7 +7,7 @@
 
     <PaymentErrorDialog
       attach="#consent-continuation-out"
-      filingName="Correction"
+      filingName="Consent to Continuation Out"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
@@ -22,7 +22,7 @@
 
     <SaveErrorDialog
       attach="#consent-continuation-out"
-      filingName="Correction"
+      filingName="Consent to Continuation Out"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -52,13 +52,13 @@
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="correction-container" class="view-container" v-if="dataLoaded">
-      <v-row no-gutters>
+    <v-container id="consent-container" class="view-container" v-if="dataLoaded">
+      <v-row>
         <v-col cols="12" lg="9">
-          <article id="correction-article">
+          <article id="consent-article">
             <!-- Page Title -->
             <header>
-              <h1 id="correction-header">Six-Month Consent to Continue Out</h1>
+              <h1 id="consent-header">Six-Month Consent to Continue Out</h1>
             </header>
 
             <!-- Ledger Detail -->
@@ -67,7 +67,7 @@
                 <h2>Ledger Detail</h2>
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
               </header>
-              <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment">
+              <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment-section">
                 <v-card flat class="py-8 px-5">
                   <v-row no-gutters>
                     <v-col cols="12" sm="3" class="pr-4">
@@ -93,10 +93,9 @@
                 <h2>Documents Delivery</h2>
                 <p>Copies of the consent to continue out documents will be sent to the email addresses listed below.</p>
               </header>
-              <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery">
+              <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery-section">
                 <v-card flat class="py-8 px-5">
                   <DocumentDelivery
-                    id="document-delivery"
                     :editableCompletingParty="isRoleStaff"
                     :contactValue="getBusinessEmail"
                     contactLabel="Business Office"
@@ -114,9 +113,8 @@
                 <h2>Certify</h2>
                 <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
-              <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form">
+              <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
                 <Certify
-                  id="certify-form"
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :entityDisplay="displayName()"
@@ -133,7 +131,7 @@
                 <p>If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
                   to a plan of arrangement, enter the court order number and select Plan of Arrangement.</p>
               </header>
-              <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order">
+              <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order-section">
                 <v-card flat class="py-8 px-5">
                   <CourtOrderPoa
                     :autoValidation="showErrors"
@@ -154,11 +152,10 @@
         <v-col cols="12" lg="3" style="position: relative">
           <aside>
             <affix
-              relative-element-selector="#correction-article"
+              relative-element-selector="#consent-article"
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
-                class="ml-4"
                 :filingData="filingData"
                 :payURL="getPayApiUrl"
                 @total-fee="totalFee=$event"
@@ -171,12 +168,12 @@
 
     <!-- Buttons -->
     <v-container
-      id="correction-buttons-container"
+      id="consent-buttons-container"
       class="list-item"
     >
       <div class="buttons-left">
         <v-btn
-          id="correction-save-btn"
+          id="consent-save-btn"
           large
           :disabled="busySaving"
           :loading="saving"
@@ -185,7 +182,7 @@
           <span>Save</span>
         </v-btn>
         <v-btn
-          id="correction-save-resume-btn"
+          id="consent-save-resume-btn"
           large
           :disabled="busySaving"
           :loading="savingResuming"
@@ -200,7 +197,7 @@
           <template v-slot:activator="{ on }">
             <div v-on="on" class="d-inline">
               <v-btn
-                id="correction-file-pay-btn"
+                id="consent-file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -216,7 +213,7 @@
         </v-tooltip>
 
         <v-btn
-          id="correction-cancel-btn"
+          id="consent-cancel-btn"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -317,7 +314,7 @@ export default class ConsentContinuationOut extends Vue {
   private totalFee = 0
   private dataLoaded = false
   private loadingMessage = ''
-  private filingId = 0 // id of this correction filing
+  private filingId = 0 // id of this consent to continuation out filing
   private savedFiling: any = null // filing during save
   private saving = false // true only when saving
   private savingResuming = false // true only when saving and resuming
@@ -398,9 +395,9 @@ export default class ConsentContinuationOut extends Vue {
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Correction`
+      this.loadingMessage = `Resuming Your Consent to Continuation Out`
     } else {
-      this.loadingMessage = `Preparing Your Correction`
+      this.loadingMessage = `Preparing Your Consent to Continuation Out`
     }
 
     // fetch draft (which may overwrite some properties)
@@ -410,13 +407,13 @@ export default class ConsentContinuationOut extends Vue {
 
     this.dataLoaded = true
 
-    // always include correction code
+    // always include consent continue out code
     // use existing Priority and Waive Fees flags
     this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
-  /** Fetches the draft correction filing. */
+  /** Fetches the draft consent filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
     await LegalServices.fetchFiling(url).then(filing => {
@@ -569,7 +566,7 @@ export default class ConsentContinuationOut extends Vue {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      this.scrollToInvalidComponent()
+      await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
 
@@ -754,7 +751,7 @@ export default class ConsentContinuationOut extends Vue {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Correction. Do you want to exit your filing?',
+      'You have unsaved changes in your Consent to Continue Out. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
@@ -834,10 +831,10 @@ export default class ConsentContinuationOut extends Vue {
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'detail-comment',
-    'document-delivery',
-    'certify-form',
-    'court-order'
+    'detail-comment-section',
+    'document-delivery-section',
+    'certify-form-section',
+    'court-order-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
@@ -848,12 +845,6 @@ export default class ConsentContinuationOut extends Vue {
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid
     }
-  }
-
-  private async scrollToInvalidComponent (): Promise<void> {
-    // scroll to invalid components
-    await Vue.nextTick()
-    await this.validateAndScroll(this.validFlags, this.validComponents)
   }
 
   @Watch('certifyFormValid')
@@ -924,7 +915,7 @@ h2 {
 }
 
 // Save & Filing Buttons
-#correction-buttons-container {
+#consent-buttons-container {
   padding-top: 2rem;
   border-top: 1px solid $gray5;
 
@@ -940,7 +931,7 @@ h2 {
     margin-left: 0.5rem;
   }
 
-  #correction-cancel-btn {
+  #consent-cancel-btn {
     margin-left: 0.5rem;
   }
 }
