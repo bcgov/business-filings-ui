@@ -8,6 +8,7 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, 
 import { Certify, DetailComment } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
+import { LegalServices } from '@/services'
 import axios from '@/axios-auth'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
@@ -210,31 +211,27 @@ describe('Consent to Continuation Out view', () => {
 
   it('resumes draft consent to continuation out properly with FAS staff payment', async () => {
     // mock "get draft consent to continue out" endpoint
-    sinon.stub(axios, 'get')
-      .withArgs('businesses/CP1234567/filings/456')
-      .returns(new Promise(resolve =>
-        resolve({
-          data: {
-            filing: {
-              business: {
-                identifier: 'CP1234567',
-                legalName: 'My Test Entity'
-              },
-              header: {
-                name: 'consentContinuationOut',
-                status: 'DRAFT',
-                certifiedBy: 'Johnny Certifier',
-                routingSlipNumber: '123456789',
-                priority: true
-              },
-              consentContinuationOut: {
-                details: 'Line 1\nLine 2\nLine 3'
-              },
-              annualReport: {}
-            }
-          }
-        })
-      ))
+    const sampleConsentContinueOutInfo = {
+      business: {
+        identifier: 'CP1234567',
+        legalName: 'My Test Entity'
+      },
+      header: {
+        name: 'consentContinuationOut',
+        status: 'DRAFT',
+        certifiedBy: 'Johnny Certifier',
+        routingSlipNumber: '123456789',
+        priority: true
+      },
+      consentContinuationOut: {
+        details: 'Line 1\nLine 2\nLine 3'
+      },
+      annualReport: {}
+    }
+
+    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+      return Promise.resolve(sampleConsentContinueOutInfo)
+    })
 
     // mock $route
     const $route = { params: { filingId: '456' } }
