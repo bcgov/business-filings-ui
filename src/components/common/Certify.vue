@@ -16,19 +16,21 @@
           />
         </div>
       </div>
-      <v-checkbox
-        :value="isCertified"
-        @change="emitIsCertified($event)"
-      >
-        <template v-slot:label>
-          <div class="certify-stmt">
-            I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
-            of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
-          </div>
-        </template>
-      </v-checkbox>
-      <p class="certify-clause">Date: {{getCurrentDate}}</p>
-      <p class="certify-clause">{{message}}</p>
+      <div class="certify-statement-section">
+        <v-checkbox
+          :value="isCertified"
+          @change="emitIsCertified($event)"
+        >
+          <template v-slot:label>
+            <div class="certify-stmt">
+              I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
+              of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
+            </div>
+          </template>
+        </v-checkbox>
+        <p class="certify-clause">Date: {{getCurrentDate}}</p>
+        <p class="certify-clause">{{message}}</p>
+      </div>
     </div>
   </v-card>
 </template>
