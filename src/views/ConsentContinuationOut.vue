@@ -886,10 +886,6 @@ h2::before {
   content: counter(header-counter) '. ';
 }
 
-.detail-text {
-  color: $gray7;
-}
-
 article {
   .v-card {
     line-height: 1.2rem;
@@ -960,7 +956,7 @@ h2 {
     }
   }
 
-  .certify-clause, .certify-stmt {
+  .certify-clause, .certify-stmt, .detail-text {
     color: $gray7;
   }
 }
