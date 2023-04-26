@@ -8,8 +8,19 @@ import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, 
 import { Certify, DetailComment } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
+import { LegalServices } from '@/services'
+import axios from '@/axios-auth'
+import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
+import sinon from 'sinon'
 import VueRouter from 'vue-router'
+
+// suppress various warnings:
+// - "Unknown custom element <affix>" warnings
+// - "$listeners is readonly"
+// - "Avoid mutating a prop directly"
+// ref: https://github.com/vuejs/vue-test-utils/issues/532
+Vue.config.silent = true
 
 Vue.use(Vuetify)
 
@@ -19,6 +30,8 @@ localVue.use(VueRouter)
 
 describe('Consent to Continuation Out view', () => {
   beforeEach(() => {
+    store.commit('setTestConfiguration', { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
+
     // init store
     store.state.currentDate = '2020-03-04'
     store.commit('setLegalType', 'CP')
@@ -27,6 +40,10 @@ describe('Consent to Continuation Out view', () => {
     store.commit('setFoundingDate', '1971-05-12T00:00:00-00:00')
     store.state.filingData = []
     store.state.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
+  })
+
+  afterEach(() => {
+    sinon.restore()
   })
 
   it('mounts the sub-components properly', async () => {
@@ -131,6 +148,122 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = false
     expect(!!vm.isPageValid).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('saves draft consent to continuation out properly', async () => {
+    // mock "save draft" endpoint (garbage response data - we aren't testing that)
+    sinon.stub(axios, 'post')
+      .withArgs('businesses/CP1234567/filings?draft=true')
+      .returns(new Promise(resolve =>
+        resolve({
+          data: {
+            filing: {
+              business: {},
+              header: { filingId: 456 },
+              consentContinuationOut: { details: 'test' },
+              annualReport: {}
+            }
+          }
+        })
+      ))
+
+    // mock $route
+    const $route = { params: { filingId: '456' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'consent-continuation-out', params: { filingId: '0' } })
+
+    const wrapper = shallowMount(ConsentContinuationOut, {
+      store,
+      router,
+      stubs: {
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetch to complete
+    await flushPromises()
+
+    const button = wrapper.find('#consent-save-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+
+    // click the Save button
+    await button.trigger('click')
+
+    // wait for save to complete and everything to update
+    await flushPromises()
+
+    // verify new Filing ID
+    expect(vm.filingId).toBe(456)
+
+    wrapper.destroy()
+  })
+
+  it('resumes draft consent to continuation out properly with FAS staff payment', async () => {
+    // mock "get draft consent to continue out" endpoint
+    const sampleConsentContinueOutInfo = {
+      business: {
+        identifier: 'CP1234567',
+        legalName: 'My Test Entity'
+      },
+      header: {
+        name: 'consentContinuationOut',
+        status: 'DRAFT',
+        certifiedBy: 'Johnny Certifier',
+        routingSlipNumber: '123456789',
+        priority: true
+      },
+      consentContinuationOut: {
+        details: 'Line 1\nLine 2\nLine 3'
+      },
+      annualReport: {}
+    }
+
+    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+      return Promise.resolve(sampleConsentContinueOutInfo)
+    })
+
+    // mock $route
+    const $route = { params: { filingId: '456' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'consent-continuation-out', params: { filingId: '0' } })
+
+    const wrapper = shallowMount(ConsentContinuationOut, {
+      store,
+      router,
+      stubs: {
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetches to complete
+    await flushPromises()
+
+    expect(vm.certifiedBy).toBe('Johnny Certifier')
+    expect(vm.staffPaymentData.option).toBe(1) // FAS
+    expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
+    expect(vm.staffPaymentData.isPriority).toBe(true)
+    // NB: line 1 (default comment) should be removed
+    expect(vm.detailComment).toBe('Line 2\nLine 3')
 
     wrapper.destroy()
   })
