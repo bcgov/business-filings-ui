@@ -449,6 +449,7 @@ import PaymentPaid from './TodoList/PaymentPaid.vue'
 import PaymentPending from './TodoList/PaymentPending.vue'
 import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.vue'
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
+import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
@@ -1403,26 +1404,30 @@ export default class TodoList extends Vue {
         // see also ItemHeaderActions.vue:correctThisFiling()
         switch (item.correctedFilingType) {
           case FilingNames.ALTERATION:
-          case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.CHANGE_OF_REGISTRATION:
           case FilingNames.CORRECTION:
+          case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.REGISTRATION:
-            // resume correction via Edit UI
-            const correctionUrl = `${this.getEditUrl}${this.getIdentifier}/correction/?correction-id=${item.filingId}`
-            navigate(correctionUrl)
+            navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
             break
 
+          case FilingNames.CHANGE_OF_ADDRESS:
+          case FilingNames.CHANGE_OF_DIRECTORS:
+            if (this.isBenBcCccUlc) {
+              // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
+              navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
+              break
+            } else {
+              this.setCurrentFilingStatus(FilingStatus.DRAFT)
+              routeToLocalCorrection(this.$router)
+              break
+            }
+
           case FilingTypes.ANNUAL_REPORT:
-          case FilingTypes.CHANGE_OF_ADDRESS:
-          case FilingTypes.CHANGE_OF_DIRECTORS:
           case FilingTypes.CONVERSION:
           default:
-            // resume local correction for all other filings
             this.setCurrentFilingStatus(FilingStatus.DRAFT)
-            this.$router.push({
-              name: Routes.CORRECTION,
-              params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
-            })
+            routeToLocalCorrection(this.$router)
             break
         }
         break
@@ -1504,6 +1509,20 @@ export default class TodoList extends Vue {
         // eslint-disable-next-line no-console
         console.log('doResumeFiling(), invalid type for item =', item)
         break
+    }
+
+    function navigateToCorrectionEditUi (editUrl: string, identifier: string): void {
+      // resume correction via Edit UI
+      const correctionUrl = `${editUrl}${identifier}/correction/?correction-id=${item.filingId}`
+      navigate(correctionUrl)
+    }
+
+    function routeToLocalCorrection (router: VueRouter): void {
+      // resume local correction
+      router.push({
+        name: Routes.CORRECTION,
+        params: { filingId: item.filingId.toString(), correctedFilingId: item.correctedFilingId.toString() }
+      })
     }
   }
 

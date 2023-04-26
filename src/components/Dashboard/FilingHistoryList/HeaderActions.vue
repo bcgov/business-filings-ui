@@ -125,18 +125,33 @@ export default class HeaderActions extends Vue {
     // see also TodoList.vue:doResumeFiling()
     switch (filing?.name) {
       case FilingTypes.ALTERATION:
-      case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.CHANGE_OF_REGISTRATION:
       case FilingTypes.CORRECTION:
+      case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.REGISTRATION:
         // correction via Edit UI
         this.mutateCurrentFiling(filing)
         this.mutateFileCorrectionDialog(true)
         break
 
-      case FilingTypes.ANNUAL_REPORT:
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
+        if (this.isBenBcCccUlc) {
+          // correction via Edit UI if current type is BC, CC, ULC, or BEN
+          // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
+          this.mutateCurrentFiling(filing)
+          this.mutateFileCorrectionDialog(true)
+          break
+        } else {
+          // Local correction otherwise
+          this.$router.push({
+            name: Routes.CORRECTION,
+            params: { correctedFilingId: filing.filingId.toString() }
+          })
+          break
+        }
+
+      case FilingTypes.ANNUAL_REPORT:
       case FilingTypes.CONVERSION:
       default:
         // local correction for all other filings
