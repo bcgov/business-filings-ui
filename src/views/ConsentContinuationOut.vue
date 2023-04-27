@@ -71,7 +71,7 @@
                 <v-card flat class="py-8 px-5">
                   <v-row no-gutters>
                     <v-col cols="12" sm="3" class="pr-4">
-                      <strong>Detail</strong>
+                      <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
                     </v-col>
                     <v-col cols="12" sm="9">
                       <p class="grey-text font-weight-bold">{{defaultComment}}</p>
@@ -116,6 +116,8 @@
               </header>
               <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
                 <Certify
+                  :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
+                  ref="certifyRef"
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :entityDisplay="displayName()"
@@ -568,8 +570,12 @@ export default class ConsentContinuationOut extends Vue {
     if (!this.isPageValid) {
       this.showErrors = true
       if (!this.detailCommentValid) {
-        // Show error message of text area if invalid
+        // Show error message of detail comment text area if invalid
         this.$refs.detailCommentRef.$refs.textarea.error = true
+      }
+      if (!this.certifyFormValid) {
+        // Show error message of legal name text field if invalid
+        this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
       }
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
@@ -944,6 +950,12 @@ h2 {
 
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
+  }
+
+  .invalid-certify {
+    .certify-stmt, .title-label {
+      color: $app-red;
+    }
   }
 }
 </style>

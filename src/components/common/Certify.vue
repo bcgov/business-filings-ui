@@ -6,6 +6,7 @@
       </v-col>
       <v-col cols="12" sm="9">
         <v-text-field
+          ref="certifyTextfieldRef"
           filled
           persistent-hint
           id="certified-by-textfield"
@@ -26,7 +27,7 @@
             </div>
           </template>
         </v-checkbox>
-        <p class="certify-clause">Date: {{getCurrentDate}}</p>
+        <p class="certify-clause"><strong>Date:</strong> {{getCurrentDate}}</p>
         <p class="certify-clause">{{message}}</p>
       </v-col>
     </v-row>
@@ -115,5 +116,11 @@ export default class Certify extends Vue {
 .title-label {
   color: $gray9;
   font-weight: bold;
+}
+
+.v-input--checkbox::v-deep {
+  .v-icon {
+    margin-top: -1.25rem;
+  }
 }
 </style>
