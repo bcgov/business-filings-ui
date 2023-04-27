@@ -118,6 +118,7 @@ export default class EntityMenu extends Vue {
   @Getter getIdentifier!: string
   @Getter getReasonText!: string
   @Getter isFirm!: boolean
+  @Getter isGoodStanding!: boolean
   @Getter isHistorical!: boolean
   @Getter isPendingDissolution!: boolean
 

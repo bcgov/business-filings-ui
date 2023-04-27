@@ -244,6 +244,7 @@ export default {
       'isAppTask',
       'isBenBcCccUlc',
       'isFirm',
+      'isGoodStanding',
       'isHistorical',
       'isPartnership',
       'isRoleStaff',
