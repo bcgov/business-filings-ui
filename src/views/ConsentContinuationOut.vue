@@ -74,7 +74,7 @@
                       <strong>Detail</strong>
                     </v-col>
                     <v-col cols="12" sm="9">
-                      <strong class="grey-text">{{defaultComment}}</strong>
+                      <p class="grey-text font-weight-bold">{{defaultComment}}</p>
                       <DetailComment
                         ref="detailCommentRef"
                         v-model="detailComment"
@@ -940,20 +940,6 @@ h2 {
 :deep(){
   #document-delivery, #court-order-label, #poa-label {
     font-size: $px-14;
-  }
-
-  .value.certifiedby {
-    padding-left: 3rem;
-  }
-
-  .certify-statement-section {
-    padding-left: 15rem;
-  }
-
-  @media (max-width: 768px) {
-    .certify-statement-section {
-      padding-left: 3rem;
-    }
   }
 
   .certify-clause, .certify-stmt, .grey-text {
