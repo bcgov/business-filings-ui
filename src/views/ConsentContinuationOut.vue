@@ -65,7 +65,7 @@
             <section>
               <header>
                 <h2>Ledger Detail</h2>
-                <p>Enter a detail that will appear on the ledger for this entity.</p>
+                <p class="grey-text">Enter a detail that will appear on the ledger for this entity.</p>
               </header>
               <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment-section">
                 <v-card flat class="py-8 px-5">
@@ -74,8 +74,9 @@
                       <strong>Detail</strong>
                     </v-col>
                     <v-col cols="12" sm="9">
-                      <p class="detail-text">{{defaultComment}}</p>
+                      <p class="grey-text font-weight-bold">{{defaultComment}}</p>
                       <DetailComment
+                        ref="detailCommentRef"
                         v-model="detailComment"
                         placeholder="Add a Detail that will appear on the ledger for this entity."
                         :maxLength="maxDetailCommentLength"
@@ -91,7 +92,7 @@
             <section>
               <header>
                 <h2>Documents Delivery</h2>
-                <p>Copies of the consent to continue out documents will be sent to the email addresses listed below.</p>
+                <p class="grey-text">Copies of the consent to continue out documents will be sent to the email addresses listed below.</p>
               </header>
               <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery-section">
                 <v-card flat class="py-8 px-5">
@@ -111,7 +112,7 @@
             <section>
               <header>
                 <h2>Certify</h2>
-                <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
+                <p class="grey-text">Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
               <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
                 <Certify
@@ -128,7 +129,7 @@
             <section>
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
-                <p>If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
+                <p class="grey-text">If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
                   to a plan of arrangement, enter the court order number and select Plan of Arrangement.</p>
               </header>
               <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order-section">
@@ -566,6 +567,10 @@ export default class ConsentContinuationOut extends Vue {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
+      if (!this.detailCommentValid) {
+        // Show error message of text area if invalid
+        this.$refs.detailCommentRef.$refs.textarea.error = true
+      }
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
@@ -881,11 +886,6 @@ h2::before {
   content: counter(header-counter) '. ';
 }
 
-.detail-text {
-  color: $gray7;
-  font-weight: bold;
-}
-
 article {
   .v-card {
     line-height: 1.2rem;
@@ -936,14 +936,14 @@ h2 {
   }
 }
 
-// Fix font size to stay consistent between all components.
+// Fix font size and color to stay consistent.
 :deep(){
   #document-delivery, #court-order-label, #poa-label {
     font-size: $px-14;
   }
 
-  .value.certifiedby {
-    padding-left: 3rem;
+  .certify-clause, .certify-stmt, .grey-text {
+    color: $gray7;
   }
 }
 </style>

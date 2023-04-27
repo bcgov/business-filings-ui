@@ -1,35 +1,35 @@
 <template>
   <v-card flat>
-    <div class="certify-container">
-      <div class="certifiedby-container">
-        <label>Legal Name</label>
-        <div class="value certifiedby">
-          <v-text-field
-            filled
-            persistent-hint
-            id="certified-by-textfield"
-            label="Person's legal name"
-            hint="Legal name of authorized person"
-            :value="certifiedBy"
-            :rules="[ v => !!v || 'A person\'s legal name is required.']"
-            @input="emitCertifiedBy($event)"
-          />
-        </div>
-      </div>
-      <v-checkbox
-        :value="isCertified"
-        @change="emitIsCertified($event)"
-      >
-        <template v-slot:label>
-          <div class="certify-stmt">
-            I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
-            of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
-          </div>
-        </template>
-      </v-checkbox>
-      <p class="certify-clause">Date: {{getCurrentDate}}</p>
-      <p class="certify-clause">{{message}}</p>
-    </div>
+    <v-row no-gutters class="pl-4 pr-4 pt-4">
+      <v-col cols="12" sm="3">
+        <label class="title-label">Legal Name</label>
+      </v-col>
+      <v-col cols="12" sm="9">
+        <v-text-field
+          filled
+          persistent-hint
+          id="certified-by-textfield"
+          label="Person's legal name"
+          hint="Legal name of authorized person"
+          :value="certifiedBy"
+          :rules="[ v => !!v || 'A person\'s legal name is required.']"
+          @input="emitCertifiedBy($event)"
+        />
+        <v-checkbox
+          :value="isCertified"
+          @change="emitIsCertified($event)"
+        >
+          <template v-slot:label>
+            <div class="certify-stmt">
+              I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
+              of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
+            </div>
+          </template>
+        </v-checkbox>
+        <p class="certify-clause">Date: {{getCurrentDate}}</p>
+        <p class="certify-clause">{{message}}</p>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -100,37 +100,6 @@ export default class Certify extends Vue {
   font-size: $px-14;
 }
 
-.certify-container {
-  padding: 1.25rem;
-}
-
-.certifiedby-container {
-  display: flex;
-  flex-flow: column nowrap;
-  position: relative;
-
-  > label:first-child {
-    font-weight: 700;
-    margin-bottom: 2rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .certifiedby-container {
-    flex-flow: row nowrap;
-
-    > label:first-child {
-      flex: 0 0 auto;
-      padding-right: 2rem;
-      width: 12rem;
-    }
-  }
-}
-
-.value.certifiedby {
-  width: 100%;
-}
-
 .certify-clause {
   padding-left: 2rem;
   color: black;
@@ -141,5 +110,10 @@ export default class Certify extends Vue {
   display: inline;
   font-size: $px-14;
   color: black;
+}
+
+.title-label {
+  color: $gray9;
+  font-weight: bold;
 }
 </style>
