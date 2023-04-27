@@ -515,6 +515,7 @@ export default class TodoList extends Vue {
   @Getter getTasks!: Array<ApiTaskIF>
   @Getter getTodoListResource!: TodoListResourceIF
   @Getter isBenBcCccUlc!: boolean
+  @Getter isGoodStanding!: boolean
 
   @Action setARFilingYear!: ActionBindingIF
   @Action setArMinDate!: ActionBindingIF
