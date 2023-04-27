@@ -936,7 +936,7 @@ h2 {
   }
 }
 
-// Fix font size/color and component alignment to stay consistent.
+// Fix font size and color to stay consistent.
 :deep(){
   #document-delivery, #court-order-label, #poa-label {
     font-size: $px-14;
