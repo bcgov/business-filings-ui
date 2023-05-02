@@ -245,8 +245,8 @@ import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
+import { EnumUtilities, LegalServices } from '@/services/'
+import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, CourtOrderIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -468,10 +468,10 @@ export default class ConsentContinuationOut extends Vue {
       const comment: string = filing.consentContinuationOut.details || ''
       this.detailComment = comment.split('\n').slice(1).join('\n')
 
-      if (filing.consentContinuationOut.courtOrder) {
-        const courtOrder = filing.consentContinuationOut.courtOrder
+      const courtOrder = filing.consentContinuationOut.courtOrder
+      if (courtOrder) {
         this.fileNumber = courtOrder.fileNumber
-        this.hasPlanOfArrangement = courtOrder.hasPlanOfArrangement
+        this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
       }
 
       if (filing.header.documentOptionalEmail) {
@@ -728,7 +728,7 @@ export default class ConsentContinuationOut extends Vue {
     if (this.fileNumber !== '') {
       data[FilingTypes.CONSENT_CONTINUATION_OUT].courtOrder = {
         fileNumber: this.fileNumber,
-        hasPlanOfArrangement: this.hasPlanOfArrangement || false
+        effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
       }
     }
 
