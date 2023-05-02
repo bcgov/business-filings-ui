@@ -83,7 +83,10 @@ export default {
       const stateFilingUrl = rootGetters.getStateFilingUrl
 
       // if there is no state filing url, return null
-      if (!stateFilingUrl) resolve(null)
+      if (!stateFilingUrl) {
+        resolve(null)
+        return
+      }
 
       LegalServices.fetchFiling(stateFilingUrl)
         .then(filing => {

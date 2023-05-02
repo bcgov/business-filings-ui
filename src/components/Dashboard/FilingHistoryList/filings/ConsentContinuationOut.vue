@@ -4,9 +4,9 @@
       <p class="mt-4">
         This consent is valid <strong>until {{ expiry }} at 12:01 am Pacific time</strong>.
       </p>
-      <p v-if="orderDetails" class="mt-4">{{ orderDetails }}</p>
+      <p v-if="orderDetails" class="mt-4" v-html="orderDetails" />
       <p v-if="fileNumber" class="mt-4 mb-0">Court Order Number: {{ fileNumber }}</p>
-      <p v-if="planOfArrangement" class="mt-0">{{ planOfArrangement }}</p>
+      <p v-if="hasEffectOfOrder" class="mt-0">Pursuant to a Plan of Arrangement</p>
     </template>
   </FilingTemplate>
 </template>
@@ -26,7 +26,6 @@ export default class ConsentContinuationOut extends Vue {
   @Prop({ required: true }) readonly index!: number
 
   get expiry (): string {
-    // FUTURE: expiry date may come from business object
     const expiry = this.filing.data?.consentContinuationOut?.expiry
     if (expiry) {
       return DateUtilities.apiToPacificDate(expiry, true)
@@ -35,7 +34,7 @@ export default class ConsentContinuationOut extends Vue {
   }
 
   get orderDetails (): string {
-    return this.filing.data?.consentContinuationOut?.orderDetails
+    return this.filing.data?.order?.orderDetails?.replace('\n', '<br/>')
   }
 
   /** The court order file number. */
@@ -43,9 +42,9 @@ export default class ConsentContinuationOut extends Vue {
     return this.filing.data?.order?.fileNumber
   }
 
-  /** The court order plan of arrangement. */
-  get planOfArrangement (): string {
-    return this.filing.data?.order?.effectOfOrder ? 'Pursuant to a Plan of Arrangement' : null
+  /** Whether the court order has an effect of order. */
+  get hasEffectOfOrder (): boolean {
+    return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 }
 </script>

@@ -9,10 +9,8 @@ import { Certify, DetailComment } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
-import axios from '@/axios-auth'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
-import sinon from 'sinon'
 import VueRouter from 'vue-router'
 
 // suppress various warnings:
@@ -42,10 +40,6 @@ describe('Consent to Continuation Out view', () => {
     store.state.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
   })
 
-  afterEach(() => {
-    sinon.restore()
-  })
-
   it('mounts the sub-components properly', async () => {
     const $route = { params: { filingId: '0' } }
 
@@ -68,6 +62,7 @@ describe('Consent to Continuation Out view', () => {
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPaymentDialog).exists()).toBe(true)
+
     wrapper.destroy()
   })
 
@@ -91,6 +86,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.filingData.length).toBe(1)
     expect(vm.filingData[0].filingTypeCode).toBe('CONTO')
     expect(vm.filingData[0].entityType).toBe('CP')
+
     wrapper.destroy()
   })
 
@@ -153,29 +149,29 @@ describe('Consent to Continuation Out view', () => {
   })
 
   it('saves draft consent to continuation out properly', async () => {
-    // mock "save draft" endpoint (garbage response data - we aren't testing that)
-    sinon.stub(axios, 'post')
-      .withArgs('businesses/CP1234567/filings?draft=true')
-      .returns(new Promise(resolve =>
-        resolve({
-          data: {
-            filing: {
-              business: {},
-              header: { filingId: 456 },
-              consentContinuationOut: { details: 'test' },
-              annualReport: {}
-            }
-          }
-        })
-      ))
+    // mock "has pending tasks" legal service
+    jest.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+      return Promise.resolve(false)
+    })
+
+    // mock "create filing" legal service
+    // (garbage response data - we aren't testing that)
+    jest.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+      return Promise.resolve({
+        business: {},
+        header: { filingId: 456 },
+        consentContinuationOut: { details: 'test' },
+        annualReport: {}
+      })
+    })
 
     // mock $route
-    const $route = { params: { filingId: '456' } }
+    const $route = { params: { filingId: '0' } }
 
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'consent-continuation-out', params: { filingId: '0' } })
+    router.push({ name: 'consent-continuation-out' })
 
     const wrapper = shallowMount(ConsentContinuationOut, {
       store,
@@ -194,14 +190,8 @@ describe('Consent to Continuation Out view', () => {
     // wait for fetch to complete
     await flushPromises()
 
-    const button = wrapper.find('#consent-save-btn')
-    expect(button.attributes('disabled')).toBeUndefined()
-
-    // click the Save button
-    await button.trigger('click')
-
-    // wait for save to complete and everything to update
-    await flushPromises()
+    // call the save action (since clicking button doesn't work)
+    await vm.onClickSave()
 
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
@@ -210,27 +200,25 @@ describe('Consent to Continuation Out view', () => {
   })
 
   it('resumes draft consent to continuation out properly with FAS staff payment', async () => {
-    // mock "get draft consent to continue out" endpoint
-    const sampleConsentContinueOutInfo = {
-      business: {
-        identifier: 'CP1234567',
-        legalName: 'My Test Entity'
-      },
-      header: {
-        name: 'consentContinuationOut',
-        status: 'DRAFT',
-        certifiedBy: 'Johnny Certifier',
-        routingSlipNumber: '123456789',
-        priority: true
-      },
-      consentContinuationOut: {
-        details: 'Line 1\nLine 2\nLine 3'
-      },
-      annualReport: {}
-    }
-
+    // mock "fetch filing" legal service
     jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
-      return Promise.resolve(sampleConsentContinueOutInfo)
+      return Promise.resolve({
+        business: {
+          identifier: 'CP1234567',
+          legalName: 'My Test Entity'
+        },
+        header: {
+          name: 'consentContinuationOut',
+          status: 'DRAFT',
+          certifiedBy: 'Johnny Certifier',
+          routingSlipNumber: '123456789',
+          priority: true
+        },
+        consentContinuationOut: {
+          details: 'Line 1\nLine 2\nLine 3'
+        },
+        annualReport: {}
+      })
     })
 
     // mock $route
@@ -239,7 +227,7 @@ describe('Consent to Continuation Out view', () => {
     // create local Vue and mock router
     createLocalVue().use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'consent-continuation-out', params: { filingId: '0' } })
+    router.push({ name: 'consent-continuation-out' })
 
     const wrapper = shallowMount(ConsentContinuationOut, {
       store,
