@@ -92,7 +92,9 @@
             <section>
               <header>
                 <h2>Documents Delivery</h2>
-                <p class="grey-text">Copies of the consent to continue out documents will be sent to the email addresses listed below.</p>
+                <p class="grey-text">
+                  Copies of the consent to continue out documents will be sent to the email addresses listed below.
+                </p>
               </header>
               <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery-section">
                 <v-card flat class="py-8 px-5">
@@ -112,7 +114,9 @@
             <section>
               <header>
                 <h2>Certify</h2>
-                <p class="grey-text">Enter the legal name of the person authorized to complete and submit this correction.</p>
+                <p class="grey-text">
+                  Enter the legal name of the person authorized to complete and submit this correction.
+                </p>
               </header>
               <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
                 <Certify
@@ -131,8 +135,10 @@
             <section>
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
-                <p class="grey-text">If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
-                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.</p>
+                <p class="grey-text">
+                  If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
+                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.
+                </p>
               </header>
               <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order-section">
                 <v-card flat class="py-8 px-5">
@@ -239,8 +245,8 @@ import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
+import { EnumUtilities, LegalServices } from '@/services/'
+import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, CourtOrderIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -462,10 +468,10 @@ export default class ConsentContinuationOut extends Vue {
       const comment: string = filing.consentContinuationOut.details || ''
       this.detailComment = comment.split('\n').slice(1).join('\n')
 
-      if (filing.consentContinuationOut.courtOrder) {
-        const courtOrder = filing.consentContinuationOut.courtOrder
+      const courtOrder = filing.consentContinuationOut.courtOrder
+      if (courtOrder) {
         this.fileNumber = courtOrder.fileNumber
-        this.hasPlanOfArrangement = courtOrder.hasPlanOfArrangement
+        this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
       }
 
       if (filing.header.documentOptionalEmail) {
@@ -722,7 +728,7 @@ export default class ConsentContinuationOut extends Vue {
     if (this.fileNumber !== '') {
       data[FilingTypes.CONSENT_CONTINUATION_OUT].courtOrder = {
         fileNumber: this.fileNumber,
-        hasPlanOfArrangement: this.hasPlanOfArrangement || false
+        effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
       }
     }
 

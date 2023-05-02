@@ -14,9 +14,7 @@
 
     <template #body>
       <div class="staff-filing-details body-2">
-        <p v-if="orderDetails" class="mt-4">
-          {{ orderDetails }}
-        </p>
+        <p v-if="orderDetails" class="mt-4" v-html="orderDetails" />
 
         <!-- if we have documents, show them -->
         <!-- NB: only court orders have documents - see also FilingTemplate.vue -->
@@ -70,7 +68,7 @@ export default class StaffFiling extends Vue {
   }
 
   get orderDetails (): string {
-    return this.filing.data?.order?.orderDetails
+    return this.filing.data?.order?.orderDetails?.replace('\n', '<br/>')
   }
 
   /** The court order file number. */
