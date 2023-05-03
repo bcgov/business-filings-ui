@@ -266,7 +266,7 @@ export default class DateUtilities {
 
     // make sure the date is in correct format
     if (date.indexOf('/') >= 0) {
-      date = date.replace('/', '-')
+      date = date.replaceAll('/', '-')
     }
 
     // first convert string to a JS Date
