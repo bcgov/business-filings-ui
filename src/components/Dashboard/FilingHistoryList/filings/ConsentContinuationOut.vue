@@ -34,7 +34,7 @@ export default class ConsentContinuationOut extends Vue {
   }
 
   get orderDetails (): string {
-    return this.filing.data?.order?.orderDetails?.replace('\n', '<br/>')
+    return this.filing.data?.order?.orderDetails?.replaceAll('\n', '<br/>')
   }
 
   /** The court order file number. */
