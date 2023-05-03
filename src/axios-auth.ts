@@ -4,10 +4,14 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 const instance = axios.create()
 
 instance.interceptors.request.use(
-  config => {
+  request => {
+    if (request.url?.startsWith('https://minio')) {
+      return request
+    }
+
     const kcToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
-    config.headers.common['Authorization'] = `Bearer ${kcToken}`
-    return config
+    request.headers.common['Authorization'] = `Bearer ${kcToken}`
+    return request
   },
   error => Promise.reject(error)
 )
