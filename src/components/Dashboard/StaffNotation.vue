@@ -146,7 +146,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isBenBcCccUlc || isCoop"
+              v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
               data-type="consent-continue-out"
               @click="goToConsentContinuationOutFiling()"
               :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
