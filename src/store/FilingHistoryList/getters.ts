@@ -1,7 +1,5 @@
 import { ApiFilingIF, FilingHistoryListStateIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
-import getters from '../getters'
-import { Store } from 'vuex'
 
 export default {
   getCurrentFiling (state: FilingHistoryListStateIF): ApiFilingIF {
@@ -82,7 +80,6 @@ export default {
   },
 
   isCcoExpired (state: FilingHistoryListStateIF, rootGetters: any): boolean {
-    const filings = rootGetters.getFilings
     const ccoFilings = state.filings.filter(val => {
       const exp = val.data?.consentContinuationOut?.expiry
       if (exp) {
