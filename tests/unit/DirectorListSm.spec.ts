@@ -2,23 +2,29 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 import DirectorListSm from '@/components/Dashboard/DirectorListSm.vue'
 import { click } from '../click'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { Roles } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('DirectorListSm', () => {
   it('handles empty data as a COOP', async () => {
     // init store
-    store.state.parties = []
-    store.commit('setLegalType', 'CP')
+    rootStore.parties = []
+    businessStore.setLegalType(CorpTypeCd.COOP)
 
-    const wrapper = mount(DirectorListSm, { store, vuetify })
+    const wrapper = mount(DirectorListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -31,8 +37,8 @@ describe('DirectorListSm', () => {
 
   it('displays multiple directors - as a COOP', async () => {
     // init store
-    store.commit('setLegalType', 'CP')
-    store.state.parties = [
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.parties = [
       {
         'officer': {
           'firstName': 'Peter',
@@ -48,10 +54,10 @@ describe('DirectorListSm', () => {
         roles: [
           {
             appointmentDate: '2020-07-06',
-            roleType: 'Director'
+            roleType: Roles.DIRECTOR
           }
         ]
-      },
+      } as any,
       {
         'officer': {
           'firstName': 'Joe',
@@ -67,13 +73,13 @@ describe('DirectorListSm', () => {
         roles: [
           {
             appointmentDate: '2020-07-06',
-            roleType: 'Director'
+            roleType: Roles.DIRECTOR
           }
         ]
-      }
+      } as any
     ]
 
-    const wrapper = mount(DirectorListSm, { store, vuetify })
+    const wrapper = mount(DirectorListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -100,8 +106,8 @@ describe('DirectorListSm', () => {
 
   it('displays multiple directors - as a BCOMP', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.state.parties = [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.parties = [
       {
         'officer': {
           'firstName': 'Peter',
@@ -124,7 +130,7 @@ describe('DirectorListSm', () => {
         roles: [
           {
             appointmentDate: '2020-07-06',
-            roleType: 'Director'
+            roleType: Roles.DIRECTOR
           }
         ]
       },
@@ -150,13 +156,13 @@ describe('DirectorListSm', () => {
         roles: [
           {
             appointmentDate: '2020-07-06',
-            roleType: 'Director'
+            roleType: Roles.DIRECTOR
           }
         ]
       }
     ]
 
-    const wrapper = mount(DirectorListSm, { store, vuetify })
+    const wrapper = mount(DirectorListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -172,11 +178,10 @@ describe('DirectorListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = mount(DirectorListSm,
       {
-        store,
         vuetify,
         propsData: {
           showCompleteYourFilingMessage: true
@@ -192,8 +197,8 @@ describe('DirectorListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.state.parties = [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.parties = [
       {
         'officer': {
           'firstName': 'Peter',
@@ -202,10 +207,10 @@ describe('DirectorListSm', () => {
         roles: [
           {
             appointmentDate: '2020-07-06',
-            roleType: 'Director'
+            roleType: Roles.DIRECTOR
           }
         ]
-      },
+      } as any,
       {
         'officer': {
           'firstName': 'Joe',
@@ -222,7 +227,6 @@ describe('DirectorListSm', () => {
 
     const wrapper = mount(DirectorListSm,
       {
-        store,
         vuetify,
         propsData: {
           showGrayedOut: true

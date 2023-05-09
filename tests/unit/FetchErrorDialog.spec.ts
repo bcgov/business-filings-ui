@@ -1,21 +1,23 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores/rootStore'
 import { FetchErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 describe('FetchErrorDialog', () => {
   it('displays everything for normal users', () => {
     // init store
-    store.state.keycloakRoles = ['']
+    rootStore.keycloakRoles = ['']
 
-    const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, store, vuetify })
+    const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to Fetch Data')
     expect(wrapper.find('#dialog-text').text())
@@ -30,9 +32,9 @@ describe('FetchErrorDialog', () => {
 
   it('does not display contact info for staff users', () => {
     // init store
-    store.state.keycloakRoles = ['staff']
+    rootStore.keycloakRoles = ['staff']
 
-    const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, store, vuetify })
+    const wrapper = shallowMount(FetchErrorDialog, { propsData: { dialog: true }, vuetify })
 
     expect(wrapper.findComponent(ContactInfo).exists()).toBe(false)
 

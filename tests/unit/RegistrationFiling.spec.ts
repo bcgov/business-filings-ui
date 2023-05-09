@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import RegistrationFiling from '@/components/Dashboard/FilingHistoryList/filings/RegistrationFiling.vue'
@@ -7,13 +8,14 @@ import RegistrationFiling from '@/components/Dashboard/FilingHistoryList/filings
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 xdescribe('Registration Filing', () => {
   it('Displays expected content with entityName', () => {
-    store.commit('setLegalName', 'My Firm')
+    businessStore.setLegalName('My Firm')
 
-    const wrapper = shallowMount(RegistrationFiling, { store, vuetify })
+    const wrapper = shallowMount(RegistrationFiling, { vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Registration Complete')

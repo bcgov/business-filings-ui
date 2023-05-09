@@ -1,13 +1,18 @@
 import LegalServices from '@/services/legal-services'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 describe('Business Actions', () => {
-  const store = getVuexStore() as any // remove typings for unit tests
+  setActivePinia(createPinia())
+  const businessStore = useBusinessStore()
+  const rootStore = useRootStore()
 
   it('loads dissolution state filing', async () => {
     // init store properties we need
-    store.commit('setStateFiling', 'dummy_url')
-    store.state.corpTypeCd = 'BEN'
+    businessStore.setStateFiling('dummy_url')
+    rootStore.corpTypeCd = CorpTypeCd.BENEFIT_COMPANY
 
     // mock filing data and services call
     const sampleStateFiling = {
@@ -26,17 +31,17 @@ describe('Business Actions', () => {
     })
 
     // call the action and verify the data in the store
-    await store.dispatch('loadStateFiling')
+    await rootStore.loadStateFiling()
     expect(LegalServices.fetchFiling).toHaveBeenCalled()
-    expect(store.state.stateFiling.business.identifier).toBe('BC0871273')
-    expect(store.state.stateFiling.dissolution.dissolutionDate).toBe('2023-01-13')
-    expect(store.state.stateFiling.header.name).toBe('dissolution')
+    expect(rootStore.stateFiling.business.identifier).toBe('BC0871273')
+    expect(rootStore.stateFiling.dissolution.dissolutionDate).toBe('2023-01-13')
+    expect(rootStore.stateFiling.header.name).toBe('dissolution')
   })
 
   it('loads consent to continuation out state filing', async () => {
     // init store properties we need
-    store.commit('setStateFiling', 'dummy_url')
-    store.state.corpTypeCd = 'BEN'
+    businessStore.setStateFiling('dummy_url')
+    rootStore.corpTypeCd = CorpTypeCd.BENEFIT_COMPANY
 
     // mock filing data and services call
     const sampleStateFiling = {
@@ -55,10 +60,10 @@ describe('Business Actions', () => {
     })
 
     // call the action and verify the data in the store
-    await store.dispatch('loadStateFiling')
+    await rootStore.loadStateFiling()
     expect(LegalServices.fetchFiling).toHaveBeenCalled()
-    expect(store.state.stateFiling.business.identifier).toBe('BC0871273')
-    expect(store.state.stateFiling.consentContinuationOut.expiry).toBe('2023-12-31')
-    expect(store.state.stateFiling.header.name).toBe('consentContinuationOut')
+    expect(rootStore.stateFiling.business.identifier).toBe('BC0871273')
+    expect(rootStore.stateFiling.consentContinuationOut.expiry).toBe('2023-12-31')
+    expect(rootStore.stateFiling.header.name).toBe('consentContinuationOut')
   })
 })

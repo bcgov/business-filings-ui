@@ -25,13 +25,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 import { ContactInfo } from '@/components/common'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   computed: {
     // Property definition for runtime environment.
-    ...mapGetters(['isRoleStaff'])
+    ...mapState(useRootStore, ['isRoleStaff'])
   },
   components: { ContactInfo }
 })

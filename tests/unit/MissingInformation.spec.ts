@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import { ContactInfo } from '@/components/common'
 import flushPromises from 'flush-promises'
@@ -9,11 +9,11 @@ import flushPromises from 'flush-promises'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
 
 describe('Missing Information component', () => {
   it('Displays expansion panel closed', () => {
-    const wrapper = mount(MissingInformation, { store, vuetify })
+    const wrapper = mount(MissingInformation, { vuetify })
 
     // verify content
     expect(wrapper.find('h3').text()).toBe('Missing information')
@@ -24,7 +24,7 @@ describe('Missing Information component', () => {
   })
 
   it('Displays expansion panel open', async () => {
-    const wrapper = mount(MissingInformation, { store, vuetify })
+    const wrapper = mount(MissingInformation, { vuetify })
 
     // click the button
     await wrapper.find('.details-btn').trigger('click')

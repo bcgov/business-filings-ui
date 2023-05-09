@@ -97,8 +97,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
-import { ApiFilingIF } from '@/interfaces'
+import { Action } from 'pinia-class'
+import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import { FilingNames } from '@/enums'
 import { ContactInfo } from '@/components/common'
@@ -107,6 +107,7 @@ import DocumentsList from './DocumentsList.vue'
 import FiledAndPaid from './subtitles/FiledAndPaid.vue'
 import FiledAndPendingPaid from './subtitles/FiledAndPendingPaid.vue'
 import HeaderActions from './HeaderActions.vue'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 
 @Component({
   components: {
@@ -122,7 +123,7 @@ export default class FilingTemplate extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Action toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
 
   /** Whether this filing is in Paid status. */
   get isStatusPaid (): boolean {

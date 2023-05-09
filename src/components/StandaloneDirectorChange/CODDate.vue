@@ -52,8 +52,10 @@
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   validations: {
@@ -65,11 +67,11 @@ export default class CodDate extends Vue {
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialCodDate!: string
 
-  @Getter getCurrentDate!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLastAnnualReportDate!: string
-  @Getter getLastDirectorChangeDate!: string
-  @Getter isBenBcCccUlc!: boolean
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLastAnnualReportDate!: string
+  @Getter(useBusinessStore) getLastDirectorChangeDate!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   // Local properties.
   protected date = '' // bound to date picker

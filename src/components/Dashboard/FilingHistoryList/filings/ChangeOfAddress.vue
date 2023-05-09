@@ -20,11 +20,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 import FutureEffectiveFiledAndPendingCoa from '../subtitles/FutureEffectiveFiledAndPendingCoa.vue'
 import FilingTemplate from '../FilingTemplate.vue'
+import { useBusinessStore } from '@/stores/businessStore'
 
 @Component({
   components: {
@@ -36,7 +37,7 @@ export default class ChangeOfAddress extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   get isFutureEffective (): boolean {
     return (

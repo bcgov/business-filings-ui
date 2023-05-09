@@ -3,7 +3,8 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { shallowMount, mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
 import axios from '@/axios-auth'
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -12,7 +13,8 @@ import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -26,8 +28,7 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test',
           name: 'registrarsNotation',
           attach: '#parent-page'
-        },
-        store
+        }
       })
     const vm: any = wrapper.vm
 
@@ -51,8 +52,7 @@ describe('AddStaffNotationDialog', () => {
           name: 'dissolution',
           dissolutionType: 'administrative',
           attach: '#parent-page'
-        },
-        store
+        }
       })
     const vm: any = wrapper.vm
 
@@ -75,8 +75,7 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Put Back On',
           name: 'putBackOn',
           attach: '#parent-page'
-        },
-        store
+        }
       })
     const vm: any = wrapper.vm
 
@@ -98,8 +97,7 @@ describe('AddStaffNotationDialog', () => {
           dialog: true,
           displayName: 'Test',
           name: 'registrarsNotation'
-        },
-        store
+        }
       })
 
     // click the Cancel button
@@ -120,7 +118,6 @@ describe('AddStaffNotationDialog', () => {
           courtOrderNumberRequired: true,
           name: 'registrarsNotation'
         },
-        store,
         vuetify
       })
 
@@ -145,7 +142,6 @@ describe('AddStaffNotationDialog', () => {
           courtOrderNumberRequired: true,
           name: 'putBackOn'
         },
-        store,
         vuetify
       })
 
@@ -171,7 +167,6 @@ describe('AddStaffNotationDialog', () => {
           name: 'dissolution',
           dissolutionType: 'administrative'
         },
-        store,
         vuetify
       })
 
@@ -196,7 +191,6 @@ describe('AddStaffNotationDialog', () => {
           name: 'registrarsNotation',
           courtOrderNumberRequired: true
         },
-        store,
         vuetify
       })
 
@@ -225,7 +219,6 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test',
           name: 'registrarsNotation'
         },
-        store,
         vuetify
       })
 
@@ -251,7 +244,6 @@ describe('AddStaffNotationDialog', () => {
           name: 'registrarsNotation',
           courtOrderNumberRequired: true
         },
-        store,
         vuetify
       })
 
@@ -275,7 +267,6 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test',
           name: 'registrarsNotation'
         },
-        store,
         vuetify
       })
 
@@ -306,7 +297,6 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test',
           name: 'registrarsNotation'
         },
-        store,
         vuetify
       })
 
@@ -337,7 +327,6 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Court Order',
           name: 'courtOrder'
         },
-        store,
         vuetify
       })
 
@@ -363,7 +352,6 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Court Order',
           name: 'courtOrder'
         },
-        store,
         vuetify
       })
 
@@ -379,7 +367,7 @@ describe('AddStaffNotationDialog', () => {
 
   it('saves notation filing when user clicks Save button', async () => {
     // init store
-    store.commit('setIdentifier', 'BC0870669')
+    businessStore.setIdentifier('BC0870669')
 
     sinon
       .stub(axios, 'post')
@@ -393,7 +381,6 @@ describe('AddStaffNotationDialog', () => {
           displayName: 'Test',
           name: 'registrarsNotation'
         },
-        store,
         vuetify
       })
 

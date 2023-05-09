@@ -13,14 +13,16 @@
 
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores/rootStore'
 import { mount, Wrapper } from '@vue/test-utils'
 import { Certify } from '@/components/common'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 // Input field selectors to test changes to the DOM elements.
 const certifiedBySelector = 'input[type=text]'
@@ -60,11 +62,10 @@ function createComponent (
   isCertified: boolean = undefined,
   currentDate: string = defaultDate
 ): Wrapper<Certify> {
-  store.state.currentDate = currentDate
+  rootStore.currentDate = currentDate
 
   return mount(Certify, {
     vuetify,
-    store,
     propsData: {
       certifiedBy,
       isCertified

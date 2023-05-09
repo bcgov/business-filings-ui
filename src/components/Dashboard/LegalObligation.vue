@@ -45,14 +45,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   mixins: [ResourceLookupMixin]
 })
 export default class LegalObligation extends Vue {
-  @Getter isBusinessWithNoMaintenanceFilings!: boolean
+  @Getter(useRootStore) isBusinessWithNoMaintenanceFilings!: boolean
 
   protected readMoreFlag = false
   protected showLegalObligation = true

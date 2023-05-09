@@ -5,8 +5,9 @@ import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
-import { getVuexStore } from '@/store'
-import { AllowableActions } from '@/enums'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { AllowableActions, CorpTypeCd } from '@/enums'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -20,7 +21,8 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 describe('Dashboard - UI', () => {
   const $route = { query: {} }
@@ -28,12 +30,9 @@ describe('Dashboard - UI', () => {
   let vm: any
 
   beforeEach(() => {
-    // init store
-    store.state.isCoaPending = false
-
     // create wrapper for Dashboard
     // this stubs out the 5 sub-components
-    wrapper = shallowMount(Dashboard, { store,
+    wrapper = shallowMount(Dashboard, {
       vuetify,
       mocks: { $route },
       data: () => ({
@@ -76,19 +75,18 @@ describe('Dashboard - UI', () => {
   it('enables standalone filing buttons when actions are allowed', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
-    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
     jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
-    store.commit('setAllowedActions', {
+    businessStore.setAllowedActions({
       filing: {
         filingTypes: [
           { name: 'changeOfAddress' },
           { name: 'changeOfDirectors' }
         ]
-      }
+      } as any
     })
-    store.state.isCoaPending = false
     await Vue.nextTick()
 
     expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(true)
@@ -101,16 +99,15 @@ describe('Dashboard - UI', () => {
   it('disables standalone filing buttons when actions are not allowed', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
-    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
     jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
-    store.commit('setAllowedActions', {
+    businessStore.setAllowedActions({
       filing: {
         filingTypes: []
-      }
+      } as any
     })
-    store.state.isCoaPending = false
     await Vue.nextTick()
 
     expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
@@ -123,10 +120,9 @@ describe('Dashboard - UI', () => {
   it('disables filing buttons when there is a BCOMP Future Effective COA', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
-    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    store.state.isCoaPending = true
     await Vue.nextTick()
 
     expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
@@ -139,10 +135,8 @@ describe('Dashboard - UI', () => {
   it('disables standalone filing buttons when there is no Business ID', async () => {
     // re-mount the component since setting session storage is not reactive
     sessionStorage.removeItem('BUSINESS_ID')
-    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { store, vuetify, mocks: { $route } })
+    const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
-
-    store.state.isCoaPending = false
 
     expect(localVm.isAllowed(AllowableActions.ADDRESS_CHANGE)).toBe(false)
     expect(localVm.isAllowed(AllowableActions.DIRECTOR_CHANGE)).toBe(false)
@@ -161,14 +155,9 @@ describe('Dashboard - UI', () => {
 })
 
 describe('Dashboard - Route Parameter Tests', () => {
-  beforeAll(() => {
-    // init store
-    store.state.isCoaPending = false
-  })
-
   it('sets Filing Id to a falsy value when the route query parameter doesn\'t exist', () => {
     const $route = { query: {} }
-    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
+    const wrapper = shallowMount(Dashboard, { mocks: { $route } })
     const vm = wrapper.vm as any
 
     expect(vm.filingId).toBeFalsy()
@@ -178,7 +167,7 @@ describe('Dashboard - Route Parameter Tests', () => {
 
   it('sets Filing Id to the numeric value of the route query parameter when it exists', () => {
     const $route = { query: { filing_id: '123' } }
-    const wrapper = shallowMount(Dashboard, { store, mocks: { $route } })
+    const wrapper = shallowMount(Dashboard, { mocks: { $route } })
     const vm = wrapper.vm as any
 
     expect(vm.filingId).toBe(123)
@@ -188,16 +177,11 @@ describe('Dashboard - Route Parameter Tests', () => {
 })
 
 describe('Dashboard - Click Tests', () => {
-  beforeAll(() => {
-    // init store
-    store.state.isCoaPending = false
-  })
-
   it('routes to Standalone Office Address Filing page when EDIT is clicked', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.commit('setIdentifier', 'CP1234567')
-    store.commit('setLegalType', 'CP')
+    businessStore.setIdentifier('CP1234567')
+    businessStore.setLegalType(CorpTypeCd.COOP)
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -205,7 +189,7 @@ describe('Dashboard - Click Tests', () => {
     const router = mockRouter.mock()
     router.push({ name: 'dashboard', query: {} })
 
-    const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
+    const wrapper = shallowMount(Dashboard, { localVue, router, vuetify })
     const vm = wrapper.vm as any
 
     const button = wrapper.find('#standalone-addresses-button')
@@ -222,8 +206,8 @@ describe('Dashboard - Click Tests', () => {
   it('displays the change of address warning dialog as a BCOMP', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     // init store
-    store.commit('setIdentifier', 'BC1234567')
-    store.commit('setLegalType', 'BEN')
+    businessStore.setIdentifier('BC1234567')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -231,7 +215,7 @@ describe('Dashboard - Click Tests', () => {
     const router = mockRouter.mock()
     router.push({ name: 'dashboard', query: {} })
 
-    const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
+    const wrapper = shallowMount(Dashboard, { localVue, router, vuetify })
     const vm = wrapper.vm as any
 
     vm.coaWarningDialog = false // initially hidden
@@ -255,7 +239,7 @@ describe('Dashboard - Click Tests', () => {
   it('routes to Standalone Directors Filing page when EDIT is clicked', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'CP1234567')
     // init store
-    store.commit('setIdentifier', 'CP1234567')
+    businessStore.setIdentifier('CP1234567')
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -263,7 +247,7 @@ describe('Dashboard - Click Tests', () => {
     const router = mockRouter.mock()
     router.push({ query: {} })
 
-    const wrapper = shallowMount(Dashboard, { localVue, store, router, vuetify })
+    const wrapper = shallowMount(Dashboard, { localVue, router, vuetify })
     const vm = wrapper.vm as any
 
     const button = wrapper.find('#standalone-directors-button')

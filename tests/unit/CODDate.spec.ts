@@ -2,8 +2,12 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useRootStore } from '@/stores/rootStore'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -13,7 +17,10 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const filingHistoryListStore = useFilingHistoryListStore()
+const rootStore = useRootStore()
 
 describe('COD Date - COOPs', () => {
   let wrapper: Wrapper<CodDate>
@@ -21,11 +28,11 @@ describe('COD Date - COOPs', () => {
 
   beforeEach(() => {
     // init store
-    store.state.currentDate = '2019-07-15'
-    store.commit('setFoundingDate', '2018-03-01T12:00:00')
-    store.commit('setLegalType', 'CP')
+    rootStore.currentDate = '2019-07-15'
+    businessStore.setFoundingDate('2018-03-01T12:00:00')
+    businessStore.setLegalType(CorpTypeCd.COOP)
 
-    wrapper = mount(CodDate, { store, vuetify })
+    wrapper = mount(CodDate, { vuetify })
     vm = wrapper.vm
   })
 
@@ -56,21 +63,21 @@ describe('COD Date - COOPs', () => {
     expect(vm.minDate).toBe('2018-03-01')
 
     // set Last COD Filing Date and verify new Min Date
-    store.commit('setLastDirectorChangeDate', '2019-03-01')
+    businessStore.setLastDirectorChangeDate('2019-03-01')
 
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
-    store.commit('mutateFilings', [])
+    filingHistoryListStore.mutateFilings([])
   })
 
   it('sets Min Date to entity founding date if no filings are present', () => {
-    store.commit('setLastDirectorChangeDate', null)
+    businessStore.setLastDirectorChangeDate(null)
     expect(vm.minDate).toBe('2018-03-01')
   })
 
   it('sets Max Date to current date in store', () => {
-    expect(vm.maxDate).toBe(vm.$store.state.currentDate)
+    expect(vm.maxDate).toBe(rootStore.currentDate)
   })
 
   it('Shows error message when date has invalid length', async () => {
@@ -110,7 +117,6 @@ describe('COD Date - COOPs', () => {
 
   it('invalidates the component when entered date is after Max Date', async () => {
     wrapper = mount(CodDate, {
-      store,
       vuetify,
       computed: {
         minDate: () => '2019-05-05',
@@ -141,7 +147,6 @@ describe('COD Date - COOPs', () => {
 
   it('invalidates the component when entered date is before Min Date', async () => {
     wrapper = mount(CodDate, {
-      store,
       vuetify,
       computed: {
         minDate: () => '2019-05-05',
@@ -176,11 +181,11 @@ describe('COD Date - BCOMPs', () => {
 
   beforeEach(() => {
     // init store
-    store.state.currentDate = '2019-07-15'
-    store.commit('setFoundingDate', '2018-03-01T12:00:00')
-    store.commit('setLegalType', 'BEN')
+    rootStore.currentDate = '2019-07-15'
+    businessStore.setFoundingDate('2018-03-01T12:00:00')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
-    wrapper = mount(CodDate, { store, vuetify })
+    wrapper = mount(CodDate, { vuetify })
     vm = wrapper.vm
   })
 
@@ -190,15 +195,15 @@ describe('COD Date - BCOMPs', () => {
 
   it('sets BCOMP Min Date to the last COD date if COD filings exist', () => {
     // set Last COD Filing Date and verify new Min Date
-    store.commit('setLastDirectorChangeDate', '2019-03-01')
+    businessStore.setLastDirectorChangeDate('2019-03-01')
     expect(vm.minDate).toBe('2019-03-01')
 
     // cleanup
-    store.commit('mutateFilings', [])
+    filingHistoryListStore.mutateFilings([])
   })
 
   it('sets BCOMP Min Date to entity founding date if no filings are present', () => {
-    store.commit('setLastDirectorChangeDate', null)
+    businessStore.setLastDirectorChangeDate(null)
     expect(vm.minDate).toBe('2018-03-01')
   })
 })

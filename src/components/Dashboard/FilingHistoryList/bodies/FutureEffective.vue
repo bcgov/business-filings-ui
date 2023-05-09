@@ -30,16 +30,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
+import { useBusinessStore } from '@/stores/businessStore'
 
 @Component({
   components: { ContactInfo }
 })
 export default class FutureEffective extends Vue {
-  @Getter getLegalName!: string
+  @Getter(useBusinessStore) getLegalName!: string
 
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: ApiFilingIF

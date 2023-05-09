@@ -1,34 +1,39 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 import { shallowMount } from '@vue/test-utils'
 import ArDate from '@/components/AnnualReport/ARDate.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('AnnualReport - UI', () => {
   beforeAll(() => {
     // init store
-    store.state.currentJsDate = new Date('2019-07-15T12:00:00')
-    store.state.currentDate = '2019-07-15'
-    store.state.nextARDate = '2020-09-18'
-    store.commit('setLegalType', 'BEN')
+    rootStore.currentJsDate = new Date('2019-07-15T12:00:00')
+    rootStore.currentDate = '2019-07-15'
+    rootStore.nextARDate = '2020-09-18'
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
 
   it('initializes the store variables properly', () => {
-    const wrapper = shallowMount(ArDate, { store })
+    const wrapper = shallowMount(ArDate)
     const vm: any = wrapper.vm
 
-    expect(vm.$store.getters.getCurrentDate).toEqual('2019-07-15')
-    expect(vm.$store.state.nextARDate).toEqual('2020-09-18')
+    expect(rootStore.getCurrentDate).toEqual('2019-07-15')
+    expect(rootStore.nextARDate).toEqual('2020-09-18')
 
     wrapper.destroy()
   })
 
   it('succeeds when the Annual report date outputs are correct', () => {
-    const wrapper = shallowMount(ArDate, { store })
+    const wrapper = shallowMount(ArDate)
     const vm: any = wrapper.vm
 
     expect(vm.$el.querySelector('.ar-date').textContent).toContain('Sep 18, 2020')

@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount, mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores/rootStore'
 import { SaveErrorDialog } from '@/components/dialogs'
 import { ContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -16,7 +18,7 @@ document.body.setAttribute('data-app', 'true')
 describe('Save Error Dialog', () => {
   it('displays generic message for normal users', async () => {
     // init store
-    store.state.keycloakRoles = []
+    rootStore.keycloakRoles = []
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -24,7 +26,6 @@ describe('Save Error Dialog', () => {
           filingName: 'FILING',
           dialog: true
         },
-        store,
         vuetify
       })
     await Vue.nextTick()
@@ -44,7 +45,7 @@ describe('Save Error Dialog', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    store.state.keycloakRoles = ['staff']
+    rootStore.keycloakRoles = ['staff']
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -52,7 +53,6 @@ describe('Save Error Dialog', () => {
           filingName: 'FILING',
           dialog: true
         },
-        store,
         vuetify
       })
 
@@ -69,7 +69,7 @@ describe('Save Error Dialog', () => {
 
   it('displays errors', () => {
     // init store
-    store.state.keycloakRoles = []
+    rootStore.keycloakRoles = []
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -77,7 +77,6 @@ describe('Save Error Dialog', () => {
           dialog: true,
           errors: [{ error: 'error msg' }]
         },
-        store,
         vuetify
       })
     const vm: any = wrapper.vm
@@ -94,7 +93,7 @@ describe('Save Error Dialog', () => {
 
   it('displays warnings', () => {
     // init store
-    store.state.keycloakRoles = []
+    rootStore.keycloakRoles = []
 
     const wrapper = shallowMount(SaveErrorDialog,
       {
@@ -102,7 +101,6 @@ describe('Save Error Dialog', () => {
           dialog: true,
           warnings: [{ warning: 'warning msg' }]
         },
-        store,
         vuetify
       })
     const vm: any = wrapper.vm
@@ -118,12 +116,11 @@ describe('Save Error Dialog', () => {
 
   it('emits an event when Exit button is clicked', async () => {
     // init store
-    store.state.keycloakRoles = []
+    rootStore.keycloakRoles = []
 
     const wrapper = mount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 

@@ -4,7 +4,10 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useRootStore } from '@/stores/rootStore'
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
@@ -13,6 +16,7 @@ import flushPromises from 'flush-promises'
 import Correction from '@/views/Correction.vue'
 import { DetailComment, Certify } from '@/components/common'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -23,7 +27,10 @@ Vue.config.silent = true
 
 Vue.use(Vuetify)
 
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
+const rootStore = useRootStore()
 
 describe('Correction - UI', () => {
   let sinonAxiosGet: any
@@ -31,7 +38,8 @@ describe('Correction - UI', () => {
   beforeEach(() => {
     sinonAxiosGet = sinon.stub(axios, 'get')
 
-    store.commit('setTestConfiguration', { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
+    configurationStore.setTestConfiguration({ configuration: null },
+      { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
 
     // mock "get orig filing" endpoint
     sinonAxiosGet
@@ -58,13 +66,13 @@ describe('Correction - UI', () => {
       ))
 
     // init store
-    store.state.currentDate = '2020-03-04'
-    store.commit('setLegalType', 'CP')
-    store.commit('setLegalName', 'My Test Entity')
-    store.commit('setIdentifier', 'CP1234567')
-    store.commit('setFoundingDate', '1971-05-12T00:00:00-00:00')
-    store.state.filingData = []
-    store.state.keycloakRoles = ['staff'] // corrections currently apply to staff only
+    rootStore.currentDate = '2020-03-04'
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setLegalName('My Test Entity')
+    businessStore.setIdentifier('CP1234567')
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    rootStore.filingData = []
+    rootStore.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
   })
 
   afterEach(() => {
@@ -80,7 +88,7 @@ describe('Correction - UI', () => {
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
 
-    const wrapper = shallowMount(Correction, { store, mocks: { $route, $router } })
+    const wrapper = shallowMount(Correction, { mocks: { $route, $router } })
 
     // verify sub-components
     expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
@@ -104,7 +112,7 @@ describe('Correction - UI', () => {
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
 
-    const wrapper = shallowMount(Correction, { store, mocks: { $route, $router } })
+    const wrapper = shallowMount(Correction, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
 
     // wait for fetch to complete
@@ -156,7 +164,7 @@ describe('Correction - UI', () => {
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
 
-    const wrapper = shallowMount(Correction, { store, mocks: { $route, $router } })
+    const wrapper = shallowMount(Correction, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
 
     // verify "isPayRequired" with no fee
@@ -195,7 +203,6 @@ describe('Correction - UI', () => {
     router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
-      store,
       router,
       stubs: {
         DetailComment: true,
@@ -254,7 +261,6 @@ describe('Correction - UI', () => {
       params: { filingId: '0', correctedFilingId: '123', correctionType: 'CLIENT' } })
 
     const wrapper = mount(Correction, {
-      store,
       router,
       stubs: {
         DetailComment: true,
@@ -323,7 +329,6 @@ describe('Correction - UI', () => {
     router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
-      store,
       router,
       stubs: {
         DetailComment: true,
@@ -386,7 +391,6 @@ describe('Correction - UI', () => {
     router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
-      store,
       router,
       stubs: {
         DetailComment: true,
@@ -448,7 +452,6 @@ describe('Correction - UI', () => {
     router.push({ name: 'correction', params: { filingId: '0', correctedFilingId: '123' } })
 
     const wrapper = mount(Correction, {
-      store,
       router,
       stubs: {
         DetailComment: true,

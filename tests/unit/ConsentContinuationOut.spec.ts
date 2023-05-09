@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useRootStore } from '@/stores/rootStore'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
@@ -12,6 +15,7 @@ import { LegalServices } from '@/services'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -22,22 +26,26 @@ Vue.config.silent = true
 
 Vue.use(Vuetify)
 
-const store = getVuexStore() as any // remove typings for unit tests
 const localVue = createLocalVue()
 localVue.use(VueRouter)
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
+const rootStore = useRootStore()
 
 describe('Consent to Continuation Out view', () => {
   beforeEach(() => {
-    store.commit('setTestConfiguration', { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
+    configurationStore.setTestConfiguration({ configuration: null },
+      { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
 
     // init store
-    store.state.currentDate = '2020-03-04'
-    store.commit('setLegalType', 'CP')
-    store.commit('setLegalName', 'My Test Entity')
-    store.commit('setIdentifier', 'CP1234567')
-    store.commit('setFoundingDate', '1971-05-12T00:00:00-00:00')
-    store.state.filingData = []
-    store.state.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
+    rootStore.currentDate = '2020-03-04'
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setLegalName('My Test Entity')
+    businessStore.setIdentifier('CP1234567')
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    rootStore.filingData = []
+    rootStore.keycloakRoles = ['staff'] // consent to continuation outs currently apply to staff only
   })
 
   it('mounts the sub-components properly', async () => {
@@ -48,7 +56,7 @@ describe('Consent to Continuation Out view', () => {
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
 
-    const wrapper = shallowMount(ConsentContinuationOut, { store, mocks: { $route, $router } })
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
     wrapper.vm.$data.dataLoaded = true
     await Vue.nextTick()
 
@@ -74,7 +82,7 @@ describe('Consent to Continuation Out view', () => {
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
 
-    const wrapper = shallowMount(ConsentContinuationOut, { store, mocks: { $route, $router } })
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
     wrapper.vm.$data.dataLoaded = true
     await Vue.nextTick()
 
@@ -99,7 +107,7 @@ describe('Consent to Continuation Out view', () => {
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
 
-    const wrapper = shallowMount(ConsentContinuationOut, { store, mocks: { $route, $router } })
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
 
     // verify "isPayRequired" with no fee
@@ -174,7 +182,6 @@ describe('Consent to Continuation Out view', () => {
     router.push({ name: 'consent-continuation-out' })
 
     const wrapper = shallowMount(ConsentContinuationOut, {
-      store,
       router,
       stubs: {
         CourtOrderPoa: true,
@@ -230,7 +237,6 @@ describe('Consent to Continuation Out view', () => {
     router.push({ name: 'consent-continuation-out' })
 
     const wrapper = shallowMount(ConsentContinuationOut, {
-      store,
       router,
       stubs: {
         CourtOrderPoa: true,

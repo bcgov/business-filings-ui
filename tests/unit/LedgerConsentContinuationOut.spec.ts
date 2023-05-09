@@ -2,16 +2,15 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
 
 describe('Display ConsentContinuationOut component', () => {
   it('Displays consentContinuationOut panel', () => {
     const wrapper = mount(ConsentContinuationOut, {
-      store,
       vuetify,
       propsData: {
         index: 123,
@@ -33,7 +32,6 @@ describe('Display ConsentContinuationOut component', () => {
 
   it('Displays consentContinuationOut with formatted expiry date', () => {
     const wrapper = mount(ConsentContinuationOut, {
-      store,
       vuetify,
       propsData: {
         index: 123,

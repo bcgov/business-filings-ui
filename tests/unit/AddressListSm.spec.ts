@@ -2,23 +2,28 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import { mount } from '@vue/test-utils'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('AddressListSm', () => {
   it('handles empty data', async () => {
     // init store
-    store.state.registeredAddress = null
-    store.state.recordsAddress = null
+    rootStore.registeredAddress = null
+    rootStore.recordsAddress = null
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -30,8 +35,8 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a COOP', async () => {
     // init store
-    store.commit('setLegalType', 'CP')
-    store.state.registeredAddress = {
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.registeredAddress = {
       'deliveryAddress':
       {
         'streetAddress': '111 Buchanan St',
@@ -49,9 +54,9 @@ describe('AddressListSm', () => {
         'addressCountry': 'CA'
       }
     }
-    store.state.recordsAddress = null
+    rootStore.recordsAddress = null
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -71,8 +76,8 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a COOP', async () => {
     // init store
-    store.commit('setLegalType', 'CP')
-    store.state.registeredAddress = {
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.registeredAddress = {
       'deliveryAddress':
       {
         'streetAddress': '220 Buchanan St',
@@ -90,9 +95,9 @@ describe('AddressListSm', () => {
         'addressCountry': 'CA'
       }
     }
-    store.state.recordsAddress = null
+    rootStore.recordsAddress = null
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -112,8 +117,8 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a BCOMP', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.state.registeredAddress = {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.registeredAddress = {
       'deliveryAddress':
       {
         'streetAddress': '111 Buchanan St',
@@ -131,7 +136,7 @@ describe('AddressListSm', () => {
         'addressCountry': 'CA'
       }
     }
-    store.state.recordsAddress = {
+    rootStore.recordsAddress = {
       'deliveryAddress':
       {
         'streetAddress': '123 Cloverdale St',
@@ -150,7 +155,7 @@ describe('AddressListSm', () => {
       }
     }
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -203,8 +208,8 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a BCOMP', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.state.registeredAddress = {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.registeredAddress = {
       'deliveryAddress':
       {
         'streetAddress': '220 Buchanan St',
@@ -222,7 +227,7 @@ describe('AddressListSm', () => {
         'addressCountry': 'CA'
       }
     }
-    store.state.recordsAddress = {
+    rootStore.recordsAddress = {
       'deliveryAddress':
       {
         'streetAddress': '123 Cloverdale St',
@@ -241,7 +246,7 @@ describe('AddressListSm', () => {
       }
     }
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -273,11 +278,10 @@ describe('AddressListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = mount(AddressListSm,
       {
-        store,
         vuetify,
         propsData: {
           showCompleteYourFilingMessage: true
@@ -303,8 +307,8 @@ describe('AddressListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.state.registeredAddress = {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.registeredAddress = {
       'deliveryAddress':
       {
         'streetAddress': '111 Buchanan St',
@@ -322,7 +326,7 @@ describe('AddressListSm', () => {
         'addressCountry': 'CA'
       }
     }
-    store.state.recordsAddress = {
+    rootStore.recordsAddress = {
       'deliveryAddress':
       {
         'streetAddress': '123 Cloverdale St',
@@ -343,7 +347,6 @@ describe('AddressListSm', () => {
 
     const wrapper = mount(AddressListSm,
       {
-        store,
         vuetify,
         propsData: {
           showGrayedOut: true
@@ -367,8 +370,8 @@ describe('AddressListSm', () => {
 
   it('displays all addresses when a Firm', async () => {
     // init store
-    store.commit('setLegalType', 'SP')
-    store.state.businessAddress = {
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    rootStore.businessAddress = {
       'deliveryAddress':
       {
         'streetAddress': '111 Buchanan St',
@@ -387,7 +390,7 @@ describe('AddressListSm', () => {
       }
     }
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -404,8 +407,8 @@ describe('AddressListSm', () => {
 
   it('displays "same as above" when a Firm', async () => {
     // init store
-    store.commit('setLegalType', 'SP')
-    store.state.businessAddress = {
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    rootStore.businessAddress = {
       'deliveryAddress':
       {
         'streetAddress': '220 Buchanan St',
@@ -424,7 +427,7 @@ describe('AddressListSm', () => {
       }
     }
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -441,11 +444,10 @@ describe('AddressListSm', () => {
 
   it('displays "complete your filing" message for firm registration', async () => {
     // init store
-    store.commit('setLegalType', 'SP')
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
 
     const wrapper = mount(AddressListSm,
       {
-        store,
         vuetify,
         propsData: {
           showCompleteYourFilingMessage: true
@@ -468,13 +470,13 @@ describe('AddressListSm', () => {
 
   it('displays "(Not entered)" message for firm registration', async () => {
     // init store
-    store.commit('setLegalType', 'SP')
-    store.state.businessAddress = {
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    rootStore.businessAddress = {
       'deliveryAddress': null,
       'mailingAddress': null
     }
 
-    const wrapper = mount(AddressListSm, { store, vuetify })
+    const wrapper = mount(AddressListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 

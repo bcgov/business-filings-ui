@@ -21,9 +21,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
-import { ApiFilingIF } from '@/interfaces'
+import { Action } from 'pinia-class'
+import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import FiledLabel from '../FiledLabel.vue'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 
 @Component({
   components: { FiledLabel }
@@ -32,7 +33,7 @@ export default class FiledAndPendingPaid extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Action toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
 }
 </script>
 

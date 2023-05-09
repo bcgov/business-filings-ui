@@ -318,7 +318,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
@@ -334,6 +334,9 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: {
@@ -368,25 +371,25 @@ export default class AnnualReport extends Vue {
   }
 
   // FUTURE: change these to getters
-  @State ARFilingYear!: number
-  @State arMinDate!: string
-  @State arMaxDate!: string
-  @State nextARDate!: string
-  @State filingData!: Array<FilingDataIF>
+  @Getter(useRootStore) ARFilingYear!: number
+  @Getter(useRootStore) arMinDate!: string
+  @Getter(useRootStore) arMaxDate!: string
+  @Getter(useRootStore) nextARDate!: string
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
 
-  @Getter getCurrentYear!: number
-  @Getter getAuthWebUrl!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getLastAddressChangeDate!: string
-  @Getter getLastAnnualReportDate!: string
-  @Getter getLastDirectorChangeDate!: string
-  @Getter getPayApiUrl!: string
-  @Getter getReportState!: string
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isCoop!: boolean
-  @Getter isCurrentFilingEditable!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) getCurrentYear!: number
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useBusinessStore) getLastAddressChangeDate!: string
+  @Getter(useBusinessStore) getLastAnnualReportDate!: string
+  @Getter(useBusinessStore) getLastDirectorChangeDate!: string
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getReportState!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useRootStore) isCurrentFilingEditable!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables for AgmDate component
   private newAgmDate = null // for resuming draft

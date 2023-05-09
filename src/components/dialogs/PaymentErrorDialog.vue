@@ -64,14 +64,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: { ContactInfo }
 })
 export default class PaymentErrorDialog extends Vue {
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean

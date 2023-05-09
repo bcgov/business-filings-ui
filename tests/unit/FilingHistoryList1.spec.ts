@@ -2,7 +2,11 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useRootStore } from '@/stores/rootStore'
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
@@ -19,12 +23,18 @@ import PaperFiling from '@/components/Dashboard/FilingHistoryList/filings/PaperF
 // import PendingFiling from '@/components/Dashboard/FilingHistoryList/PendingFiling.vue'
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffFiling.vue'
 import LimitedRestoration from '@/components/Dashboard/FilingHistoryList/filings/LimitedRestoration.vue'
+import { CorpTypeCd, FilingTypes } from '@bcrs-shared-components/enums'
+import { FilingStatus, FilingSubTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
+const filingHistoryListStore = useFilingHistoryListStore()
+const rootStore = useRootStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -66,11 +76,10 @@ describe('Filing History List - misc functionality', () => {
   it('handles empty data', async () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [])
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([])
 
     const wrapper = mount(FilingHistoryList, {
-      store,
       propsData: { dissolutionType: 'administrative' },
       vuetify
     })
@@ -88,11 +97,10 @@ describe('Filing History List - misc functionality', () => {
 
   xit('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', SAMPLE_FILINGS)
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings(SAMPLE_FILINGS as any)
 
     const wrapper = mount(FilingHistoryList, {
-      store,
       propsData: { highlightId: 222 },
       vuetify
     })
@@ -107,8 +115,8 @@ describe('Filing History List - misc functionality', () => {
 
   xit('displays multiple filing items', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -117,11 +125,11 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
         isFutureEffective: false,
-        name: 'annualReport',
-        status: 'COMPLETED',
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-07-02',
         submitter: 'Submitter 1'
-      },
+      } as any,
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -130,8 +138,8 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 222,
         isFutureEffective: false,
-        name: 'changeOfDirectors',
-        status: 'COMPLETED',
+        name: FilingTypes.CHANGE_OF_DIRECTORS,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-04-04',
         submitter: 'Submitter 2'
       },
@@ -143,8 +151,8 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 333,
         isFutureEffective: false,
-        name: 'changeOfAddress',
-        status: 'COMPLETED',
+        name: FilingTypes.CHANGE_OF_ADDRESS,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-05-06',
         submitter: 'Submitter 3'
       },
@@ -156,8 +164,8 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 444,
         isFutureEffective: false,
-        name: 'annualReport',
-        status: 'COMPLETED',
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-03-02',
         submitter: 'Submitter 4'
       },
@@ -169,8 +177,8 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 555,
         isFutureEffective: false,
-        name: 'changeOfDirectors',
-        status: 'COMPLETED',
+        name: FilingTypes.CHANGE_OF_DIRECTORS,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-02-04',
         submitter: 'Submitter 5'
       },
@@ -182,14 +190,14 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 666,
         isFutureEffective: false,
-        name: 'changeOfAddress',
-        status: 'COMPLETED',
+        name: FilingTypes.CHANGE_OF_ADDRESS,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-01-06',
         submitter: 'Submitter 6'
       }
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -203,8 +211,8 @@ describe('Filing History List - misc functionality', () => {
 
   it('expands a paper-only filing', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: true,
         businessIdentifier: 'CP0001191',
@@ -213,14 +221,14 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 222,
         isFutureEffective: false,
-        name: 'changeOfDirectors',
-        status: 'COMPLETED',
+        name: FilingTypes.CHANGE_OF_DIRECTORS,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-03-09',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -254,8 +262,8 @@ describe('Filing History List - misc functionality', () => {
 
   xit('expands a regular filing', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -264,15 +272,15 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
         isFutureEffective: false,
-        name: 'annualReport',
-        status: 'COMPLETED',
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-06-02',
         submitter: 'Cameron',
         documentsLink: 'http://test'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -308,8 +316,8 @@ describe('Filing History List - misc functionality', () => {
 
   xit('expands a full restoration filing', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -318,21 +326,21 @@ describe('Filing History List - misc functionality', () => {
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
         isFutureEffective: false,
-        name: 'restoration',
-        status: 'COMPLETED',
+        name: FilingTypes.RESTORATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-06-02',
         submitter: 'Cameron',
         documentsLink: 'http://test',
         data: {
           restoration: {
-            date: '2021-01-01',
+            expiry: '2021-01-01',
             type: 'fullRestoration'
           }
         }
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -365,8 +373,8 @@ describe('Filing History List - misc functionality', () => {
 
   xit('expands a limited restoration filing', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -379,22 +387,22 @@ describe('Filing History List - misc functionality', () => {
             expiry: '2021-04-01',
             legalName: 'BC1234567 LTD.'
           }
-        },
+        } as any,
         displayName: 'Limited Restoration Application',
         documentsLink: 'http://test',
         effectiveDate: '2019-11-20 22:17:54 GMT',
         filingId: 111,
-        filingSubType: 'limitedRestoration',
+        filingSubType: FilingSubTypes.LIMITED_RESTORATION,
         isFutureEffective: false,
-        name: 'restoration',
+        name: FilingTypes.RESTORATION,
         paymentStatusCode: 'COMPLETED',
-        status: 'COMPLETED',
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-06-02',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -446,12 +454,11 @@ describe('Filing History List - misc functionality', () => {
   // FUTURE: show and verify the tooltip
   xit('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.commit('setIdentifier', 'BC0007291')
-    store.commit('mutateFilings', SAMPLE_FILINGS)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    businessStore.setIdentifier('BC0007291')
+    filingHistoryListStore.mutateFilings(SAMPLE_FILINGS as any)
 
     const wrapper = mount(FilingHistoryList, {
-      store,
       propsData: { highlightId: 666 },
       vuetify
     })
@@ -492,11 +499,10 @@ describe('Filing History List - misc functionality', () => {
 
   xit('disables corrections when "disable changes" prop is set', async () => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('mutateFilings', [])
+    businessStore.setIdentifier('CP0001191')
+    filingHistoryListStore.mutateFilings([])
 
     const wrapper = mount(FilingHistoryList, {
-      store,
       propsData: { disableChanges: true },
       vuetify
     })
@@ -507,10 +513,9 @@ describe('Filing History List - misc functionality', () => {
   })
 
   xit('returns correct values for disableCorrection()', async () => {
-    store.commit('mutateFilings', [])
+    filingHistoryListStore.mutateFilings([])
 
     const wrapper = mount(FilingHistoryList, {
-      store,
       propsData: { disableChanges: false },
       vuetify
     })
@@ -540,25 +545,25 @@ describe('Filing History List - misc functionality', () => {
 
     // conditions[3]: IA as a BEN/BC/CC/ULC
     for (const entityType of ['BEN', 'BC', 'CC', 'ULC']) {
-      store.commit('setLegalType', entityType)
+      businessStore.setLegalType(entityType as any)
       expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(false)
     }
 
     // conditions[4]: Change of Registration as a firm
     for (const entityType of ['SP', 'GP']) {
-      store.commit('setLegalType', entityType)
+      businessStore.setLegalType(entityType as any)
       expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(false)
     }
 
     // conditions[5]: Correction as a firm or BEN/BC/CC/ULC
     for (const entityType of ['SP', 'GP', 'BEN', 'BC', 'CC', 'ULC']) {
-      store.commit('setLegalType', entityType)
+      businessStore.setLegalType(entityType as any)
       expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(false)
     }
 
     // conditions[6]: Registration as a firm
     for (const entityType of ['SP', 'GP']) {
-      store.commit('setLegalType', entityType)
+      businessStore.setLegalType(entityType as any)
       expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(false)
     }
 
@@ -584,19 +589,19 @@ describe('Filing History List - misc functionality', () => {
     }
 
     // only conditions[3]: IA as not a BEN/BC/CC/ULC
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     expect(vm.disableCorrection({ ...item, name: 'incorporationApplication' })).toBe(true)
 
     // only conditions[4]: Change of Registration as not a firm
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     expect(vm.disableCorrection({ ...item, name: 'changeOfRegistration' })).toBe(true)
 
     // only conditions[5]: Correction as not a firm nor BEN/BC/CC/ULC
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     expect(vm.disableCorrection({ ...item, name: 'correction' })).toBe(true)
 
     // only conditions[6]: Registration as not a firm
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     expect(vm.disableCorrection({ ...item, name: 'registration' })).toBe(true)
   })
 })
@@ -792,7 +797,8 @@ describe('Filing History List - redirections', () => {
   })
 
   beforeEach(() => {
-    store.commit('setTestConfiguration', { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+    configurationStore.setTestConfiguration({ configuration: null },
+      { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     const get = sinon.stub(axios, 'get')
     const post = sinon.stub(axios, 'post')
 
@@ -850,13 +856,14 @@ describe('Filing History List - redirections', () => {
 
   xit('redirects to Edit URL when filing an IA correction', async () => {
     // init data
-    store.commit('setTestConfiguration', { key: 'VUE_APP_EDIT_URL', value: 'https://edit.url/' })
+    configurationStore.setTestConfiguration({ configuration: null },
+      { key: 'VUE_APP_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-    store.commit('setLegalType', 'BEN')
-    store.state.keycloakRoles = ['staff']
-    store.commit('setIdentifier', 'BC1234567')
-    store.commit('mutateFilings', [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.keycloakRoles = ['staff']
+    businessStore.setIdentifier('BC1234567')
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdenfier: 'BC1234567',
@@ -866,14 +873,14 @@ describe('Filing History List - redirections', () => {
         filingId: 85114,
         filingLink: 'businesses/BC1234567/filings/85114',
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'COMPLETED',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-04-28 19:14:45 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -922,9 +929,9 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays an "empty" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.commit('mutateFilings', [])
+    filingHistoryListStore.mutateFilings([])
 
-    const wrapper = shallowMount(FilingHistoryList, { store, vuetify })
+    const wrapper = shallowMount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -939,10 +946,10 @@ describe('Filing History List - incorporation applications', () => {
 
   xit('displays actual title for a named company IA', async () => {
     // init store
-    store.state.nameRequest = null
+    rootStore.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -951,14 +958,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'COMPLETED',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-05-06 19:00:00 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -982,8 +989,8 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays default title for a numbered company IA', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -992,14 +999,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'COMPLETED',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-05-06 19:00:00 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1023,8 +1030,8 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays a "future effective" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1033,14 +1040,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
         isFutureEffective: true,
-        name: 'incorporationApplication',
-        status: 'PAID',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.PAID,
         submittedDate: '2020-04-28 19:14:45 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1085,9 +1092,9 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays a "future effective pending" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    rootStore.nameRequest = { nrNum: 'NR 1234567' }
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1096,14 +1103,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         isFutureEffective: true,
-        name: 'incorporationApplication',
-        status: 'PAID',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.PAID,
         submittedDate: '2020-04-28 19:14:45 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1148,9 +1155,9 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays a Paid IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    rootStore.nameRequest = { nrNum: 'NR 1234567' }
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1159,14 +1166,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'PAID',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.PAID,
         submittedDate: '2020-05-06 19:00:00 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1211,8 +1218,8 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays a Completed IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1221,14 +1228,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'COMPLETED',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-04-28 19:14:45 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1272,9 +1279,9 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays a Paid IA (business mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    rootStore.nameRequest = { nrNum: 'NR 1234567' }
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1283,14 +1290,14 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'PAID',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.PAID,
         submittedDate: '2020-05-06 19:00:00 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1335,8 +1342,8 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays a Completed IA (business mode)', async () => {
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.commit('setLegalType', 'BEN')
-    store.commit('mutateFilings', [
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1345,15 +1352,15 @@ describe('Filing History List - incorporation applications', () => {
         effectiveDate: '2020-05-06 19:00:00 GMT', // past date
         filingId: 85114,
         isFutureEffective: false,
-        name: 'incorporationApplication',
-        status: 'COMPLETED',
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-04-28 19:14:45 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1407,7 +1414,7 @@ describe('Filing History List - paper only and other filings', () => {
   beforeEach(() => {
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
 
   afterEach(() => {
@@ -1416,7 +1423,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "paper only" AR (other) filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: true,
         businessIdentifier: 'BC1234567',
@@ -1425,14 +1432,14 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2017-03-24 19:20:05 GMT',
         filingId: 85114,
         isFutureEffective: false,
-        name: 'annualReport',
-        status: 'COMPLETED',
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2017-03-24 19:20:05 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1468,7 +1475,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays an "empty" alteration filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1477,18 +1484,18 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2020-03-24 19:20:05 GMT',
         filingId: 85114,
         isFutureEffective: false,
-        name: 'alteration',
-        status: 'COMPLETED',
+        name: FilingTypes.ALTERATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
         data: {
           order: {}
         }
-      }
+      } as any
     ])
 
-    wrapper = mount(FilingHistoryList, { store, vuetify })
+    wrapper = mount(FilingHistoryList, { vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1528,7 +1535,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "future effective" alteration filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1537,8 +1544,8 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2099-12-31 23:59:59 GMT', // way in the future so it's always > now
         filingId: 85114,
         isFutureEffective: true,
-        name: 'alteration',
-        status: 'PAID',
+        name: FilingTypes.ALTERATION,
+        status: FilingStatus.PAID,
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
@@ -1548,10 +1555,10 @@ describe('Filing History List - paper only and other filings', () => {
             toLegalType: 'BEN'
           }
         }
-      }
+      } as any
     ])
 
-    wrapper = mount(FilingHistoryList, { store, vuetify })
+    wrapper = mount(FilingHistoryList, { vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1593,7 +1600,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "future effective pending" alteration filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1602,8 +1609,8 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2020-04-24 19:20:05 GMT', // past date
         filingId: 85114,
         isFutureEffective: true,
-        name: 'alteration',
-        status: 'PAID',
+        name: FilingTypes.ALTERATION,
+        status: FilingStatus.PAID,
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
@@ -1613,10 +1620,10 @@ describe('Filing History List - paper only and other filings', () => {
             toLegalType: 'BEN'
           }
         }
-      }
+      } as any
     ])
 
-    wrapper = mount(FilingHistoryList, { store, vuetify })
+    wrapper = mount(FilingHistoryList, { vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1658,7 +1665,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "full" alteration filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1667,8 +1674,8 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2020-03-24 19:20:05 GMT',
         filingId: 85114,
         isFutureEffective: false,
-        name: 'alteration',
-        status: 'COMPLETED',
+        name: FilingTypes.ALTERATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2020-03-24 19:20:05 GMT',
         submitter: 'Cameron',
         'documentsLink': 'http://test',
@@ -1678,10 +1685,10 @@ describe('Filing History List - paper only and other filings', () => {
             toLegalType: 'BEN'
           }
         }
-      }
+      } as any
     ])
 
-    wrapper = mount(FilingHistoryList, { store, vuetify })
+    wrapper = mount(FilingHistoryList, { vuetify })
     vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1722,7 +1729,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a Registrar\'s Notation (staff only) filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1731,8 +1738,8 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2021-05-05 20:37:44 GMT',
         filingId: 123,
         isFutureEffective: false,
-        name: 'registrarsNotation',
-        status: 'COMPLETED',
+        name: FilingTypes.REGISTRARS_NOTATION,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2021-05-05 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
@@ -1742,10 +1749,10 @@ describe('Filing History List - paper only and other filings', () => {
             orderDetails: 'A note about order'
           }
         }
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1778,7 +1785,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a Registrar\'s Order (staff only) filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1787,8 +1794,8 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2021-05-05 20:37:44 GMT',
         filingId: 123,
         isFutureEffective: false,
-        name: 'registrarsOrder',
-        status: 'COMPLETED',
+        name: FilingTypes.REGISTRARS_ORDER,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2021-05-05 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
@@ -1798,10 +1805,10 @@ describe('Filing History List - paper only and other filings', () => {
             orderDetails: 'A note about order'
           }
         }
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1834,7 +1841,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a Court Order (staff only) filing', async () => {
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1843,8 +1850,8 @@ describe('Filing History List - paper only and other filings', () => {
         effectiveDate: '2021-05-05 20:37:44 GMT',
         filingId: 123,
         isFutureEffective: false,
-        name: 'courtOrder',
-        status: 'COMPLETED',
+        name: FilingTypes.COURT_ORDER,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2021-05-05 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
@@ -1854,10 +1861,10 @@ describe('Filing History List - paper only and other filings', () => {
             orderDetails: 'A note about order'
           }
         }
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -1908,7 +1915,7 @@ describe('Filing History List - with Court Order documents', () => {
 
   it('does not display the documents list when no documents are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_COURT_ORDER_DOCUMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/BC0871300/filings/111/documents')
@@ -1918,7 +1925,7 @@ describe('Filing History List - with Court Order documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
@@ -1940,7 +1947,7 @@ describe('Filing History List - with Court Order documents', () => {
 
   xit('display the documents list when documents are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_COURT_ORDER_DOCUMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/BC0871300/filings/111/documents')
@@ -1952,7 +1959,7 @@ describe('Filing History List - with Court Order documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
@@ -1995,7 +2002,7 @@ describe('Filing History List - with documents', () => {
 
   xit('does not display the documents list when no documents are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_DOCUMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
@@ -2005,7 +2012,7 @@ describe('Filing History List - with documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
@@ -2027,7 +2034,7 @@ describe('Filing History List - with documents', () => {
 
   xit('display the documents list when documents are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_DOCUMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
@@ -2042,7 +2049,7 @@ describe('Filing History List - with documents', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that Documents List component does not exist before the item is expanded
@@ -2068,7 +2075,7 @@ describe('Filing History List - with documents', () => {
 
   xit('computes proper document titles from the documents data', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_DOCUMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
@@ -2086,7 +2093,6 @@ describe('Filing History List - with documents', () => {
       })))
 
     const wrapper = mount(FilingHistoryList, {
-      store,
       propsData: { highlightId: 666 },
       vuetify
     })
@@ -2130,7 +2136,7 @@ describe('Filing History List - detail comments', () => {
 
   it('does not display the details count when count is zero', async () => {
     // init store
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -2139,14 +2145,14 @@ describe('Filing History List - detail comments', () => {
         effectiveDate: '2019-06-02 19:22:59 GMT',
         filingId: 111,
         isFutureEffective: false,
-        name: 'annualReport',
-        status: 'COMPLETED',
+        name: FilingTypes.ANNUAL_REPORT,
+        status: FilingStatus.COMPLETED,
         submittedDate: '2019-06-02 19:22:59 GMT',
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that detail comments button does not exist
@@ -2157,7 +2163,7 @@ describe('Filing History List - detail comments', () => {
 
   it('displays the comments count when count is greater than zero', async () => {
     // init store
-    store.commit('mutateFilings', [
+    filingHistoryListStore.mutateFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -2167,14 +2173,14 @@ describe('Filing History List - detail comments', () => {
         effectiveDate: '2099-12-13 08:00:00 GMT', // Dec 13, 2099 at 00:00:00 am Pacific
         filingId: 666,
         isFutureEffective: true,
-        name: 'changeOfAddress',
-        status: 'PAID',
+        name: FilingTypes.CHANGE_OF_ADDRESS,
+        status: FilingStatus.PAID,
         submittedDate: '2019-12-12 19:22:59 GMT', // Dec 12, 2019 at 11:22:59 am Pacific
         submitter: 'Cameron'
-      }
+      } as any
     ])
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify detail comments button
@@ -2185,7 +2191,7 @@ describe('Filing History List - detail comments', () => {
 
   xit('does not display the details list when no comments are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_COMMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_COMMENTS_LINK] as any)
 
     // mock "get comments"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/comments')
@@ -2195,7 +2201,7 @@ describe('Filing History List - detail comments', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that Details List component does not exist before the item is expanded
@@ -2213,7 +2219,7 @@ describe('Filing History List - detail comments', () => {
 
   xit('displays the details list when comments are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITH_COMMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITH_COMMENTS_LINK] as any)
 
     // mock "get comments"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/comments')
@@ -2240,7 +2246,7 @@ describe('Filing History List - detail comments', () => {
         }
       })))
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that Details List component does not exist until the item is expanded
@@ -2278,9 +2284,9 @@ describe('Filing History List - without documents', () => {
 
   it('does not display the view documents button when no documents are present on a filing', async () => {
     // init store
-    store.commit('mutateFilings', [FILING_WITHOUT_DOCUMENTS_LINK])
+    filingHistoryListStore.mutateFilings([FILING_WITHOUT_DOCUMENTS_LINK] as any)
 
-    const wrapper = mount(FilingHistoryList, { store, vuetify })
+    const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()
 
     // verify that View Documents Button is not rendered

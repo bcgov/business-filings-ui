@@ -1,18 +1,19 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
 import AlterationFiling from '@/components/Dashboard/FilingHistoryList/filings/AlterationFiling.vue'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 xdescribe('Alteration Filing', () => {
   it('Displays expected content with a null filing', () => {
     const wrapper = mount(AlterationFiling, {
-      store,
       vuetify,
       propsData: { filing: null }
     })
@@ -26,7 +27,6 @@ xdescribe('Alteration Filing', () => {
 
   it('Displays expected content with an empty filing', () => {
     const wrapper = mount(AlterationFiling, {
-      store,
       vuetify,
       propsData: { filing: {} }
     })
@@ -40,10 +40,9 @@ xdescribe('Alteration Filing', () => {
 
   it('Displays expected content with a valid filing', () => {
     // init store
-    store.commit('setLegalName', 'MY COMPANY')
+    businessStore.setLegalName('MY COMPANY')
 
     const wrapper = mount(AlterationFiling, {
-      store,
       vuetify,
       propsData: {
         filing: {

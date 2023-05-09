@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapState } from 'pinia'
 import * as Sentry from '@sentry/browser'
 import { GetFeatureFlag, navigate, UpdateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -143,6 +143,10 @@ import {
   Routes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useRootStore } from '@/stores/rootStore'
 
 export default {
   name: 'App',
@@ -198,17 +202,26 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'getAuthApiUrl',
-      'getBusinessUrl',
-      'getCreateUrl',
-      'getEntityName',
-      'getLegalType',
-      'getIdentifier',
-      'getRegHomeUrl',
-      'isRoleStaff',
-      'showFetchingDataSpinner'
-    ]),
+    ...mapState(useConfigurationStore,
+      [
+        'getAuthApiUrl',
+        'getBusinessUrl',
+        'getCreateUrl',
+        'getRegHomeUrl'
+      ]),
+
+    ...mapState(useBusinessStore,
+      [
+        'getEntityName',
+        'getLegalType',
+        'getIdentifier'
+      ]),
+
+    ...mapState(useRootStore,
+      [
+        'isRoleStaff',
+        'showFetchingDataSpinner'
+      ]),
 
     /** The Business ID string. */
     businessId (): string {
@@ -309,37 +322,43 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'loadBusinessInfo',
-      'loadFilings',
-      'loadStateFiling',
-      'setAuthRoles',
-      'setBusinessAddress',
-      'setBusinessEmail',
-      'setBusinessPhone',
-      'setBusinessPhoneExtension',
-      'setConfigObject',
-      'setCorpTypeCd',
-      'setCurrentDate',
-      'setCurrentJsDate',
-      'setEntityStatus',
-      'setFilings',
-      'setKeycloakRoles',
-      'setNameRequest',
-      'setParties',
-      'setRecordsAddress',
-      'setRegisteredAddress',
-      'setTasks',
-      'setUserKeycloakGuid'
-    ]),
+    ...mapActions(useBusinessStore,
+      [
+        'loadBusinessInfo',
+        'setLegalName',
+        'setLegalType',
+        'setGoodStanding',
+        'setIdentifier'
+      ]),
 
-    ...mapMutations([
-      'mutateFetchingDataSpinner',
-      'setLegalName',
-      'setLegalType',
-      'setGoodStanding',
-      'setIdentifier'
-    ]),
+    ...mapActions(useFilingHistoryListStore,
+      [
+        'loadFilings',
+        'setFilings'
+      ]),
+
+    ...mapActions(useRootStore,
+      [
+        'loadStateFiling',
+        'setAuthRoles',
+        'setBusinessAddress',
+        'setBusinessEmail',
+        'setBusinessPhone',
+        'setBusinessPhoneExtension',
+        'setConfigObject',
+        'setCorpTypeCd',
+        'setCurrentDate',
+        'setCurrentJsDate',
+        'setEntityStatus',
+        'setKeycloakRoles',
+        'setNameRequest',
+        'setParties',
+        'setRecordsAddress',
+        'setRegisteredAddress',
+        'setTasks',
+        'setUserKeycloakGuid',
+        'setFetchingDataSpinner'
+      ]),
 
     /** Fetches business data / incorp app data. */
     async fetchData (): Promise<void> {
@@ -780,7 +799,7 @@ export default {
 
     /** Request and Download Business Summary Document. */
     async downloadBusinessSummary (): Promise<void> {
-      this.mutateFetchingDataSpinner(true)
+      this.setFetchingDataSpinner(true)
       const summaryDocument: DocumentIF = {
         title: 'Summary',
         filename: `${this.businessId} Summary - ${this.getCurrentDate}.pdf`,
@@ -792,7 +811,7 @@ export default {
         console.log('fetchDocument() error =', error)
         this.downloadErrorDialog = true
       })
-      this.mutateFetchingDataSpinner(false)
+      this.setFetchingDataSpinner(false)
     },
 
     /** Direct to Digital Credentials. **/

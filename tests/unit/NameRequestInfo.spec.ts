@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
 import { NameRequestInfo } from '@/components/common/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 const approvedCpNamerequest = {
   nrNum: 'NR 1234567',
@@ -75,11 +78,10 @@ const conditionalSpNamerequest = {
 
 describe('NameRequestInfo component', () => {
   it('renders an approved coop namerequest correctly', async () => {
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     const wrapper = mount(NameRequestInfo,
       {
         propsData: { nameRequest: approvedCpNamerequest },
-        store,
         vuetify
       })
     await Vue.nextTick()
@@ -126,11 +128,10 @@ describe('NameRequestInfo component', () => {
   })
 
   it('renders a conditional sole prop namerequest correctly', async () => {
-    store.commit('setLegalType', 'SP')
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
     const wrapper = mount(NameRequestInfo,
       {
         propsData: { nameRequest: conditionalSpNamerequest },
-        store,
         vuetify
       })
     await Vue.nextTick()

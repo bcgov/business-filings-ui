@@ -59,22 +59,25 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { DateUtilities } from '@/services'
 import { navigate } from '@/utils'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({})
 export default class EntityDefinitions extends Vue {
   @Prop({ required: true }) readonly businessId!: string // may be null
 
-  @Getter getBusinessEmail!: string
-  @Getter getBusinessProfileUrl!: string
-  @Getter getBusinessNumber!: string
-  @Getter getFoundingDate!: Date
-  @Getter getFullPhoneNumber!: string
-  @Getter getIdentifier!: string
-  @Getter getNameRequest!: any
-  @Getter isFirm!: boolean
+  @Getter(useRootStore) getBusinessEmail!: string
+  @Getter(useConfigurationStore) getBusinessProfileUrl!: string
+  @Getter(useBusinessStore) getBusinessNumber!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useRootStore) getFullPhoneNumber!: string
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useRootStore) getNameRequest!: any
+  @Getter(useBusinessStore) isFirm!: boolean
 
   /** The registration date, if applicable. */
   get registrationDate (): string {

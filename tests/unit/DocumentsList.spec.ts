@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
 
 // Components and sub-components
 import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
@@ -9,7 +9,7 @@ import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsLis
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
 
 describe('Documents List', () => {
   const SAMPLE_FILING = {
@@ -33,7 +33,7 @@ describe('Documents List', () => {
       documents: []
     }
 
-    const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
     await Vue.nextTick()
 
     // verify the number of document buttons
@@ -50,7 +50,7 @@ describe('Documents List', () => {
       ]
     }
 
-    const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
     await Vue.nextTick()
 
     // verify the number of document buttons
@@ -75,7 +75,7 @@ describe('Documents List', () => {
       ]
     }
 
-    const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
     await Vue.nextTick()
 
     // verify the number of document buttons
@@ -101,7 +101,7 @@ describe('Documents List', () => {
       ]
     }
 
-    const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -116,8 +116,8 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
     // set the flags
-    vm.mutateLoadingOne(true)
-    vm.mutateLoadingOneIndex(1)
+    vm.setLoadingOne(true)
+    vm.setLoadingOneIndex(1)
     await Vue.nextTick()
 
     // verify that all buttons are disabled and that only button 1 is loading
@@ -128,7 +128,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
-    vm.mutateLoadingOne(false)
+    vm.setLoadingOne(false)
     wrapper.destroy()
   })
 
@@ -141,7 +141,7 @@ describe('Documents List', () => {
       ]
     }
 
-    const wrapper = mount(DocumentsList, { propsData: { filing }, store, vuetify })
+    const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -156,7 +156,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
     // set the flag
-    vm.mutateLoadingAll(true)
+    vm.setLoadingAll(true)
     await Vue.nextTick()
 
     // verify that all buttons are disabled and that only button 1 is loading
@@ -167,7 +167,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(true)
 
-    vm.mutateLoadingAll(false)
+    vm.setLoadingAll(false)
     wrapper.destroy()
   })
 })

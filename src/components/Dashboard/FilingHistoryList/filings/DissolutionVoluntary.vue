@@ -62,7 +62,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ApiFilingIF, DissolutionConfirmationResourceIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 import FiledAndPendingPaid from '../subtitles/FiledAndPendingPaid.vue'
@@ -70,6 +70,8 @@ import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
 import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
 import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: {
@@ -84,9 +86,9 @@ export default class DissolutionVoluntary extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter isFirm!: boolean
-  @Getter getLegalName!: string
-  @Getter getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useRootStore) getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {

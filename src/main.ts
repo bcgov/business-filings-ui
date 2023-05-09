@@ -9,7 +9,7 @@ import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import { GetFeatureFlag, InitLdClient, navigate, setBaseRouteAndBusinessId } from '@/utils'
 import { getVueRouter } from '@/router'
-import { getVuexStore } from '@/store'
+import { getPiniaStore, getVuexStore } from '@/stores'
 import '@/registerServiceWorker'
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
@@ -19,6 +19,7 @@ import App from '@/App.vue'
 import * as Integrations from '@sentry/integrations'
 import * as Sentry from '@sentry/vue'
 import Hotjar from 'vue-hotjar'
+import { useConfigurationStore } from './stores/configurationStore'
 
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
@@ -29,6 +30,11 @@ Vue.use(Affix)
 Vue.use(Vue2Filters) // needed by SbcFeeSummary
 
 const store = getVuexStore()
+const pinia = getPiniaStore()
+
+// Needed to fix "getActivePinia was called with no active Pinia" error
+// Type assertion to turn off type checking
+Vue.use(pinia as any)
 
 // main code
 async function start () {
@@ -38,7 +44,9 @@ async function start () {
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   // first load the configuration, then set base route and check business id
-  await store.dispatch('loadConfiguration')
+  // await store.dispatch('loadConfiguration')
+  const configurationStore = useConfigurationStore()
+  configurationStore.loadConfiguration()
 
   setBaseRouteAndBusinessId(windowLocationPathname, processEnvBaseUrl, windowLocationOrigin) // may throw an error
 
@@ -108,6 +116,7 @@ async function start () {
     }),
     router,
     store,
+    pinia,
     render: h => h(App)
   }).$mount('#app')
 }

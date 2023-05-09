@@ -1,13 +1,15 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores/rootStore'
 import { CancelPaymentErrorDialog } from '@/components/dialogs'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
   it('displays generic message for normal users', () => {
@@ -16,7 +18,6 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
         propsData: {
           dialog: true
         },
-        store,
         vuetify
       })
 
@@ -31,14 +32,13 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
 
   it('displays generic message for staff', () => {
     // init store
-    store.state.keycloakRoles.push('staff')
+    rootStore.keycloakRoles.push('staff')
 
     const wrapper = shallowMount(CancelPaymentErrorDialog,
       {
         propsData: {
           dialog: true
         },
-        store,
         vuetify
       })
 
@@ -63,7 +63,6 @@ describe('CancelPaymentErrorDialog - Displays Error/Warning messages', () => {
             }
           ]
         },
-        store,
         vuetify
       })
 

@@ -437,7 +437,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
@@ -457,6 +457,10 @@ import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDial
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { RestorationTypes } from '@bcrs-shared-components/enums'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: {
@@ -502,26 +506,26 @@ export default class TodoList extends Vue {
 
   @Prop({ default: null }) readonly highlightId!: number
 
-  @Getter getAuthWebUrl!: string
-  @Getter getBusinessUrl!: string
-  @Getter getBusinessWarnings!: BusinessWarningIF
-  @Getter getCreateUrl!: string
-  @Getter getEditUrl!: string
-  @Getter getLegalType!: CorpTypeCd
-  @Getter getIdentifier!: string
-  @Getter getNameRequest!: any
-  @Getter getPayApiUrl!: string
-  @Getter getPendingCoa!: ApiFilingIF
-  @Getter getTasks!: Array<ApiTaskIF>
-  @Getter getTodoListResource!: TodoListResourceIF
-  @Getter isBenBcCccUlc!: boolean
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useConfigurationStore) getBusinessUrl!: string
+  @Getter(useBusinessStore) getBusinessWarnings!: BusinessWarningIF
+  @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useConfigurationStore) getEditUrl!: string
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useRootStore) getNameRequest!: any
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
+  @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
+  @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter isGoodStanding!: boolean
 
-  @Action setARFilingYear!: ActionBindingIF
-  @Action setArMinDate!: ActionBindingIF
-  @Action setArMaxDate!: ActionBindingIF
-  @Action setNextARDate!: ActionBindingIF
-  @Action setCurrentFilingStatus!: ActionBindingIF
+  @Action(useRootStore) setARFilingYear!: ActionBindingIF
+  @Action(useRootStore) setArMinDate!: ActionBindingIF
+  @Action(useRootStore) setArMaxDate!: ActionBindingIF
+  @Action(useRootStore) setNextARDate!: ActionBindingIF
+  @Action(useRootStore) setCurrentFilingStatus!: ActionBindingIF
 
   // for template
   readonly EnumUtilities = EnumUtilities

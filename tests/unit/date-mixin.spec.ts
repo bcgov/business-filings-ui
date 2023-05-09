@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores/rootStore'
 import MixinTester from '@/mixin-tester.vue'
 
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 describe('Date Mixin', () => {
   let vm: any
 
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(MixinTester, { store })
+    const wrapper = shallowMount(MixinTester)
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -65,7 +67,7 @@ describe('Date Mixin', () => {
 
   it('returns correct values for formatYyyyMmDd()', () => {
     // init store
-    store.state.currentJsDate = new Date('2020-01-01T08:00:00')
+    rootStore.currentJsDate = new Date('2020-01-01T08:00:00')
 
     expect(vm.formatYyyyMmDd(null)).toBeNull()
     expect(vm.formatYyyyMmDd('123456789')).toBeNull()
@@ -86,7 +88,7 @@ describe('Date Mixin', () => {
 
   it('returns correct values for daysFromToday()', () => {
     // init store
-    store.state.currentJsDate = new Date('2021-11-23T12:00:00')
+    rootStore.currentJsDate = new Date('2021-11-23T12:00:00')
 
     expect(vm.daysFromToday(null)).toBeNaN()
     expect(vm.daysFromToday(new Date(2021, 10, 22))).toBe(-1) // yesterday
@@ -97,7 +99,7 @@ describe('Date Mixin', () => {
 
   it('returns correct values for DAYLIGHT SAVINGS spring forward daysFromToday()', () => {
     // init store
-    store.state.currentJsDate = new Date('2022-03-01T12:00:00')
+    rootStore.currentJsDate = new Date('2022-03-01T12:00:00')
 
     expect(vm.daysFromToday(new Date(2022, 3 - 1, 2))).toBe(1) // before time change
     expect(vm.daysFromToday(new Date(2022, 3 - 1, 15))).toBe(14) // after time change
@@ -105,7 +107,7 @@ describe('Date Mixin', () => {
 
   it('returns correct values for DAYLIGHT SAVINGS fall back daysFromToday()', () => {
     // init store
-    store.state.currentJsDate = new Date('2022-11-01T12:00:00')
+    rootStore.currentJsDate = new Date('2022-11-01T12:00:00')
 
     expect(vm.daysFromToday(new Date(2022, 11 - 1, 2))).toBe(1) // before time change
     expect(vm.daysFromToday(new Date(2022, 11 - 1, 8))).toBe(7) // after time change
@@ -113,7 +115,7 @@ describe('Date Mixin', () => {
 
   it('returns correct values for yyyyMmDdToDate()', () => {
     // init store
-    store.state.currentJsDate = new Date('2021-11-23T12:00:00')
+    rootStore.currentJsDate = new Date('2021-11-23T12:00:00')
 
     expect(vm.yyyyMmDdToDate(null)).toBeNull()
     expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()

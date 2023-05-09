@@ -1,19 +1,23 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 import DissolutionVoluntary from '@/components/Dashboard/FilingHistoryList/filings/DissolutionVoluntary.vue'
 import { ConfigJson } from '@/resources'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 xdescribe('Dissolution Filing', () => {
   it('Displays expected content with a null filing', () => {
     const wrapper = mount(DissolutionVoluntary, {
-      store,
       vuetify,
       propsData: { filing: null }
     })
@@ -27,12 +31,11 @@ xdescribe('Dissolution Filing', () => {
 
   it('Displays expected content with a valid Coop filing', () => {
     // init store
-    store.commit('setLegalName', 'MY COMPANY')
-    store.commit('setLegalType', 'CP')
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
+    businessStore.setLegalName('MY COMPANY')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
 
     const wrapper = mount(DissolutionVoluntary, {
-      store,
       vuetify,
       propsData: {
         filing: {
@@ -57,12 +60,11 @@ xdescribe('Dissolution Filing', () => {
 
   it('Displays expected content with a valid corp filing', () => {
     // init store
-    store.commit('setLegalName', 'MY COMPANY')
-    store.commit('setLegalType', 'BEN')
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
+    businessStore.setLegalName('MY COMPANY')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
 
     const wrapper = mount(DissolutionVoluntary, {
-      store,
       vuetify,
       propsData: {
         filing: {
@@ -87,12 +89,11 @@ xdescribe('Dissolution Filing', () => {
 
   it('Displays expected content with a valid SP filing', () => {
     // init store
-    store.commit('setLegalName', 'MY COMPANY')
-    store.commit('setLegalType', 'SP')
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
+    businessStore.setLegalName('MY COMPANY')
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    rootStore.configObject = ConfigJson.find(x => x.entityType === businessStore.getLegalType)
 
     const wrapper = mount(DissolutionVoluntary, {
-      store,
       vuetify,
       propsData: {
         filing: {

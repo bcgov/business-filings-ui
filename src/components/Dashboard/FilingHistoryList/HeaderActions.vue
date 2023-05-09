@@ -58,11 +58,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter, Mutation } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { AllowableActions, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   mixins: [AllowableActionsMixin]
@@ -73,15 +76,14 @@ export default class HeaderActions extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isFirm!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
-  @Action showCommentDialog!: ActionBindingIF
-  @Action toggleFilingHistoryItem!: ActionBindingIF
-
-  @Mutation mutateCurrentFiling!: (x: ApiFilingIF) => void
-  @Mutation mutateFileCorrectionDialog!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
+  @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void
 
   /** Whether this entity is a business (and not a temporary registration). */
   get isBusiness (): string {
@@ -130,8 +132,8 @@ export default class HeaderActions extends Vue {
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.REGISTRATION:
         // correction via Edit UI
-        this.mutateCurrentFiling(filing)
-        this.mutateFileCorrectionDialog(true)
+        this.setCurrentFiling(filing)
+        this.setFileCorrectionDialog(true)
         break
 
       case FilingTypes.CHANGE_OF_ADDRESS:
@@ -139,8 +141,8 @@ export default class HeaderActions extends Vue {
         if (this.isBenBcCccUlc) {
           // correction via Edit UI if current type is BC, CC, ULC, or BEN
           // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
-          this.mutateCurrentFiling(filing)
-          this.mutateFileCorrectionDialog(true)
+          this.setCurrentFiling(filing)
+          this.setFileCorrectionDialog(true)
           break
         } else {
           // Local correction otherwise

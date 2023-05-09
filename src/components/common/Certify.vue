@@ -37,11 +37,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({})
 export default class Certify extends Vue {
-  @Getter getCurrentDate!: string
+  @Getter(useRootStore) getCurrentDate!: string
 
   /** Certified By prop. */
   @Prop({ default: '' }) readonly certifiedBy!: string

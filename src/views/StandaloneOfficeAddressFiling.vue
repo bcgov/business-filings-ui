@@ -191,7 +191,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
@@ -203,6 +203,9 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: {
@@ -230,16 +233,14 @@ export default class StandaloneOfficeAddressFiling extends Vue {
     officeAddressesComponent: OfficeAddresses
   }
 
-  // FUTURE: change this to a getter
-  @State filingData!: Array<FilingDataIF>
-
-  @Getter getAuthWebUrl!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getPayApiUrl!: string
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isCoop!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   // local variables
   private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }

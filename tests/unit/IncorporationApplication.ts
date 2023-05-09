@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/stores'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import IncorporationApplication from '@/components/Dashboard/FilingHistoryList/filings/IncorporationApplication.vue'

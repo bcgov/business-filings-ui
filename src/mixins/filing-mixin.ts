@@ -1,6 +1,6 @@
 import { Component } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import {
   CorrectionFilingIF,
   DissolutionFilingIF,
@@ -15,24 +15,25 @@ import {
   FilingSubTypes,
   FilingTypes
 } from '@/enums'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 
 /**
  * Mixin that provides some useful filing utilities.
  */
 @Component({})
 export default class FilingMixin extends DateMixin {
-  @Action setFilingData!: (x: any) => void
+  @Action(useRootStore) setFilingData!: (x: any) => void
 
-  // FUTURE: change these to getters
-  @State filingData!: Array<FilingDataIF>
-  @State entityName!: string
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
+  @Getter(useBusinessStore) entityName!: string
 
-  @Getter getBusinessAddress!: OfficeAddressIF
-  @Getter getCurrentDate!: string
-  @Getter getFoundingDate!: Date
-  @Getter getIdentifier!: string
-  @Getter getLegalType!: CorpTypeCd
-  @Getter getRegisteredOfficeAddress!: OfficeAddressIF
+  @Getter(useRootStore) getBusinessAddress!: OfficeAddressIF
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useRootStore) getRegisteredOfficeAddress!: OfficeAddressIF
 
   /**
    * Adds/removes filing code and/or sets flags in the Filing Data object.

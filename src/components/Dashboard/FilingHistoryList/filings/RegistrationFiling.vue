@@ -21,11 +21,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import { navigate } from '@/utils'
 import FilingTemplate from '../FilingTemplate.vue'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
 
 @Component({
   components: {
@@ -36,8 +38,8 @@ export default class RegistrationFiling extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter readonly getLegalName!: string
-  @Getter readonly getMyBusinessRegistryUrl!: string
+  @Getter(useBusinessStore) readonly getLegalName!: string
+  @Getter(useConfigurationStore) readonly getMyBusinessRegistryUrl!: string
 
   get isStatusCompleted (): boolean {
     return EnumUtilities.isStatusCompleted(this.filing)

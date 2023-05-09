@@ -536,7 +536,7 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { required, maxLength } from 'vuelidate/lib/validators'
 import { cloneDeep, isEqual } from 'lodash'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -544,6 +544,8 @@ import { WarningPopover } from '@/components/common/'
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 import { Actions } from '@/enums'
 import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: {
@@ -582,12 +584,12 @@ export default class Directors extends Vue {
    */
   @Prop({ default: () => [] }) readonly directors!: DirectorIF[]
 
-  @Getter getCurrentDate!: string
-  @Getter getFoundingDate!: Date
-  @Getter getIdentifier!: string
-  @Getter getLastAnnualReportDate!: string
-  @Getter getLastDirectorChangeDate!: string
-  @Getter isBenBcCccUlc!: boolean
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useRootStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) getLastAnnualReportDate!: string
+  @Getter(useBusinessStore) getLastDirectorChangeDate!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   /** Effective date for fetching and appointing/ceasing directors. */
   private asOfDate: string

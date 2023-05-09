@@ -85,10 +85,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   mixins: [
@@ -103,9 +105,9 @@ export default class ProprietorPartnersListSm extends Vue {
   /** Whether to gray out (disable) the proprietor / partners list. */
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
-  @Getter getParties!: PartyIF[]
-  @Getter isSoleProp!: boolean
-  @Getter isPartnership!: boolean
+  @Getter(useRootStore) getParties!: PartyIF[]
+  @Getter(useBusinessStore) isSoleProp!: boolean
+  @Getter(useBusinessStore) isPartnership!: boolean
 
   /** The proprietor / partners list. */
   get proprietorPartners (): PartyIF[] {

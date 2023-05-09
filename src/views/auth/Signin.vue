@@ -6,11 +6,12 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { navigate } from '@/utils'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useConfigurationStore } from '@/stores/configurationStore'
 
 @Component({
   computed: {
-    ...mapGetters(['getLoginUrl'])
+    ...mapState(useConfigurationStore, ['getLoginUrl'])
   }
 })
 export default class Signin extends Vue {

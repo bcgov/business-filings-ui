@@ -37,15 +37,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { GetFeatureFlag } from '@/utils'
+import { useBusinessStore } from '@/stores/businessStore'
 
 @Component({
   components: { ContactInfo }
 })
 export default class MissingInformation extends Vue {
-  @Getter isFirm!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
 
   private panel = 1
 

@@ -8,13 +8,16 @@ import sinon from 'sinon'
 import { SummaryDirectors } from '@/components/common'
 
 // Store
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -24,8 +27,8 @@ describe('Directors as a COOP', () => {
 
   beforeEach(done => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('setLegalType', 'CP')
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     const directors = [
       {
         'id': 1,
@@ -86,7 +89,7 @@ describe('Directors as a COOP', () => {
       }
     ]
     const Constructor = Vue.extend(SummaryDirectors)
-    const instance = new Constructor({ store, propsData: { directors }, vuetify })
+    const instance = new Constructor({ propsData: { directors }, vuetify })
     vm = instance.$mount()
 
     Vue.nextTick(() => {
@@ -161,8 +164,8 @@ describe('Directors as a BCOMP', () => {
 
   beforeEach(done => {
     // init store
-    store.commit('setIdentifier', 'BC0007291')
-    store.commit('setLegalType', 'BEN')
+    businessStore.setIdentifier('BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     const directors = [
       {
         'id': 1,
@@ -250,7 +253,7 @@ describe('Directors as a BCOMP', () => {
       }
     ]
     const Constructor = Vue.extend(SummaryDirectors)
-    const instance = new Constructor({ store, propsData: { directors }, vuetify })
+    const instance = new Constructor({ propsData: { directors }, vuetify })
     vm = instance.$mount()
 
     Vue.nextTick(() => {

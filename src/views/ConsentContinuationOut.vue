@@ -237,7 +237,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -251,6 +251,9 @@ import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, Sav
 import { ConfirmDialogType, CourtOrderIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useConfigurationStore } from '@/stores/configurationStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   components: {
@@ -279,15 +282,13 @@ export default class ConsentContinuationOut extends Vue {
     confirm: ConfirmDialogType
   }
 
-  // FUTURE: change this to a getter
-  @State filingData!: Array<FilingDataIF>
-
-  @Getter getAuthWebUrl!: string
-  @Getter getBusinessEmail!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getPayApiUrl!: string
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useRootStore) getBusinessEmail!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes

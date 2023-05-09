@@ -32,53 +32,54 @@
 // Libraries
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter, Mutation } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF, DocumentIF } from '@/interfaces'
 import { LegalServices } from '@/services'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
 
 @Component({})
 export default class DocumentsList extends Vue {
   /** The filing containing documents. */
   @Prop({ required: true }) readonly filing!: ApiFilingIF
 
-  @Getter getLoadingOneIndex!: number
-  @Getter isLoadingAll!: boolean
-  @Getter isLoadingOne!: boolean
+  @Getter(useFilingHistoryListStore) getLoadingOneIndex!: number
+  @Getter(useFilingHistoryListStore) isLoadingAll!: boolean
+  @Getter(useFilingHistoryListStore) isLoadingOne!: boolean
 
-  @Mutation mutateDownloadErrorDialog!: (x: boolean) => void
-  @Mutation mutateLoadingAll!: (x: boolean) => void
-  @Mutation mutateLoadingOne!: (x: boolean) => void
-  @Mutation mutateLoadingOneIndex!: (x: number) => void
+  @Action(useFilingHistoryListStore) setDownloadErrorDialog!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) setLoadingAll!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) setLoadingOne!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) setLoadingOneIndex!: (x: number) => void
 
   async downloadOne (document: DocumentIF, index: number): Promise<void> {
     if (document && index >= 0) { // safety check
-      this.mutateLoadingOne(true)
-      this.mutateLoadingOneIndex(index)
+      this.setLoadingOne(true)
+      this.setLoadingOneIndex(index)
 
       await LegalServices.fetchDocument(document).catch(error => {
         // eslint-disable-next-line no-console
         console.log('fetchDocument() error =', error)
-        this.mutateDownloadErrorDialog(true)
+        this.setDownloadErrorDialog(true)
       })
 
-      this.mutateLoadingOne(false)
-      this.mutateLoadingOneIndex(-1)
+      this.setLoadingOne(false)
+      this.setLoadingOneIndex(-1)
     }
   }
 
   async downloadAll (filing: ApiFilingIF): Promise<void> {
     if (filing?.documents) { // safety check
-      this.mutateLoadingAll(true)
+      this.setLoadingAll(true)
 
       for (const document of filing.documents) {
         await LegalServices.fetchDocument(document).catch(error => {
           // eslint-disable-next-line no-console
           console.log('fetchDocument() error =', error)
-          this.mutateDownloadErrorDialog(true)
+          this.setDownloadErrorDialog(true)
         })
       }
 
-      this.mutateLoadingAll(false)
+      this.setLoadingAll(false)
     }
   }
 }

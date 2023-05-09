@@ -115,9 +115,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
-import { State, Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
   mixins: [DateMixin]
@@ -145,13 +147,12 @@ export default class AgmDate extends Vue {
   /** Whether to allow changing the directors. */
   @Prop({ default: true }) readonly allowCod!: boolean
 
-  // FUTURE: change these to getters
-  @State ARFilingYear!: number
-  @State arMinDate!: string
-  @State arMaxDate!: string
-
-  @Getter isCoop!: boolean
-  @Getter getCurrentDate!: string
+  // Getters
+  @Getter(useRootStore) ARFilingYear!: number
+  @Getter(useRootStore) arMinDate!: string
+  @Getter(useRootStore) arMaxDate!: string
+  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useRootStore) getCurrentDate!: string
 
   // Local properties.
   private dateText = '' // value in text field

@@ -63,7 +63,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import {
   RegisterWallet,
   CredentialsLanding,
@@ -75,6 +75,7 @@ import { Stepper } from '@/components/common'
 import { DigitalCredentialTypes, Routes } from '@/enums'
 import { DigitalCredentialsIF, StepsIF } from '@/interfaces'
 import { LegalServices } from '@/services/'
+import { useBusinessStore } from '@/stores/businessStore'
 
 @Component({
   components: {
@@ -84,7 +85,7 @@ import { LegalServices } from '@/services/'
   }
 })
 export default class DigitalCredentials extends Vue {
-  @Getter getIdentifier!: string
+  @Getter(useBusinessStore) getIdentifier!: string
 
   private issuedCredentials: Array<DigitalCredentialsIF> = []
   private credentialInvitationUrl = ''

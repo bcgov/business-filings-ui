@@ -1,26 +1,30 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useRootStore } from '@/stores/rootStore'
 import { ConfirmDissolutionDialog } from '@/components/dialogs'
 import { ConfigJson } from '@/resources'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   it('displays confirmation modal to users for Sole Proprietorship', () => {
-    store.commit('setLegalType', 'SP')
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    rootStore.setConfigObject(ConfigJson.find(x => x.entityType === businessStore.getLegalType))
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
         propsData: {
           dialog: true
         },
-        store,
         vuetify
       })
 
@@ -41,15 +45,14 @@ describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   })
 
   it('displays confirmation modal to users for General Partnership', () => {
-    store.commit('setLegalType', 'GP')
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
+    businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
+    rootStore.setConfigObject(ConfigJson.find(x => x.entityType === businessStore.getLegalType))
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
         propsData: {
           dialog: true
         },
-        store,
         vuetify
       })
 
@@ -70,15 +73,14 @@ describe('Confirm Dissolution Dialog - Displays Confirmation messages', () => {
   })
 
   it('displays confirmation modal to users for Benefit Company', () => {
-    store.commit('setLegalType', 'BEN')
-    store.state.configObject = ConfigJson.find(x => x.entityType === store.getters.getLegalType)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.setConfigObject(ConfigJson.find(x => x.entityType === businessStore.getLegalType))
 
     const wrapper = shallowMount(ConfirmDissolutionDialog,
       {
         propsData: {
           dialog: true
         },
-        store,
         vuetify
       })
 

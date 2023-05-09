@@ -7,7 +7,10 @@ import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
+import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useRootStore } from '@/stores/rootStore'
 import App from '@/App.vue'
 
 // mock fetch() as it is not defined in Jest
@@ -24,7 +27,10 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const filingHistoryListStore = useFilingHistoryListStore()
+const rootStore = useRootStore()
 
 const BCOMP_ADDRESSES = {
   registeredOffice: {
@@ -554,7 +560,6 @@ describe('App as a COOP', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -569,58 +574,58 @@ describe('App as a COOP', () => {
   })
 
   it('gets Keycloak Roles and Auth Roles properly', () => {
-    expect(vm.$store.getters.isRoleStaff).toBe(true)
-    expect(vm.$store.getters.isRoleEdit).toBe(true)
-    expect(vm.$store.getters.isRoleView).toBe(true)
+    expect(rootStore.isRoleStaff).toBe(true)
+    expect(rootStore.isRoleEdit).toBe(true)
+    expect(rootStore.isRoleView).toBe(true)
   })
 
   it('fetches Entity Info properly', () => {
-    expect(vm.$store.state.businessEmail).toEqual('name@mail.com')
-    expect(vm.$store.state.businessPhone).toEqual('(111)-222-3333')
-    expect(vm.$store.state.businessPhoneExtension).toEqual('999')
+    expect(rootStore.businessEmail).toEqual('name@mail.com')
+    expect(rootStore.businessPhone).toEqual('(111)-222-3333')
+    expect(rootStore.businessPhoneExtension).toEqual('999')
   })
 
   it('initializes Current Date properly', () => {
     const dateString = vm.dateToYyyyMmDd(new Date())
-    expect(vm.$store.getters.getCurrentDate).toEqual(dateString)
+    expect(rootStore.getCurrentDate).toEqual(dateString)
   })
 
   it('fetches Business Info properly', () => {
-    expect(vm.$store.getters.getLegalName).toBe('TEST NAME')
-    expect(vm.$store.getters.isGoodStanding).toBe(true)
-    expect(vm.$store.getters.getBusinessNumber).toBe('123456789')
-    expect(vm.$store.getters.getIdentifier).toBe('CP0001191')
+    expect(businessStore.getLegalName).toBe('TEST NAME')
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getBusinessNumber).toBe('123456789')
+    expect(businessStore.getIdentifier).toBe('CP0001191')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.getters.getFoundingDate).toEqual(entityFoundingDate)
+    expect(businessStore.getFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
-    expect(vm.$store.state.tasks.length).toBe(3)
-    expect(vm.$store.state.tasks[0].task.todo.header.ARFilingYear).toBe(2017)
-    expect(vm.$store.state.tasks[1].task.todo.header.ARFilingYear).toBe(2018)
-    expect(vm.$store.state.tasks[2].task.todo.header.ARFilingYear).toBe(2019)
+    expect(rootStore.tasks.length).toBe(3)
+    expect(rootStore.tasks[0].task.todo.header.ARFilingYear).toBe(2017)
+    expect(rootStore.tasks[1].task.todo.header.ARFilingYear).toBe(2018)
+    expect(rootStore.tasks[2].task.todo.header.ARFilingYear).toBe(2019)
   })
 
   xit('fetches Filings properly', () => {
-    expect(vm.$store.state.filings.length).toBe(3)
-    expect(vm.$store.state.filings[0].name).toBe('annualReport')
-    expect(vm.$store.state.filings[1].name).toBe('changeOfDirectors')
-    expect(vm.$store.state.filings[2].name).toBe('changeOfAddress')
+    expect(filingHistoryListStore.filings.length).toBe(3)
+    expect(filingHistoryListStore.filings[0].name).toBe('annualReport')
+    expect(filingHistoryListStore.filings[1].name).toBe('changeOfDirectors')
+    expect(filingHistoryListStore.filings[2].name).toBe('changeOfAddress')
   })
 
   it('fetches Addresses properly', () => {
-    expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
-    expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
+    expect(rootStore.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
+    expect(rootStore.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
     // These values have been assigned in the mockResponse but are expected to be filtered out by front-end logic.
-    expect(vm.$store.state.registeredAddress.addressType).toBeUndefined()
+    expect(rootStore.registeredAddress.mailingAddress.addressType).toBeUndefined()
   })
 
   it('fetches Parties properly', () => {
-    expect(vm.$store.state.parties.length).toBe(3)
-    expect(vm.$store.state.parties[0].officer.lastName).toBe('Griffin') // director
-    expect(vm.$store.state.parties[1].officer.lastName).toBe('Swanson') // director
-    expect(vm.$store.state.parties[2].officer.lastName).toBe('Smith') // custodian
+    expect(rootStore.parties.length).toBe(3)
+    expect(rootStore.parties[0].officer.lastName).toBe('Griffin') // director
+    expect(rootStore.parties[1].officer.lastName).toBe('Swanson') // director
+    expect(rootStore.parties[2].officer.lastName).toBe('Smith') // custodian
   })
 })
 
@@ -803,7 +808,6 @@ describe('App as a BCOMP', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -818,61 +822,61 @@ describe('App as a BCOMP', () => {
   })
 
   it('gets Keycloak Roles and Auth Roles properly', () => {
-    expect(vm.$store.getters.isRoleStaff).toBe(false)
-    expect(vm.$store.getters.isRoleEdit).toBe(true)
-    expect(vm.$store.getters.isRoleView).toBe(true)
+    expect(rootStore.isRoleStaff).toBe(false)
+    expect(rootStore.isRoleEdit).toBe(true)
+    expect(rootStore.isRoleView).toBe(true)
   })
 
   it('fetches Entity Info properly', () => {
-    expect(vm.$store.state.businessEmail).toEqual('name@mail.com')
-    expect(vm.$store.state.businessPhone).toEqual('(111)-222-3333')
-    expect(vm.$store.state.businessPhoneExtension).toEqual('999')
+    expect(rootStore.businessEmail).toEqual('name@mail.com')
+    expect(rootStore.businessPhone).toEqual('(111)-222-3333')
+    expect(rootStore.businessPhoneExtension).toEqual('999')
   })
 
   it('initializes Current Date properly', () => {
     const dateString = vm.dateToYyyyMmDd(new Date())
-    expect(vm.$store.getters.getCurrentDate).toEqual(dateString)
+    expect(rootStore.getCurrentDate).toEqual(dateString)
   })
 
   it('fetches Business Info properly', () => {
-    expect(vm.$store.getters.getLegalName).toBe('TEST NAME')
-    expect(vm.$store.getters.isGoodStanding).toBe(true)
-    expect(vm.$store.getters.getBusinessNumber).toBe('123456789')
-    expect(vm.$store.getters.getIdentifier).toBe('BC0007291')
+    expect(businessStore.getLegalName).toBe('TEST NAME')
+    expect(businessStore.isGoodStanding).toBe(true)
+    expect(businessStore.getBusinessNumber).toBe('123456789')
+    expect(businessStore.getIdentifier).toBe('BC0007291')
     const entityFoundingDate = vm.apiToDate('2000-07-13T00:00:00+00:00')
-    expect(vm.$store.getters.getFoundingDate).toEqual(entityFoundingDate)
+    expect(businessStore.getFoundingDate).toEqual(entityFoundingDate)
   })
 
   it('fetches Tasks properly', () => {
-    expect(vm.$store.state.tasks.length).toBe(3)
-    expect(vm.$store.state.tasks[0].task.todo.header.ARFilingYear).toBe(2017)
-    expect(vm.$store.state.tasks[1].task.todo.header.ARFilingYear).toBe(2018)
-    expect(vm.$store.state.tasks[2].task.todo.header.ARFilingYear).toBe(2019)
+    expect(rootStore.tasks.length).toBe(3)
+    expect(rootStore.tasks[0].task.todo.header.ARFilingYear).toBe(2017)
+    expect(rootStore.tasks[1].task.todo.header.ARFilingYear).toBe(2018)
+    expect(rootStore.tasks[2].task.todo.header.ARFilingYear).toBe(2019)
   })
 
   xit('fetches Filings properly', () => {
-    expect(vm.$store.state.filings.length).toBe(3)
-    expect(vm.$store.state.filings[0].name).toBe('annualReport')
-    expect(vm.$store.state.filings[1].name).toBe('changeOfDirectors')
-    expect(vm.$store.state.filings[2].name).toBe('changeOfAddress')
+    expect(filingHistoryListStore.filings.length).toBe(3)
+    expect(filingHistoryListStore.filings[0].name).toBe('annualReport')
+    expect(filingHistoryListStore.filings[1].name).toBe('changeOfDirectors')
+    expect(filingHistoryListStore.filings[2].name).toBe('changeOfAddress')
   })
 
   it('fetches Addresses properly', () => {
-    expect(vm.$store.state.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
-    expect(vm.$store.state.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
+    expect(rootStore.registeredAddress.mailingAddress.addressCity).toBe('Victoria')
+    expect(rootStore.registeredAddress.deliveryAddress.addressCity).toBe('Glasgow')
 
-    expect(vm.$store.state.recordsAddress.mailingAddress.addressCity).toBe('Glasgow')
-    expect(vm.$store.state.recordsAddress.deliveryAddress.addressCity).toBe('Victoria')
+    expect(rootStore.recordsAddress.mailingAddress.addressCity).toBe('Glasgow')
+    expect(rootStore.recordsAddress.deliveryAddress.addressCity).toBe('Victoria')
 
     // These values have been assigned in the mockResponse but are expected to be filtered out by front-end logic.
-    expect(vm.$store.state.registeredAddress.addressType).toBeUndefined()
-    expect(vm.$store.state.recordsAddress.addressType).toBeUndefined()
+    expect(rootStore.registeredAddress.mailingAddress.addressType).toBeUndefined()
+    expect(rootStore.recordsAddress.mailingAddress.addressType).toBeUndefined()
   })
 
   it('fetches Parties properly', () => {
-    expect(vm.$store.state.parties.length).toBe(2)
-    expect(vm.$store.state.parties[0].officer.lastName).toBe('Griffin')
-    expect(vm.$store.state.parties[1].officer.lastName).toBe('Swanson')
+    expect(rootStore.parties.length).toBe(2)
+    expect(rootStore.parties[0].officer.lastName).toBe('Griffin')
+    expect(rootStore.parties[1].officer.lastName).toBe('Swanson')
   })
 })
 
@@ -882,8 +886,8 @@ describe('App as a Draft IA with approved NR', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -961,7 +965,6 @@ describe('App as a Draft IA with approved NR', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -976,28 +979,28 @@ describe('App as a Draft IA with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   it('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getLegalType).toBe('BEN')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
-    expect(vm.$store.getters.isAppTask).toBe(true)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.getLegalType).toBe('BEN')
+    expect(businessStore.getLegalName).toBe('My Name Request')
+    expect(rootStore.isAppTask).toBe(true)
 
     // verify loaded task
-    expect(vm.$store.state.tasks.length).toBe(1)
-    expect(vm.$store.state.tasks[0].enabled).toBe(true)
-    expect(vm.$store.state.tasks[0].order).toBe(1)
-    expect(vm.$store.state.tasks[0].task.filing.business.identifier).toBe('T123456789')
-    expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('BEN')
-    expect(vm.$store.state.tasks[0].task.filing.header.date).toBe('2020-05-21T00:11:55.887740+00:00')
-    expect(vm.$store.state.tasks[0].task.filing.header.name).toBe('incorporationApplication')
-    expect(vm.$store.state.tasks[0].task.filing.header.status).toBe('DRAFT')
-    expect(vm.$store.state.tasks[0].task.filing.header.filingId).toBe(789)
-    expect(vm.$store.state.tasks[0].task.filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.tasks[0].task.filing.incorporationApplication.nameRequest.legalType).toBe('BEN')
+    expect(rootStore.tasks.length).toBe(1)
+    expect(rootStore.tasks[0].enabled).toBe(true)
+    expect(rootStore.tasks[0].order).toBe(1)
+    expect(rootStore.tasks[0].task.filing.business.identifier).toBe('T123456789')
+    expect(rootStore.tasks[0].task.filing.business.legalType).toBe('BEN')
+    expect(rootStore.tasks[0].task.filing.header.date).toBe('2020-05-21T00:11:55.887740+00:00')
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('incorporationApplication')
+    expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(rootStore.tasks[0].task.filing.header.filingId).toBe(789)
+    expect(rootStore.tasks[0].task.filing.incorporationApplication.nameRequest.nrNumber).toBe('NR 1234567')
+    expect(rootStore.tasks[0].task.filing.incorporationApplication.nameRequest.legalType).toBe('BEN')
   })
 })
 
@@ -1007,8 +1010,8 @@ describe('App as a Draft IA with conditional-not required NR', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1087,7 +1090,6 @@ describe('App as a Draft IA with conditional-not required NR', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1102,8 +1104,8 @@ describe('App as a Draft IA with conditional-not required NR', () => {
   })
 
   it('fetches conditional-not required NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Conditional NR With Consent Not Required')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Conditional NR With Consent Not Required')
   })
 })
 
@@ -1113,8 +1115,8 @@ describe('App as a Draft IA with conditional-received NR', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1193,7 +1195,6 @@ describe('App as a Draft IA with conditional-received NR', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1208,8 +1209,8 @@ describe('App as a Draft IA with conditional-received NR', () => {
   })
 
   it('fetches conditional-received NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Conditional NR With Consent Received')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Conditional NR With Consent Received')
   })
 })
 
@@ -1219,8 +1220,8 @@ describe('App as a Draft IA with conditional-waived NR', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1299,7 +1300,6 @@ describe('App as a Draft IA with conditional-waived NR', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1314,8 +1314,8 @@ describe('App as a Draft IA with conditional-waived NR', () => {
   })
 
   it('fetches conditional-waived NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Conditional NR With Consent Waived')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Conditional NR With Consent Waived')
   })
 })
 
@@ -1325,8 +1325,8 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1415,7 +1415,6 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1430,41 +1429,41 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   xit('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getLegalType).toBe('BEN')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
-    expect(vm.$store.getters.isAppFiling).toBe(true)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.getLegalType).toBe('BEN')
+    expect(businessStore.getLegalName).toBe('My Name Request')
+    expect(rootStore.isAppFiling).toBe(true)
 
     // spot check addresses and directors
-    expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
-    expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
-    expect(vm.$store.state.parties.length).toEqual(2)
-    expect(vm.$store.state.parties[0].officer.firstName).toBe('Griffin')
-    expect(vm.$store.state.parties[1].officer.organizationName).toBe('Test Inc')
+    expect(rootStore.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
+    expect(rootStore.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
+    expect(rootStore.parties.length).toEqual(2)
+    expect(rootStore.parties[0].officer.firstName).toBe('Griffin')
+    expect(rootStore.parties[1].officer.organizationName).toBe('Test Inc')
 
     // verify loaded filing
-    expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
-    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
-    expect(vm.$store.state.filings[0].commentsCount).toBe(0)
-    expect(vm.$store.state.filings[0].commentsLink).toBe('http://comments')
-    expect(vm.$store.state.filings[0].displayName).toBe('Incorporation Application')
-    expect(vm.$store.state.filings[0].documentsLink).toBe('http://documents')
-    expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
-    expect(vm.$store.state.filings[0].filingId).toBe(789)
-    expect(vm.$store.state.filings[0].filingLink).toBe('http://filing')
-    expect(vm.$store.state.filings[0].isFutureEffective).toBe(true)
-    expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
-    expect(vm.$store.state.filings[0].status).toBe('PAID')
-    expect(vm.$store.state.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
-    expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
-    expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
-    expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
+    expect(filingHistoryListStore.filings.length).toBe(1)
+    expect(filingHistoryListStore.filings[0].availableOnPaperOnly).toBe(false)
+    expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
+    expect(filingHistoryListStore.filings[0].commentsCount).toBe(0)
+    expect(filingHistoryListStore.filings[0].commentsLink).toBe('http://comments')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('Incorporation Application')
+    expect(filingHistoryListStore.filings[0].documentsLink).toBe('http://documents')
+    expect(filingHistoryListStore.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
+    expect(filingHistoryListStore.filings[0].filingId).toBe(789)
+    expect(filingHistoryListStore.filings[0].filingLink).toBe('http://filing')
+    expect(filingHistoryListStore.filings[0].isFutureEffective).toBe(true)
+    expect(filingHistoryListStore.filings[0].name).toBe('incorporationApplication')
+    expect(filingHistoryListStore.filings[0].status).toBe('PAID')
+    expect(filingHistoryListStore.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
+    expect(filingHistoryListStore.filings[0].submitter).toBe('Submitter')
+    expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-10')
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
   })
 })
 
@@ -1475,8 +1474,8 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1565,7 +1564,6 @@ describe('App as a COMPLETED Incorporation Application', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1580,41 +1578,41 @@ describe('App as a COMPLETED Incorporation Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   xit('fetches IA filing properly', () => {
-    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getLegalType).toBe('BEN')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
-    expect(vm.$store.getters.isAppFiling).toBe(true)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.getLegalType).toBe('BEN')
+    expect(businessStore.getLegalName).toBe('My Name Request')
+    expect(rootStore.isAppFiling).toBe(true)
 
     // spot check addresses and directors
-    expect(vm.$store.state.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
-    expect(vm.$store.state.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
-    expect(vm.$store.state.parties.length).toEqual(2)
-    expect(vm.$store.state.parties[0].officer.firstName).toBe('Griffin')
-    expect(vm.$store.state.parties[1].officer.organizationName).toBe('Test Inc')
+    expect(rootStore.registeredAddress.mailingAddress.streetAddress).toBe('1012 Douglas St')
+    expect(rootStore.recordsAddress.mailingAddress.streetAddress).toBe('220 Buchanan St')
+    expect(rootStore.parties.length).toEqual(2)
+    expect(rootStore.parties[0].officer.firstName).toBe('Griffin')
+    expect(rootStore.parties[1].officer.organizationName).toBe('Test Inc')
 
     // verify loaded filing
-    expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
-    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
-    expect(vm.$store.state.filings[0].commentsCount).toBe(0)
-    expect(vm.$store.state.filings[0].commentsLink).toBe('http://comments')
-    expect(vm.$store.state.filings[0].displayName).toBe('Incorporation Application')
-    expect(vm.$store.state.filings[0].documentsLink).toBe('http://documents')
-    expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
-    expect(vm.$store.state.filings[0].filingId).toBe(789)
-    expect(vm.$store.state.filings[0].filingLink).toBe('http://filing')
-    expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
-    expect(vm.$store.state.filings[0].name).toBe('incorporationApplication')
-    expect(vm.$store.state.filings[0].status).toBe('COMPLETED')
-    expect(vm.$store.state.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
-    expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
-    expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
-    expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
+    expect(filingHistoryListStore.filings.length).toBe(1)
+    expect(filingHistoryListStore.filings[0].availableOnPaperOnly).toBe(false)
+    expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
+    expect(filingHistoryListStore.filings[0].commentsCount).toBe(0)
+    expect(filingHistoryListStore.filings[0].commentsLink).toBe('http://comments')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('Incorporation Application')
+    expect(filingHistoryListStore.filings[0].documentsLink).toBe('http://documents')
+    expect(filingHistoryListStore.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
+    expect(filingHistoryListStore.filings[0].filingId).toBe(789)
+    expect(filingHistoryListStore.filings[0].filingLink).toBe('http://filing')
+    expect(filingHistoryListStore.filings[0].isFutureEffective).toBe(false)
+    expect(filingHistoryListStore.filings[0].name).toBe('incorporationApplication')
+    expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
+    expect(filingHistoryListStore.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
+    expect(filingHistoryListStore.filings[0].submitter).toBe('Submitter')
+    expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-10')
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['incorporationApplication'])
   })
 })
 
@@ -1624,8 +1622,8 @@ describe('App as an historical business', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1734,7 +1732,6 @@ describe('App as an historical business', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1749,10 +1746,10 @@ describe('App as an historical business', () => {
   })
 
   it('fetches and parses state filing properly', () => {
-    expect(vm.$store.getters.isActive).toBe(false)
-    expect(vm.$store.getters.isHistorical).toBe(true)
-    expect(vm.$store.getters.isLiquidation).toBe(false)
-    expect(vm.$store.getters.getReasonText).toBe('Voluntary Dissolution – December 1, 2021')
+    expect(businessStore.isActive).toBe(false)
+    expect(businessStore.isHistorical).toBe(true)
+    expect(businessStore.isLiquidation).toBe(false)
+    expect(rootStore.getReasonText).toBe('Voluntary Dissolution – December 1, 2021')
   })
 })
 
@@ -1762,8 +1759,8 @@ describe('App as a Draft Registration with approved NR', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1841,7 +1838,6 @@ describe('App as a Draft Registration with approved NR', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1856,28 +1852,28 @@ describe('App as a Draft Registration with approved NR', () => {
   })
 
   it('fetches approved NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   it('fetches Registration filing properly', () => {
-    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getLegalType).toBe('SP')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
-    expect(vm.$store.getters.isAppTask).toBe(true)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.getLegalType).toBe('SP')
+    expect(businessStore.getLegalName).toBe('My Name Request')
+    expect(rootStore.isAppTask).toBe(true)
 
     // verify loaded task
-    expect(vm.$store.state.tasks.length).toBe(1)
-    expect(vm.$store.state.tasks[0].enabled).toBe(true)
-    expect(vm.$store.state.tasks[0].order).toBe(1)
-    expect(vm.$store.state.tasks[0].task.filing.business.identifier).toBe('T123456789')
-    expect(vm.$store.state.tasks[0].task.filing.business.legalType).toBe('SP')
-    expect(vm.$store.state.tasks[0].task.filing.header.date).toBe('2020-05-21T00:11:55.887740+00:00')
-    expect(vm.$store.state.tasks[0].task.filing.header.name).toBe('registration')
-    expect(vm.$store.state.tasks[0].task.filing.header.status).toBe('DRAFT')
-    expect(vm.$store.state.tasks[0].task.filing.header.filingId).toBe(789)
-    expect(vm.$store.state.tasks[0].task.filing.registration.nameRequest.nrNumber).toBe('NR 1234567')
-    expect(vm.$store.state.tasks[0].task.filing.registration.nameRequest.legalType).toBe('SP')
+    expect(rootStore.tasks.length).toBe(1)
+    expect(rootStore.tasks[0].enabled).toBe(true)
+    expect(rootStore.tasks[0].order).toBe(1)
+    expect(rootStore.tasks[0].task.filing.business.identifier).toBe('T123456789')
+    expect(rootStore.tasks[0].task.filing.business.legalType).toBe('SP')
+    expect(rootStore.tasks[0].task.filing.header.date).toBe('2020-05-21T00:11:55.887740+00:00')
+    expect(rootStore.tasks[0].task.filing.header.name).toBe('registration')
+    expect(rootStore.tasks[0].task.filing.header.status).toBe('DRAFT')
+    expect(rootStore.tasks[0].task.filing.header.filingId).toBe(789)
+    expect(rootStore.tasks[0].task.filing.registration.nameRequest.nrNumber).toBe('NR 1234567')
+    expect(rootStore.tasks[0].task.filing.registration.nameRequest.legalType).toBe('SP')
   })
 })
 
@@ -1888,8 +1884,8 @@ describe('App as a COMPLETED Registration Application', () => {
 
   beforeAll(() => {
     // clear store
-    store.commit('tasks', [])
-    store.commit('mutateFilings', [])
+    rootStore.setTasks([])
+    filingHistoryListStore.mutateFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1978,7 +1974,6 @@ describe('App as a COMPLETED Registration Application', () => {
     wrapper = shallowMount(App, {
       localVue,
       router,
-      store,
       vuetify
     })
     vm = wrapper.vm
@@ -1993,33 +1988,33 @@ describe('App as a COMPLETED Registration Application', () => {
   })
 
   it('fetches NR data properly', () => {
-    expect(vm.$store.getters.getNameRequest.nrNum).toBe('NR 1234567')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
+    expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
+    expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
   xit('fetches Registration filing properly', () => {
-    expect(vm.$store.getters.getIdentifier).toBe('T123456789')
-    expect(vm.$store.getters.getLegalType).toBe('SP')
-    expect(vm.$store.getters.getLegalName).toBe('My Name Request')
-    expect(vm.$store.getters.isAppFiling).toBe(true)
+    expect(businessStore.getIdentifier).toBe('T123456789')
+    expect(businessStore.getLegalType).toBe('SP')
+    expect(businessStore.getLegalName).toBe('My Name Request')
+    expect(rootStore.isAppFiling).toBe(true)
 
     // verify loaded filing
-    expect(vm.$store.state.filings.length).toBe(1)
-    expect(vm.$store.state.filings[0].availableOnPaperOnly).toBe(false)
-    expect(vm.$store.state.filings[0].businessIdentifier).toBe('T123456789')
-    expect(vm.$store.state.filings[0].commentsCount).toBe(0)
-    expect(vm.$store.state.filings[0].commentsLink).toBe('http://comments')
-    expect(vm.$store.state.filings[0].displayName).toBe('Registration')
-    expect(vm.$store.state.filings[0].documentsLink).toBe('http://documents')
-    expect(vm.$store.state.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
-    expect(vm.$store.state.filings[0].filingId).toBe(789)
-    expect(vm.$store.state.filings[0].filingLink).toBe('http://filing')
-    expect(vm.$store.state.filings[0].isFutureEffective).toBe(false)
-    expect(vm.$store.state.filings[0].name).toBe('registration')
-    expect(vm.$store.state.filings[0].status).toBe('COMPLETED')
-    expect(vm.$store.state.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
-    expect(vm.$store.state.filings[0].submitter).toBe('Submitter')
-    expect(vm.$store.state.filings[0].data.applicationDate).toBe('2020-05-10')
-    expect(vm.$store.state.filings[0].data.legalFilings).toEqual(['registration'])
+    expect(filingHistoryListStore.filings.length).toBe(1)
+    expect(filingHistoryListStore.filings[0].availableOnPaperOnly).toBe(false)
+    expect(filingHistoryListStore.filings[0].businessIdentifier).toBe('T123456789')
+    expect(filingHistoryListStore.filings[0].commentsCount).toBe(0)
+    expect(filingHistoryListStore.filings[0].commentsLink).toBe('http://comments')
+    expect(filingHistoryListStore.filings[0].displayName).toBe('Registration')
+    expect(filingHistoryListStore.filings[0].documentsLink).toBe('http://documents')
+    expect(filingHistoryListStore.filings[0].effectiveDate).toBe('Fri, 22 May 2020 00:00:00 GMT')
+    expect(filingHistoryListStore.filings[0].filingId).toBe(789)
+    expect(filingHistoryListStore.filings[0].filingLink).toBe('http://filing')
+    expect(filingHistoryListStore.filings[0].isFutureEffective).toBe(false)
+    expect(filingHistoryListStore.filings[0].name).toBe('registration')
+    expect(filingHistoryListStore.filings[0].status).toBe('COMPLETED')
+    expect(filingHistoryListStore.filings[0].submittedDate).toBe('Sun, 10 May 2020 11:22:33 GMT')
+    expect(filingHistoryListStore.filings[0].submitter).toBe('Submitter')
+    expect(filingHistoryListStore.filings[0].data.applicationDate).toBe('2020-05-10')
+    expect(filingHistoryListStore.filings[0].data.legalFilings).toEqual(['registration'])
   })
 })

@@ -4,14 +4,17 @@ import Vuetify from 'vuetify'
 import sinon from 'sinon'
 import { mount } from '@vue/test-utils'
 import axios from '@/axios-auth'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores/businessStore'
 import { OfficeAddresses } from '@/components/common'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 const sinonAxiosGet = sinon.stub(axios, 'get')
 
 function getAddressX (x: number, type: string): any {
@@ -29,8 +32,8 @@ function getAddressX (x: number, type: string): any {
 
 describe('OfficeAddresses as a COOP', () => {
   beforeAll(() => {
-    store.commit('setLegalType', 'CP')
-    store.commit('setIdentifier', 'CP0000841')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setIdentifier('CP0000841')
   })
 
   it('fetches the original office addresses with different delivery and mailing', async () => {
@@ -51,7 +54,7 @@ describe('OfficeAddresses as a COOP', () => {
       })))
 
     // mount the component
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // fetch original addresses
     await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
@@ -129,7 +132,7 @@ describe('OfficeAddresses as a COOP', () => {
       })))
 
     // mount the component
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // fetch original addresses
     await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
@@ -180,13 +183,13 @@ describe('OfficeAddresses as a COOP', () => {
   })
 
   it('has enabled Change button when enabled', () => {
-    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: true } })
+    const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: true } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
   })
 
   it('has no Change button when component is disabled', () => {
-    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: false } })
+    const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: false } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').exists()).toBe(false)
   })
@@ -195,8 +198,8 @@ describe('OfficeAddresses as a COOP', () => {
 describe('OfficeAddresses as a BCOMP', () => {
   beforeAll(() => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.commit('setIdentifier', 'BC1218881')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    businessStore.setIdentifier('BC1218881')
   })
 
   it('fetches the original office addresses with different registered and records', async () => {
@@ -222,7 +225,7 @@ describe('OfficeAddresses as a BCOMP', () => {
       })))
 
     // mount the component
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // fetch original addresses
     await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
@@ -339,7 +342,7 @@ describe('OfficeAddresses as a BCOMP', () => {
       })))
 
     // mount the component
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // fetch original addresses
     await (wrapper.vm as any).getOrigAddresses('2020-11-16', true)
@@ -413,13 +416,13 @@ describe('OfficeAddresses as a BCOMP', () => {
   })
 
   it('has enabled Change button when enabled', () => {
-    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: true } })
+    const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: true } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').attributes('disabled')).toBeUndefined()
   })
 
   it('has no Change button when component is disabled', () => {
-    const wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { componentEnabled: false } })
+    const wrapper = mount(OfficeAddresses, { vuetify, propsData: { componentEnabled: false } })
 
     expect(wrapper.find('#reg-off-addr-change-btn').exists()).toBe(false)
   })
