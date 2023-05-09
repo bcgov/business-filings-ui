@@ -16,7 +16,7 @@
             small label text-color="white">LIMITED RESTORATION</v-chip>
         </span>
 
-        <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
+        <span id="authorized-to-continue-out" v-if="isCcoExpired">
           <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
             small label text-color="white">AUTHORIZED TO CONTINUE OUT</v-chip>
         </span>
@@ -55,6 +55,7 @@ export default class EntityHeader extends Vue {
   @Getter isAuthorizedToContinueOut!: boolean
   @Getter isInLimitedRestoration!: boolean
   @Getter isSoleProp!: boolean
+  @Getter isCcoExpired!: boolean
 
   /** The business description. */
   get businessDescription (): string {

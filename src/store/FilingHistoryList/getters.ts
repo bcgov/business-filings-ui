@@ -1,5 +1,7 @@
 import { ApiFilingIF, FilingHistoryListStateIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
+import getters from '../getters'
+import { Store } from 'vuex'
 
 export default {
   getCurrentFiling (state: FilingHistoryListStateIF): ApiFilingIF {
@@ -77,5 +79,24 @@ export default {
   /** Whether one document is downloading. */
   isLoadingOne (state: FilingHistoryListStateIF): boolean {
     return state.loadingOne
+  },
+
+  isCcoExpired (state: FilingHistoryListStateIF, rootGetters: any): boolean {
+    const filings = rootGetters.getFilings
+    const ccoFilings = state.filings.filter(val => {
+      const exp = val.data?.consentContinuationOut?.expiry
+      if (exp) {
+        return true
+      }
+      return false
+    })
+    if (ccoFilings) {
+      const exp = ccoFilings[0].data?.consentContinuationOut?.expiry
+      const ccoExpiryDate = DateUtilities.dateToYyyyMmDd(new Date(exp))
+      const currentDate = rootGetters.getCurrentDate
+      const diff = DateUtilities.daysFromToday(new Date(currentDate), new Date(ccoExpiryDate))
+      return diff >= 0
+    }
+    return false
   }
 }
