@@ -79,6 +79,7 @@ export default {
     return state.loadingOne
   },
 
+  /** Whether the business is authorized to continue out, i.e. true if cco expiry date is present or in the future. */
   isAuthorizedToContinueOut (state: FilingHistoryListStateIF, rootGetters: any): boolean {
     const ccoFilings = state.filings.filter(val => {
       const exp = val.data?.consentContinuationOut?.expiry
