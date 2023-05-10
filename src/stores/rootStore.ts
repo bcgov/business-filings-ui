@@ -140,7 +140,6 @@ export const useRootStore = defineStore('root', {
     isBusinessWithNoMaintenanceFilings (state): boolean {
       const filingHistoryListStore = useFilingHistoryListStore()
       return (
-      // no todo items
         (state.tasks.length === 0) &&
       // only the IA or Registraion filing history item
       (filingHistoryListStore.getFilings.length === 1) && (

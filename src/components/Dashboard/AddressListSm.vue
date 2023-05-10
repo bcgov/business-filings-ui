@@ -212,7 +212,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter, State } from 'pinia-class'
+import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { ApiFilingIF, OfficeAddressIF } from '@/interfaces'
 import FirmsAddressList from './FirmsAddressList.vue'
