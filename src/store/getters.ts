@@ -209,15 +209,5 @@ export default {
         EnumUtilities.isTypeRestorationLimitedExtension(stateFiling)
       )
     )
-  },
-
-  /**
-   * True if the business is authorized to continue out, ie, the state filing is a
-   * Consent to Continuation Out filing.
-   */
-  isAuthorizedToContinueOut (_state: StateIF, getters: any): boolean {
-    const stateFiling = getters.getStateFiling as StateFilingIF // may be null
-
-    return (stateFiling?.hasOwnProperty(FilingTypes.CONSENT_CONTINUATION_OUT) || false)
   }
 }
