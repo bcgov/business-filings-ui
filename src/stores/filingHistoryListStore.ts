@@ -1,7 +1,6 @@
 import { ApiFilingIF, CommentIF, DocumentIF, FilingHistoryListStateIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-
 import { defineStore } from 'pinia'
 import { useBusinessStore } from './businessStore'
 import { useRootStore } from './rootStore'

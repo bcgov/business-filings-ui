@@ -44,7 +44,6 @@ async function start () {
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   // first load the configuration, then set base route and check business id
-  // await store.dispatch('loadConfiguration')
   const configurationStore = useConfigurationStore()
   configurationStore.loadConfiguration()
 
