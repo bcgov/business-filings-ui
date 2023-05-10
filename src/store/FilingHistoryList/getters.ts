@@ -81,15 +81,15 @@ export default {
 
   /** Whether the business is authorized to continue out, i.e. true if cco expiry date is present or in the future. */
   isAuthorizedToContinueOut (state: FilingHistoryListStateIF, rootGetters: any): boolean {
-    const ccoFilings = state.filings.filter(val => {
+    const ccoFiling = state.filings.find(val => {
       const exp = val.data?.consentContinuationOut?.expiry
       if (exp) {
         return true
       }
       return false
     })
-    if (ccoFilings && ccoFilings.length > 0) {
-      const exp = ccoFilings[0].data?.consentContinuationOut?.expiry
+    if (ccoFiling) {
+      const exp = ccoFiling.data?.consentContinuationOut?.expiry
       const ccoExpiryDate = DateUtilities.dateToYyyyMmDd(new Date(exp))
       const currentDate = rootGetters.getCurrentDate
       const diff = DateUtilities.daysFromToday(new Date(currentDate), new Date(ccoExpiryDate))
