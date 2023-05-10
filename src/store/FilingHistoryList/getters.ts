@@ -79,7 +79,7 @@ export default {
     return state.loadingOne
   },
 
-  isCcoExpired (state: FilingHistoryListStateIF, rootGetters: any): boolean {
+  isAuthorizedToContinueOut (state: FilingHistoryListStateIF, rootGetters: any): boolean {
     const ccoFilings = state.filings.filter(val => {
       const exp = val.data?.consentContinuationOut?.expiry
       if (exp) {
