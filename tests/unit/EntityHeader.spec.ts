@@ -157,33 +157,33 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
 
   const variations = [
     {
-      currentDate: "2023-11-09",
+      currentDate: '2023-11-09',
       filing: {
         data: {
-          consentContinuationOut:{
-            expiry: "2023-11-09T08:00:00+00:00"
+          consentContinuationOut: {
+            expiry: '2023-11-09T08:00:00+00:00'
           }
         }
       },
       exists: true
     },
     {
-      currentDate: "2023-05-09",
+      currentDate: '2023-05-09',
       filing: {
         data: {
-          consentContinuationOut:{
-            expiry: "2023-11-09T08:00:00+00:00"
+          consentContinuationOut: {
+            expiry: '2023-11-09T08:00:00+00:00'
           }
         }
       },
       exists: true
     },
     {
-      currentDate: "2023-05-09",
-      filing:{
+      currentDate: '2023-05-09',
+      filing: {
         data: {
-          consentContinuationOut:{
-            expiry: "2022-11-09T08:00:00+00:00"
+          consentContinuationOut: {
+            expiry: '2022-11-09T08:00:00+00:00'
           }
         }
       },
@@ -216,5 +216,4 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       wrapper.destroy()
     })
   })
-
 })
