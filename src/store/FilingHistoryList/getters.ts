@@ -87,7 +87,7 @@ export default {
       }
       return false
     })
-    if (ccoFilings) {
+    if (ccoFilings && ccoFilings.length > 0) {
       const exp = ccoFilings[0].data?.consentContinuationOut?.expiry
       const ccoExpiryDate = DateUtilities.dateToYyyyMmDd(new Date(exp))
       const currentDate = rootGetters.getCurrentDate
