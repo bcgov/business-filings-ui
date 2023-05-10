@@ -244,7 +244,7 @@ export default {
         'isBenBcCccUlc',
         'isFirm',
         'isGoodStanding',
-      'isHistorical',
+        'isHistorical',
         'isPartnership',
         'isSoleProp'
       ]),
