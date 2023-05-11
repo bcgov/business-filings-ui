@@ -9,7 +9,7 @@ export const useConfigurationStore = defineStore('configuration', {
   }),
 
   getters: {
-    getAuthWebUrl (state): string {
+    getAuthWebUrl (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_AUTH_WEB_URL
     },
 
@@ -21,7 +21,7 @@ export const useConfigurationStore = defineStore('configuration', {
       return this.getAuthWebUrl + 'businessprofile'
     },
 
-    getRegHomeUrl (state): string {
+    getRegHomeUrl (state: ConfigurationStateIF): string {
       return state.configuration?.VUE_APP_REGISTRY_HOME_URL || ''
     },
 
@@ -29,59 +29,59 @@ export const useConfigurationStore = defineStore('configuration', {
       return this.getRegHomeUrl + 'login'
     },
 
-    getBusinessUrl (state): string {
+    getBusinessUrl (state: ConfigurationStateIF): string {
       return state.configuration?.VUE_APP_BUSINESSES_URL || ''
     },
 
-    getCreateUrl (state): string {
+    getCreateUrl (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_BUSINESS_CREATE_URL
     },
 
-    getEditUrl (state): string {
+    getEditUrl (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_BUSINESS_EDIT_URL
     },
 
-    getLegalApiUrl (state): string {
-      const root = state.configuration
-      return root.VUE_APP_LEGAL_API_URL + root.VUE_APP_LEGAL_API_VERSION_2 + '/'
+    getLegalApiUrl (state: ConfigurationStateIF): string {
+      const configuration = state.configuration
+      return configuration.VUE_APP_LEGAL_API_URL + configuration.VUE_APP_LEGAL_API_VERSION_2 + '/'
     },
 
-    getAuthApiUrl (state): string {
+    getAuthApiUrl (state: ConfigurationStateIF): string {
       if (state.configuration?.VUE_APP_AUTH_API_URL && state.configuration?.VUE_APP_AUTH_API_VERSION) {
         return state.configuration.VUE_APP_AUTH_API_URL + state.configuration.VUE_APP_AUTH_API_VERSION + '/'
       }
       return ''
     },
 
-    getPayApiUrl (state): string {
+    getPayApiUrl (state: ConfigurationStateIF): string {
       if (state.configuration?.VUE_APP_PAY_API_URL && state.configuration?.VUE_APP_PAY_API_VERSION) {
         return state.configuration.VUE_APP_PAY_API_URL + state.configuration.VUE_APP_PAY_API_VERSION + '/'
       }
       return ''
     },
 
-    getStatusApiUrl (state): string {
+    getStatusApiUrl (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_STATUS_API_URL + state.configuration.VUE_APP_STATUS_API_VERSION
     },
 
-    getSiteminderLogoutUrl (state): string {
+    getSiteminderLogoutUrl (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_SITEMINDER_LOGOUT_URL
     },
 
-    getHotJarId (state): string {
+    getHotJarId (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_HOTJAR_ID
     },
 
-    getAddressCompleteKey (state): string {
+    getAddressCompleteKey (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_ADDRESS_COMPLETE_KEY
     },
 
     /** Get Launch Darkly Client ID */
-    getBusinessFilingLdClientId (state): string {
+    getBusinessFilingLdClientId (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID
     },
 
-    getSentryDsn (state): string {
+    getSentryDsn (state: ConfigurationStateIF): string {
       return state.configuration.VUE_APP_SENTRY_DSN
     }
   },

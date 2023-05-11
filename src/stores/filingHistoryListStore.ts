@@ -20,12 +20,12 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
   }),
 
   getters: {
-    getCurrentFiling (state): ApiFilingIF {
+    getCurrentFiling (state: FilingHistoryListStateIF): ApiFilingIF {
       return state.currentFiling
     },
 
     /** The list of filings from the API. */
-    getFilings (state): ApiFilingIF[] {
+    getFilings (state: FilingHistoryListStateIF): ApiFilingIF[] {
       // return only the valid filings
       return state.filings.filter(filing => {
         // safety check for required fields
@@ -44,12 +44,12 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     },
 
     /** The index of the currently-downloading doc. */
-    getLoadingOneIndex (state): number {
+    getLoadingOneIndex (state: FilingHistoryListStateIF): number {
       return state.loadingOneIndex
     },
 
     /** The currently expanded panel. */
-    getPanel (state): number {
+    getPanel (state: FilingHistoryListStateIF): number {
       return state.panel
     },
 
@@ -60,41 +60,41 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       return filings.find(filing => {
         return (
           businessStore.isBenBcCccUlc &&
-            EnumUtilities.isTypeChangeOfAddress(filing) &&
-            filing.isFutureEffective &&
-            EnumUtilities.isStatusPaid(filing) &&
-            DateUtilities.isDateFuture(filing.effectiveDate)
+          EnumUtilities.isTypeChangeOfAddress(filing) &&
+          filing.isFutureEffective &&
+          EnumUtilities.isStatusPaid(filing) &&
+          DateUtilities.isDateFuture(filing.effectiveDate)
         )
       })
     },
 
     /** Whether the Add Comment dialog should be displayed. */
-    isAddCommentDialog (state): boolean {
+    isAddCommentDialog (state: FilingHistoryListStateIF): boolean {
       return state.addCommentDialog
     },
 
     /** Whether the Download Error dialog should be displayed. */
-    isDownloadErrorDialog (state): boolean {
+    isDownloadErrorDialog (state: FilingHistoryListStateIF): boolean {
       return state.downloadErrorDialog
     },
 
     /** Whether the File Correction dialog should be displayed. */
-    isFileCorrectionDialog (state): boolean {
+    isFileCorrectionDialog (state: FilingHistoryListStateIF): boolean {
       return state.fileCorrectionDialog
     },
 
     /** Whether the Load Correction dialog should be displayed. */
-    isLoadCorrectionDialog (state): boolean {
+    isLoadCorrectionDialog (state: FilingHistoryListStateIF): boolean {
       return state.loadCorrectionDialog
     },
 
     /** Whether all documents are downloading. */
-    isLoadingAll (state): boolean {
+    isLoadingAll (state: FilingHistoryListStateIF): boolean {
       return state.loadingAll
     },
 
     /** Whether one document is downloading. */
-    isLoadingOne (state): boolean {
+    isLoadingOne (state: FilingHistoryListStateIF): boolean {
       return state.loadingOne
     }
   },
@@ -143,7 +143,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
      * @param id a business id or temporary registration number
      */
     loadFilings (id: string): Promise<any> {
-    // need to return a promise
+      // need to return a promise
       return new Promise((resolve, reject) => {
         LegalServices.fetchFilings(id)
           .then(filings => {
@@ -158,8 +158,8 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     },
 
     setFilings (val: ApiFilingIF[]): void {
-    // add some properties to each filing
-    // so they're not null (and therefore non-reactive)
+      // add some properties to each filing
+      // so they're not null (and therefore non-reactive)
       const filings = val.map(filing => {
         return {
           ...filing,
@@ -244,6 +244,9 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         const documents = await LegalServices.fetchDocuments(filing.documentsLink)
         // load each type of document
         filing.documents = []
+        // Get identifier and if current user is staff then store in local variables
+        const identifier = businessStore.getIdentifier
+        const isStaff = rootStore.isRoleStaff
         // iterate over documents properties
         for (const prop in documents) {
           if (prop === 'legalFilings' && Array.isArray(documents.legalFilings)) {
@@ -258,19 +261,19 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
                 else title = EnumUtilities.filingTypeToName(prop as FilingTypes, null)
 
                 const date = DateUtilities.dateToYyyyMmDd(new Date(filing.submittedDate))
-                const filename = `${businessStore.getIdentifier} ${title} - ${date}.pdf`
+                const filename = `${identifier} ${title} - ${date}.pdf`
                 const link = legalFiling[prop]
                 pushDocument(title, filename, link)
               }
             }
           } else if (prop === 'uploadedCourtOrder') {
             const fileNumber = filing.data?.order?.fileNumber || '[unknown]'
-            const title = rootStore.isRoleStaff ? `${filing.displayName} ${fileNumber}` : `${filing.displayName}`
+            const title = isStaff ? `${filing.displayName} ${fileNumber}` : `${filing.displayName}`
             const filename = title
             const link = documents[prop] as string
             pushDocument(title, filename, link)
           } else {
-          // this is a submission level output
+            // this is a submission level output
             const title = EnumUtilities.camelCaseToWords(prop)
             const date = DateUtilities.dateToYyyyMmDd(new Date(filing.submittedDate))
             const filename = `${businessStore.getIdentifier} ${title} - ${date}.pdf`
@@ -279,18 +282,18 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           }
         }
       } catch (error) {
-      // set property to null to retry next time
+        // set property to null to retry next time
         filing.documents = null
         // eslint-disable-next-line no-console
         console.log('loadDocuments() error =', error)
-      // FUTURE: enable some error dialog?
+        // FUTURE: enable some error dialog?
       }
 
       function pushDocument (title: string, filename: string, link: string) {
         if (title && filename && link) {
           filing.documents.push({ title, filename, link } as DocumentIF)
         } else {
-        // eslint-disable-next-line no-console
+          // eslint-disable-next-line no-console
           console.log(`invalid document = ${title} | ${filename} | ${link}`)
         }
       }
@@ -304,14 +307,14 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     hideCommentDialog (needReload: boolean): Promise<void> {
       const rootStore = useRootStore()
       // need to return a promise
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         this.addCommentDialog = false
 
         // if needed, reload comments for current filing
         if (needReload) {
           if (this.getCurrentFiling?.commentsLink) { // safety check
             rootStore.setFetchingDataSpinner(true)
-            this.loadComments(this.getCurrentFiling)
+            await this.loadComments(this.getCurrentFiling)
             setTimeout(() => { rootStore.setFetchingDataSpinner(false) }, 250)
           }
         }

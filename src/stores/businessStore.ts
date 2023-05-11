@@ -33,75 +33,74 @@ export const useBusinessStore = defineStore('business', {
 
   getters: {
     /** The allowed actions object. */
-    getAllowedActions (state): AllowedActionsIF {
+    getAllowedActions (state: BusinessStateIF): AllowedActionsIF {
       return state.businessInfo.allowedActions
     },
 
     /** The business number (aka Tax ID). */
-    getBusinessNumber (state): string {
+    getBusinessNumber (state: BusinessStateIF): string {
       return state.businessInfo.taxId
     },
 
     /** The business warnings list. */
-    getBusinessWarnings (state): Array<BusinessWarningIF> {
+    getBusinessWarnings (state: BusinessStateIF): Array<BusinessWarningIF> {
       return state.businessInfo.warnings
     },
 
     /** The business state.businessInfo. */
-    getBusinessState (state): EntityState {
+    getBusinessState (state: BusinessStateIF): EntityState {
       return state.businessInfo.state
     },
 
     /** The founding date. */
-    getFoundingDate (state): Date {
+    getFoundingDate (state: BusinessStateIF): Date {
       return DateUtilities.apiToDate(state.businessInfo.foundingDate)
     },
 
     /** The business identifier (aka Incorporation Number). */
-    getIdentifier (state): string {
+    getIdentifier (state: BusinessStateIF): string {
       return state.businessInfo.identifier
     },
 
     /** The last address change date. */
-    getLastAddressChangeDate (state): string {
+    getLastAddressChangeDate (state: BusinessStateIF): string {
       return state.businessInfo.lastAddressChangeDate
     },
 
     /** The last annual report change date. */
-    getLastAnnualReportDate (state): string {
+    getLastAnnualReportDate (state: BusinessStateIF): string {
       return state.businessInfo.lastAnnualReportDate
     },
 
     /** The last director change date. */
-    getLastDirectorChangeDate (state): string {
+    getLastDirectorChangeDate (state: BusinessStateIF): string {
       return state.businessInfo.lastDirectorChangeDate
     },
 
     /** The legal name. */
-    getLegalName (state): string {
+    getLegalName (state: BusinessStateIF): string {
       return state.businessInfo.legalName
     },
 
     /** The legal type. */
-    getLegalType (state): CorpTypeCd {
+    getLegalType (state: BusinessStateIF): CorpTypeCd {
       return state.businessInfo.legalType
     },
 
     /** The entity name, or numbered description, or empty string. */
     getEntityName (): string {
       return (
-        this.getLegalName ||
-      GetCorpNumberedDescription(this.getLegalType)
+        this.getLegalName || GetCorpNumberedDescription(this.getLegalType)
       )
     },
 
     /** The state filing URL (may be null). */
-    getStateFilingUrl (state): string {
+    getStateFilingUrl (state: BusinessStateIF): string {
       return state.businessInfo.stateFiling
     },
 
     /** Is true of the business has a court order filing */
-    hasCourtOrders (state): boolean {
+    hasCourtOrders (state: BusinessStateIF): boolean {
       return state.businessInfo.hasCourtOrders
     },
 
@@ -127,17 +126,17 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** Is True if the business is frozen. */
-    isAdminFrozen (state): boolean {
+    isAdminFrozen (state: BusinessStateIF): boolean {
       return state.businessInfo.adminFreeze
     },
 
     /** Is True if entity is a Benefit Company. */
-    isBComp (state): boolean {
+    isBComp (state: BusinessStateIF): boolean {
       return (state.businessInfo.legalType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
     /** Is True if entity is a BC Company. */
-    isBcCompany (state): boolean {
+    isBcCompany (state: BusinessStateIF): boolean {
       return (state.businessInfo.legalType === CorpTypeCd.BC_COMPANY)
     },
 
@@ -152,17 +151,17 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** Is True if entity is a BC Community Contribution Company. */
-    isCcc (state): boolean {
+    isCcc (state: BusinessStateIF): boolean {
       return (state.businessInfo.legalType === CorpTypeCd.BC_CCC)
     },
 
     /** Is True if entity is a Cooperative. */
-    isCoop (state): boolean {
+    isCoop (state: BusinessStateIF): boolean {
       return (state.businessInfo.legalType === CorpTypeCd.COOP)
     },
 
     /** Is True if entity is a BC Corporation. */
-    isCorp (state): boolean {
+    isCorp (state: BusinessStateIF): boolean {
       return (state.businessInfo.legalType === CorpTypeCd.BC_CORPORATION)
     },
 
@@ -172,7 +171,7 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** Is True if business is in good standing. */
-    isGoodStanding (state): boolean {
+    isGoodStanding (state: BusinessStateIF): boolean {
       return state.businessInfo.goodStanding
     },
 
