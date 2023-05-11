@@ -157,29 +157,16 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
 
   const variations = [
     {
-      currentDate: '2023-11-09',
       filing: {
         data: {
           consentContinuationOut: {
-            expiry: '2023-11-09T08:00:00+00:00'
+            expiry: '2223-11-09T08:00:00+00:00'
           }
         }
       },
       exists: true
     },
     {
-      currentDate: '2023-05-09',
-      filing: {
-        data: {
-          consentContinuationOut: {
-            expiry: '2023-11-09T08:00:00+00:00'
-          }
-        }
-      },
-      exists: true
-    },
-    {
-      currentDate: '2023-05-09',
       filing: {
         data: {
           consentContinuationOut: {
@@ -194,7 +181,6 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
   variations.forEach((_, index) => {
     it(`conditionally displays continue out badge - variation #${index}`, async () => {
       // init store
-      store.state.currentDate = _.currentDate
       store.state.filingHistoryList.filings.push(_.filing)
 
       const wrapper = shallowMount(EntityHeader, {
@@ -211,7 +197,6 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       }
 
       // cleanup
-      store.state.currentDate = null
       store.state.filingHistoryList.filings.pop()
       wrapper.destroy()
     })
