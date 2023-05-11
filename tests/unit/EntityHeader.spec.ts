@@ -156,20 +156,32 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
   const router = mockRouter.mock()
 
   const variations = [
-    { // 0
-      stateFiling: null,
-      exists: false
-    },
-    { // 1
-      stateFiling: { consentContinuationOut: {} },
+    {
+      filing: {
+        data: {
+          consentContinuationOut: {
+            expiry: '2223-11-09T08:00:00+00:00'
+          }
+        }
+      },
       exists: true
+    },
+    {
+      filing: {
+        data: {
+          consentContinuationOut: {
+            expiry: '2022-11-09T08:00:00+00:00'
+          }
+        }
+      },
+      exists: false
     }
   ]
 
   variations.forEach((_, index) => {
     it(`conditionally displays continue out badge - variation #${index}`, async () => {
       // init store
-      store.state.stateFiling = _.stateFiling
+      store.state.filingHistoryList.filings.push(_.filing)
 
       const wrapper = shallowMount(EntityHeader, {
         store,
@@ -185,7 +197,7 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       }
 
       // cleanup
-      store.state.stateFiling = null
+      store.state.filingHistoryList.filings.pop()
       wrapper.destroy()
     })
   })

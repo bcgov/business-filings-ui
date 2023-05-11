@@ -77,5 +77,22 @@ export default {
   /** Whether one document is downloading. */
   isLoadingOne (state: FilingHistoryListStateIF): boolean {
     return state.loadingOne
+  },
+
+  /** Whether the business is authorized to continue out, i.e. true if cco expiry date is present or in the future. */
+  isAuthorizedToContinueOut (state: FilingHistoryListStateIF, rootGetters: any): boolean {
+    const ccoFiling = state.filings.find(val => {
+      const exp = val.data?.consentContinuationOut?.expiry
+      if (exp) {
+        return true
+      }
+      return false
+    })
+    if (ccoFiling) {
+      const exp = ccoFiling.data?.consentContinuationOut?.expiry
+      const ccoExpiryDate = DateUtilities.apiToDate(exp)
+      return ccoExpiryDate >= new Date()
+    }
+    return false
   }
 }
