@@ -52,7 +52,7 @@ filings.forEach((filing: any, index: number) => {
 
     beforeAll(() => {
       businessStore.setIdentifier(ENTITY_INC_NO)
-      filingHistoryListStore.mutateFilings([filing])
+      filingHistoryListStore.setFilings([filing])
 
       const get = sinon.stub(axios, 'get')
 

@@ -112,10 +112,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       this.fileCorrectionDialog = val
     },
 
-    mutateFilings (val: ApiFilingIF[]) {
-      this.filings = val
-    },
-
     setLoadingAll (val: boolean) {
       this.loadingAll = val
     },
@@ -167,7 +163,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           documents: filing.documents || null
         }
       })
-      this.mutateFilings(filings)
+      this.filings = filings
     },
 
     /** Closes current panel or opens new panel and loads comments and documents. */

@@ -750,7 +750,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
 
-    // Need to fix this for Pinia upgrade
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
@@ -820,7 +819,6 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
 
-    // Need to Fix this after Pinia Upgrade
     expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()

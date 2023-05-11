@@ -74,7 +74,7 @@ describe('Filing History List - misc functionality', () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     const wrapper = mount(FilingHistoryList, {
       propsData: { dissolutionType: 'administrative' },
@@ -95,7 +95,7 @@ describe('Filing History List - misc functionality', () => {
   xit('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings(SAMPLE_FILINGS as any)
+    filingHistoryListStore.setFilings(SAMPLE_FILINGS as any)
 
     const wrapper = mount(FilingHistoryList, {
       propsData: { highlightId: 222 },
@@ -113,7 +113,7 @@ describe('Filing History List - misc functionality', () => {
   xit('displays multiple filing items', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -209,7 +209,7 @@ describe('Filing History List - misc functionality', () => {
   it('expands a paper-only filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: true,
         businessIdentifier: 'CP0001191',
@@ -260,7 +260,7 @@ describe('Filing History List - misc functionality', () => {
   xit('expands a regular filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -314,7 +314,7 @@ describe('Filing History List - misc functionality', () => {
   xit('expands a full restoration filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -371,7 +371,7 @@ describe('Filing History List - misc functionality', () => {
   xit('expands a limited restoration filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -453,7 +453,7 @@ describe('Filing History List - misc functionality', () => {
     // init store
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setIdentifier('BC0007291')
-    filingHistoryListStore.mutateFilings(SAMPLE_FILINGS as any)
+    filingHistoryListStore.setFilings(SAMPLE_FILINGS as any)
 
     const wrapper = mount(FilingHistoryList, {
       propsData: { highlightId: 666 },
@@ -497,7 +497,7 @@ describe('Filing History List - misc functionality', () => {
   xit('disables corrections when "disable changes" prop is set', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     const wrapper = mount(FilingHistoryList, {
       propsData: { disableChanges: true },
@@ -510,7 +510,7 @@ describe('Filing History List - misc functionality', () => {
   })
 
   xit('returns correct values for disableCorrection()', async () => {
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     const wrapper = mount(FilingHistoryList, {
       propsData: { disableChanges: false },
@@ -860,7 +860,7 @@ describe('Filing History List - redirections', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     rootStore.keycloakRoles = ['staff']
     businessStore.setIdentifier('BC1234567')
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdenfier: 'BC1234567',
@@ -926,7 +926,7 @@ describe('Filing History List - incorporation applications', () => {
   xit('displays an "empty" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     const wrapper = shallowMount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
@@ -946,7 +946,7 @@ describe('Filing History List - incorporation applications', () => {
     rootStore.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -987,7 +987,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1028,7 +1028,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1091,7 +1091,7 @@ describe('Filing History List - incorporation applications', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1154,7 +1154,7 @@ describe('Filing History List - incorporation applications', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1216,7 +1216,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1278,7 +1278,7 @@ describe('Filing History List - incorporation applications', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'T123456789',
@@ -1340,7 +1340,7 @@ describe('Filing History List - incorporation applications', () => {
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1420,7 +1420,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "paper only" AR (other) filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: true,
         businessIdentifier: 'BC1234567',
@@ -1472,7 +1472,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays an "empty" alteration filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1532,7 +1532,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "future effective" alteration filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1597,7 +1597,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "future effective pending" alteration filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1662,7 +1662,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a "full" alteration filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1726,7 +1726,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a Registrar\'s Notation (staff only) filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1782,7 +1782,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a Registrar\'s Order (staff only) filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1838,7 +1838,7 @@ describe('Filing History List - paper only and other filings', () => {
   })
 
   xit('displays a Court Order (staff only) filing', async () => {
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'BC1234567',
@@ -1912,7 +1912,7 @@ describe('Filing History List - with Court Order documents', () => {
 
   it('does not display the documents list when no documents are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/BC0871300/filings/111/documents')
@@ -1944,7 +1944,7 @@ describe('Filing History List - with Court Order documents', () => {
 
   xit('display the documents list when documents are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/BC0871300/filings/111/documents')
@@ -1999,7 +1999,7 @@ describe('Filing History List - with documents', () => {
 
   xit('does not display the documents list when no documents are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
@@ -2031,7 +2031,7 @@ describe('Filing History List - with documents', () => {
 
   xit('display the documents list when documents are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
@@ -2072,7 +2072,7 @@ describe('Filing History List - with documents', () => {
 
   xit('computes proper document titles from the documents data', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
     // mock "get documents"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/documents')
@@ -2133,7 +2133,7 @@ describe('Filing History List - detail comments', () => {
 
   it('does not display the details count when count is zero', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -2160,7 +2160,7 @@ describe('Filing History List - detail comments', () => {
 
   it('displays the comments count when count is greater than zero', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([
+    filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
         businessIdentifier: 'CP0001191',
@@ -2188,7 +2188,7 @@ describe('Filing History List - detail comments', () => {
 
   xit('does not display the details list when no comments are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_COMMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_COMMENTS_LINK] as any)
 
     // mock "get comments"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/comments')
@@ -2216,7 +2216,7 @@ describe('Filing History List - detail comments', () => {
 
   xit('displays the details list when comments are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITH_COMMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITH_COMMENTS_LINK] as any)
 
     // mock "get comments"
     sinon.stub(axios, 'get').withArgs('businesses/CP0001191/filings/111/comments')
@@ -2281,7 +2281,7 @@ describe('Filing History List - without documents', () => {
 
   it('does not display the view documents button when no documents are present on a filing', async () => {
     // init store
-    filingHistoryListStore.mutateFilings([FILING_WITHOUT_DOCUMENTS_LINK] as any)
+    filingHistoryListStore.setFilings([FILING_WITHOUT_DOCUMENTS_LINK] as any)
 
     const wrapper = mount(FilingHistoryList, { vuetify })
     await Vue.nextTick()

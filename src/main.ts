@@ -34,6 +34,7 @@ const pinia = getPiniaStore()
 
 // Needed to fix "getActivePinia was called with no active Pinia" error
 // Type assertion to turn off type checking
+// Ref: https://stackoverflow.com/questions/74865884/cant-access-pinia-store-in-beforeenter-in-vue-2-app
 Vue.use(pinia as any)
 
 // main code

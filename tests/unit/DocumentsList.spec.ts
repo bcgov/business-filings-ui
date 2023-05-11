@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { useFilingHistoryListStore } from '@/stores'
 
 // Components and sub-components
 import DocumentsList from '@/components/Dashboard/FilingHistoryList/DocumentsList.vue'
@@ -10,6 +11,7 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
+const filingHistoryListStore = useFilingHistoryListStore()
 
 describe('Documents List', () => {
   const SAMPLE_FILING = {
@@ -116,8 +118,8 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
     // set the flags
-    vm.setLoadingOne(true)
-    vm.setLoadingOneIndex(1)
+    filingHistoryListStore.setLoadingOne(true)
+    filingHistoryListStore.setLoadingOneIndex(1)
     await Vue.nextTick()
 
     // verify that all buttons are disabled and that only button 1 is loading
@@ -128,7 +130,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
-    vm.setLoadingOne(false)
+    filingHistoryListStore.setLoadingOne(false)
     wrapper.destroy()
   })
 
@@ -156,7 +158,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(false)
 
     // set the flag
-    vm.setLoadingAll(true)
+    filingHistoryListStore.setLoadingAll(true)
     await Vue.nextTick()
 
     // verify that all buttons are disabled and that only button 1 is loading
@@ -167,7 +169,7 @@ describe('Documents List', () => {
     expect(wrapper.find('.download-all-btn').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('.download-all-btn').classes('v-btn--loading')).toBe(true)
 
-    vm.setLoadingAll(false)
+    filingHistoryListStore.setLoadingAll(false)
     wrapper.destroy()
   })
 })

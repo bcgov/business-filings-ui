@@ -143,7 +143,7 @@ for (const test of obligationTestCases) {
     })
 
     it('do not show the legal obligation section if there are no filings', async () => {
-      filingHistoryListStore.mutateFilings([])
+      filingHistoryListStore.setFilings([])
 
       const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
@@ -154,7 +154,7 @@ for (const test of obligationTestCases) {
     })
 
     it('shows the legal obligation section if it is a new business with no maintenance filing', async () => {
-      filingHistoryListStore.mutateFilings(test.filingBody as any)
+      filingHistoryListStore.setFilings(test.filingBody as any)
 
       const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
@@ -165,7 +165,7 @@ for (const test of obligationTestCases) {
     })
 
     it('do not show the legal obligation section if the business has maintenance filings', async () => {
-      filingHistoryListStore.mutateFilings(businessWithMaintenanceFiling as any)
+      filingHistoryListStore.setFilings(businessWithMaintenanceFiling as any)
 
       const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
@@ -176,7 +176,7 @@ for (const test of obligationTestCases) {
     })
 
     it('hides the legal obligation section on clicking dismiss button', async () => {
-      filingHistoryListStore.mutateFilings(test.filingBody as any)
+      filingHistoryListStore.setFilings(test.filingBody as any)
 
       const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
@@ -192,7 +192,7 @@ for (const test of obligationTestCases) {
     })
 
     it('hides the legal obligation section if there is a task', async () => {
-      filingHistoryListStore.mutateFilings(test.filingBody as any)
+      filingHistoryListStore.setFilings(test.filingBody as any)
       rootStore.setTasks(taskList as any)
 
       const wrapper = mount(LegalObligation, { vuetify })
@@ -208,7 +208,7 @@ for (const test of obligationTestCases) {
 describe('Legal Obligation - temp reg number', () => {
   it('hides the legal obligation section for temp reg number', async () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
-    filingHistoryListStore.mutateFilings(newIncorporationFiling as any)
+    filingHistoryListStore.setFilings(newIncorporationFiling as any)
 
     const wrapper = mount(LegalObligation, { vuetify })
     await Vue.nextTick()

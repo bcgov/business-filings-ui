@@ -40,4 +40,6 @@ describe('Missing Information component', () => {
 
     wrapper.destroy()
   })
+
+  // FUTURE: add a text to verify hidePhoneNumbers()
 })
