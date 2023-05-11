@@ -90,10 +90,8 @@ export default {
     })
     if (ccoFiling) {
       const exp = ccoFiling.data?.consentContinuationOut?.expiry
-      const ccoExpiryDate = DateUtilities.dateToYyyyMmDd(new Date(exp))
-      const currentDate = rootGetters.getCurrentDate
-      const diff = DateUtilities.daysFromToday(new Date(currentDate), new Date(ccoExpiryDate))
-      return diff >= 0
+      const ccoExpiryDate = DateUtilities.apiToDate(exp)
+      return ccoExpiryDate >= new Date()
     }
     return false
   }
