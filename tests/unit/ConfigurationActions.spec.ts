@@ -1,6 +1,6 @@
 import { setBaseRouteAndBusinessId } from '@/utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useConfigurationStore } from '@/stores/configurationStore'
+import { useConfigurationStore } from '@/stores'
 
 // mock the console.info function to hide the output
 console.info = jest.fn()

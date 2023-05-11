@@ -37,7 +37,7 @@ import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { GetFeatureFlag } from '@/utils'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   components: { ContactInfo }

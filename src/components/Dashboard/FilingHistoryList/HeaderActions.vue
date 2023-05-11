@@ -63,9 +63,7 @@ import { AllowableActions, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   mixins: [AllowableActionsMixin]
@@ -81,9 +79,9 @@ export default class HeaderActions extends Vue {
   @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
-  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
 
   /** Whether this entity is a business (and not a temporary registration). */
   get isBusiness (): string {

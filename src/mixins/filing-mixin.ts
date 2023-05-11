@@ -15,8 +15,7 @@ import {
   FilingSubTypes,
   FilingTypes
 } from '@/enums'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 /**
  * Mixin that provides some useful filing utilities.
@@ -25,9 +24,8 @@ import { useRootStore } from '@/stores/rootStore'
 export default class FilingMixin extends DateMixin {
   @Action(useRootStore) setFilingData!: (x: any) => void
 
-  @Getter(useRootStore) filingData!: Array<FilingDataIF>
   @Getter(useBusinessStore) entityName!: string
-
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
   @Getter(useRootStore) getBusinessAddress!: OfficeAddressIF
   @Getter(useRootStore) getCurrentDate!: string
   @Getter(useBusinessStore) getFoundingDate!: Date

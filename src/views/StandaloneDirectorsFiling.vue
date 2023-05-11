@@ -312,9 +312,7 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -345,7 +343,6 @@ export default class StandaloneDirectorsFiling extends Vue {
   }
 
   @Getter(useRootStore) filingData!: Array<FilingDataIF>
-
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string

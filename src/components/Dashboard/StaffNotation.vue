@@ -199,9 +199,7 @@ import { AddStaffNotationDialog } from '@/components/dialogs'
 import { AllowableActionsMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'
 import { ActionBindingIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: { AddStaffNotationDialog },
@@ -237,8 +235,8 @@ export default class StaffNotation extends Vue {
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
-  @Action(useRootStore) isInLimitedRestoration!: boolean
 
+  @Action(useRootStore) isInLimitedRestoration!: boolean
   @Action(useRootStore) setFetchingDataSpinner!: ActionBindingIF
 
   showRegistrarsNotationDialog (): void {

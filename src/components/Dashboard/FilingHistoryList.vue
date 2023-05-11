@@ -73,10 +73,7 @@ import { FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { navigate } from '@/utils'
 import * as Filings from './FilingHistoryList/filings'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -107,7 +104,6 @@ export default class FilingHistoryList extends Vue {
 
   @Action(useFilingHistoryListStore) hideCommentDialog!: ActionBindingIF
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
-
   @Action(useFilingHistoryListStore) setDownloadErrorDialog!: (x: boolean) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
   @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void

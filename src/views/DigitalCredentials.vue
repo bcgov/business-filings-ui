@@ -75,7 +75,7 @@ import { Stepper } from '@/components/common'
 import { DigitalCredentialTypes, Routes } from '@/enums'
 import { DigitalCredentialsIF, StepsIF } from '@/interfaces'
 import { LegalServices } from '@/services/'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   components: {

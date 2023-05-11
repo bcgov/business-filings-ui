@@ -40,8 +40,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class DetailsList extends Vue {

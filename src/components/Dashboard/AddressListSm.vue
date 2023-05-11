@@ -216,9 +216,7 @@ import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { ApiFilingIF, OfficeAddressIF } from '@/interfaces'
 import FirmsAddressList from './FirmsAddressList.vue'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: { FirmsAddressList },
@@ -239,8 +237,8 @@ export default class AddressListSm extends Vue {
   @Getter(useBusinessStore) isCorp!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
-  @Getter(useRootStore) registeredAddress!: OfficeAddressIF
   @Getter(useRootStore) recordsAddress!: OfficeAddressIF
+  @Getter(useRootStore) registeredAddress!: OfficeAddressIF
 
   /** Whether a COA is pending. */
   get isCoaPending (): boolean {

@@ -44,21 +44,17 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { mapState } from 'pinia'
+import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { NameRequestStates } from '@/enums'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 
 @Component({
-  computed: {
-    // Property definition for runtime environment.
-    ...mapState(useRootStore, ['isRoleStaff'])
-  },
   components: { ContactInfo }
 })
 export default class NameRequestInvalidDialog extends Vue {
   // Getter definition for static type checking.
-  readonly isRoleStaff!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   // Enum definition for use in template.
   NameRequestStates = NameRequestStates

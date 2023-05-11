@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 import AlterationFiling from '@/components/Dashboard/FilingHistoryList/filings/AlterationFiling.vue'
 
 Vue.use(Vuetify)

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import RegistrationFiling from '@/components/Dashboard/FilingHistoryList/filings/RegistrationFiling.vue'

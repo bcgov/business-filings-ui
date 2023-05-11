@@ -72,7 +72,7 @@ import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin, DirectorMixin } from '@/mixins'
 import { DirectorIF, PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 
 @Component({
   mixins: [

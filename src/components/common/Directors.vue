@@ -544,8 +544,7 @@ import { WarningPopover } from '@/components/common/'
 import { CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin } from '@/mixins'
 import { Actions } from '@/enums'
 import { FormIF, AddressIF, DirectorIF, EmptyDirector, ComponentIF, AlertMessageIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   components: {

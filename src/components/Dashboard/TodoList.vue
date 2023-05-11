@@ -457,10 +457,7 @@ import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDial
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { RestorationTypes } from '@bcrs-shared-components/enums'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: {

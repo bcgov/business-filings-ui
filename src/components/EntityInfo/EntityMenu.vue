@@ -106,9 +106,7 @@ import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import { AllowableActions, NigsMessage } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
 import { navigate } from '@/utils'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: { StaffComments },
@@ -121,7 +119,7 @@ export default class EntityMenu extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getReasonText!: string
   @Getter(useBusinessStore) isFirm!: boolean
-  @Getter isGoodStanding!: boolean
+  @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 

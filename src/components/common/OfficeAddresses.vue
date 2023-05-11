@@ -210,7 +210,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { CommonMixin } from '@/mixins'
 import { RegRecAddressesIF, AddressIF } from '@/interfaces'
 import { Actions } from '@/enums'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   components: {
@@ -229,8 +229,8 @@ export default class OfficeAddresses extends Vue {
    */
   @Prop({ default: () => {} }) readonly addresses!: RegRecAddressesIF
 
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   /** Effective date for fetching office addresses. */
   private asOfDate: string

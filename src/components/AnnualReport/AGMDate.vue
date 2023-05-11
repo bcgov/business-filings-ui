@@ -118,8 +118,7 @@ import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   mixins: [DateMixin]

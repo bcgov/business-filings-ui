@@ -1,6 +1,6 @@
 import LegalServices from '@/services/legal-services'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 import { useRootStore } from '@/stores/rootStore'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 

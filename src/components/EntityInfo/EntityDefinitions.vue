@@ -62,9 +62,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateUtilities } from '@/services'
 import { navigate } from '@/utils'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class EntityDefinitions extends Vue {

@@ -47,7 +47,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 
 @Component({
   mixins: [ResourceLookupMixin]

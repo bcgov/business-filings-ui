@@ -6,7 +6,7 @@ import VueRouter from 'vue-router'
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 import { AllowableActions, CorpTypeCd } from '@/enums'
 
 // Components

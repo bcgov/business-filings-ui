@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 import FirmsAddressList from '@/components/Dashboard/FirmsAddressList.vue'
 
 Vue.use(Vuetify)

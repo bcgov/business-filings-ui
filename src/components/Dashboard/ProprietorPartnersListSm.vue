@@ -89,8 +89,7 @@ import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   mixins: [

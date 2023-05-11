@@ -35,7 +35,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF, DocumentIF } from '@/interfaces'
 import { LegalServices } from '@/services'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useFilingHistoryListStore } from '@/stores'
 
 @Component({})
 export default class DocumentsList extends Vue {

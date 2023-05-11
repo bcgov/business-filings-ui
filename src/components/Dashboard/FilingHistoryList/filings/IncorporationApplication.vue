@@ -63,8 +63,7 @@ import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
 import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
 import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {

@@ -3,8 +3,7 @@ import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { AlertMessageIF, ObligationsResourceIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 /**
  * Mixin for components to retrieve text/settings from JSON resource.

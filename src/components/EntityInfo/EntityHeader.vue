@@ -43,8 +43,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { FilingNames } from '@/enums'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class EntityHeader extends Vue {

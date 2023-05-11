@@ -19,7 +19,7 @@ import App from '@/App.vue'
 import * as Integrations from '@sentry/integrations'
 import * as Sentry from '@sentry/vue'
 import Hotjar from 'vue-hotjar'
-import { useConfigurationStore } from './stores/configurationStore'
+import { useConfigurationStore } from './stores'
 
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false

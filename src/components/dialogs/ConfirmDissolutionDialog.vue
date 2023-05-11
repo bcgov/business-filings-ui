@@ -55,8 +55,7 @@ import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DissolutionConfirmationResourceIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class ConfirmDissolutionDialog extends Vue {
@@ -67,9 +66,9 @@ export default class ConfirmDissolutionDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Global getters
+  @Getter(useRootStore) getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: string
-  @Getter(useRootStore) getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
 
   /** The entity title to display. */
   get entityTitle (): string {

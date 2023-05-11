@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { mount } from '@vue/test-utils'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 import { OfficeAddresses } from '@/components/common'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 

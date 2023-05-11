@@ -11,11 +11,7 @@ import Directors from '@/components/common/Directors.vue'
 import { Certify } from '@/components/common'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useAuthenticationStore } from '@/stores/authenticationStore'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
@@ -35,10 +31,8 @@ Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const authenticationStore = useAuthenticationStore()
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
-const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
 const sampleDirectors = [
@@ -238,7 +232,6 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       },
       vuetify
     })
-    const vm: any = wrapper.vm
 
     // set local properties
     await wrapper.setData({
@@ -272,7 +265,6 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       },
       vuetify
     })
-    const vm: any = wrapper.vm
 
     // set local properties
     await wrapper.setData({

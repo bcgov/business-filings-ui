@@ -143,10 +143,7 @@ import {
   Routes
 } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
 
 export default {
   name: 'App',
@@ -325,9 +322,9 @@ export default {
     ...mapActions(useBusinessStore,
       [
         'loadBusinessInfo',
+        'setGoodStanding',
         'setLegalName',
         'setLegalType',
-        'setGoodStanding',
         'setIdentifier'
       ]),
 
@@ -350,14 +347,14 @@ export default {
         'setCurrentDate',
         'setCurrentJsDate',
         'setEntityStatus',
+        'setFetchingDataSpinner',
         'setKeycloakRoles',
         'setNameRequest',
         'setParties',
         'setRecordsAddress',
         'setRegisteredAddress',
         'setTasks',
-        'setUserKeycloakGuid',
-        'setFetchingDataSpinner'
+        'setUserKeycloakGuid'
       ]),
 
     /** Fetches business data / incorp app data. */

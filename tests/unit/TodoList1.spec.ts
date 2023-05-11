@@ -7,9 +7,7 @@ import axios from '@/axios-auth'
 import sinon from 'sinon'
 import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import flushPromises from 'flush-promises'
 
 // Components

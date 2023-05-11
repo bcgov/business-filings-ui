@@ -334,9 +334,7 @@ import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -376,7 +374,6 @@ export default class AnnualReport extends Vue {
   @Getter(useRootStore) arMaxDate!: string
   @Getter(useRootStore) nextARDate!: string
   @Getter(useRootStore) filingData!: Array<FilingDataIF>
-
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getFoundingDate!: Date

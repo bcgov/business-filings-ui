@@ -25,7 +25,7 @@ import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 import FutureEffectiveFiledAndPendingCoa from '../subtitles/FutureEffectiveFiledAndPendingCoa.vue'
 import FilingTemplate from '../FilingTemplate.vue'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   components: {

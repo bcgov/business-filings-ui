@@ -38,7 +38,7 @@
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 
 @Component({})
 export default class Certify extends Vue {

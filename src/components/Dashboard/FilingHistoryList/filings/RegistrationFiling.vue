@@ -26,8 +26,7 @@ import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import { navigate } from '@/utils'
 import FilingTemplate from '../FilingTemplate.vue'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {

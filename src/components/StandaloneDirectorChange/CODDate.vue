@@ -54,8 +54,7 @@ import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   validations: {

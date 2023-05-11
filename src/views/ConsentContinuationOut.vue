@@ -251,9 +251,7 @@ import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, Sav
 import { ConfirmDialogType, CourtOrderIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {

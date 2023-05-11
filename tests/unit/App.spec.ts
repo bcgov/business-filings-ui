@@ -8,9 +8,7 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
 
 // mock fetch() as it is not defined in Jest
@@ -887,7 +885,7 @@ describe('App as a Draft IA with approved NR', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1011,7 +1009,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1116,7 +1114,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1221,7 +1219,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1326,7 +1324,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1475,7 +1473,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1623,7 +1621,7 @@ describe('App as an historical business', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1760,7 +1758,7 @@ describe('App as a Draft Registration with approved NR', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
@@ -1885,7 +1883,7 @@ describe('App as a COMPLETED Registration Application', () => {
   beforeAll(() => {
     // clear store
     rootStore.setTasks([])
-    filingHistoryListStore.mutateFilings([])
+    filingHistoryListStore.setFilings([])
 
     sessionStorage.clear()
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)

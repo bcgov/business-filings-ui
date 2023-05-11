@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 import { mount } from '@vue/test-utils'
 import FutureEffective from '@/components/Dashboard/FilingHistoryList/bodies/FutureEffective.vue'
 import { ContactInfo } from '@/components/common'

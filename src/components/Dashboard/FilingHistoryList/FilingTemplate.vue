@@ -107,7 +107,7 @@ import DocumentsList from './DocumentsList.vue'
 import FiledAndPaid from './subtitles/FiledAndPaid.vue'
 import FiledAndPendingPaid from './subtitles/FiledAndPendingPaid.vue'
 import HeaderActions from './HeaderActions.vue'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useFilingHistoryListStore } from '@/stores'
 
 @Component({
   components: {

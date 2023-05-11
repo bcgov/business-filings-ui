@@ -31,7 +31,7 @@ import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   components: { ContactInfo }

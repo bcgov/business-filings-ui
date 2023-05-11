@@ -75,7 +75,7 @@ import { NameRequestStates } from '@/enums'
 import { NameRequestIF, NameRequestApplicantIF } from '@/interfaces'
 import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { useBusinessStore } from '@/stores/businessStore'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   mixins: [

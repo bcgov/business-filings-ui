@@ -193,10 +193,7 @@ import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.v
 import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useConfigurationStore } from '@/stores/configurationStore'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 export default {
   name: 'Dashboard', // eslint-disable-line vue/multi-word-component-names

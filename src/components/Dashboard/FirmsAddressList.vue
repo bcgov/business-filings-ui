@@ -116,7 +116,7 @@ import { Getter } from 'pinia-class'
 import { isEmpty } from 'lodash'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { OfficeAddressIF } from '@/interfaces'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 
 @Component({
   mixins: [

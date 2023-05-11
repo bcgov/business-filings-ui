@@ -24,7 +24,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import FiledLabel from '../FiledLabel.vue'
-import { useFilingHistoryListStore } from '@/stores/filingHistoryListStore'
+import { useFilingHistoryListStore } from '@/stores'
 
 @Component({
   components: { FiledLabel }

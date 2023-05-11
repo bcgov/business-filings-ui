@@ -14,7 +14,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 import { mount, Wrapper } from '@vue/test-utils'
 import { Certify } from '@/components/common'
 

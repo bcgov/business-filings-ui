@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 import { shallowMount } from '@vue/test-utils'
 import DetailsList from '@/components/Dashboard/FilingHistoryList/DetailsList.vue'
 

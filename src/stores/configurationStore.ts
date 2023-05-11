@@ -98,8 +98,9 @@ export const useConfigurationStore = defineStore('configuration', {
     setTestConfiguration (state: ConfigurationStateIF, { key, value }: KeyValueIF) {
       if (!state.configuration) {
         Vue.set(state, 'configuration', {})
+      } else {
+        Vue.set(state.configuration, key, value)
       }
-      Vue.set(state.configuration, key, value)
     },
 
     setSessionVariables (data: any) {

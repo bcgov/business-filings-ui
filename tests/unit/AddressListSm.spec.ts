@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import { mount } from '@vue/test-utils'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'

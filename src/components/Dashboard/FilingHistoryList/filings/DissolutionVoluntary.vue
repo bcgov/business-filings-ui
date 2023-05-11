@@ -70,8 +70,7 @@ import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
 import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
 import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -86,9 +85,9 @@ export default class DissolutionVoluntary extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter(useBusinessStore) isFirm!: boolean
-  @Getter(useBusinessStore) getLegalName!: string
   @Getter(useRootStore) getDissolutionConfirmationResource!: DissolutionConfirmationResourceIF
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useBusinessStore) isFirm!: boolean
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {

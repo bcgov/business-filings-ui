@@ -14,8 +14,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   mixins: [DateMixin]

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 import MixinTester from '@/mixin-tester.vue'
 
 setActivePinia(createPinia())

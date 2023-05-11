@@ -4,8 +4,7 @@ import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Routes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {

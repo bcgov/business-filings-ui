@@ -1,5 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia'
-import { useAuthenticationStore } from '@/stores/authenticationStore'
+import { useAuthenticationStore } from '@/stores'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuetify from 'vuetify'

@@ -129,9 +129,7 @@ import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF } from '@/interfaces'
 import { EffectOfOrderTypes, FilingSubTypes, FilingTypes, PageSizes } from '@/enums'
 import { EnumUtilities, LegalServices } from '@/services'
-import { useAuthenticationStore } from '@/stores/authenticationStore'
-import { useBusinessStore } from '@/stores/businessStore'
-import { useRootStore } from '@/stores/rootStore'
+import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   components: {

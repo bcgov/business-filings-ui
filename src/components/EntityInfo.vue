@@ -35,7 +35,7 @@ import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
-import { useRootStore } from '@/stores/rootStore'
+import { useRootStore } from '@/stores'
 
 @Component({
   components: {
