@@ -167,10 +167,10 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     },
 
     /** Closes current panel or opens new panel and loads comments and documents. */
-    toggleFilingHistoryItem (index: number): Promise<void> {
+    toggleFilingHistoryItem (index: number): Promise<any> {
       const rootStore = useRootStore()
       // need to return a promise because action is called via dispatch
-      return new Promise<void>(async resolve => {
+      return new Promise(async () => {
         const isCurrentPanel = (this.getPanel === index)
 
         // check if we're opening a new panel
@@ -196,8 +196,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         }
 
         this.setPanel(isCurrentPanel ? null : index)
-        resolve()
-      }) as any
+      })
     },
 
     /** Loads the comments for this history item. */
@@ -300,10 +299,10 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       this.addCommentDialog = true
     },
 
-    hideCommentDialog (needReload: boolean): Promise<void> {
+    hideCommentDialog (needReload: boolean): Promise<any> {
       const rootStore = useRootStore()
       // need to return a promise
-      return new Promise<void>(async resolve => {
+      return new Promise(async () => {
         this.addCommentDialog = false
 
         // if needed, reload comments for current filing
@@ -314,8 +313,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
             setTimeout(() => { rootStore.setFetchingDataSpinner(false) }, 250)
           }
         }
-        resolve()
-      }) as any
+      })
     }
   }
 })
