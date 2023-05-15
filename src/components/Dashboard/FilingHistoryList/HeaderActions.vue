@@ -84,7 +84,7 @@ export default class HeaderActions extends Vue {
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
 
   /** Whether this entity is a business (and not a temporary registration). */
-  get isBusiness (): string {
+  get isBusiness (): boolean {
     return !!sessionStorage.getItem('BUSINESS_ID')
   }
 

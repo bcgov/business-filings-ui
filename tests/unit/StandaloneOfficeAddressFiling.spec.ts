@@ -84,7 +84,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(true)
@@ -102,7 +102,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       certifyFormValid: true,
       addressesFormValid: false
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -120,7 +120,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       certifyFormValid: false,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -138,7 +138,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([]) // no data
+    rootStore.setFilingData([]) // no data
 
     // confirm that flag is set correctly
     expect(vm.isPageValid).toEqual(false)
@@ -172,7 +172,8 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
+    await Vue.nextTick()
 
     // confirm that button is enabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -208,7 +209,7 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       certifyFormValid: false,
       addressesFormValid: false
     })
-    await rootStore.setFilingData([]) // no data
+    rootStore.setFilingData([]) // no data
 
     // confirm that button is disabled
     expect(wrapper.find('#coa-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -717,7 +718,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     expect(vm.isPageValid).toEqual(true)
 
@@ -777,7 +778,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     expect(vm.isPageValid).toEqual(true)
 
@@ -790,6 +791,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     // FUTURE: verify that draft filing was fetched
 
     const button = wrapper.find('#coa-file-pay-btn')
+    await Vue.nextTick()
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
@@ -1003,7 +1005,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     expect(vm.isPageValid).toEqual(true)
 
@@ -1063,7 +1065,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     expect(vm.isPageValid).toEqual(true)
 
@@ -1076,6 +1078,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     // FUTURE: verify that draft filing was fetched
 
     const button = wrapper.find('#coa-file-pay-btn')
+    await Vue.nextTick()
     expect(button.attributes('disabled')).toBeUndefined()
 
     // click the File & Pay button
@@ -1879,7 +1882,7 @@ describe('Standalone Office Address Filing - payment required error', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // stub address data
     await wrapper.setData({

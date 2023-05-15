@@ -476,8 +476,8 @@ describe('Filing History List - misc functionality', () => {
 
   // it('returns correct values for the date comparison methods', async () => {
   //   // init store
-  //   store.commit('setIdentifier', 'CP0001191')
-  //   store.commit('mutateFilings', [])
+  //   businessStore.setIdentifier('CP0001191')
+  //   filingHistoryListStore.setFilings([])
 
   //   const wrapper = mount(FilingHistoryList, { store, vuetify })
   //   const vm = wrapper.vm as any
