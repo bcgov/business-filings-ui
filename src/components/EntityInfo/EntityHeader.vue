@@ -43,7 +43,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { FilingNames } from '@/enums'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class EntityHeader extends Vue {
@@ -53,7 +53,7 @@ export default class EntityHeader extends Vue {
   @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
-  @Getter(useRootStore) isAuthorizedToContinueOut!: boolean
+  @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
 

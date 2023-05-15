@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import mockRouter from './mockRouter'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
@@ -15,6 +15,7 @@ Vue.use(VueRouter)
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
+const filingHistoryListStore = useFilingHistoryListStore()
 const rootStore = useRootStore()
 
 describe('Entity Header - data', () => {
@@ -180,7 +181,7 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
   variations.forEach((_, index) => {
     it(`conditionally displays continue out badge - variation #${index}`, async () => {
       // init store
-      store.state.filingHistoryList.filings.push(_.filing)
+      filingHistoryListStore.filings.push(_.filing as any)
 
       const wrapper = shallowMount(EntityHeader, {
         vuetify,
@@ -195,7 +196,7 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       }
 
       // cleanup
-      store.state.filingHistoryList.filings.pop()
+      filingHistoryListStore.filings.pop()
       wrapper.destroy()
     })
   })
