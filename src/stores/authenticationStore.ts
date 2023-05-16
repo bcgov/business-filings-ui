@@ -1,6 +1,7 @@
 import { AccountTypes } from '@bcrs-shared-components/enums'
 import { RootStateIF } from '@/interfaces'
 import { defineStore } from 'pinia'
+import { useRootStore } from './rootStore'
 
 export const useAuthenticationStore = defineStore('authentication', {
   getters: {
@@ -15,8 +16,8 @@ export const useAuthenticationStore = defineStore('authentication', {
     },
 
     /** The user's Keycloak GUID. */
-    getKeycloakGuid (rootGetters): string {
-      return rootGetters['auth/keycloakGuid']
+    getKeycloakGuid (): string {
+      return useRootStore().userKeycloakGuid
     },
 
     /** The user's Keycloak Bearer Token. */

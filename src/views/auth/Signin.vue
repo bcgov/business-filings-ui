@@ -5,9 +5,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { navigate } from '@/utils'
+import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { useConfigurationStore } from '@/stores'
 
+@Component({
+})
 export default class Signin extends Vue {
   @Getter(useConfigurationStore) getLoginUrl!: string
 

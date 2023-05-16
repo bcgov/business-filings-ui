@@ -236,7 +236,6 @@ export default class StaffNotation extends Vue {
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
-  @Action(useRootStore) isInLimitedRestoration!: boolean
   @Action(useRootStore) setFetchingDataSpinner!: ActionBindingIF
 
   showRegistrarsNotationDialog (): void {
