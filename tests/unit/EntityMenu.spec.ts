@@ -202,7 +202,7 @@ describe('Entity Menu - HISTORICAL badge', () => {
     it(`conditionally displays historical badge - variation #${index}`, async () => {
       // init store
       businessStore.setState(_.entityState as any)
-      businessStore.setStateFiling(_.stateFiling as any || null)
+      rootStore.setStateFiling(_.stateFiling as any || null)
 
       const wrapper = mount(EntityMenu, { vuetify, router, propsData: { businessId: null } })
       await Vue.nextTick()
@@ -210,7 +210,7 @@ describe('Entity Menu - HISTORICAL badge', () => {
       expect(wrapper.find('#historical-chip').exists()).toBe(_.exists)
       if (_.exists) {
         expect(wrapper.find('#historical-chip').text()).toBe('HISTORICAL')
-        // expect(wrapper.find('#historical-chip + span').text()).toBe(_.text)
+        expect(wrapper.find('#historical-chip + span').text()).toBe(_.text)
       }
 
       wrapper.destroy()
