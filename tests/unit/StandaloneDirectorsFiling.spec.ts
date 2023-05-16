@@ -111,7 +111,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any])
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(true)
@@ -131,7 +131,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any])
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
@@ -151,7 +151,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: false,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
@@ -186,7 +186,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: true,
       certifyFormValid: false
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(true)
@@ -206,7 +206,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([])
+    rootStore.setFilingData([]) // dummy data
 
     // confirm that flags are set correctly
     expect(vm.isEditPageValid).toEqual(false)
@@ -240,7 +240,8 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
+    await Vue.nextTick()
 
     // confirm that button is enabled
     expect(wrapper.find('#cod-file-pay-btn').attributes('disabled')).toBeUndefined()
@@ -273,7 +274,7 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
       directorFormValid: false,
       certifyFormValid: false
     })
-    await rootStore.setFilingData([]) // no data
+    rootStore.setFilingData([]) // no data
 
     // confirm that button is disabled
     expect(wrapper.find('#cod-file-pay-btn').attributes('disabled')).toBe('disabled')
@@ -719,7 +720,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
+    rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       entityType: CorpTypeCd.COOP } as any])
 
     // make sure a fee is required
@@ -789,7 +790,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
+    rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       entityType: CorpTypeCd.BENEFIT_COMPANY } as any])
 
     // make sure a fee is required
@@ -860,7 +861,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // make sure a fee is required
     await wrapper.setData({ totalFee: 100 })
@@ -972,7 +973,7 @@ describe('Standalone Directors Filing - Part 3B - Submitting filing that doesn\'
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // NB: can't find button because Vuetify hasn't rendered it
     // const button = wrapper.find('#cod-file-pay-btn')
@@ -1077,7 +1078,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
         directorFormValid: true,
         certifyFormValid: true
       })
-      await rootStore.setFilingData([{} as any]) // dummy data
+      rootStore.setFilingData([{} as any]) // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1120,7 +1121,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{} as any]) // dummy data
+    rootStore.setFilingData([{} as any]) // dummy data
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1463,7 +1464,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         directorFormValid: true,
         certifyFormValid: true
       })
-      await rootStore.setFilingData([{} as any]) // dummy data
+      rootStore.setFilingData([{} as any]) // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1500,7 +1501,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
         directorFormValid: true,
         certifyFormValid: true
       })
-      await rootStore.setFilingData([{} as any]) // dummy data
+      rootStore.setFilingData([{} as any]) // dummy data
 
       // sanity check
       expect(jest.isMockFunction(window.location.assign)).toBe(true)
@@ -1617,7 +1618,7 @@ describe('Standalone Directors Filing - payment required error', () => {
       directorFormValid: true,
       certifyFormValid: true
     })
-    await rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
+    rootStore.setFilingData([{ filingTypeCode: FilingCodes.DIRECTOR_CHANGE_OT,
       entityType: CorpTypeCd.COOP } as any])
 
     // stub address data

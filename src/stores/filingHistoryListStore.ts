@@ -220,12 +220,12 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     /** Loads the comments for this history item. */
     async loadComments (filing: ApiFilingIF): Promise<void> {
       try {
-      // fetch comments array from API
+        // fetch comments array from API
         const comments = await LegalServices.fetchComments(filing.commentsLink)
         // flatten and sort the comments
         filing.comments = flattenAndSortComments(comments)
       } catch (error) {
-      // set property to null to retry next time
+        // set property to null to retry next time
         filing.comments = null
         // eslint-disable-next-line no-console
         console.log('loadComments() error =', error)
@@ -237,7 +237,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       /** Flattens and sorts an array of comments. */
       function flattenAndSortComments (comments: Array<CommentIF>): Array<CommentIF> {
         if (comments && comments.length > 0) {
-        // first use map to change comment.comment to comment
+          // first use map to change comment.comment to comment
           const temp: Array<any> = comments.map(c => c.comment)
           // then sort newest to oldest
           // NB: these `new Date()` are safe because we're comparing like units
@@ -253,7 +253,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       const businessStore = useBusinessStore()
       const rootStore = useRootStore()
       try {
-      // fetch documents object from API
+        // fetch documents object from API
         const documents = await LegalServices.fetchDocuments(filing.documentsLink)
         // load each type of document
         filing.documents = []
