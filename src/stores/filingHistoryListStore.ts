@@ -30,7 +30,8 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       return state.filings.filter(filing => {
         // safety check for required fields
         if (!filing.name || !filing.displayName || !filing.effectiveDate || !filing.submittedDate || !filing.status) {
-          console.log('Invalid filing =', filing) // eslint-disable-line no-console
+          // eslint-disable-next-line no-console
+          console.log('Invalid filing =', filing)
           return false
         }
         return true
@@ -213,6 +214,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
 
         this.setPanel(isCurrentPanel ? null : index)
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.log('toggleFilingHistoryItem() error =', error)
       }
     },
@@ -331,6 +333,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           }
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.log('hideCommentDialog() error =', error)
       }
     }
