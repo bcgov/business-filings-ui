@@ -2,14 +2,19 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import ProprietorPartnersListSm from '@/components/Dashboard/ProprietorPartnersListSm.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { Roles } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 const PARTIES = [
   {
@@ -93,10 +98,10 @@ const PARTIES = [
 describe('ProprietorPartnersListSm', () => {
   it('displays proprietor (SP filing)', async () => {
     // init store
-    store.commit('setLegalType', 'SP')
-    store.state.parties = PARTIES
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    rootStore.setParties(PARTIES as any)
 
-    const wrapper = mount(ProprietorPartnersListSm, { store, vuetify })
+    const wrapper = mount(ProprietorPartnersListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -109,10 +114,10 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays partners (GP filing)', async () => {
     // init store
-    store.commit('setLegalType', 'GP')
-    store.state.parties = PARTIES
+    businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
+    rootStore.setParties(PARTIES as any)
 
-    const wrapper = mount(ProprietorPartnersListSm, { store, vuetify })
+    const wrapper = mount(ProprietorPartnersListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -126,11 +131,10 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "complete your filing" message', async () => {
     // init store
-    store.commit('setLegalType', 'SP')
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
 
     const wrapper = mount(ProprietorPartnersListSm,
       {
-        store,
         vuetify,
         propsData: {
           showCompleteYourFilingMessage: true
@@ -146,12 +150,11 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "grayed out" mode', async () => {
     // init store
-    store.commit('setLegalType', 'GP')
-    store.state.parties = PARTIES
+    businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
+    rootStore.setParties(PARTIES as any)
 
     const wrapper = mount(ProprietorPartnersListSm,
       {
-        store,
         vuetify,
         propsData: {
           showGrayedOut: true
@@ -175,8 +178,8 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "(Not entered)" message for firm registration', async () => {
     // init store
-    store.commit('setLegalType', 'GP')
-    store.state.parties = [
+    businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
+    rootStore.setParties([
       {
         officer: {
           organizationName: 'Bacon House',
@@ -188,7 +191,7 @@ describe('ProprietorPartnersListSm', () => {
         roles: [
           {
             appointmentDate: '2022-04-01',
-            roleType: 'Partner'
+            roleType: Roles.PARTNER
           }
         ]
       },
@@ -203,15 +206,14 @@ describe('ProprietorPartnersListSm', () => {
         roles: [
           {
             appointmentDate: '2022-04-01',
-            roleType: 'Partner'
+            roleType: Roles.PARTNER
           }
         ]
       }
-    ]
+    ])
 
     const wrapper = mount(ProprietorPartnersListSm,
       {
-        store,
         vuetify,
         propsData: {
           showCompleteYourFilingMessage: false
@@ -249,12 +251,11 @@ describe('ProprietorPartnersListSm', () => {
 
   it('displays "Complete your filing..." for no parties', async () => {
     // init store
-    store.commit('setLegalType', 'GP')
-    store.state.parties = []
+    businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
+    rootStore.setParties([])
 
     const wrapper = mount(ProprietorPartnersListSm,
       {
-        store,
         vuetify,
         propsData: {
           showCompleteYourFilingMessage: false

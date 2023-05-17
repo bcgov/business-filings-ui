@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 import { DateUtilities } from '@/services/'
+import { useRootStore } from '@/stores'
 
 /** Mixin that provides some useful date utilities. */
 @Component({})
 export default class DateMixin extends Vue {
-  @Getter getCurrentJsDate!: Date
+  @Getter(useRootStore) getCurrentJsDate!: Date
 
   /**
    * DEPRECATED - call resources/date-utilities instead

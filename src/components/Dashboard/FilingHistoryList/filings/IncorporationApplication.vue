@@ -54,7 +54,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
 import { navigate } from '@/utils'
@@ -63,6 +63,7 @@ import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
 import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
 import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 
 @Component({
   components: {
@@ -77,8 +78,8 @@ export default class IncorporationApplication extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter readonly getLegalName!: string
-  @Getter readonly getMyBusinessRegistryUrl!: string
+  @Getter(useBusinessStore) readonly getLegalName!: string
+  @Getter(useConfigurationStore) readonly getMyBusinessRegistryUrl!: string
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {

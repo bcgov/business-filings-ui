@@ -1,22 +1,30 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores'
 import * as FeatureFlags from '@/utils/feature-flags'
 import MixinTester from '@/mixin-tester.vue'
 import { AllowableActions, FilingSubTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingTypeIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 describe('Allowable Actions Mixin', () => {
   let vm: any
 
   function setAllowedFilingType (filingType = {}) {
-    store.commit('setAllowedActions', { filing: { filingTypes: [filingType] } })
+    businessStore.setAllowedActions({
+      filing: {
+        filingSubmissionLink: '',
+        filingTypes: [filingType as FilingTypeIF]
+      }
+    })
   }
 
   function setFeatureFlag (val: any) {
@@ -25,7 +33,7 @@ describe('Allowable Actions Mixin', () => {
 
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(MixinTester, { store, vuetify })
+    const wrapper = shallowMount(MixinTester, { vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })

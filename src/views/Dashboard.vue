@@ -175,7 +175,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'pinia'
 import { navigate } from '@/utils'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
@@ -193,6 +193,7 @@ import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.v
 import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 export default {
   name: 'Dashboard', // eslint-disable-line vue/multi-word-component-names
@@ -231,25 +232,38 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'getEditUrl',
-      'getHistoryCount',
-      'getIdentifier',
-      'getParties',
-      'getPendingCoa',
-      'hasComplianceWarning',
-      'hasMissingInfoWarning',
-      'isAdminFrozen',
-      'isAppFiling',
-      'isAppTask',
-      'isBenBcCccUlc',
-      'isFirm',
-      'isGoodStanding',
-      'isHistorical',
-      'isPartnership',
-      'isRoleStaff',
-      'isSoleProp'
-    ]),
+    ...mapState(useBusinessStore,
+      [
+        'getIdentifier',
+        'hasComplianceWarning',
+        'hasMissingInfoWarning',
+        'isAdminFrozen',
+        'isBenBcCccUlc',
+        'isFirm',
+        'isGoodStanding',
+        'isHistorical',
+        'isPartnership',
+        'isSoleProp'
+      ]),
+
+    ...mapState(useConfigurationStore,
+      [
+        'getEditUrl'
+      ]),
+
+    ...mapState(useFilingHistoryListStore,
+      [
+        'getHistoryCount',
+        'getPendingCoa'
+      ]),
+
+    ...mapState(useRootStore,
+      [
+        'getParties',
+        'isAppFiling',
+        'isAppTask',
+        'isRoleStaff'
+      ]),
 
     /** Whether a COA is pending. */
     isCoaPending (): boolean {
@@ -314,7 +328,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setCurrentFilingStatus']),
+    ...mapActions(useRootStore, ['setCurrentFilingStatus']),
 
     goToStandaloneDirectors () {
       this.setCurrentFilingStatus(FilingStatus.NEW)

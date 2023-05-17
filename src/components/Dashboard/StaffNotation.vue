@@ -185,7 +185,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Mutation } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { navigate } from '@/utils'
 import {
   AllowableActions,
@@ -198,23 +198,11 @@ import {
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { AllowableActionsMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'
-import { mapGetters } from 'vuex'
+import { ActionBindingIF } from '@/interfaces'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: { AddStaffNotationDialog },
-  computed: {
-    ...mapGetters([
-      'getCreateUrl',
-      'getEditUrl',
-      'getIdentifier',
-      'isAdminFrozen',
-      'isBenBcCccUlc',
-      'isCoop',
-      'isFirm',
-      'isHistorical',
-      'isInLimitedRestoration'
-    ])
-  },
   mixins: [
     AllowableActionsMixin,
     FilingMixin
@@ -239,7 +227,16 @@ export default class StaffNotation extends Vue {
   /** Prop for the scrollbar offset to be added. */
   @Prop() readonly addScrollbarOffset!: string
 
-  @Mutation mutateFetchingDataSpinner!: ActionBindingIF
+  @Getter(useConfigurationStore) getCreateUrl!: string
+  @Getter(useConfigurationStore) getEditUrl!: string
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useBusinessStore) isAdminFrozen!: boolean
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isHistorical!: boolean
+
+  @Action(useRootStore) setFetchingDataSpinner!: ActionBindingIF
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true
@@ -291,7 +288,7 @@ export default class StaffNotation extends Vue {
     let url: string
     try {
       // show spinner since the network calls below can take a few seconds
-      this.mutateFetchingDataSpinner(true)
+      this.setFetchingDataSpinner(true)
 
       // create restoration draft filing
       const restoration = this.buildRestorationFiling(restorationType)
@@ -312,7 +309,7 @@ export default class StaffNotation extends Vue {
       navigate(url)
     } catch (error) {
       // clear spinner on error
-      this.mutateFetchingDataSpinner(false)
+      this.setFetchingDataSpinner(false)
 
       alert(`Could not create restoration filing. Please try again or cancel.`)
     }

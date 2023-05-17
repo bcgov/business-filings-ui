@@ -55,7 +55,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { DateTooltip } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
@@ -65,6 +65,7 @@ import FilingTemplate from '../FilingTemplate.vue'
 import FutureEffective from '../bodies/FutureEffective.vue'
 import FutureEffectivePaid from '../subtitles/FutureEffectivePaid.vue'
 import FutureEffectivePending from '../bodies/FutureEffectivePending.vue'
+import { useBusinessStore } from '@/stores'
 
 @Component({
   components: {
@@ -82,7 +83,7 @@ export default class AlterationFiling extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter getLegalName!: string
+  @Getter(useBusinessStore) getLegalName!: string
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {

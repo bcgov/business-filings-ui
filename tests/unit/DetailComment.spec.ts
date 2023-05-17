@@ -1,20 +1,17 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
 import { DetailComment } from '@/components/common'
 import { sleep } from '@/utils/sleep'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
 
 describe('DetailComment', () => {
   it('initializes correctly', () => {
     const wrapper = shallowMount(DetailComment,
       {
-        store,
         vuetify
       })
     const vm: any = wrapper.vm
@@ -40,7 +37,6 @@ describe('DetailComment', () => {
           placeholder: 'Enter Comment Here',
           autofocus: true
         },
-        store,
         vuetify
       })
     const vm: any = wrapper.vm
@@ -55,7 +51,6 @@ describe('DetailComment', () => {
   it('emits valid event when value prop is changed', async () => {
     const wrapper = shallowMount(DetailComment,
       {
-        store,
         vuetify
       })
 
@@ -73,7 +68,6 @@ describe('DetailComment', () => {
   it('emits events when value model is changed', async () => {
     const wrapper = shallowMount(DetailComment,
       {
-        store,
         vuetify
       })
     const vm: any = wrapper.vm

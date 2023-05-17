@@ -100,12 +100,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import { AllowableActions, NigsMessage } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
 import { navigate } from '@/utils'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: { StaffComments },
@@ -114,13 +115,13 @@ import { navigate } from '@/utils'
 export default class EntityMenu extends Vue {
   @Prop({ required: true }) readonly businessId!: string // may be null
 
-  @Getter getEditUrl!: string
-  @Getter getIdentifier!: string
-  @Getter getReasonText!: string
-  @Getter isFirm!: boolean
-  @Getter isGoodStanding!: boolean
-  @Getter isHistorical!: boolean
-  @Getter isPendingDissolution!: boolean
+  @Getter(useConfigurationStore) getEditUrl!: string
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useRootStore) getReasonText!: string
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isGoodStanding!: boolean
+  @Getter(useBusinessStore) isHistorical!: boolean
+  @Getter(useRootStore) isPendingDissolution!: boolean
 
   // enums for template
   readonly axios = axios

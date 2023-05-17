@@ -9,19 +9,19 @@
 
     <DownloadErrorDialog
       :dialog="isDownloadErrorDialog"
-      @close="mutateDownloadErrorDialog(false)"
+      @close="setDownloadErrorDialog(false)"
       attach="#filing-history-list"
     />
 
     <LoadCorrectionDialog
       :dialog="isLoadCorrectionDialog"
-      @exit="mutateLoadCorrectionDialog(false)"
+      @exit="setLoadCorrectionDialog(false)"
       attach="#filing-history-list"
     />
 
     <FileCorrectionDialog
       :dialog="isFileCorrectionDialog"
-      @exit="mutateFileCorrectionDialog(false)"
+      @exit="setFileCorrectionDialog(false)"
       @redirect="redirectFiling($event)"
       attach="#filing-history-list"
     />
@@ -64,7 +64,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter, Mutation } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog }
   from '@/components/dialogs'
 import { CorrectionTypes } from '@/enums'
@@ -73,6 +73,7 @@ import { FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { navigate } from '@/utils'
 import * as Filings from './FilingHistoryList/filings'
+import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -87,27 +88,26 @@ import * as Filings from './FilingHistoryList/filings'
 export default class FilingHistoryList extends Vue {
   @Prop({ default: null }) readonly highlightId!: number
 
-  @Getter getCurrentFiling!: ApiFilingIF
-  @Getter getEditUrl!: string
-  @Getter getFilings!: Array<ApiFilingIF>
-  @Getter getIdentifier!: string
-  @Getter getPanel!: number
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isFirm!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter hasCourtOrders!: boolean
-  @Getter isAddCommentDialog!: boolean
-  @Getter isDownloadErrorDialog!: boolean
-  @Getter isLoadCorrectionDialog!: boolean
-  @Getter isFileCorrectionDialog!: boolean
+  @Getter(useFilingHistoryListStore) getCurrentFiling!: ApiFilingIF
+  @Getter(useConfigurationStore) getEditUrl!: string
+  @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useFilingHistoryListStore) getPanel!: number
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useBusinessStore) hasCourtOrders!: boolean
+  @Getter(useFilingHistoryListStore) isAddCommentDialog!: boolean
+  @Getter(useFilingHistoryListStore) isDownloadErrorDialog!: boolean
+  @Getter(useFilingHistoryListStore) isLoadCorrectionDialog!: boolean
+  @Getter(useFilingHistoryListStore) isFileCorrectionDialog!: boolean
 
-  @Action hideCommentDialog!: ActionBindingIF
-  @Action toggleFilingHistoryItem!: ActionBindingIF
-
-  @Mutation mutateDownloadErrorDialog!: (x: boolean) => void
-  @Mutation mutateFetchingDataSpinner!: (x: boolean) => void
-  @Mutation mutateFileCorrectionDialog!: (x: boolean) => void
-  @Mutation mutateLoadCorrectionDialog!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) hideCommentDialog!: ActionBindingIF
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) setDownloadErrorDialog!: (x: boolean) => void
+  @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void
+  @Action(useFilingHistoryListStore) setLoadCorrectionDialog!: (x: boolean) => void
 
   /** Whether this entity is a business (and not a temporary registration). */
   get isBusiness (): boolean {
@@ -149,7 +149,7 @@ export default class FilingHistoryList extends Vue {
   protected async redirectFiling (correctionType: CorrectionTypes): Promise<void> {
     try {
       // show spinner since the network calls below can take a few seconds
-      this.mutateFetchingDataSpinner(true)
+      this.setFetchingDataSpinner(true)
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
@@ -173,11 +173,11 @@ export default class FilingHistoryList extends Vue {
       navigate(correctionUrl)
     } catch (error) {
       // clear spinner on error
-      this.mutateFetchingDataSpinner(false)
+      this.setFetchingDataSpinner(false)
 
       // eslint-disable-next-line no-console
       console.log('Error creating correction =', error)
-      this.mutateLoadCorrectionDialog(true)
+      this.setLoadCorrectionDialog(true)
     }
   }
 

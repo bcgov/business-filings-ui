@@ -66,19 +66,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
+import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
+import { useRootStore } from '@/stores/rootStore'
 
 @Component({
-  computed: {
-    // Property definition for runtime environment.
-    ...mapGetters(['isRoleStaff'])
-  },
   components: { ContactInfo }
 })
 export default class SaveErrorDialog extends Vue {
-  // Getter definition for static type checking.
-  readonly isRoleStaff!: boolean
+  // Getter to check if logged in user is Staff.
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string

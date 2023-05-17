@@ -4,16 +4,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
 import { navigate } from '@/utils'
-import { mapGetters } from 'vuex'
+import { Component } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
+import { useConfigurationStore } from '@/stores'
 
 @Component({
-  computed: {
-    ...mapGetters(['getLoginUrl'])
-  }
 })
 export default class Signin extends Vue {
+  @Getter(useConfigurationStore) getLoginUrl!: string
+
   /** Called when component is created. */
   protected created () {
     // navigate to BC Registry login page then return to this app

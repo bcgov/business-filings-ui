@@ -4,17 +4,21 @@ import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import Directors from '@/components/common/Directors.vue'
 import { ConfigJson } from '@/resources/business-config'
 import { click } from '../click'
 import { setValue } from '../setValue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('Directors as a COOP', () => {
   let wrapper: Wrapper<Directors>
@@ -22,10 +26,10 @@ describe('Directors as a COOP', () => {
 
   beforeAll(() => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('setLegalType', 'CP')
-    store.commit('setFoundingDate', '2018-03-01T00:00:00')
-    store.state.configObject = ConfigJson.find(x => x.entityType === 'CP')
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setFoundingDate('2018-03-01T00:00:00')
+    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.COOP)
   })
 
   beforeEach(async () => {
@@ -91,7 +95,7 @@ describe('Directors as a COOP', () => {
       })))
 
     // mount the component
-    wrapper = mount(Directors, { store, vuetify })
+    wrapper = mount(Directors, { vuetify })
     vm = wrapper.vm
 
     // fetch original directors
@@ -321,10 +325,10 @@ describe('Directors as a COOP (no sync)', () => {
 
   beforeAll(() => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('setLegalType', 'CP')
-    store.commit('setFoundingDate', '2018-03-01T00:00:00')
-    store.state.configObject = ConfigJson.find(x => x.entityType === 'CP')
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setFoundingDate('2018-03-01T00:00:00')
+    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.COOP)
   })
 
   beforeEach(async () => {
@@ -390,7 +394,7 @@ describe('Directors as a COOP (no sync)', () => {
       })))
 
     // mount the component
-    wrapper = mount(Directors, { store, vuetify })
+    wrapper = mount(Directors, { vuetify })
     vm = wrapper.vm
 
     // fetch original directors
@@ -558,10 +562,10 @@ describe('Directors as a BCOMP', () => {
 
   beforeAll(() => {
     // init store
-    store.commit('setIdentifier', 'BC0007291')
-    store.commit('setLegalType', 'BEN')
-    store.commit('setFoundingDate', '2018-03-01T00:00:00')
-    store.state.configObject = ConfigJson.find(x => x.entityType === 'BEN')
+    businessStore.setIdentifier('BC0007291')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    businessStore.setFoundingDate('2018-03-01T00:00:00')
+    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.BENEFIT_COMPANY)
   })
 
   beforeEach(async () => {
@@ -654,7 +658,7 @@ describe('Directors as a BCOMP', () => {
       })))
 
     // mount the component
-    wrapper = mount(Directors, { store, vuetify })
+    wrapper = mount(Directors, { vuetify })
     vm = wrapper.vm
 
     // fetch original directors
@@ -875,10 +879,10 @@ describe('Appoint New Director tests', () => {
 
   beforeAll(() => {
     // init store
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('setLegalType', 'CP')
-    store.commit('setFoundingDate', '2018-03-01T00:00:00')
-    store.state.configObject = ConfigJson.find(x => x.entityType === 'CP')
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setFoundingDate('2018-03-01T00:00:00')
+    rootStore.configObject = ConfigJson.find(x => x.entityType === CorpTypeCd.COOP)
   })
 
   beforeEach(async () => {
@@ -893,7 +897,7 @@ describe('Appoint New Director tests', () => {
       })))
 
     // mount the component
-    wrapper = mount(Directors, { store, vuetify })
+    wrapper = mount(Directors, { vuetify })
     vm = wrapper.vm
 
     // fetch original directors

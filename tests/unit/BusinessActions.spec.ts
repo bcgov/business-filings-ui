@@ -1,15 +1,19 @@
 import LegalServices from '@/services/legal-services'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 describe('Business Actions', () => {
-  const store = getVuexStore() as any // remove typings for unit tests
+  setActivePinia(createPinia())
+  const businessStore = useBusinessStore()
+  const rootStore = useRootStore()
 
   it('loads business info', async () => {
     // set session storage we need
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
 
     // init store properties we need
-    store.state.corpTypeCd = 'BC'
+    rootStore.corpTypeCd = CorpTypeCd.BC_COMPANY
 
     // mock business data and services call
     const sampleBusinessInfo = {
@@ -22,10 +26,10 @@ describe('Business Actions', () => {
     })
 
     // call the action and verify the data in the store
-    await store.dispatch('loadBusinessInfo')
+    await businessStore.loadBusinessInfo()
     expect(LegalServices.fetchBusiness).toHaveBeenCalled()
-    expect(store.getters.getIdentifier).toBe('BC1234567')
-    expect(store.getters.getLegalType).toBe('BC')
-    expect(store.getters.getStateFilingUrl).toBe('dummy_url')
+    expect(businessStore.getIdentifier).toBe('BC1234567')
+    expect(businessStore.getLegalType).toBe('BC')
+    expect(businessStore.getStateFilingUrl).toBe('dummy_url')
   })
 })

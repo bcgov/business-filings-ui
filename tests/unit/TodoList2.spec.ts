@@ -7,8 +7,12 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import TodoList from '@/components/Dashboard/TodoList.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingTypes } from '@bcrs-shared-components/enums'
+import { FilingStatus, FilingSubTypes } from '@/enums'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -18,7 +22,9 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -31,15 +37,15 @@ describe('TodoList - common expansion panel header tests', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.commit('setLegalType', 'BEN')
-    store.commit('setGoodStanding', true)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    businessStore.setGoodStanding(true)
   })
 
   it('handles empty data', async () => {
     // init store
-    store.state.tasks = []
+    rootStore.tasks = []
 
-    const wrapper = mount(TodoList, { store, vuetify })
+    const wrapper = mount(TodoList, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -91,27 +97,26 @@ describe('TodoList - common expansion panel header tests', () => {
 
   it('displays draft restoration as staff', async () => {
     // init store
-    store.state.tasks = [
+    rootStore.tasks = [
       {
         enabled: true,
         order: 1,
         task: {
           filing: {
             header: {
-              name: 'restoration',
-              status: 'DRAFT',
+              name: FilingTypes.RESTORATION,
+              status: FilingStatus.DRAFT,
               filingId: 1,
               comments: []
             },
             business: {},
-            restoration: { type: 'fullRestoration' }
-          }
+            restoration: { type: FilingSubTypes.FULL_RESTORATION }
+          } as any
         }
       }
     ]
 
     const wrapper = mount(TodoList, {
-      store,
       computed: { isRoleStaff: () => true },
       vuetify
     })
@@ -137,27 +142,26 @@ describe('TodoList - common expansion panel header tests', () => {
 
   it('displays draft restoration as non-staff', async () => {
     // init store
-    store.state.tasks = [
+    rootStore.tasks = [
       {
         enabled: true,
         order: 1,
         task: {
           filing: {
             header: {
-              name: 'restoration',
-              status: 'DRAFT',
+              name: FilingTypes.RESTORATION,
+              status: FilingStatus.DRAFT,
               filingId: 1,
               comments: []
             },
             business: {},
-            restoration: { type: 'fullRestoration' }
-          }
+            restoration: { type: FilingSubTypes.FULL_RESTORATION }
+          } as any
         }
       }
     ]
 
     const wrapper = mount(TodoList, {
-      store,
       computed: { isRoleStaff: () => false },
       vuetify
     })
@@ -176,27 +180,26 @@ describe('TodoList - common expansion panel header tests', () => {
 
   it('displays draft consent to continuation out as staff', async () => {
     // init store
-    store.state.tasks = [
+    rootStore.tasks = [
       {
         enabled: true,
         order: 1,
         task: {
           filing: {
             header: {
-              name: 'consentContinuationOut',
-              status: 'DRAFT',
+              name: FilingTypes.CONSENT_CONTINUATION_OUT,
+              status: FilingStatus.DRAFT,
               filingId: 1,
               comments: []
             },
             business: {},
             consentContinuationOut: { comment: 'line1\nline2' }
-          }
+          } as any
         }
       }
     ]
 
     const wrapper = mount(TodoList, {
-      store,
       computed: { isRoleStaff: () => true },
       vuetify
     })
@@ -222,27 +225,26 @@ describe('TodoList - common expansion panel header tests', () => {
 
   it('displays draft consent to continuation out as non-staff', async () => {
     // init store
-    store.state.tasks = [
+    rootStore.tasks = [
       {
         enabled: true,
         order: 1,
         task: {
           filing: {
             header: {
-              name: 'consentContinuationOut',
-              status: 'DRAFT',
+              name: FilingTypes.CONSENT_CONTINUATION_OUT,
+              status: FilingStatus.DRAFT,
               filingId: 1,
               comments: []
             },
             business: {},
             consentContinuationOut: { comment: 'line1\nline2' }
-          }
+          } as any
         }
       }
     ]
 
     const wrapper = mount(TodoList, {
-      store,
       computed: { isRoleStaff: () => false },
       vuetify
     })
@@ -380,7 +382,7 @@ xdescribe('TodoList - tests specific to Cooperatives', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
   //
   // FUTURE: add any Coop-specific tests here
@@ -394,7 +396,7 @@ xdescribe('TodoList - tests specific to corporations (BEN, etc)', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
 
   it('displays new AR header/checkbox', async () => {
@@ -412,7 +414,7 @@ xdescribe('TodoList - tests specific to Incorporation Applications', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('TEMP_REG_NUMBER', 'TaAbBcC123')
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
   //
   // FUTURE: verify numbered vs named IAs (see also Filing History List unit tests)

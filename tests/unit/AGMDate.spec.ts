@@ -2,8 +2,10 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import AgmDate from '@/components/AnnualReport/AGMDate.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -13,7 +15,9 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('AgmDate', () => {
   let wrapper: Wrapper<AgmDate>
@@ -21,13 +25,13 @@ describe('AgmDate', () => {
 
   beforeEach(() => {
     // init store
-    store.state.ARFilingYear = 2019
-    store.state.arMinDate = '2019-01-01'
-    store.state.arMaxDate = '2019-12-31'
-    store.commit('setLegalType', 'CP')
-    store.commit('setLastAnnualReportDate', '2018-07-15')
+    rootStore.ARFilingYear = 2019
+    rootStore.arMinDate = '2019-01-01'
+    rootStore.arMaxDate = '2019-12-31'
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setLastAnnualReportDate('2018-07-15')
 
-    wrapper = mount(AgmDate, { store, vuetify })
+    wrapper = mount(AgmDate, { vuetify })
     vm = wrapper.vm
   })
 
@@ -44,12 +48,12 @@ describe('AgmDate', () => {
   })
 
   it('does not render the checkbox if today is before max AGM date', async () => {
-    await vm.$store.commit('currentDate', '2019-03-15')
+    await rootStore.setCurrentDate('2019-03-15')
     expect(wrapper.find('#no-agm-checkbox').exists()).toBe(false)
   })
 
   it('renders the checkbox if today is after max AGM date', async () => {
-    await vm.$store.commit('currentDate', '2020-01-01')
+    await rootStore.setCurrentDate('2020-01-01')
     expect(wrapper.find('#no-agm-checkbox').exists()).toBe(true)
   })
 

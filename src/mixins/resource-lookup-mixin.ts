@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { State, Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { AlertMessageIF, ObligationsResourceIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 /**
  * Mixin for components to retrieve text/settings from JSON resource.
@@ -10,9 +11,8 @@ import { FilingCodes } from '@/enums'
 @Component({})
 export default class ResourceLookupMixin extends Vue {
     // FUTURE: change this to a getter
-    @State configObject!: any
-
-    @Getter isBenBcCccUlc!: boolean
+    @Getter(useRootStore) configObject!: any
+    @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
     /**
      * Returns certify message using the configuration lookup object.

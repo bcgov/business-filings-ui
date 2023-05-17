@@ -178,11 +178,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { CommonMixin, DateMixin } from '@/mixins'
 import { Actions } from '@/enums'
 import { DirectorIF } from '@/interfaces'
+import { useBusinessStore } from '@/stores/businessStore'
 
 @Component({
   components: { BaseAddress },
@@ -195,7 +196,7 @@ export default class SummaryDirectors extends Vue {
   // Directors array passed into this component.
   @Prop({ default: () => [] }) readonly directors!: Array<DirectorIF>
 
-  @Getter isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   // Local properties
   protected directorSummary: Array<DirectorIF> = []

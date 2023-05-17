@@ -1,19 +1,20 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Routes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
-  @Getter getAllowedActions!: AllowedActionsIF
-  @Getter getLegalType!: CorpTypeCd
-  @Getter isBComp!: boolean
-  @Getter isCoop!: boolean
-  @Getter isFirm!: boolean
-  @Getter isGoodStanding!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useBusinessStore) getAllowedActions!: AllowedActionsIF
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useBusinessStore) isBComp!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isGoodStanding!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   /**
    * Returns True if the specified action is allowed, else False.

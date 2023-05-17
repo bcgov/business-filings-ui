@@ -68,10 +68,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin, DirectorMixin } from '@/mixins'
 import { DirectorIF, PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
+import { useRootStore } from '@/stores'
 
 @Component({
   mixins: [
@@ -87,7 +88,7 @@ export default class DirectorListSm extends Vue {
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
-  @Getter getParties!: PartyIF[]
+  @Getter(useRootStore) getParties!: PartyIF[]
 
   /** The directors list. */
   get directors (): DirectorIF[] {

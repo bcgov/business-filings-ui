@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
 import axios from '@/axios-auth'
 import { AddCommentDialog } from '@/components/dialogs'
 import { DetailComment } from '@/components/common'
@@ -10,7 +9,6 @@ import { DetailComment } from '@/components/common'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
 
 const propsData = {
   dialog: true,
@@ -26,7 +24,6 @@ describe('AddCommentDialog', () => {
     const wrapper = shallowMount(AddCommentDialog,
       {
         propsData,
-        store,
         vuetify
       })
     const vm: any = wrapper.vm
@@ -49,7 +46,6 @@ describe('AddCommentDialog', () => {
     const wrapper = shallowMount(AddCommentDialog,
       {
         propsData,
-        store,
         vuetify
       })
 
@@ -78,7 +74,6 @@ describe('AddCommentDialog', () => {
     const wrapper = shallowMount(AddCommentDialog,
       {
         propsData,
-        store,
         vuetify
       })
     const vm: any = wrapper.vm

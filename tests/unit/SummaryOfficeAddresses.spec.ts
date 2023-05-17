@@ -1,22 +1,26 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import { SummaryOfficeAddresses } from '@/components/common'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('Summary Office Addresses (BCOMP)', () => {
   let vm: any
 
   beforeAll(() => {
     // init store
-    store.commit('setLegalType', 'BEN')
-    store.state.registeredAddress = {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.registeredAddress = {
       deliveryAddress: {
         addressCity: 'delCity',
         addressCountry: 'delCountry',
@@ -37,7 +41,7 @@ describe('Summary Office Addresses (BCOMP)', () => {
       }
     }
 
-    store.state.recordsAddress = {
+    rootStore.recordsAddress = {
       deliveryAddress: {
         addressCity: 'recDelCity',
         addressCountry: 'recDelCountry',
@@ -63,10 +67,9 @@ describe('Summary Office Addresses (BCOMP)', () => {
     const Constructor = Vue.extend(SummaryOfficeAddresses)
     const instance = await new Constructor({
       propsData: {
-        registeredAddress: store.state.registeredAddress,
-        recordsAddress: store.state.recordsAddress
+        registeredAddress: rootStore.registeredAddress,
+        recordsAddress: rootStore.recordsAddress
       },
-      store,
       vuetify
     })
     vm = instance.$mount()
@@ -139,10 +142,9 @@ describe('Summary Office Addresses (BCOMP)', () => {
     const Constructor = Vue.extend(SummaryOfficeAddresses)
     const instance = await new Constructor({
       propsData: {
-        registeredAddress: store.state.registeredAddress,
+        registeredAddress: rootStore.registeredAddress,
         recordsAddress: recordsAddress
       },
-      store,
       vuetify
     })
     vm = instance.$mount()

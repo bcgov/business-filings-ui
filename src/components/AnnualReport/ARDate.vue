@@ -12,18 +12,18 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { State, Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
+import { useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   mixins: [DateMixin]
 })
 export default class ArDate extends Vue {
-  // FUTURE: change this to a getter
-  @State nextARDate!: string
-
-  @Getter isBenBcCccUlc!: boolean
-  @Getter getCurrentDate!: string
+  // Getters
+  @Getter(useRootStore) nextARDate!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useRootStore) getCurrentDate!: string
 }
 </script>
 

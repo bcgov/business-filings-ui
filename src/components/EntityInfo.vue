@@ -30,11 +30,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
+import { useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -44,7 +45,7 @@ import EntityMenu from './EntityInfo/EntityMenu.vue'
   }
 })
 export default class EntityInfo extends Vue {
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Whether to show the hover style. */
   protected showHoverStyle = false

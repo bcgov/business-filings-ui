@@ -298,7 +298,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
 import { navigate } from '@/utils'
@@ -312,6 +312,7 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -341,15 +342,13 @@ export default class StandaloneDirectorsFiling extends Vue {
     directorsComponent: Directors
   }
 
-  // FUTURE: change this to a getter
-  @State filingData!: Array<FilingDataIF>
-
-  @Getter getAuthWebUrl!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getPayApiUrl!: string
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables
   private updatedDirectors = []

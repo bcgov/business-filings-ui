@@ -2,22 +2,23 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores'
 import FirmsAddressList from '@/components/Dashboard/FirmsAddressList.vue'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 describe('FirmsAddressList', () => {
   it('displays title and icons for delivery/mailing address', async () => {
     // init store
-    store.state.businessAddress = null
+    rootStore.businessAddress = null
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: false,
@@ -39,10 +40,9 @@ describe('FirmsAddressList', () => {
 
   it('displays "Complete your filing to display" for addresses', async () => {
     // init store
-    store.state.businessAddress = null
+    rootStore.businessAddress = null
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: true,
@@ -62,10 +62,9 @@ describe('FirmsAddressList', () => {
 
   it('displays "(Not entered)" for delivery/mailing address', async () => {
     // init store
-    store.state.businessAddress = null
+    rootStore.businessAddress = null
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: false,
@@ -90,13 +89,12 @@ describe('FirmsAddressList', () => {
       addressCountry: 'CA'
     }
     // init store
-    store.state.businessAddress = {
+    rootStore.businessAddress = {
       deliveryAddress: sameAddress,
       mailingAddress: sameAddress
     }
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: false,
@@ -129,13 +127,12 @@ describe('FirmsAddressList', () => {
     }
     const mailingAddress = { ...deliveryAddress, streetAddress: '444 Fish Rd' }
     // init store
-    store.state.businessAddress = {
+    rootStore.businessAddress = {
       deliveryAddress: deliveryAddress,
       mailingAddress: mailingAddress
     }
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: false,
@@ -165,13 +162,12 @@ describe('FirmsAddressList', () => {
 
   it('displays "(Not entered)" for invalid businessAddress', async () => {
     // init store
-    store.state.businessAddress = {
+    rootStore.businessAddress = {
       deliveryAddress: null,
       mailingAddress: null
     }
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: false,
@@ -191,13 +187,12 @@ describe('FirmsAddressList', () => {
 
   it('displays "(Not entered)" for getter getBusinessAddress', async () => {
     // init store
-    store.state.businessAddress = {
+    rootStore.businessAddress = {
       deliveryAddress: {},
       mailingAddress: {}
-    }
+    } as any
 
     const wrapper = mount(FirmsAddressList, {
-      store,
       vuetify,
       propsData: {
         showCompleteYourFilingMessage: false,

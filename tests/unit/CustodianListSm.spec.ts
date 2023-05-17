@@ -2,23 +2,25 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
 import { click } from '../click'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 describe('CustodianListSm', () => {
   it('handles empty data as a COOP', async () => {
     // init store
-    store.state.custodians = []
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
 
-    const wrapper = mount(CustodianListSm, { store, vuetify })
+    const wrapper = mount(CustodianListSm, { vuetify })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -31,7 +33,7 @@ describe('CustodianListSm', () => {
 
   it('displays multiple custodians as a COOP', async () => {
     // init store
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalType(CorpTypeCd.COOP)
     const custodians = [
       {
         'officer': {
@@ -61,7 +63,7 @@ describe('CustodianListSm', () => {
       }
     ]
 
-    const wrapper = mount(CustodianListSm, { store, vuetify, propsData: { custodians } })
+    const wrapper = mount(CustodianListSm, { vuetify, propsData: { custodians } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
@@ -88,7 +90,7 @@ describe('CustodianListSm', () => {
 
   it('displays multiple custodians as a BCOMP', async () => {
     // init store
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     const custodians = [
       {
         'officer': {
@@ -132,7 +134,7 @@ describe('CustodianListSm', () => {
       }
     ]
 
-    const wrapper = mount(CustodianListSm, { store, vuetify, propsData: { custodians } })
+    const wrapper = mount(CustodianListSm, { vuetify, propsData: { custodians } })
     const vm = wrapper.vm as any
     await Vue.nextTick()
 

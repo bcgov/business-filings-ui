@@ -40,21 +40,22 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { FilingNames } from '@/enums'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({})
 export default class EntityHeader extends Vue {
   @Prop({ required: true }) readonly businessId!: string // may be null
   @Prop({ required: true }) readonly tempRegNumber!: string // may be null
 
-  @Getter getEntityName!: string
-  @Getter getLegalType!: CorpTypeCd
-  @Getter getLimitedRestorationActiveUntil!: string
-  @Getter isAuthorizedToContinueOut!: boolean
-  @Getter isInLimitedRestoration!: boolean
-  @Getter isSoleProp!: boolean
+  @Getter(useBusinessStore) getEntityName!: string
+  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
+  @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
+  @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
+  @Getter(useRootStore) isInLimitedRestoration!: boolean
+  @Getter(useBusinessStore) isSoleProp!: boolean
 
   /** The business description. */
   get businessDescription (): string {

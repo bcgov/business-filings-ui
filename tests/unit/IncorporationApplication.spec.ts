@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import IncorporationApplication from '@/components/Dashboard/FilingHistoryList/filings/IncorporationApplication.vue'
@@ -7,14 +8,15 @@ import IncorporationApplication from '@/components/Dashboard/FilingHistoryList/f
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
 
 xdescribe('Incorporation Application Filing', () => {
   it('Displays expected content with entityName', () => {
-    store.commit('setLegalName', 'My Business')
-    store.commit('setIdentifier', null)
+    businessStore.setLegalName('My Business')
+    businessStore.setIdentifier(null)
 
-    const wrapper = shallowMount(IncorporationApplication, { store, vuetify })
+    const wrapper = shallowMount(IncorporationApplication, { vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Incorporation Complete')
@@ -29,10 +31,10 @@ xdescribe('Incorporation Application Filing', () => {
   })
 
   it('Displays expected content with businessId', () => {
-    store.commit('setLegalName', null)
-    store.commit('setIdentifier', 'BC1234567')
+    businessStore.setLegalName(null)
+    businessStore.setIdentifier('BC1234567')
 
-    const wrapper = shallowMount(IncorporationApplication, { store, vuetify })
+    const wrapper = shallowMount(IncorporationApplication, { vuetify })
 
     // verify content
     expect(wrapper.find('h4').text()).toBe('Incorporation Complete')

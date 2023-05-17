@@ -6,13 +6,14 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import SbcSignout from 'sbc-common-components/src/components/SbcSignout.vue'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
+import { useConfigurationStore } from '@/stores'
 
 @Component({
   components: { SbcSignout }
 })
 export default class Signout extends Vue {
-  @Getter getLoginUrl!: string
+  @Getter(useConfigurationStore) getLoginUrl!: string
 
   get redirectUrl (): string {
     // after signout, redirect to BC Registries login page

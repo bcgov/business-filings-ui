@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { ConfigJson } from '@/resources'
 import { CorpTypeCd } from '@/enums'
 
@@ -13,7 +14,10 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const filingHistoryListStore = useFilingHistoryListStore()
+const rootStore = useRootStore()
 
 const newIncorporationFiling = [
   {
@@ -126,22 +130,22 @@ for (const test of obligationTestCases) {
   describe(`Legal Obligation for ${test.entityType}`, () => {
     beforeAll(() => {
       sessionStorage.setItem('BUSINESS_ID', test.identifier)
-      store.commit('setLegalType', test.entityType)
-      store.commit('setIdentifier', test.identifier)
-      store.state.configObject = ConfigJson[test.configKey]
+      businessStore.setLegalType(test.entityType)
+      businessStore.setIdentifier(test.identifier)
+      rootStore.configObject = ConfigJson[test.configKey]
     })
 
     afterAll(() => {
       sessionStorage.removeItem('BUSINESS_ID')
-      store.commit('setLegalType', null)
-      store.commit('setIdentifier', null)
-      store.state.tasks = []
+      businessStore.setLegalType(null)
+      businessStore.setIdentifier(null)
+      rootStore.tasks = []
     })
 
     it('do not show the legal obligation section if there are no filings', async () => {
-      store.commit('mutateFilings', [])
+      filingHistoryListStore.setFilings([])
 
-      const wrapper = mount(LegalObligation, { store, vuetify })
+      const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
@@ -150,9 +154,9 @@ for (const test of obligationTestCases) {
     })
 
     it('shows the legal obligation section if it is a new business with no maintenance filing', async () => {
-      store.commit('mutateFilings', test.filingBody)
+      filingHistoryListStore.setFilings(test.filingBody as any)
 
-      const wrapper = mount(LegalObligation, { store, vuetify })
+      const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(test.displaysObligations)
@@ -161,9 +165,9 @@ for (const test of obligationTestCases) {
     })
 
     it('do not show the legal obligation section if the business has maintenance filings', async () => {
-      store.commit('mutateFilings', businessWithMaintenanceFiling)
+      filingHistoryListStore.setFilings(businessWithMaintenanceFiling as any)
 
-      const wrapper = mount(LegalObligation, { store, vuetify })
+      const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
@@ -172,9 +176,9 @@ for (const test of obligationTestCases) {
     })
 
     it('hides the legal obligation section on clicking dismiss button', async () => {
-      store.commit('mutateFilings', test.filingBody)
+      filingHistoryListStore.setFilings(test.filingBody as any)
 
-      const wrapper = mount(LegalObligation, { store, vuetify })
+      const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(test.displaysObligations)
@@ -188,10 +192,10 @@ for (const test of obligationTestCases) {
     })
 
     it('hides the legal obligation section if there is a task', async () => {
-      store.commit('mutateFilings', test.filingBody)
-      store.commit('tasks', taskList)
+      filingHistoryListStore.setFilings(test.filingBody as any)
+      rootStore.setTasks(taskList as any)
 
-      const wrapper = mount(LegalObligation, { store, vuetify })
+      const wrapper = mount(LegalObligation, { vuetify })
       await Vue.nextTick()
 
       expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)
@@ -204,9 +208,9 @@ for (const test of obligationTestCases) {
 describe('Legal Obligation - temp reg number', () => {
   it('hides the legal obligation section for temp reg number', async () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T1234567')
-    store.commit('mutateFilings', newIncorporationFiling)
+    filingHistoryListStore.setFilings(newIncorporationFiling as any)
 
-    const wrapper = mount(LegalObligation, { store, vuetify })
+    const wrapper = mount(LegalObligation, { vuetify })
     await Vue.nextTick()
 
     expect(wrapper.find('.legal-obligation-container').exists()).toBe(false)

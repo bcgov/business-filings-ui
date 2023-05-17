@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRootStore } from '@/stores'
 import { shallowMount } from '@vue/test-utils'
 import DetailsList from '@/components/Dashboard/FilingHistoryList/DetailsList.vue'
 
@@ -9,7 +10,8 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const rootStore = useRootStore()
 
 describe('Details List', () => {
   const mockFilingNoComments = {
@@ -84,7 +86,7 @@ describe('Details List', () => {
   }
 
   it('Displays no details if filing contains no comments', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingNoComments } })
+    const wrapper = shallowMount(DetailsList, { propsData: { filing: mockFilingNoComments } })
 
     expect(wrapper.find('.detail-body').exists()).toBe(false)
 
@@ -92,7 +94,7 @@ describe('Details List', () => {
   })
 
   it('Displays details if filing contains comments', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingOneComment } })
+    const wrapper = shallowMount(DetailsList, { propsData: { filing: mockFilingOneComment } })
 
     expect(wrapper.find('.detail-body').exists()).toBe(true)
 
@@ -100,7 +102,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct count in the title - single detail', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingOneComment } })
+    const wrapper = shallowMount(DetailsList, { propsData: { filing: mockFilingOneComment } })
 
     expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
 
@@ -108,7 +110,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct count in the title - multiple details', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingManyComments } })
+    const wrapper = shallowMount(DetailsList, { propsData: { filing: mockFilingManyComments } })
 
     expect(wrapper.find('.title-bar').text()).toContain('Details (3)')
 
@@ -116,7 +118,7 @@ describe('Details List', () => {
   })
 
   it('Displays the correct number of details in the list', () => {
-    const wrapper = shallowMount(DetailsList, { store, propsData: { filing: mockFilingManyComments } })
+    const wrapper = shallowMount(DetailsList, { propsData: { filing: mockFilingManyComments } })
 
     expect(wrapper.findAll('.detail-body').length).toEqual(3)
 
@@ -124,10 +126,9 @@ describe('Details List', () => {
   })
 
   it('Does NOT display the add detail btn when the user is NOT staff', () => {
-    store.state.keycloakRoles = ['user']
+    rootStore.keycloakRoles = ['user']
 
     const wrapper = shallowMount(DetailsList, {
-      store,
       propsData: { filing: mockFilingOneComment }
     })
 
@@ -137,10 +138,9 @@ describe('Details List', () => {
   })
 
   it('Displays the Add Detail button if staff user and NOT a task item', () => {
-    store.state.keycloakRoles = ['staff']
+    rootStore.keycloakRoles = ['staff']
 
     const wrapper = shallowMount(DetailsList, {
-      store,
       propsData: { filing: mockFilingOneComment }
     })
 
@@ -150,10 +150,9 @@ describe('Details List', () => {
   })
 
   it('Displays the correct filing data if NOT staff user', () => {
-    store.state.keycloakRoles = ['user']
+    rootStore.keycloakRoles = ['user']
 
     const wrapper = shallowMount(DetailsList, {
-      store,
       propsData: { filing: mockFilingOneComment }
     })
 
@@ -167,10 +166,9 @@ describe('Details List', () => {
   })
 
   it('Displays the correct filing data if staff user', async () => {
-    store.state.keycloakRoles = ['staff']
+    rootStore.keycloakRoles = ['staff']
 
     const wrapper = shallowMount(DetailsList, {
-      store,
       vuetify,
       propsData: { filing: mockFilingManyComments }
     })

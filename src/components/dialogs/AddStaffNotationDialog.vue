@@ -122,13 +122,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { FormIF } from '@/interfaces'
 import { EffectOfOrderTypes, FilingSubTypes, FilingTypes, PageSizes } from '@/enums'
 import { EnumUtilities, LegalServices } from '@/services'
+import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -170,13 +171,13 @@ export default class AddStaffNotationDialog extends Vue {
   @Prop({ default: false }) readonly courtOrderNumberRequired!: boolean
 
   // Global getters
-  @Getter getCurrentDate!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getLegalType!: string
-  @Getter getIdentifier!: string
-  @Getter getKeycloakGuid!: string
-  @Getter isAdminFrozen!: boolean
+  @Getter(useRootStore) getCurrentDate!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useBusinessStore) getLegalType!: string
+  @Getter(useBusinessStore) getIdentifier!: string
+  @Getter(useAuthenticationStore) getKeycloakGuid!: string
+  @Getter(useBusinessStore) isAdminFrozen!: boolean
 
   // Properties
   protected customErrorMsg = ''

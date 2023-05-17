@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useRootStore } from '@/stores'
 import EntityInfo from '@/components/EntityInfo.vue'
 import EntityDefinitions from '@/components/EntityInfo/EntityDefinitions.vue'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
@@ -12,7 +13,9 @@ Vue.use(Vuetify)
 Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const rootStore = useRootStore()
 
 describe('Entity Info component', () => {
   it('renders sub-components', async () => {
@@ -20,12 +23,12 @@ describe('Entity Info component', () => {
     sessionStorage.clear()
 
     // set store properties
-    store.commit('setLegalName', null)
-    store.commit('setLegalType', null)
-    store.state.entityStatus = null
-    store.commit('setTaxId', null)
+    businessStore.setLegalName(null)
+    businessStore.setLegalType(null)
+    rootStore.entityStatus = null
+    businessStore.setTaxId(null)
 
-    const wrapper = shallowMount(EntityInfo, { store, vuetify })
+    const wrapper = shallowMount(EntityInfo, { vuetify })
     await Vue.nextTick()
 
     expect(wrapper.findComponent(EntityDefinitions).exists()).toBe(true)

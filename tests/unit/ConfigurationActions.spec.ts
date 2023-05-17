@@ -1,12 +1,13 @@
 import { setBaseRouteAndBusinessId } from '@/utils'
-import { getVuexStore } from '@/store'
-import { nextTick } from 'vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useConfigurationStore } from '@/stores'
 
 // mock the console.info function to hide the output
 console.info = jest.fn()
 
 describe('Configuration Actions', () => {
-  const store = getVuexStore() as any // remove typings for unit tests
+  setActivePinia(createPinia())
+  const configurationStore = useConfigurationStore()
 
   // init environment variable
   process.env.BASE_URL = '/business/'
@@ -44,24 +45,20 @@ describe('Configuration Actions', () => {
 
     // call method
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('loadConfiguration')
-      .then(() => {
-        nextTick()
-        // verify data
-        expect(store.getters.getAddressCompleteKey).toBe('address complete key')
-        expect(store.getters.getAuthApiUrl).toBe('auth api url/auth api version/')
-        expect(store.getters.getAuthWebUrl).toBe('auth web url')
-        expect(store.getters.getCreateUrl).toBe('business create url')
-        expect(store.getters.getEditUrl).toBe('business edit url')
-        expect(store.getters.getBusinessFilingLdClientId).toBe('business filing ld client id')
-        expect(store.getters.getBusinessUrl).toBe('businesses url')
-        expect(store.getters.getLegalApiUrl).toBe('legal api url/legal api version 2/')
-        expect(store.getters.getPayApiUrl).toBe('pay api url/pay api version/')
-        expect(store.getters.getRegHomeUrl).toBe('registry home url')
-        expect(store.getters.getSentryDsn).toBe('sentry dsn')
-        expect(store.getters.getSiteminderLogoutUrl).toBe('siteminder logout url')
-        expect(store.getters.getStatusApiUrl).toBe('status api url/status api version')
-      })
+    await configurationStore.loadConfiguration()
+    expect(configurationStore.getAddressCompleteKey).toBe('address complete key')
+    expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
+    expect(configurationStore.getAuthWebUrl).toBe('auth web url')
+    expect(configurationStore.getCreateUrl).toBe('business create url')
+    expect(configurationStore.getEditUrl).toBe('business edit url')
+    expect(configurationStore.getBusinessFilingLdClientId).toBe('business filing ld client id')
+    expect(configurationStore.getBusinessUrl).toBe('businesses url')
+    expect(configurationStore.getLegalApiUrl).toBe('legal api url/legal api version 2/')
+    expect(configurationStore.getPayApiUrl).toBe('pay api url/pay api version/')
+    expect(configurationStore.getRegHomeUrl).toBe('registry home url')
+    expect(configurationStore.getSentryDsn).toBe('sentry dsn')
+    expect(configurationStore.getSiteminderLogoutUrl).toBe('siteminder logout url')
+    expect(configurationStore.getStatusApiUrl).toBe('status api url/status api version')
   })
 
   it('fetches and loads the configuration to session variables', async () => {
@@ -75,7 +72,7 @@ describe('Configuration Actions', () => {
 
     // call method
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await store.dispatch('loadConfiguration')
+    await configurationStore.loadConfiguration()
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
   })
@@ -135,12 +132,10 @@ describe('Configuration Actions', () => {
   })
 
   it('sessions variables correctly set for the SBC header', async () => {
-    await store.dispatch('loadConfiguration')
-      .then(() => {
-        expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
-        expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
-        expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
-        expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
-      })
+    configurationStore.loadConfiguration()
+    expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
+    expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
+    expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')
+    expect(sessionStorage.getItem('STATUS_API_URL')).toBe('status api url/status api version')
   })
 })

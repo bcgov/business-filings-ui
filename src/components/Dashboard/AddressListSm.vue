@@ -212,10 +212,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
-import { OfficeAddressIF } from '@/interfaces'
+import { ApiFilingIF, OfficeAddressIF } from '@/interfaces'
 import FirmsAddressList from './FirmsAddressList.vue'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
   components: { FirmsAddressList },
@@ -231,15 +232,13 @@ export default class AddressListSm extends Vue {
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
-  @Getter getPendingCoa!: ApiFilingIF
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isCorp!: boolean
-  @Getter isFirm!: boolean
-  @Getter isHistorical!: boolean
-
-  // FUTURE: change these to getters
-  @State registeredAddress!: OfficeAddressIF
-  @State recordsAddress!: OfficeAddressIF
+  @Getter(useFilingHistoryListStore) getPendingCoa!: ApiFilingIF
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCorp!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isHistorical!: boolean
+  @Getter(useRootStore) recordsAddress!: OfficeAddressIF
+  @Getter(useRootStore) registeredAddress!: OfficeAddressIF
 
   /** Whether a COA is pending. */
   get isCoaPending (): boolean {

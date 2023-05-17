@@ -1,28 +1,33 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import EntityDefinitions from '@/components/EntityInfo/EntityDefinitions.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const configurationStore = useConfigurationStore()
+const rootStore = useRootStore()
 
 describe('Entity Definitions component', () => {
   it('handles empty data', async () => {
     // set empty store properties
-    store.state.businessEmail = null
-    store.state.businessPhone = null
-    store.state.businessPhoneExtension = null
-    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
-    store.commit('setFoundingDate', null)
-    store.commit('setIdentifier', null)
-    store.commit('setLegalType', null)
-    store.state.nameRequest = null
-    store.commit('setTaxId', null) // aka business number
+    rootStore.businessEmail = null
+    rootStore.businessPhone = null
+    rootStore.businessPhoneExtension = null
+    configurationStore.setConfiguration({ VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
+    businessStore.setFoundingDate(null)
+    businessStore.setIdentifier(null)
+    businessStore.setLegalType(null)
+    rootStore.nameRequest = null
+    businessStore.setTaxId(null) // aka business number
 
-    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: null } })
+    const wrapper = shallowMount(EntityDefinitions, { vuetify, propsData: { businessId: null } })
     await Vue.nextTick()
 
     // verify getter and elements
@@ -38,18 +43,18 @@ describe('Entity Definitions component', () => {
 
   it('displays Business info properly - Coop', async () => {
     // set store properties
-    store.state.businessEmail = 'business@mail.zzz'
-    store.state.businessPhone = '(111)222-3333'
-    store.state.businessPhoneExtension = '444'
-    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
-    store.commit('setFoundingDate', null)
-    store.commit('setIdentifier', 'CP0001191')
-    store.commit('setLegalType', 'CP')
-    store.state.nameRequest = null
-    store.commit('setTaxId', '123456789')
+    rootStore.businessEmail = 'business@mail.zzz'
+    rootStore.businessPhone = '(111)222-3333'
+    rootStore.businessPhoneExtension = '444'
+    configurationStore.setConfiguration({ VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
+    businessStore.setFoundingDate(null)
+    businessStore.setIdentifier('CP0001191')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.nameRequest = null
+    businessStore.setTaxId('123456789')
 
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: 'CP0001191' } })
+    const wrapper = shallowMount(EntityDefinitions, { vuetify, propsData: { businessId: 'CP0001191' } })
     await Vue.nextTick()
 
     // verify displayed text
@@ -64,17 +69,17 @@ describe('Entity Definitions component', () => {
 
   it('displays Business info properly - Firm', async () => {
     // set store properties
-    store.state.businessEmail = 'business@mail.zzz'
-    store.state.businessPhone = '(111)222-3333'
-    store.state.businessPhoneExtension = '444'
-    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
-    store.commit('setFoundingDate', '2023-01-06T22:21:35.965694+00:00')
-    store.commit('setIdentifier', 'FM0001191')
-    store.commit('setLegalType', 'GP')
-    store.commit('setTaxId', '123456789')
+    rootStore.businessEmail = 'business@mail.zzz'
+    rootStore.businessPhone = '(111)222-3333'
+    rootStore.businessPhoneExtension = '444'
+    configurationStore.setConfiguration({ VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
+    businessStore.setFoundingDate('2023-01-06T22:21:35.965694+00:00')
+    businessStore.setIdentifier('FM0001191')
+    businessStore.setLegalType(CorpTypeCd.PARTNERSHIP)
+    businessStore.setTaxId('123456789')
 
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: 'FM0001191' } })
+    const wrapper = shallowMount(EntityDefinitions, { vuetify, propsData: { businessId: 'FM0001191' } })
     await Vue.nextTick()
 
     // verify displayed text
@@ -89,17 +94,17 @@ describe('Entity Definitions component', () => {
 
   it('displays IA info properly - Named Benefit Company', async () => {
     // set store properties
-    store.state.businessEmail = null
-    store.state.businessPhone = null
-    store.state.businessPhoneExtension = null
-    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
-    store.commit('setFoundingDate', null)
-    store.commit('setIdentifier', null)
-    store.commit('setLegalType', 'BEN')
-    store.state.nameRequest = { nrNum: 'NR 1234567' }
-    store.commit('setTaxId', null) // aka business number
+    rootStore.businessEmail = null
+    rootStore.businessPhone = null
+    rootStore.businessPhoneExtension = null
+    configurationStore.setConfiguration({ VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
+    businessStore.setFoundingDate(null)
+    businessStore.setIdentifier(null)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.nameRequest = { nrNum: 'NR 1234567' }
+    businessStore.setTaxId(null)
 
-    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: null } })
+    const wrapper = shallowMount(EntityDefinitions, { vuetify, propsData: { businessId: null } })
     await Vue.nextTick()
 
     // verify displayed text
@@ -114,17 +119,17 @@ describe('Entity Definitions component', () => {
 
   it('displays IA info properly - Numbered Benefit Company', async () => {
     // set store properties
-    store.state.businessEmail = null
-    store.state.businessPhone = null
-    store.state.businessPhoneExtension = null
-    store.commit('setConfiguration', { VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
-    store.commit('setFoundingDate', null)
-    store.commit('setIdentifier', null)
-    store.commit('setLegalType', 'BEN')
-    store.state.nameRequest = null
-    store.commit('setTaxId', null) // aka business number
+    rootStore.businessEmail = null
+    rootStore.businessPhone = null
+    rootStore.businessPhoneExtension = null
+    configurationStore.setConfiguration({ VUE_APP_AUTH_WEB_URL: 'auth-web-url/' })
+    businessStore.setFoundingDate(null)
+    businessStore.setIdentifier(null)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    rootStore.nameRequest = null
+    businessStore.setTaxId(null)
 
-    const wrapper = shallowMount(EntityDefinitions, { store, vuetify, propsData: { businessId: null } })
+    const wrapper = shallowMount(EntityDefinitions, { vuetify, propsData: { businessId: null } })
     await Vue.nextTick()
 
     // verify displayed text

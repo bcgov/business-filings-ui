@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useFilingHistoryListStore } from '@/stores'
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
@@ -23,7 +24,9 @@ const ENTITY_INC_NO = 'CP0000840'
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const filingHistoryListStore = useFilingHistoryListStore()
 
 // Helper functions
 const itIf = (condition) => condition ? it : xit
@@ -31,7 +34,7 @@ const isPaperOnly = (filing) => filing.availableOnPaperOnly
 const isCorrection = (filing) => !!filing.correctedFilingId
 const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === 'incorporationApplication')
-const isBcompCoa = (filing) => false // FUTURE: implement BComp tests
+const isBcompCoa = () => false // FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === 'alteration')
 const isConsentContinuationOut = (filing) => (filing.name === 'consentContinuationOut')
 const isStaff = (filing) => (
@@ -48,8 +51,8 @@ filings.forEach((filing: any, index: number) => {
     let wrapper, vm
 
     beforeAll(() => {
-      store.commit('setIdentifier', ENTITY_INC_NO)
-      store.commit('mutateFilings', [filing])
+      businessStore.setIdentifier(ENTITY_INC_NO)
+      filingHistoryListStore.setFilings([filing])
 
       const get = sinon.stub(axios, 'get')
 
@@ -63,7 +66,7 @@ filings.forEach((filing: any, index: number) => {
 
       // mount the component
       wrapper = mount(FilingHistoryList, {
-        store, propsData: { dissolutionType: filing?.data?.dissolution?.dissolutionType }, vuetify })
+        propsData: { dissolutionType: filing?.data?.dissolution?.dissolutionType }, vuetify })
       vm = wrapper.vm
     })
 
@@ -107,7 +110,6 @@ filings.forEach((filing: any, index: number) => {
 
     itIf(isBcompCoa(filing))('BCOMP change of address filing', () => {
       expect(vm.getFilings.length).toBe(1) // sanity check
-      const item = vm.getFilings[0]
 
       // expect(item.isFutureEffectiveCoaPending).toBeDefined()
     })

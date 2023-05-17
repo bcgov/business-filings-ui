@@ -179,7 +179,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -191,6 +191,7 @@ import { EnumUtilities, LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
 import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
@@ -218,14 +219,12 @@ export default class Correction extends Vue {
     confirm: ConfirmDialogType
   }
 
-  // FUTURE: change this to a getter
-  @State filingData!: Array<FilingDataIF>
-
-  @Getter getAuthWebUrl!: string
-  @Getter getFoundingDate!: Date
-  @Getter getLegalName!: string
-  @Getter getPayApiUrl!: string
-  @Getter isRoleStaff!: boolean
+  @Getter(useRootStore) filingData!: Array<FilingDataIF>
+  @Getter(useConfigurationStore) getAuthWebUrl!: string
+  @Getter(useBusinessStore) getFoundingDate!: Date
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes

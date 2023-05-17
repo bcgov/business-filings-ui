@@ -112,10 +112,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { isEmpty } from 'lodash'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { OfficeAddressIF } from '@/interfaces'
+import { useRootStore } from '@/stores'
 
 @Component({
   mixins: [
@@ -130,7 +131,7 @@ export default class FirmsAddressList extends Vue {
   /** Whether to gray out (disable) the director list. */
   @Prop({ default: false }) readonly showGrayedOut!: boolean
 
-  @Getter getBusinessAddress!: OfficeAddressIF
+  @Getter(useRootStore) getBusinessAddress!: OfficeAddressIF
 
   // Business
   get businessAddress (): OfficeAddressIF|null {

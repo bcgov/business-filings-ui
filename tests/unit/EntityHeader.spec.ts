@@ -2,27 +2,32 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import mockRouter from './mockRouter'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { EntityStatus } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore() as any // remove typings for unit tests
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+const filingHistoryListStore = useFilingHistoryListStore()
+const rootStore = useRootStore()
 
 describe('Entity Header - data', () => {
   const router = mockRouter.mock()
 
   it('handles empty data', async () => {
     // set store properties
-    store.commit('setLegalName', null)
-    store.commit('setLegalType', null)
-    store.state.entityStatus = null
+    businessStore.setLegalName(null)
+    businessStore.setLegalType(null)
+    rootStore.entityStatus = null
 
     const wrapper = shallowMount(EntityHeader, {
-      store,
       vuetify,
       router,
       propsData: { businessId: null, tempRegNumber: null }
@@ -35,13 +40,12 @@ describe('Entity Header - data', () => {
 
   it('displays Business entity info properly', async () => {
     // set store properties
-    store.commit('setLegalName', 'My Business')
-    store.commit('setGoodStanding', true)
-    store.commit('setLegalType', 'CP')
+    businessStore.setLegalName('My Business')
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.COOP)
 
     // mount the component and wait for everything to stabilize
     const wrapper = shallowMount(EntityHeader, {
-      store,
       vuetify,
       router,
       propsData: { businessId: 'CP0001191', tempRegNumber: null }
@@ -55,12 +59,11 @@ describe('Entity Header - data', () => {
 
   it('displays Draft Incorp App entity info properly - Named Company', async () => {
     // set store properties
-    store.commit('setLegalName', 'My Named Company')
-    store.state.entityStatus = 'DRAFT_APP'
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalName('My Named Company')
+    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
-      store,
       vuetify,
       router,
       propsData: { businessId: null, tempRegNumber: 'T123456789' }
@@ -73,12 +76,11 @@ describe('Entity Header - data', () => {
 
   it('displays Draft Incorp App entity info properly - Numbered Company', async () => {
     // set store properties
-    store.commit('setLegalName', null)
-    store.state.entityStatus = 'DRAFT_APP'
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalName(null)
+    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
-      store,
       vuetify,
       router,
       propsData: { businessId: null, tempRegNumber: 'T123456789' }
@@ -91,12 +93,11 @@ describe('Entity Header - data', () => {
 
   it('displays Paid (Named) Incorp App entity info properly', async () => {
     // set store properties
-    store.commit('setLegalName', 'My Future Company')
-    store.state.entityStatus = 'FILED_APP'
-    store.commit('setLegalType', 'BEN')
+    businessStore.setLegalName('My Future Company')
+    rootStore.entityStatus = EntityStatus.FILED_APP
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     const wrapper = shallowMount(EntityHeader, {
-      store,
       vuetify,
       router,
       propsData: { businessId: null, tempRegNumber: 'T123456789' }
@@ -129,10 +130,9 @@ describe('Entity Header - LIMITED RESTORATION badge', () => {
   variations.forEach((_, index) => {
     it(`conditionally displays limited restoration badge - variation #${index}`, async () => {
       // init store
-      store.state.stateFiling = _.stateFiling
+      rootStore.setStateFiling(_.stateFiling)
 
       const wrapper = shallowMount(EntityHeader, {
-        store,
         vuetify,
         router,
         propsData: { businessId: 'BC1234567', tempRegNumber: null }
@@ -146,7 +146,7 @@ describe('Entity Header - LIMITED RESTORATION badge', () => {
       }
 
       // cleanup
-      store.state.stateFiling = null
+      rootStore.setStateFiling(null)
       wrapper.destroy()
     })
   })
@@ -181,10 +181,9 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
   variations.forEach((_, index) => {
     it(`conditionally displays continue out badge - variation #${index}`, async () => {
       // init store
-      store.state.filingHistoryList.filings.push(_.filing)
+      filingHistoryListStore.filings.push(_.filing as any)
 
       const wrapper = shallowMount(EntityHeader, {
-        store,
         vuetify,
         router,
         propsData: { businessId: 'BC1234567', tempRegNumber: null }
@@ -197,7 +196,7 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
       }
 
       // cleanup
-      store.state.filingHistoryList.filings.pop()
+      filingHistoryListStore.filings.pop()
       wrapper.destroy()
     })
   })
