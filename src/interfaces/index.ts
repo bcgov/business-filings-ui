@@ -11,6 +11,9 @@ export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 
+// must come before other interfaces that use it
+export * from './officer-interface'
+
 export * from './action-interface'
 export * from './address-interfaces'
 export * from './alert-message-interface'
@@ -35,7 +38,6 @@ export * from './form-interface'
 export * from './key-value-interface'
 export * from './name-request-interface'
 export * from './obligations-interface'
-export * from './officer-interface'
 export * from './party-interface'
 export * from './payment-error-interface'
 export * from './pdf-info-interface'
