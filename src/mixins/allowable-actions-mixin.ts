@@ -59,7 +59,8 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.CONSENT_CONTINUATION_OUT: {
-        return this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT)
+        const ff = !!GetFeatureFlag('supported-consent-continuation-out-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT))
       }
 
       case AllowableActions.CORRECTION: {

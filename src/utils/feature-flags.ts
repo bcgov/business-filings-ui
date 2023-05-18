@@ -14,7 +14,8 @@ const defaultFlagSet: LDFlagSet = {
   'show-alert-phone-numbers-firm': false,
   'supported-business-summary-entities': [],
   'supported-correction-entities': [],
-  'supported-dissolution-entities': []
+  'supported-dissolution-entities': [],
+  'supported-consent-continuation-out-entities': []
 }
 
 /**

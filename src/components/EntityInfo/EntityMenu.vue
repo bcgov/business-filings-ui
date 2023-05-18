@@ -39,26 +39,6 @@
       </v-tooltip>
     </span>
 
-    <!-- Dissolve Business -->
-    <span v-if="isBusiness && !isHistorical">
-      <v-tooltip top content-class="top-tooltip" transition="fade-transition">
-        <template v-slot:activator="{ on }">
-          <v-btn
-            small text color="primary"
-            id="dissolution-button"
-            :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
-            @click="promptDissolve()"
-            v-on="on"
-          >
-            <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
-            <span class="font-13 ml-1">Dissolve this Business</span>
-          </v-btn>
-        </template>
-        Dissolving the business will make this business historical
-        and it will be struck from the corporate registry.
-      </v-tooltip>
-    </span>
-
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip top content-class="top-tooltip" transition="fade-transition">
@@ -94,6 +74,58 @@
         Manage the digital credentials generated for the business.
       </v-tooltip>
     </span>
+
+    <!-- More Actions -->
+    <span v-if="isBusiness && !isHistorical">
+      <v-menu offset-y transition="slide-y-transition" v-model="expand">
+        <template v-slot:activator="{ on }">
+          <v-btn text color="primary" class="menu-btn pr-3" v-on="on">
+            <v-icon v-if="expand">mdi-menu-up</v-icon>
+            <v-icon v-else>mdi-menu-down</v-icon>
+            <span>More Actions</span>
+          </v-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item-group color="primary">
+            <!-- Dissolve Business -->
+            <v-tooltip right content-class="right-tooltip">
+              <template v-slot:activator="{ on }">
+                <v-list-item
+                  id="dissolution-list-item"
+                  v-on="on"
+                  @click="promptDissolve()"
+                  :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
+                >
+                  <v-list-item-title>
+                    <span class="app-blue">Dissolve this Business</span>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              Dissolving the business will make this business historical
+              and it will be struck from the corporate registry.
+            </v-tooltip>
+
+            <!-- Consent to Continue Out -->
+            <v-tooltip right content-class="right-tooltip">
+              <template v-slot:activator="{ on }">
+                <v-list-item
+                  v-if="isBenBcCccUlc || isCoop"
+                  id="cco-list-item"
+                  v-on="on"
+                  @click="goToConsentContinuationOutFiling()"
+                >
+                  <v-list-item-title>
+                    <span class="app-blue">Consent to Continue Out</span>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              Submit a Consent to Continue Out of the province ofB.C.
+            </v-tooltip>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
+    </span>
   </menu>
 </template>
 
@@ -118,10 +150,14 @@ export default class EntityMenu extends Vue {
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getReasonText!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
+
+  private expand = false
 
   // enums for template
   readonly axios = axios
