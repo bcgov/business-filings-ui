@@ -114,6 +114,7 @@
                   id="cco-list-item"
                   v-on="on"
                   @click="goToConsentContinuationOutFiling()"
+                  :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
                 >
                   <v-list-item-title>
                     <span class="app-blue">Consent to Continue Out</span>
