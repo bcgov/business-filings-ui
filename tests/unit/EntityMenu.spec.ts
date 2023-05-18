@@ -18,8 +18,8 @@ const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
-/** To prevent - Unable to locate target [data-app] */
-console.warn = jest.fn()
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
 
 describe('Entity Menu - entities', () => {
   const router = mockRouter.mock()

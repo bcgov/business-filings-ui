@@ -110,7 +110,7 @@
             <v-tooltip right content-class="right-tooltip">
               <template v-slot:activator="{ on }">
                 <v-list-item
-                  v-if="isBenBcCccUlc || isCoop"
+                  v-if="isBenBcCccUlc"
                   id="cco-list-item"
                   v-on="on"
                   @click="goToConsentContinuationOutFiling()"
@@ -121,7 +121,7 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              Submit a Consent to Continue Out of the province ofB.C.
+              Submit a Consent to Continue Out of the province of B.C.
             </v-tooltip>
           </v-list-item-group>
         </v-list>
@@ -158,7 +158,7 @@ export default class EntityMenu extends Vue {
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
-  private expand = false
+  expand = false
 
   // enums for template
   readonly axios = axios
@@ -173,7 +173,7 @@ export default class EntityMenu extends Vue {
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, navigates to the Edit UI to view or change company information.
    */
-  protected promptChangeCompanyInfo (): void {
+  promptChangeCompanyInfo (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
@@ -194,7 +194,7 @@ export default class EntityMenu extends Vue {
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, emits an event to prompt user to confirm voluntary dissolution.
    */
-  protected promptDissolve (): void {
+  promptDissolve (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
       return
@@ -208,7 +208,7 @@ export default class EntityMenu extends Vue {
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  private emitDownloadBusinessSummary (): void {}
+  emitDownloadBusinessSummary (): void {}
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
@@ -217,7 +217,7 @@ export default class EntityMenu extends Vue {
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  private emitViewAddDigitalCredentials (): void {}
+  emitViewAddDigitalCredentials (): void {}
 }
 </script>
 
