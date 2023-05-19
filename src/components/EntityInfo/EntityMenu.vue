@@ -170,7 +170,6 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
    * Otherwise, navigates to the Edit UI to view or change company information.
    */
   promptChangeCompanyInfo (): void {
-  promptChangeCompanyInfo (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
