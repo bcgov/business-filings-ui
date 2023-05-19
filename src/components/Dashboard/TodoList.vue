@@ -1209,7 +1209,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentToken: header.paymentToken || null,
         payErrorObj,
         // FUTURE: ideally, this would come from the filing:
-        warnings: (this.getBusinessWarnings as any).map(warning => warning.message) as any
+        warnings: (this.getBusinessWarnings as any).map(warning => warning.message)
       } as TodoItemIF
       this.todoItems.push(item)
     } else {
