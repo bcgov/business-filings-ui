@@ -110,7 +110,7 @@
             <v-tooltip right content-class="right-tooltip">
               <template v-slot:activator="{ on }">
                 <v-list-item
-                  v-if="isBenBcCccUlc"
+                  v-if="isBenBcCccUlc || isCoop"
                   id="cco-list-item"
                   v-on="on"
                   @click="goToConsentContinuationOutFiling()"
@@ -224,4 +224,9 @@ export default class EntityMenu extends Vue {
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+:deep(.theme--light.v-list-item--disabled) {
+  opacity: 0.38 !important;
+}
+
 </style>
