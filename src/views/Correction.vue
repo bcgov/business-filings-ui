@@ -177,8 +177,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
@@ -190,7 +189,7 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { EnumUtilities, LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -204,24 +203,15 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     SaveErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
-  },
-  mixins: [
-    CommonMixin,
-    DateMixin,
-    EnumMixin,
-    FilingMixin,
-    ResourceLookupMixin
-  ]
+  }
 })
-export default class Correction extends Vue {
+export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
   }
 
-  @Getter(useRootStore) filingData!: Array<FilingDataIF>
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) isRoleStaff!: boolean
@@ -230,38 +220,38 @@ export default class Correction extends Vue {
   readonly FilingCodes = FilingCodes
 
   // variables for DetailComment component
-  private detailComment = ''
-  private detailCommentValid: boolean = null
+  detailComment = ''
+  detailCommentValid: boolean = null
 
   // variables for Certify component
-  private certifiedBy = ''
-  private isCertified = false
-  private certifyFormValid: boolean = null
+  certifiedBy = ''
+  isCertified = false
+  certifyFormValid: boolean = null
 
   // variables for staff payment
-  private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  private staffPaymentDialog = false
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  staffPaymentDialog = false
 
   // variables for displaying dialogs
-  private loadCorrectionDialog = false
-  private resumeErrorDialog = false
-  private saveErrorReason: SaveErrorReasons = null
-  private paymentErrorDialog = false
+  loadCorrectionDialog = false
+  resumeErrorDialog = false
+  saveErrorReason: SaveErrorReasons = null
+  paymentErrorDialog = false
 
   // other variables
-  private totalFee = 0
-  private dataLoaded = false
-  private loadingMessage = ''
-  private filingId = 0 // id of this correction filing
-  private savedFiling: any = null // filing during save
-  private correctedFilingId = 0 // id of filing to correct
-  private origFiling = null // copy of original filing
-  private saving = false // true only when saving
-  private savingResuming = false // true only when saving and resuming
-  private filingPaying = false // true only when filing and paying
-  private haveChanges = false
-  private saveErrors = []
-  private saveWarnings = []
+  totalFee = 0
+  dataLoaded = false
+  loadingMessage = ''
+  filingId = 0 // id of this correction filing
+  savedFiling: any = null // filing during save
+  correctedFilingId = 0 // id of filing to correct
+  origFiling = null // copy of original filing
+  saving = false // true only when saving
+  savingResuming = false // true only when saving and resuming
+  filingPaying = false // true only when filing and paying
+  haveChanges = false
+  saveErrors = []
+  saveWarnings = []
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -331,7 +321,7 @@ export default class Correction extends Vue {
   }
 
   /** Called when component is created. */
-  protected created (): void {
+  created (): void {
     // init
     this.setFilingData([])
 

@@ -23,8 +23,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { useRootStore } from '@/stores'
@@ -43,6 +42,6 @@ export default class DownloadErrorDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Pass click event to parent.
-  @Emit() protected close () {}
+  @Emit() close () {}
 }
 </script>

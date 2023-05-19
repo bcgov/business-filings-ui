@@ -51,8 +51,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
 import { ImportantMessage } from '@/components/common'
 import { DigitalCredentialsIF } from '@/interfaces'
@@ -68,6 +67,6 @@ export default class CredentialsLanding extends Vue {
 
   // Pass add event to parent.
   @Emit('addCredentials')
-  private addCredentials () {}
+  addCredentials () {}
 }
 </script>

@@ -108,7 +108,7 @@ filings.forEach((filing: any, index: number) => {
       // expect(item.isFutureEffectiveIaPending).toBeDefined() // FUTURE: test this more specifically
     })
 
-    itIf(isBcompCoa(filing))('BCOMP change of address filing', () => {
+    itIf(isBcompCoa())('BCOMP change of address filing', () => {
       expect(vm.getFilings.length).toBe(1) // sanity check
 
       // expect(item.isFutureEffectiveCoaPending).toBeDefined()

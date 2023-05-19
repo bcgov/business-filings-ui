@@ -15,10 +15,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
-import { HistoryItemIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
 
 @Component({
@@ -26,7 +24,7 @@ import { DateUtilities } from '@/services'
 })
 export default class LimitedRestorationExtensionFiling extends Vue {
   /** The subject filing. */
-  @Prop({ required: true }) readonly filing!: HistoryItemIF
+  @Prop({ required: true }) readonly filing!: any
 
   /** The expiry date of the limited restoration extension filing. */
   get expiryDateFriendly (): string {

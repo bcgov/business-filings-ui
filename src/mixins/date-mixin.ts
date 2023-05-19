@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiDateTimeUtc, IsoDatePacific } from '@bcrs-shared-components/interfaces'
 import { DateUtilities } from '@/services/'

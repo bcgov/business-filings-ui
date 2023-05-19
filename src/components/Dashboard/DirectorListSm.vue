@@ -66,22 +66,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin, DirectorMixin } from '@/mixins'
 import { DirectorIF, PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
 import { useRootStore } from '@/stores'
 
-@Component({
-  mixins: [
-    CommonMixin,
-    CountriesProvincesMixin,
-    DirectorMixin
-  ]
-})
-export default class DirectorListSm extends Vue {
+@Component({})
+export default class DirectorListSm extends Mixins(CommonMixin, CountriesProvincesMixin, DirectorMixin) {
   /** Whether to display "complete your filing" instead of the director list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 
@@ -104,7 +97,7 @@ export default class DirectorListSm extends Vue {
   }
 
   /** Whether to appear disabled. */
-  protected get disabled (): boolean {
+  get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
 }

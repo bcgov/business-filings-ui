@@ -52,8 +52,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities } from '@/services'
@@ -78,8 +77,8 @@ export default class IncorporationApplication extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter(useBusinessStore) readonly getLegalName!: string
-  @Getter(useConfigurationStore) readonly getMyBusinessRegistryUrl!: string
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
 
   /** Whether this filing is in Complete status. */
   get isStatusCompleted (): boolean {
@@ -104,7 +103,7 @@ export default class IncorporationApplication extends Vue {
     )
   }
 
-  protected returnToMyBusinessRegistry (): void {
+  returnToMyBusinessRegistry (): void {
     navigate(this.getMyBusinessRegistryUrl)
   }
 }

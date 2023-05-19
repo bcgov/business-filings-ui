@@ -80,8 +80,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { DigitalCredentialTypes } from '@/enums'
 import { DigitalCredentialsIF } from '@/interfaces'
 
@@ -92,16 +91,16 @@ export default class IssueCredentials extends Vue {
   @Prop({ default: false }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   readonly DigitalCredentialTypes = DigitalCredentialTypes
-  private isSendingOffer = false
+  isSendingOffer = false
 
   get isPendingAcceptedOffer (): boolean {
     return !this.issuedCredentials[0]?.isIssued
   }
 
-  @Emit() protected back (): void {}
+  @Emit() back (): void {}
 
   @Emit('sendCredentialOffer')
-  protected sendCredentialOffer (credentialType: DigitalCredentialTypes) {
+  sendCredentialOffer (credentialType: DigitalCredentialTypes) {
     this.isSendingOffer = true
     return credentialType
   }

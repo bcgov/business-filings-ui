@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Routes } from '@/enums'
@@ -154,7 +153,7 @@ export default class AllowableActionsMixin extends Vue {
    * @param type the filing subtype to check (optional)
    * @returns True if the specified filing is allowed, else False
    */
-  private isAllowedFiling (name: FilingTypes, type = ''): boolean {
+  isAllowedFiling (name: FilingTypes, type = ''): boolean {
     const filingTypes = this.getAllowedActions?.filing?.filingTypes || []
     return filingTypes.some(ft => {
       if (ft.name !== name) return false

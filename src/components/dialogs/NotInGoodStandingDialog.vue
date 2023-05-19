@@ -66,8 +66,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 import { NigsMessage } from '@/enums'
 
@@ -93,7 +92,7 @@ export default class NotInGoodStandingDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit() protected close () {}
+  @Emit() close () {}
 }
 </script>
 

@@ -17,8 +17,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
@@ -36,7 +35,7 @@ export default class LimitedRestoration extends Vue {
 
   /** The legal name from the restoration filing. */
   get legalName (): string {
-    return this.filing.data?.restoration?.toLegalName || '[unknown]'
+    return this.filing.data?.restoration?.legalName || '[unknown]'
   }
 
   /** The expiry date of the limited restoration filing as a Pacific date. */

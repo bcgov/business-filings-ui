@@ -62,8 +62,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog }
   from '@/components/dialogs'
@@ -82,16 +81,14 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     DownloadErrorDialog,
     FileCorrectionDialog,
     LoadCorrectionDialog
-  },
-  mixins: [FilingMixin]
+  }
 })
-export default class FilingHistoryList extends Vue {
+export default class FilingHistoryList extends Mixins(FilingMixin) {
   @Prop({ default: null }) readonly highlightId!: number
 
   @Getter(useFilingHistoryListStore) getCurrentFiling!: ApiFilingIF
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
-  @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useFilingHistoryListStore) getPanel!: number
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
@@ -125,7 +122,7 @@ export default class FilingHistoryList extends Vue {
   }
 
   /** Returns the name of the sub-component to use for the specified filing. */
-  protected is (filing: ApiFilingIF): string {
+  is (filing: ApiFilingIF): string {
     switch (true) {
       case filing.availableOnPaperOnly: return 'paper-filing' // must come first
       case EnumUtilities.isTypeAlteration(filing): return 'alteration-filing'
@@ -146,7 +143,7 @@ export default class FilingHistoryList extends Vue {
    * Creates a draft correction and redirects to Edit UI.
    * Called by File Correction Dialog
    **/
-  protected async redirectFiling (correctionType: CorrectionTypes): Promise<void> {
+  async redirectFiling (correctionType: CorrectionTypes): Promise<void> {
     try {
       // show spinner since the network calls below can take a few seconds
       this.setFetchingDataSpinner(true)
@@ -186,12 +183,12 @@ export default class FilingHistoryList extends Vue {
    * If there is a filing ID to highlight then it finds it and expands its panel.
    */
   @Watch('getFilings', { immediate: true })
-  private onFilingsChange (): void {
+  onFilingsChange (): void {
     // if needed, highlight a specific filing
     if (this.highlightId) {
       const index = this.getFilings.findIndex(f => (f.filingId === this.highlightId))
       if (index >= 0) { // safety check
-        this.toggleFilingHistoryItem(index, this.getFilings[index])
+        this.toggleFilingHistoryItem(index)
       }
     }
   }

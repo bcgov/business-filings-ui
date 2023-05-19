@@ -58,22 +58,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { PartyIF } from '@/interfaces'
 
-@Component({
-  mixins: [
-    CommonMixin,
-    CountriesProvincesMixin
-  ]
-})
-export default class CustodianListSm extends Vue {
+@Component({})
+export default class CustodianListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   @Prop({ default: () => [] }) readonly custodians!: Array<PartyIF>
 
   /** Return the officer person or org name */
-  protected officerName (party: PartyIF): string {
+  officerName (party: PartyIF): string {
     if (party.officer.firstName) {
       return `${party.officer.firstName} ${party.officer.middleInitial || ''} ${party.officer.lastName}`
     }

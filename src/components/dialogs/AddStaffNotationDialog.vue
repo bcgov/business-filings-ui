@@ -120,8 +120,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -135,10 +134,9 @@ import { useAuthenticationStore, useBusinessStore, useRootStore } from '@/stores
   components: {
     CourtOrderPoa,
     FileUploadPdf
-  },
-  mixins: [DateMixin]
+  }
 })
-export default class AddStaffNotationDialog extends Vue {
+export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   $refs!: Vue['$refs'] & {
     courtOrderPoaRef: FormIF,
     fileUploadRef: FormIF,
@@ -180,15 +178,15 @@ export default class AddStaffNotationDialog extends Vue {
   @Getter(useBusinessStore) isAdminFrozen!: boolean
 
   // Properties
-  protected customErrorMsg = ''
-  protected notation = '' // notation text
-  protected courtOrderNumber = '' // court order number
-  protected planOfArrangement = false // whether filing has plan of arrangement
-  protected saving = false // whether this component is currently saving
-  protected courtOrderPoaKey = 0 // court order component key, to force re-render
-  protected enableValidation = false // flag to enable validation
-  protected file: File = null // court order file object
-  protected fileKey: string = null // court order file key
+  customErrorMsg = ''
+  notation = '' // notation text
+  courtOrderNumber = '' // court order number
+  planOfArrangement = false // whether filing has plan of arrangement
+  saving = false // whether this component is currently saving
+  courtOrderPoaKey = 0 // court order component key, to force re-render
+  enableValidation = false // flag to enable validation
+  file: File = null // court order file object
+  fileKey: string = null // court order file key
 
   /** Whether this filing is an Administrative Dissolution. */
   get isAdministrativeDissolution (): boolean {
@@ -258,7 +256,7 @@ export default class AddStaffNotationDialog extends Vue {
   }
 
   @Watch('notation')
-  private async onNotationChanged (): Promise<void> {
+  async onNotationChanged (): Promise<void> {
     // if this is a court order and notation has changed, re-validate file upload component
     if (this.isCourtOrder && this.enableValidation) {
       await Vue.nextTick() // wait for variables to update
@@ -268,7 +266,7 @@ export default class AddStaffNotationDialog extends Vue {
 
   // NB: watch "fileKey" because it changes according to file validity (while "file" might not)
   @Watch('fileKey')
-  private async onFileKeyChanged (): Promise<void> {
+  async onFileKeyChanged (): Promise<void> {
     // if this is a court order and file has changed, re-validate notation form
     if (this.isCourtOrder && this.enableValidation) {
       await Vue.nextTick() // wait for variables to update
@@ -277,7 +275,7 @@ export default class AddStaffNotationDialog extends Vue {
   }
 
   @Watch('dialog')
-  private onDialogChanged (val: boolean): void {
+  onDialogChanged (val: boolean): void {
     // when dialog is hidden, reset everything
     if (!val) {
       // disable validation
@@ -297,7 +295,7 @@ export default class AddStaffNotationDialog extends Vue {
   }
 
   /** Called when user clicks button to file/save the current filing. */
-  protected async onSave (): Promise<void> {
+  async onSave (): Promise<void> {
     // prevent double saving
     if (this.saving) return
 
@@ -423,7 +421,7 @@ export default class AddStaffNotationDialog extends Vue {
    */
    @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitClose (needReload: boolean): void {}
+  emitClose (needReload: boolean): void {}
 }
 </script>
 

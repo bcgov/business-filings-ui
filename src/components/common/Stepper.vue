@@ -38,8 +38,7 @@
 
 <script lang="ts">
 // Libraries
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { StepsIF } from '@/interfaces'
 
 @Component({})
@@ -47,11 +46,11 @@ export default class Stepper extends Vue {
   /** The required steps. */
   @Prop({ required: true }) readonly getSteps!: Array<StepsIF>
 
-  protected goTo (step) {
+  goTo (step) {
     this.$router.push(step.to).catch(() => {})
   }
 
-  protected isCurrentStep (step): boolean {
+  isCurrentStep (step): boolean {
     return this.$route.fullPath === step.to
   }
 }

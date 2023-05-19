@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import FiledLabel from '../FiledLabel.vue'

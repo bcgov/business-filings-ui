@@ -83,21 +83,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { PartyIF } from '@/interfaces'
 import { Roles } from '@/enums'
 import { useBusinessStore, useRootStore } from '@/stores'
 
-@Component({
-  mixins: [
-    CommonMixin,
-    CountriesProvincesMixin
-  ]
-})
-export default class ProprietorPartnersListSm extends Vue {
+@Component({})
+export default class ProprietorPartnersListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the proprietor / partners list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 
@@ -123,12 +117,12 @@ export default class ProprietorPartnersListSm extends Vue {
   }
 
   /** Whether to appear disabled. */
-  protected get disabled (): boolean {
+  get disabled (): boolean {
     return (this.showCompleteYourFilingMessage || this.showGrayedOut)
   }
 
   /** Returns formatted officer name or organization name. */
-  protected officerName (party: PartyIF): string {
+  officerName (party: PartyIF): string {
     if (party.officer.firstName) {
       return `${party.officer.firstName} ${party.officer.middleInitial || ''} ${party.officer.lastName}`
     }

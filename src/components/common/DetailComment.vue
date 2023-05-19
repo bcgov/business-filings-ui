@@ -16,8 +16,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
@@ -49,7 +48,7 @@ export default class DetailComment extends Vue {
   @Prop({ default: false }) readonly autofocus!: boolean
 
   /** Called when component is created. */
-  protected created (): void {
+  created (): void {
     // inform parent of initial validity
     this.emitValid(this.value)
   }
@@ -60,18 +59,18 @@ export default class DetailComment extends Vue {
    */
   @Watch('value')
   @Debounce(300)
-  private onValueChanged (val: string): void {
+  onValueChanged (val: string): void {
     this.emitValid(val)
   }
 
   /** Emits an event with the changed comment (ie, updated v-model). */
   @Emit('input')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitInput (val: string): void {}
+  emitInput (val: string): void {}
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')
-  private emitValid (val: string): boolean {
+  emitValid (val: string): boolean {
     // component is valid if every rule is valid
     return this.rules.every(rule => rule(val) === true)
   }

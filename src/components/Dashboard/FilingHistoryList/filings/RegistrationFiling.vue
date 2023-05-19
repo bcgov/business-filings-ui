@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
@@ -37,14 +36,14 @@ export default class RegistrationFiling extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Getter(useBusinessStore) readonly getLegalName!: string
-  @Getter(useConfigurationStore) readonly getMyBusinessRegistryUrl!: string
+  @Getter(useBusinessStore) getLegalName!: string
+  @Getter(useConfigurationStore) getMyBusinessRegistryUrl!: string
 
   get isStatusCompleted (): boolean {
     return EnumUtilities.isStatusCompleted(this.filing)
   }
 
-  protected returnToMyBusinessRegistry (): void {
+  returnToMyBusinessRegistry (): void {
     navigate(this.getMyBusinessRegistryUrl)
   }
 }

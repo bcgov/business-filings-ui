@@ -18,8 +18,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { DateTooltip } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'

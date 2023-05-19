@@ -435,8 +435,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { navigate } from '@/utils'
@@ -475,31 +474,26 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     PaymentPending,
     PaymentPendingOnlineBanking,
     PaymentUnsuccessful
-  },
-  mixins: [
-    AllowableActionsMixin,
-    DateMixin,
-    EnumMixin
-  ]
+  }
 })
-export default class TodoList extends Vue {
+export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, EnumMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
   }
 
   // local properties
-  protected todoItems: Array<TodoItemIF> = []
-  protected deleteErrors: Array<any> = []
-  protected deleteWarnings: Array<any> = []
-  protected deleteErrorDialog = false
-  protected cancelPaymentErrors: Array<any> = []
-  protected cancelPaymentErrorDialog = false
-  protected enableCheckbox: Array<any> = []
-  protected confirmEnabled = false
-  protected panel: number = null // currently expanded panel
-  protected checkTimer: number = null
-  protected inProcessFiling: number = null
+  todoItems: Array<TodoItemIF> = []
+  deleteErrors: Array<any> = []
+  deleteWarnings: Array<any> = []
+  deleteErrorDialog = false
+  cancelPaymentErrors: Array<any> = []
+  cancelPaymentErrorDialog = false
+  enableCheckbox: Array<any> = []
+  confirmEnabled = false
+  panel: number = null // currently expanded panel
+  checkTimer: number = null
+  inProcessFiling: number = null
 
   @Prop({ default: null }) readonly highlightId!: number
 
@@ -508,7 +502,6 @@ export default class TodoList extends Vue {
   @Getter(useBusinessStore) getBusinessWarnings!: BusinessWarningIF
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
-  @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getNameRequest!: any
   @Getter(useConfigurationStore) getPayApiUrl!: string
@@ -516,7 +509,7 @@ export default class TodoList extends Vue {
   @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isGoodStanding!: boolean
+  @Getter(useBusinessStore) isSoleProp!: boolean
 
   @Action(useRootStore) setARFilingYear!: ActionBindingIF
   @Action(useRootStore) setArMinDate!: ActionBindingIF
@@ -563,13 +556,13 @@ export default class TodoList extends Vue {
   }
 
   /** Whether to show the invalid section styling. */
-  protected showInvalidSection (item: TodoItemIF): boolean {
+  showInvalidSection (item: TodoItemIF): boolean {
     if (item.isAlteringToBen && !this.isGoodStanding) return true
     return false
   }
 
   /** Whether to show the Annual Report verify checkbox. */
-  protected showAnnualReportCheckbox (item: TodoItemIF): boolean {
+  showAnnualReportCheckbox (item: TodoItemIF): boolean {
     return (
       item.enabled &&
       this.businessId &&
@@ -580,7 +573,7 @@ export default class TodoList extends Vue {
   }
 
   /** Whether the File Annual Report button should be disabled. */
-  protected isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
+  isFileAnnualReportDisabled (item: TodoItemIF, index: number): boolean {
     return (
       !item.enabled ||
       (this.isBenBcCccUlc && !this.enableCheckbox[index]) ||
@@ -589,7 +582,7 @@ export default class TodoList extends Vue {
   }
 
   /** Whether to show the details button with blue color. */
-  protected showDetailsBtnBlue (item: TodoItemIF): boolean {
+  showDetailsBtnBlue (item: TodoItemIF): boolean {
     if (this.isStatusNew(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeConversion(item)) return true
     if (this.isStatusDraft(item) && this.isTypeIncorporationApplication(item) &&
@@ -601,7 +594,7 @@ export default class TodoList extends Vue {
   }
 
   /** Whether to show the details button with red color. */
-  protected showDetailsBtnRed (item: TodoItemIF): boolean {
+  showDetailsBtnRed (item: TodoItemIF): boolean {
     if (this.isStatusDraft(item) && this.isTypeCorrection(item)) return true
     if (this.isStatusDraft(item) && this.isPayError(item)) return true
     if (this.isStatusError(item) && (this.inProcessFiling !== item.filingId)) return true
@@ -610,7 +603,7 @@ export default class TodoList extends Vue {
   }
 
   /** Loads list of tasks from the API into Todo Items array. */
-  private async loadData (): Promise<void> {
+  async loadData (): Promise<void> {
     this.todoItems = []
 
     // create 'task items' list from 'tasks' array from API
@@ -636,7 +629,7 @@ export default class TodoList extends Vue {
    * Identifies the specified task as "in progress" and starts a
    * process to check if the task changes to a completed filing.
    */
-  private highlightTask (id: number): void {
+  highlightTask (id: number): void {
     // first ensure filing is in todo list
     const index = this.todoItems.findIndex(h => h.filingId === id)
     if (index >= 0) {
@@ -651,7 +644,7 @@ export default class TodoList extends Vue {
    * Checks whether the subject filing is now Completed.
    * Retries after 1 second for up to 5 iterations.
    */
-  private checkIfCompleted (id: number, count: number): void {
+  checkIfCompleted (id: number, count: number): void {
     // stop this cycle after 5 iterations
     if (++count > 5) {
       this.inProcessFiling = null
@@ -676,7 +669,7 @@ export default class TodoList extends Vue {
   }
 
   /** Loads a todo item into the Todo Items array. */
-  private loadTodoItem (task: ApiTaskIF): void {
+  loadTodoItem (task: ApiTaskIF): void {
     const todo = task.task.todo // already checked for not falsey in loadData()
     const header = todo.header
 
@@ -700,7 +693,7 @@ export default class TodoList extends Vue {
   }
 
   /** Loads a NEW Annual Report todo. */
-  private loadAnnualReportTodo (task: ApiTaskIF): void {
+  loadAnnualReportTodo (task: ApiTaskIF): void {
     const todo = task.task.todo
     const business = todo.business
     const header = todo.header
@@ -738,7 +731,7 @@ export default class TodoList extends Vue {
   }
 
   /** Loads a NEW Conversion todo. */
-  private loadConversionTodo (task: ApiTaskIF): void {
+  loadConversionTodo (task: ApiTaskIF): void {
     if (!this.isRoleStaff) return // regular users can't file a new conversion
 
     const todo = task.task.todo
@@ -764,7 +757,7 @@ export default class TodoList extends Vue {
   }
 
   /** Loads a filing item into the Todo Items array. */
-  private async loadFilingItem (task: ApiTaskIF): Promise<void> {
+  async loadFilingItem (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing // already checked for not falsey in loadData()
     const header = filing.header
 
@@ -823,7 +816,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadDissolution (task: ApiTaskIF): Promise<void> {
+  async loadDissolution (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const dissolution = filing.dissolution
     const business = filing.business
@@ -861,7 +854,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadAlteration (task: ApiTaskIF): Promise<void> {
+  async loadAlteration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const alteration = filing.alteration
     const business = filing.business
@@ -918,7 +911,7 @@ export default class TodoList extends Vue {
    * Loads a DRAFT/PENDING/ERROR/PAID Annual Report filing.
    * (Currently used for Coop ARs only, as BEN/BC/CCC/ULC can't save draft ARs.)
    */
-  private async loadAnnualReport (task: ApiTaskIF): Promise<void> {
+  async loadAnnualReport (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const annualReport = filing.annualReport
     const business = filing.business
@@ -952,7 +945,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadChangeOfDirectors (task: ApiTaskIF): Promise<void> {
+  async loadChangeOfDirectors (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const business = filing.business
     const header = filing.header
@@ -981,7 +974,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadChangeOfAddress (task: ApiTaskIF): Promise<void> {
+  async loadChangeOfAddress (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const business = filing.business
     const changeOfAddress = filing.changeOfAddress
@@ -1010,7 +1003,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadCorrection (task: ApiTaskIF): Promise<void> {
+  async loadCorrection (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const business = filing.business
     const correction = filing.correction
@@ -1027,9 +1020,9 @@ export default class TodoList extends Vue {
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
         // Corrections on Alterations always have a correctedFilingType of Alteration -> alterationRequired = true
-        correctedFilingType: EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true),
+        correctedFilingType: EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, null),
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
-          EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, true)),
+          EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, null)),
         draftTitle: EnumUtilities.filingTypeToName(FilingTypes.CORRECTION),
         status: header.status,
         enabled: task.enabled,
@@ -1046,7 +1039,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
+  async loadIncorporationApplication (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const incorporationApplication = filing.incorporationApplication
@@ -1098,7 +1091,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadRegistration (task: ApiTaskIF): Promise<void> {
+  async loadRegistration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const registration = filing.registration
@@ -1153,7 +1146,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadChangeOfRegistration (task: ApiTaskIF): Promise<void> {
+  async loadChangeOfRegistration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const changeOfRegistration = filing.changeOfRegistration
@@ -1195,7 +1188,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadConversion (task: ApiTaskIF): Promise<void> {
+  async loadConversion (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const conversion = filing.conversion
@@ -1204,7 +1197,7 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
-      const item: TodoItemIF = {
+      const item = {
         name: FilingTypes.CONVERSION,
         filingId: header.filingId,
         title: FilingNames.CONVERSION, // FUTURE: enhance title (and subtitle?) if needed
@@ -1216,8 +1209,8 @@ export default class TodoList extends Vue {
         paymentToken: header.paymentToken || null,
         payErrorObj,
         // FUTURE: ideally, this would come from the filing:
-        warnings: this.getBusinessWarnings.map(warning => warning.message)
-      }
+        warnings: (this.getBusinessWarnings as any).map(warning => warning.message) as any
+      } as TodoItemIF
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
@@ -1225,7 +1218,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadConsentContinuationOut (task: ApiTaskIF): Promise<void> {
+  async loadConsentContinuationOut (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const consentContinuationOut = filing.consentContinuationOut
@@ -1234,7 +1227,7 @@ export default class TodoList extends Vue {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
-      const item: TodoItemIF = {
+      const item = {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
         filingId: header.filingId,
         title: FilingNames.CONSENT_CONTINUATION_OUT,
@@ -1246,8 +1239,8 @@ export default class TodoList extends Vue {
         paymentToken: header.paymentToken || null,
         payErrorObj,
         // FUTURE: ideally, this would come from the filing:
-        warnings: this.getBusinessWarnings.map(warning => warning.message)
-      }
+        warnings: (this.getBusinessWarnings as any).map(warning => warning.message)
+      } as TodoItemIF
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
@@ -1255,7 +1248,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadSpecialResolution (task: ApiTaskIF): Promise<void> {
+  async loadSpecialResolution (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const business = filing.business
@@ -1292,7 +1285,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private async loadRestoration (task: ApiTaskIF): Promise<void> {
+  async loadRestoration (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
     const business = filing.business
@@ -1332,7 +1325,7 @@ export default class TodoList extends Vue {
     }
   }
 
-  private expiresText (nameRequest: any): string {
+  expiresText (nameRequest: any): string {
     const date = this.apiToDate(nameRequest.expirationDate)
     const expireDays = this.daysFromToday(date)
     // NB: 0 means NR expires today
@@ -1348,7 +1341,7 @@ export default class TodoList extends Vue {
   }
 
   /** Files a new filing (todo item). */
-  protected doFileNow (item: TodoItemIF): void {
+  doFileNow (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // file the subject Annual Report
@@ -1372,7 +1365,7 @@ export default class TodoList extends Vue {
   }
 
   /** Resumes a draft filing. */
-  protected doResumeFiling (item: TodoItemIF): void {
+  doResumeFiling (item: TodoItemIF): void {
     switch (item.name) {
       case FilingTypes.ANNUAL_REPORT:
         // resume this Annual Report locally
@@ -1487,19 +1480,24 @@ export default class TodoList extends Vue {
       case FilingTypes.RESTORATION: {
         let restorationType: string
 
-        if (item.filingSubType === RestorationTypes.FULL) {
+        /**
+         * Type assertion is done to fix TypeScript error.
+         * "This condition will always return 'false' since the types
+         * 'FilingSubTypes' and 'RestorationTypes' have no overlap."
+         */
+        if ((item.filingSubType as any) === (RestorationTypes.FULL as any)) {
           restorationType = RestorationTypes.FULL
         }
 
-        if (item.filingSubType === RestorationTypes.LIMITED) {
+        if ((item.filingSubType as any) === (RestorationTypes.LIMITED as any)) {
           restorationType = RestorationTypes.LIMITED
         }
 
-        if (item.filingSubType === RestorationTypes.LTD_EXTEND) {
+        if ((item.filingSubType as any) === (RestorationTypes.LTD_EXTEND as any)) {
           restorationType = RestorationTypes.LTD_EXTEND
         }
 
-        if (item.filingSubType === RestorationTypes.LTD_TO_FULL) {
+        if ((item.filingSubType as any) === (RestorationTypes.LTD_TO_FULL as any)) {
           restorationType = RestorationTypes.LTD_TO_FULL
         }
 
@@ -1549,7 +1547,7 @@ export default class TodoList extends Vue {
   }
 
   // this is called for both Resume Payment and Retry Payment
-  protected doResumePayment (item: TodoItemIF): boolean {
+  doResumePayment (item: TodoItemIF): boolean {
     const paymentToken = item.paymentToken
 
     const returnUrl = encodeURIComponent(this.baseUrl + '?filing_id=' + item.filingId)
@@ -1559,7 +1557,7 @@ export default class TodoList extends Vue {
     return true
   }
 
-  protected confirmDeleteDraft (item: TodoItemIF): void {
+  confirmDeleteDraft (item: TodoItemIF): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Delete Draft?',
@@ -1583,7 +1581,7 @@ export default class TodoList extends Vue {
     })
   }
 
-  protected confirmDeleteApplication (item: TodoItemIF): void {
+  confirmDeleteApplication (item: TodoItemIF): void {
     const line1 = `Deleting this ${item.draftTitle} will remove this application and all information ` +
       'associated with this application.'
     const line2 = this.getNameRequest
@@ -1624,7 +1622,7 @@ export default class TodoList extends Vue {
     })
   }
 
-  private async doDeleteDraft (item: TodoItemIF, refreshDashboard = true): Promise<void> {
+  async doDeleteDraft (item: TodoItemIF, refreshDashboard = true): Promise<void> {
     const id = this.getIdentifier || this.tempRegNumber
     const url = `businesses/${id}/filings/${item.filingId}`
 
@@ -1650,18 +1648,18 @@ export default class TodoList extends Vue {
     })
   }
 
-  protected resetErrors (): void {
+  resetErrors (): void {
     this.deleteErrorDialog = false
     this.deleteErrors = []
     this.deleteWarnings = []
   }
 
-  protected resetCancelPaymentErrors (): void {
+  resetCancelPaymentErrors (): void {
     this.cancelPaymentErrorDialog = false
     this.cancelPaymentErrors = []
   }
 
-  protected confirmCancelPayment (item: TodoItemIF): void {
+  confirmCancelPayment (item: TodoItemIF): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Cancel Payment?',
@@ -1685,7 +1683,7 @@ export default class TodoList extends Vue {
     })
   }
 
-  private async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
+  async cancelPaymentAndSetToDraft (item: TodoItemIF): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${item.filingId}`
 
     await axios.patch(url, {}).then(res => {
@@ -1705,30 +1703,30 @@ export default class TodoList extends Vue {
     })
   }
 
-  protected isPayError (item: TodoItemIF): boolean {
+  isPayError (item: TodoItemIF): boolean {
     return !!item.payErrorObj
   }
 
-  private priorityCorrectionTitle (priority: boolean): string {
+  priorityCorrectionTitle (priority: boolean): string {
     let title = priority ? 'Priority ' : ''
     title += EnumUtilities.filingTypeToName(FilingTypes.CORRECTION)
     return title
   }
 
-  private specialResolutionTitle (priority: boolean): string {
+  specialResolutionTitle (priority: boolean): string {
     let title = priority ? 'Priority ' : ''
     title += EnumUtilities.filingTypeToName(FilingTypes.SPECIAL_RESOLUTION)
     return title
   }
 
   @Watch('getTasks', { immediate: true })
-  private async onTasksChanged (): Promise<void> {
+  async onTasksChanged (): Promise<void> {
     // load data initially and when tasks list changes
     await this.loadData()
   }
 
   /** Called just before this component is destroyed. */
-  protected beforeDestroy (): void {
+  beforeDestroy (): void {
     // cancel the check timer if it is running
     clearTimeout(this.checkTimer)
   }

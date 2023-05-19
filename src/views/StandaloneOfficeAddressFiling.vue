@@ -189,8 +189,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
@@ -202,7 +201,7 @@ import { ConfirmDialog, FetchErrorDialog, PaymentErrorDialog, ResumeErrorDialog,
 import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -216,55 +215,47 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     ResumeErrorDialog,
     SaveErrorDialog,
     StaffPaymentDialog
-  },
-  mixins: [
-    CommonMixin,
-    DateMixin,
-    FilingMixin,
-    ResourceLookupMixin
-  ]
+  }
 })
-export default class StandaloneOfficeAddressFiling extends Vue {
+export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, DateMixin,
+  FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,
     officeAddressesComponent: OfficeAddresses
   }
 
-  @Getter(useRootStore) filingData!: Array<FilingDataIF>
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // local variables
-  private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
-  private filingId: number = null
-  private savedFiling: any = null // filing during save
-  private loadingMessage = ''
-  private dataLoaded = false
-  private isFetching = false
-  private fetchErrorDialog = false
-  private paymentErrorDialog = false
-  private resumeErrorDialog = false
-  private saveErrorReason: SaveErrorReasons = null
-  private staffPaymentDialog = false
-  private coaDate = ''
-  private isCertified = false
-  private certifiedBy = ''
-  private certifyFormValid = false
-  private addressesFormValid: boolean = null
-  private saving = false // true only when saving
-  private savingResuming = false // true only when saving and resuming
-  private filingPaying = false // true only when filing and paying
-  private haveChanges = false
-  private saveErrors = []
-  private saveWarnings = []
-  private totalFee = 0
-  private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
+  filingId: number = null
+  savedFiling: any = null // filing during save
+  loadingMessage = ''
+  dataLoaded = false
+  isFetching = false
+  fetchErrorDialog = false
+  paymentErrorDialog = false
+  resumeErrorDialog = false
+  saveErrorReason: SaveErrorReasons = null
+  staffPaymentDialog = false
+  coaDate = ''
+  isCertified = false
+  certifiedBy = ''
+  certifyFormValid = false
+  addressesFormValid: boolean = null
+  saving = false // true only when saving
+  savingResuming = false // true only when saving and resuming
+  filingPaying = false // true only when filing and paying
+  haveChanges = false
+  saveErrors = []
+  saveWarnings = []
+  totalFee = 0
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -308,7 +299,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
   }
 
   /** Called when component is created. */
-  protected created (): void {
+  created (): void {
     // init
     this.setFilingData([])
 
@@ -370,7 +361,7 @@ export default class StandaloneOfficeAddressFiling extends Vue {
   }
 
   /** Called just before this component is destroyed. */
-  protected beforeDestroy (): void {
+  beforeDestroy (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
   }

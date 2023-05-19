@@ -131,8 +131,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
@@ -142,10 +141,9 @@ import { navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
-  components: { StaffComments },
-  mixins: [AllowableActionsMixin]
+  components: { StaffComments }
 })
-export default class EntityMenu extends Vue {
+export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly businessId!: string // may be null
 
   @Getter(useConfigurationStore) getEditUrl!: string
@@ -153,8 +151,6 @@ export default class EntityMenu extends Vue {
   @Getter(useRootStore) getReasonText!: string
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
-  @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
@@ -173,6 +169,7 @@ export default class EntityMenu extends Vue {
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, navigates to the Edit UI to view or change company information.
    */
+  promptChangeCompanyInfo (): void {
   promptChangeCompanyInfo (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
@@ -204,7 +201,7 @@ export default class EntityMenu extends Vue {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  private emitConfirmDissolution (): void {}
+  emitConfirmDissolution (): void {}
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
@@ -213,7 +210,7 @@ export default class EntityMenu extends Vue {
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitNotInGoodStanding (message: NigsMessage): void {}
+  emitNotInGoodStanding (message: NigsMessage): void {}
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')

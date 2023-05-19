@@ -3,8 +3,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import SbcSignout from 'sbc-common-components/src/components/SbcSignout.vue'
 import { Getter } from 'pinia-class'
 import { useConfigurationStore } from '@/stores'

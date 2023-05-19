@@ -49,8 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { isNotNull, isValidFormat, isValidCodDate } from '@/validators'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
@@ -59,10 +58,9 @@ import { useBusinessStore, useRootStore } from '@/stores'
 @Component({
   validations: {
     dateFormatted: { isNotNull, isValidFormat, isValidCodDate }
-  },
-  mixins: [DateMixin]
+  }
 })
-export default class CodDate extends Vue {
+export default class CodDate extends Mixins(DateMixin) {
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialCodDate!: string
 
@@ -73,9 +71,9 @@ export default class CodDate extends Vue {
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   // Local properties.
-  protected date = '' // bound to date picker
-  protected dateFormatted = '' // bound to text field
-  protected menu = false // bound to calendar menu
+  date = '' // bound to date picker
+  dateFormatted = '' // bound to text field
+  menu = false // bound to calendar menu
 
   /** The array of validations rules for the COD Date text field. */
   get codDateRules (): Array<(v) => boolean | string> {
@@ -110,7 +108,7 @@ export default class CodDate extends Vue {
   }
 
   /** Called when component is mounted. */
-  private mounted (): void {
+  mounted (): void {
     // load initial data
     this.dateFormatted = this.formatDate(this.initialCodDate)
   }
@@ -119,7 +117,7 @@ export default class CodDate extends Vue {
    * Local helper to change date from YYYY-MM-DD to YYYY/MM/DD.
    * @returns The formatted date.
    */
-  private formatDate (date: string, validate = true): string {
+  formatDate (date: string, validate = true): string {
     if (validate && !this.isValidDate(date, '-')) return ''
     const [year, month, day] = date.split('-')
     return `${year}/${month}/${day}`
@@ -129,7 +127,7 @@ export default class CodDate extends Vue {
    * Local helper to change date from YYYY/MM/DD to YYYY-MM-DD.
    * @returns The parsed date.
    */
-  private parseDate (date: string): string {
+  parseDate (date: string): string {
     // changes date from YYYY/MM/DD to YYYY-MM-DD
     if (!this.isValidDate(date, '/')) return ''
     const [year, month, day] = date.split('/')
@@ -140,7 +138,7 @@ export default class CodDate extends Vue {
    * Local helper to determine if passed-in date is valid.
    * @returns True if date is valid, otherwise false.
    */
-  private isValidDate (date, separator): boolean {
+  isValidDate (date, separator): boolean {
     return (isNotNull.call(this, date) &&
       isValidFormat.call(this, date, separator) &&
       isValidCodDate.call(this, date, separator))
@@ -150,7 +148,7 @@ export default class CodDate extends Vue {
    * When prop changes, load (initial) data.
    */
   @Watch('initialCodDate')
-  private onInitialCodChanged (val: string): void {
+  onInitialCodChanged (val: string): void {
     if (val) {
       this.dateFormatted = this.formatDate(val)
     }
@@ -160,7 +158,7 @@ export default class CodDate extends Vue {
    * When text field changes, update date picker.
    */
   @Watch('dateFormatted')
-  private onDateFormattedChanged (val: string): void {
+  onDateFormattedChanged (val: string): void {
     this.date = this.parseDate(val)
   }
 
@@ -168,7 +166,7 @@ export default class CodDate extends Vue {
    * When date picker changes, update text field etc.
    */
   @Watch('date')
-  private onDateChanged (val: string): void {
+  onDateChanged (val: string): void {
     const codDate = this.isValidDate(val, '-') ? val : null
     // only update text field if date is valid
     // this is to retain previous invalid values
@@ -184,14 +182,14 @@ export default class CodDate extends Vue {
    */
   @Emit('codDate')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitCodDate (val: string): void {}
+  emitCodDate (val: string): void {}
 
   /**
    * Emits an event indicating whether or not this component is valid.
    */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitValid (val: boolean): void {}
+  emitValid (val: boolean): void {}
 }
 </script>
 

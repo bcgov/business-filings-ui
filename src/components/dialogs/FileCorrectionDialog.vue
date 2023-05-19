@@ -33,8 +33,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit, Watch } from 'vue-property-decorator'
+import { Component, Prop, Emit, Watch, Vue } from 'vue-property-decorator'
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
@@ -53,7 +52,7 @@ export default class FileCorrectionDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   /** Check off buttons to confirm correction type */
-  protected checkToStart () {
+  checkToStart () {
     if (this.correctionType === null) {
       this.hasChosenCorrection = false
     } else {
@@ -64,7 +63,7 @@ export default class FileCorrectionDialog extends Vue {
 
   /** Called when payment option (radio group item) has changed. */
   @Watch('correctionType')
-  private onCorrectionTypeChanged (val: string): void {
+  onCorrectionTypeChanged (val: string): void {
     switch (val) {
       case CorrectionTypes.CLIENT:
         this.correctionType = CorrectionTypes.CLIENT
@@ -80,7 +79,7 @@ export default class FileCorrectionDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit() protected exit () {
+  @Emit() exit () {
     this.hasChosenCorrection = true
     this.correctionType = null
   }
@@ -90,7 +89,7 @@ export default class FileCorrectionDialog extends Vue {
    * Redirect to start correction.
    */
   @Emit('redirect')
-  private emitRedirect (correctionType: CorrectionTypes): void {}
+  emitRedirect (correctionType: CorrectionTypes): void {}
 }
 </script>
 

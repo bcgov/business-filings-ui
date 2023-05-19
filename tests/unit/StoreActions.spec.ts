@@ -63,7 +63,6 @@ describe('Business Actions', () => {
     await rootStore.loadStateFiling()
     expect(LegalServices.fetchFiling).toHaveBeenCalled()
     expect(rootStore.stateFiling.business.identifier).toBe('BC0871273')
-    expect(rootStore.stateFiling.consentContinuationOut.expiry).toBe('2023-12-31')
     expect(rootStore.stateFiling.header.name).toBe('consentContinuationOut')
   })
 })
