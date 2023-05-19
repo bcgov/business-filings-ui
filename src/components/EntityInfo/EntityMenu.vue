@@ -150,7 +150,6 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getReasonText!: string
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
