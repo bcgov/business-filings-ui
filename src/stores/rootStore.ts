@@ -79,19 +79,24 @@ export const useRootStore = defineStore('root', {
       return null
     },
 
+    /** The roles from the Keycloak token (JWT). */
+    getKeycloakRoles (state: StateIF): Array<string> {
+      return state.keycloakRoles
+    },
+
     /** Is True if Staff role is set.
-     * DEPRECATED - use authentication/isKeyCloakRoleStaff() instead
+     * DEPRECATED - use authentication/isKeycloakRoleStaff() instead
      */
     isRoleStaff (state: StateIF): boolean {
       return state.keycloakRoles.includes('staff')
     },
 
-    /** Is True if Edit role is set. */
+    /** Is True if app permissions includes Edit role. */
     isRoleEdit (state: StateIF): boolean {
       return state.authRoles.includes('edit')
     },
 
-    /** Is True if View role is set. */
+    /** Is True if app permission includes View role. */
     isRoleView (state: StateIF): boolean {
       return state.authRoles.includes('view')
     },
@@ -255,6 +260,7 @@ export const useRootStore = defineStore('root', {
       this.stateFiling = stateFilingResponse
     },
 
+    /** Set the roles from the Keycloak token (JWT). */
     setKeycloakRoles (keycloakRoles: Array<string>) {
       this.keycloakRoles = keycloakRoles
     },
@@ -263,6 +269,7 @@ export const useRootStore = defineStore('root', {
       this.userKeycloakGuid = userKeycloakGuid
     },
 
+    /** Set the app permissions. */
     setAuthRoles (authRoles: Array<string>) {
       this.authRoles = authRoles
     },

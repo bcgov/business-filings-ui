@@ -216,6 +216,7 @@ export default {
 
     ...mapState(useRootStore,
       [
+        'getKeycloakRoles',
         'isRoleStaff',
         'showFetchingDataSpinner'
       ]),
@@ -374,7 +375,7 @@ export default {
       try {
         // get Keycloak roles
         const jwt = this.getJWT()
-        const keycloakRoles = this.getKeycloakRoles(jwt)
+        const keycloakRoles = this.fetchKeycloakRoles(jwt)
         this.setKeycloakRoles(keycloakRoles)
 
         // safety check
@@ -515,8 +516,8 @@ export default {
       }
     },
 
-    /** Gets Keycloak roles from JWT. */
-    getKeycloakRoles (jwt: any): Array<string> {
+    /** Fetches Keycloak roles from JWT. */
+    fetchKeycloakRoles (jwt: any): Array<string> {
       const keycloakRoles = jwt.roles
       if (keycloakRoles && keycloakRoles.length > 0) {
         return keycloakRoles
@@ -541,8 +542,8 @@ export default {
       const email: string = userInfo.contacts[0]?.email || userInfo.email
       const firstName: string = userInfo?.firstname
       const lastName: string = userInfo?.lastname
-      // remove leading { and trailing } and tokenize string
-      const custom: any = { roles: userInfo.roles?.slice(1, -1).split(',') }
+      // store Keycloak roles in custom object
+      const custom = { roles: this.getKeycloakRoles } as any
 
       await UpdateLdUser(key, email, firstName, lastName, custom)
     },
@@ -659,7 +660,7 @@ export default {
       this.storeParties({ data: { parties: application.parties || [] } })
 
       // add this as a filing (for Filing History List)
-      const filingItem: ApiFilingIF = {
+      const filingItem = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: this.getIdentifier,
         commentsCount: filedApplication.commentsCount,
@@ -678,7 +679,7 @@ export default {
           applicationDate: this.dateToYyyyMmDd(this.apiToDate(header.date)),
           legalFilings: [header.name]
         }
-      }
+      } as ApiFilingIF
       this.setFilings([filingItem])
     },
 
