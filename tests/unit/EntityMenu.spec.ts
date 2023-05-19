@@ -18,6 +18,9 @@ const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
 describe('Entity Menu - entities', () => {
   const router = mockRouter.mock()
 
@@ -41,7 +44,7 @@ describe('Entity Menu - entities', () => {
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
     expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(false)
-    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
+    expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
 
@@ -77,7 +80,7 @@ describe('Entity Menu - entities', () => {
     expect(wrapper.findComponent(StaffComments).exists()).toBe(true)
     expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(true)
-    expect(wrapper.find('#dissolution-button').exists()).toBe(true)
+    expect(wrapper.find('.menu-btn').exists()).toBe(true)
     expect(wrapper.find('#download-summary-button').exists()).toBe(true)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
 
@@ -112,7 +115,7 @@ describe('Entity Menu - entities', () => {
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
     expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(false)
-    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
+    expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
     expect(wrapper.find('#view-add-digital-credentials-button').exists()).toBe(false)
 
@@ -329,62 +332,11 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
 
-    const button = wrapper.find('#dissolution-button')
-    expect(button.exists()).toBe(true)
-    expect(button.text()).toBe('Dissolve this Business')
-    expect(button.classes()).not.toContain('v-btn--disabled') // enabled
-
-    wrapper.destroy()
-  })
-
-  it('does not display the button if not a business', async () => {
-    businessStore.setState(EntityState.ACTIVE)
-
-    // mount the component and wait for everything to stabilize
-    const wrapper = mount(EntityMenu, {
-      vuetify,
-      mixins: [{ methods: { isAllowed: () => true } }],
-      propsData: { businessId: null }
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('does not display the button if historical', async () => {
-    businessStore.setState(EntityState.HISTORICAL)
-
-    // mount the component and wait for everything to stabilize
-    const wrapper = mount(EntityMenu, {
-      vuetify,
-      mixins: [{ methods: { isAllowed: () => true } }],
-      propsData: { businessId: 'BC1234567' }
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.find('#dissolution-button').exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('displays the button as disabled if not allowed', async () => {
-    businessStore.setState(EntityState.ACTIVE)
-
-    // mount the component and wait for everything to stabilize
-    const wrapper = mount(EntityMenu, {
-      vuetify,
-      mixins: [{ methods: { isAllowed: () => false } }],
-      propsData: { businessId: 'BC1234567' }
-    })
-    await Vue.nextTick()
-
-    const button = wrapper.find('#dissolution-button')
-    expect(button.exists()).toBe(true)
-    expect(button.classes()).toContain('v-btn--disabled')
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.find('#dissolution-list-item').exists()).toBe(true)
+    expect(wrapper.find('#dissolution-list-item').text()).toBe('Dissolve this Business')
+    expect(wrapper.find('#dissolution-list-item').classes()).not.toContain('v-btn--disabled') // enabled
 
     wrapper.destroy()
   })
@@ -399,10 +351,11 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
+
+    await wrapper.find('.menu-btn').trigger('click')
 
     // click the button and verify emitted event
-    await wrapper.find('#dissolution-button').trigger('click')
+    await wrapper.find('#dissolution-list-item').trigger('click')
     expect(wrapper.emitted().confirmDissolution).toEqual([[]])
 
     wrapper.destroy()
@@ -418,10 +371,11 @@ describe('Entity Menu - Dissolve this Business click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
+
+    await wrapper.find('.menu-btn').trigger('click')
 
     // click the button and verify emitted event
-    await wrapper.find('#dissolution-button').trigger('click')
+    await wrapper.find('#dissolution-list-item').trigger('click')
     expect(wrapper.emitted().notInGoodStanding).toEqual([['dissolve']])
 
     wrapper.destroy()
@@ -491,6 +445,78 @@ describe('Entity Menu - Business Digital Credentials click tests', () => {
     // click the button and verify emitted event
     await wrapper.find('#view-add-digital-credentials-button').trigger('click')
     expect(wrapper.emitted().viewAddDigitalCredentials).toEqual([[]])
+
+    wrapper.destroy()
+  })
+})
+
+describe('Entity Menu - More actions click tests', () => {
+  it('renders More actions correctly', async () => {
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    expect(wrapper.find('.menu-btn').text()).toBe('More Actions')
+
+    wrapper.destroy()
+  })
+
+  it('does not render More actions if historical', async () => {
+    businessStore.setState(EntityState.HISTORICAL)
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => false } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    expect(wrapper.find('.menu-btn').exists()).toBe(false)
+    wrapper.destroy()
+  })
+
+  it('does not render More actions if not a business', async () => {
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: null }
+    })
+
+    expect(wrapper.find('.menu-btn').exists()).toBe(false)
+    wrapper.destroy()
+  })
+})
+
+describe('Entity Menu - Consent to Continuation click tests', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('displays the Consent to Continuation button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setState(EntityState.ACTIVE)
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.find('#cco-list-item').exists()).toBe(true)
+    expect(wrapper.find('#cco-list-item').text()).toBe('Consent to Continue Out')
+    expect(wrapper.find('#cco-list-item').classes()).not.toContain('v-btn--disabled') // enabled
 
     wrapper.destroy()
   })
