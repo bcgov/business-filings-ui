@@ -235,7 +235,7 @@ export default class FileUploadPdf extends Vue {
       const isValidPageSize =
         (width / pageSizeInfo.pointsPerInch === pageSizeInfo.width) &&
         (height / pageSizeInfo.pointsPerInch === pageSizeInfo.height)
-      return isValidPageSize
+      if (!isValidPageSize) return false
     }
     return true
   }
