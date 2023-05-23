@@ -81,7 +81,7 @@ export default class StaffPaymentDialog extends Vue {
     this.validate = true
 
     // wait for validation
-    await Vue.nextTick()
+    await this.$nextTick()
 
     // emit submit event only if form is valid
     // otherwise user stays on this dialog

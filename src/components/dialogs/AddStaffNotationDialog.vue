@@ -259,7 +259,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   async onNotationChanged (): Promise<void> {
     // if this is a court order and notation has changed, re-validate file upload component
     if (this.isCourtOrder && this.enableValidation) {
-      await Vue.nextTick() // wait for variables to update
+      await this.$nextTick() // wait for variables to update
       this.$refs.fileUploadRef.validate()
     }
   }
@@ -269,7 +269,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
   async onFileKeyChanged (): Promise<void> {
     // if this is a court order and file has changed, re-validate notation form
     if (this.isCourtOrder && this.enableValidation) {
-      await Vue.nextTick() // wait for variables to update
+      await this.$nextTick() // wait for variables to update
       this.$refs.notationFormRef.validate()
     }
   }
@@ -303,7 +303,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
 
     // enable validation
     this.enableValidation = true
-    await Vue.nextTick() // wait for form to update
+    await this.$nextTick() // wait for form to update
 
     // if any component is invalid, don't save
     const isNotationFormValid = this.$refs.notationFormRef.validate()
