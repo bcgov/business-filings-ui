@@ -87,7 +87,7 @@ export default class Certify extends Vue {
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (valid: boolean): void {}
+  emitValid (valid: boolean): void { /* no empty function */ }
 }
 </script>
 

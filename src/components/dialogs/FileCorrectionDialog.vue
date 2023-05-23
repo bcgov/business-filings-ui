@@ -89,7 +89,7 @@ export default class FileCorrectionDialog extends Vue {
    * Redirect to start correction.
    */
   @Emit('redirect')
-  emitRedirect (correctionType: CorrectionTypes): void {}
+  emitRedirect (correctionType: CorrectionTypes): void { /* no empty function */ }
 }
 </script>
 

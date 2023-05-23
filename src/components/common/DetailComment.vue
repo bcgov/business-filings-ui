@@ -66,7 +66,7 @@ export default class DetailComment extends Vue {
   /** Emits an event with the changed comment (ie, updated v-model). */
   @Emit('input')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitInput (val: string): void {}
+  emitInput (val: string): void { /* no empty function */ }
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')

@@ -81,7 +81,7 @@ export default class AddCommentDialog extends Vue {
    */
   @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitClose (needReload: boolean): void {}
+  emitClose (needReload: boolean): void { /* no empty function */ }
 
   /** Saves the current comment. */
   async save (): Promise<void> {

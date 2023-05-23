@@ -182,14 +182,14 @@ export default class CodDate extends Mixins(DateMixin) {
    */
   @Emit('codDate')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitCodDate (val: string): void {}
+  emitCodDate (val: string): void { /* no empty function */ }
 
   /**
    * Emits an event indicating whether or not this component is valid.
    */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (val: boolean): void {}
+  emitValid (val: boolean): void { /* no empty function */ }
 }
 </script>
 

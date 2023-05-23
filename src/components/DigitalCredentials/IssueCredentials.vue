@@ -97,7 +97,7 @@ export default class IssueCredentials extends Vue {
     return !this.issuedCredentials[0]?.isIssued
   }
 
-  @Emit() back (): void {}
+  @Emit() back (): void { /* no empty function */ }
 
   @Emit('sendCredentialOffer')
   sendCredentialOffer (credentialType: DigitalCredentialTypes) {

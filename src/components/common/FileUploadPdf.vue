@@ -266,11 +266,11 @@ export default class FileUploadPdf extends Vue {
 
   @Emit('update:file')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateFile (file: File): void {}
+  updateFile (file: File): void { /* no empty function */ }
 
   @Emit('update:fileKey')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateFileKey (fileKey: string): void {}
+  updateFileKey (fileKey: string): void { /* no empty function */ }
 }
 </script>
 

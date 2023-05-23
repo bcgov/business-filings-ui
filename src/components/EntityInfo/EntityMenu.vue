@@ -199,20 +199,20 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  emitConfirmDissolution (): void {}
+  emitConfirmDissolution (): void { /* no empty function */ }
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  emitDownloadBusinessSummary (): void {}
+  emitDownloadBusinessSummary (): void { /* no empty function */ }
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitNotInGoodStanding (message: NigsMessage): void {}
+  emitNotInGoodStanding (message: NigsMessage): void { /* no empty function */ }
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  emitViewAddDigitalCredentials (): void {}
+  emitViewAddDigitalCredentials (): void { /* no empty function */ }
 }
 </script>
 

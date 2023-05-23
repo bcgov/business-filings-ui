@@ -105,7 +105,7 @@ export default class StaffPaymentDialog extends Vue {
 
   // Pass updated staff payment data to parent.
   @Emit('update:staffPaymentData')
-  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
+  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void { /* no empty function */ }
 }
 </script>
 
