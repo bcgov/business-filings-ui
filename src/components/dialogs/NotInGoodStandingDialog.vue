@@ -92,7 +92,7 @@ export default class NotInGoodStandingDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit() close () {}
+  @Emit() close () { /* no empty function */ }
 }
 </script>
 

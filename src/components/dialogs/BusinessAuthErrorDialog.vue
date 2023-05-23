@@ -54,7 +54,7 @@ export default class BusinessAuthErrorDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Pass click events to parent.
-  @Emit() exit () { /* eslint no-empty-function */ }
-  @Emit() retry () { /* eslint no-empty-function */ }
+  @Emit() exit () { /* no empty function */ }
+  @Emit() retry () { /* no empty function */ }
 }
 </script>

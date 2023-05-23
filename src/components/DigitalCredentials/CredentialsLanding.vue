@@ -67,6 +67,6 @@ export default class CredentialsLanding extends Vue {
 
   // Pass add event to parent.
   @Emit('addCredentials')
-  addCredentials () {}
+  addCredentials () { /* no empty function */ }
 }
 </script>

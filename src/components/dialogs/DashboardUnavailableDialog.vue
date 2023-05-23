@@ -44,7 +44,7 @@ export default class DashboardUnavailableDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Pass click events to parent.
-  @Emit() exit () {}
-  @Emit() retry () {}
+  @Emit() exit () { /* no empty function */ }
+  @Emit() retry () { /* no empty function */ }
 }
 </script>

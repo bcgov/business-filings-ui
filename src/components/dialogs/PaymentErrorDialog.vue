@@ -90,7 +90,7 @@ export default class PaymentErrorDialog extends Vue {
   @Prop({ default: () => [] }) readonly warnings!: any[]
 
   /** Pass click event to parent. */
-  @Emit() protected exit () {}
+  @Emit() protected exit () { /* no empty function */ }
 
   /** The number of errors in the passed-in array. */
   get numErrors (): number {

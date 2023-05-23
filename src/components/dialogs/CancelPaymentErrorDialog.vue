@@ -56,6 +56,6 @@ export default class CancelPaymentErrorDialog extends Vue {
   @Prop({ default: () => [] }) readonly errors!: any[]
 
   // Pass click event to parent.
-  @Emit() okay () {}
+  @Emit() okay () { /* no empty function */ }
 }
 </script>
