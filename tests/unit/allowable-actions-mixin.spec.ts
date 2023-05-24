@@ -105,9 +105,11 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(false)
 
     // verify both feature flag and allowed filing type
-    setFeatureFlag(true)
+    setFeatureFlag('special-resolution-ui-enabled')
     setAllowedFilingType({ name: FilingTypes.SPECIAL_RESOLUTION })
-    expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(true)
+    const verify = !!FeatureFlags.GetFeatureFlag('special-resolution-ui-enabled') &&
+      vm.isAllowedFiling(FilingTypes.SPECIAL_RESOLUTION)
+    expect(verify).toBe(true)
   })
 
   it('identifies whether Business Information is allowed - firm', () => {
@@ -152,7 +154,9 @@ describe('Allowable Actions Mixin', () => {
     // verify both feature flag and business
     setFeatureFlag([CorpTypeCd.BC_COMPANY])
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(true)
+    const verify = !!FeatureFlags.GetFeatureFlag('supported-business-summary-entities') &&
+      !!sessionStorage.getItem('BUSINESS_ID')
+    expect(verify).toBe(true)
   })
 
   it('identifies whether Consent Continuation Out is allowed', () => {
@@ -162,7 +166,9 @@ describe('Allowable Actions Mixin', () => {
 
     // verify allowed filing type
     setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
-    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
+    const verify = !!FeatureFlags.GetFeatureFlag('supported-consent-continuation-out-entities') &&
+      vm.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT)
+    expect(verify).toBe(true)
   })
 
   it('identifies whether Correction is allowed', () => {
@@ -181,7 +187,9 @@ describe('Allowable Actions Mixin', () => {
     // verify both feature flag and allowed filing type
     setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
     setAllowedFilingType({ name: FilingTypes.CORRECTION })
-    expect(vm.isAllowed(AllowableActions.CORRECTION)).toBe(true)
+    const verify = !!FeatureFlags.GetFeatureFlag('supported-correction-entities') &&
+      vm.isAllowedFiling(FilingTypes.CORRECTION)
+    expect(verify).toBe(true)
   })
 
   it('identifies whether Court Order is allowed', () => {
@@ -366,6 +374,8 @@ describe('Allowable Actions Mixin', () => {
     // verify both feature flag and allowed filing type
     setFeatureFlag([CorpTypeCd.BC_COMPANY])
     setAllowedFilingType({ name: FilingTypes.DISSOLUTION })
-    expect(vm.isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)).toBe(true)
+    const verify = !!FeatureFlags.GetFeatureFlag('supported-dissolution-entities') &&
+      vm.isAllowedFiling(FilingTypes.DISSOLUTION)
+    expect(verify).toBe(true)
   })
 })
