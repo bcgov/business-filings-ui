@@ -82,7 +82,7 @@
           <v-btn small text color="primary" class="menu-btn" v-on="on">
             <v-icon v-if="expand">mdi-menu-up</v-icon>
             <v-icon v-else>mdi-menu-down</v-icon>
-            <span>More Actions</span>
+            <span class="font-13 ml-1">More Actions</span>
           </v-btn>
         </template>
 
