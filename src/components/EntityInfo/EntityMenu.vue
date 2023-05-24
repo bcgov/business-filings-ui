@@ -39,26 +39,6 @@
       </v-tooltip>
     </span>
 
-    <!-- Dissolve Business -->
-    <span v-if="isBusiness && !isHistorical">
-      <v-tooltip top content-class="top-tooltip" transition="fade-transition">
-        <template v-slot:activator="{ on }">
-          <v-btn
-            small text color="primary"
-            id="dissolution-button"
-            :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
-            @click="promptDissolve()"
-            v-on="on"
-          >
-            <img src="@/assets/images/Dissolution_Header_Icon.svg" alt="" class="pa-1">
-            <span class="font-13 ml-1">Dissolve this Business</span>
-          </v-btn>
-        </template>
-        Dissolving the business will make this business historical
-        and it will be struck from the corporate registry.
-      </v-tooltip>
-    </span>
-
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
       <v-tooltip top content-class="top-tooltip" transition="fade-transition">
@@ -94,6 +74,59 @@
         Manage the digital credentials generated for the business.
       </v-tooltip>
     </span>
+
+    <!-- More Actions -->
+    <span v-if="isBusiness && !isHistorical">
+      <v-menu offset-y transition="slide-y-transition" v-model="expand">
+        <template v-slot:activator="{ on }">
+          <v-btn text color="primary" class="menu-btn pr-3" v-on="on">
+            <v-icon v-if="expand">mdi-menu-up</v-icon>
+            <v-icon v-else>mdi-menu-down</v-icon>
+            <span>More Actions</span>
+          </v-btn>
+        </template>
+
+        <v-list dense>
+          <v-list-item-group color="primary">
+            <!-- Dissolve Business -->
+            <v-tooltip right content-class="right-tooltip">
+              <template v-slot:activator="{ on }">
+                <v-list-item
+                  id="dissolution-list-item"
+                  v-on="on"
+                  @click="promptDissolve()"
+                  :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
+                >
+                  <v-list-item-title>
+                    <span class="app-blue">Dissolve this Business</span>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              Dissolving the business will make this business historical
+              and it will be struck from the corporate registry.
+            </v-tooltip>
+
+            <!-- Consent to Continue Out -->
+            <v-tooltip right content-class="right-tooltip">
+              <template v-slot:activator="{ on }">
+                <v-list-item
+                  v-if="isBenBcCccUlc || isCoop"
+                  id="cco-list-item"
+                  v-on="on"
+                  @click="goToConsentContinuationOutFiling()"
+                  :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
+                >
+                  <v-list-item-title>
+                    <span class="app-blue">Consent to Continue Out</span>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              Submit a Consent to Continue Out of the province of B.C.
+            </v-tooltip>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
+    </span>
   </menu>
 </template>
 
@@ -118,10 +151,14 @@ export default class EntityMenu extends Vue {
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getReasonText!: string
+  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
+
+  expand = false
 
   // enums for template
   readonly axios = axios
@@ -136,7 +173,7 @@ export default class EntityMenu extends Vue {
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, navigates to the Edit UI to view or change company information.
    */
-  protected promptChangeCompanyInfo (): void {
+  promptChangeCompanyInfo (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
@@ -157,7 +194,7 @@ export default class EntityMenu extends Vue {
    * Emits an event to display NIGS dialog if company is not in good standing.
    * Otherwise, emits an event to prompt user to confirm voluntary dissolution.
    */
-  protected promptDissolve (): void {
+  promptDissolve (): void {
     if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.DISSOLVE)
       return
@@ -171,7 +208,7 @@ export default class EntityMenu extends Vue {
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  private emitDownloadBusinessSummary (): void {}
+  emitDownloadBusinessSummary (): void {}
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
@@ -180,11 +217,16 @@ export default class EntityMenu extends Vue {
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  private emitViewAddDigitalCredentials (): void {}
+  emitViewAddDigitalCredentials (): void {}
 }
 </script>
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+:deep(.theme--light.v-list-item--disabled) {
+  opacity: 0.38 !important;
+}
+
 </style>
