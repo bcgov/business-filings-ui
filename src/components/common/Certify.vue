@@ -35,7 +35,6 @@
 </template>
 
 <script lang="ts">
-
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { useRootStore } from '@/stores'

@@ -47,21 +47,21 @@ export default class EntityInfo extends Vue {
   @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Whether to show the hover style. */
-   showHoverStyle = false
+  showHoverStyle = false
 
-   /** The Business ID string (may be null). */
-   get businessId (): string {
-     return sessionStorage.getItem('BUSINESS_ID')
-   }
+  /** The Business ID string (may be null). */
+  get businessId (): string {
+    return sessionStorage.getItem('BUSINESS_ID')
+  }
 
-   /** The Temporary Registration Number string (may be null). */
-   get tempRegNumber (): string {
-     return sessionStorage.getItem('TEMP_REG_NUMBER')
-   }
+  /** The Temporary Registration Number string (may be null). */
+  get tempRegNumber (): string {
+    return sessionStorage.getItem('TEMP_REG_NUMBER')
+  }
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-   emitConfirmDissolution (): void { /* no empty function */ }
+  emitConfirmDissolution (): void { /* no empty function */ }
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
