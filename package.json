@@ -88,7 +88,7 @@
     "vue-debounce-decorator": "^1.0.1",
     "vue-plugin-helper-decorator": "^0.0.12",
     "vue-property-decorator": "^9.1.2",
-    "vue-template-compiler": "2.7.14",
+    "vue-template-compiler": "2.7.10",
     "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^1.2.0"
