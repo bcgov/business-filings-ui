@@ -591,6 +591,16 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /** Working directors data (also used as v-model for the HTML list). */
   allDirectors: DirectorIF[] = []
 
+  /** Initialize dir to use in the template's for loop. */
+  dir: DirectorIF = {
+    id: 0,
+    officer: undefined,
+    deliveryAddress: undefined,
+    appointmentDate: '',
+    cessationDate: '',
+    actions: []
+  }
+
   directorEditInProgress = false
   directorPreEdit = null // officer before edit
   showNewDirectorForm = false
