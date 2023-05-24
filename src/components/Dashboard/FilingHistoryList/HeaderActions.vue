@@ -100,7 +100,7 @@ export default class HeaderActions extends Vue {
    */
   disableCorrection (): boolean {
     // first check allowable actions
-    if (!this.isAllowed(AllowableActions.CORRECTION)) return false
+    if (!this.isAllowed(AllowableActions.CORRECTION)) return true
 
     const conditions: Array<() => boolean> = []
     // list of conditions to DISABLE correction
