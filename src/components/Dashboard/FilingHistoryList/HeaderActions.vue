@@ -76,9 +76,11 @@ export default class HeaderActions extends Vue {
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
+  @Action(useFilingHistoryListStore) showF!: ActionBindingIF
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
@@ -98,10 +100,9 @@ export default class HeaderActions extends Vue {
    */
   disableCorrection (): boolean {
     // first check allowable actions
-    if (!this.isAllowed(AllowableActions.CORRECTION)) return true
+    if (!this.isAllowed(AllowableActions.CORRECTION)) return false
 
     const conditions: Array<() => boolean> = []
-
     // list of conditions to DISABLE correction
     // (any condition not listed below is ALLOWED)
     conditions[0] = () => this.filing.availableOnPaperOnly
@@ -136,7 +137,8 @@ export default class HeaderActions extends Vue {
 
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
-        if (this.isBenBcCccUlc) {
+      case FilingTypes.SPECIAL_RESOLUTION:
+        if (this.isBenBcCccUlc || this.isCoop) {
           // correction via Edit UI if current type is BC, CC, ULC, or BEN
           // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
           this.setCurrentFiling(filing)

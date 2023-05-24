@@ -94,6 +94,7 @@ export default class FilingHistoryList extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useFilingHistoryListStore) getPanel!: number
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useBusinessStore) hasCourtOrders!: boolean
@@ -153,7 +154,7 @@ export default class FilingHistoryList extends Vue {
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
-      if (this.isFirm || this.isBenBcCccUlc) {
+      if (this.isFirm || this.isBenBcCccUlc || this.isCoop) {
         correctionFiling = this.buildCorrectionFiling(this.getCurrentFiling, correctionType)
       }
 
