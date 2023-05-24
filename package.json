@@ -44,7 +44,7 @@
     "regenerator-runtime": "^0.13.11",
     "register-service-worker": "^1.7.2",
     "sbc-common-components": "3.0.8",
-    "vue": "^2.7.10",
+    "vue": "2.7.10",
     "vue-affix": "^0.5.2",
     "vue-hotjar": "^1.4.0",
     "vue-router": "^3.6.5",
