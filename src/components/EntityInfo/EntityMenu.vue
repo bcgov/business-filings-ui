@@ -80,9 +80,9 @@
       <v-menu offset-y transition="slide-y-transition" v-model="expand">
         <template v-slot:activator="{ on }">
           <v-btn small text color="primary" class="menu-btn" v-on="on">
-            <v-icon v-if="expand">mdi-menu-up</v-icon>
-            <v-icon v-else>mdi-menu-down</v-icon>
             <span class="font-13 ml-1">More Actions</span>
+            <v-icon medium v-if="expand">mdi-menu-up</v-icon>
+            <v-icon medium v-else>mdi-menu-down</v-icon>
           </v-btn>
         </template>
 
