@@ -82,10 +82,9 @@ describe('Standalone Directors Filing - Part 1 - UI', () => {
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
-    rootStore.currentDate = '2019-07-15'
+
     // set Last Filing Date and verify new Min Date
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
+    rootStore.currentDate = '2019-07-15'
     businessStore.setFoundingDate('2018-03-01T00:00:00')
   })
 

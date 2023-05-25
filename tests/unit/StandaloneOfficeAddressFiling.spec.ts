@@ -60,8 +60,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.api.url/' })
   })
 
   it('renders the filing sub-components properly', () => {

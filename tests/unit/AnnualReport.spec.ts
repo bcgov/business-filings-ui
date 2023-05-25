@@ -44,8 +44,6 @@ describe('Annual Report - Part 1 - UI', () => {
     rootStore.arMaxDate = '2018-04-30'
     rootStore.currentFilingStatus = FilingStatus.NEW
     businessStore.setLegalType(CorpTypeCd.COOP)
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_PAY_API_URL', value: 'https://auth.web.url/' })
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {

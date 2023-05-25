@@ -802,8 +802,6 @@ describe('Filing History List - redirections', () => {
   })
 
   beforeEach(() => {
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     const get = sinon.stub(axios, 'get')
     const post = sinon.stub(axios, 'post')
 
