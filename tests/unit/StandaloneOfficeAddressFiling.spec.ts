@@ -683,12 +683,16 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const localVue = createLocalVue()
@@ -718,7 +722,9 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
       certifyFormValid: true,
       addressesFormValid: true
     })
+
     rootStore.setFilingData([{} as any]) // dummy data
+    await Vue.nextTick()
 
     expect(vm.isPageValid).toEqual(true)
 
@@ -729,7 +735,6 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that new filing was created
-
     const button = wrapper.find('#coa-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
 
@@ -971,11 +976,16 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked', async () => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const localVue = createLocalVue()
@@ -1006,6 +1016,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
       addressesFormValid: true
     })
     rootStore.setFilingData([{} as any]) // dummy data
+    await Vue.nextTick()
 
     expect(vm.isPageValid).toEqual(true)
 

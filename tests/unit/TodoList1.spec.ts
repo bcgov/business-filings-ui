@@ -1096,7 +1096,8 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
+  // NOT WORKING
+  it('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1116,10 +1117,10 @@ describe('TodoList - UI - BCOMPs', () => {
         'order': 1
       }
     ]
-    // store.state.isCoaPending = true // normally set by FilingHistoryList
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
+    jest.spyOn(vm, 'isCoaPending', 'get').mockReturnValue(true)
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
@@ -1143,7 +1144,6 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(wrapper.find('.list-item__actions .v-btn').attributes('disabled')).toBe('disabled')
     expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
-    // store.state.isCoaPending = false // reset for future tests
     wrapper.destroy()
   })
 
