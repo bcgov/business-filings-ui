@@ -80,7 +80,6 @@ export default class HeaderActions extends Vue {
   @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
-  @Action(useFilingHistoryListStore) showF!: ActionBindingIF
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void
   @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
