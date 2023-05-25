@@ -773,6 +773,14 @@ describe('Filing History List - redirections', () => {
     delete window.location
     window.location = { assign: jest.fn() } as any
 
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
       'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
       'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
@@ -851,10 +859,8 @@ describe('Filing History List - redirections', () => {
     sinon.restore()
   })
 
-  xit('redirects to Edit URL when filing an IA correction', async () => {
+  it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)

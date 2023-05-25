@@ -285,17 +285,22 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
   })
 
   afterAll(() => {
     window.location.assign = assign
   })
 
-  xit('redirects to Edit URL to view/alter business info', async () => {
+  it('redirects to Edit URL to view/alter business info', async () => {
     // init session storage
     sessionStorage.clear()
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     // init store

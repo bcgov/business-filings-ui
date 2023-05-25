@@ -2191,8 +2191,12 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
   beforeAll(() => {
     // init store
     sessionStorage.clear()
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://create.url/' })
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setLegalName('My Business Inc')
@@ -2207,7 +2211,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     window.location.assign = assign
   })
 
-  xit('redirects to Create URL when \'Resume\' is clicked on a Named Company draft IA', async () => {
+  it('redirects to Create URL when \'Resume\' is clicked on a Named Company draft IA', async () => {
     // init Incorporation Application filing task
     rootStore.tasks = [
       {
@@ -2256,7 +2260,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Create URL when \'Resume\' is clicked on a Numbered Company draft IA', async () => {
+  it('redirects to Create URL when \'Resume\' is clicked on a Numbered Company draft IA', async () => {
     // init Incorporation Application filing task
     rootStore.tasks = [
       {
@@ -2323,11 +2327,15 @@ describe('TodoList - Click Tests - Corrections', () => {
   ]
 
   for (const test of editTests) {
-    xit(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
+    it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
       // init session storage and store
       sessionStorage.clear()
-      configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-        { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+      const configuration = {
+        VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+      }
+
+      // set configurations
+      configurationStore.setConfiguration(configuration)
       sessionStorage.setItem('BUSINESS_ID', test.businessId)
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       businessStore.setIdentifier(test.businessId)
@@ -2378,7 +2386,7 @@ describe('TodoList - Click Tests - Corrections', () => {
     'registrarsOrder', 'specialResolution', 'transition', 'voluntaryDissolution']
 
   for (const test of localTest) {
-    xit(`Router pushes locally to resume a draft ${test} correction`, async () => {
+    it(`Router pushes locally to resume a draft ${test} correction`, async () => {
       // init draft Correction filing task
       rootStore.tasks = [
         {
@@ -2449,11 +2457,16 @@ describe('TodoList - Click Tests - Alterations', () => {
     window.location.assign = assign
   })
 
-  xit('redirects to Edit URL to resume a draft alteration', async () => {
+  it('redirects to Edit URL to resume a draft alteration', async () => {
     // init session storage and store
     sessionStorage.clear()
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://edit.url/' })
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setIdentifier('BC1234567')
@@ -2867,11 +2880,15 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
   ]
 
   for (const test of fullAndLtdRestorationTests) {
-    xit(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
+    it(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       // init store
       sessionStorage.clear()
-      configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-        { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://create.url/' })
+      const configuration = {
+        VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
+      }
+
+      // set configurations
+      configurationStore.setConfiguration(configuration)
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       rootStore.currentDate = '2022-12-31'
       businessStore.setIdentifier(test.businessId)
@@ -2944,11 +2961,15 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
   ]
 
   for (const test of extensionAndConversionTests) {
-    xit(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
+    it(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       // init store
       sessionStorage.clear()
-      configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-        { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+      const configuration = {
+        VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+      }
+
+      // set configurations
+      configurationStore.setConfiguration(configuration)
       sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       rootStore.currentDate = '2022-12-31'
       businessStore.setIdentifier(test.businessId)
