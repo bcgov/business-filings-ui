@@ -29,7 +29,7 @@
               outlined
               color="primary"
               :ripple=false
-              @click.stop="toggleFilingHistoryItem(index, filing)"
+              @click.stop="toggleFilingHistoryItem(index)"
             >
               <v-icon small style="padding-top: 2px">mdi-message-reply</v-icon>
               <span>Detail{{filing.commentsCount > 1 ? "s" : ""}} ({{filing.commentsCount}})</span>

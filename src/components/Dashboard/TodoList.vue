@@ -451,11 +451,10 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
-import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingSubTypes, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
-import { RestorationTypes } from '@bcrs-shared-components/enums'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
@@ -499,7 +498,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useConfigurationStore) getBusinessUrl!: string
-  @Getter(useBusinessStore) getBusinessWarnings!: BusinessWarningIF
+  @Getter(useBusinessStore) getBusinessWarnings!: Array<BusinessWarningIF>
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
@@ -1020,9 +1019,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         correctedFilingId: correction.correctedFilingId,
         // this is only used for external corrections (IA):
         // Corrections on Alterations always have a correctedFilingType of Alteration -> alterationRequired = true
-        correctedFilingType: EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, null),
+        correctedFilingType: EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes),
         title: (this.priorityCorrectionTitle(header.priority) + ' - ' +
-          EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes, null, null)),
+          EnumUtilities.filingTypeToName(correction.correctedFilingType as FilingTypes)),
         draftTitle: EnumUtilities.filingTypeToName(FilingTypes.CORRECTION),
         status: header.status,
         enabled: task.enabled,
@@ -1209,7 +1208,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentToken: header.paymentToken || null,
         payErrorObj,
         // FUTURE: ideally, this would come from the filing:
-        warnings: (this.getBusinessWarnings as any).map(warning => warning.message)
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
       this.todoItems.push(item)
     } else {
@@ -1239,7 +1238,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         paymentToken: header.paymentToken || null,
         payErrorObj,
         // FUTURE: ideally, this would come from the filing:
-        warnings: (this.getBusinessWarnings as any).map(warning => warning.message)
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
       } as TodoItemIF
       this.todoItems.push(item)
     } else {
@@ -1478,27 +1477,27 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       }
 
       case FilingTypes.RESTORATION: {
-        let restorationType: string
+        let restorationType: FilingSubTypes
 
         /**
          * Type assertion is done to fix TypeScript error.
          * "This condition will always return 'false' since the types
          * 'FilingSubTypes' and 'RestorationTypes' have no overlap."
          */
-        if ((item.filingSubType as any) === (RestorationTypes.FULL as any)) {
-          restorationType = RestorationTypes.FULL
+        if (item.filingSubType === FilingSubTypes.FULL_RESTORATION) {
+          restorationType = FilingSubTypes.FULL_RESTORATION
         }
 
-        if ((item.filingSubType as any) === (RestorationTypes.LIMITED as any)) {
-          restorationType = RestorationTypes.LIMITED
+        if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION) {
+          restorationType = FilingSubTypes.LIMITED_RESTORATION
         }
 
-        if ((item.filingSubType as any) === (RestorationTypes.LTD_EXTEND as any)) {
-          restorationType = RestorationTypes.LTD_EXTEND
+        if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
+          restorationType = FilingSubTypes.LIMITED_RESTORATION_EXTENSION
         }
 
-        if ((item.filingSubType as any) === (RestorationTypes.LTD_TO_FULL as any)) {
-          restorationType = RestorationTypes.LTD_TO_FULL
+        if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
+          restorationType = FilingSubTypes.LIMITED_RESTORATION_TO_FULL
         }
 
         navigate(this.buildRestorationUrl(item, restorationType))
@@ -1527,17 +1526,17 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   }
 
   // navigate to Create UI if Full/Limited restoration or to Edit UI if Limited extension/Full to Limited conversion
-  buildRestorationUrl (item: TodoItemIF, restorationType:string): string {
+  buildRestorationUrl (item: TodoItemIF, restorationType: FilingSubTypes): string {
     let url: string
 
     switch (restorationType) {
-      case RestorationTypes.FULL:
-      case RestorationTypes.LIMITED: {
+      case FilingSubTypes.FULL_RESTORATION:
+      case FilingSubTypes.LIMITED_RESTORATION: {
         url = `${this.getCreateUrl}?id=${this.getIdentifier}`
         break
       }
-      case RestorationTypes.LTD_EXTEND:
-      case RestorationTypes.LTD_TO_FULL: {
+      case FilingSubTypes.LIMITED_RESTORATION_EXTENSION:
+      case FilingSubTypes.LIMITED_RESTORATION_TO_FULL: {
         url = `${this.getEditUrl}${this.getIdentifier}/` + restorationType + `?restoration-id=${item.filingId}`
         break
       }

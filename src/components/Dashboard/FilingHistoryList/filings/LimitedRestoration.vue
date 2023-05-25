@@ -35,7 +35,7 @@ export default class LimitedRestoration extends Vue {
 
   /** The legal name from the restoration filing. */
   get legalName (): string {
-    return this.filing.data?.restoration?.legalName || '[unknown]'
+    return this.filing.data?.restoration?.toLegalName || '[unknown]'
   }
 
   /** The expiry date of the limited restoration filing as a Pacific date. */

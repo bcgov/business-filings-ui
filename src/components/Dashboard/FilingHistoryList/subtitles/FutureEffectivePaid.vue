@@ -12,7 +12,7 @@
       outlined
       color="primary"
       :ripple=false
-      @click.stop="toggleFilingHistoryItem(index, filing)"
+      @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-information-outline</v-icon>
       <span class="view-details ml-1">View Details</span>

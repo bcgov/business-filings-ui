@@ -34,7 +34,7 @@ const isPaperOnly = (filing) => filing.availableOnPaperOnly
 const isCorrection = (filing) => !!filing.correctedFilingId
 const isCorrected = (filing) => !!filing.correctionFilingId
 const isIncorporationApplication = (filing) => (filing.name === 'incorporationApplication')
-const isBcompCoa = () => false // FUTURE: implement BComp tests
+// const isBcompCoa = (filing) => false FUTURE: implement BComp tests
 const isAlteration = (filing) => (filing.name === 'alteration')
 const isConsentContinuationOut = (filing) => (filing.name === 'consentContinuationOut')
 const isStaff = (filing) => (
@@ -108,11 +108,11 @@ filings.forEach((filing: any, index: number) => {
       // expect(item.isFutureEffectiveIaPending).toBeDefined() // FUTURE: test this more specifically
     })
 
-    itIf(isBcompCoa())('BCOMP change of address filing', () => {
-      expect(vm.getFilings.length).toBe(1) // sanity check
+    // itIf(isBcompCoa(filing))('BCOMP change of address filing', () => {
+      // expect(vm.getFilings.length).toBe(1) // sanity check
 
       // expect(item.isFutureEffectiveCoaPending).toBeDefined()
-    })
+    // })
 
     itIf(isAlteration(filing))('alteration filing', () => {
       // expect(vm.getFilings.length).toBe(1) // sanity check

@@ -272,7 +272,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   $refs!: {
     confirm: ConfirmDialogType,
     certifyRef: Certify,
-    detailCommentRef: DetailComment,
+    detailCommentRef: DetailComment
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
@@ -569,11 +569,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       this.showErrors = true
       if (!this.detailCommentValid) {
         // Show error message of detail comment text area if invalid
-        (this.$refs.detailCommentRef.$refs.textarea as any).error = true
+        this.$refs.detailCommentRef.$refs.textarea.error = true
       }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
-        (this.$refs.certifyRef.$refs.certifyTextfieldRef as any).error = true
+        this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
       }
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return

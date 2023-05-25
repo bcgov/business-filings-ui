@@ -6,7 +6,7 @@
       outlined
       color="primary"
       :ripple=false
-      @click.stop="toggleFilingHistoryItem(index, filing)"
+      @click.stop="toggleFilingHistoryItem(index)"
     >
       <template v-if="filing.availableOnPaperOnly">
         <span class="view-details app-blue">Request a Copy</span>

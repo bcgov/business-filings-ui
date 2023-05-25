@@ -21,6 +21,11 @@ import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
 export default class DetailComment extends Vue {
+  // Refs
+  $refs!: {
+    textarea: any
+  }
+
   /** Array of validations rules for the textarea. */
   get rules (): Array<(val) => boolean | string> {
     // include whitespace in maximum length check

@@ -41,6 +41,11 @@ import { useRootStore } from '@/stores'
 
 @Component({})
 export default class Certify extends Vue {
+  // Refs
+  $refs!: {
+    certifyTextfieldRef: any
+  }
+
   @Getter(useRootStore) getCurrentDate!: string
 
   /** Certified By prop. */

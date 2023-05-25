@@ -153,7 +153,7 @@ export default class AllowableActionsMixin extends Vue {
    * @param type the filing subtype to check (optional)
    * @returns True if the specified filing is allowed, else False
    */
-  isAllowedFiling (name: FilingTypes, type = ''): boolean {
+  private isAllowedFiling (name: FilingTypes, type = ''): boolean {
     const filingTypes = this.getAllowedActions?.filing?.filingTypes || []
     return filingTypes.some(ft => {
       if (ft.name !== name) return false
