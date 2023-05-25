@@ -553,6 +553,16 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -684,16 +694,10 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a COOP', async () => {
     // init store
     businessStore.setLegalType(CorpTypeCd.COOP)
-
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {
@@ -756,15 +760,10 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     wrapper.destroy()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new filing and the File & Pay button ' +
     'is clicked - as a BCOMP', async () => {
     // init store
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     const $route = { params: { filingId: 0 } } // new filing id
     const wrapper = mount(StandaloneDirectorsFiling, {

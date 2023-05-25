@@ -1614,6 +1614,15 @@ describe('TodoList - Click Tests', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
   })
 
   afterAll(() => {
@@ -1723,12 +1732,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1774,12 +1778,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1824,12 +1823,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1954,6 +1948,16 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     delete window.location
     window.location = { assign: jest.fn() } as any
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2082,12 +2086,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -2134,12 +2133,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
