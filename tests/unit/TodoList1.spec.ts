@@ -1096,7 +1096,6 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  // NOT WORKING
   it('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
     // init store
     rootStore.tasks = [
