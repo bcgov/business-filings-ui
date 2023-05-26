@@ -591,15 +591,11 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /** Working directors data (also used as v-model for the HTML list). */
   allDirectors: DirectorIF[] = []
 
-  /** Initialize dir to use in the template's for loop. */
-  dir: DirectorIF = {
-    id: 0,
-    officer: undefined,
-    deliveryAddress: undefined,
-    appointmentDate: '',
-    cessationDate: '',
-    actions: []
-  }
+  /**
+   * Define dir so it's reactive and can be referenced in the template's for loop.
+   * Not sure why this is needed in this case but not others.
+   */
+  dir = {} // no type needed
 
   directorEditInProgress = false
   directorPreEdit = null // officer before edit
@@ -910,7 +906,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
    * @param id The id of the director to delete
    */
   deleteDirector (id: number): void {
-    const newList = this.directors.filter(dir => dir.id !== id)
+    const newList = this.directors.filter(director => director.id !== id)
     this.allDirectors = newList
 
     this.activeIndex = null
