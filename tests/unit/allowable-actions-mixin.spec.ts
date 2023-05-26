@@ -15,6 +15,13 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
+// mock the entire module
+// it's the only way to override any exported function
+jest.mock('@/utils/feature-flags', () => {
+  // we just care about this one function
+  return { GetFeatureFlag: jest.fn() }
+})
+
 describe('Allowable Actions Mixin', () => {
   let vm: any
 
@@ -28,7 +35,8 @@ describe('Allowable Actions Mixin', () => {
   }
 
   function setFeatureFlag (val: any) {
-    jest.spyOn((FeatureFlags as any), 'GetFeatureFlag').mockReturnValue(val)
+    // return the value we want for the test
+    jest.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue(val)
   }
 
   beforeAll(async () => {
@@ -90,7 +98,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.ANNUAL_REPORT)).toBe(true)
   })
 
-  xit('identifies whether Business Information is allowed - Coop', () => {
+  it('identifies whether Business Information is allowed - Coop', () => {
     jest.spyOn(vm, 'isCoop', 'get').mockReturnValue(true)
     jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
@@ -136,7 +144,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(true)
   })
 
-  xit('identifies whether Business Summary is allowed', () => {
+  it('identifies whether Business Summary is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify business but no feature flag
@@ -165,7 +173,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
   })
 
-  xit('identifies whether Correction is allowed', () => {
+  it('identifies whether Correction is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 
     // verify allowed filing type but no feature flag
@@ -350,7 +358,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.TRANSITION)).toBe(true)
   })
 
-  xit('identifies whether Voluntary Dissolution is allowed', () => {
+  it('identifies whether Voluntary Dissolution is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify allowed filing type but no feature flag

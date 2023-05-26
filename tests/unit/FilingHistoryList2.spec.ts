@@ -109,9 +109,9 @@ filings.forEach((filing: any, index: number) => {
     })
 
     // itIf(isBcompCoa(filing))('BCOMP change of address filing', () => {
-      // expect(vm.getFilings.length).toBe(1) // sanity check
+    //   expect(vm.getFilings.length).toBe(1) // sanity check
 
-      // expect(item.isFutureEffectiveCoaPending).toBeDefined()
+    //   expect(item.isFutureEffectiveCoaPending).toBeDefined()
     // })
 
     itIf(isAlteration(filing))('alteration filing', () => {
