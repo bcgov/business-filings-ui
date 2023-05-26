@@ -79,7 +79,7 @@ const sampleDirectors = [
 ]
 
 describe('Standalone Directors Filing - Part 1 - UI', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
 

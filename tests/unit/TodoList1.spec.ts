@@ -1144,6 +1144,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(wrapper.find('.list-item__actions .v-btn').attributes('disabled')).toBe('disabled')
     expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
+    jest.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -2306,6 +2307,17 @@ describe('TodoList - Click Tests - Corrections', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // init session storage and store
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('BUSINESS_ID', test.businessId)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2322,16 +2334,6 @@ describe('TodoList - Click Tests - Corrections', () => {
 
   for (const test of editTests) {
     it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
-      // init session storage and store
-      sessionStorage.clear()
-      const configuration = {
-        VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
-      }
-
-      // set configurations
-      configurationStore.setConfiguration(configuration)
-      sessionStorage.setItem('BUSINESS_ID', test.businessId)
-      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       businessStore.setIdentifier(test.businessId)
       // init draft Correction filing task
       rootStore.tasks = [
@@ -2445,13 +2447,7 @@ describe('TodoList - Click Tests - Alterations', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
-  })
 
-  afterAll(() => {
-    window.location.assign = assign
-  })
-
-  it('redirects to Edit URL to resume a draft alteration', async () => {
     // init session storage and store
     sessionStorage.clear()
     const configuration = {
@@ -2460,9 +2456,15 @@ describe('TodoList - Click Tests - Alterations', () => {
 
     // set configurations
     configurationStore.setConfiguration(configuration)
-
-    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('redirects to Edit URL to resume a draft alteration', async () => {
+    sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     businessStore.setIdentifier('BC1234567')
     businessStore.setGoodStanding(true)
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -2862,6 +2864,16 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // init store
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2875,15 +2887,6 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
 
   for (const test of fullAndLtdRestorationTests) {
     it(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
-      // init store
-      sessionStorage.clear()
-      const configuration = {
-        VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
-      }
-
-      // set configurations
-      configurationStore.setConfiguration(configuration)
-      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       rootStore.currentDate = '2022-12-31'
       businessStore.setIdentifier(test.businessId)
       businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -2943,6 +2946,15 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2957,14 +2969,6 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
   for (const test of extensionAndConversionTests) {
     it(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       // init store
-      sessionStorage.clear()
-      const configuration = {
-        VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
-      }
-
-      // set configurations
-      configurationStore.setConfiguration(configuration)
-      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       rootStore.currentDate = '2022-12-31'
       businessStore.setIdentifier(test.businessId)
       businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
