@@ -61,8 +61,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Watch, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import {
   RegisterWallet,
@@ -87,9 +86,9 @@ import { useBusinessStore } from '@/stores'
 export default class DigitalCredentials extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
 
-  private issuedCredentials: Array<DigitalCredentialsIF> = []
-  private credentialInvitationUrl = ''
-  private hasRegisteredWallet = false
+  issuedCredentials: Array<DigitalCredentialsIF> = []
+  credentialInvitationUrl = ''
+  hasRegisteredWallet = false
 
   /** The steps for Business Digital Credentials. **/
   get digitalCredentialSteps (): Array<StepsIF> {
@@ -134,47 +133,47 @@ export default class DigitalCredentials extends Vue {
     return this.digitalCredentialSteps[this.currentStepIndex + 1]?.text || 'Done'
   }
 
-  protected addCredentials (): void {
+  addCredentials (): void {
     this.$router.push({ path: `${Routes.DIGITAL_CREDENTIALS}/${Routes.DOWNLOAD_WALLET}` })
   }
 
-  protected back (): void {
+  back (): void {
     this.$router.push({ path: this.digitalCredentialSteps[this.currentStepIndex - 1].to })
   }
 
-  protected next (): void {
+  next (): void {
     this.$router.push({
       path: this.digitalCredentialSteps[this.currentStepIndex + 1]?.to ||
       `/${Routes.DIGITAL_CREDENTIALS}`
     })
   }
 
-  protected cancel (): void {
+  cancel (): void {
     this.$router.push({ path: `/${Routes.DIGITAL_CREDENTIALS}` })
   }
 
-  private async getCredentials (): Promise<void> {
+  async getCredentials (): Promise<void> {
     const { data } = await LegalServices.fetchCredentials(this.getIdentifier)
     if (data?.issuedCredentials) {
       this.issuedCredentials = data.issuedCredentials
     }
   }
 
-  private async addCredentialInvitation (): Promise<void> {
+  async addCredentialInvitation (): Promise<void> {
     const { data } = await LegalServices.createCredentialInvitation(this.getIdentifier)
     if (data?.invitationUrl) {
       this.credentialInvitationUrl = data.invitationUrl
     }
   }
 
-  private async getCredentialsConnection (): Promise<void> {
+  async getCredentialsConnection (): Promise<void> {
     const connection = await LegalServices.fetchCredentialConnection(this.getIdentifier)
     if (connection) {
       this.hasRegisteredWallet = true
     }
   }
 
-  protected async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
+  async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
     const credentialIssued = await LegalServices.issueCredentialOffer(this.getIdentifier, credentialType)
     if (credentialIssued) {
       await this.getCredentials()
@@ -184,7 +183,7 @@ export default class DigitalCredentials extends Vue {
   // Keep credential data in sync when navigating between routes.
   // This is required due to the nature of external interactions between mobile device and api
   @Watch('$route', { immediate: true })
-  private async syncCredentials (): Promise<void> {
+  async syncCredentials (): Promise<void> {
     await this.getCredentials()
 
     // Check for connections on step 2 when there is no registered wallet

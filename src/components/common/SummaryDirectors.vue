@@ -176,8 +176,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { CommonMixin, DateMixin } from '@/mixins'
@@ -186,22 +185,18 @@ import { DirectorIF } from '@/interfaces'
 import { useBusinessStore } from '@/stores/businessStore'
 
 @Component({
-  components: { BaseAddress },
-  mixins: [
-    CommonMixin,
-    DateMixin
-  ]
+  components: { BaseAddress }
 })
-export default class SummaryDirectors extends Vue {
+export default class SummaryDirectors extends Mixins(CommonMixin, DateMixin) {
   // Directors array passed into this component.
   @Prop({ default: () => [] }) readonly directors!: Array<DirectorIF>
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   // Local properties
-  protected directorSummary: Array<DirectorIF> = []
-  protected directorsCeased: Array<DirectorIF> = []
-  protected expand = true
+  directorSummary: Array<DirectorIF> = []
+  directorsCeased: Array<DirectorIF> = []
+  expand = true
 
   /**
     * Watcher to keep director lists up to date.
@@ -209,7 +204,7 @@ export default class SummaryDirectors extends Vue {
     * - "directorsCeased" will contain ceased directors
     */
   @Watch('directors', { deep: true, immediate: true })
-  private onDirectorsChanged (val: Array<DirectorIF>): void {
+  onDirectorsChanged (val: Array<DirectorIF>): void {
     this.directorSummary = val.filter(d => !d.actions || !d.actions.includes(Actions.CEASED))
     this.directorsCeased = val.filter(d => d.actions && d.actions.includes(Actions.CEASED))
   }
@@ -227,7 +222,7 @@ export default class SummaryDirectors extends Vue {
    * @param director The director to check.
    * @returns True if director was appointed.
    */
-  protected isNew (director: DirectorIF): boolean {
+  isNew (director: DirectorIF): boolean {
     // return director.actions && director.actions.includes(Actions.APPOINTED)
     return director.actions && (director.actions.indexOf(Actions.APPOINTED) >= 0)
   }
@@ -237,7 +232,7 @@ export default class SummaryDirectors extends Vue {
    * @param director The director to check.
    * @returns True if director had their address changed.
    */
-  protected isAddressChanged (director: DirectorIF): boolean {
+  isAddressChanged (director: DirectorIF): boolean {
     // return director.actions && director.actions.includes(Actions.ADDRESSCHANGED)
     return director.actions && (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
   }
@@ -247,7 +242,7 @@ export default class SummaryDirectors extends Vue {
    * @param director The director to check.
    * @returns True if director had their name changed.
    */
-  protected isNameChanged (director: DirectorIF): boolean {
+  isNameChanged (director: DirectorIF): boolean {
     // return director.actions && director.actions.includes(Actions.NAMECHANGED)
     return director.actions && (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
   }
@@ -257,7 +252,7 @@ export default class SummaryDirectors extends Vue {
    * @param director The director to check.
    * @returns True if director is active.
    */
-  protected isActive (director: DirectorIF): boolean {
+  isActive (director: DirectorIF): boolean {
     // return director.actions && director.actions.includes(Actions.CEASED)
     return director.actions && (director.actions.indexOf(Actions.CEASED) < 0)
   }
@@ -267,7 +262,7 @@ export default class SummaryDirectors extends Vue {
    * @param director The director to check.
    * @returns True if director is actionable.
    */
-  protected isActionable (director: DirectorIF): boolean {
+  isActionable (director: DirectorIF): boolean {
     return (director.isDirectorActionable !== undefined) ? director.isDirectorActionable : true
   }
 }

@@ -3,6 +3,7 @@ import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF } from '
 
 export interface StateFilingIF {
   business: any
+  consentContinuationOut?: any
   header: ApiHeaderIF
   dissolution?: any
   restoration?: any

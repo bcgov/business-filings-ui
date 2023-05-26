@@ -35,13 +35,17 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { useRootStore } from '@/stores'
 
 @Component({})
 export default class Certify extends Vue {
+  // Refs
+  $refs!: {
+    certifyTextfieldRef: any
+  }
+
   @Getter(useRootStore) getCurrentDate!: string
 
   /** Certified By prop. */
@@ -57,7 +61,7 @@ export default class Certify extends Vue {
   @Prop({ default: '' }) readonly entityDisplay!: string
 
   /** Called when component is created. */
-  protected created (): void {
+  created (): void {
     // inform parent of initial validity
     this.emitValid(!!this.trimmedCertifiedBy && this.isCertified)
   }
@@ -70,7 +74,7 @@ export default class Certify extends Vue {
 
   /** Emits an event to update the Certified By prop. */
   @Emit('update:certifiedBy')
-  private emitCertifiedBy (certifiedBy: string): string {
+  emitCertifiedBy (certifiedBy: string): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     certifiedBy = certifiedBy && certifiedBy.replace(/\s+/g, ' ').trim()
     this.emitValid(!!certifiedBy && this.isCertified)
@@ -79,7 +83,7 @@ export default class Certify extends Vue {
 
   /** Emits an event to update the Is Certified prop. */
   @Emit('update:isCertified')
-  private emitIsCertified (isCertified: boolean): boolean {
+  emitIsCertified (isCertified: boolean): boolean {
     this.emitValid(!!this.trimmedCertifiedBy && isCertified)
     return isCertified
   }
@@ -87,7 +91,7 @@ export default class Certify extends Vue {
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitValid (valid: boolean): void {}
+  emitValid (valid: boolean): void { /* no empty function */ }
 }
 </script>
 

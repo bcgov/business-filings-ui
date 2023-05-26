@@ -183,8 +183,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { navigate } from '@/utils'
 import {
@@ -202,20 +201,16 @@ import { ActionBindingIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
-  components: { AddStaffNotationDialog },
-  mixins: [
-    AllowableActionsMixin,
-    FilingMixin
-  ]
+  components: { AddStaffNotationDialog }
 })
-export default class StaffNotation extends Vue {
-  private isAddingAdministerFreeze = false
-  private isAddingAdministrativeDissolution = false
-  private isAddingCourtOrder = false
-  private isAddingPutBackOn = false
-  private isAddingRegistrarsNotation = false
-  private isAddingRegistrarsOrder = false
-  private expand = false
+export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingMixin) {
+  isAddingAdministerFreeze = false
+  isAddingAdministrativeDissolution = false
+  isAddingCourtOrder = false
+  isAddingPutBackOn = false
+  isAddingRegistrarsNotation = false
+  isAddingRegistrarsOrder = false
+  expand = false
 
   // enums for template
   readonly AllowableActions = AllowableActions
@@ -229,11 +224,8 @@ export default class StaffNotation extends Vue {
 
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
-  @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) isAdminFrozen!: boolean
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
   @Action(useRootStore) setFetchingDataSpinner!: ActionBindingIF
@@ -335,7 +327,7 @@ export default class StaffNotation extends Vue {
 
   @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private close (needReload: boolean): void {}
+  close (needReload: boolean): void { /* no empty function */ }
 }
 </script>
 

@@ -1,45 +1,43 @@
 <template>
   <v-card id="step-buttons-container">
-    <template v-for="(step, index) in getSteps">
-      <div
-        class="step"
-        :key="index"
-        @click="goTo(step)"
-        v-on:keyup.tab="goTo(step)"
-        :class="{'active-step': isCurrentStep(step)}"
-      >
-        <div class="step__indicator">
-          <div class="step__line"></div>
-          <v-btn
-            outlined fab
-            color="primary"
-            :id=step.id
-            class="step__btn"
-            tabindex="-1"
-            :ripple="false"
-            :class="{ 'selected-btn': isCurrentStep(step) }"
-          >
-            <v-icon class="step__icon" :class="{ 'selected-icon': isCurrentStep(step) }">{{ step.icon }}</v-icon>
-          </v-btn>
-        </div>
+    <div
+      v-for="(step, index) in getSteps"
+      class="step"
+      :key="index"
+      @click="goTo(step)"
+      v-on:keyup.tab="goTo(step)"
+      :class="{'active-step': isCurrentStep(step)}"
+    >
+      <div class="step__indicator">
+        <div class="step__line"></div>
         <v-btn
-          class="step__label pre-line px-3"
-          text
+          outlined fab
+          color="primary"
+          :id=step.id
+          class="step__btn"
+          tabindex="-1"
           :ripple="false"
-          :disabled=step.disabled
-          :class="[{'active__btn__text': isCurrentStep(step)}, 'inactive__btn__text']"
+          :class="{ 'selected-btn': isCurrentStep(step) }"
         >
-          {{ step.text }}
+          <v-icon class="step__icon" :class="{ 'selected-icon': isCurrentStep(step) }">{{ step.icon }}</v-icon>
         </v-btn>
       </div>
-    </template>
+      <v-btn
+        class="step__label pre-line px-3"
+        text
+        :ripple="false"
+        :disabled=step.disabled
+        :class="[{'active__btn__text': isCurrentStep(step)}, 'inactive__btn__text']"
+      >
+        {{ step.text }}
+      </v-btn>
+    </div>
   </v-card>
 </template>
 
 <script lang="ts">
 // Libraries
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { StepsIF } from '@/interfaces'
 
 @Component({})
@@ -47,11 +45,11 @@ export default class Stepper extends Vue {
   /** The required steps. */
   @Prop({ required: true }) readonly getSteps!: Array<StepsIF>
 
-  protected goTo (step) {
+  goTo (step) {
     this.$router.push(step.to).catch(() => {})
   }
 
-  protected isCurrentStep (step): boolean {
+  isCurrentStep (step): boolean {
     return this.$route.fullPath === step.to
   }
 }

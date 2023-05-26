@@ -107,8 +107,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { ImportantMessage } from '@/components/common'
 import QrcodeVue from 'qrcode.vue'
 

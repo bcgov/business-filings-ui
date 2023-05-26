@@ -6,7 +6,7 @@
       outlined
       color="primary"
       :ripple=false
-      @click.stop="toggleFilingHistoryItem(index, filing)"
+      @click.stop="toggleFilingHistoryItem(index)"
     >
       <template v-if="filing.availableOnPaperOnly">
         <span class="view-details app-blue">Request a Copy</span>
@@ -56,27 +56,22 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AllowableActions, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
-import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { useBusinessStore, useFilingHistoryListStore } from '@/stores'
 
-@Component({
-  mixins: [AllowableActionsMixin]
-})
-export default class HeaderActions extends Vue {
+@Component({})
+export default class HeaderActions extends Mixins(AllowableActionsMixin) {
   readonly AllowableActions = AllowableActions
 
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
-  @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
@@ -121,7 +116,7 @@ export default class HeaderActions extends Vue {
   }
 
   /** Called by File a Correction button to correct the subject filing. */
-  protected async correctThisFiling (filing: ApiFilingIF): Promise<void> {
+  async correctThisFiling (filing: ApiFilingIF): Promise<void> {
     // see also TodoList.vue:doResumeFiling()
     switch (filing?.name) {
       case FilingTypes.ALTERATION:

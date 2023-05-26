@@ -30,8 +30,7 @@
 
 <script lang="ts">
 // Libraries
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ApiFilingIF, DocumentIF } from '@/interfaces'
 import { LegalServices } from '@/services'

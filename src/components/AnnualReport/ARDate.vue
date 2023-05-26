@@ -10,16 +10,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { useBusinessStore, useRootStore } from '@/stores'
 
-@Component({
-  mixins: [DateMixin]
-})
-export default class ArDate extends Vue {
+@Component({})
+export default class ArDate extends Mixins(DateMixin) {
   // Getters
   @Getter(useRootStore) nextARDate!: string
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean

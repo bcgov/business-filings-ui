@@ -46,8 +46,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { StaffPayment } from '@bcrs-shared-components/staff-payment'
 import { StaffPaymentIF } from '@/interfaces'
 import { StaffPaymentOptions } from '@/enums'
@@ -73,16 +72,16 @@ export default class StaffPaymentDialog extends Vue {
   // Prop to display loading indicators and to disable buttons.
   @Prop({ default: false }) readonly loading!: boolean
 
-  protected validate = false
-  protected staffPaymentFormValid = false
+  validate = false
+  staffPaymentFormValid = false
 
   /** Called when user clicks Submit button. */
-  protected async submit (): Promise<void> {
+  async submit (): Promise<void> {
     // enable validation
     this.validate = true
 
     // wait for validation
-    await Vue.nextTick()
+    await this.$nextTick()
 
     // emit submit event only if form is valid
     // otherwise user stays on this dialog
@@ -96,7 +95,7 @@ export default class StaffPaymentDialog extends Vue {
   }
 
   /** Called when user clicks Exit button. */
-  protected exit (): void {
+  exit (): void {
     // reset validation (for next time)
     this.validate = false
 
@@ -106,7 +105,7 @@ export default class StaffPaymentDialog extends Vue {
 
   // Pass updated staff payment data to parent.
   @Emit('update:staffPaymentData')
-  protected emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
+  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void { /* no empty function */ }
 }
 </script>
 

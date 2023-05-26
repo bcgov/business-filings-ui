@@ -96,7 +96,7 @@ export interface ApiFilingIF {
     // restorations filings only
     restoration?: {
       expiry: IsoDatePacific,
-      legalName: string
+      toLegalName: string
     }
 
     // special resolution filings only

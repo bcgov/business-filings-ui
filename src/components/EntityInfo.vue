@@ -28,8 +28,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit } from 'vue-property-decorator'
+import { Component, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { NigsMessage } from '@/enums'
 import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
@@ -48,7 +47,7 @@ export default class EntityInfo extends Vue {
   @Getter(useRootStore) isRoleStaff!: boolean
 
   /** Whether to show the hover style. */
-  protected showHoverStyle = false
+  showHoverStyle = false
 
   /** The Business ID string (may be null). */
   get businessId (): string {
@@ -62,19 +61,19 @@ export default class EntityInfo extends Vue {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  private emitConfirmDissolution (): void {}
+  emitConfirmDissolution (): void { /* no empty function */ }
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  private emitDownloadBusinessSummary (): void {}
+  emitDownloadBusinessSummary (): void { /* no empty function */ }
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
-  private emitNotInGoodStanding (message: NigsMessage): void {}
+  emitNotInGoodStanding (message: NigsMessage): void { /* no empty function */ }
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  private emitViewAddDigitalCredentials (): void {}
+  emitViewAddDigitalCredentials (): void { /* no empty function */ }
 }
 </script>
 

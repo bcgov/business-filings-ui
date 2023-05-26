@@ -9,7 +9,7 @@
       outlined
       color="orange darken-2"
       :ripple=false
-      @click.stop="toggleFilingHistoryItem(index, filing)"
+      @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-alert</v-icon>
       <span class="view-details ml-1">View Details</span>
@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import FiledLabel from '../FiledLabel.vue'

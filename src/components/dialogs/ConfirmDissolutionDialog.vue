@@ -51,8 +51,7 @@
 
 <script lang="ts">
 
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DissolutionConfirmationResourceIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
@@ -106,8 +105,8 @@ export default class ConfirmDissolutionDialog extends Vue {
   }
 
   // Pass click events to parent.
-  @Emit() close () {}
-  @Emit() proceed () {}
+  @Emit() close () { /* no empty function */ }
+  @Emit() proceed () { /* no empty function */ }
 }
 </script>
 

@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import { omit, isEqual } from 'lodash'
+import { Component, Vue } from 'vue-property-decorator'
+import { isEqual } from 'lodash'
+import omit from 'lodash.omit'
 
 /**
  * Mixin that provides some useful common utilities.

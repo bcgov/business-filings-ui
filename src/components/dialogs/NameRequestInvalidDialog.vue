@@ -42,8 +42,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { NameRequestStates } from '@/enums'
@@ -69,7 +68,7 @@ export default class NameRequestInvalidDialog extends Vue {
   @Prop({ default: null }) readonly type!: NameRequestStates
 
   // Pass click events to parent.
-  @Emit() protected exit () {}
-  @Emit() protected retry () {}
+  @Emit() exit () { /* no empty function */ }
+  @Emit() retry () { /* no empty function */ }
 }
 </script>
