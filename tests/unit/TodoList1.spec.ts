@@ -2316,7 +2316,6 @@ describe('TodoList - Click Tests - Corrections', () => {
 
     // set configurations
     configurationStore.setConfiguration(configuration)
-    sessionStorage.setItem('BUSINESS_ID', test.businessId)
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
@@ -2334,6 +2333,7 @@ describe('TodoList - Click Tests - Corrections', () => {
 
   for (const test of editTests) {
     it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
+      sessionStorage.setItem('BUSINESS_ID', test.businessId)
       businessStore.setIdentifier(test.businessId)
       // init draft Correction filing task
       rootStore.tasks = [
