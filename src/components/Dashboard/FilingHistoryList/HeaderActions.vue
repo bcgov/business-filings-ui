@@ -75,8 +75,8 @@ export default class HeaderActions extends Vue {
   @Prop({ required: true }) readonly index!: number
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
+  @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
