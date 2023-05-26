@@ -533,8 +533,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { Getter } from 'pinia-class'
 import { required, maxLength } from 'vuelidate/lib/validators'
@@ -550,15 +549,9 @@ import { useBusinessStore, useRootStore } from '@/stores'
   components: {
     BaseAddress,
     WarningPopover
-  },
-  mixins: [
-    CommonMixin,
-    DateMixin,
-    DirectorMixin,
-    ResourceLookupMixin
-  ]
+  }
 })
-export default class Directors extends Vue {
+export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMixin, ResourceLookupMixin) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   // ref: https://github.com/vuejs/vue-class-component/issues/94
@@ -588,51 +581,60 @@ export default class Directors extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   /** Effective date for fetching and appointing/ceasing directors. */
-  private asOfDate: string
+  asOfDate: string
 
   /** Original directors from Legal API. */
-  private original: DirectorIF[] = []
+  original: DirectorIF[] = []
 
   /** Working directors data (also used as v-model for the HTML list). */
-  private allDirectors: DirectorIF[] = []
+  allDirectors: DirectorIF[] = []
 
-  private directorEditInProgress = false
-  private directorPreEdit = null // officer before edit
-  private showNewDirectorForm = false
-  private showPopup = false
-  private activeIndex = -1
-  private activeIndexCustomCease = -1
-  private activeDirectorToDelete: DirectorIF = null
-  private cessationDateTemp: string = null
-  private isEditingDirector = false
-  private messageIndex = -1
+  /** Initialize dir to use in the template's for loop. */
+  dir: DirectorIF = {
+    id: 0,
+    officer: undefined,
+    deliveryAddress: undefined,
+    appointmentDate: '',
+    cessationDate: '',
+    actions: []
+  }
+
+  directorEditInProgress = false
+  directorPreEdit = null // officer before edit
+  showNewDirectorForm = false
+  showPopup = false
+  activeIndex = -1
+  activeIndexCustomCease = -1
+  activeDirectorToDelete: DirectorIF = null
+  cessationDateTemp: string = null
+  isEditingDirector = false
+  messageIndex = -1
 
   /** V-model for new director form. */
-  private newDirector = cloneDeep(EmptyDirector)
+  newDirector = cloneDeep(EmptyDirector)
 
-  private inProgressDelivAddress: AddressIF = null
-  private inProgressMailAddress: AddressIF = null
-  private editFormShowHide = {
+  inProgressDelivAddress: AddressIF = null
+  inProgressMailAddress: AddressIF = null
+  editFormShowHide = {
     showAddress: true,
     showName: true,
     showDates: true
   }
-  private directorFormValid = true // used for New and Edit forms
+  directorFormValid = true // used for New and Edit forms
 
   /**
    * State of the form checkbox for determining whether or not the mailing address
    * is the same as the delivery address.
    */
-  private inheritDeliveryAddress = false
+  inheritDeliveryAddress = false
 
   /**
    * The Address schema containing Vuelidate rules.
    * NB: This should match the subject JSON schema.
    */
-  private addressSchema = {
+  addressSchema = {
     streetAddress: {
       required,
       maxLength: maxLength(50)
@@ -697,12 +699,12 @@ export default class Directors extends Vue {
   ]
 
   /** Returns true if at least one director has a paid change. */
-  private isDirectorsPaidChange (): boolean {
+  isDirectorsPaidChange (): boolean {
     return this.allDirectors.some(dir => dir.isFeeApplied)
   }
 
   /** Returns true if least one director has a free change. */
-  private isDirectorsFreeChange (): boolean {
+  isDirectorsFreeChange (): boolean {
     return this.allDirectors.some(dir => this.isNameChanged(dir) || this.isAddressChanged(dir))
   }
 
@@ -778,7 +780,7 @@ export default class Directors extends Vue {
    * Local helper to provide a complete address object including missing/blank fields.
    * @returns a complete address object
    */
-  private formatAddress (address: any): AddressIF {
+  formatAddress (address: any): AddressIF {
     return {
       addressCity: address.addressCity || '',
       addressCountry: address.addressCountry || '',
@@ -795,7 +797,7 @@ export default class Directors extends Vue {
    * See also LegalServices.fetchParties().
    */
   // FUTURE: this API call should be in the parent component or some mixin/service
-  private async fetchDirectors (): Promise<void> {
+  async fetchDirectors (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
       const url = `businesses/${this.getIdentifier}/directors?date=${this.asOfDate}`
       await axios.get(url).then(response => {
@@ -865,21 +867,21 @@ export default class Directors extends Vue {
    * - when a draft filing is loaded
    **/
   @Watch('directors', { deep: true })
-  private onDirectorsChanged (): void {
+  onDirectorsChanged (): void {
     // fill working addresses from parent
     // NB: object assignment is OK here
     this.allDirectors = this.directors
   }
 
   /** Local helper to add a new director. */
-  private addNewDirector (): void {
+  addNewDirector (): void {
     this.showNewDirectorForm = true
     this.activeIndex = null
     this.directorEditInProgress = true
   }
 
   /** Local helper to cancel adding a new director. */
-  private cancelNewDirector (): void {
+  cancelNewDirector (): void {
     this.showNewDirectorForm = false
     this.$refs.newDirectorForm.reset()
     this.$refs.baseAddressNew.$refs.addressForm.reset()
@@ -898,7 +900,7 @@ export default class Directors extends Vue {
   //  * Local helper to show the Delete Director confirmation popup.
   //  * @param director The director object to delete.
   //  */
-  // private showDeleteDirectorConfirmation (director): void {
+  // showDeleteDirectorConfirmation (director): void {
   //   this.showPopup = true
   //   this.activeDirectorToDelete = director
   // }
@@ -907,7 +909,7 @@ export default class Directors extends Vue {
    * Local helper to delete a director.
    * @param id The id of the director to delete
    */
-  private deleteDirector (id: number): void {
+  deleteDirector (id: number): void {
     const newList = this.directors.filter(dir => dir.id !== id)
     this.allDirectors = newList
 
@@ -918,7 +920,7 @@ export default class Directors extends Vue {
   }
 
   /** Local helper to validate the new director form. */
-  private validateNewDirectorForm (): void {
+  validateNewDirectorForm (): void {
     var mainFormIsValid = this.$refs.newDirectorForm.validate()
     var addressFormIsValid = this.$refs.baseAddressNew.$refs.addressForm.validate()
     if (this.$refs.mailAddressNew) {
@@ -937,7 +939,7 @@ export default class Directors extends Vue {
   }
 
   /** Local helper push the current (new) director data into the list. */
-  private pushNewDirectorData (): void {
+  pushNewDirectorData (): void {
     if (this.inheritDeliveryAddress) {
       this.inProgressMailAddress = { ...this.inProgressDelivAddress }
     }
@@ -976,7 +978,7 @@ export default class Directors extends Vue {
    * Local helper to cease a director.
    * @param director The director object to cease.
    */
-  private ceaseDirector (director: DirectorIF, index: number): void {
+  ceaseDirector (director: DirectorIF, index: number): void {
     // if this is a Cease, apply a fee
     // otherwise it's just undoing a cease or undoing a new director, so remove fee
     this.messageIndex = index
@@ -1001,7 +1003,7 @@ export default class Directors extends Vue {
    * Local helper to edit a director.
    * @param index The index of the director to edit.
    */
-  private editDirector (index: number): void {
+  editDirector (index: number): void {
     // clear in-progress director data from form in BaseAddress component - ie: start fresh
     this.inProgressDelivAddress = null
     this.inProgressMailAddress = null
@@ -1015,7 +1017,7 @@ export default class Directors extends Vue {
    * Local helper to edit a director's dates.
    * @param index The index of the director to edit.
    */
-  private editDirectorDates (index: number): void {
+  editDirectorDates (index: number): void {
     this.editFormShowHide = {
       showAddress: false,
       showName: false,
@@ -1029,7 +1031,7 @@ export default class Directors extends Vue {
    * Local helper to edit a director's name.
    * @param index The index of the director to edit.
    */
-  private editDirectorName (index: number): void {
+  editDirectorName (index: number): void {
     this.directorPreEdit = { ...this.allDirectors[index].officer }
     this.editFormShowHide = {
       showAddress: false,
@@ -1044,7 +1046,7 @@ export default class Directors extends Vue {
    * Local helper to edit a director's address.
    * @param index The index of the director to edit.
    */
-  private editDirectorAddress (index: number): void {
+  editDirectorAddress (index: number): void {
     this.directorPreEdit = null
     this.editFormShowHide = {
       showAddress: true,
@@ -1060,7 +1062,7 @@ export default class Directors extends Vue {
    * @param index The index of the director to save.
    * @param id The id of the director to save.
    */
-  private saveEditDirector (index: number, id: number): void {
+  saveEditDirector (index: number, id: number): void {
     // get current director (object reference)
     const director = this.allDirectors[index]
 
@@ -1127,7 +1129,7 @@ export default class Directors extends Vue {
    * Local helper to cancel a director that was edited.
    * @param id Id of the director being edited.
    */
-  private cancelEditDirector (id: number = null): void {
+  cancelEditDirector (id: number = null): void {
     if (id) this.restoreDirName(id, false)
     this.activeIndex = -1
     this.directorEditInProgress = false
@@ -1145,7 +1147,7 @@ export default class Directors extends Vue {
    * @param id ID of the director currently being edited.
    * @param isRestore Boolean indicating a hard or soft name reset.
    */
-  private restoreDirName (id: number, isRestore: boolean): void {
+  restoreDirName (id: number, isRestore: boolean): void {
     const index = this.allDirectors.findIndex(director => director.id === id)
     const director = this.allDirectors[index]
 
@@ -1171,7 +1173,7 @@ export default class Directors extends Vue {
    * To be used when we want to save the data.
    * @param val The new value.
    */
-  private updateDeliveryAddress (val: AddressIF): void {
+  updateDeliveryAddress (val: AddressIF): void {
     this.inProgressDelivAddress = val
   }
 
@@ -1180,7 +1182,7 @@ export default class Directors extends Vue {
    * To be used when we want to save the data.
    * @param val The new value.
    */
-  private updateMailingAddress (val: AddressIF): void {
+  updateMailingAddress (val: AddressIF): void {
     this.inProgressMailAddress = val
   }
 
@@ -1189,7 +1191,7 @@ export default class Directors extends Vue {
    * @param thedate The date to check.
    * @returns Whether the date is not in the future.
    */
-  private dateIsNotFuture (thedate: string): boolean {
+  dateIsNotFuture (thedate: string): boolean {
     return this.compareYyyyMmDd(thedate, this.getCurrentDate, '<=')
   }
 
@@ -1198,7 +1200,7 @@ export default class Directors extends Vue {
    * @param director The director to check.
    * @returns The date.
    */
-  private earliestStandaloneCeaseDateToSet (director: DirectorIF): string {
+  earliestStandaloneCeaseDateToSet (director: DirectorIF): string {
     if (this.compareYyyyMmDd(director.appointmentDate, this.earliestDateToSet, '>')) {
       return director.appointmentDate
     } else {
@@ -1211,7 +1213,7 @@ export default class Directors extends Vue {
    * @param director The director to change.
    * @param val The action value to add or remove.
    */
-  private toggleAction (director: DirectorIF, val: Actions): void {
+  toggleAction (director: DirectorIF, val: Actions): void {
     // if director has specified action (eg, CEASED) then remove it, otherwise add it
     const index = director.actions.indexOf(val)
     if (index >= 0) director.actions.splice(index)
@@ -1223,7 +1225,7 @@ export default class Directors extends Vue {
    * @param director The director to change.
    * @param val The action value to add.
    */
-  private addAction (director: DirectorIF, val: Actions): void {
+  addAction (director: DirectorIF, val: Actions): void {
     if (director.actions.indexOf(val) < 0) director.actions.push(val)
   }
 
@@ -1232,7 +1234,7 @@ export default class Directors extends Vue {
    * @param director The director to change.
    * @param val The action value to remove.
    */
-  private removeAction (director: DirectorIF, val: Actions): void {
+  removeAction (director: DirectorIF, val: Actions): void {
     director.actions = director.actions.filter(action => action !== val)
   }
 
@@ -1241,7 +1243,7 @@ export default class Directors extends Vue {
    * @param director The director to check.
    * @returns Whether the director was appointed.
    */
-  private isNew (director: DirectorIF): boolean {
+  isNew (director: DirectorIF): boolean {
     // helper function - was the director added in this filing?
     return (director.actions.indexOf(Actions.APPOINTED) >= 0)
   }
@@ -1251,7 +1253,7 @@ export default class Directors extends Vue {
    * @param director The director to check.
    * @returns Whether the director has had the name changed.
    */
-  private isNameChanged (director: DirectorIF): boolean {
+  isNameChanged (director: DirectorIF): boolean {
     return (director.actions.indexOf(Actions.NAMECHANGED) >= 0)
   }
 
@@ -1260,7 +1262,7 @@ export default class Directors extends Vue {
    * @param director The director to check.
    * @returns Whether the director has had the address changed.
    */
-  private isAddressChanged (director: DirectorIF): boolean {
+  isAddressChanged (director: DirectorIF): boolean {
     return (director.actions.indexOf(Actions.ADDRESSCHANGED) >= 0)
   }
 
@@ -1269,7 +1271,7 @@ export default class Directors extends Vue {
    * @param director The director to check.
    * @returns Whether the director is active (ie, not ceased).
    */
-  private isActive (director: DirectorIF): boolean {
+  isActive (director: DirectorIF): boolean {
     // helper function - is the director active, ie: not ceased?
     return (director.actions.indexOf(Actions.CEASED) < 0)
   }
@@ -1279,20 +1281,20 @@ export default class Directors extends Vue {
    * @param director The director to check.
    * @returns Whether the director is actionable.
    */
-  private isActionable (director: DirectorIF): boolean {
+  isActionable (director: DirectorIF): boolean {
     return (director.isDirectorActionable !== undefined) ? director.isDirectorActionable : true
   }
 
   /** Called when a director form's validity changes. */
   @Watch('directorFormValid')
-  private onDirectorFormValidChanged (): void {
+  onDirectorFormValidChanged (): void {
     // emit event back up to parent
     this.emitDirectorFormValid()
   }
 
   /** Called when the directors list changes for any reason. */
   @Watch('allDirectors', { deep: true })
-  private onAllDirectorsChanged (): void {
+  onAllDirectorsChanged (): void {
     // emit events back up to parent
     this.emitWorkingDirectors()
     this.emitDirectorsPaidChange()
@@ -1300,13 +1302,13 @@ export default class Directors extends Vue {
   }
 
   @Watch('directorEditInProgress')
-  private onDirectorEditActionChanged (): void {
+  onDirectorEditActionChanged (): void {
     // emit event back up to parent
     this.emitDirectorEditInProgress()
   }
 
   @Watch('complianceMsg')
-  private onComplianceMsgChanged (): void {
+  onComplianceMsgChanged (): void {
     // emit event back up to parent
     this.emitcomplianceDialogMsg()
   }
@@ -1314,47 +1316,47 @@ export default class Directors extends Vue {
   /** Emits an event containing the earliest director change date. */
   @Emit('earliestDateToSet')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitEarliestDateToSet (val: string): void {}
+  emitEarliestDateToSet (val: string): void { /* no empty function */ }
 
   /** Emits an event containing this component's paid change state. */
   @Emit('directorsPaidChange')
-  private emitDirectorsPaidChange (): boolean {
+  emitDirectorsPaidChange (): boolean {
     return this.isDirectorsPaidChange()
   }
 
   /** Emits an event containing this component's free change state. */
   @Emit('directorsFreeChange')
-  private emitDirectorsFreeChange (): boolean {
+  emitDirectorsFreeChange (): boolean {
     return this.isDirectorsFreeChange()
   }
 
   /** Emits an event containing the director form's validity. */
   @Emit('directorFormValid')
-  private emitDirectorFormValid (): boolean {
+  emitDirectorFormValid (): boolean {
     return this.directorFormValid
   }
 
   /** Emits an event that indicates whether a director edit is in progress. */
   @Emit('directorEditAction')
-  private emitDirectorEditInProgress (): boolean {
+  emitDirectorEditInProgress (): boolean {
     return this.directorEditInProgress
   }
 
   /** Emits an event that indicates a director compliance warning has been triggered. */
   @Emit('complianceDialogMsg')
-  private emitcomplianceDialogMsg (): AlertMessageIF {
+  emitcomplianceDialogMsg (): AlertMessageIF {
     return this.complianceMsg
   }
 
   /** Emits original addresses object to the parent page. */
   @Emit('original')
-  private emitOriginalDirectors (): DirectorIF[] {
+  emitOriginalDirectors (): DirectorIF[] {
     return this.original
   }
 
   /** Emits updated addresses object to the parent page (ie, sync). */
   @Emit('update:directors')
-  private emitWorkingDirectors (): DirectorIF[] {
+  emitWorkingDirectors (): DirectorIF[] {
     return this.allDirectors
   }
 }

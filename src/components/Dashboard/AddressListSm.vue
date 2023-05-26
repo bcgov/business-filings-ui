@@ -210,8 +210,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { ApiFilingIF, OfficeAddressIF } from '@/interfaces'
@@ -219,13 +218,9 @@ import FirmsAddressList from './FirmsAddressList.vue'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 @Component({
-  components: { FirmsAddressList },
-  mixins: [
-    CommonMixin,
-    CountriesProvincesMixin
-  ]
+  components: { FirmsAddressList }
 })
-export default class AddressListSm extends Vue {
+export default class AddressListSm extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 

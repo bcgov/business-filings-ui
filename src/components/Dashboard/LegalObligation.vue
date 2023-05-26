@@ -43,23 +43,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import ResourceLookupMixin from '@/mixins/resource-lookup-mixin'
 import { useRootStore } from '@/stores'
 
-@Component({
-  mixins: [ResourceLookupMixin]
-})
-export default class LegalObligation extends Vue {
+@Component({})
+export default class LegalObligation extends Mixins(ResourceLookupMixin) {
   @Getter(useRootStore) isBusinessWithNoMaintenanceFilings!: boolean
 
-  protected readMoreFlag = false
-  protected showLegalObligation = true
+  readMoreFlag = false
+  showLegalObligation = true
 
   /** Whether this entity is a business (and not a temporary registration). */
-  get isBusiness (): string {
+  get isBusiness (): boolean {
     return !!sessionStorage.getItem('BUSINESS_ID')
   }
 }

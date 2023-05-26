@@ -66,8 +66,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { getName } from 'country-list'
 import { capitalize, formatPhoneNumber } from '@/utils'
@@ -77,14 +76,8 @@ import { DateMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore } from '@/stores'
 
-@Component({
-  mixins: [
-    DateMixin,
-    EnumMixin,
-    NameRequestMixin
-  ]
-})
-export default class NameRequestInfo extends Vue {
+@Component({})
+export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRequestMixin) {
   @Prop({ default: () => {} }) readonly nameRequest!: NameRequestIF
 
   @Getter(useBusinessStore) isSoleProp!: boolean

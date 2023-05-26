@@ -38,8 +38,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class CredentialsFooter extends Vue {
@@ -49,9 +48,9 @@ export default class CredentialsFooter extends Vue {
 
   @Prop({ default: 'Next' }) readonly nextStepName!: string
 
-  @Emit() protected back (): void {}
-  @Emit() protected next (): void {}
-  @Emit() protected cancel (): void {}
+  @Emit() back (): void { /* no empty function */ }
+  @Emit() next (): void { /* no empty function */ }
+  @Emit() cancel (): void { /* no empty function */ }
 }
 </script>
 

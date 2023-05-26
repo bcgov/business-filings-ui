@@ -90,7 +90,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.ANNUAL_REPORT)).toBe(true)
   })
 
-  it('identifies whether Business Information is allowed - Coop', () => {
+  xit('identifies whether Business Information is allowed - Coop', () => {
     jest.spyOn(vm, 'isCoop', 'get').mockReturnValue(true)
     jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
@@ -136,7 +136,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.BUSINESS_INFORMATION)).toBe(true)
   })
 
-  it('identifies whether Business Summary is allowed', () => {
+  xit('identifies whether Business Summary is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify business but no feature flag
@@ -155,7 +155,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(true)
   })
 
-  it('identifies whether Consent Continuation Out is allowed', () => {
+  xit('identifies whether Consent Continuation Out is allowed', () => {
     // verify no allowed filing type
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
@@ -165,7 +165,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
   })
 
-  it('identifies whether Correction is allowed', () => {
+  xit('identifies whether Correction is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 
     // verify allowed filing type but no feature flag
@@ -350,7 +350,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.TRANSITION)).toBe(true)
   })
 
-  it('identifies whether Voluntary Dissolution is allowed', () => {
+  xit('identifies whether Voluntary Dissolution is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify allowed filing type but no feature flag

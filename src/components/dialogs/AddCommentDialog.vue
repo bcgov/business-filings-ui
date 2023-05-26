@@ -35,8 +35,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { DetailComment } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
@@ -55,17 +54,17 @@ export default class AddCommentDialog extends Vue {
   @Prop({ default: null }) readonly filing!: ApiFilingIF
 
   /** The comment text. */
-  protected comment = ''
+  comment = ''
 
   /** Whether the detail component is valid. */
-  protected detailCommentValid = false
+  detailCommentValid = false
 
   /** Whether this component is currently saving. */
-  protected saving = false
+  saving = false
 
   /** Called when prop changes (ie, dialog is shown/hidden). */
   @Watch('dialog')
-  private onDialogChanged (val: boolean): void {
+  onDialogChanged (val: boolean): void {
     // when dialog is shown, reset comment and validation
     if (val) {
       this.comment = ''
@@ -82,10 +81,10 @@ export default class AddCommentDialog extends Vue {
    */
   @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitClose (needReload: boolean): void {}
+  emitClose (needReload: boolean): void { /* no empty function */ }
 
   /** Saves the current comment. */
-  protected async save (): Promise<void> {
+  async save (): Promise<void> {
     // prevent double saving
     if (this.saving) return
 

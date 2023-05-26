@@ -16,15 +16,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { AxiosResponse } from 'axios'
-import { Component, Emit, Prop } from 'vue-property-decorator'
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist/build/pdf'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
-
-// set web worker
-GlobalWorkerOptions.workerSrc = require('pdfjs-dist/build/pdf.worker.entry')
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -43,10 +38,20 @@ export default class FileUploadPdf extends Vue {
   readonly uploadToUrl!: (url: string, file: File, key: string, userId: string) => Promise<AxiosResponse>
 
   /** Component key, used to force it to re-render. */
-  protected count = 0
+  count = 0
 
   /** Custom errors messages, use to put component into manual error mode. */
-  protected errorMessages = [] as Array<string>
+  errorMessages = [] as Array<string>
+
+  private pdfjsLib: any
+
+  created () {
+    // NB: we load the lib and worker this way to avoid a memory leak (esp in unit tests)
+    // NB: must use require instead of import or this doesn't work
+    // NB: must use legacy build for unit tests not running in Node 18+
+    this.pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js')
+    this.pdfjsLib.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
+  }
 
   /** Clears data and local state. */
   public reset (): void {
@@ -100,7 +105,7 @@ export default class FileUploadPdf extends Vue {
   }
 
   /** When file is selected or cleared, validates the file and uploads it. */
-  protected async onChange (file: File): Promise<void> {
+  async onChange (file: File): Promise<void> {
     // update parent for later reactivity
     this.updateFile(file)
     this.updateFileKey(null)
@@ -144,7 +149,7 @@ export default class FileUploadPdf extends Vue {
    * @param file the file to validate
    * @returns whether file is valid
    */
-  private async validateFile (file: File): Promise<boolean> {
+  async validateFile (file: File): Promise<boolean> {
     if (typeof file.arrayBuffer === 'undefined') return true
 
     // verify file size
@@ -195,12 +200,12 @@ export default class FileUploadPdf extends Vue {
    * @param file the file to check
    * @return an object containing the file's info
    */
-  private async retrieveFileInfo (file: File): Promise<PdfInfoIF> {
+  async retrieveFileInfo (file: File): Promise<PdfInfoIF> {
     try {
-      const pdfBufferData = await file.arrayBuffer()
-      const pdfData = new Uint8Array(pdfBufferData) // put it in a Uint8Array
-      const pdf = await getDocument({ data: pdfData })
-      const perms = await pdf.getPermissions()
+      const arrayBuffer = await file.arrayBuffer()
+      const data = new Uint8Array(arrayBuffer) // put it in a Uint8Array
+      const document = await this.pdfjsLib.getDocument({ data: data })
+      const perms = await document.getPermissions()
       return { isEncrypted: false, isContentLocked: !!perms }
     } catch (err) {
       if (err.name === 'PasswordException') {
@@ -217,20 +222,20 @@ export default class FileUploadPdf extends Vue {
    * @param pageSize page size to check for
    * @return whether file is expected page size
    */
-  private async isPageSize (file: File, pageSize: PageSizes): Promise<boolean> {
+  async isPageSize (file: File, pageSize: PageSizes): Promise<boolean> {
     const pageSizeInfo = PAGE_SIZE_DICT[pageSize]
-    const pdfBufferData = await file.arrayBuffer()
-    const pdfData = new Uint8Array(pdfBufferData) // put it in a Uint8Array
-    const pdf = await getDocument({ data: pdfData })
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const p1 = await pdf.getPage(pageNum)
-      const [x, y, w, h] = p1._pageInfo.view
+    const arrayBuffer = await file.arrayBuffer()
+    const data = new Uint8Array(arrayBuffer) // put it in a Uint8Array
+    const document = await this.pdfjsLib.getDocument({ data }).promise
+    for (let pageNum = 1; pageNum <= document.numPages; pageNum++) {
+      const page = await document.getPage(pageNum)
+      const [x, y, w, h] = page._pageInfo.view
       const width = w - x
       const height = h - y
-      const isvalidPageSize =
+      const isValidPageSize =
         (width / pageSizeInfo.pointsPerInch === pageSizeInfo.width) &&
         (height / pageSizeInfo.pointsPerInch === pageSizeInfo.height)
-      return isvalidPageSize
+      if (!isValidPageSize) return false
     }
     return true
   }
@@ -239,7 +244,7 @@ export default class FileUploadPdf extends Vue {
    * Uploads the file to a server.
    * @returns the file key on success, or null on failure
    */
-  private async uploadFile (file: File): Promise<string> {
+  async uploadFile (file: File): Promise<string> {
     try {
       // NB: will throw on API error
       const psu = await this.getPresignedUrl(file.name)
@@ -261,11 +266,11 @@ export default class FileUploadPdf extends Vue {
 
   @Emit('update:file')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected updateFile (file: File): void {}
+  updateFile (file: File): void { /* no empty function */ }
 
   @Emit('update:fileKey')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected updateFileKey (fileKey: string): void {}
+  updateFileKey (fileKey: string): void { /* no empty function */ }
 }
 </script>
 

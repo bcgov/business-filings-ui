@@ -12,8 +12,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ApiFilingIF } from '@/interfaces'
 import FilingTemplate from '../FilingTemplate.vue'
 import { DateUtilities } from '@/services'

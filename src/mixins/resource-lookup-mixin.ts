@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { AlertMessageIF, ObligationsResourceIF } from '@/interfaces'
 import { FilingCodes } from '@/enums'

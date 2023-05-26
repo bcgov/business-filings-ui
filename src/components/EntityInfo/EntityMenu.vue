@@ -131,8 +131,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
@@ -142,19 +141,15 @@ import { navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
-  components: { StaffComments },
-  mixins: [AllowableActionsMixin]
+  components: { StaffComments }
 })
-export default class EntityMenu extends Vue {
+export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   @Prop({ required: true }) readonly businessId!: string // may be null
 
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useRootStore) getReasonText!: string
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useBusinessStore) isFirm!: boolean
-  @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
 
@@ -204,20 +199,20 @@ export default class EntityMenu extends Vue {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  private emitConfirmDissolution (): void {}
+  emitConfirmDissolution (): void { /* no empty function */ }
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  emitDownloadBusinessSummary (): void {}
+  emitDownloadBusinessSummary (): void { /* no empty function */ }
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitNotInGoodStanding (message: NigsMessage): void {}
+  emitNotInGoodStanding (message: NigsMessage): void { /* no empty function */ }
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  emitViewAddDigitalCredentials (): void {}
+  emitViewAddDigitalCredentials (): void { /* no empty function */ }
 }
 </script>
 

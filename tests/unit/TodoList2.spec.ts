@@ -379,11 +379,11 @@ xdescribe('TodoList - common expansion panel content tests', () => {
 
 // FUTURE: implement this
 xdescribe('TodoList - tests specific to Cooperatives', () => {
-  beforeAll(() => {
-    sessionStorage.clear()
-    sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
-    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-  })
+  // beforeAll(() => {
+  // sessionStorage.clear()
+  // sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
+  // businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+  // })
   //
   // FUTURE: add any Coop-specific tests here
   // eg, year in title
@@ -411,11 +411,11 @@ xdescribe('TodoList - tests specific to corporations (BEN, etc)', () => {
 
 // FUTURE: implement this
 xdescribe('TodoList - tests specific to Incorporation Applications', () => {
-  beforeAll(() => {
-    sessionStorage.clear()
-    sessionStorage.setItem('TEMP_REG_NUMBER', 'TaAbBcC123')
-    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-  })
+  // beforeAll(() => {
+  // sessionStorage.clear()
+  // sessionStorage.setItem('TEMP_REG_NUMBER', 'TaAbBcC123')
+  // businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+  // })
   //
   // FUTURE: verify numbered vs named IAs (see also Filing History List unit tests)
   //

@@ -32,8 +32,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { GetFeatureFlag } from '@/utils'
@@ -45,9 +44,9 @@ import { useBusinessStore } from '@/stores'
 export default class FrozenInformation extends Vue {
   @Getter(useBusinessStore) isFirm!: boolean
 
-  private panel = 1
+  panel = 1
 
-  private togglePanel (): void {
+  togglePanel (): void {
     this.panel = (this.panel === 1 ? 0 : 1)
   }
 
