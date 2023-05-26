@@ -13,7 +13,7 @@ const defaultFlagSet: LDFlagSet = {
   'sentry-enable': false, // by default, no sentry logs
   'show-alert-phone-numbers-firm': false,
   'supported-business-summary-entities': [],
-  'supported-correction-entities': ['CP'],
+  'supported-correction-entities': [],
   'supported-dissolution-entities': [],
   'supported-consent-continuation-out-entities': []
 }
