@@ -30,17 +30,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 
 @Component({
   components: { ContactInfo }
 })
 export default class NotInGoodStanding extends Vue {
-  protected panel = 1
+  panel = 1
 
-  protected togglePanel (): void {
+  togglePanel (): void {
     this.panel = (this.panel === 1 ? 0 : 1)
   }
 }

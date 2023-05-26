@@ -29,16 +29,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { DigitalCredentialsIF, TableHeaderIF } from '@/interfaces'
 import { DigitalCredentialTypes } from '@/enums'
 import { DateMixin } from '@/mixins'
 
-@Component({
-  mixins: [DateMixin]
-})
-export default class CredentialsTable extends Vue {
+@Component({})
+export default class CredentialsTable extends Mixins(DateMixin) {
   @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {
@@ -68,7 +65,7 @@ export default class CredentialsTable extends Vue {
     ]
   }
 
-  protected formatCredentialType (credentialType: DigitalCredentialTypes): string {
+  formatCredentialType (credentialType: DigitalCredentialTypes): string {
     // Safety check
     if (!credentialType) return 'Unknown'
     return credentialType.charAt(0).toUpperCase() + credentialType.slice(1) + ' Credential'

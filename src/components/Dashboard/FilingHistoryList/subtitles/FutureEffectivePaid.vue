@@ -12,7 +12,7 @@
       outlined
       color="primary"
       :ripple=false
-      @click.stop="toggleFilingHistoryItem(index, filing)"
+      @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-information-outline</v-icon>
       <span class="view-details ml-1">View Details</span>
@@ -22,8 +22,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
 import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'

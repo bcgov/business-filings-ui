@@ -78,8 +78,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { CommonMixin } from '@/mixins'
 import { AddressIF, OfficeAddressIF } from '@/interfaces'
@@ -88,10 +87,9 @@ import { AddressIF, OfficeAddressIF } from '@/interfaces'
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class SummaryOfficeAddresses extends Vue {
+export default class SummaryOfficeAddresses extends Mixins(CommonMixin) {
   /**
    * Registered Office address object passed in from the parent which is pulled from store.
    */

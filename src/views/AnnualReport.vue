@@ -316,8 +316,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { isEmpty } from 'lodash'
@@ -333,7 +332,7 @@ import { CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin } from '@/mixi
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
-import { ConfirmDialogType, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -352,15 +351,9 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     StaffPaymentDialog,
     SummaryDirectors,
     SummaryOfficeAddresses
-  },
-  mixins: [
-    CommonMixin,
-    DateMixin,
-    FilingMixin,
-    ResourceLookupMixin
-  ]
+  }
 })
-export default class AnnualReport extends Vue {
+export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,
@@ -373,69 +366,66 @@ export default class AnnualReport extends Vue {
   @Getter(useRootStore) arMinDate!: string
   @Getter(useRootStore) arMaxDate!: string
   @Getter(useRootStore) nextARDate!: string
-  @Getter(useRootStore) filingData!: Array<FilingDataIF>
   @Getter(useRootStore) getCurrentYear!: number
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLastAddressChangeDate!: string
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) getReportState!: string
-  @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useRootStore) isCurrentFilingEditable!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables for AgmDate component
-  private newAgmDate = null // for resuming draft
-  private newAgmExtension = null // for resuming draft
-  private newNoAgm = null // for resuming draft
-  private agmDate = null
-  private agmExtension = null
-  private noAgm = null
-  protected agmDateValid = false
+  newAgmDate = null // for resuming draft
+  newAgmExtension = null // for resuming draft
+  newNoAgm = null // for resuming draft
+  agmDate = null
+  agmExtension = null
+  noAgm = null
+  agmDateValid = false
 
   // variables for OfficeAddresses component
-  private originalAddresses: any = { registeredOffice: {}, recordsOffice: {} }
-  private updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
-  private addressesFormValid: boolean = null
+  originalAddresses: any = { registeredOffice: {}, recordsOffice: {} }
+  updatedAddresses: any = { registeredOffice: {}, recordsOffice: {} }
+  addressesFormValid: boolean = null
 
   // variables for Directors component
-  private originalDirectors = []
-  private updatedDirectors = []
-  private directorFormValid = true
-  private directorEditInProgress = false
+  originalDirectors = []
+  updatedDirectors = []
+  directorFormValid = true
+  directorEditInProgress = false
 
   // variables for Certify component
-  private certifiedBy = ''
-  private isCertified = false
-  private certifyFormValid = null
+  certifiedBy = ''
+  isCertified = false
+  certifyFormValid = null
 
   // variables for staff payment
-  private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  private staffPaymentDialog = false
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  staffPaymentDialog = false
 
   // variables for displaying dialogs
-  private fetchErrorDialog = false
-  private resumeErrorDialog = false
-  private saveErrorReason: SaveErrorReasons = null
-  private paymentErrorDialog = false
+  fetchErrorDialog = false
+  resumeErrorDialog = false
+  saveErrorReason: SaveErrorReasons = null
+  paymentErrorDialog = false
 
   // other variables
-  private totalFee = 0
-  private filingId: number = null
-  private savedFiling: any = null // filing during save
-  private loadingMessage = ''
-  private dataLoaded = false
-  private isFetching = false
-  private saving = false // true only when saving
-  private savingResuming = false // true only when saving and resuming
-  private filingPaying = false // true only when filing and paying
-  private haveChanges = false
-  private saveErrors = []
-  private saveWarnings = []
+  totalFee = 0
+  filingId: number = null
+  savedFiling: any = null // filing during save
+  loadingMessage = ''
+  dataLoaded = false
+  isFetching = false
+  saving = false // true only when saving
+  savingResuming = false // true only when saving and resuming
+  filingPaying = false // true only when filing and paying
+  haveChanges = false
+  saveErrors = []
+  saveWarnings = []
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -497,7 +487,7 @@ export default class AnnualReport extends Vue {
   }
 
   /** Called when component is created. */
-  protected created (): void {
+  created (): void {
     // init
     this.setFilingData([])
 
@@ -577,7 +567,7 @@ export default class AnnualReport extends Vue {
   }
 
   /** Called just before this component is destroyed. */
-  protected beforeDestroy (): void {
+  beforeDestroy (): void {
     // stop listening for custom events
     this.$root.$off('fetch-error-event')
   }

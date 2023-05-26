@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { NameRequestStates, NameRequestTypes } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 

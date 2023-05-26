@@ -235,8 +235,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
@@ -248,7 +247,7 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, CourtOrderIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -265,25 +264,19 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     SaveErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
-  },
-  mixins: [
-    CommonMixin,
-    DateMixin,
-    EnumMixin,
-    FilingMixin,
-    ResourceLookupMixin
-  ]
+  }
 })
-export default class ConsentContinuationOut extends Vue {
+export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixin,
+  EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    confirm: ConfirmDialogType
+    confirm: ConfirmDialogType,
+    certifyRef: Certify,
+    detailCommentRef: DetailComment
   }
 
-  @Getter(useRootStore) filingData!: Array<FilingDataIF>
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useRootStore) getBusinessEmail!: string
-  @Getter(useBusinessStore) getFoundingDate!: Date
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) isRoleStaff!: boolean
@@ -292,45 +285,45 @@ export default class ConsentContinuationOut extends Vue {
   readonly FilingCodes = FilingCodes
 
   // variables for DetailComment component
-  private detailComment = ''
-  private detailCommentValid = false
+  detailComment = ''
+  detailCommentValid = false
 
   // variables for Certify component
-  private certifiedBy = ''
-  private isCertified = false
-  private certifyFormValid = false
+  certifiedBy = ''
+  isCertified = false
+  certifyFormValid = false
 
   // variables for Courder Order POA component
-  private fileNumber = ''
-  private hasPlanOfArrangement = false
-  private courtOrderValid = true
+  fileNumber = ''
+  hasPlanOfArrangement = false
+  courtOrderValid = true
 
   // variables for Document Delivery component
-  private documentDeliveryValid = true
-  private documentOptionalEmail = ''
+  documentDeliveryValid = true
+  documentOptionalEmail = ''
 
   // variables for staff payment
-  private staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  private staffPaymentDialog = false
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  staffPaymentDialog = false
 
   // variables for displaying dialogs
-  private resumeErrorDialog = false
-  private saveErrorReason: SaveErrorReasons = null
-  private paymentErrorDialog = false
+  resumeErrorDialog = false
+  saveErrorReason: SaveErrorReasons = null
+  paymentErrorDialog = false
 
   // other variables
-  private totalFee = 0
-  private dataLoaded = false
-  private loadingMessage = ''
-  private filingId = 0 // id of this consent to continuation out filing
-  private savedFiling: any = null // filing during save
-  private saving = false // true only when saving
-  private savingResuming = false // true only when saving and resuming
-  private showErrors = false // true when we press on File and Pay (trigger validation)
-  private filingPaying = false // true only when filing and paying
-  private haveChanges = false
-  private saveErrors = []
-  private saveWarnings = []
+  totalFee = 0
+  dataLoaded = false
+  loadingMessage = ''
+  filingId = 0 // id of this consent to continuation out filing
+  savedFiling: any = null // filing during save
+  saving = false // true only when saving
+  savingResuming = false // true only when saving and resuming
+  showErrors = false // true when we press on File and Pay (trigger validation)
+  filingPaying = false // true only when filing and paying
+  haveChanges = false
+  saveErrors = []
+  saveWarnings = []
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -372,7 +365,7 @@ export default class ConsentContinuationOut extends Vue {
   }
 
   /** Called when component is created. */
-  protected created (): void {
+  created (): void {
     // init
     this.setFilingData([])
 

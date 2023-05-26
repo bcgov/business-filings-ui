@@ -110,21 +110,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { isEmpty } from 'lodash'
 import { CommonMixin, CountriesProvincesMixin } from '@/mixins'
 import { OfficeAddressIF } from '@/interfaces'
 import { useRootStore } from '@/stores'
 
-@Component({
-  mixins: [
-    CommonMixin,
-    CountriesProvincesMixin
-  ]
-})
-export default class FirmsAddressList extends Vue {
+@Component({})
+export default class FirmsAddressList extends Mixins(CommonMixin, CountriesProvincesMixin) {
   /** Whether to display "complete your filing" instead of the address list. */
   @Prop({ default: false }) readonly showCompleteYourFilingMessage!: boolean
 

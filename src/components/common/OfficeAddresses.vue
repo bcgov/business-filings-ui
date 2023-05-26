@@ -200,8 +200,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import axios from '@/axios-auth'
 import { isEmpty } from 'lodash'
 import { Getter } from 'pinia-class'
@@ -216,10 +215,9 @@ import { useBusinessStore } from '@/stores'
   components: {
     'delivery-address': BaseAddress,
     'mailing-address': BaseAddress
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class OfficeAddresses extends Vue {
+export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Indicates whether this component should be enabled or not. */
   @Prop({ default: true }) readonly componentEnabled!: boolean
 
@@ -233,37 +231,37 @@ export default class OfficeAddresses extends Vue {
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
   /** Effective date for fetching office addresses. */
-  private asOfDate: string
+  asOfDate: string
 
   /** Original addresses object from Legal API. */
-  private original = {} as RegRecAddressesIF
+  original = {} as RegRecAddressesIF
 
   // Working addresses data (also used as v-models for the BaseAddress components)
-  private deliveryAddress = {} as AddressIF
-  private mailingAddress = {} as AddressIF
-  private recDeliveryAddress = {} as AddressIF
-  private recMailingAddress = {} as AddressIF
+  deliveryAddress = {} as AddressIF
+  mailingAddress = {} as AddressIF
+  recDeliveryAddress = {} as AddressIF
+  recMailingAddress = {} as AddressIF
 
   // Validation events from BaseAddress components
-  private deliveryAddressValid = true
-  private mailingAddressValid = true
-  private recDeliveryAddressValid = true
-  private recMailingAddressValid = true
+  deliveryAddressValid = true
+  mailingAddressValid = true
+  recDeliveryAddressValid = true
+  recMailingAddressValid = true
 
   /** Whether to show the editable form for an address (true) or the static display address (false). */
-  private showAddressForm = false
+  showAddressForm = false
 
   /** V-model for "Registered Mailing Address same as Registered Delivery Address" checkbox. */
-  private inheritDeliveryAddress = true
+  inheritDeliveryAddress = true
 
   /** V-model for "Records Mailing Address same as Records Delivery Address" checkbox. */
-  private inheritRecDeliveryAddress = true
+  inheritRecDeliveryAddress = true
 
   /** V-model for "Records Addresses same as Registered Addresses" checkbox. */
-  private inheritRegisteredAddress = true
+  inheritRegisteredAddress = true
 
   /** The Address schema containing Vuelidate rules. */
-  private officeAddressSchema = officeAddressSchema
+  officeAddressSchema = officeAddressSchema
 
   /** Whether the address form is valid. */
   get formValid (): boolean {
@@ -283,7 +281,7 @@ export default class OfficeAddresses extends Vue {
 
   /** Fetches the office addresses on As Of Date from the Legal API. */
   // FUTURE: this API call should be in the parent component or some mixin/service
-  private async fetchAddresses (): Promise<void> {
+  async fetchAddresses (): Promise<void> {
     if (this.getIdentifier && this.asOfDate) {
       const url = `businesses/${this.getIdentifier}/addresses?date=${this.asOfDate}`
       await axios.get(url).then(response => {
@@ -345,13 +343,13 @@ export default class OfficeAddresses extends Vue {
    * - when a draft filing is loaded
    **/
   @Watch('addresses', { deep: true })
-  private onAddressesChanged (): void {
+  onAddressesChanged (): void {
     // fill working addresses from parent
     this.fillWorkingAddresses(this.addresses)
   }
 
   /** Assigns the specified addresses to local properties, and sets inherited flags. */
-  private fillWorkingAddresses (addresses: RegRecAddressesIF): void {
+  fillWorkingAddresses (addresses: RegRecAddressesIF): void {
     this.deliveryAddress = { ...addresses?.registeredOffice?.deliveryAddress }
     this.mailingAddress = { ...addresses?.registeredOffice?.mailingAddress }
 
@@ -377,21 +375,21 @@ export default class OfficeAddresses extends Vue {
    * @param baseAddress The base address that will be updated.
    * @param newAddress the object containing the new address.
    */
-  private updateBaseAddress (baseAddress: AddressIF, newAddress: AddressIF): void {
+  updateBaseAddress (baseAddress: AddressIF, newAddress: AddressIF): void {
     // Note that we do a copy of the fields (rather than change the object reference)
     // to prevent an infinite loop with the property.
     Object.assign(baseAddress, newAddress)
   }
 
   /** Cancels the editing of addresses when user clicks Cancel button. */
-  private cancelEditAddresses (): void {
+  cancelEditAddresses (): void {
     // reset working addresses from draft
     this.fillWorkingAddresses(this.addresses)
     this.showAddressForm = false
   }
 
   /** Resets the working addresses when user clicks Reset button. */
-  private resetAddresses (): void {
+  resetAddresses (): void {
     // reset working addresses from original and sync them with parent
     this.fillWorkingAddresses(this.original)
     this.emitWorkingAddresses()
@@ -402,7 +400,7 @@ export default class OfficeAddresses extends Vue {
    * Updates the address data using what was entered on the forms.
    * Called when user clicks Update Addresses button.
    */
-  private updateAddresses (): void {
+  updateAddresses (): void {
     if (this.inheritDeliveryAddress) {
       // inherit the registered delivery address
       this.mailingAddress = { ...this.deliveryAddress, addressType: 'mailing' }
@@ -426,36 +424,36 @@ export default class OfficeAddresses extends Vue {
   }
 
   /** Adds an action, if it doesn't already exist. */
-  private addAction (address: AddressIF, val: string): void {
+  addAction (address: AddressIF, val: string): void {
     if (address.actions.indexOf(val) < 0) address.actions.push(val)
   }
 
   /** Removes an action, if it already exists. */
-  private removeAction (address: AddressIF, val: string): void {
+  removeAction (address: AddressIF, val: string): void {
     address.actions = address.actions.filter(action => action !== val)
   }
 
   /** When form valid state changes, emit event up to parent. */
   @Watch('formValid')
-  private onFormValidChanged (): void {
+  onFormValidChanged (): void {
     this.emitValid()
   }
 
   /** Emits the valid state of the addresses. */
   @Emit('valid')
-  private emitValid (): boolean {
+  emitValid (): boolean {
     return this.formValid
   }
 
   /** Emits the modified state of the addresses. */
   @Emit('modified')
-  private emitModified (): boolean {
+  emitModified (): boolean {
     return this.anyModified
   }
 
   /** Emits original addresses object to the parent page. */
   @Emit('original')
-  private emitOriginalAddresses (): RegRecAddressesIF {
+  emitOriginalAddresses (): RegRecAddressesIF {
     if (this.isBenBcCccUlc) {
       return {
         registeredOffice: this.original.registeredOffice,
@@ -470,7 +468,7 @@ export default class OfficeAddresses extends Vue {
 
   /** Emits updated addresses object to the parent page (ie, sync). */
   @Emit('update:addresses')
-  private emitWorkingAddresses (): RegRecAddressesIF {
+  emitWorkingAddresses (): RegRecAddressesIF {
     const deliveryAddress = { ...this.deliveryAddress } as AddressIF
     const mailingAddress = { ...this.mailingAddress } as AddressIF
     const recDeliveryAddress = { ...this.recDeliveryAddress } as AddressIF

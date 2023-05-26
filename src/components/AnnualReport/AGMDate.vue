@@ -113,17 +113,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DateMixin } from '@/mixins'
 import { FormIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
 
-@Component({
-  mixins: [DateMixin]
-})
-export default class AgmDate extends Vue {
+@Component({})
+export default class AgmDate extends Mixins(DateMixin) {
   // To fix "property X does not exist on type Y" errors, annotate types for referenced components.
   // ref: https://github.com/vuejs/vetur/issues/1414
   // ref: https://github.com/vuejs/vue-class-component/issues/94
@@ -154,12 +151,12 @@ export default class AgmDate extends Vue {
   @Getter(useRootStore) getCurrentDate!: string
 
   // Local properties.
-  private dateText = '' // value in text field
-  private datePicker = '' // value in date picker
-  private menu = false // whether calendar menu is visible
-  private agmExtension = false // whether checkbox is checked
-  private noAgm = false // whether checkbox is checked
-  private backupDate = '' // for toggling No AGM
+  dateText = '' // value in text field
+  datePicker = '' // value in date picker
+  menu = false // whether calendar menu is visible
+  agmExtension = false // whether checkbox is checked
+  noAgm = false // whether checkbox is checked
+  backupDate = '' // for toggling No AGM
 
   /** The array of validations rule(s) for the AGM Date text field. */
   get agmDateRules (): Array<(v) => boolean | string> {
@@ -202,14 +199,14 @@ export default class AgmDate extends Vue {
   }
 
   /** Called when component is mounted. */
-  private mounted (): void {
+  mounted (): void {
     // set date picker but not text field
     this.datePicker = this.newAgmDate || this.arMaxDate
   }
 
   /** Called when prop changes (ie, due to resuming a draft). */
   @Watch('newAgmDate')
-  private onNewAgmDateChanged (val: string): void {
+  onNewAgmDateChanged (val: string): void {
     // always update text field
     this.dateText = val
     // only update date picker if we have a valid date
@@ -221,7 +218,7 @@ export default class AgmDate extends Vue {
 
   /** Called when prop changes (ie, due to resuming a draft) */
   @Watch('newAgmExtension')
-  private onNewAgmExtension (val: boolean): void {
+  onNewAgmExtension (val: boolean): void {
     // update model value
     this.agmExtension = val
     // update parent
@@ -231,7 +228,7 @@ export default class AgmDate extends Vue {
 
   /** Called when prop changes (ie, due to resuming a draft) */
   @Watch('newNoAgm')
-  private onNewNoAgmChanged (val: boolean): void {
+  onNewNoAgmChanged (val: boolean): void {
     // update model value
     this.noAgm = val
     // update parent
@@ -240,7 +237,7 @@ export default class AgmDate extends Vue {
   }
 
   /** Called when date picker changes. */
-  private onDatePickerChanged (val: string): void {
+  onDatePickerChanged (val: string): void {
     // update text field
     this.dateText = val
     // update parent
@@ -249,14 +246,14 @@ export default class AgmDate extends Vue {
   }
 
   /** Called when AGM Extension checkbox changes. */
-  private onAgmExtensionChanged (): void {
+  onAgmExtensionChanged (): void {
     // update parent
     this.emitAgmExtension()
     this.emitValid()
   }
 
   /** Called when checkbox changes. */
-  private onNoAgmCheckboxChanged (val: boolean): void {
+  onNoAgmCheckboxChanged (val: boolean): void {
     if (val) {
       // save and clear text field
       this.backupDate = this.dateText
@@ -275,19 +272,19 @@ export default class AgmDate extends Vue {
 
   /** Emits an event with the new value of AGM Date (from text field, which may be empty). */
   @Emit('agmDate')
-  private emitAgmDate (): string {
+  emitAgmDate (): string {
     return this.dateText
   }
 
   /** Emits an event with the new value of No AGM. */
   @Emit('agmExtension')
-  private emitAgmExtension (): boolean {
+  emitAgmExtension (): boolean {
     return this.agmExtension
   }
 
   /** Emits an event with the new value of No AGM. */
   @Emit('noAgm')
-  private emitNoAgm (): boolean {
+  emitNoAgm (): boolean {
     return this.noAgm
   }
 
@@ -296,7 +293,7 @@ export default class AgmDate extends Vue {
    * This needs to be called after all changes.
    */
   @Emit('valid')
-  private emitValid (): boolean {
+  emitValid (): boolean {
     // valid if checkbox is not applicable, or is checked
     const validAgmExtension = (!this.showAgmExtensionCheckbox || this.agmExtension)
     // valid if No AGM was checked, or a date was entered and AGM extension is valid
