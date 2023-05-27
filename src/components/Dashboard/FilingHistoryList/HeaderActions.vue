@@ -109,6 +109,8 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm && !this.isBenBcCccUlc)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
+    conditions[7] = () => (EnumUtilities.isTypeSpecialResolution(this.filing) &&
+      EnumUtilities.isStatusCorrected(this.filing))
 
     // check if any condition is True
     return conditions.some(condition => condition())
@@ -131,9 +133,8 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
       case FilingTypes.SPECIAL_RESOLUTION:
-        if (this.isBenBcCccUlc || this.isCoop) {
-          // correction via Edit UI if current type is BC, CC, ULC, or BEN
-          // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
+        if (this.isBenBcCccUlc || (filing.name === FilingTypes.SPECIAL_RESOLUTION && this.isCoop)) {
+          // correction via Edit UI if current type is BC, CC, ULC, BEN or coop special resolution correction
           this.setCurrentFiling(filing)
           this.setFileCorrectionDialog(true)
           break
