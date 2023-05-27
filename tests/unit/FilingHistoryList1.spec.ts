@@ -892,7 +892,6 @@ describe('Filing History List - redirections', () => {
 
   afterEach(() => {
     sinon.restore()
-    jest.restoreAllMocks()
   })
 
   it('redirects to Edit URL when filing an Special Resolution Correction', async () => {
