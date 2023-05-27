@@ -9,7 +9,7 @@ const localVue = createLocalVue()
 setActivePinia(createPinia())
 const authenticationStore = useAuthenticationStore()
 
-xdescribe('testing current account module', () => {
+describe('testing current account module', () => {
   const dummyAccount = (accountType: string) => {
     return {
       accountStatus: 'string',
@@ -30,7 +30,7 @@ xdescribe('testing current account module', () => {
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })
 
-      // store.commit('account/setCurrentAccount', dummyAccount('PREMIUM'), { root: true })
+      store.commit('account/setCurrentAccount', dummyAccount('PREMIUM'), { root: true })
       expect(authenticationStore.isPremiumAccount).toBe(true)
       expect(authenticationStore.isSbcStaff).toBe(false)
     })
@@ -42,7 +42,7 @@ xdescribe('testing current account module', () => {
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })
 
-      // store.commit('account/setCurrentAccount', dummyAccount('SBC_STAFF'), { root: true })
+      store.commit('account/setCurrentAccount', dummyAccount('SBC_STAFF'), { root: true })
       expect(authenticationStore.isPremiumAccount).toBe(false)
       expect(authenticationStore.isSbcStaff).toBe(true)
     })

@@ -36,6 +36,18 @@ const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
 describe('Annual Report - Part 1 - UI', () => {
+  beforeAll(() => {
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+  })
+
   beforeEach(() => {
     // init store
     businessStore.setIdentifier('CP0001191')
@@ -44,8 +56,6 @@ describe('Annual Report - Part 1 - UI', () => {
     rootStore.arMaxDate = '2018-04-30'
     rootStore.currentFilingStatus = FilingStatus.NEW
     businessStore.setLegalType(CorpTypeCd.COOP)
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_PAY_API_URL', value: 'https://auth.web.url/' })
   })
 
   it('renders the Annual Report sub-components properly when entity is a Coop', () => {
@@ -869,14 +879,8 @@ describe('Annual Report - Part 3 - Submitting', () => {
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
     'is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
-
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
@@ -952,9 +956,6 @@ describe('Annual Report - Part 3 - Submitting', () => {
 
   it('updates an existing filing and routes to the dashboard when this is a draft AR and the File & Pay button ' +
     'is clicked and payment action is not required', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -1098,11 +1099,10 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     sinon.restore()
   })
 
-  xit('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
+  it('saves a new filing and redirects to Pay URL when this is a new AR and the File & Pay button ' +
     'is clicked', async () => {
     // set necessary session variables
     sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
 
     // create local Vue and mock router
