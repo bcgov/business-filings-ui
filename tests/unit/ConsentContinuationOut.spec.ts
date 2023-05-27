@@ -33,9 +33,6 @@ const rootStore = useRootStore()
 
 describe('Consent to Continuation Out view', () => {
   beforeEach(() => {
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_PAY_API_URL', value: 'https://pay.web.url/' })
-
     // init store
     rootStore.currentDate = '2020-03-04'
     businessStore.setLegalType(CorpTypeCd.COOP)

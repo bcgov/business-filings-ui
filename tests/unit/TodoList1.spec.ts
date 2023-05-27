@@ -1096,7 +1096,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
+  it('disables \'File Annual Report\' and verification checkbox when COA is pending', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1116,10 +1116,10 @@ describe('TodoList - UI - BCOMPs', () => {
         'order': 1
       }
     ]
-    // store.state.isCoaPending = true // normally set by FilingHistoryList
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
+    jest.spyOn(vm, 'isCoaPending', 'get').mockReturnValue(true)
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
@@ -1143,7 +1143,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(wrapper.find('.list-item__actions .v-btn').attributes('disabled')).toBe('disabled')
     expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
-    // store.state.isCoaPending = false // reset for future tests
+    jest.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -1614,6 +1614,15 @@ describe('TodoList - Click Tests', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
   })
 
   afterAll(() => {
@@ -1723,12 +1732,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1774,12 +1778,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1824,12 +1823,7 @@ describe('TodoList - Click Tests', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Change Payment Type\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1954,6 +1948,16 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     delete window.location
     window.location = { assign: jest.fn() } as any
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2082,12 +2086,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Resume Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -2134,12 +2133,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
-    // set necessary session variables
-    sessionStorage.setItem('BASE_URL', 'https://base.url/')
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_AUTH_WEB_URL', value: 'https://auth.web.url/' })
-
+  it('redirects to Pay URL when \'Retry Payment\' is clicked', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -2191,8 +2185,12 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
   beforeAll(() => {
     // init store
     sessionStorage.clear()
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://create.url/' })
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setLegalName('My Business Inc')
@@ -2207,7 +2205,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     window.location.assign = assign
   })
 
-  xit('redirects to Create URL when \'Resume\' is clicked on a Named Company draft IA', async () => {
+  it('redirects to Create URL when \'Resume\' is clicked on a Named Company draft IA', async () => {
     // init Incorporation Application filing task
     rootStore.tasks = [
       {
@@ -2256,7 +2254,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  xit('redirects to Create URL when \'Resume\' is clicked on a Numbered Company draft IA', async () => {
+  it('redirects to Create URL when \'Resume\' is clicked on a Numbered Company draft IA', async () => {
     // init Incorporation Application filing task
     rootStore.tasks = [
       {
@@ -2308,6 +2306,16 @@ describe('TodoList - Click Tests - Corrections', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // init session storage and store
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2323,13 +2331,8 @@ describe('TodoList - Click Tests - Corrections', () => {
   ]
 
   for (const test of editTests) {
-    xit(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
-      // init session storage and store
-      sessionStorage.clear()
-      configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-        { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
+    it(`redirects to Edit URL to resume a draft ${test.correctedFilingType} correction`, async () => {
       sessionStorage.setItem('BUSINESS_ID', test.businessId)
-      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       businessStore.setIdentifier(test.businessId)
       // init draft Correction filing task
       rootStore.tasks = [
@@ -2378,7 +2381,7 @@ describe('TodoList - Click Tests - Corrections', () => {
     'registrarsOrder', 'specialResolution', 'transition', 'voluntaryDissolution']
 
   for (const test of localTest) {
-    xit(`Router pushes locally to resume a draft ${test} correction`, async () => {
+    it(`Router pushes locally to resume a draft ${test} correction`, async () => {
       // init draft Correction filing task
       rootStore.tasks = [
         {
@@ -2443,19 +2446,24 @@ describe('TodoList - Click Tests - Alterations', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // init session storage and store
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
     window.location.assign = assign
   })
 
-  xit('redirects to Edit URL to resume a draft alteration', async () => {
-    // init session storage and store
-    sessionStorage.clear()
-    configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-      { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://edit.url/' })
+  it('redirects to Edit URL to resume a draft alteration', async () => {
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
     businessStore.setIdentifier('BC1234567')
     businessStore.setGoodStanding(true)
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -2855,6 +2863,16 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    // init store
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2867,12 +2885,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
   ]
 
   for (const test of fullAndLtdRestorationTests) {
-    xit(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
-      // init store
-      sessionStorage.clear()
-      configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-        { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://create.url/' })
-      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+    it(`redirects to Create URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       rootStore.currentDate = '2022-12-31'
       businessStore.setIdentifier(test.businessId)
       businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -2932,6 +2945,15 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
+
+    sessionStorage.clear()
+    const configuration = {
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
   })
 
   afterAll(() => {
@@ -2944,12 +2966,8 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
   ]
 
   for (const test of extensionAndConversionTests) {
-    xit(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
+    it(`redirects to Edit URL when 'Resume' is clicked on a ${test.restorationType} draft applciation`, async () => {
       // init store
-      sessionStorage.clear()
-      configurationStore.setTestConfiguration({ configuration: configurationStore.configuration },
-        { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
-      sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
       rootStore.currentDate = '2022-12-31'
       businessStore.setIdentifier(test.businessId)
       businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)

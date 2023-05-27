@@ -33,11 +33,13 @@ describe('StaffNotation', () => {
     delete window.location
     window.location = { assign: jest.fn() } as any
 
-    // set necessary variables
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
-    configurationStore.setTestConfiguration({ configuration: null },
-      { key: 'VUE_APP_BUSINESS_CREATE_URL', value: 'https://create.url/' })
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
   })
 
   afterAll(() => {
@@ -411,7 +413,7 @@ describe('StaffNotation', () => {
     wrapper.destroy()
   })
 
-  xit('goes to conversion filing', async () => {
+  it('goes to conversion filing', async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const wrapper = mount(StaffNotation, { vuetify, localVue })
@@ -430,7 +432,7 @@ describe('StaffNotation', () => {
     wrapper.destroy()
   })
 
-  xit('goes to restoration filing', async () => {
+  it('goes to restoration filing', async () => {
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY) // corp
     businessStore.setIdentifier('BC1234567')
@@ -469,7 +471,7 @@ describe('StaffNotation', () => {
     sinon.restore()
   })
 
-  xit('goes to limited restoration extension filing', async () => {
+  it('goes to limited restoration extension filing', async () => {
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
     businessStore.setIdentifier('BC1234567')
@@ -509,7 +511,7 @@ describe('StaffNotation', () => {
     sinon.restore()
   })
 
-  xit('goes to limited restoration conversion filing', async () => {
+  it('goes to limited restoration conversion filing', async () => {
     // set store specifically for this test
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setIdentifier('BC1234567')

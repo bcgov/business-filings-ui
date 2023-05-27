@@ -91,18 +91,6 @@ export const useConfigurationStore = defineStore('configuration', {
       this.configuration = data
     },
 
-    /**
-     * Use this mutator to set a specific attribute in unit testing. Eg,
-     * store.commit('setTestConfiguration', { key: 'VUE_APP_PAY_API_URL', value: 'https://auth.web.url/' })
-     */
-    setTestConfiguration (state: ConfigurationStateIF, { key, value }: KeyValueIF) {
-      if (!state.configuration) {
-        Vue.set(state, 'configuration', {})
-      } else {
-        Vue.set(state.configuration, key, value)
-      }
-    },
-
     setSessionVariables (data: any) {
     // The following four session variables are used by SBC Header (a common component):
       sessionStorage.setItem('AUTH_WEB_URL', data.VUE_APP_AUTH_WEB_URL)

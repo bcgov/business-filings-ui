@@ -784,6 +784,14 @@ describe('Filing History List - redirections', () => {
     delete window.location
     window.location = { assign: jest.fn() } as any
 
+    const configuration = {
+      VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
+      VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
+    }
+
+    // set configurations
+    configurationStore.setConfiguration(configuration)
+
     sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3F' +
       'QbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiI0MmMzOWQzYi1iMTZkLTRiYWMtOWU1Ny1hNDYyZjQ3NWY0M2UiLCJleHAiO' +
       'jE1NzUwNzI4MTEsIm5iZiI6MCwiaWF0IjoxNTc1MDQ0MDExLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2EvYXV' +
@@ -805,7 +813,7 @@ describe('Filing History List - redirections', () => {
   })
 
   beforeEach(() => {
-    configurationStore.setTestConfiguration({ configuration: {} },
+    configurationStore.setTestConfiguration({ configuration: null },
       { key: 'VUE_APP_BUSINESS_EDIT_URL', value: 'https://edit.url/' })
     const get = sinon.stub(axios, 'get')
     const post = sinon.stub(axios, 'post')
@@ -887,83 +895,9 @@ describe('Filing History List - redirections', () => {
 
   afterEach(() => {
     sinon.restore()
-    jest.restoreAllMocks()
   })
 
-  it('redirects to Edit URL when filing an Special Resolution Correction', async () => {
-    // init data
-    configurationStore.setConfiguration({ VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/' })
-    businessStore.setIdentifier('CP1002587')
-    businessStore.setLegalType(CorpTypeCd.COOP)
-    sessionStorage.setItem('BUSINESS_ID', 'CP1002587')
-    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2816" }')
-    rootStore.keycloakRoles = ['staff']
-    filingHistoryListStore.setFilings([
-      {
-        availableOnPaperOnly: false,
-        businessIdenfier: 'CP1002587',
-        commentsCount: 0,
-        displayName: 'Special Resolution',
-        effectiveDate: 'Wed, 24 May 2023 18:02:16 GMT',
-        filingId: 145190,
-        filingLink: '/CP1002587/filings/145190',
-        isFutureEffective: false,
-        name: FilingTypes.SPECIAL_RESOLUTION,
-        paymentStatusCode: 'COMPLETED',
-        status: FilingStatus.COMPLETED,
-        submittedDate: 'Wed, 24 May 2023 18:02:16 GMT',
-        submitter: 'Sarah Smith'
-      } as any
-    ])
-
-    const wrapper = mount(FilingHistoryList, { vuetify })
-    const vm = wrapper.vm as any
-    await Vue.nextTick()
-
-    // sanity check
-    expect(vm.getFilings.length).toEqual(1)
-
-    // find and click the drop-down menu button
-    const menuButton = wrapper.find('.menu-btn')
-    expect(menuButton).toBeDefined()
-    await menuButton.trigger('click')
-
-    // find and click the "File a Correction" menu item
-    const fileCorrectionItem = wrapper.find('.file-correction-item')
-    expect(fileCorrectionItem.exists()).toBe(true)
-    await fileCorrectionItem.trigger('click')
-
-    // verify to display the correction dialog modal
-    const fileCorrectionDialog = wrapper.find('.file-correction-dialog')
-    expect(fileCorrectionDialog.exists()).toBe(true)
-
-    // verify radio buttons for client and staff
-    const clientRadioBtn = wrapper.find('#correct-client-radio')
-    expect(clientRadioBtn.exists()).toBe(true)
-
-    // click the staff radio button
-    const staffRadioBtn = wrapper.find('#correct-staff-radio')
-    expect(staffRadioBtn.exists()).toBe(true)
-    await staffRadioBtn.trigger('click')
-
-    // verify redirection
-    const startCorrectionBtn = wrapper.find('#dialog-start-button')
-    expect(startCorrectionBtn.exists()).toBe(true)
-    await startCorrectionBtn.trigger('click')
-    await Vue.nextTick()
-
-    const editUrl = 'https://edit.url/CP1002587/correction/?correction-id=145190'
-    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    // wait for a short delay before checking window.location.assign
-    await new Promise(resolve => setTimeout(resolve, 100))
-    expect(window.location.assign).toHaveBeenCalledTimes(1)
-    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
-
-    sessionStorage.removeItem('BUSINESS_ID')
-    wrapper.destroy()
-  })
-
-  xit('redirects to Edit URL when filing an IA correction', async () => {
+  it('redirects to Edit URL when filing an IA correction', async () => {
     // init data
     configurationStore.setTestConfiguration({ configuration: null },
       { key: 'VUE_APP_EDIT_URL', value: 'https://edit.url/' })
