@@ -125,6 +125,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case FilingTypes.CORRECTION:
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.REGISTRATION:
+      case FilingTypes.SPECIAL_RESOLUTION:
         // correction via Edit UI
         this.setCurrentFiling(filing)
         this.setFileCorrectionDialog(true)
@@ -132,9 +133,9 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
 
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
-      case FilingTypes.SPECIAL_RESOLUTION:
-        if (this.isBenBcCccUlc || (filing.name === FilingTypes.SPECIAL_RESOLUTION && this.isCoop)) {
-          // correction via Edit UI if current type is BC, CC, ULC, BEN or coop special resolution correction
+        if (this.isBenBcCccUlc) {
+          // correction via Edit UI if current type is BC, CC, ULC, or BEN
+          // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
           this.setCurrentFiling(filing)
           this.setFileCorrectionDialog(true)
           break
