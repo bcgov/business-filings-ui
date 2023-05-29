@@ -257,7 +257,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
     this.close(needReload)
   }
 
-  goToConversionFiling ():void {
+  goToConversionFiling (): void {
     const url = `${this.getEditUrl}${this.getIdentifier}/conversion`
     navigate(url)
   }
@@ -271,7 +271,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
     this.close(needReload)
   }
 
-  goToConsentContinuationOutFiling ():void {
+  goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
   }
