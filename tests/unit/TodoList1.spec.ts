@@ -2327,7 +2327,8 @@ describe('TodoList - Click Tests - Corrections', () => {
     { businessId: 'BC1234567', correctedFilingType: 'incorporationApplication' },
     { businessId: 'FM1234567', correctedFilingType: 'changeOfRegistration' },
     { businessId: 'BC1234567', correctedFilingType: 'correction' },
-    { businessId: 'FM1234567', correctedFilingType: 'registration' }
+    { businessId: 'FM1234567', correctedFilingType: 'registration' },
+    { businessId: 'CP1002587', correctedFilingType: 'specialResolution' }
   ]
 
   for (const test of editTests) {
@@ -2378,7 +2379,7 @@ describe('TodoList - Click Tests - Corrections', () => {
   // courtOrder is not a valid filing for Corrections
   const localTest = ['annualReport', 'changeOfAddress', 'changeOfDirectors', 'conversion', 'changeOfName',
     'courtOrder', 'dissolution', 'dissolved', 'involuntaryDissolution', 'putBackOn', 'registrarsNotation',
-    'registrarsOrder', 'specialResolution', 'transition', 'voluntaryDissolution']
+    'registrarsOrder', 'transition', 'voluntaryDissolution']
 
   for (const test of localTest) {
     it(`Router pushes locally to resume a draft ${test} correction`, async () => {

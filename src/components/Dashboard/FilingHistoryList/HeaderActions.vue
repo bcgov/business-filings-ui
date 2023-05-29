@@ -96,7 +96,6 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
     if (!this.isAllowed(AllowableActions.CORRECTION)) return true
 
     const conditions: Array<() => boolean> = []
-
     // list of conditions to DISABLE correction
     // (any condition not listed below is ALLOWED)
     conditions[0] = () => this.filing.availableOnPaperOnly
@@ -108,7 +107,9 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
     )
     conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) && !this.isBenBcCccUlc)
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
-    conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) && !this.isFirm && !this.isBenBcCccUlc)
+    conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) &&
+      !this.isFirm && !this.isBenBcCccUlc &&
+      !this.isCoop)
     conditions[6] = () => (EnumUtilities.isTypeRegistration(this.filing) && !this.isFirm)
 
     // check if any condition is True
@@ -124,6 +125,7 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       case FilingTypes.CORRECTION:
       case FilingTypes.INCORPORATION_APPLICATION:
       case FilingTypes.REGISTRATION:
+      case FilingTypes.SPECIAL_RESOLUTION:
         // correction via Edit UI
         this.setCurrentFiling(filing)
         this.setFileCorrectionDialog(true)

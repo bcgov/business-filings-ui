@@ -1402,6 +1402,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           case FilingNames.CORRECTION:
           case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.REGISTRATION:
+          case FilingNames.SPECIAL_RESOLUTION:
             navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
             break
 
