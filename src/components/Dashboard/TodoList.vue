@@ -187,49 +187,14 @@
                   </v-btn>
                 </template>
 
-                <!-- draft correction or conversion or restoration or consent to continuation Out (staff only) -->
-                <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item) ||
-                  EnumUtilities.isTypeRestoration(item) || isTypeConsentContinuationOut(item)) && isRoleStaff"
-                >
-                  <v-btn
-                    class="btn-draft-resume"
-                    color="primary"
-                    :disabled="!item.enabled"
-                    @click.native.stop="doResumeFiling(item)"
-                  >
-                    <span>Resume</span>
-                  </v-btn>
-
-                  <!-- dropdown menu -->
-                  <v-menu offset-y left>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        id="menu-activator"
-                        class="actions__more-actions__btn px-0"
-                        color="primary"
-                        :disabled="!item.enabled"
-                      >
-                        <v-icon>mdi-menu-down</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list class="actions__more-actions">
-                      <v-list-item id="btn-draft-delete" @click.stop="confirmDeleteDraft(item)">
-                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete draft</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </template>
-
-                <!-- other correction or conversion or restoration or consent to continuation out -->
-                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) ||
-                  EnumUtilities.isTypeRestoration(item) || isTypeConsentContinuationOut(item)"
+                <!-- non-staff see no buttons for correction or conversion or restoration -->
+                <template v-else-if="!isRoleStaff && (isTypeCorrection(item) || isTypeConversion(item) ||
+                  EnumUtilities.isTypeRestoration(item))"
                 >
                   <!-- no action button in this case -->
                 </template>
 
-                <!-- other draft filing -->
+                <!-- draft filing -->
                 <template v-else-if="isStatusDraft(item)">
                   <v-btn
                     class="btn-draft-resume"
