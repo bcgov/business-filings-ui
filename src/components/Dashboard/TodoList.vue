@@ -187,9 +187,9 @@
                   </v-btn>
                 </template>
 
-                <!-- non-staff see no buttons for correction or conversion or restoration -->
+                <!-- non-staff see no buttons for correction or conversion or restoration or Continuation Out -->
                 <template v-else-if="!isRoleStaff && (isTypeCorrection(item) || isTypeConversion(item) ||
-                  EnumUtilities.isTypeRestoration(item))"
+                  EnumUtilities.isTypeRestoration(item) || EnumUtilities.isTypeContinuationOut(item))"
                 >
                   <!-- no action button in this case -->
                 </template>
