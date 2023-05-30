@@ -712,7 +712,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     const data: any = {
       [FilingTypes.CONTINUATION_OUT]: {
-        // FUTURE: add more filing properties below
+        // FUTURE: add more filing properties below and change the dummy data to actual data
         details: `${this.defaultComment}\n${this.detailComment}`,
         continuationOutDate: '2023-08-23T23:53:32.000+00:00',
         foreignJurisdiction: {
