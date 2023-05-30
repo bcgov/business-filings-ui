@@ -26,6 +26,7 @@ describe('Enum Utilities', () => {
     expect(EnumUtilities.isTypeChangeOfName({ name: 'changeOfName' })).toBe(true)
     expect(EnumUtilities.isTypeChangeOfRegistration({ name: 'changeOfRegistration' })).toBe(true)
     expect(EnumUtilities.isTypeConsentContinuationOut({ name: 'consentContinuationOut' })).toBe(true)
+    expect(EnumUtilities.isTypeContinuationOut({ name: 'continuationOut' })).toBe(true)
     expect(EnumUtilities.isTypeConversion({ name: 'conversion' })).toBe(true)
     expect(EnumUtilities.isTypeCorrection({ name: 'correction' })).toBe(true)
     expect(EnumUtilities.isTypeDissolutionAdministrative({ name: 'dissolution', filingSubType: 'administrative' }))

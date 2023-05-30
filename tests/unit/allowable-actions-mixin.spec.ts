@@ -173,6 +173,16 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
   })
 
+  it('identifies whether Continuation Out is allowed', () => {
+    // verify no allowed filing type
+    setAllowedFilingType()
+    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
+
+    // verify allowed filing type
+    setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
+    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(true)
+  })
+
   it('identifies whether Correction is allowed', () => {
     jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 

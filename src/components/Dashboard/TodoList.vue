@@ -739,6 +739,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         case FilingTypes.CONSENT_CONTINUATION_OUT:
           await this.loadConsentContinuationOut(task)
           break
+        case FilingTypes.CONTINUATION_OUT:
+          await this.loadContinuationOut(task)
+          break
         case FilingTypes.CORRECTION:
           await this.loadCorrection(task)
           break
@@ -1212,6 +1215,36 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
   }
 
+  async loadContinuationOut (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const continuationOut = filing.continuationOut
+
+    if (header && continuationOut) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      const item = {
+        name: FilingTypes.CONTINUATION_OUT,
+        filingId: header.filingId,
+        title: FilingNames.CONTINUATION_OUT,
+        draftTitle: FilingNames.CONTINUATION_OUT,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        // FUTURE: ideally, this would come from the filing:
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
+      } as TodoItemIF
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
   async loadSpecialResolution (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
@@ -1357,6 +1390,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         // resume this Consent to Continuation Out locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
         this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
+        break
+
+      case FilingTypes.CONTINUATION_OUT:
+        // resume this Continuation Out locally
+        this.setCurrentFilingStatus(FilingStatus.DRAFT)
+        this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CORRECTION:
