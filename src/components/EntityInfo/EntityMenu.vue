@@ -197,7 +197,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     this.emitConfirmDissolution()
   }
 
-  goToConsentContinuationOutFiling ():void {
+  goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
   }
