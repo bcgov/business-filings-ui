@@ -1,6 +1,8 @@
 import Vue from 'vue'
+import sinon from 'sinon'
 import Vuetify from 'vuetify'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import axios from '@/axios-auth'
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
@@ -14,6 +16,7 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingStatus } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -23,9 +26,9 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 Vue.config.silent = true
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
-localVue.use(VueRouter)
+const vuetify = new Vuetify({})
+// const localVue = createLocalVue()
+// localVue.use(VueRouter)
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
@@ -198,6 +201,7 @@ describe('Consent to Continuation Out view', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
+    jest.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -253,6 +257,142 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.staffPaymentData.isPriority).toBe(true)
     // NB: line 1 (default comment) should be removed
     expect(vm.detailComment).toBe('Line 2\nLine 3')
+
+    jest.restoreAllMocks()
+    wrapper.destroy()
+  })
+})
+
+describe('Consent to Continue Out File and Pay general user and IAs only', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: jest.fn() } as any
+
+    // set configurations
+    const configuration = {
+      'VUE_APP_AUTH_WEB_URL': 'https://auth.web.url/'
+    }
+    configurationStore.setConfiguration(configuration)
+
+    // set necessary session variables
+    sessionStorage.setItem('BASE_URL', 'https://base.url/')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+  })
+
+  beforeEach(() => {
+    // init store
+    rootStore.currentDate = '2020-03-04'
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setLegalName('My Test Entity')
+    businessStore.setIdentifier('BC0007291')
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
+    rootStore.filingData = []
+    rootStore.keycloakRoles = ['user']
+
+    // mock "get tasks" endpoint - needed for hasPendingTasks()
+    sinon
+      .stub(axios, 'get')
+      .withArgs('businesses/BC0007291/tasks')
+      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+
+    // mock "save and file" endpoint
+    sinon
+      .stub(axios, 'post')
+      .withArgs('businesses/BC0007291/filings')
+      .returns(
+        new Promise(resolve =>
+          resolve({
+            data: {
+              filing: {
+                consentContinuationOut: {
+                  expiry: '2023-08-17T08:00:00.000000+00:00'
+                },
+                business: {
+                  foundingDate: '2007-04-08T00:00:00+00:00',
+                  identifier: 'BC0007291',
+                  legalName: 'Legal Name - BC0007291'
+                },
+                header: {
+                  name: 'consentContinuationOut',
+                  date: '2017-06-06',
+                  submitter: 'bc0007291',
+                  status: 'PENDING',
+                  filingId: 123,
+                  certifiedBy: 'Full Name',
+                  email: 'no_one@never.get',
+                  paymentToken: '321',
+                  isPaymentActionRequired: true
+                }
+              }
+            }
+          })
+        )
+      )
+  })
+
+  afterEach(() => {
+    sinon.restore()
+    jest.restoreAllMocks()
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'consent-continuation-out', params: { filingId: '0' } }) // new filing id
+
+    const wrapper = mount(ConsentContinuationOut, {
+      localVue,
+      router,
+      stubs: {
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        SbcFeeSummary: true
+      },
+      vuetify
+    })
+    const vm: any = wrapper.vm
+
+    // make sure form is validated
+    await wrapper.setData({
+      detailCommentValid: true,
+      documentDeliveryValid: true,
+      certifyFormValid: true,
+      courtOrderValid: true
+    })
+
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    expect(vm.isPageValid).toEqual(true)
+
+    // make sure a fee is required
+    vm.totalFee = 100
+
+    // sanity check
+    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+
+    const button = wrapper.find('#consent-file-pay-btn')
+    expect(button.attributes('disabled')).toBeUndefined()
+
+    // click the File & Pay button
+    await button.trigger('click')
+    await flushPromises() // wait for save to complete and everything to update
+
+    // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    const payURL = 'https://auth.web.url/makepayment/321/' + encodeURIComponent('https://base.url/?filing_id=123')
+    expect(window.location.assign).toHaveBeenCalledWith(payURL + '?accountid=' + accountId)
 
     wrapper.destroy()
   })

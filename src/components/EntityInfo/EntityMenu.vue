@@ -135,7 +135,7 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import { AllowableActions, NigsMessage } from '@/enums'
+import { AllowableActions, NigsMessage, Routes } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
 import { navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -195,6 +195,11 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
       return
     }
     this.emitConfirmDissolution()
+  }
+
+  goToConsentContinuationOutFiling ():void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
   }
 
   /** Emits an event to confirm dissolution. */
