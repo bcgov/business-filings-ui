@@ -454,7 +454,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(vm.isPageValid).toEqual(true)
 
     // make sure a fee is required
-    vm.totalFee = 100
+    vm.totalFee = 350
 
     // sanity check
     expect(jest.isMockFunction(window.location.assign)).toBe(true)
