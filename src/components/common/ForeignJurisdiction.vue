@@ -6,6 +6,7 @@
       </v-col>
       <v-col cols="12" sm="9">
         <v-select
+          id="country-selector"
           :items="countryNames"
           v-model="selectedCountry"
           filled
@@ -15,6 +16,7 @@
         />
         <v-select
           v-if="canadaUsaRegions.length > 0"
+          id="region-selector"
           :items="canadaUsaRegions"
           v-model="selectedRegion"
           filled
@@ -36,10 +38,12 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   selectedCountry = ''
   selectedRegion = ''
 
+  /** Get country names as an array of strings. */
   get countryNames (): string[] {
     return this.getCountries().map(country => country.name)
   }
 
+  /** Get the respective regions of the country selected as an array of strings. */
   get canadaUsaRegions (): string[] {
     if (this.selectedCountry === 'Canada') {
       let regions = this.getCountryRegions('CA').map(region => region.name)
@@ -66,6 +70,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     ]
   }
 
+  /** Emit event whenever a country is selected. */
   @Emit('update:country')
   emitChangedCountry (): void {
     this.selectedRegion = ''
@@ -80,6 +85,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     }
   }
 
+  /** Helper function to validate if a region is selected when applicable. */
   private validateRegions (): void {
     if (this.canadaUsaRegions.length > 0) {
       if (this.selectedRegion !== '') {
@@ -90,6 +96,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     }
   }
 
+  /** Emit event whenever a region is selected. */
   @Emit('update:region')
   emitChangedRegion (): void {
     if (this.canadaUsaRegions.length > 0) {
