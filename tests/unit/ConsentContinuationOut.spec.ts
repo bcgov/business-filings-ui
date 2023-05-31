@@ -27,8 +27,8 @@ Vue.config.silent = true
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-// const localVue = createLocalVue()
-// localVue.use(VueRouter)
+const localVue = createLocalVue()
+localVue.use(VueRouter)
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
