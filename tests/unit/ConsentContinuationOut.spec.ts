@@ -263,7 +263,7 @@ describe('Consent to Continuation Out view', () => {
   })
 })
 
-describe('Consent to Continue Out File and Pay general user and IAs only', () => {
+describe('Consent to Continue Out for general user and IAs only', () => {
   const { assign } = window.location
 
   beforeAll(() => {
@@ -341,6 +341,83 @@ describe('Consent to Continue Out File and Pay general user and IAs only', () =>
 
   afterAll(() => {
     window.location.assign = assign
+  })
+
+  it('mounts the sub-components properly', async () => {
+    const $route = { params: { filingId: '0' } }
+
+    // create local Vue and mock router
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const $router = mockRouter.mock()
+
+    const wrapper = shallowMount(ConsentContinuationOut, { mocks: { $route, $router } })
+    wrapper.vm.$data.dataLoaded = true
+    await Vue.nextTick()
+
+    // verify sub-components
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPaymentDialog).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('saves draft consent to continuation out properly', async () => {
+    // mock "has pending tasks" legal service
+    jest.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+      return Promise.resolve(false)
+    })
+
+    // mock "create filing" legal service
+    // (garbage response data - we aren't testing that)
+    jest.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+      return Promise.resolve({
+        business: {},
+        header: { filingId: 456 },
+        consentContinuationOut: { details: 'test' },
+        annualReport: {}
+      })
+    })
+
+    // mock $route
+    const $route = { params: { filingId: '0' } }
+
+    // create local Vue and mock router
+    createLocalVue().use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'consent-continuation-out' })
+
+    const wrapper = shallowMount(ConsentContinuationOut, {
+      router,
+      stubs: {
+        CourtOrderPoa: true,
+        DetailComment: true,
+        DocumentDelivery: true,
+        Certify: true,
+        SbcFeeSummary: true
+      },
+      mocks: { $route }
+    })
+    const vm: any = wrapper.vm
+
+    // wait for fetch to complete
+    await flushPromises()
+
+    // call the save action (since clicking button doesn't work)
+    await vm.onClickSave()
+
+    // verify new Filing ID
+    expect(vm.filingId).toBe(456)
+
+    jest.restoreAllMocks()
+    wrapper.destroy()
   })
 
   it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
