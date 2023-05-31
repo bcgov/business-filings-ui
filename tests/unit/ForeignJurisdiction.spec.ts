@@ -64,7 +64,8 @@ describe('ForeignJurisdiction', () => {
     const countriesSelector = wrapper.find('#country-selector')
     await countriesSelector.setValue('Lebanon')
 
-    expect(vm.emitChangedCountry())
+    vm.emitChangedCountry()
+
     expect(wrapper.emitted('valid')).toBeTruthy()
     wrapper.destroy()
   })
@@ -94,8 +95,9 @@ describe('ForeignJurisdiction', () => {
     const regionsSelector = wrapper.find('#region-selector')
     await regionsSelector.setValue('Ontario')
 
-    expect(vm.emitChangedCountry())
-    expect(vm.emitChangedRegion())
+    vm.emitChangedCountry()
+    vm.emitChangedRegion()
+
     expect(wrapper.emitted('valid')).toBeTruthy()
     wrapper.destroy()
   })

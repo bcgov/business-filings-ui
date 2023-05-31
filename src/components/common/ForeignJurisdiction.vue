@@ -98,15 +98,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 
   /** Emit event whenever a region is selected. */
   @Emit('update:region')
-  emitChangedRegion (): void {
-    if (this.canadaUsaRegions.length > 0) {
-      if (this.selectedRegion !== '') {
-        this.emitValid(true)
-      } else {
-        this.emitValid(false)
-      }
-    }
-  }
+  emitChangedRegion (): void { /* no empty function */ }
 
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
