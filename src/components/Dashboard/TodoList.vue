@@ -187,49 +187,14 @@
                   </v-btn>
                 </template>
 
-                <!-- draft correction or conversion or restoration or consent to continuation Out (staff only) -->
-                <template v-else-if="isStatusDraft(item) && (isTypeCorrection(item) || isTypeConversion(item) ||
-                  EnumUtilities.isTypeRestoration(item) || isTypeConsentContinuationOut(item)) && isRoleStaff"
-                >
-                  <v-btn
-                    class="btn-draft-resume"
-                    color="primary"
-                    :disabled="!item.enabled"
-                    @click.native.stop="doResumeFiling(item)"
-                  >
-                    <span>Resume</span>
-                  </v-btn>
-
-                  <!-- dropdown menu -->
-                  <v-menu offset-y left>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        id="menu-activator"
-                        class="actions__more-actions__btn px-0"
-                        color="primary"
-                        :disabled="!item.enabled"
-                      >
-                        <v-icon>mdi-menu-down</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list class="actions__more-actions">
-                      <v-list-item id="btn-draft-delete" @click.stop="confirmDeleteDraft(item)">
-                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
-                        <v-list-item-title>Delete draft</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </template>
-
-                <!-- other correction or conversion or restoration or consent to continuation out -->
-                <template v-else-if="isTypeCorrection(item) || isTypeConversion(item) ||
-                  EnumUtilities.isTypeRestoration(item) || isTypeConsentContinuationOut(item)"
+                <!-- non-staff see no buttons for correction or conversion or restoration or Continuation Out -->
+                <template v-else-if="!isRoleStaff && (isTypeCorrection(item) || isTypeConversion(item) ||
+                  EnumUtilities.isTypeRestoration(item) || EnumUtilities.isTypeContinuationOut(item))"
                 >
                   <!-- no action button in this case -->
                 </template>
 
-                <!-- other draft filing -->
+                <!-- draft filing -->
                 <template v-else-if="isStatusDraft(item)">
                   <v-btn
                     class="btn-draft-resume"
@@ -774,6 +739,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         case FilingTypes.CONSENT_CONTINUATION_OUT:
           await this.loadConsentContinuationOut(task)
           break
+        case FilingTypes.CONTINUATION_OUT:
+          await this.loadContinuationOut(task)
+          break
         case FilingTypes.CORRECTION:
           await this.loadCorrection(task)
           break
@@ -1247,6 +1215,36 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
   }
 
+  async loadContinuationOut (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const continuationOut = filing.continuationOut
+
+    if (header && continuationOut) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      const item = {
+        name: FilingTypes.CONTINUATION_OUT,
+        filingId: header.filingId,
+        title: FilingNames.CONTINUATION_OUT,
+        draftTitle: FilingNames.CONTINUATION_OUT,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        // FUTURE: ideally, this would come from the filing:
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
+      } as TodoItemIF
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
   async loadSpecialResolution (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
@@ -1394,6 +1392,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
 
+      case FilingTypes.CONTINUATION_OUT:
+        // resume this Continuation Out locally
+        this.setCurrentFilingStatus(FilingStatus.DRAFT)
+        this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
+        break
+
       case FilingTypes.CORRECTION:
         // see also ItemHeaderActions.vue:correctThisFiling()
         switch (item.correctedFilingType) {
@@ -1402,6 +1406,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           case FilingNames.CORRECTION:
           case FilingNames.INCORPORATION_APPLICATION:
           case FilingNames.REGISTRATION:
+          case FilingNames.SPECIAL_RESOLUTION:
             navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
             break
 

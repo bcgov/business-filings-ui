@@ -102,6 +102,11 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CONSENT_CONTINUATION_OUT)
   }
 
+  /** Returns True if filing is a Continuation Out. */
+  static isTypeContinuationOut (item: any): boolean {
+    return (item.name === FilingTypes.CONTINUATION_OUT)
+  }
+
   /** Returns True if filing is a Conversion. */
   static isTypeConversion (item: any): boolean {
     return (item.name === FilingTypes.CONVERSION)

@@ -91,6 +91,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   @Getter(useFilingHistoryListStore) getFilings!: Array<ApiFilingIF>
   @Getter(useFilingHistoryListStore) getPanel!: number
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
+  @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useBusinessStore) hasCourtOrders!: boolean
@@ -128,6 +129,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
       case EnumUtilities.isTypeAlteration(filing): return 'alteration-filing'
       case EnumUtilities.isTypeChangeOfAddress(filing): return 'change-of-address'
       case EnumUtilities.isTypeConsentContinuationOut(filing): return 'consent-continuation-out'
+      case EnumUtilities.isTypeContinuationOut(filing): return 'continuation-out'
       case EnumUtilities.isTypeDissolutionVoluntary(filing): return 'dissolution-voluntary'
       case EnumUtilities.isTypeIncorporationApplication(filing): return 'incorporation-application'
       case EnumUtilities.isTypeRestorationLimited(filing): return 'limited-restoration'
@@ -150,7 +152,7 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
 
       // build correction filing
       let correctionFiling: CorrectionFilingIF
-      if (this.isFirm || this.isBenBcCccUlc) {
+      if (this.isFirm || this.isBenBcCccUlc || this.isCoop) {
         correctionFiling = this.buildCorrectionFiling(this.getCurrentFiling, correctionType)
       }
 
