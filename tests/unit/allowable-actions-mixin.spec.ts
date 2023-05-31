@@ -163,14 +163,42 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.BUSINESS_SUMMARY)).toBe(true)
   })
 
-  xit('identifies whether Consent Continuation Out is allowed', () => {
-    // verify no allowed filing type
+  it('identifies whether Consent Continuation Out is allowed', () => {
+    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+
+    // verify allowed filing type but no feature flag
+    setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
+    setFeatureFlag([])
+    expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
+
+    // verify feature flag but no allowed filing type
+    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
     setAllowedFilingType()
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(false)
 
-    // verify allowed filing type
+    // verify both feature flag and allowed filing type
+    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
     setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
     expect(vm.isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)).toBe(true)
+  })
+
+  it('identifies whether Continuation Out is allowed', () => {
+    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+
+    // verify allowed filing type but no feature flag
+    setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
+    setFeatureFlag([])
+    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
+
+    // verify feature flag but no allowed filing type
+    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    setAllowedFilingType()
+    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(false)
+
+    // verify both feature flag and allowed filing type
+    setFeatureFlag([CorpTypeCd.BENEFIT_COMPANY])
+    setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
+    expect(vm.isAllowed(AllowableActions.CONTINUATION_OUT)).toBe(true)
   })
 
   it('identifies whether Correction is allowed', () => {

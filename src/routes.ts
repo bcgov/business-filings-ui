@@ -3,6 +3,7 @@ import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
+import ContinuationOut from '@/views/ContinuationOut.vue'
 import Correction from '@/views/Correction.vue'
 import Signin from '@/views/auth/Signin.vue'
 import Signout from '@/views/auth/Signout.vue'
@@ -78,6 +79,22 @@ export default [
           disabled: false,
           exact: true,
           to: { name: Routes.CONSENT_CONTINUATION_OUT }
+        }
+      ]
+    }
+  },
+  {
+    path: '/continuation-out',
+    name: Routes.CONTINUATION_OUT,
+    component: ContinuationOut,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: FilingNames.CONTINUATION_OUT,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.CONTINUATION_OUT }
         }
       ]
     }

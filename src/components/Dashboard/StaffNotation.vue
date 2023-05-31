@@ -157,6 +157,17 @@
             </v-list-item>
 
             <v-list-item
+              v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
+              data-type="continue-out"
+              @click="goToContinuationOutFiling()"
+              :disabled="!isAllowed(AllowableActions.CONTINUATION_OUT)"
+            >
+              <v-list-item-title>
+                <span class="app-blue">Continue Out</span>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
               v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)"
               data-type="extend-limited-restoration"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)"
@@ -274,6 +285,11 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
+  }
+
+  goToContinuationOutFiling ():void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.CONTINUATION_OUT, params: { filingId: '0' } })
   }
 
   async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: FilingSubTypes): Promise<void> {

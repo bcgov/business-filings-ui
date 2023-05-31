@@ -62,6 +62,11 @@ export default class AllowableActionsMixin extends Vue {
         return (ff && this.isAllowedFiling(FilingTypes.CONSENT_CONTINUATION_OUT))
       }
 
+      case AllowableActions.CONTINUATION_OUT: {
+        const ff = !!GetFeatureFlag('supported-continuation-out-entities')?.includes(this.getLegalType)
+        return (ff && this.isAllowedFiling(FilingTypes.CONTINUATION_OUT))
+      }
+
       case AllowableActions.CORRECTION: {
         // NB: specific entities are targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('supported-correction-entities')?.includes(this.getLegalType)
