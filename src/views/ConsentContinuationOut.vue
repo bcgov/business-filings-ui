@@ -88,6 +88,15 @@
               </div>
             </section>
 
+            <section>
+              <header>
+                <h2>Jurisdiction Information</h2>
+              </header>
+              <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment-section">
+                <ForeignJurisdiction />
+              </div>
+            </section>
+
             <!-- Documents Delivery -->
             <section>
               <header>
@@ -240,7 +249,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, DetailComment } from '@/components/common'
+import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -259,6 +268,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     CourtOrderPoa,
     DetailComment,
     DocumentDelivery,
+    ForeignJurisdiction,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
