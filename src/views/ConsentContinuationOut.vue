@@ -93,7 +93,9 @@
                 <h2>Jurisdiction Information</h2>
               </header>
               <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment-section">
-                <ForeignJurisdiction />
+                <v-card flat class="pt-6 px-4">
+                  <ForeignJurisdiction/>
+                </v-card>
               </div>
             </section>
 

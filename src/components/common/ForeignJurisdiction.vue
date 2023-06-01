@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="pt-6 px-4">
+  <div id="foreign-jurisdiction">
     <v-row no-gutters>
       <v-col cols="12" sm="3">
         <label class="title-label">Jurisdiction</label>
@@ -7,26 +7,31 @@
       <v-col cols="12" sm="9">
         <v-select
           id="country-selector"
-          :items="countryNames"
+          :items="getCountries()"
+          item-text="name"
           v-model="selectedCountry"
           filled
+          return-object
           placeholder="Jurisdiction Country"
           :rules="countryRules"
+          menu-props="auto"
           @change="emitChangedCountry($event)"
         />
         <v-select
           v-if="canadaUsaRegions.length > 0"
           id="region-selector"
           :items="canadaUsaRegions"
+          item-text="name"
           v-model="selectedRegion"
           filled
-          placeholder="Jurisdiction Province"
+          return-object
+          placeholder="Jurisdiction Region"
           :rules="regionRules"
           @change="emitChangedRegion($event)"
         />
       </v-col>
     </v-row>
-  </v-card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -35,23 +40,18 @@ import { CountriesProvincesMixin } from '@/mixins'
 
 @Component({})
 export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin) {
-  selectedCountry = ''
-  selectedRegion = ''
+  selectedCountry = {}
+  selectedRegion = {}
 
-  /** Get country names as an array of strings. */
-  get countryNames (): string[] {
-    return this.getCountries().map(country => country.name)
-  }
-
-  /** Get the respective regions of the country selected as an array of strings. */
-  get canadaUsaRegions (): string[] {
-    if (this.selectedCountry === 'Canada') {
-      let regions = this.getCountryRegions('CA').map(region => region.name)
-      regions = regions.filter(province => province !== 'British Columbia')
-      regions.push('Federal')
+  /** Get the respective regions of the country selected as an array of objects. */
+  get canadaUsaRegions (): Array<object> {
+    if (this.selectedCountry.name === 'Canada') {
+      let regions = this.getCountryRegions('CA')
+      regions = regions.filter(province => province.name !== 'British Columbia')
+      regions.push({ name: 'Federal', code: 'FD' })
       return regions
-    } else if (this.selectedCountry === 'United States of America') {
-      return this.getCountryRegions('US').map(region => region.name)
+    } else if (this.selectedCountry.name === 'United States of America') {
+      return this.getCountryRegions('US')
     }
     return []
   }
@@ -59,23 +59,23 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Validation rules for the Jurisdiction Country dropdown. */
   get countryRules (): Array<(val) => boolean | string> {
     return [
-      val => (val && val.trim().length > 0) || 'Jurisdiction Country is required.'
+      val => (val.length !== 0) || 'Jurisdiction Country is required.'
     ]
   }
 
   /** Validation rules for the Jurisdiction Region dropdown. */
   get regionRules (): Array<(val) => boolean | string> {
     return [
-      val => (val && val.trim().length > 0) || 'Jurisdiction Region is required.'
+      val => (val.length !== 0) || 'Jurisdiction Region is required.'
     ]
   }
 
   /** Emit event whenever a country is selected. */
   @Emit('update:country')
-  emitChangedCountry (): void {
-    this.selectedRegion = ''
-    if (this.selectedCountry !== '') {
-      if (this.selectedCountry === 'Canada' || this.selectedCountry === 'United States of America') {
+  emitChangedCountry (): object {
+    this.selectedRegion = {}
+    if (this.selectedCountry.name !== '') {
+      if (this.selectedCountry.name === 'Canada' || this.selectedCountry.name === 'United States of America') {
         this.validateRegions()
       } else {
         this.emitValid(true)
@@ -83,12 +83,13 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     } else {
       this.emitValid(false)
     }
+    return this.selectedCountry
   }
 
   /** Helper function to validate if a region is selected when applicable. */
   private validateRegions (): void {
     if (this.canadaUsaRegions.length > 0) {
-      if (this.selectedRegion !== '') {
+      if (this.selectedRegion.name !== '') {
         this.emitValid(true)
       } else {
         this.emitValid(false)
@@ -98,7 +99,9 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 
   /** Emit event whenever a region is selected. */
   @Emit('update:region')
-  emitChangedRegion (): void { /* no empty function */ }
+  emitChangedRegion (): object {
+    return this.selectedRegion
+  }
 
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
@@ -112,5 +115,10 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 .title-label {
   color: $gray9;
   font-weight: bold;
+}
+
+// Vuetify Overrides
+:deep(.v-select__selection--comma) {
+  overflow: inherit;
 }
 </style>
