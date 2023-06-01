@@ -75,7 +75,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   emitChangedCountry (): object {
     this.selectedRegion = {}
     if (this.selectedCountry.name !== '') {
-      if (this.selectedCountry.name === 'Canada' || this.selectedCountry.name === 'United States of America') {
+      if (this.selectedCountry.code === 'CA' || this.selectedCountry.code === 'US') {
         this.validateRegions()
       } else {
         this.emitValid(true)
