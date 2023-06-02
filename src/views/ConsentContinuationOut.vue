@@ -713,7 +713,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     const data: any = {
       [FilingTypes.CONSENT_CONTINUATION_OUT]: {
         // FUTURE: add more filing properties below
-        details: `${this.defaultComment}\n${this.detailComment}`
+        details: `${this.defaultComment}\n${this.detailComment}`,
+        foreignJurisdiction: {
+          country: 'CA',
+          region: 'AB'
+        }
       }
     }
 
