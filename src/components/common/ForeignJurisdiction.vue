@@ -1,5 +1,5 @@
 <template>
-  <div id="foreign-jurisdiction">
+  <v-card flat id="foreign-jurisdiction">
     <v-row no-gutters>
       <v-col cols="12" sm="3">
         <label class="title-label">Jurisdiction</label>
@@ -31,7 +31,7 @@
         />
       </v-col>
     </v-row>
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -45,12 +45,12 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
 
   /** Get the respective regions of the country selected as an array of objects. */
   get canadaUsaRegions (): Array<object> {
-    if (this.selectedCountry.name === 'Canada') {
+    if (this.selectedCountry.code === 'CA') {
       let regions = this.getCountryRegions('CA')
-      regions = regions.filter(province => province.name !== 'British Columbia')
-      regions.push({ name: 'Federal', code: 'FD' })
+      regions = regions.filter(province => province.short !== 'BC')
+      regions.push({ name: 'Federal', short: 'FD' })
       return regions
-    } else if (this.selectedCountry.name === 'United States of America') {
+    } else if (this.selectedCountry.code === 'US') {
       return this.getCountryRegions('US')
     }
     return []
