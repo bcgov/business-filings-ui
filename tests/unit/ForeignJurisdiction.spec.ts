@@ -30,7 +30,7 @@ describe('ForeignJurisdiction', () => {
     const vm: any = wrapper.vm
 
     await wrapper.find('#country-selector').trigger('click')
-    wrapper.findAll('.v-list-item').at(123).trigger('click')
+    await wrapper.findAll('.v-list-item').at(123).trigger('click')
 
     expect(vm.selectedCountry).toEqual({code: 'LB', name: 'Lebanon'})
     expect(vm.selectedRegion).toEqual({})
@@ -66,7 +66,7 @@ describe('ForeignJurisdiction', () => {
 
     const provinces = wrapper.findAll('.v-select').at(1).props('items')
 
-    expect(!provinces.includes({'name': 'British Columbia', 'short': 'BC'}))
+    expect(provinces).toEqual(expect.not.arrayContaining([{name: 'British Columbia', short: 'BC'}]))
     wrapper.destroy()
   })
 
@@ -81,7 +81,7 @@ describe('ForeignJurisdiction', () => {
 
     const provinces = wrapper.findAll('.v-select').at(1).props('items')
 
-    expect(provinces.includes({'name': 'Federal', 'short': 'FD'}))
+    expect(provinces).toEqual(expect.arrayContaining([{name: 'Federal', short: 'FD'}]))
     wrapper.destroy()
   })
 
@@ -110,10 +110,10 @@ describe('ForeignJurisdiction', () => {
       })
 
     await wrapper.find('#country-selector').trigger('click')
-    wrapper.findAll('.v-list-item').at(123).trigger('click')
+    await wrapper.findAll('.v-list-item').at(123).trigger('click')
 
     expect(wrapper.emitted('update:country').pop()[0]).toEqual({code: 'LB', name: 'Lebanon'})
-    expect(wrapper.emitted('valid')).toBeTruthy()
+    expect(wrapper.emitted('valid').pop()[0]).toBe(true)
     wrapper.destroy()
   })
 
@@ -125,11 +125,11 @@ describe('ForeignJurisdiction', () => {
     const vm: any = wrapper.vm
 
     await wrapper.find('#country-selector').trigger('click')
-    wrapper.findAll('.v-list-item').at(39).trigger('click')
+    await wrapper.findAll('.v-list-item').at(39).trigger('click')
 
     expect(vm.selectedRegion).toEqual({})
     expect(wrapper.emitted('update:country').pop()[0]).toEqual({code: 'CA', name: 'Canada'})
-    expect(wrapper.emitted('valid').pop()[0]).toBeFalsy()
+    expect(wrapper.emitted('valid').pop()[0]).toBe(false)
     wrapper.destroy()
   })
 
