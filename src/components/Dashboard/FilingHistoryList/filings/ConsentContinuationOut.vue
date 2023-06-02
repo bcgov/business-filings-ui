@@ -1,12 +1,14 @@
 <template>
   <FilingTemplate class="consent-continuation-out" :filing="filing" :index="index">
     <template #body>
-      <p class="mt-4">
-        This consent is valid <strong>until {{ expiry }} at 12:01 am Pacific time</strong>.
-      </p>
-      <p v-if="orderDetails" class="mt-4" v-html="orderDetails" />
-      <p v-if="fileNumber" class="mt-4 mb-0">Court Order Number: {{ fileNumber }}</p>
-      <p v-if="hasEffectOfOrder" class="mt-0">Pursuant to a Plan of Arrangement</p>
+      <div v-if="isFilingComplete">
+        <p class="mt-4">
+          This consent is valid <strong>until {{ expiry }} at 12:01 am Pacific time</strong>.
+        </p>
+        <p v-if="orderDetails" class="mt-4" v-html="orderDetails" />
+        <p v-if="fileNumber" class="mt-4 mb-0">Court Order Number: {{ fileNumber }}</p>
+        <p v-if="hasEffectOfOrder" class="mt-0">Pursuant to a Plan of Arrangement</p>
+      </div>
     </template>
   </FilingTemplate>
 </template>
@@ -15,7 +17,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ApiFilingIF } from '@/interfaces'
 import FilingTemplate from '../FilingTemplate.vue'
-import { DateUtilities } from '@/services'
+import { DateUtilities, EnumUtilities } from '@/services'
 
 @Component({
   components: { FilingTemplate }
@@ -44,6 +46,11 @@ export default class ConsentContinuationOut extends Vue {
   /** Whether the court order has an effect of order. */
   get hasEffectOfOrder (): boolean {
     return Boolean(this.filing.data?.order?.effectOfOrder)
+  }
+
+  /** Whether the filing is complete. */
+  get isFilingComplete (): boolean {
+    return EnumUtilities.isStatusCompleted(this.filing)
   }
 }
 </script>
