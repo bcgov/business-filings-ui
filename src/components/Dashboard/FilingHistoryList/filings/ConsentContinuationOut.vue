@@ -48,7 +48,7 @@ export default class ConsentContinuationOut extends Vue {
     return Boolean(this.filing.data?.order?.effectOfOrder)
   }
 
-  /** Whether the filing is pending. */
+  /** Whether the filing is complete. */
   get isFilingComplete (): boolean {
     return !EnumUtilities.isStatusPending(this.filing) && Boolean(this.filing.data)
   }
