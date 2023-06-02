@@ -50,7 +50,7 @@ export default class ConsentContinuationOut extends Vue {
 
   /** Whether the filing is complete. */
   get isFilingComplete (): boolean {
-    return !EnumUtilities.isStatusPending(this.filing) && Boolean(this.filing.data)
+    return EnumUtilities.isStatusCompleted(this.filing)
   }
 }
 </script>
