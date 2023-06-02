@@ -15,7 +15,7 @@
           placeholder="Jurisdiction Country"
           :rules="countryRules"
           menu-props="auto"
-          @change="emitChangedCountry($event)"
+          @input="emitChangedCountry($event)"
         />
         <v-select
           v-if="canadaUsaRegions.length > 0"
@@ -27,7 +27,7 @@
           return-object
           placeholder="Jurisdiction Region"
           :rules="regionRules"
-          @change="emitChangedRegion($event)"
+          @input="emitChangedRegion($event)"
         />
       </v-col>
     </v-row>
@@ -59,14 +59,14 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Validation rules for the Jurisdiction Country dropdown. */
   get countryRules (): Array<(val) => boolean | string> {
     return [
-      val => (val.length !== 0) || 'Jurisdiction Country is required.'
+      val => !!(val.code) || 'Jurisdiction Country is required.'
     ]
   }
 
   /** Validation rules for the Jurisdiction Region dropdown. */
   get regionRules (): Array<(val) => boolean | string> {
     return [
-      val => (val.length !== 0) || 'Jurisdiction Region is required.'
+      val => !!(val.short) || 'Jurisdiction Region is required.'
     ]
   }
 
@@ -89,7 +89,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Helper function to validate if a region is selected when applicable. */
   private validateRegions (): void {
     if (this.canadaUsaRegions.length > 0) {
-      if (this.selectedRegion.name !== '') {
+      if (!this.selectedRegion) {
         this.emitValid(true)
       } else {
         this.emitValid(false)

@@ -29,80 +29,124 @@ describe('ForeignJurisdiction', () => {
       })
     const vm: any = wrapper.vm
 
-    wrapper.find('#country-selector').trigger('click')
-    await Vue.nextTick()
-    wrapper.find('.menuable__content__active').findAll('.v-list-item').at(123).trigger('click')
+    await wrapper.find('#country-selector').trigger('click')
+    wrapper.findAll('.v-list-item').at(123).trigger('click')
 
     expect(vm.selectedCountry).toEqual({code: 'LB', name: 'Lebanon'})
     expect(vm.selectedRegion).toEqual({})
     wrapper.destroy()
   })
 
-  xit('set correct region when selected via the region selector', async () => {
+  it('set correct Canadian province when selected via the region selector', async () => {
     const wrapper = mount(ForeignJurisdiction,
       {
         vuetify
       })
     const vm: any = wrapper.vm
 
-    wrapper.find('#country-selector').trigger('click')
-    await Vue.nextTick()
-    wrapper.findAll('.v-list-item').at(39).trigger('click')
+    await wrapper.find('#country-selector').trigger('click')
+    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+
+    const region = wrapper.find('#region-selector')
+    await region.setValue(JSON.stringify({code: 'ON', name: 'Ontario'}))
+
     expect(vm.selectedCountry).toEqual({code: 'CA', name: 'Canada'})
-
-    await Vue.nextTick()
-    wrapper.find('#region-selector').trigger('click')
-    wrapper.find('.menuable__content__active').findAll('.v-list-item').at(7).trigger('click')
-    await Vue.nextTick()
-    expect(vm.selectedRegion).toEqual({name: 'Ontario', short: 'ON'})
+    expect(vm.selectedRegion).toEqual(JSON.stringify({code: 'ON', name: 'Ontario'}))
     wrapper.destroy()
   })
 
-  xit('emit correct validation when country is selected', async () => {
+  it('no BC as a province when Canada is selected as the country', async () => {
+    const wrapper = mount(ForeignJurisdiction,
+      {
+        vuetify
+      })
+
+    await wrapper.find('#country-selector').trigger('click')
+    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+
+    const provinces = wrapper.findAll('.v-select').at(1).props('items')
+
+    expect(!provinces.includes({'name': 'British Columbia', 'short': 'BC'}))
+    wrapper.destroy()
+  })
+
+  it('Federal exists as a province when Canada is selected as the country', async () => {
+    const wrapper = mount(ForeignJurisdiction,
+      {
+        vuetify
+      })
+
+    await wrapper.find('#country-selector').trigger('click')
+    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+
+    const provinces = wrapper.findAll('.v-select').at(1).props('items')
+
+    expect(provinces.includes({'name': 'Federal', 'short': 'FD'}))
+    wrapper.destroy()
+  })
+
+  it('set correct US state when selected via the region selector', async () => {
     const wrapper = mount(ForeignJurisdiction,
       {
         vuetify
       })
     const vm: any = wrapper.vm
 
-    const countriesSelector = wrapper.find('#country-selector')
-    await countriesSelector.setValue('Lebanon')
+    await wrapper.find('#country-selector').trigger('click')
+    await wrapper.findAll('.v-list-item').at(235).trigger('click')
 
-    vm.emitChangedCountry()
+    const region = wrapper.find('#region-selector')
+    await region.setValue(JSON.stringify({code: 'NY', name: 'New York'}))
 
-    expect(wrapper.emitted('valid')).toBeTruthy()
+    expect(vm.selectedCountry).toEqual({code: 'US', name: 'United States of America'})
+    expect(vm.selectedRegion).toEqual(JSON.stringify({code: 'NY', name: 'New York'}))
     wrapper.destroy()
   })
 
-  xit('emit correct validation when country is selected but region is not', async () => {
+  it('emit correct events when country is selected', async () => {
     const wrapper = mount(ForeignJurisdiction,
       {
         vuetify
       })
 
-    const countriesSelector = wrapper.find('#country-selector')
-    await countriesSelector.setValue('Canada')
+    await wrapper.find('#country-selector').trigger('click')
+    wrapper.findAll('.v-list-item').at(123).trigger('click')
 
-    expect(wrapper.emitted('valid')).toBeFalsy()
+    expect(wrapper.emitted('update:country').pop()[0]).toEqual({code: 'LB', name: 'Lebanon'})
+    expect(wrapper.emitted('valid')).toBeTruthy()
     wrapper.destroy()
   })
 
-  xit('emit correct validation when country and region are selected', async () => {
+  it('emit correct events when country is selected but region is not', async () => {
     const wrapper = mount(ForeignJurisdiction,
       {
         vuetify
       })
     const vm: any = wrapper.vm
 
-    const countriesSelector = wrapper.find('#country-selector')
-    await countriesSelector.setValue('Canada')
-    const regionsSelector = wrapper.find('#region-selector')
-    await regionsSelector.setValue('Ontario')
+    await wrapper.find('#country-selector').trigger('click')
+    wrapper.findAll('.v-list-item').at(39).trigger('click')
 
-    vm.emitChangedCountry()
-    vm.emitChangedRegion()
+    expect(vm.selectedRegion).toEqual({})
+    expect(wrapper.emitted('update:country').pop()[0]).toEqual({code: 'CA', name: 'Canada'})
+    expect(wrapper.emitted('valid').pop()[0]).toBeFalsy()
+    wrapper.destroy()
+  })
 
-    expect(wrapper.emitted('valid')).toBeTruthy()
+  it('emit correct events when country and region are selected', async () => {
+    const wrapper = mount(ForeignJurisdiction,
+      {
+        vuetify
+      })
+
+    await wrapper.find('#country-selector').trigger('click')
+    await wrapper.findAll('.v-list-item').at(39).trigger('click')
+
+    const region = wrapper.find('#region-selector')
+    await region.setValue(JSON.stringify({short: 'ON', name: 'Ontario'}))
+
+    expect(wrapper.emitted('update:country').pop()[0]).toEqual({code: 'CA', name: 'Canada'})
+    expect(wrapper.emitted('update:region').pop()[0]).toEqual(JSON.stringify({short: 'ON', name: 'Ontario'}))
     wrapper.destroy()
   })
 })
