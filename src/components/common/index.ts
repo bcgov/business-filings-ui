@@ -4,6 +4,7 @@ import ContactInfo from './ContactInfo.vue'
 import DateTooltip from './DateTooltip.vue'
 import DetailComment from './DetailComment.vue'
 import FileUploadPdf from './FileUploadPdf.vue'
+import ForeignJurisdiction from './ForeignJurisdiction.vue'
 import ImportantMessage from './ImportantMessage.vue'
 import NameRequestInfo from './NameRequestInfo.vue'
 import OfficeAddresses from './OfficeAddresses.vue'
@@ -22,6 +23,7 @@ export {
   DateTooltip,
   DetailComment,
   FileUploadPdf,
+  ForeignJurisdiction,
   ImportantMessage,
   NameRequestInfo,
   OfficeAddresses,
