@@ -94,6 +94,23 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     return countryCode?.code
   }
 
+  /** Helper function to get a country's name when given the code.
+   * @example ('CA') -> 'Canada'
+   */
+  private getCountryNameFromCode (code: string): string {
+    const country = this.getCountries().find(country => country.code === code)
+    return country?.name
+  }
+
+  /** Helper function to get a region's name when given the short.
+   * @example ('AB') -> 'Alberta'
+   * @example ('NY') -> 'New York'
+   */
+  private getRegionNameFromCode (short: string): string {
+    const region = this.canadaUsaRegions?.find(region => region.short === short)
+    return region?.name
+  }
+
   @Watch('draftCountry')
   onDraftCountryChanged (val: string): void {
     this.selectedCountryName = val
@@ -115,23 +132,6 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
       this.emitValid(true)
     }
     return this.selectedCountryCode
-  }
-
-  /** Helper function to get a country's name when given the code.
-   * @example ('CA') -> 'Canada'
-   */
-  private getCountryNameFromCode (code: string): string {
-    const country = this.getCountries().find(country => country.code === code)
-    return country?.name
-  }
-
-  /** Helper function to get a region's name when given the short.
-   * @example ('AB') -> 'Alberta'
-   * @example ('NY') -> 'New York'
-   */
-  private getRegionNameFromCode (short: string): string {
-    const region = this.canadaUsaRegions?.find(region => region.short === short)
-    return region?.name
   }
 
   /** Emit the selected country's region short whenever a new region is selected. */
