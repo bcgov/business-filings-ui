@@ -88,6 +88,23 @@
               </div>
             </section>
 
+            <!--  Jurisdiction Information -->
+            <section>
+              <header>
+                <h2>Jurisdiction Information</h2>
+              </header>
+              <div :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
+                id="foreign-jurisdiction-section">
+                <v-card flat class="pt-6 px-4">
+                  <ForeignJurisdiction
+                    ref="foreignJurisdictionRef"
+                    @update:country="selectedCountry=$event"
+                    @update:region="selectedRegion=$event"
+                    @valid="foreignJurisdictionValid=$event"/>
+                </v-card>
+              </div>
+            </section>
+
             <!-- Documents Delivery -->
             <section>
               <header>
@@ -240,7 +257,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, DetailComment } from '@/components/common'
+import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
@@ -259,6 +276,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     CourtOrderPoa,
     DetailComment,
     DocumentDelivery,
+    ForeignJurisdiction,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -272,7 +290,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   $refs!: {
     confirm: ConfirmDialogType,
     certifyRef: Certify,
-    detailCommentRef: DetailComment
+    detailCommentRef: DetailComment,
+    foreignJurisdictionRef: ForeignJurisdiction
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
@@ -297,6 +316,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   fileNumber = ''
   hasPlanOfArrangement = false
   courtOrderValid = true
+
+  // variables for Foreign Jurisdiction component
+  foreignJurisdictionValid = false
+  selectedCountry = ''
+  selectedRegion = ''
 
   // variables for Document Delivery component
   documentDeliveryValid = true
@@ -350,7 +374,8 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.certifyFormValid && this.documentDeliveryValid && this.courtOrderValid)
+    return (this.detailCommentValid && this.certifyFormValid && this.foreignJurisdictionValid &&
+      this.documentDeliveryValid && this.courtOrderValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -847,6 +872,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     'detail-comment-section',
     'document-delivery-section',
     'certify-form-section',
+    'foreign-jurisdiction-section',
     'court-order-section'
   ]
 
@@ -856,6 +882,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       detailComment: this.detailCommentValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
+      foreignJurisdiction: this.foreignJurisdictionValid,
       courtOrder: this.courtOrderValid
     }
   }
@@ -863,6 +890,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detailCommentValid')
+  @Watch('foreignJurisdictionValid')
   @Watch('documentDeliveryValid')
   onHaveChanges (): void {
     this.haveChanges = true
