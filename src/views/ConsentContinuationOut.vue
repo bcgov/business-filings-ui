@@ -93,11 +93,13 @@
               <header>
                 <h2>Jurisdiction Information</h2>
               </header>
-              <div :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
+              <div :class="{ 'invalid-foreign-jurisdiction': !foreignJurisdictionValid && showErrors }"
                 id="foreign-jurisdiction-section">
                 <v-card flat class="pt-6 px-4">
                   <ForeignJurisdiction
                     ref="foreignJurisdictionRef"
+                    :draftCountry.sync="draftCountry"
+                    :draftRegion.sync="draftRegion"
                     @update:country="selectedCountry=$event"
                     @update:region="selectedRegion=$event"
                     @valid="foreignJurisdictionValid=$event"/>
@@ -320,7 +322,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   // variables for Foreign Jurisdiction component
   foreignJurisdictionValid = false
   selectedCountry = ''
+  draftCountry = ''
   selectedRegion = ''
+  draftRegion = ''
 
   // variables for Document Delivery component
   documentDeliveryValid = true
@@ -491,6 +495,12 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
         this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
       }
 
+      const foreignJurisdiction = filing.consentContinuationOut.foreignJurisdiction
+      if (foreignJurisdiction) {
+        this.draftCountry = foreignJurisdiction.country
+        this.draftRegion = foreignJurisdiction.region
+      }
+
       if (filing.header.documentOptionalEmail) {
         this.documentOptionalEmail = filing.header.documentOptionalEmail
       }
@@ -599,6 +609,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
+      }
+      if (!this.foreignJurisdictionValid) {
+        // Show error message of legal name text field if invalid
+        this.$refs.foreignJurisdictionRef.$refs.countrySelectRef.error = true
+        this.$refs.foreignJurisdictionRef.$refs.regionSelectRef.error = true
       }
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
@@ -737,11 +752,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     const data: any = {
       [FilingTypes.CONSENT_CONTINUATION_OUT]: {
-        // FUTURE: add more filing properties below
         details: `${this.defaultComment}\n${this.detailComment}`,
         foreignJurisdiction: {
-          country: 'CA',
-          region: 'AB'
+          country: this.selectedCountry,
+          region: this.selectedRegion
         }
       }
     }
@@ -882,16 +896,16 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       detailComment: this.detailCommentValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
-      foreignJurisdiction: this.foreignJurisdictionValid,
-      courtOrder: this.courtOrderValid
+      courtOrder: this.courtOrderValid,
+      foreignJurisdiction: this.foreignJurisdictionValid
     }
   }
 
   @Watch('certifyFormValid')
   @Watch('courtOrderValid')
   @Watch('detailCommentValid')
-  @Watch('foreignJurisdictionValid')
   @Watch('documentDeliveryValid')
+  @Watch('foreignJurisdictionValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -984,6 +998,11 @@ h2 {
 
   .invalid-certify {
     .certify-stmt, .title-label {
+      color: $app-red;
+    }
+  }
+  .invalid-foreign-jurisdiction {
+    .title-label {
       color: $app-red;
     }
   }

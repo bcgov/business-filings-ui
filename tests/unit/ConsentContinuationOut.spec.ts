@@ -8,7 +8,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ConsentContinuationOut from '@/views/ConsentContinuationOut.vue'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
-import { Certify, DetailComment } from '@/components/common'
+import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
@@ -121,6 +121,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Detail Comment form
@@ -128,6 +129,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.detailCommentValid = false
     vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
@@ -135,6 +137,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Court Order form
@@ -142,6 +145,7 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = false
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
@@ -149,6 +153,15 @@ describe('Consent to Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = false
+    vm.foreignJurisdictionValid = true
+    expect(!!vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid Foreign Jurisdiction form
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.detailCommentValid = true
+    vm.documentDeliveryValid = true
+    vm.foreignJurisdictionValid = false
     expect(!!vm.isPageValid).toBe(false)
 
     wrapper.destroy()
@@ -186,6 +199,7 @@ describe('Consent to Continuation Out view', () => {
         DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
+        ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -221,7 +235,11 @@ describe('Consent to Continuation Out view', () => {
           priority: true
         },
         consentContinuationOut: {
-          details: 'Line 1\nLine 2\nLine 3'
+          details: 'Line 1\nLine 2\nLine 3',
+          foreignJurisdiction: {
+            country: 'CA',
+            region: 'AB'
+          }
         },
         annualReport: {}
       })
@@ -242,6 +260,7 @@ describe('Consent to Continuation Out view', () => {
         DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
+        ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -257,6 +276,8 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.staffPaymentData.isPriority).toBe(true)
     // NB: line 1 (default comment) should be removed
     expect(vm.detailComment).toBe('Line 2\nLine 3')
+    expect(vm.draftCountry).toBe('CA')
+    expect(vm.draftRegion).toBe('AB')
 
     jest.restoreAllMocks()
     wrapper.destroy()
@@ -309,7 +330,11 @@ describe('Consent to Continue Out for general user and IAs only', () => {
             data: {
               filing: {
                 consentContinuationOut: {
-                  expiry: '2023-08-17T08:00:00.000000+00:00'
+                  expiry: '2023-08-17T08:00:00.000000+00:00',
+                  foreignJurisdiction: {
+                    country: 'CA',
+                    region: 'AB'
+                  }
                 },
                 business: {
                   foundingDate: '2007-04-08T00:00:00+00:00',
@@ -361,6 +386,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
     expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
@@ -401,6 +427,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
         DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
+        ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -434,6 +461,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
         DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
+        ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
       vuetify
@@ -445,7 +473,8 @@ describe('Consent to Continue Out for general user and IAs only', () => {
       detailCommentValid: true,
       documentDeliveryValid: true,
       certifyFormValid: true,
-      courtOrderValid: true
+      courtOrderValid: true,
+      foreignJurisdictionValid: true
     })
 
     wrapper.vm.$data.dataLoaded = true

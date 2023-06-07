@@ -6,6 +6,7 @@
       </v-col>
       <v-col cols="12" sm="9">
         <v-select
+          ref="countrySelectRef"
           id="country-selector"
           :items="getCountries()"
           item-text="name"
@@ -18,6 +19,7 @@
           @input="emitChangedCountry($event)"
         />
         <v-select
+          ref="regionSelectRef"
           v-if="canadaUsaRegions.length > 0"
           id="region-selector"
           :items="canadaUsaRegions"
@@ -40,6 +42,12 @@ import { CountriesProvincesMixin } from '@/mixins'
 
 @Component({})
 export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin) {
+    // Refs
+    $refs!: {
+      countrySelectRef: any
+      regionSelectRef: any
+  }
+
   /** Country passed into this component. */
   @Prop({ default: () => '' }) readonly draftCountry!: string
 
