@@ -28,5 +28,6 @@ export const state: StateIF = {
   parties: [],
   recordsAddress: null,
   registeredAddress: null,
-  tasks: []
+  tasks: [],
+  currentPage: null
 }

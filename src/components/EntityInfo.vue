@@ -9,6 +9,7 @@
           />
           <EntityMenu
             class="mt-4 ml-n4"
+            v-if="!isInFilingPage"
             :businessId="businessId"
             @confirmDissolution="emitConfirmDissolution()"
             @downloadBusinessSummary="emitDownloadBusinessSummary()"
@@ -45,6 +46,7 @@ import { useRootStore } from '@/stores'
 })
 export default class EntityInfo extends Vue {
   @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useRootStore) isInFilingPage!: boolean
 
   /** Whether to show the hover style. */
   showHoverStyle = false

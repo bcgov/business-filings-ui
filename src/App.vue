@@ -311,6 +311,7 @@ export default {
 
     // ...otherwise proceed
     await this.fetchData()
+    this.storeCurrentPage()
   },
 
   /** Called just before this component is destroyed. */
@@ -355,7 +356,8 @@ export default {
         'setRecordsAddress',
         'setRegisteredAddress',
         'setTasks',
-        'setUserKeycloakGuid'
+        'setUserKeycloakGuid',
+        'setCurrentPage'
       ]),
 
     /** Fetches business data / incorp app data. */
@@ -759,6 +761,11 @@ export default {
       this.setConfigObject(configObject)
     },
 
+    /** Stores name of current page. */
+    storeCurrentPage (): void {
+      this.setCurrentPage(this.$route.name)
+    },
+
     /** Creates a draft filing and navigates to the Create UI to file a company dissolution filing. */
     async dissolveCompany (): Promise<void> {
       const dissolutionFiling = this.buildDissolutionFiling()
@@ -825,6 +832,7 @@ export default {
       if (this.$route.name === Routes.DASHBOARD) {
         await this.fetchData()
       }
+      this.storeCurrentPage()
     }
   }
 }

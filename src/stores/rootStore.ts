@@ -5,6 +5,7 @@ import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddre
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { useBusinessStore } from './businessStore'
 import { useFilingHistoryListStore } from './filingHistoryListStore'
+import { Routes } from '@/enums/routes'
 
 export const useRootStore = defineStore('root', {
   state: (): StateIF => ({
@@ -32,7 +33,8 @@ export const useRootStore = defineStore('root', {
     parties: [],
     recordsAddress: null,
     registeredAddress: null,
-    tasks: []
+    tasks: [],
+    currentPage: null
   }),
 
   getters: {
@@ -114,6 +116,16 @@ export const useRootStore = defineStore('root', {
     /** Is True if this is a Paid or Completed Application. */
     isAppFiling (state: StateIF): boolean {
       return (state.entityStatus === EntityStatus.FILED_APP)
+    },
+
+    /** Is True if this is on local filing pages. */
+    isInFilingPage (state: StateIF): boolean {
+      return state.currentPage === Routes.ANNUAL_REPORT ||
+      state.currentPage === Routes.CONSENT_CONTINUATION_OUT ||
+      state.currentPage === Routes.CONTINUATION_OUT ||
+      state.currentPage === Routes.CORRECTION ||
+      state.currentPage === Routes.STANDALONE_ADDRESSES ||
+      state.currentPage === Routes.STANDALONE_DIRECTORS
     },
 
     /** The Name Request (may be null). */
@@ -352,6 +364,10 @@ export const useRootStore = defineStore('root', {
 
     setCorpTypeCd (val: CorpTypeCd) {
       this.corpTypeCd = val
+    },
+
+    setCurrentPage (currentPage: string) {
+      this.currentPage = currentPage
     },
 
     /**
