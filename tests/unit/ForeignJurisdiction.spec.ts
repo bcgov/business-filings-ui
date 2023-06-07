@@ -7,6 +7,9 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
 describe('ForeignJurisdiction', () => {
   it('initializes correctly', () => {
     const wrapper = mount(ForeignJurisdiction,

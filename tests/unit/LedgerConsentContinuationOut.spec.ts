@@ -3,6 +3,7 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
 import { createPinia, setActivePinia } from 'pinia'
+import flushPromises from 'flush-promises'
 
 // mock the console.warn function to hide "[Vuetify] The v-expansion-panel component must be used inside a
 // v-expansion-panels"
@@ -20,7 +21,12 @@ describe('Display ConsentContinuationOut component', () => {
         index: 123,
         filing: {
           documentsLink: 'http://localhost/endpoint',
-          displayName: '6-Month Consent to Continue Out'
+          displayName: '6-Month Consent to Continue Out',
+          data: {
+            consentContinuationOut: {
+              expiry: '2023-08-17T08:00:00.000000+00:00'
+            }
+          }
         }
       }
     })
@@ -32,7 +38,7 @@ describe('Display ConsentContinuationOut component', () => {
       .toContain('FILED AND PAID  (filed by  on [unknown])  EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
     expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
-    expect(vm.expiry).toEqual('[unknown]')
+    expect(vm.expiry).toEqual('August 17, 2023')
     wrapper.destroy()
   })
 

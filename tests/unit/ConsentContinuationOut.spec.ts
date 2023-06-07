@@ -34,6 +34,9 @@ const businessStore = useBusinessStore()
 const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
 describe('Consent to Continuation Out view', () => {
   beforeEach(() => {
     // init store
