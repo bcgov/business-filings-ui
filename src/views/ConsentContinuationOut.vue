@@ -320,11 +320,11 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   courtOrderValid = true
 
   // variables for Foreign Jurisdiction component
-  foreignJurisdictionValid = false
-  selectedCountry = ''
   draftCountry = ''
-  selectedRegion = ''
   draftRegion = ''
+  selectedCountry = ''
+  selectedRegion = ''
+  foreignJurisdictionValid = false
 
   // variables for Document Delivery component
   documentDeliveryValid = true
