@@ -44,5 +44,4 @@ export interface StateIF {
   recordsAddress: OfficeAddressIF
   registeredAddress: OfficeAddressIF
   tasks: Array<ApiTaskIF> // "tasks" data from API
-  currentPage: string
 }
