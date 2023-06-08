@@ -613,7 +613,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       if (!this.foreignJurisdictionValid) {
         // Show error message of legal name text field if invalid
         this.$refs.foreignJurisdictionRef.$refs.countrySelectRef.error = true
-        this.$refs.foreignJurisdictionRef.$refs.regionSelectRef.error = true
+        if (this.selectedCountry) {
+          this.$refs.foreignJurisdictionRef.$refs.regionSelectRef.error = true
+        }
       }
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
