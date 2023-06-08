@@ -2432,10 +2432,8 @@ describe('Filing History List - expands Consent to continue out', () => {
 
     const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
-    // await Vue.nextTick()
 
     jest.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
-    // await Vue.nextTick()
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
