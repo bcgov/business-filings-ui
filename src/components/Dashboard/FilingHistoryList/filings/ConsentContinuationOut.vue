@@ -3,11 +3,11 @@
     <template #body>
       <div>
         <p class="mt-4" v-if="isFilingComplete && !isConsentExpired">
-          This consent to continue out to {{foreignJurisdiction}} is valid <strong>until {{ expiry }} at 12:01 am
+          This consent to continue out to {{foreignJurisdiction}} is valid <strong>until {{ expiry }} at 23:59 pm
           Pacific time</strong>.
         </p>
         <p class="mt-4" v-if="isConsentExpired">
-          <v-icon left color="orange darken-2">mdi-alert</v-icon>
+          <v-icon class="warn-icon" left color="orange darken-2">mdi-alert</v-icon>
           This consent is expired. Please resubmit the continue out application for authorization to become a foreign
           corporation.
         </p>
@@ -107,4 +107,9 @@ p {
   font-size: $px-15;
   margin-top: 1rem !important;
 }
+
+.warn-icon {
+    margin-bottom: 6px;
+}
+
 </style>
