@@ -132,8 +132,8 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     this.selectedRegionName = val
   }
 
-    /** Validate country field */
-    @Watch('validateForm')
+  /** Validate country field */
+  @Watch('validateForm')
   validateForeignJurisdiction (): void {
     if (this.validateForm && !this.selectedCountryName) {
       this.$refs.countrySelectRef.validate()
@@ -144,15 +144,15 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Validate region field */
   @Watch('selectedCountryName')
   @Watch('validateForm')
-    async onCountrychanged (): Promise<void> {
-      if (this.validateForm) {
-        await this.$nextTick()
-        if (this.selectedCountryName === 'Canada' || this.selectedCountryName === 'United States of America') {
-          this.$refs.regionSelectRef.validate()
-          this.$refs.regionSelectRef.error = true
-        }
+  async onCountrychanged (): Promise<void> {
+    if (this.validateForm) {
+      await this.$nextTick()
+      if (this.selectedCountryName === 'Canada' || this.selectedCountryName === 'United States of America') {
+        this.$refs.regionSelectRef.validate()
+        this.$refs.regionSelectRef.error = true
       }
     }
+  }
   /** Emit the selected country's code whenever a new country is selected. */
   @Emit('update:country')
   emitChangedCountry (): string {
