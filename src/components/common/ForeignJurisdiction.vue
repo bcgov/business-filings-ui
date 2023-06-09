@@ -54,6 +54,9 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Region passed into this component. */
   @Prop({ default: () => '' }) readonly draftRegion!: string
 
+  /** Prompt the validations. Used for global validations. */
+  @Prop({ default: false }) readonly validateForm!: boolean
+
   selectedCountryName = ''
   selectedRegionName = ''
 
@@ -119,6 +122,14 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     return region?.name
   }
 
+  @Watch('validateForm')
+  validateForeignJurisdiction (): void {
+    if (this.validateForm && !this.selectedCountryName) {
+      this.$refs.countrySelectRef.validate()
+      this.$refs.countrySelectRef.error = true
+    }
+  }
+
   @Watch('draftCountry')
   onDraftCountryChanged (val: string): void {
     this.selectedCountryName = val
@@ -129,6 +140,17 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
     this.selectedRegionName = val
   }
 
+  @Watch('selectedCountryName')
+  @Watch('validateForm')
+  async onCountrychanged (): Promise<void> {
+    if (this.validateForm) {
+      await this.$nextTick()
+      if (this.selectedCountryName === 'Canada' || this.selectedCountryName === 'United States of America') {
+        this.$refs.regionSelectRef.validate()
+        this.$refs.regionSelectRef.error = true
+      }
+    }
+  }
   /** Emit the selected country's code whenever a new country is selected. */
   @Emit('update:country')
   emitChangedCountry (): string {
@@ -153,6 +175,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   }
 
   /** Emits an event indicating whether or not the form is valid. */
+  @Watch('valid')
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   emitValid (valid: boolean): void { /* no empty function */ }

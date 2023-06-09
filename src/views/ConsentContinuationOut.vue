@@ -98,6 +98,7 @@
                 <v-card flat class="pt-6 px-4">
                   <ForeignJurisdiction
                     ref="foreignJurisdictionRef"
+                    :validateForm="showErrors"
                     :draftCountry.sync="draftCountry"
                     :draftRegion.sync="draftRegion"
                     @update:country="selectedCountry=$event"
@@ -609,13 +610,6 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
-      }
-      if (!this.foreignJurisdictionValid) {
-        // Show error message of legal name text field if invalid
-        this.$refs.foreignJurisdictionRef.$refs.countrySelectRef.error = true
-        if (this.selectedCountry) {
-          this.$refs.foreignJurisdictionRef.$refs.regionSelectRef.error = true
-        }
       }
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
