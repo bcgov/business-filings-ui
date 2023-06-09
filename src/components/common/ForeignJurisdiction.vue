@@ -153,6 +153,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
       }
     }
   }
+
   /** Emit the selected country's code whenever a new country is selected. */
   @Emit('update:country')
   emitChangedCountry (): string {
