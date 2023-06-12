@@ -8,16 +8,27 @@
 
       <!-- Subtitle -->
       <div>
-        <span id="business-description">{{ businessDescription }}</span>
+        <span id="business-description">{{ businessDescription }} </span>
+        <span id="limited-restoration-badge-wrap" class="ml-3"  v-if="isInLimitedRestoration">
+          <span id="limited-restoration-badge" class="ml-3">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
+        </span>
+      </div>
 
-        <span id="limited-restoration" class="ml-3" v-if="isInLimitedRestoration">
-          <span class="ml-3">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
-          <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+      <div id="historical" class="mt-2" v-if="isHistorical">
+          <v-chip
+            id="historical-chip"
+            class="primary mt-n1 pointer-events-none font-weight-bold"
+             small label text-color="white">HISTORICAL</v-chip>
+          <span class="font-14 mx-3">{{ getReasonText || 'Unknown Reason' }}</span>
+      </div>
+      <div id="multiple-badges" class="mt-2" v-else>
+        <span id="limited-restoration" v-if="isInLimitedRestoration">
+          <v-chip class="primary mt-n1 pointer-events-none font-weight-bold"
             small label text-color="white">LIMITED RESTORATION</v-chip>
         </span>
 
         <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
-          <v-chip class="primary mt-n1 ml-3 pointer-events-none font-weight-bold"
+          <v-chip :class="dynamicClassForBadges"
             small label text-color="white">AUTHORIZED TO CONTINUE OUT</v-chip>
         </span>
       </div>
@@ -52,7 +63,9 @@ export default class EntityHeader extends Vue {
   @Getter(useBusinessStore) getEntityName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
+  @Getter(useRootStore) getReasonText!: string
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
+  @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
 
@@ -64,6 +77,12 @@ export default class EntityHeader extends Vue {
     } else {
       return corpFullDescription
     }
+  }
+
+  get dynamicClassForBadges (): string {
+    const singleBadge = 'primary mt-n1 pointer-events-none font-weight-bold'
+    const multipleBadges = 'primary mt-n1 ml-3 pointer-events-none font-weight-bold'
+    return this.isInLimitedRestoration ? multipleBadges : singleBadge
   }
 
   /** The incorporation application or registration description. */
@@ -93,13 +112,14 @@ export default class EntityHeader extends Vue {
 
 #business-description,
 #limited-restoration,
+#limited-restoration-badge,
 #ia-reg-description {
   font-size: $px-14;
   color: $gray7;
 }
 
 // vertical lines between items:
-#limited-restoration {
+#limited-restoration-badge-wrap {
   border-left: 1px solid $gray3;
 }
 </style>
