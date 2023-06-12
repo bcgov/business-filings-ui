@@ -125,7 +125,7 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(true)
+    expect(vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Detail Comment form
     vm.certifyFormValid = true
@@ -133,7 +133,7 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = false
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
     vm.certifyFormValid = false
@@ -141,7 +141,7 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Court Order form
     vm.certifyFormValid = true
@@ -149,7 +149,7 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
     vm.certifyFormValid = true
@@ -157,7 +157,7 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = false
     vm.foreignJurisdictionValid = true
-    expect(!!vm.isPageValid).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Foreign Jurisdiction form
     vm.certifyFormValid = true
@@ -165,7 +165,7 @@ describe('Consent to Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.foreignJurisdictionValid = false
-    expect(!!vm.isPageValid).toBe(false)
+    expect(vm.isPageValid).toBe(false)
 
     wrapper.destroy()
   })

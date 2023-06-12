@@ -880,9 +880,9 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
     'detail-comment-section',
+    'foreign-jurisdiction-section',
     'document-delivery-section',
     'certify-form-section',
-    'foreign-jurisdiction-section',
     'court-order-section'
   ]
 
@@ -890,10 +890,10 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   get validFlags (): object {
     return {
       detailComment: this.detailCommentValid,
+      foreignJurisdiction: this.foreignJurisdictionValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
-      courtOrder: this.courtOrderValid,
-      foreignJurisdiction: this.foreignJurisdictionValid
+      courtOrder: this.courtOrderValid
     }
   }
 
