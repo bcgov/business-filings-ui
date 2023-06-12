@@ -3,8 +3,7 @@
     <template #body>
       <div>
         <p class="mt-4" v-if="isFilingComplete && !isConsentExpired">
-          This consent to continue out to {{foreignJurisdiction}} is valid <strong>until {{ expiry }} at 23:59 pm
-          Pacific time</strong>.
+          This consent to continue out to {{foreignJurisdiction}} is valid <strong>until {{ expiry }}</strong>.
         </p>
         <p class="mt-4" v-if="isConsentExpired">
           <v-icon class="warn-icon" left color="orange darken-2">mdi-alert</v-icon>
@@ -36,7 +35,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
   get expiry (): string {
     const expiry = this.filing.data?.consentContinuationOut?.expiry
     if (expiry) {
-      return DateUtilities.apiToPacificDate(expiry, true)
+      return DateUtilities.apiToPacificDateTime(expiry, true)
     }
     return '[unknown]'
   }
