@@ -333,7 +333,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
             data: {
               filing: {
                 consentContinuationOut: {
-                  expiry: '2023-08-17T08:00:00.000000+00:00',
+                  expiry: '2023-08-17T07:59:00.000000+00:00',
                   foreignJurisdiction: {
                     country: 'CA',
                     region: 'AB'
