@@ -45,14 +45,14 @@ export default class BusinessNameForeign extends Vue {
   /** The trimmed Business Name string (may be ''). */
   get trimmedBusinessName (): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
-    return this.businessName && this.businessName.replace(/\s+/g, ' ').trim()
+    return this.businessName?.replace(/\s+/g, ' ').trim()
   }
 
   /** Emits an event to update the business name. */
   @Emit('update:businessName')
   emitBusinessName (businessName: string): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
-    businessName = businessName && businessName.replace(/\s+/g, ' ').trim()
+    businessName = businessName?.replace(/\s+/g, ' ').trim()
     this.emitValid(!!businessName)
     return businessName
   }

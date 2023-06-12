@@ -12,7 +12,6 @@
           incorporated company under the Business Corporations Act.
           You are required to retain a copy of all the Continuation Out documents in your records books.
         </p>
-        <p v-if="orderDetails" class="mt-4" v-html="orderDetails" />
         <p v-if="fileNumber" class="mt-4 mb-0">Court Order Number: {{ fileNumber }}</p>
         <p v-if="hasEffectOfOrder" class="mt-0">Pursuant to a Plan of Arrangement</p>
       </div>
@@ -52,10 +51,6 @@ export default class ContinuationOut extends Vue {
     } else {
       return foreignJurisdiction.country
     }
-  }
-
-  get orderDetails (): string {
-    return this.filing.data?.order?.orderDetails?.replaceAll('\n', '<br/>')
   }
 
   /** The court order file number. */
