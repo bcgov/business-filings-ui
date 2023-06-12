@@ -1,5 +1,5 @@
 //
-// These are validator functions used by CODDate.vue.
+// These are validator functions used by CODDate.vue and EffectiveDate.vue.
 //
 
 /**
@@ -48,4 +48,18 @@ export function isValidCodDate (date: string, separator: string): boolean {
   const d2 = this.maxDate.split('-').join('')
   const c = date.split(separator).join('')
   return c >= d1 && c <= d2
+}
+
+/**
+ * Whether the date is a valid Effective date: month must be less than max.
+ * @param date the date to check
+ * @param separator the date component separator (eg, / or -)
+ */
+export function isValidEffectiveDate (date: string, separator: string): boolean {
+  if (!date) return false
+  // special handling because Vuelidate doesn't pass in separator
+  separator = (typeof separator === 'string') ? separator : '/'
+  const d2 = this.maxDate.split('-').join('')
+  const c = date.split(separator).join('')
+  return c <= d2
 }

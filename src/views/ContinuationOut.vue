@@ -5,15 +5,6 @@
       ref="confirm"
     />
 
-    <PaymentErrorDialog
-      attach="#continuation-out"
-      filingName="Continuation Out"
-      :dialog="paymentErrorDialog"
-      :errors="saveErrors"
-      :warnings="saveWarnings"
-      @exit="onPaymentErrorDialogExit()"
-    />
-
     <ResumeErrorDialog
       attach="#continuation-out"
       :dialog="resumeErrorDialog"
@@ -30,15 +21,6 @@
       @exit="saveErrorReason=null"
       @retry="onSaveErrorDialogRetry()"
       @okay="onSaveErrorDialogOkay()"
-    />
-
-    <StaffPaymentDialog
-      attach="#continuation-out"
-      :dialog="staffPaymentDialog"
-      :staffPaymentData.sync="staffPaymentData"
-      :loading="filingPaying"
-      @exit="staffPaymentDialog=false"
-      @submit="onClickFilePay(true)"
     />
 
     <!-- Initial Page Load Transition -->
@@ -88,6 +70,62 @@
               </div>
             </section>
 
+            <!-- Effective Date of Continuation -->
+            <section>
+              <header>
+                <h2>Effective Date of Continuation</h2>
+              </header>
+              <div :class="{ 'invalid-section': !effectiveDateValid && showErrors }" id="effective-date-section">
+                <EffectiveDate
+                  :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
+                  class="pt-6 px-4"
+                  ref="effectiveDateRef"
+                  :initialEffectiveDate="initialEffectiveDate"
+                  @update:effectiveDate="effectiveDate=$event"
+                  @valid="effectiveDateValid=$event"
+                />
+              </div>
+            </section>
+
+            <!-- Jurisdiction Information -->
+            <section>
+              <header>
+                <h2>Jurisdiction Information</h2>
+              </header>
+              <div
+                :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
+                id="jurisdiction-information-section"
+              >
+                <ForeignJurisdiction
+                  :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
+                  class="pt-6 px-4"
+                  ref="foreignJurisdictionRef"
+                  :draftCountry="initialCountry"
+                  :draftRegion="initialRegion"
+                  @update:country="selectedCountry=$event"
+                  @update:region="selectedRegion=$event"
+                  @valid="foreignJurisdictionValid=$event"
+                />
+              </div>
+            </section>
+
+            <!-- Business Information -->
+            <section>
+              <header>
+                <h2>Business Information</h2>
+              </header>
+              <div :class="{ 'invalid-section': !businessNameValid && showErrors }" id="business-information-section">
+                <BusinessNameForeign
+                  :class="{ 'invalid-component': !businessNameValid && showErrors }"
+                  class="pt-6 px-4"
+                  ref="businessNameForeignRef"
+                  :draftBusinessName="initialBusinessName"
+                  @update:businessName="businessName=$event"
+                  @valid="businessNameValid=$event"
+                />
+              </div>
+            </section>
+
             <!-- Documents Delivery -->
             <section>
               <header>
@@ -120,7 +158,7 @@
               </header>
               <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
                 <Certify
-                  :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
+                  :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   ref="certifyRef"
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
@@ -240,8 +278,8 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, DetailComment } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
+import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
@@ -254,25 +292,29 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
+    BusinessNameForeign,
     Certify,
     ConfirmDialog,
     CourtOrderPoa,
     DetailComment,
     DocumentDelivery,
-    PaymentErrorDialog,
+    EffectiveDate,
+    ForeignJurisdiction,
     ResumeErrorDialog,
     SaveErrorDialog,
-    SbcFeeSummary,
-    StaffPaymentDialog
+    SbcFeeSummary
   }
 })
 export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
+    businessNameForeignRef: BusinessNameForeign,
     confirm: ConfirmDialogType,
     certifyRef: Certify,
-    detailCommentRef: DetailComment
+    detailCommentRef: DetailComment,
+    effectiveDateRef: EffectiveDate,
+    foreignJurisdictionRef: ForeignJurisdiction,
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
@@ -287,6 +329,23 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   // variables for DetailComment component
   detailComment = ''
   detailCommentValid = false
+
+  // variables for EffectiveDate component
+  initialEffectiveDate = ''
+  effectiveDate = null
+  effectiveDateValid = false
+
+  // variables for ForeignJurisdiction component
+  initialCountry = ''
+  initialRegion = ''
+  selectedCountry = null
+  selectedRegion = null
+  foreignJurisdictionValid = false
+
+  // variables for BusinessNameForeign component
+  initialBusinessName = ''
+  businessName = ''
+  businessNameValid = false
 
   // variables for Certify component
   certifiedBy = ''
@@ -304,12 +363,10 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  staffPaymentDialog = false
 
   // variables for displaying dialogs
   resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
-  paymentErrorDialog = false
 
   // other variables
   totalFee = 0
@@ -329,7 +386,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   get showLoadingContainer (): boolean {
     // show loading container when data isn't yet loaded and when
     // no dialogs are displayed (otherwise dialogs may be hidden)
-    return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
+    return (!this.dataLoaded && !this.saveErrorReason)
   }
 
   /** Default comment (ie, the first line of the detail comment). */
@@ -350,7 +407,10 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.certifyFormValid && this.documentDeliveryValid && this.courtOrderValid)
+    return (this.detailCommentValid && this.effectiveDateValid &&
+      this.foreignJurisdictionValid && this.businessNameValid &&
+      this.documentDeliveryValid && this.courtOrderValid &&
+      this.certifyFormValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -399,6 +459,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       this.loadingMessage = `Resuming Your Continuation Out`
     } else {
       this.loadingMessage = `Preparing Your Continuation Out`
+      this.initialBusinessName = this.getLegalName
     }
 
     // fetch draft (which may overwrite some properties)
@@ -432,21 +493,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       this.certifiedBy = filing.header.certifiedBy
 
       // load Staff Payment properties
-      if (filing.header.routingSlipNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.FAS,
-          routingSlipNumber: filing.header.routingSlipNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.bcolAccountNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.BCOL,
-          bcolAccountNumber: filing.header.bcolAccountNumber,
-          datNumber: filing.header.datNumber,
-          folioNumber: filing.header.folioNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.waiveFees) {
+      if (filing.header.waiveFees) {
         this.staffPaymentData = {
           option: StaffPaymentOptions.NO_FEE
         } as StaffPaymentIF
@@ -464,6 +511,24 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       if (courtOrder) {
         this.fileNumber = courtOrder.fileNumber
         this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
+      }
+
+      const continuationOutDate = filing.continuationOut.continuationOutDate
+      if (continuationOutDate) {
+        this.initialEffectiveDate = continuationOutDate
+      }
+
+      const foreignJurisdiction = filing.continuationOut.foreignJurisdiction
+      if (foreignJurisdiction) {
+        this.initialCountry = foreignJurisdiction.country
+        if (foreignJurisdiction.region) {
+          this.initialRegion = foreignJurisdiction.region
+        }
+      }
+
+      const legalName = filing.continuationOut.legalName
+      if (legalName) {
+        this.initialBusinessName = legalName
       }
 
       if (filing.header.documentOptionalEmail) {
@@ -567,27 +632,30 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
+
+      // Show error messages of components if invalid
       if (!this.detailCommentValid) {
-        // Show error message of detail comment text area if invalid
         this.$refs.detailCommentRef.$refs.textarea.error = true
       }
+      if (!this.effectiveDateValid) {
+        this.$refs.effectiveDateRef.$refs.textarea.error = true
+      }
+      if (!this.foreignJurisdictionValid) {
+        this.$refs.foreignJurisdictionRef.$refs.vselectRef.error = true
+      }
+      if (!this.businessNameValid) {
+        this.$refs.businessNameForeignRef.$refs.textarea.error = true
+      }
       if (!this.certifyFormValid) {
-        // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
       }
+
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
 
     // prevent double saving
     if (this.busySaving) return
-
-    // if this is a staff user clicking File and Pay (not Submit)
-    // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
-      this.staffPaymentDialog = true
-      return
-    }
 
     this.filingPaying = true
 
@@ -596,8 +664,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
         // changes were saved if a 402 is received, so clear flag
         this.haveChanges = false
-        // display payment error dialog
-        this.paymentErrorDialog = true
         // try to return filing (which should exist in this case)
         return error?.response?.data?.filing || null
       } else {
@@ -615,7 +681,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     // if there were no errors, finish file-pay process now
     // otherwise, dialogs may finish this later
-    if (!this.paymentErrorDialog && !this.saveErrorReason) this.onClickFilePayFinish()
+    if (!this.saveErrorReason) this.onClickFilePayFinish()
 
     this.filingPaying = false
   }
@@ -681,18 +747,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     }
 
     switch (this.staffPaymentData.option) {
-      case StaffPaymentOptions.FAS:
-        header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.BCOL:
-        header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
-        header.header['datNumber'] = this.staffPaymentData.datNumber
-        header.header['folioNumber'] = this.staffPaymentData.folioNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
       case StaffPaymentOptions.NO_FEE:
         header.header['waiveFees'] = true
         break
@@ -712,13 +766,13 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     const data: any = {
       [FilingTypes.CONTINUATION_OUT]: {
-        // FUTURE: add more filing properties below and change the dummy data to actual data
         details: `${this.defaultComment}\n${this.detailComment}`,
-        continuationOutDate: '2023-08-23T23:53:32.000+00:00',
+        continuationOutDate: this.effectiveDate,
         foreignJurisdiction: {
-          country: 'Canada',
-          legalName: '0871322 B.C. LTD.'
-        }
+          country: this.selectedCountry,
+          region: this.selectedRegion
+        },
+        legalName: this.businessName
       }
     }
 
@@ -786,20 +840,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     })
   }
 
-  /** Handles Exit event from Payment Error dialog. */
-  onPaymentErrorDialogExit (): void {
-    if (this.isRoleStaff) {
-      // close Payment Error dialog -- this
-      // leaves user on Staff Payment dialog
-      this.paymentErrorDialog = false
-    } else {
-      // close the dialog and go to dashboard --
-      // user will have to retry payment from there
-      this.paymentErrorDialog = false
-      this.goToDashboard(true)
-    }
-  }
-
   /** Handles Retry events from Save Error dialog. */
   async onSaveErrorDialogRetry (): Promise<void> {
     switch (this.saveErrorReason) {
@@ -846,6 +886,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
     'detail-comment-section',
+    'effective-date-section',
+    'jurisdiction-information-section',
+    'business-information-section',
     'document-delivery-section',
     'certify-form-section',
     'court-order-section'
@@ -855,6 +898,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   get validFlags (): object {
     return {
       detailComment: this.detailCommentValid,
+      effectiveDate: this.effectiveDateValid,
+      foreignJurisdiction: this.foreignJurisdictionValid,
+      businessInformation: this.businessNameValid,
       documentDelivery: this.documentDeliveryValid,
       certifyForm: this.certifyFormValid,
       courtOrder: this.courtOrderValid
@@ -866,16 +912,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   @Watch('detailCommentValid')
   @Watch('documentDeliveryValid')
   onHaveChanges (): void {
-    this.haveChanges = true
-  }
-
-  @Watch('staffPaymentData')
-  onStaffPaymentDataChanged (val: StaffPaymentIF): void {
-    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
-
-    // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, val.isPriority, waiveFees)
-
     this.haveChanges = true
   }
 }
@@ -955,7 +991,7 @@ h2 {
     color: $gray7;
   }
 
-  .invalid-certify {
+  .invalid-component {
     .certify-stmt, .title-label {
       color: $app-red;
     }
