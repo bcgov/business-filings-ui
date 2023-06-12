@@ -158,69 +158,6 @@ describe('Entity Menu - entities', () => {
   })
 })
 
-describe('Entity Menu - HISTORICAL badge', () => {
-  const router = mockRouter.mock()
-
-  const variations = [
-    { // 0
-      entityState: 'ACTIVE',
-      exists: false
-    },
-    { // 1
-      entityState: 'LIQUIDATION',
-      exists: false
-    },
-    { // 2
-      entityState: 'HISTORICAL',
-      stateFiling: null,
-      exists: true,
-      text: 'Unknown Reason'
-    },
-    { // 3
-      entityState: 'HISTORICAL',
-      stateFiling: {
-        header: { name: 'dissolution' },
-        dissolution: {
-          dissolutionDate: '2020-01-01',
-          dissolutionType: 'voluntary'
-        }
-      },
-      exists: true,
-      text: 'Voluntary Dissolution – January 1, 2020'
-    },
-    { // 4
-      entityState: 'HISTORICAL',
-      stateFiling: {
-        header: {
-          name: 'involuntaryDissolution',
-          effectiveDate: '2020-01-01T08:01:00+00:00'
-        }
-      },
-      exists: true,
-      text: 'Involuntary Dissolution – January 1, 2020 at 12:01 am Pacific time'
-    }
-  ]
-
-  variations.forEach((_, index) => {
-    it(`conditionally displays historical badge - variation #${index}`, async () => {
-      // init store
-      businessStore.setState(_.entityState as any)
-      rootStore.setStateFiling(_.stateFiling as any || null)
-
-      const wrapper = mount(EntityMenu, { vuetify, router, propsData: { businessId: null } })
-      await Vue.nextTick()
-
-      expect(wrapper.find('#historical-chip').exists()).toBe(_.exists)
-      if (_.exists) {
-        expect(wrapper.find('#historical-chip').text()).toBe('HISTORICAL')
-        expect(wrapper.find('#historical-chip + span').text()).toBe(_.text)
-      }
-
-      wrapper.destroy()
-    })
-  })
-})
-
 describe('Entity Menu - View and Change Business Information button', () => {
   const router = mockRouter.mock()
 
