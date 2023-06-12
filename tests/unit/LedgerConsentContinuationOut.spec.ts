@@ -20,7 +20,12 @@ describe('Display ConsentContinuationOut component', () => {
         index: 123,
         filing: {
           documentsLink: 'http://localhost/endpoint',
-          displayName: '6-Month Consent to Continue Out'
+          displayName: '6-Month Consent to Continue Out',
+          data: {
+            consentContinuationOut: {
+              expiry: '2023-08-18T06:59:00.000000+00:00'
+            }
+          }
         }
       }
     })
@@ -32,7 +37,7 @@ describe('Display ConsentContinuationOut component', () => {
       .toContain('FILED AND PAID  (filed by  on [unknown])  EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
     expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
-    expect(vm.expiry).toEqual('[unknown]')
+    expect(vm.expiry).toEqual('August 17, 2023 at 11:59 pm Pacific time')
     wrapper.destroy()
   })
 
@@ -46,7 +51,7 @@ describe('Display ConsentContinuationOut component', () => {
           displayName: '6-Month Consent to Continue Out',
           data: {
             consentContinuationOut: {
-              expiry: '2023-08-17T08:00:00.000000+00:00'
+              expiry: '2023-08-18T06:59:00.000000+00:00'
             }
           }
         }
@@ -55,7 +60,7 @@ describe('Display ConsentContinuationOut component', () => {
     const vm: any = wrapper.vm
 
     // verify content
-    expect(vm.expiry).toEqual('August 17, 2023')
+    expect(vm.expiry).toEqual('August 17, 2023 at 11:59 pm Pacific time')
     wrapper.destroy()
   })
 })
