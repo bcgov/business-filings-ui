@@ -1,4 +1,4 @@
-name: Business Filings UI CI
+name: BUSINESS FILINGS UI CI
 
 on:
   pull_request:
