@@ -9,8 +9,8 @@
       <!-- Subtitle -->
       <div>
         <span id="business-description">{{ businessDescription }} </span>
-        <span id="limited-restoration-badge-wrap" class="ml-3"  v-if="isInLimitedRestoration">
-          <span id="limited-restoration-badge" class="ml-3">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
+        <span id="active-util-wrap" class="ml-3"  v-if="isInLimitedRestoration">
+          <span id="active-util" class="ml-3">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
         </span>
       </div>
 
@@ -112,14 +112,14 @@ export default class EntityHeader extends Vue {
 
 #business-description,
 #limited-restoration,
-#limited-restoration-badge,
+#active-util,
 #ia-reg-description {
   font-size: $px-14;
   color: $gray7;
 }
 
 // vertical lines between items:
-#limited-restoration-badge-wrap {
+#active-util-wrap {
   border-left: 1px solid $gray3;
 }
 </style>
