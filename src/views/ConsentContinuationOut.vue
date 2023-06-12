@@ -99,8 +99,8 @@
                   <ForeignJurisdiction
                     ref="foreignJurisdictionRef"
                     :validateForm="showErrors"
-                    :draftCountry.sync="draftCountry"
-                    :draftRegion.sync="draftRegion"
+                    :draftCountry="draftCountry"
+                    :draftRegion="draftRegion"
                     @update:country="selectedCountry=$event"
                     @update:region="selectedRegion=$event"
                     @valid="foreignJurisdictionValid=$event"/>
