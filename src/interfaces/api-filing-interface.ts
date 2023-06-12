@@ -64,8 +64,10 @@ export interface ApiFilingIF {
     consentContinuationOut?: {
       expiry: IsoDatePacific
       orderDetails: string
-      country: string
-      region?: string
+      foreignJurisdiction: {
+        country: string
+        region?: string
+      }
     }
 
     // conversion filings only
