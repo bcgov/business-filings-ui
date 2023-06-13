@@ -1,17 +1,19 @@
 <template>
   <FilingTemplate class="limited-restoration" :filing="filing" :index="index">
     <template #body>
-      <h4>Limited Restoration Period</h4>
+      <div v-if="isFilingComplete">
+        <h4>Limited Restoration Period</h4>
 
-      <p class="mt-4">
-        The Company <strong>{{ legalName }}</strong> was successfully restored and is active
-        <strong>until {{ expiryDate }}</strong>. At the end of the limited restoration period,
-        the company will be automatically dissolved. If you require assistance to extend a
-        limited restoration/reinstatement or wish to convert your restoration from a limited
-        period to a full restoration, please contact BC Registries staff:
-      </p>
+        <p class="mt-4">
+          The Company <strong>{{ legalName }}</strong> was successfully restored and is active
+          <strong>until {{ expiryDate }}</strong>. At the end of the limited restoration period,
+          the company will be automatically dissolved. If you require assistance to extend a
+          limited restoration/reinstatement or wish to convert your restoration from a limited
+          period to a full restoration, please contact BC Registries staff:
+        </p>
 
-      <ContactInfo class="mt-4" />
+        <ContactInfo class="mt-4" />
+      </div>
     </template>
   </FilingTemplate>
 </template>
@@ -20,7 +22,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ContactInfo } from '@/components/common'
 import { ApiFilingIF } from '@/interfaces'
-import { DateUtilities } from '@/services'
+import { DateUtilities, EnumUtilities } from '@/services'
 import FilingTemplate from '../FilingTemplate.vue'
 
 @Component({
@@ -43,6 +45,11 @@ export default class LimitedRestoration extends Vue {
     const expiry = this.filing.data?.restoration?.expiry
     const date = DateUtilities.yyyyMmDdToDate(expiry)
     return (DateUtilities.dateToPacificDate(date, true) || '[unknown]')
+  }
+
+  /** Whether the filing is complete. */
+  get isFilingComplete (): boolean {
+    return EnumUtilities.isStatusCompleted(this.filing)
   }
 }
 </script>
