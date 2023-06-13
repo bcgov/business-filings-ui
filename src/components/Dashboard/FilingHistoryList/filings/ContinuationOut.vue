@@ -60,7 +60,7 @@ export default class ContinuationOut extends Mixins(CountriesProvincesMixin) {
 
   /** Get the respective regions of the country selected as an array of objects. */
   get canadaUsaRegions (): Array<object> {
-    const foreignJusrisdictionCountry = this.filing.data?.consentContinuationOut?.country
+    const foreignJusrisdictionCountry = this.filing.data?.continuationOut?.country
     if (foreignJusrisdictionCountry === 'CA') {
       return this.getCountryRegions('CA')
     } else if (foreignJusrisdictionCountry === 'US') {
