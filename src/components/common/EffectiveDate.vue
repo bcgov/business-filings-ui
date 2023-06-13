@@ -68,6 +68,9 @@ export default class EffectiveDate extends Mixins(DateMixin) {
   // Prop passed into this component.
   @Prop({ default: '' }) readonly initialEffectiveDate!: string
 
+  /** Prompt the validations. Used for global validations. */
+  @Prop({ default: false }) readonly validateForm!: boolean
+
   @Getter(useRootStore) getCurrentDate!: string
 
   // Local properties.
@@ -155,6 +158,15 @@ export default class EffectiveDate extends Mixins(DateMixin) {
     }
     this.emitEffectiveDate(effectiveDate)
     this.emitValid(Boolean(effectiveDate))
+  }
+
+  /** Validate date text field */
+  @Watch('validateForm')
+  validateDateField (): void {
+    if (this.validateForm && !this.dateFormatted) {
+      this.$refs.textarea.validate()
+      this.$refs.textarea.error = true
+    }
   }
 
   /**

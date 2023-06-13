@@ -81,6 +81,7 @@
                   class="pt-6 px-4"
                   ref="effectiveDateRef"
                   :initialEffectiveDate="initialEffectiveDate"
+                  :validateForm="showErrors"
                   @update:effectiveDate="effectiveDate=$event"
                   @valid="effectiveDateValid=$event"
                 />
@@ -102,6 +103,7 @@
                   ref="foreignJurisdictionRef"
                   :draftCountry="initialCountry"
                   :draftRegion="initialRegion"
+                  :validateForm="showErrors"
                   @update:country="selectedCountry=$event"
                   @update:region="selectedRegion=$event"
                   @valid="foreignJurisdictionValid=$event"
@@ -120,6 +122,7 @@
                   class="pt-6 px-4"
                   ref="businessNameForeignRef"
                   :draftBusinessName="initialBusinessName"
+                  :validateForm="showErrors"
                   @update:businessName="businessName=$event"
                   @valid="businessNameValid=$event"
                 />
@@ -637,15 +640,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       if (!this.detailCommentValid) {
         this.$refs.detailCommentRef.$refs.textarea.error = true
       }
-      if (!this.effectiveDateValid) {
-        this.$refs.effectiveDateRef.$refs.textarea.error = true
-      }
-      if (!this.foreignJurisdictionValid) {
-        this.$refs.foreignJurisdictionRef.$refs.vselectRef.error = true
-      }
-      if (!this.businessNameValid) {
-        this.$refs.businessNameForeignRef.$refs.textarea.error = true
-      }
       if (!this.certifyFormValid) {
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
       }
@@ -973,10 +967,6 @@ h2 {
   }
 
   .v-btn + .v-btn {
-    margin-left: 0.5rem;
-  }
-
-  #consent-cancel-btn {
     margin-left: 0.5rem;
   }
 }

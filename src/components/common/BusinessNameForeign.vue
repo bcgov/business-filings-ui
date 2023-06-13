@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class BusinessNameForeign extends Vue {
@@ -31,6 +31,9 @@ export default class BusinessNameForeign extends Vue {
 
   /** Draft Business Name. */
   @Prop({ default: '' }) readonly draftBusinessName!: string
+
+  /** Prompt the validations. Used for global validations. */
+  @Prop({ default: false }) readonly validateForm!: boolean
 
   businessName = ''
 
@@ -46,6 +49,15 @@ export default class BusinessNameForeign extends Vue {
   get trimmedBusinessName (): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     return this.businessName?.replace(/\s+/g, ' ').trim()
+  }
+
+  /** Validate business name field */
+  @Watch('validateForm')
+  validateBusinessName (): void {
+    if (this.validateForm && !this.businessName) {
+      this.$refs.textarea.validate()
+      this.$refs.textarea.error = true
+    }
   }
 
   /** Emits an event to update the business name. */
