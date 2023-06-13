@@ -207,7 +207,7 @@ describe('Entity Header - LIMITED RESTORATION badge', () => {
 
       expect(wrapper.find('#limited-restoration').exists()).toBe(_.exists)
       if (_.exists) {
-        expect(wrapper.find('#active-util-wrap').text()).toContain('Active until')
+        expect(wrapper.find('#active-util').text()).toContain('Active until')
         expect(wrapper.find('#limited-restoration').text()).toContain('LIMITED RESTORATION')
       }
 
