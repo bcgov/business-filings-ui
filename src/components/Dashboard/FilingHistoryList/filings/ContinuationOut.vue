@@ -2,6 +2,7 @@
   <FilingTemplate class="continuation-out" :filing="filing" :index="index">
     <template #body>
       <div v-if="isFilingComplete">
+        <h4>Continuation Out Complete</h4>
         <p class="mt-4">
           The Company {{ legalName }} was successfully
           <strong>Continued Out on
