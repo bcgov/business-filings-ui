@@ -51,8 +51,6 @@ export default class ContinuationOut extends Mixins(CountriesProvincesMixin) {
     const country = this.getCountryName(this.filing.data?.continuationOut?.country)
     const region = this.getRegionNameFromCode(this.filing.data?.continuationOut?.region)
 
-    console.log(foreignJusrisdictionCountry)
-
     if (foreignJusrisdictionCountry === 'CA' || foreignJusrisdictionCountry === 'US') {
       return region + ', ' + country
     } else {
