@@ -42,7 +42,6 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(false)
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
@@ -78,7 +77,6 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(true)
-    expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(true)
     expect(wrapper.find('.menu-btn').exists()).toBe(true)
     expect(wrapper.find('#download-summary-button').exists()).toBe(true)
@@ -113,7 +111,6 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(false)
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
@@ -148,7 +145,6 @@ describe('Entity Menu - entities', () => {
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffComments).exists()).toBe(false)
-    expect(wrapper.find('#historical-chip').exists()).toBe(false)
     expect(wrapper.find('#company-information-button').exists()).toBe(false)
     expect(wrapper.find('#dissolution-button').exists()).toBe(false)
     expect(wrapper.find('#download-summary-button').exists()).toBe(false)
