@@ -158,7 +158,11 @@ describe('Entity Header - HISTORICAL badge', () => {
       businessStore.setState(_.entityState as any)
       rootStore.setStateFiling(_.stateFiling as any || null)
 
-      const wrapper = shallowMount(EntityHeader, { vuetify, router, propsData: { businessId: 'BC1234567', tempRegNumber: null } })
+      const wrapper = shallowMount(EntityHeader, {
+        vuetify,
+        router,
+        propsData: { businessId: 'BC1234567', tempRegNumber: null }
+      })
       await Vue.nextTick()
 
       expect(wrapper.find('#historical-chip').exists()).toBe(_.exists)

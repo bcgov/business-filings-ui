@@ -9,7 +9,9 @@
       <!-- Subtitle -->
       <div>
         <span id="business-description">{{ businessDescription }}</span>
-        <span id="active-util" class="ml-3 pl-3" v-if="isInLimitedRestoration">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
+        <span id="active-util" class="ml-3 pl-3" v-if="isInLimitedRestoration">
+          Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}
+        </span>
       </div>
 
       <div id="historical" class="mt-2" v-if="isHistorical">
