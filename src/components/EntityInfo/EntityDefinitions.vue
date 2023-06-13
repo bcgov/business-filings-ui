@@ -153,7 +153,6 @@ export default class EntityDefinitions extends Vue {
 dl {
   font-size: $px-14;
   line-height: 1.5rem;
-  margin-top: 0.2rem;
 }
 
 dt {

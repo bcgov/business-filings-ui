@@ -8,10 +8,8 @@
 
       <!-- Subtitle -->
       <div>
-        <span id="business-description">{{ businessDescription }} </span>
-        <span id="active-util-wrap" class="ml-3"  v-if="isInLimitedRestoration">
-          <span id="active-util" class="ml-3">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
-        </span>
+        <span id="business-description">{{ businessDescription }}</span>
+        <span id="active-util" class="ml-3 pl-3" v-if="isInLimitedRestoration">Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}</span>
       </div>
 
       <div id="historical" class="mt-2" v-if="isHistorical">
@@ -28,7 +26,7 @@
         </span>
 
         <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
-          <v-chip :class="dynamicClassForBadges"
+          <v-chip class="primary mt-n1 pointer-events-none font-weight-bold" :class="{ 'ml-3': isInLimitedRestoration }"
             small label text-color="white">AUTHORIZED TO CONTINUE OUT</v-chip>
         </span>
       </div>
@@ -79,12 +77,6 @@ export default class EntityHeader extends Vue {
     }
   }
 
-  get dynamicClassForBadges (): string {
-    const singleBadge = 'primary mt-n1 pointer-events-none font-weight-bold'
-    const multipleBadges = 'primary mt-n1 ml-3 pointer-events-none font-weight-bold'
-    return this.isInLimitedRestoration ? multipleBadges : singleBadge
-  }
-
   /** The incorporation application or registration description. */
   get iaRegDescription (): string {
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getLegalType)
@@ -119,7 +111,7 @@ export default class EntityHeader extends Vue {
 }
 
 // vertical lines between items:
-#active-util-wrap {
+#active-util {
   border-left: 1px solid $gray3;
 }
 </style>

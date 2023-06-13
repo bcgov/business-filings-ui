@@ -21,6 +21,7 @@
         <v-col cols="12" md="3">
           <EntityDefinitions
             :businessId="businessId"
+            class="mt-3"
           />
         </v-col>
       </v-row>
