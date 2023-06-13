@@ -30,7 +30,7 @@ describe('Display ContinuationOut component', () => {
                 region: 'AB'
               },
               legalName: 'North Shore Toys LTD.'
-            },
+            }
           }
         }
       }
