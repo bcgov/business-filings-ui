@@ -211,12 +211,12 @@ describe('Continuation Out view', () => {
         business: {},
         header: { filingId: 456 },
         continuationOut: {
-            continuationOutDate: '2023-06-10',
-            details: 'test',
-            foreignJurisdiction: {
-                country: 'LB'
-            },
-            legalName: 'North Shore Toys LTD.'
+          continuationOutDate: '2023-06-10',
+          details: 'test',
+          foreignJurisdiction: {
+            country: 'LB'
+          },
+          legalName: 'North Shore Toys LTD.'
         },
         annualReport: {}
       })
