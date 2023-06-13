@@ -652,7 +652,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     if (this.busySaving) return
 
     this.filingPaying = true
-
     // save final filing (not draft)
     this.savedFiling = await this.saveFiling(false).catch(error => {
       if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {

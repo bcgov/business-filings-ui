@@ -20,15 +20,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { ApiFilingIF } from '@/interfaces'
 import FilingTemplate from '../FilingTemplate.vue'
 import { DateUtilities, EnumUtilities } from '@/services'
+import { CountriesProvincesMixin } from '@/mixins'
 
 @Component({
   components: { FilingTemplate }
 })
-export default class ContinuationOut extends Vue {
+export default class ContinuationOut extends Mixins(CountriesProvincesMixin) {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
@@ -45,12 +46,33 @@ export default class ContinuationOut extends Vue {
   }
 
   get foreignJurisdiction (): string {
-    const foreignJurisdiction = this.filing.data?.continuationOut?.foreignJurisdiction
-    if (foreignJurisdiction.region) {
-      return foreignJurisdiction.region + ', ' + foreignJurisdiction.country
+    const foreignJusrisdictionCountry = this.filing.data?.continuationOut?.country
+    const country = this.getCountryName(this.filing.data?.continuationOut?.country)
+    const region = this.getRegionNameFromCode(this.filing.data?.continuationOut?.region)
+
+    console.log(foreignJusrisdictionCountry)
+
+    if (foreignJusrisdictionCountry === 'CA' || foreignJusrisdictionCountry === 'US') {
+      return region + ', ' + country
     } else {
-      return foreignJurisdiction.country
+      return country
     }
+  }
+
+  /** Get the respective regions of the country selected as an array of objects. */
+  get canadaUsaRegions (): Array<object> {
+    const foreignJusrisdictionCountry = this.filing.data?.consentContinuationOut?.country
+    if (foreignJusrisdictionCountry === 'CA') {
+      return this.getCountryRegions('CA')
+    } else if (foreignJusrisdictionCountry === 'US') {
+      return this.getCountryRegions('US')
+    }
+    return []
+  }
+
+  private getRegionNameFromCode (short: string): string {
+    const region = this.canadaUsaRegions?.find(region => region.short === short)
+    return region?.name
   }
 
   /** The court order file number. */
