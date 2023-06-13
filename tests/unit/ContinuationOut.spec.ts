@@ -4,9 +4,9 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import ContinuationOut from '@/views/ContinuationOut.vue'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
-import { Certify, DetailComment } from '@/components/common'
+import { BusinessNameForeign, EffectiveDate, Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { LegalServices } from '@/services'
@@ -56,15 +56,16 @@ describe('Continuation Out view', () => {
     await Vue.nextTick()
 
     // verify sub-components
+    expect(wrapper.findComponent(BusinessNameForeign).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
     expect(wrapper.findComponent(DetailComment).exists()).toBe(true)
     expect(wrapper.findComponent(DocumentDelivery).exists()).toBe(true)
-    expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(EffectiveDate).exists()).toBe(true)
+    expect(wrapper.findComponent(ForeignJurisdiction).exists()).toBe(true)
     expect(wrapper.findComponent(ResumeErrorDialog).exists()).toBe(true)
     expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
-    expect(wrapper.findComponent(StaffPaymentDialog).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -114,40 +115,86 @@ describe('Continuation Out view', () => {
     expect(!!vm.isPayRequired).toBe(true)
 
     // verify "validated" - all true
+    vm.businessNameValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(true)
 
     // verify "validated" - invalid Detail Comment form
+    vm.businessNameValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = false
     vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
+    vm.businessNameValid = true
     vm.certifyFormValid = false
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Court Order form
+    vm.businessNameValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = false
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Document Delivery form
+    vm.businessNameValid = true
     vm.certifyFormValid = true
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = false
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
     expect(!!vm.isPageValid).toBe(false)
 
+    // verify "validated" - invalid Foreign Jurisdiction form
+    vm.businessNameValid = true
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.detailCommentValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = false
+    expect(vm.isPageValid).toBe(false)
+    wrapper.destroy()
+
+    // verify "validated" - invalid Effective Date form
+    vm.businessNameValid = true
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.detailCommentValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = false
+    vm.foreignJurisdictionValid = false
+    expect(vm.isPageValid).toBe(false)
+    wrapper.destroy()
+
+    // verify "validated" - invalid Business Name Foreign form
+    vm.businessNameValid = false
+    vm.certifyFormValid = true
+    vm.courtOrderValid = true
+    vm.detailCommentValid = true
+    vm.documentDeliveryValid = true
+    vm.effectiveDateValid = false
+    vm.foreignJurisdictionValid = false
+    expect(vm.isPageValid).toBe(false)
     wrapper.destroy()
   })
 
@@ -163,7 +210,14 @@ describe('Continuation Out view', () => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
-        continuationOut: { details: 'test' },
+        continuationOut: {
+            continuationOutDate: '2023-06-10',
+            details: 'test',
+            foreignJurisdiction: {
+                country: 'LB'
+            },
+            legalName: 'North Shore Toys LTD.'
+        },
         annualReport: {}
       })
     })
@@ -179,10 +233,13 @@ describe('Continuation Out view', () => {
     const wrapper = shallowMount(ContinuationOut, {
       router,
       stubs: {
+        BusinessNameForeign: true,
         CourtOrderPoa: true,
         DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
+        EffectiveDate: true,
+        ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -201,7 +258,7 @@ describe('Continuation Out view', () => {
     wrapper.destroy()
   })
 
-  it('resumes draft continuation out properly with FAS staff payment', async () => {
+  it('resumes draft continuation out properly', async () => {
     // mock "fetch filing" legal service
     jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve({
@@ -217,7 +274,13 @@ describe('Continuation Out view', () => {
           priority: true
         },
         continuationOut: {
-          details: 'Line 1\nLine 2\nLine 3'
+          continuationOutDate: '2023-06-10',
+          details: 'Line 1\nLine 2\nLine 3',
+          foreignJurisdiction: {
+            country: 'CA',
+            region: 'AB'
+          },
+          legalName: 'North Shore Toys LTD.'
         },
         annualReport: {}
       })
@@ -234,10 +297,13 @@ describe('Continuation Out view', () => {
     const wrapper = shallowMount(ContinuationOut, {
       router,
       stubs: {
+        BusinessNameForeign: true,
         CourtOrderPoa: true,
         DetailComment: true,
         DocumentDelivery: true,
         Certify: true,
+        EffectiveDate: true,
+        ForeignJurisdiction: true,
         SbcFeeSummary: true
       },
       mocks: { $route }
@@ -248,11 +314,12 @@ describe('Continuation Out view', () => {
     await flushPromises()
 
     expect(vm.certifiedBy).toBe('Johnny Certifier')
-    expect(vm.staffPaymentData.option).toBe(1) // FAS
-    expect(vm.staffPaymentData.routingSlipNumber).toBe('123456789')
-    expect(vm.staffPaymentData.isPriority).toBe(true)
     // NB: line 1 (default comment) should be removed
     expect(vm.detailComment).toBe('Line 2\nLine 3')
+    expect(vm.initialEffectiveDate).toBe('2023-06-10')
+    expect(vm.initialBusinessName).toBe('North Shore Toys LTD.')
+    expect(vm.initialCountry).toBe('CA')
+    expect(vm.initialRegion).toBe('AB')
 
     wrapper.destroy()
   })
