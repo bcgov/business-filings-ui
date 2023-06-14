@@ -217,8 +217,9 @@ export const useRootStore = defineStore('root', {
         if (!dissolutionDate) throw new Error('Invalid dissolution date')
         date = DateUtilities.dateToPacificDate(dissolutionDate, true)
       } else {
-        name = filingType === FilingTypes.CONTINUATION_OUT
-          ? 'Continued Out' : EnumUtilities.filingTypeToName(filingType)
+        name = (filingType === FilingTypes.CONTINUATION_OUT)
+          ? 'Continued Out'
+          : EnumUtilities.filingTypeToName(filingType)
         const effectiveDate = DateUtilities.apiToDate(stateFiling.header.effectiveDate)
         if (!effectiveDate) throw new Error('Invalid effective date')
         date = DateUtilities.dateToPacificDateTime(effectiveDate)
