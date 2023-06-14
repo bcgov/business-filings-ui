@@ -18,7 +18,7 @@
         <v-chip
           id="historical-chip"
           class="primary mt-n1 pointer-events-none font-weight-bold"
-            small label text-color="white">HISTORICAL</v-chip>
+          small label text-color="white">HISTORICAL</v-chip>
         <span class="font-14 mx-3">{{ getReasonText || 'Unknown Reason' }}</span>
       </div>
       <div id="multiple-badges" class="mt-2" v-else>
