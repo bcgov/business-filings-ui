@@ -5,9 +5,9 @@
         <h4>Continuation Out Complete</h4>
         <p class="mt-4">
           The Company {{ legalName }} was successfully
-          <strong>Continued Out on
-            {{ continuationOutDate }}, to {{ foreignJurisdiction }} under the name
-            {{ legalName }}.
+          <strong>
+            Continued Out on {{ continuationOutDate }}, to
+            {{ foreignJurisdiction }} under the name {{ legalName }}.
           </strong>
           The Company has been struck from the register and ceased to be an
           incorporated company under the Business Corporations Act.
