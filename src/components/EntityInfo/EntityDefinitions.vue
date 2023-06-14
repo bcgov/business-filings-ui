@@ -53,16 +53,6 @@
         </v-btn>
       </dd>
     </template>
-
-    <!-- Test - to be deleted -->
-    <template>
-      <div>
-        <dt class="mr-2">Test:</dt>
-        <dd id="test">
-          <span>TEST</span>
-        </dd>
-      </div>
-    </template>
   </dl>
 </template>
 
