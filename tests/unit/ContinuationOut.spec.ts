@@ -182,7 +182,7 @@ describe('Continuation Out view', () => {
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
     vm.effectiveDateValid = false
-    vm.foreignJurisdictionValid = false
+    vm.foreignJurisdictionValid = true
     expect(vm.isPageValid).toBe(false)
     wrapper.destroy()
 
@@ -192,8 +192,8 @@ describe('Continuation Out view', () => {
     vm.courtOrderValid = true
     vm.detailCommentValid = true
     vm.documentDeliveryValid = true
-    vm.effectiveDateValid = false
-    vm.foreignJurisdictionValid = false
+    vm.effectiveDateValid = true
+    vm.foreignJurisdictionValid = true
     expect(vm.isPageValid).toBe(false)
     wrapper.destroy()
   })
