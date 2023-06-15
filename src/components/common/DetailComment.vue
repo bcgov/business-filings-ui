@@ -1,17 +1,19 @@
 <template>
   <v-card flat id="detail-comment-container">
-    <v-textarea
-      ref="textarea"
-      auto-grow
-      rows="5"
-      id="detail-comment-textarea"
-      :counter="maxLength"
-      :rules="rules"
-      :value="value"
-      :placeholder="placeholder"
-      :autofocus="autofocus"
-      @input="emitInput($event)"
-    />
+    <v-row no-gutters class="pl-4 pr-4 pt-2 pb-2">
+      <v-textarea
+        ref="textarea"
+        auto-grow
+        rows="5"
+        id="detail-comment-textarea"
+        :counter="maxLength"
+        :rules="rules"
+        :value="value"
+        :placeholder="placeholder"
+        :autofocus="autofocus"
+        @input="emitInput($event)"
+      />
+    </v-row>
   </v-card>
 </template>
 
