@@ -32,20 +32,20 @@
 
       <v-list dense>
         <v-list-item-group color="primary">
-          <v-list-item :disabled="disableCorrection()">
+          <v-list-item :disabled="disableCorrection()" @click.stop="correctThisFiling(filing)">
             <v-list-item-icon>
               <v-icon color="primary">mdi-file-document-edit-outline</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="file-correction-item" @click.stop="correctThisFiling(filing)">
+            <v-list-item-title class="file-correction-item" >
               <span class="app-blue">File a Correction</span>
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)">
+          <v-list-item :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)" @click.stop="showCommentDialog(filing)">
             <v-list-item-icon>
               <v-icon color="primary">mdi-comment-plus</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="add-detail-comment-item" @click.stop="showCommentDialog(filing)">
+            <v-list-item-title class="add-detail-comment-item">
               <span class="app-blue">Add Detail</span>
             </v-list-item-title>
           </v-list-item>
