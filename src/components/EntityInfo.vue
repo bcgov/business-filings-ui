@@ -8,7 +8,8 @@
             :tempRegNumber="tempRegNumber"
           />
           <EntityMenu
-            class="mt-4 ml-n4"
+            class="mt-2 ml-n3"
+            v-if="!isInLocalFilingPage"
             :businessId="businessId"
             @confirmDissolution="emitConfirmDissolution()"
             @downloadBusinessSummary="emitDownloadBusinessSummary()"
@@ -20,6 +21,7 @@
         <v-col cols="12" md="3">
           <EntityDefinitions
             :businessId="businessId"
+            class="mt-3"
           />
         </v-col>
       </v-row>
@@ -35,6 +37,7 @@ import EntityDefinitions from './EntityInfo/EntityDefinitions.vue'
 import EntityHeader from './EntityInfo/EntityHeader.vue'
 import EntityMenu from './EntityInfo/EntityMenu.vue'
 import { useRootStore } from '@/stores'
+import { Routes } from '@/enums/routes'
 
 @Component({
   components: {
@@ -52,6 +55,16 @@ export default class EntityInfo extends Vue {
   /** The Business ID string (may be null). */
   get businessId (): string {
     return sessionStorage.getItem('BUSINESS_ID')
+  }
+
+  /** Is True if this is on local filing pages. */
+  get isInLocalFilingPage (): string {
+    return this.$route?.name === Routes.ANNUAL_REPORT ||
+    this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
+    this.$route?.name === Routes.CONTINUATION_OUT ||
+    this.$route?.name === Routes.CORRECTION ||
+    this.$route?.name === Routes.STANDALONE_ADDRESSES ||
+    this.$route?.name === Routes.STANDALONE_DIRECTORS
   }
 
   /** The Temporary Registration Number string (may be null). */
@@ -108,16 +121,6 @@ menu > span + span {
 :deep(.v-btn.v-btn--disabled, .v-btn.v-btn--disabled .v-icon) {
   opacity: 0.4 !important;
   color: $app-blue !important;
-}
-
-:deep(#staff-comments .v-btn) {
-  margin-top: -4px; // for vertical alignment
-}
-
-#company-information-button,
-#dissolution-button,
-#download-summary-button {
-  margin-top: -4px; // for vertical alignment
 }
 
 :deep(.v-chip__content) {

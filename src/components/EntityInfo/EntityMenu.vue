@@ -9,16 +9,6 @@
       />
     </span>
 
-    <span v-if="isHistorical">
-      <v-chip
-        id="historical-chip"
-        class="primary mt-n1 ml-4 pointer-events-none" small label text-color="white"
-      >
-        <strong>HISTORICAL</strong>
-      </v-chip>
-      <span class="font-14 mx-3">{{ getReasonText || 'Unknown Reason' }}</span>
-    </span>
-
     <!-- View and Change Business Information -->
     <span v-if="isBusiness && !isHistorical">
       <v-btn
@@ -148,7 +138,6 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   @Getter(useConfigurationStore) getEditUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
-  @Getter(useRootStore) getReasonText!: string
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isPendingDissolution!: boolean
