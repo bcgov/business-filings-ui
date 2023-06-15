@@ -669,7 +669,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     }
 
     const data: any = {
-      correction: {
+      [FilingTypes.CORRECTION]: {
         correctedFilingId: this.correctedFilingId,
         correctedFilingType: this.origFiling.header.name,
         correctedFilingDate: this.dateToYyyyMmDd(this.apiToDate(this.origFiling.header.date)),
