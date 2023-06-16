@@ -1,4 +1,6 @@
 import { CorrectionTypes } from '@/enums'
+import { IsoDatePacific } from '@/interfaces'
+
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface CorrectionFilingIF {
   header: {
@@ -21,7 +23,7 @@ export interface CorrectionFilingIF {
   correction: {
     correctedFilingId: string
     correctedFilingType: string
-    correctedFilingDate: string
+    correctedFilingDate: IsoDatePacific
     type?: CorrectionTypes
     comment: string
   }

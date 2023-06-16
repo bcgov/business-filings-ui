@@ -19,7 +19,7 @@ describe('Details List', () => {
     title: 'Annual Report (2018)',
     filingId: 63958,
     submitter: 'John Doe',
-    submittedDate: '2018-12-12',
+    submittedDate: 'Wed, 12 Dec 2018 12:00:00 GMT',
     paymentToken: null,
     isPaperOnly: true,
     comments: []
@@ -30,7 +30,7 @@ describe('Details List', () => {
     title: 'Annual Report (2018)',
     filingId: 63958,
     submitter: 'John Doe',
-    submittedDate: '2018-12-12',
+    submittedDate: 'Wed, 12 Dec 2018 12:00:00 GMT',
     paymentToken: null,
     isPaperOnly: true,
     comments: [
@@ -51,7 +51,7 @@ describe('Details List', () => {
     title: 'Annual Report (2018)',
     filingId: 63958,
     submitter: 'John Doe',
-    submittedDate: '2018-12-12',
+    submittedDate: 'Wed, 12 Dec 2018 12:00:00 GMT',
     paymentToken: null,
     isPaperOnly: true,
     comments: [
