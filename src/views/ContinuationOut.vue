@@ -475,7 +475,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     this.dataLoaded = true
 
     // always include continue out code
-    // use existing Priority and Waive Fees flags
+    // clear Priority flag and set the Waive Fees flag to true
     this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, undefined, true)
   }
 
