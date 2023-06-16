@@ -286,9 +286,8 @@ import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
-  StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
+import { ConfirmDialogType } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -363,9 +362,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   // variables for Document Delivery component
   documentDeliveryValid = true
   documentOptionalEmail = ''
-
-  // variables for staff payment
-  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
 
   // variables for displaying dialogs
   resumeErrorDialog = false
@@ -480,8 +476,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     // always include continue out code
     // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, this.staffPaymentData.isPriority,
-      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, undefined, true)
   }
 
   /** Fetches the draft continuation out filing. */
@@ -500,17 +495,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
       // load Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
-
-      // load Staff Payment properties
-      if (filing.header.waiveFees) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NO_FEE
-        } as StaffPaymentIF
-      } else {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NONE
-        } as StaffPaymentIF
-      }
 
       // load Detail Comment, removing the first line (default comment)
       const comment: string = filing.continuationOut.details || ''
@@ -745,9 +729,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       header.header.documentOptionalEmail = this.documentOptionalEmail
     }
 
-    if (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE) {
-      header.header['waiveFees'] = true
-    }
+    header.header['waiveFees'] = true
 
     const business: any = {
       business: {
