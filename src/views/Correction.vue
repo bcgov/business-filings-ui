@@ -75,12 +75,16 @@
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
                 <p class="black--text mb-0">{{defaultComment}}</p>
               </header>
-              <DetailComment
-                v-model="detailComment"
-                placeholder="Add a Detail that will appear on the ledger for this entity."
-                :maxLength="maxDetailCommentLength"
-                @valid="detailCommentValid=$event"
-              />
+              <v-card flat>
+                <div no-gutters class="px-4 py-2">
+                  <DetailComment
+                    v-model="detailComment"
+                    placeholder="Add a Detail that will appear on the ledger for this entity."
+                    :maxLength="maxDetailCommentLength"
+                    @valid="detailCommentValid=$event"
+                  />
+                </div>
+              </v-card>
             </section>
 
             <!-- Certify -->
