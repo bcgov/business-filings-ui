@@ -166,7 +166,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :entityDisplay="displayName()"
-                  :message="certifyMessage"
+                  :message="certifyText(FilingCodes.CONTINUATION_OUT)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -395,13 +395,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   /** Default comment (ie, the first line of the detail comment). */
   get defaultComment (): string {
     return 'Continuation Out'
-  }
-
-  /** The message to be displayed in the Certify Component. */
-  get certifyMessage (): string {
-    return ('Note: It is an offence to make or assist in making a false or' +
-      ' misleading statement in a record filed under the Business Corporations Act.' +
-      ' A person who commits this offence is subject to a maximum fine of $5,000.')
   }
 
   /** Maximum length of detail comment. */
