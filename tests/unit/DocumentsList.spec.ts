@@ -25,7 +25,7 @@ describe('Documents List', () => {
     isFutureEffective: false,
     name: 'annualReport',
     status: 'COMPLETED',
-    submittedDate: '2019-04-06 19:22:59.00 GMT',
+    submittedDate: 'Sat, 06 Apr 2019 19:22:59.00 GMT',
     submitter: 'Cameron'
   }
 

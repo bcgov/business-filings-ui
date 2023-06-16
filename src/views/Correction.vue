@@ -681,7 +681,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     // NB: a correction to a correction is applied to the original data
     const filing = Object.assign({}, header, business, data)
     try {
-      let ret
+      let ret = null
       if (this.filingId > 0) {
         // we have a filing id, so update an existing filing
         ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)

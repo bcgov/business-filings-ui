@@ -91,6 +91,7 @@ export default class FilingMixin extends DateMixin {
    * @returns the filing body
    */
   buildCorrectionFiling (correctedFiling: any, correctionType: CorrectionTypes): CorrectionFilingIF {
+    const submittedDate = new Date(correctedFiling.submittedDate)
     const correctionFiling: CorrectionFilingIF = {
       header: {
         date: this.getCurrentDate,
@@ -103,7 +104,7 @@ export default class FilingMixin extends DateMixin {
       },
       correction: {
         comment: '',
-        correctedFilingDate: correctedFiling.submittedDate,
+        correctedFilingDate: this.dateToYyyyMmDd(submittedDate),
         correctedFilingId: correctedFiling.filingId,
         correctedFilingType: correctedFiling.name,
         type: correctionType

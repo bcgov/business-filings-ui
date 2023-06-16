@@ -239,7 +239,7 @@ export default class DateUtilities {
    * Converts an API datetime string (in UTC) to a UTC string.
    * @example "2021-10-01T19:26:24.530803+00:00" -> "Fri, 01 Oct 2021 19:26:24 GMT"
    */
-  static apiToUtcString (dateTimeString: ApiDateTimeUtc): string {
+  static apiToUtcString (dateTimeString: ApiDateTimeUtc): FormattedDateTimeGmt {
     if (!dateTimeString) return null // safety check
 
     const date = this.apiToDate(dateTimeString)

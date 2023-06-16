@@ -52,7 +52,7 @@ describe('Filing History List - misc functionality', () => {
       isFutureEffective: false,
       name: 'annualReport',
       status: 'COMPLETED',
-      submittedDate: '2019-06-02 19:22:59 GMT',
+      submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
       submitter: 'Submitter 1'
     },
     {
@@ -66,7 +66,7 @@ describe('Filing History List - misc functionality', () => {
       isFutureEffective: true,
       name: 'changeOfAddress',
       status: 'PAID',
-      submittedDate: '2019-12-12 19:22:59 GMT', // Dec 12, 2019 at 11:22:59 am Pacific
+      submittedDate: 'Thu 12 Dec 2019 19:22:59 GMT', // Dec 12, 2019 at 11:22:59 am Pacific
       submitter: 'Submitter 2'
     }
   ]
@@ -125,7 +125,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.ANNUAL_REPORT,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-07-02',
+        submittedDate: 'Tue, 02 July 2019 12:00:00 GMT',
         submitter: 'Submitter 1'
       } as any,
       {
@@ -138,7 +138,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.CHANGE_OF_DIRECTORS,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-04-04',
+        submittedDate: 'Thu, 04 Apr 2019 12:00:00 GMT',
         submitter: 'Submitter 2'
       },
       {
@@ -151,7 +151,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.CHANGE_OF_ADDRESS,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-05-06',
+        submittedDate: 'Mon, 06 May 2019 12:00:00 GMT',
         submitter: 'Submitter 3'
       },
       {
@@ -164,7 +164,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.ANNUAL_REPORT,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-03-02',
+        submittedDate: 'Sat, 02 Mar 2019 12:00:00 GMT',
         submitter: 'Submitter 4'
       },
       {
@@ -177,7 +177,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.CHANGE_OF_DIRECTORS,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-02-04',
+        submittedDate: 'Mon, 04 Feb 2019 12:00:00 GMT',
         submitter: 'Submitter 5'
       },
       {
@@ -190,7 +190,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.CHANGE_OF_ADDRESS,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-01-06',
+        submittedDate: 'Sun, 06 Jan 2019 12:00:00 GMT',
         submitter: 'Submitter 6'
       }
     ])
@@ -221,7 +221,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.CHANGE_OF_DIRECTORS,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-03-09',
+        submittedDate: 'Sat, 09 Mar 2019 12:00:00 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -272,7 +272,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.ANNUAL_REPORT,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-06-02',
+        submittedDate: 'Sun, 02 Jun 2019 12:00:00 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test'
       } as any
@@ -326,7 +326,7 @@ describe('Filing History List - misc functionality', () => {
         isFutureEffective: false,
         name: FilingTypes.RESTORATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-06-02',
+        submittedDate: 'Sun, 02 Jun 2019 12:00:00 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
         data: {
@@ -395,7 +395,7 @@ describe('Filing History List - misc functionality', () => {
         name: FilingTypes.RESTORATION,
         paymentStatusCode: 'COMPLETED',
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-06-02',
+        submittedDate: 'Sun, 02 Jun 2019 12:00:00 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -772,7 +772,7 @@ describe('Filing History List - redirections', () => {
     business: { identifier: 'CP1002587', legalName: undefined, legalType: 'CP' },
     correction: {
       comment: '',
-      correctedFilingDate: 'Wed, 24 May 2023 18:02:16 GMT',
+      correctedFilingDate: '2023-05-24',
       correctedFilingId: 145190,
       correctedFilingType: 'specialResolution',
       type: 'STAFF'
@@ -882,7 +882,7 @@ describe('Filing History List - redirections', () => {
           correction: {
             correctedFilingId: 145190,
             correctedFilingType: FilingTypes.SPECIAL_RESOLUTION,
-            correctedFilingDate: '2020-04-28 19:14:45 GMT',
+            correctedFilingDate: '2020-04-28',
             comment: null
           },
           srCorrection
@@ -987,7 +987,7 @@ describe('Filing History List - redirections', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-04-28 19:14:45 GMT',
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1072,7 +1072,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-05-06 19:00:00 GMT',
+        submittedDate: 'Wed, 06 May 2020 19:00:00 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1113,7 +1113,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-05-06 19:00:00 GMT',
+        submittedDate: 'Wed, 06 May 2020 19:00:00 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1154,7 +1154,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: true,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.PAID,
-        submittedDate: '2020-04-28 19:14:45 GMT',
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1217,7 +1217,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: true,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.PAID,
-        submittedDate: '2020-04-28 19:14:45 GMT',
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1280,7 +1280,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.PAID,
-        submittedDate: '2020-05-06 19:00:00 GMT',
+        submittedDate: 'Wed, 06 May 2020 19:00:00 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1342,7 +1342,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-04-28 19:14:45 GMT',
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1404,7 +1404,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.PAID,
-        submittedDate: '2020-05-06 19:00:00 GMT',
+        submittedDate: 'Wed, 06 May 2020 19:00:00 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1466,7 +1466,7 @@ describe('Filing History List - incorporation applications', () => {
         isFutureEffective: false,
         name: FilingTypes.INCORPORATION_APPLICATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-04-28 19:14:45 GMT',
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test'
       } as any
@@ -1546,7 +1546,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: false,
         name: FilingTypes.ANNUAL_REPORT,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2017-03-24 19:20:05 GMT',
+        submittedDate: 'Fri, 24 Mar 2017 19:20:05 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -1598,7 +1598,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: false,
         name: FilingTypes.ALTERATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-03-24 19:20:05 GMT',
+        submittedDate: 'Fri, 24 Mar 2017 19:20:05 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
         data: {
@@ -1658,7 +1658,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: true,
         name: FilingTypes.ALTERATION,
         status: FilingStatus.PAID,
-        submittedDate: '2020-03-24 19:20:05 GMT',
+        submittedDate: 'Fri, 24 Mar 2017 19:20:05 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
         data: {
@@ -1723,7 +1723,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: true,
         name: FilingTypes.ALTERATION,
         status: FilingStatus.PAID,
-        submittedDate: '2020-03-24 19:20:05 GMT',
+        submittedDate: 'Fri, 24 Mar 2017 19:20:05 GMT',
         submitter: 'Cameron',
         documentsLink: 'http://test',
         data: {
@@ -1788,7 +1788,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: false,
         name: FilingTypes.ALTERATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2020-03-24 19:20:05 GMT',
+        submittedDate: 'Fri, 24 Mar 2017 19:20:05 GMT',
         submitter: 'Cameron',
         'documentsLink': 'http://test',
         data: {
@@ -1852,7 +1852,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: false,
         name: FilingTypes.REGISTRARS_NOTATION,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2021-05-05 20:37:44 GMT',
+        submittedDate: 'Wed, 05 May 2021 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
           order: {
@@ -1908,7 +1908,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: false,
         name: FilingTypes.REGISTRARS_ORDER,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2021-05-05 20:37:44 GMT',
+        submittedDate: 'Wed, 05 May 2021 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
           order: {
@@ -1964,7 +1964,7 @@ describe('Filing History List - paper only and other filings', () => {
         isFutureEffective: false,
         name: FilingTypes.COURT_ORDER,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2021-05-05 20:37:44 GMT',
+        submittedDate: 'Wed, 05 May 2021 20:37:44 GMT',
         submitter: 'Cameron',
         data: {
           order: {
@@ -2021,7 +2021,7 @@ describe('Filing History List - with Court Order documents', () => {
     isFutureEffective: false,
     name: 'uploadedCourtOrder',
     status: 'COMPLETED',
-    submittedDate: '2022-04-06 19:22:59.00 GMT',
+    submittedDate: 'Wed, 06 Apr 2022 19:22:59.00 GMT',
     submitter: 'Cameron'
   }
 
@@ -2108,7 +2108,7 @@ describe('Filing History List - with documents', () => {
     isFutureEffective: false,
     name: 'annualReport',
     status: 'COMPLETED',
-    submittedDate: '2019-04-06 19:22:59.00 GMT',
+    submittedDate: 'Sat, 06 Apr 2019 19:22:59.00 GMT',
     submitter: 'Cameron'
   }
 
@@ -2242,7 +2242,7 @@ describe('Filing History List - detail comments', () => {
     isFutureEffective: false,
     name: 'annualReport',
     status: 'COMPLETED',
-    submittedDate: '2019-06-02 19:22:59 GMT',
+    submittedDate: 'Tue, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Cameron'
   }
 
@@ -2259,7 +2259,7 @@ describe('Filing History List - detail comments', () => {
         isFutureEffective: false,
         name: FilingTypes.ANNUAL_REPORT,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2019-06-02 19:22:59 GMT',
+        submittedDate: 'Tue, 02 Jun 2019 19:22:59 GMT',
         submitter: 'Cameron'
       } as any
     ])
@@ -2287,7 +2287,7 @@ describe('Filing History List - detail comments', () => {
         isFutureEffective: true,
         name: FilingTypes.CHANGE_OF_ADDRESS,
         status: FilingStatus.PAID,
-        submittedDate: '2019-12-12 19:22:59 GMT', // Dec 12, 2019 at 11:22:59 am Pacific
+        submittedDate: 'Thu, 12 Dec 2019 19:22:59 GMT', // Dec 12, 2019 at 11:22:59 am Pacific
         submitter: 'Cameron'
       } as any
     ])
@@ -2390,7 +2390,7 @@ describe('Filing History List - without documents', () => {
     isFutureEffective: false,
     name: 'Involuntary Dissolution',
     status: 'COMPLETED',
-    submittedDate: '2019-04-06 19:22:59.00 GMT',
+    submittedDate: 'Sat, 06 Apr 2019 19:22:59.00 GMT',
     submitter: 'Cameron'
   }
 
@@ -2424,7 +2424,7 @@ describe('Filing History List - expands Consent to continue out', () => {
         isFutureEffective: false,
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
         status: FilingStatus.COMPLETED,
-        submittedDate: '2022-11-20 22:17:54 GMT',
+        submittedDate: 'Sun, 20 Nov 2022 22:17:54 GMT',
         submitter: 'BCREGTEST',
         documentsLink: 'http://test'
       } as any

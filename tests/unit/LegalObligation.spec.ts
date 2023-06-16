@@ -23,12 +23,12 @@ const newIncorporationFiling = [
   {
     availableOnPaperOnly: false,
     displayName: 'Incorporation Application',
-    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
     isFutureEffective: false,
     name: 'incorporationApplication',
     status: 'PAID',
-    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
   }
 ]
@@ -37,12 +37,12 @@ const newRegistrationFiling = [
   {
     availableOnPaperOnly: false,
     displayName: 'Registration',
-    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
     isFutureEffective: false,
     name: 'registration',
     status: 'PAID',
-    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
   }
 ]
@@ -51,23 +51,23 @@ const businessWithMaintenanceFiling = [
   {
     availableOnPaperOnly: false,
     displayName: 'Incorporation Application',
-    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 123,
     isFutureEffective: false,
     name: 'incorporationApplication',
     status: 'PAID',
-    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
   },
   {
     availableOnPaperOnly: false,
     displayName: 'Annual Report (2019)',
-    effectiveDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    effectiveDate: '2019-06-02 19:22:59 GMT',
     filingId: 456,
     isFutureEffective: false,
     name: 'annualReport',
     status: 'PAID',
-    submittedDate: new Date('2019-06-02T19:22:59.003777+00:00'),
+    submittedDate: 'Sun, 02 Jun 2019 19:22:59 GMT',
     submitter: 'Full Name 1'
   }
 ]

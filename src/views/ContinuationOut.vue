@@ -738,7 +738,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
         ret = await LegalServices.updateFiling(this.getIdentifier, filing, this.filingId, isDraft)
       } else {
         // filing id is 0, so create a new filing
-        console.log(filing)
         ret = await LegalServices.createFiling(this.getIdentifier, filing, isDraft)
       }
       return ret
