@@ -193,6 +193,6 @@ export default class EffectiveDate extends Mixins(DateMixin) {
 }
 
 .validationErrorInfo {
-  color: red;
+  color: $app-red;
 }
 </style>

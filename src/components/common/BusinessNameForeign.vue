@@ -30,7 +30,7 @@ export default class BusinessNameForeign extends Vue {
   }
 
   /** Draft Business Name. */
-  @Prop({ default: '' }) readonly draftBusinessName!: string
+  @Prop({ required: true }) readonly draftBusinessName!: string
 
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean

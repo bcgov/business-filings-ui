@@ -43,7 +43,7 @@ describe('Display ContinuationOut component', () => {
       .toContain('FILED AND PAID  (filed by  on [unknown])  EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
     expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
-    expect(vm.continuationOutDate).toEqual('June 9, 2023')
+    expect(vm.continuationOutDate).toEqual('Jun 10, 2023')
     expect(vm.legalName).toBe('North Shore Toys LTD.')
     wrapper.destroy()
   })

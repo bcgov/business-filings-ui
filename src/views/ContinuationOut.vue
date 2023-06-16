@@ -156,7 +156,7 @@
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
-                  Enter the legal name of the person authorized to complete and submit this correction.
+                  Enter the legal name of the person authorized to complete and submit this filing.
                 </p>
               </header>
               <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
@@ -166,7 +166,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  :message="certifyMessage"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -335,14 +335,14 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   // variables for EffectiveDate component
   initialEffectiveDate = ''
-  effectiveDate = null
+  effectiveDate = ''
   effectiveDateValid = false
 
   // variables for ForeignJurisdiction component
   initialCountry = ''
   initialRegion = ''
-  selectedCountry = null
-  selectedRegion = null
+  selectedCountry = ''
+  selectedRegion = ''
   foreignJurisdictionValid = false
 
   // variables for BusinessNameForeign component
@@ -397,10 +397,17 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     return 'Continuation Out'
   }
 
+  /** The message to be displayed in the Certify Component. */
+  get certifyMessage (): string {
+    return ('Note: It is an offence to make or assist in making a false or' +
+      ' misleading statement in a record filed under the Business Corporations Act.' +
+      ' A person who commits this offence is subject to a maximum fine of $5,000.')
+  }
+
   /** Maximum length of detail comment. */
   get maxDetailCommentLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
-    return 1000 - this.defaultComment.length - 1
+    return 2000 - this.defaultComment.length - 1
   }
 
   /** The Base URL string. */
@@ -429,6 +436,12 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** Called when component is created. */
   created (): void {
+    // Safety check to make sure Staff is filing the Continuation Out.
+    if (!this.isRoleStaff) {
+      this.resumeErrorDialog = true
+      throw new Error('This is a Staff only Filing.')
+    }
+
     // init
     this.setFilingData([])
 
@@ -739,13 +752,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       header.header.documentOptionalEmail = this.documentOptionalEmail
     }
 
-    switch (this.staffPaymentData.option) {
-      case StaffPaymentOptions.NO_FEE:
-        header.header['waiveFees'] = true
-        break
-
-      case StaffPaymentOptions.NONE: // should never happen
-        break
+    if (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE) {
+      header.header['waiveFees'] = true
     }
 
     const business: any = {

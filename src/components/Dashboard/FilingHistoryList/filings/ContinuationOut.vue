@@ -41,7 +41,7 @@ export default class ContinuationOut extends Mixins(CountriesProvincesMixin) {
   get continuationOutDate (): string {
     const continuationOutDate = this.filing.data?.continuationOut?.continuationOutDate
     if (continuationOutDate) {
-      return DateUtilities.apiToPacificDate(continuationOutDate, true)
+      return DateUtilities.formatYyyyMmDd(continuationOutDate)
     }
     return '[unknown]'
   }

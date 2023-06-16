@@ -72,7 +72,7 @@ export interface ApiFilingIF {
 
     // continuation out filings only
     continuationOut?: {
-      continuationOutDate: string
+      continuationOutDate: IsoDatePacific
       courtOrder?: any
       details: string
       foreignJurisdiction: {

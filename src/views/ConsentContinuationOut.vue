@@ -135,7 +135,7 @@
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
-                  Enter the legal name of the person authorized to complete and submit this correction.
+                  Enter the legal name of the person authorized to complete and submit this filing.
                 </p>
               </header>
               <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
@@ -369,7 +369,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   /** Maximum length of detail comment. */
   get maxDetailCommentLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
-    return 1000 - this.defaultComment.length - 1
+    return 2000 - this.defaultComment.length - 1
   }
 
   /** The Base URL string. */
