@@ -118,7 +118,7 @@ describe('ForeignJurisdiction', () => {
     await wrapper.findAll('.v-list-item').at(123).trigger('click')
 
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('LB')
-    expect(wrapper.emitted('update:region').pop()[0]).toEqual(undefined)
+    expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
     expect(wrapper.emitted('valid').pop()[0]).toBe(true)
     wrapper.destroy()
   })
@@ -135,7 +135,7 @@ describe('ForeignJurisdiction', () => {
 
     expect(vm.selectedRegionName).toEqual('')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
-    expect(wrapper.emitted('update:region').pop()[0]).toEqual(undefined)
+    expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
     wrapper.destroy()
   })
@@ -171,7 +171,7 @@ describe('ForeignJurisdiction', () => {
     expect(vm.selectedCountryName).toEqual('Lebanon')
     expect(vm.selectedRegionName).toEqual('')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('LB')
-    expect(wrapper.emitted('update:region').pop()[0]).toEqual(undefined)
+    expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
     expect(wrapper.emitted('valid').pop()[0]).toBe(true)
     wrapper.destroy()
   })
@@ -189,7 +189,7 @@ describe('ForeignJurisdiction', () => {
     expect(vm.selectedCountryName).toEqual('Canada')
     expect(vm.selectedRegionName).toEqual('')
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
-    expect(wrapper.emitted('update:region').pop()[0]).toEqual(undefined)
+    expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
     wrapper.destroy()
   })
@@ -225,9 +225,9 @@ describe('ForeignJurisdiction', () => {
     const vm: any = wrapper.vm
 
     expect(vm.selectedCountryName).toEqual('Canada')
-    expect(vm.selectedRegionName).toEqual(undefined)
+    expect(vm.selectedRegionName).toBeUndefined()
     expect(wrapper.emitted('update:country').pop()[0]).toEqual('CA')
-    expect(wrapper.emitted('update:region').pop()[0]).toEqual(undefined)
+    expect(wrapper.emitted('update:region').pop()[0]).toBeUndefined()
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
     wrapper.destroy()
   })

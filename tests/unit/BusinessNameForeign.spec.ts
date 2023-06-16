@@ -17,7 +17,7 @@ describe('BusinessNameForeign', () => {
       })
     const vm: any = wrapper.vm
 
-    expect(vm.businessName).toEqual(undefined)
+    expect(vm.businessName).toBeUndefined()
     expect(wrapper.emitted('update:businessName').pop()[0]).toBeUndefined()
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
     wrapper.destroy()
