@@ -119,7 +119,7 @@
               <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery-section">
                 <v-card flat class="py-8 px-5">
                   <DocumentDelivery
-                    :editableCompletingParty="isRoleStaff"
+                    editableCompletingParty="true"
                     :contactValue="getBusinessEmail"
                     contactLabel="Business Office"
                     :documentOptionalEmail="documentOptionalEmail"
