@@ -75,8 +75,8 @@
             <span class="font-weight-bold">Upload File</span>
             <FileUploadPdf
               ref="fileUploadRef"
-              :file="file"
-              :fileKey="fileKey"
+              v-model:file="file"
+              v-model:fileKey="fileKey"
               class="ml-12 flex-grow-1"
               :isRequired="enableValidation && isCourtOrder && !notation"
               :customErrorMSg="courtOrderCustomValidationMsg"
