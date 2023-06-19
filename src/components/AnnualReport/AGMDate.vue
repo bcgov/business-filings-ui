@@ -1,10 +1,17 @@
 <template>
-  <v-card flat id="agm-date-container" v-if="isCoop">
+  <v-card
+    v-if="isCoop"
+    id="agm-date-container"
+    flat
+  >
     <div class="meta-container">
       <label>Annual General<br>Meeting Date</label>
 
       <div>
-        <v-form ref="form" class="value date">
+        <v-form
+          ref="form"
+          class="value date"
+        >
           <!-- date picker -->
           <v-menu
             ref="menu"
@@ -14,11 +21,11 @@
             transition="scale-transition"
             max-width="290"
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-text-field
+                v-model="dateText"
                 data-test-id="agm-date-text"
                 class="pt-0"
-                v-model="dateText"
                 :disabled="noAgm"
                 :rules="agmDateRules"
                 label="Annual General Meeting Date"
@@ -26,15 +33,15 @@
                 append-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
-                v-on="on"
                 filled
+                v-on="on"
               />
             </template>
             <v-date-picker
-              data-test-id="agm-date-picker"
               v-model="datePicker"
-              :min=arMinDate
-              :max=arMaxDate
+              data-test-id="agm-date-picker"
+              :min="arMinDate"
+              :max="arMaxDate"
               no-title
               @input="menu=false"
               @change="onDatePickerChanged($event)"
@@ -43,7 +50,10 @@
 
           <!-- restriction messages -->
           <!-- date must have been selected first -->
-          <div v-if="dateText" class="restriction-messages mt-4">
+          <div
+            v-if="dateText"
+            class="restriction-messages mt-4"
+          >
             <span v-if="!allowCoa && !allowCod">
               You cannot change your Registered Office Addresses or Directors in this Annual Report
               because your AGM predates another filing that may have conflicting changes.
@@ -61,13 +71,20 @@
 
         <!-- special AGM Extension message and checkbox -->
         <v-expand-transition>
-          <div v-if="showAgmExtensionCheckbox" class="agm-extension-container mt-4">
-            <p>The selected Annual General Meeting date is beyond April 30, 2021 and would have required
-              an extension of the Annual General Meeting date.</p>
-            <p>The Registrar granted an extension for all Cooperatives that wished to extend their Annual
+          <div
+            v-if="showAgmExtensionCheckbox"
+            class="agm-extension-container mt-4"
+          >
+            <p>
+              The selected Annual General Meeting date is beyond April 30, 2021 and would have required
+              an extension of the Annual General Meeting date.
+            </p>
+            <p>
+              The Registrar granted an extension for all Cooperatives that wished to extend their Annual
               General Meeting (AGM) up to and including October 31, 2021. You did not need to make an
               application to the Registrar to request an extension of your AGM; however, you must have
-              informed your members that the AGM date was extended.</p>
+              informed your members that the AGM date was extended.
+            </p>
 
             <v-checkbox
               id="agm-extension-checkbox"
@@ -75,7 +92,7 @@
               hide-details
               @change="onAgmExtensionChanged($event)"
             >
-              <template v-slot:label>
+              <template #label>
                 <span class="font-weight-bold">The Cooperative Association extended its Annual General Meeting
                   date and notified its members of this extension (required for this date selection)</span>
               </template>
@@ -84,26 +101,36 @@
         </v-expand-transition>
 
         <!-- No AGM checkbox -->
-        <v-checkbox v-if="showNoAgmCheckbox"
+        <v-checkbox
+          v-if="showNoAgmCheckbox"
           id="no-agm-checkbox"
           v-model="noAgm"
           hide-details
-          :label=noAgmLabel
+          :label="noAgmLabel"
           @change="onNoAgmCheckboxChanged($event)"
         />
 
         <!-- No AGM message -->
         <v-expand-transition>
-          <div v-if="noAgm" class="no-agm-container d-flex align-start mt-4">
-            <v-icon color="primary">mdi-information-outline</v-icon>
+          <div
+            v-if="noAgm"
+            class="no-agm-container d-flex align-start mt-4"
+          >
+            <v-icon color="primary">
+              mdi-information-outline
+            </v-icon>
 
             <div class="ml-3">
-              <p>A general meeting of every association must be held at least once in every calendar year
+              <p>
+                A general meeting of every association must be held at least once in every calendar year
                 within 4 months after the end of its financial year, to be in compliance with the Cooperative
-                Association Act (Section 143).</p>
-              <p>You can continue your filing, and there is no fee enforced by BC Registries and Online
+                Association Act (Section 143).
+              </p>
+              <p>
+                You can continue your filing, and there is no fee enforced by BC Registries and Online
                 Services for being out of compliance with legislation. However, it is important to hold a valid
-                AGM in the next calendar year to be in compliance with the Cooperative Association Act.</p>
+                AGM in the next calendar year to be in compliance with the Cooperative Association Act.
+              </p>
             </div>
           </div>
         </v-expand-transition>

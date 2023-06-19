@@ -880,7 +880,6 @@ describe('App as a BCOMP', () => {
 
 describe('App as a Draft IA with approved NR', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -965,7 +964,6 @@ describe('App as a Draft IA with approved NR', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1004,7 +1002,6 @@ describe('App as a Draft IA with approved NR', () => {
 
 describe('App as a Draft IA with conditional-not required NR', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1090,7 +1087,6 @@ describe('App as a Draft IA with conditional-not required NR', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1109,7 +1105,6 @@ describe('App as a Draft IA with conditional-not required NR', () => {
 
 describe('App as a Draft IA with conditional-received NR', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1195,7 +1190,6 @@ describe('App as a Draft IA with conditional-received NR', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1214,7 +1208,6 @@ describe('App as a Draft IA with conditional-received NR', () => {
 
 describe('App as a Draft IA with conditional-waived NR', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1300,7 +1293,6 @@ describe('App as a Draft IA with conditional-waived NR', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1319,7 +1311,6 @@ describe('App as a Draft IA with conditional-waived NR', () => {
 
 describe('App as a PAID (pending) Incorporation Application', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1415,7 +1406,6 @@ describe('App as a PAID (pending) Incorporation Application', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1468,7 +1458,6 @@ describe('App as a PAID (pending) Incorporation Application', () => {
 describe('App as a COMPLETED Incorporation Application', () => {
   // Intermediate scenario - While returning from payment completion page
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1564,7 +1553,6 @@ describe('App as a COMPLETED Incorporation Application', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1616,7 +1604,6 @@ describe('App as a COMPLETED Incorporation Application', () => {
 
 describe('App as an historical business', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1732,7 +1719,6 @@ describe('App as an historical business', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1753,7 +1739,6 @@ describe('App as an historical business', () => {
 
 describe('App as a Draft Registration with approved NR', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1838,7 +1823,6 @@ describe('App as a Draft Registration with approved NR', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()
@@ -1878,7 +1862,6 @@ describe('App as a Draft Registration with approved NR', () => {
 describe('App as a COMPLETED Registration Application', () => {
   // Intermediate scenario - While returning from payment completion page
   let wrapper: Wrapper<Vue>
-  let vm: any
 
   beforeAll(() => {
     // clear store
@@ -1974,7 +1957,6 @@ describe('App as a COMPLETED Registration Application', () => {
       router,
       vuetify
     })
-    vm = wrapper.vm
 
     // wait for everything to settle
     await flushPromises()

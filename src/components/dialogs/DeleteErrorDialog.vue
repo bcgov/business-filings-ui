@@ -1,41 +1,79 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="delete-error-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="delete-error-dialog"
+  >
     <v-card>
-      <v-card-title id="dialog-title" v-if="errors.length > 0 || warnings.length < 1">
+      <v-card-title
+        v-if="errors.length > 0 || warnings.length < 1"
+        id="dialog-title"
+      >
         Unable to Delete Filing
       </v-card-title>
-      <v-card-title id="dialog-title" v-else>
+      <v-card-title
+        v-else
+        id="dialog-title"
+      >
         Filing Deleted with Warnings
       </v-card-title>
 
       <v-card-text id="dialog-text">
-        <p class="font-15" v-if="errors.length + warnings.length < 1">
+        <p
+          v-if="errors.length + warnings.length < 1"
+          class="font-15"
+        >
           We were unable to delete your filing.
         </p>
-        <p class="font-15" v-else-if="errors.length > 0">
+        <p
+          v-else-if="errors.length > 0"
+          class="font-15"
+        >
           We were unable to delete your filing due to the following errors:
         </p>
-        <p class="font-15" v-else>
+        <p
+          v-else
+          class="font-15"
+        >
           Please note the following:
         </p>
-        <p class="font-15" v-for="(error, index) in errors" :key="index">
-          {{error.error || error.message}}
+        <p
+          v-for="(error, index) in errors"
+          :key="index"
+          class="font-15"
+        >
+          {{ error.error || error.message }}
         </p>
-        <p class="font-15" v-for="(warning, index) in warnings" :key="index">
-          {{warning.warning || warning.message}}
+        <p
+          v-for="(warning, index) in warnings"
+          :key="index"
+          class="font-15"
+        >
+          {{ warning.warning || warning.message }}
         </p>
 
         <template v-if="!isRoleStaff">
-          <p class="font-15">If you need help, please contact us.</p>
+          <p class="font-15">
+            If you need help, please contact us.
+          </p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-ok-btn" color="primary" text @click="okay()">OK</v-btn>
+        <v-spacer />
+        <v-btn
+          id="dialog-ok-btn"
+          color="primary"
+          text
+          @click="okay()"
+        >
+          OK
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

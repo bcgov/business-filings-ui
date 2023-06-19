@@ -2,46 +2,87 @@
   <header id="entity-header">
     <template v-if="!!businessId">
       <!-- Title -->
-      <div id="entity-legal-name" aria-label="Entity Legal Name">
+      <div
+        id="entity-legal-name"
+        aria-label="Entity Legal Name"
+      >
         {{ getEntityName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
       <div>
         <span id="business-description">{{ businessDescription }}</span>
-        <span id="active-util" class="ml-3 pl-3" v-if="isInLimitedRestoration">
+        <span
+          v-if="isInLimitedRestoration"
+          id="active-util"
+          class="ml-3 pl-3"
+        >
           Active until {{ getLimitedRestorationActiveUntil || 'Unknown' }}
         </span>
       </div>
 
-      <div id="historical" class="mt-2" v-if="isHistorical">
+      <div
+        v-if="isHistorical"
+        id="historical"
+        class="mt-2"
+      >
         <v-chip
           id="historical-chip"
           class="primary mt-n1 pointer-events-none font-weight-bold"
-          small label text-color="white">HISTORICAL</v-chip>
+          small
+          label
+          text-color="white"
+        >
+          HISTORICAL
+        </v-chip>
         <span class="font-14 mx-3">{{ getReasonText || 'Unknown Reason' }}</span>
       </div>
-      <div id="multiple-badges" class="mt-2" v-else>
-        <span id="limited-restoration" v-if="isInLimitedRestoration">
-          <v-chip class="primary mt-n1 pointer-events-none font-weight-bold"
-            small label text-color="white">LIMITED RESTORATION</v-chip>
+      <div
+        v-else
+        id="multiple-badges"
+        class="mt-2"
+      >
+        <span
+          v-if="isInLimitedRestoration"
+          id="limited-restoration"
+        >
+          <v-chip
+            class="primary mt-n1 pointer-events-none font-weight-bold"
+            small
+            label
+            text-color="white"
+          >LIMITED RESTORATION</v-chip>
         </span>
 
-        <span id="authorized-to-continue-out" v-if="isAuthorizedToContinueOut">
-          <v-chip class="primary mt-n1 pointer-events-none font-weight-bold" :class="{ 'ml-3': isInLimitedRestoration }"
-            small label text-color="white">AUTHORIZED TO CONTINUE OUT</v-chip>
+        <span
+          v-if="isAuthorizedToContinueOut"
+          id="authorized-to-continue-out"
+        >
+          <v-chip
+            class="primary mt-n1 pointer-events-none font-weight-bold"
+            :class="{ 'ml-3': isInLimitedRestoration }"
+            small
+            label
+            text-color="white"
+          >AUTHORIZED TO CONTINUE OUT</v-chip>
         </span>
       </div>
     </template>
 
     <template v-if="!!tempRegNumber">
       <!-- Title -->
-      <div id="ia-reg-name" aria-label="Incorporation Application or Registration Entity Name">
+      <div
+        id="ia-reg-name"
+        aria-label="Incorporation Application or Registration Entity Name"
+      >
         {{ getEntityName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
-      <div id="ia-reg-description" aria-label="Incorporation Application or Registration Description">
+      <div
+        id="ia-reg-description"
+        aria-label="Incorporation Application or Registration Description"
+      >
         {{ iaRegDescription }}
       </div>
     </template>

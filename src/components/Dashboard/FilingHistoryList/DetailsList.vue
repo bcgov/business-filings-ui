@@ -2,14 +2,16 @@
   <div class="details-list">
     <div class="title-bar">
       <h4>
-        <v-icon small>mdi-message-reply</v-icon>
-        <span class="ml-1">Detail{{filing.comments.length > 1 ? "s" : ""}} ({{filing.comments.length}})</span>
+        <v-icon small>
+          mdi-message-reply
+        </v-icon>
+        <span class="ml-1">Detail{{ filing.comments.length > 1 ? "s" : "" }} ({{ filing.comments.length }})</span>
       </h4>
       <v-btn
+        v-if="isRoleStaff"
         class="add-detail-btn"
         color="primary"
-        v-if="isRoleStaff"
-        :disabled ="!filing.filingId"
+        :disabled="!filing.filingId"
         @click="showCommentDialog(filing)"
       >
         <span>Add Detail</span>
@@ -18,15 +20,21 @@
 
     <!-- the detail comments list-->
     <v-list class="pb-0">
-      <v-list-item class="pl-0 pr-0 detail-body" v-for="(comment, index) in filing.comments" :key="index">
+      <v-list-item
+        v-for="(comment, index) in filing.comments"
+        :key="index"
+        class="pl-0 pr-0 detail-body"
+      >
         <v-list-item-content>
-          <v-list-item-title class="body-2">
+          <v-list-item-title class="text-body-2">
             <strong v-if="!isRoleStaff">BC Registries Staff</strong>
-            <strong v-else>{{comment.submitterDisplayName || 'N/A'}}</strong>
-            ({{DateUtilities.apiToPacificDateTime(comment.timestamp)}})
+            <strong v-else>{{ comment.submitterDisplayName || 'N/A' }}</strong>
+            ({{ DateUtilities.apiToPacificDateTime(comment.timestamp) }})
           </v-list-item-title>
-          <v-list-item-subtitle class="body-2">
-            <div class="pre-line">{{comment.comment}}</div>
+          <v-list-item-subtitle class="text-body-2">
+            <div class="pre-line">
+              {{ comment.comment }}
+            </div>
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>

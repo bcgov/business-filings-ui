@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="incorporation-application" :filing="filing" :index="index">
+  <FilingTemplate
+    class="incorporation-application"
+    :filing="filing"
+    :index="index"
+  >
     <template #subtitle>
       <FiledAndPendingPaid
         v-if="isFutureEffectivePending"
@@ -19,12 +23,12 @@
     <template #body>
       <FutureEffectivePending
         v-if="isFutureEffectivePending"
-        :filing=filing
+        :filing="filing"
       />
 
       <FutureEffective
         v-else-if="isFutureEffective"
-        :filing=filing
+        :filing="filing"
       />
 
       <div
@@ -42,7 +46,10 @@
         </p>
 
         <div class="to-dashboard-container text-center mt-6">
-          <v-btn color="primary" @click.stop="returnToMyBusinessRegistry()">
+          <v-btn
+            color="primary"
+            @click.stop="returnToMyBusinessRegistry()"
+          >
             <span>Return to My Business Registry</span>
           </v-btn>
         </div>

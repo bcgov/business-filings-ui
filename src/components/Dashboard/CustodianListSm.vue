@@ -1,51 +1,93 @@
 <template>
   <div id="custodian-list-sm">
-    <v-expansion-panels accordion multiple  :value="[0]">
-      <v-expansion-panel class="align-items-top address-panel"
-                         v-for="custodian in custodians"
-                         :key="custodian.id"
+    <v-expansion-panels
+      accordion
+      multiple
+      :value="[0]"
+    >
+      <v-expansion-panel
+        v-for="custodian in custodians"
+        :key="custodian.id"
+        class="align-items-top address-panel"
       >
         <v-expansion-panel-header class="address-panel-toggle">
           <div class="avatar-container">
-            <v-avatar color="primary" size="25">{{ officerName(custodian).substring(0,1) }}</v-avatar>
+            <v-avatar
+              color="primary"
+              size="25"
+            >
+              {{ officerName(custodian).substring(0,1) }}
+            </v-avatar>
           </div>
-          <div class="list-item__title">{{ officerName(custodian) }}</div>
+          <div class="list-item__title">
+            {{ officerName(custodian) }}
+          </div>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
           <v-list class="pt-0 pb-0">
-            <v-list-item class="delivery-address-list-item" v-if="custodian.deliveryAddress">
+            <v-list-item
+              v-if="custodian.deliveryAddress"
+              class="delivery-address-list-item"
+            >
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <ul class="address-subtitle pre-line">
-                    <li class="address-line1">{{ custodian.deliveryAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ custodian.deliveryAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ custodian.deliveryAddress.addressCity }}
+                    <li class="address-line1">
+                      {{ custodian.deliveryAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ custodian.deliveryAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ custodian.deliveryAddress.addressCity }}
                       {{ custodian.deliveryAddress.addressRegion }}
-                      {{ custodian.deliveryAddress.postalCode }}</li>
-                    <li class="address-line4">{{ getCountryName(custodian.deliveryAddress.addressCountry) }}</li>
+                      {{ custodian.deliveryAddress.postalCode }}
+                    </li>
+                    <li class="address-line4">
+                      {{ getCountryName(custodian.deliveryAddress.addressCountry) }}
+                    </li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item" v-if="custodian.mailingAddress">
+            <v-list-item
+              v-if="custodian.mailingAddress"
+              class="mailing-address-list-item"
+            >
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above"
-                       v-if="isSame(custodian.deliveryAddress, custodian.mailingAddress, 'id')"
+                  <div
+                    v-if="isSame(custodian.deliveryAddress, custodian.mailingAddress, 'id')"
+                    class="same-as-above"
                   >
                     <span>Same as above</span>
                   </div>
-                  <ul v-else class="address-subtitle pre-line">
-                    <li class="address-line1">{{ custodian.mailingAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ custodian.mailingAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ custodian.mailingAddress.addressCity }}
+                  <ul
+                    v-else
+                    class="address-subtitle pre-line"
+                  >
+                    <li class="address-line1">
+                      {{ custodian.mailingAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ custodian.mailingAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ custodian.mailingAddress.addressCity }}
                       {{ custodian.mailingAddress.addressRegion }}
-                      {{ custodian.mailingAddress.postalCode }}</li>
-                    <li class="address-line4">{{ getCountryName(custodian.mailingAddress.addressCountry) }}</li>
+                      {{ custodian.mailingAddress.postalCode }}
+                    </li>
+                    <li class="address-line4">
+                      {{ getCountryName(custodian.mailingAddress.addressCountry) }}
+                    </li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>

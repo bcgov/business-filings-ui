@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="limited-restoration" :filing="filing" :index="index">
+  <FilingTemplate
+    class="limited-restoration"
+    :filing="filing"
+    :index="index"
+  >
     <template #body>
       <div v-if="isFilingComplete">
         <h4>Limited Restoration Period</h4>

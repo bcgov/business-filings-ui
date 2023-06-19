@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="change-of-address" :filing="filing" :index="index">
+  <FilingTemplate
+    class="change-of-address"
+    :filing="filing"
+    :index="index"
+  >
     <template #subtitle>
       <FutureEffectiveFiledAndPendingCoa
         v-if="isFutureEffective"

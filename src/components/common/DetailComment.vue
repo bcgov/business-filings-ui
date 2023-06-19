@@ -1,10 +1,13 @@
 <template>
-  <v-card flat id="detail-comment-container">
+  <v-card
+    id="detail-comment-container"
+    flat
+  >
     <v-textarea
+      id="detail-comment-textarea"
       ref="textarea"
       auto-grow
       rows="5"
-      id="detail-comment-textarea"
       :counter="maxLength"
       :rules="rules"
       :value="value"

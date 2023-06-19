@@ -1,6 +1,7 @@
 <template>
   <v-file-input
     id="file-upload-pdf"
+    :key="count"
     dense
     filled
     show-size
@@ -9,7 +10,6 @@
     accept=".pdf"
     label="Select a file to upload"
     :value="file"
-    :key="count"
     :error-messages="errorMessages"
     @change="onChange($event)"
   />

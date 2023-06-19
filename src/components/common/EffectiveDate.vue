@@ -1,49 +1,61 @@
 <template>
-  <v-card flat id="effective-date">
-      <v-row>
-        <v-col cols="12" sm="3">
-          <label class="title-label">Effective Date of Continuation Out</label>
-        </v-col>
-        <v-col cols="12" sm="9">
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="18rem"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                ref="textarea"
-                id="date-text-field"
-                v-model="dateFormatted"
-                :rules="effectiveDateRules"
-                label="Date of Continuation Out"
-                hint="YYYY/MM/DD"
-                append-icon="mdi-calendar"
-                v-on="on"
-                filled
-              />
-            </template>
-            <v-date-picker
-              v-model="date"
-              :max=maxDate
-              no-title
-              @input="menu=true"
+  <v-card
+    id="effective-date"
+    flat
+  >
+    <v-row>
+      <v-col
+        cols="12"
+        sm="3"
+      >
+        <label class="title-label">Effective Date of Continuation Out</label>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="9"
+      >
+        <v-menu
+          ref="menu"
+          v-model="menu"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="18rem"
+        >
+          <template #activator="{ on }">
+            <v-text-field
+              id="date-text-field"
+              ref="textarea"
+              v-model="dateFormatted"
+              :rules="effectiveDateRules"
+              label="Date of Continuation Out"
+              hint="YYYY/MM/DD"
+              append-icon="mdi-calendar"
+              filled
+              v-on="on"
             />
-          </v-menu>
+          </template>
+          <v-date-picker
+            v-model="date"
+            :max="maxDate"
+            no-title
+            @input="menu=true"
+          />
+        </v-menu>
 
-          <div class="validationErrorInfo" v-if="$v.dateFormatted.isNotNull">
-            <span v-if="!$v.dateFormatted.isValidFormat">
-              Date must be in format YYYY/MM/DD.
-            </span>
-            <span v-else-if="!$v.dateFormatted.isValidEffectiveDate">
-                Please enter a day before {{formatDate(maxDate, false)}}.
-            </span>
-          </div>
-        </v-col>
-      </v-row>
+        <div
+          v-if="$v.dateFormatted.isNotNull"
+          class="validationErrorInfo"
+        >
+          <span v-if="!$v.dateFormatted.isValidFormat">
+            Date must be in format YYYY/MM/DD.
+          </span>
+          <span v-else-if="!$v.dateFormatted.isValidEffectiveDate">
+            Please enter a day before {{ formatDate(maxDate, false) }}.
+          </span>
+        </div>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 

@@ -6,7 +6,7 @@
         <span class="vert-pipe" />
         <span>EFFECTIVE as of <DateTooltip :date="effectiveDate" /></span>
       </template>
-      <span v-else >Filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" /></span>
+      <span v-else>Filed by {{ filing.submitter }} on <DateTooltip :date="submittedDate" /></span>
     </template>
 
     <template v-else>

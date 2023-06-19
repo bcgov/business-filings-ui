@@ -1,19 +1,32 @@
 <template>
-  <div id="director-list-sm" :class="{ 'disabled': disabled }">
+  <div
+    id="director-list-sm"
+    :class="{ 'disabled': disabled }"
+  >
     <div v-if="showCompleteYourFilingMessage">
       <span class="complete-filing">Complete your filing to display</span>
     </div>
 
-    <v-expansion-panels v-else accordion multiple>
+    <v-expansion-panels
+      v-else
+      accordion
+      multiple
+    >
       <!-- when grayed out, disable expansion -->
-      <v-expansion-panel class="align-items-top address-panel"
+      <v-expansion-panel
         v-for="director in directors"
         :key="director.id"
+        class="align-items-top address-panel"
         :disabled="disabled"
       >
         <v-expansion-panel-header class="address-panel-toggle">
           <div class="avatar-container">
-            <v-avatar color="primary" size="25">{{ director.officer.firstName.substring(0,1) }}</v-avatar>
+            <v-avatar
+              color="primary"
+              size="25"
+            >
+              {{ director.officer.firstName.substring(0,1) }}
+            </v-avatar>
           </div>
           <div class="list-item__title">
             {{ director.officer.firstName }} {{ director.officer.middleInitial }} {{ director.officer.lastName }}
@@ -22,38 +35,68 @@
 
         <v-expansion-panel-content>
           <v-list class="pt-0 pb-0">
-            <v-list-item class="delivery-address-list-item" v-if="director.deliveryAddress">
+            <v-list-item
+              v-if="director.deliveryAddress"
+              class="delivery-address-list-item"
+            >
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <ul class="address-subtitle pre-line">
-                    <li class="address-line1">{{ director.deliveryAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ director.deliveryAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ director.deliveryAddress.addressCity }}
-                                              {{ director.deliveryAddress.addressRegion }}
-                                              {{ director.deliveryAddress.postalCode }}</li>
-                    <li class="address-line4">{{ getCountryName(director.deliveryAddress.addressCountry) }}</li>
+                    <li class="address-line1">
+                      {{ director.deliveryAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ director.deliveryAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ director.deliveryAddress.addressCity }}
+                      {{ director.deliveryAddress.addressRegion }}
+                      {{ director.deliveryAddress.postalCode }}
+                    </li>
+                    <li class="address-line4">
+                      {{ getCountryName(director.deliveryAddress.addressCountry) }}
+                    </li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item" v-if="director.mailingAddress">
+            <v-list-item
+              v-if="director.mailingAddress"
+              class="mailing-address-list-item"
+            >
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above"
+                  <div
                     v-if="isSame(director.deliveryAddress, director.mailingAddress, 'id')"
+                    class="same-as-above"
                   >
                     <span>Same as above</span>
                   </div>
-                  <ul v-else class="address-subtitle pre-line">
-                    <li class="address-line1">{{ director.mailingAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ director.mailingAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ director.mailingAddress.addressCity }}
-                                              {{ director.mailingAddress.addressRegion }}
-                                              {{ director.mailingAddress.postalCode }}</li>
-                    <li class="address-line4">{{ getCountryName(director.mailingAddress.addressCountry) }}</li>
+                  <ul
+                    v-else
+                    class="address-subtitle pre-line"
+                  >
+                    <li class="address-line1">
+                      {{ director.mailingAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ director.mailingAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ director.mailingAddress.addressCity }}
+                      {{ director.mailingAddress.addressRegion }}
+                      {{ director.mailingAddress.postalCode }}
+                    </li>
+                    <li class="address-line4">
+                      {{ getCountryName(director.mailingAddress.addressCountry) }}
+                    </li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>

@@ -1,7 +1,14 @@
 <template>
-  <FilingTemplate class="registration-filing" :filing="filing" :index="index">
+  <FilingTemplate
+    class="registration-filing"
+    :filing="filing"
+    :index="index"
+  >
     <template #body>
-      <div v-if="isStatusCompleted" class="completed-dissolution-details">
+      <div
+        v-if="isStatusCompleted"
+        class="completed-dissolution-details"
+      >
         <h4>Registration Complete</h4>
 
         <p>{{ getLegalName || 'This company' }} has been successfully registered.</p>
@@ -9,7 +16,10 @@
         <p>Return to My Business Registry to access your business and file changes.</p>
 
         <div class="to-dashboard-container text-center mt-6">
-          <v-btn color="primary" @click.stop="returnToMyBusinessRegistry()">
+          <v-btn
+            color="primary"
+            @click.stop="returnToMyBusinessRegistry()"
+          >
             <span>Return to My Business Registry</span>
           </v-btn>
         </div>

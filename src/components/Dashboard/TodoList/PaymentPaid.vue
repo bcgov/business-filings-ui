@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-paid-details body-2 pa-4">
+  <div class="payment-paid-details text-body-2 pa-4">
     <h4>Paid</h4>
 
     <p class="pt-3 mb-2">

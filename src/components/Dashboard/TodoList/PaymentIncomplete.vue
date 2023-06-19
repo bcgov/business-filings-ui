@@ -1,8 +1,11 @@
 <template>
-  <div class="payment-incomplete-details body-2 pa-4">
-    <h4>Payment Incomplete - {{title}}</h4>
+  <div class="payment-incomplete-details text-body-2 pa-4">
+    <h4>Payment Incomplete - {{ title }}</h4>
 
-    <p class="pt-3 mb-2" v-html="detail" />
+    <p
+      class="pt-3 mb-2"
+      v-html="detail"
+    />
   </div>
 </template>
 

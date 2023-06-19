@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="continuation-out" :filing="filing" :index="index">
+  <FilingTemplate
+    class="continuation-out"
+    :filing="filing"
+    :index="index"
+  >
     <template #body>
       <div v-if="isFilingComplete">
         <h4>Continuation Out Complete</h4>
@@ -13,8 +17,18 @@
           incorporated company under the Business Corporations Act.
           You are required to retain a copy of all the Continuation Out documents in your records books.
         </p>
-        <p v-if="fileNumber" class="mt-4 mb-0">Court Order Number: {{ fileNumber }}</p>
-        <p v-if="hasEffectOfOrder" class="mt-0">Pursuant to a Plan of Arrangement</p>
+        <p
+          v-if="fileNumber"
+          class="mt-4 mb-0"
+        >
+          Court Order Number: {{ fileNumber }}
+        </p>
+        <p
+          v-if="hasEffectOfOrder"
+          class="mt-0"
+        >
+          Pursuant to a Plan of Arrangement
+        </p>
       </div>
     </template>
   </FilingTemplate>

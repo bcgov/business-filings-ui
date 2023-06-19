@@ -2,31 +2,37 @@
   <v-card id="step-buttons-container">
     <div
       v-for="(step, index) in getSteps"
-      class="step"
       :key="index"
-      @click="goTo(step)"
-      v-on:keyup.tab="goTo(step)"
+      class="step"
       :class="{'active-step': isCurrentStep(step)}"
+      @click="goTo(step)"
+      @keyup.tab="goTo(step)"
     >
       <div class="step__indicator">
-        <div class="step__line"></div>
+        <div class="step__line" />
         <v-btn
-          outlined fab
+          :id="step.id"
+          outlined
+          fab
           color="primary"
-          :id=step.id
           class="step__btn"
           tabindex="-1"
           :ripple="false"
           :class="{ 'selected-btn': isCurrentStep(step) }"
         >
-          <v-icon class="step__icon" :class="{ 'selected-icon': isCurrentStep(step) }">{{ step.icon }}</v-icon>
+          <v-icon
+            class="step__icon"
+            :class="{ 'selected-icon': isCurrentStep(step) }"
+          >
+            {{ step.icon }}
+          </v-icon>
         </v-btn>
       </div>
       <v-btn
         class="step__label pre-line px-3"
         text
         :ripple="false"
-        :disabled=step.disabled
+        :disabled="step.disabled"
         :class="[{'active__btn__text': isCurrentStep(step)}, 'inactive__btn__text']"
       >
         {{ step.text }}

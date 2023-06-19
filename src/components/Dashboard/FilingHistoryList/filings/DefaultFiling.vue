@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="default-filing" :filing="filing" :index="index">
+  <FilingTemplate
+    class="default-filing"
+    :filing="filing"
+    :index="index"
+  >
     <!-- just use all fallback slots -->
   </FilingTemplate>
 </template>

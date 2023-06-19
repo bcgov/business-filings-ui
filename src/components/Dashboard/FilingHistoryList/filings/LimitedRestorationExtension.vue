@@ -1,11 +1,15 @@
 <template>
-  <FilingTemplate class="limited-restoration-extension" :filing="filing" :index="index">
+  <FilingTemplate
+    class="limited-restoration-extension"
+    :filing="filing"
+    :index="index"
+  >
     <template #body>
       <h4>Extension of Limited Restoration</h4>
 
       <p>
         The period of restoration was successfuly extended and is active <strong>until
-        {{ expiryDate }}</strong>. At the end of the extended limited restoration period, the
+          {{ expiryDate }}</strong>. At the end of the extended limited restoration period, the
         company will be automatically dissolved. If you require assistance to extend a limited
         restoration/reinstatement or wish to convert your restoration from a limited period to
         a full restoration, please contact BC Registries staff:

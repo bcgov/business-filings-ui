@@ -1,11 +1,18 @@
 <template>
-  <v-tooltip transition="fade-transition" right>
-    <template v-slot:activator="{ on, attrs }">
-      <div v-bind="attrs" v-on="on" class="date-tooltip d-inline cursor-default">
-        <span class="dotted-underline">{{dateString}}</span>
+  <v-tooltip
+    transition="fade-transition"
+    right
+  >
+    <template #activator="{ on, attrs }">
+      <div
+        v-bind="attrs"
+        class="date-tooltip d-inline cursor-default"
+        v-on="on"
+      >
+        <span class="dotted-underline">{{ dateString }}</span>
       </div>
     </template>
-    {{dateTimeString}}
+    {{ dateTimeString }}
   </v-tooltip>
 </template>
 

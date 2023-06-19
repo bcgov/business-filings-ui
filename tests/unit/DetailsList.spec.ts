@@ -158,8 +158,8 @@ describe('Details List', () => {
 
     expect(wrapper.find('.title-bar').text()).toContain('Detail (1)')
     expect(wrapper.find('.title-bar').text()).not.toContain('Add Detail')
-    expect(wrapper.find('.body-2').text()).toContain('BC Registries Staff')
-    expect(wrapper.find('.body-2 .pre-line').text())
+    expect(wrapper.find('.text-body-2').text()).toContain('BC Registries Staff')
+    expect(wrapper.find('.text-body-2 .pre-line').text())
       .toContain('Correction for Annual Report (2018), filed on 2018-01-08.')
 
     wrapper.destroy()
@@ -177,8 +177,8 @@ describe('Details List', () => {
     expect(wrapper.find('.title-bar').text()).toContain('Details (3)')
     expect(wrapper.find('.title-bar').text()).toContain('Add Detail')
 
-    const firstItem = wrapper.findAll('.body-2').at(1)
-    const thirdItem = wrapper.findAll('.body-2').at(3)
+    const firstItem = wrapper.findAll('.text-body-2').at(1)
+    const thirdItem = wrapper.findAll('.text-body-2').at(3)
 
     expect(firstItem.text()).toContain('cbIdIr1234')
     expect(firstItem.text()).toContain('2020-03-02T20:26:31.697044+00:00')

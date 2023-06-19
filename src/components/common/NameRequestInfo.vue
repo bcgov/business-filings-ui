@@ -1,7 +1,10 @@
 <template>
   <div class="name-request-info">
     <v-row no-gutters>
-      <v-col cols="6" class="pl-8">
+      <v-col
+        cols="6"
+        class="pl-8"
+      >
         <ul class="ma-0 pa-0">
           <li>
             <label class="hdr">Name Request</label>
@@ -19,26 +22,44 @@
             <span class="val">{{ expirationDate }}</span>
           </li>
           <li id="status">
-            <v-icon v-if="state === NameRequestStates.APPROVED ||
-                          state === NameRequestStates.CONDITIONAL"
-              color="green" class="nr-status-icon">mdi-check</v-icon>
+            <v-icon
+              v-if="state === NameRequestStates.APPROVED ||
+                state === NameRequestStates.CONDITIONAL"
+              color="green"
+              class="nr-status-icon"
+            >
+              mdi-check
+            </v-icon>
             <span class="key">Status:</span>
             <span class="val">{{ capitalize(state) }}</span>
           </li>
           <li id="condition-consent">
-            <v-icon v-if="conditionConsent === NOT_REQUIRED_STATE ||
-                          conditionConsent === RECEIVED_STATE ||
-                          conditionConsent === WAIVED_STATE"
-              color="green" class="nr-status-icon">mdi-check</v-icon>
-            <v-icon v-if="conditionConsent === NOT_RECEIVED_STATE" color="red"
-              class="nr-status-icon">mdi-close</v-icon>
+            <v-icon
+              v-if="conditionConsent === NOT_REQUIRED_STATE ||
+                conditionConsent === RECEIVED_STATE ||
+                conditionConsent === WAIVED_STATE"
+              color="green"
+              class="nr-status-icon"
+            >
+              mdi-check
+            </v-icon>
+            <v-icon
+              v-if="conditionConsent === NOT_RECEIVED_STATE"
+              color="red"
+              class="nr-status-icon"
+            >
+              mdi-close
+            </v-icon>
             <span class="key">Condition/Consent:</span>
             <span class="val">{{ conditionConsent }}</span>
           </li>
         </ul>
       </v-col>
 
-      <v-col id="name-request-applicant-info" cols="6">
+      <v-col
+        id="name-request-applicant-info"
+        cols="6"
+      >
         <ul>
           <li>
             <label class="hdr">Name Request Applicant</label>

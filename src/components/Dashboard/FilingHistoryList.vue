@@ -3,58 +3,75 @@
     <AddCommentDialog
       :dialog="isAddCommentDialog"
       :filing="getCurrentFiling"
-      @close="hideCommentDialog($event)"
       attach="#filing-history-list"
+      @close="hideCommentDialog($event)"
     />
 
     <DownloadErrorDialog
       :dialog="isDownloadErrorDialog"
-      @close="setDownloadErrorDialog(false)"
       attach="#filing-history-list"
+      @close="setDownloadErrorDialog(false)"
     />
 
     <LoadCorrectionDialog
       :dialog="isLoadCorrectionDialog"
-      @exit="setLoadCorrectionDialog(false)"
       attach="#filing-history-list"
+      @exit="setLoadCorrectionDialog(false)"
     />
 
     <FileCorrectionDialog
       :dialog="isFileCorrectionDialog"
+      attach="#filing-history-list"
       @exit="setFileCorrectionDialog(false)"
       @redirect="redirectFiling($event)"
-      attach="#filing-history-list"
     />
 
     <!-- Court order notification -->
-    <v-card v-if="hasCourtOrders" class="my-6 pa-6" elevation="0">
+    <v-card
+      v-if="hasCourtOrders"
+      class="my-6 pa-6"
+      elevation="0"
+    >
       <v-icon>mdi-gavel</v-icon>
       <span class="ml-1">Court order(s) have been filed on this company. Review the filing history for impacts
         to business information.</span>
     </v-card>
 
-    <div class="scrollable-container" v-if="showHistoryPanel">
+    <div
+      v-if="showHistoryPanel"
+      class="scrollable-container"
+    >
       <v-expansion-panels :value="getPanel">
         <component
-          v-for="(filing, index) in getFilings"
           :is="is(filing)"
+          v-for="(filing, index) in getFilings"
+          :key="index"
           :filing="filing"
           :index="index"
-          :key="index"
         />
       </v-expansion-panels>
     </div>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="!showHistoryPanel">
+    <v-card
+      v-if="!showHistoryPanel"
+      class="no-results"
+      flat
+    >
       <v-card-text>
         <template v-if="isTemporaryRegistration">
-          <div class="no-results__subtitle">Complete your filing to display</div>
+          <div class="no-results__subtitle">
+            Complete your filing to display
+          </div>
         </template>
 
         <template v-if="isBusiness">
-          <div class="no-results__title">You have no filing history</div>
-          <div class="no-results__subtitle">Your completed filings and transactions will appear here</div>
+          <div class="no-results__title">
+            You have no filing history
+          </div>
+          <div class="no-results__subtitle">
+            Your completed filings and transactions will appear here
+          </div>
         </template>
       </v-card-text>
     </v-card>

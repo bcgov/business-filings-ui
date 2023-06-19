@@ -5,17 +5,19 @@
         <div>
           <h3 class="item-header-title">
             <slot name="title">
-              <span>{{filing.displayName}}</span>
+              <span>{{ filing.displayName }}</span>
             </slot>
           </h3>
 
           <slot name="subtitle">
-            <FiledAndPendingPaid v-if="isStatusPaid"
+            <FiledAndPendingPaid
+              v-if="isStatusPaid"
               class="item-header-subtitle"
               :filing="filing"
               :index="index"
             />
-            <FiledAndPaid v-else
+            <FiledAndPaid
+              v-else
               class="item-header-subtitle"
               :filing="filing"
               :index="index"
@@ -28,11 +30,16 @@
               class="comments-btn mt-1"
               outlined
               color="primary"
-              :ripple=false
+              :ripple="false"
               @click.stop="toggleFilingHistoryItem(index)"
             >
-              <v-icon small style="padding-top: 2px">mdi-message-reply</v-icon>
-              <span>Detail{{filing.commentsCount > 1 ? "s" : ""}} ({{filing.commentsCount}})</span>
+              <v-icon
+                small
+                style="padding-top: 2px"
+              >
+                mdi-message-reply
+              </v-icon>
+              <span>Detail{{ filing.commentsCount > 1 ? "s" : "" }} ({{ filing.commentsCount }})</span>
             </v-btn>
           </slot>
         </div>
@@ -49,19 +56,30 @@
     <v-expansion-panel-content>
       <slot name="body">
         <!-- is this a generic paid (not yet completed) filing? -->
-        <div v-if="isStatusPaid" class="body-2">
-          <h4 class="mt-4">Filing Pending</h4>
+        <div
+          v-if="isStatusPaid"
+          class="text-body-2"
+        >
+          <h4 class="mt-4">
+            Filing Pending
+          </h4>
 
           <p class="mt-4">
             This {{ title }} is paid, but the filing has not been completed by the Business Registry
             yet. Some filings may take longer than expected.
           </p>
 
-          <p v-if="fileNumber" class="mt-4">
+          <p
+            v-if="fileNumber"
+            class="mt-4"
+          >
             Court Order Number: {{ fileNumber }}
           </p>
 
-          <p v-if="hasEffectOfOrder" class="mt-4">
+          <p
+            v-if="hasEffectOfOrder"
+            class="mt-4"
+          >
             Pursuant to a Plan of Arrangement
           </p>
 
@@ -79,15 +97,18 @@
         <!-- NB: staff filings don't have documents - see StaffFiling.vue for any exceptions -->
         <template v-if="!isTypeStaff && filing.documents && filing.documents.length > 0">
           <v-divider class="my-6" />
-          <DocumentsList :filing=filing />
+          <DocumentsList :filing="filing" />
         </template>
       </slot>
 
       <slot name="detail-comments">
         <!-- if we have detail comments, show them -->
-        <div v-if="filing.comments && filing.commentsCount > 0" class="mb-n2">
+        <div
+          v-if="filing.comments && filing.commentsCount > 0"
+          class="mb-n2"
+        >
           <v-divider class="my-6" />
-          <DetailsList :filing=filing />
+          <DetailsList :filing="filing" />
         </div>
       </slot>
     </v-expansion-panel-content>

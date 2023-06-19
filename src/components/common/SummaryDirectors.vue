@@ -10,49 +10,69 @@
           <span class="header-appointed">Appointed/Elected</span>
         </v-subheader>
 
-        <li class="director-list-item"
+        <li
           v-for="(director, index) in directorSummary"
           :id="'director-' + director.id"
-          :class="{ 'remove' : !isActionable(director)}"
           :key="index"
+          class="director-list-item"
+          :class="{ 'remove' : !isActionable(director)}"
         >
           <div class="meta-container">
             <label>
-              <span>{{director.officer.firstName}} </span>
-              <span>{{director.officer.middleInitial}} </span>
-              <span>{{director.officer.lastName}}</span>
+              <span>{{ director.officer.firstName }} </span>
+              <span>{{ director.officer.middleInitial }} </span>
+              <span>{{ director.officer.lastName }}</span>
               <div class="director-status">
                 <v-scale-transition>
-                  <v-chip x-small label color="blue" text-color="white"
+                  <v-chip
                     v-show="isNew(director) && !director.cessationDate"
+                    x-small
+                    label
+                    color="blue"
+                    text-color="white"
                   >
                     New
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
-                  <v-chip x-small label text-color="rgba(0,0,0,.38)"
+                  <v-chip
                     v-show="!isActionable(director)"
+                    x-small
+                    label
+                    text-color="rgba(0,0,0,.38)"
                   >
                     Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
-                  <v-chip x-small label color="blue lighten-2" text-color="white"
+                  <v-chip
                     v-show="isNew(director) && director.cessationDate"
+                    x-small
+                    label
+                    color="blue lighten-2"
+                    text-color="white"
                   >
                     Appointed and Ceased
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
-                  <v-chip x-small label color="blue" text-color="white"
+                  <v-chip
                     v-show="isNameChanged(director)"
+                    x-small
+                    label
+                    color="blue"
+                    text-color="white"
                   >
                     Name Changed
                   </v-chip>
                 </v-scale-transition>
                 <v-scale-transition>
-                  <v-chip x-small label color="blue" text-color="white"
+                  <v-chip
                     v-show="isAddressChanged(director)"
+                    x-small
+                    label
+                    color="blue"
+                    text-color="white"
                   >
                     Address Changed
                   </v-chip>
@@ -67,17 +87,29 @@
                     <base-address :address="director.deliveryAddress" />
                   </div>
 
-                  <div class="address same-address" v-if="isBenBcCccUlc">
+                  <div
+                    v-if="isBenBcCccUlc"
+                    class="address same-address"
+                  >
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                       Same as Delivery Address
                     </span>
-                    <base-address v-else :address="director.mailingAddress" />
+                    <base-address
+                      v-else
+                      :address="director.mailingAddress"
+                    />
                   </div>
 
                   <div class="director_dates">
-                    <div class="director_dates__date">{{ director.appointmentDate }}</div>
-                    <div v-if="director.cessationDate">Ceased</div>
-                    <div class="director_dates__date">{{ director.cessationDate }}</div>
+                    <div class="director_dates__date">
+                      {{ director.appointmentDate }}
+                    </div>
+                    <div v-if="director.cessationDate">
+                      Ceased
+                    </div>
+                    <div class="director_dates__date">
+                      {{ director.cessationDate }}
+                    </div>
                   </div>
                 </div>
               </v-expand-transition>
@@ -90,56 +122,85 @@
     <br>
 
     <!-- Ceased Directors List -->
-    <v-btn text small v-if="directorsCeased.length > 0" @click="expand = !expand" class="cease-btn">
+    <v-btn
+      v-if="directorsCeased.length > 0"
+      text
+      small
+      class="cease-btn"
+      @click="expand = !expand"
+    >
       <v-icon>{{ dropdownIcon }}</v-icon>
       <span>Hide Ceased Directors</span>
     </v-btn>
     <v-card flat>
       <v-expand-transition>
-        <ul class="list director-list" v-show="expand">
-          <li class="director-list-item"
+        <ul
+          v-show="expand"
+          class="list director-list"
+        >
+          <li
             v-for="(director, index) in directorsCeased"
             :id="'director-' + director.id"
-            :class="{ 'remove' : !isActive(director) || !isActionable(director)}"
             :key="index"
+            class="director-list-item"
+            :class="{ 'remove' : !isActive(director) || !isActionable(director)}"
           >
             <div class="meta-container">
               <label>
-                <span>{{director.officer.firstName}} </span>
-                <span>{{director.officer.middleInitial}} </span>
-                <span>{{director.officer.lastName}}</span>
+                <span>{{ director.officer.firstName }} </span>
+                <span>{{ director.officer.middleInitial }} </span>
+                <span>{{ director.officer.lastName }}</span>
                 <div class="director-status">
                   <v-scale-transition>
-                    <v-chip x-small label color="blue" text-color="white"
+                    <v-chip
                       v-show="isNew(director) && !director.cessationDate"
+                      x-small
+                      label
+                      color="blue"
+                      text-color="white"
                     >
                       New
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>
-                    <v-chip x-small label text-color="rgba(0,0,0,.38)"
+                    <v-chip
                       v-show="!isActive(director) || !isActionable(director)"
+                      x-small
+                      label
+                      text-color="rgba(0,0,0,.38)"
                     >
                       Ceased
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>
-                    <v-chip x-small label color="blue lighten-2" text-color="white"
+                    <v-chip
                       v-show="isNew(director) && director.cessationDate"
+                      x-small
+                      label
+                      color="blue lighten-2"
+                      text-color="white"
                     >
                       Appointed and Ceased
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>
-                    <v-chip x-small label color="blue" text-color="white"
+                    <v-chip
                       v-show="isNameChanged(director)"
+                      x-small
+                      label
+                      color="blue"
+                      text-color="white"
                     >
                       Name Changed
                     </v-chip>
                   </v-scale-transition>
                   <v-scale-transition>
-                    <v-chip x-small label color="blue" text-color="white"
+                    <v-chip
                       v-show="isAddressChanged(director)"
+                      x-small
+                      label
+                      color="blue"
+                      text-color="white"
                     >
                       Address Changed
                     </v-chip>
@@ -153,16 +214,28 @@
                     <div class="address">
                       <base-address :address="director.deliveryAddress" />
                     </div>
-                    <div class="address same-address" v-if="isBenBcCccUlc">
+                    <div
+                      v-if="isBenBcCccUlc"
+                      class="address same-address"
+                    >
                       <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                         Same as Delivery Address
                       </span>
-                      <base-address v-else :address="director.mailingAddress" />
+                      <base-address
+                        v-else
+                        :address="director.mailingAddress"
+                      />
                     </div>
                     <div class="director_dates">
-                      <div class="director_dates__date">{{ director.appointmentDate }}</div>
-                      <div v-if="director.cessationDate">Ceased</div>
-                      <div class="director_dates__date">{{ director.cessationDate }}</div>
+                      <div class="director_dates__date">
+                        {{ director.appointmentDate }}
+                      </div>
+                      <div v-if="director.cessationDate">
+                        Ceased
+                      </div>
+                      <div class="director_dates__date">
+                        {{ director.cessationDate }}
+                      </div>
                     </div>
                   </div>
                 </v-expand-transition>

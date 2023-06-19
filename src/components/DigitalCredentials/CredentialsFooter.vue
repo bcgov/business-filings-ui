@@ -1,5 +1,8 @@
 <template>
-  <v-container id="credentials-footer" class="list-item px-0 pb-1">
+  <v-container
+    id="credentials-footer"
+    class="list-item px-0 pb-1"
+  >
     <div class="buttons-right">
       <v-btn
         v-if="currentStepIndex > 0"
@@ -21,7 +24,9 @@
         @click="next()"
       >
         <span>{{ nextStepName }}</span>
-        <v-icon v-if="currentStepIndex !== lastStepIndex">mdi-chevron-right</v-icon>
+        <v-icon v-if="currentStepIndex !== lastStepIndex">
+          mdi-chevron-right
+        </v-icon>
       </v-btn>
 
       <v-btn

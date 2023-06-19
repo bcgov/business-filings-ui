@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useRootStore } from '@/stores'
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
 import mockRouter from './mockRouter'
 import flushPromises from 'flush-promises'
@@ -27,7 +27,6 @@ Vue.use(Vuetify)
 
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
-const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
 describe('Correction - UI', () => {

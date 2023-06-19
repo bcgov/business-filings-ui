@@ -3,37 +3,75 @@
     v-if="showLegalObligation && !!getObligations && isBusinessWithNoMaintenanceFilings && isBusiness"
     class="legal-obligation-container"
   >
-    <v-card flat class="legal-obligation-section">
-      <v-icon color="primary" class="mr-2">mdi-information-outline</v-icon>
+    <v-card
+      flat
+      class="legal-obligation-section"
+    >
+      <v-icon
+        color="primary"
+        class="mr-2"
+      >
+        mdi-information-outline
+      </v-icon>
       <div>
-        <span class="font-weight-bold obligations-title">{{getObligations.title}}</span>
+        <span class="font-weight-bold obligations-title">{{ getObligations.title }}</span>
         <span class="obligations-copy">
-          You are required by the <em>{{getObligations.act}}</em> {{getObligations.obligationStatement}}
+          You are required by the <em>{{ getObligations.act }}</em> {{ getObligations.obligationStatement }}
         </span>
-        <p class="app-blue cursor-pointer mt-2 mb-0" @click="readMoreFlag = true">
+        <p
+          class="app-blue cursor-pointer mt-2 mb-0"
+          @click="readMoreFlag = true"
+        >
           <span v-if="!readMoreFlag"><u>Read more about your obligations</u></span>
         </p>
 
-        <div v-if="readMoreFlag" class="mb-4">
-          <div class="obligations-copy pt-2">{{getObligations.subtitle}}</div>
+        <div
+          v-if="readMoreFlag"
+          class="mb-4"
+        >
+          <div class="obligations-copy pt-2">
+            {{ getObligations.subtitle }}
+          </div>
           <div class="pt-2">
             <ul>
-              <li v-for="(changes, index) in getObligations.includedChanges" :key="index" class="obligations-copy">
-                <span class="font-weight-bold">{{changes.label}}</span> - {{changes.description}}
+              <li
+                v-for="(changes, index) in getObligations.includedChanges"
+                :key="index"
+                class="obligations-copy"
+              >
+                <span class="font-weight-bold">{{ changes.label }}</span> - {{ changes.description }}
               </li>
             </ul>
           </div>
           <div class="pt-2">
-            <a :href="getObligations.detailInfoURL" target="_blank">Find out more detailed information</a>
-            <v-icon color="primary" class="ml-1" small>mdi-open-in-new</v-icon>
+            <a
+              :href="getObligations.detailInfoURL"
+              target="_blank"
+            >Find out more detailed information</a>
+            <v-icon
+              color="primary"
+              class="ml-1"
+              small
+            >
+              mdi-open-in-new
+            </v-icon>
           </div>
           <div class="pt-6">
-            <span class="app-blue cursor-pointer" @click="readMoreFlag = false"><u>Read less</u></span>
+            <span
+              class="app-blue cursor-pointer"
+              @click="readMoreFlag = false"
+            ><u>Read less</u></span>
           </div>
         </div>
 
         <div class="legal-obligation-btn-panel float-right mt-2">
-          <v-btn id="dismiss-btn" color="primary" @click="showLegalObligation = false" height="25" width="90">
+          <v-btn
+            id="dismiss-btn"
+            color="primary"
+            height="25"
+            width="90"
+            @click="showLegalObligation = false"
+          >
             <span>Dismiss</span>
           </v-btn>
         </div>

@@ -1,23 +1,40 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="resume-error-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="resume-error-dialog"
+  >
     <v-card>
       <v-card-title>Unable to Resume Filing</v-card-title>
 
       <v-card-text>
-        <p class="font-15">We were unable to resume your filing. You can return to
-          the Business Dashboard and try again.</p>
+        <p class="font-15">
+          We were unable to resume your filing. You can return to
+          the Business Dashboard and try again.
+        </p>
 
         <template v-if="!isRoleStaff">
-          <p class="font-15">If this error persists, please contact us.</p>
+          <p class="font-15">
+            If this error persists, please contact us.
+          </p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-exit-button" color="primary" text @click="exit()">Return to dashboard</v-btn>
+        <v-spacer />
+        <v-btn
+          id="dialog-exit-button"
+          color="primary"
+          text
+          @click="exit()"
+        >
+          Return to dashboard
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

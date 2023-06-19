@@ -1,18 +1,34 @@
 <template>
-  <v-dialog v-model="dialog" width="50rem" persistent :attach="attach" content-class="payment-error-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="50rem"
+    persistent
+    :attach="attach"
+    content-class="payment-error-dialog"
+  >
     <v-card>
-      <v-card-title id="dialog-title">Unable to Process Payment</v-card-title>
+      <v-card-title id="dialog-title">
+        Unable to Process Payment
+      </v-card-title>
 
       <v-card-text id="dialog-text">
         <!-- display common message -->
-        <div class="font-15" v-if="!isRoleStaff">
-          <p>We are unable to process your payment at this time. This {{filingName}} has been saved
-            as a DRAFT and you can retry your payment from the Business Dashboard at a later time.</p>
+        <div
+          v-if="!isRoleStaff"
+          class="font-15"
+        >
+          <p>
+            We are unable to process your payment at this time. This {{ filingName }} has been saved
+            as a DRAFT and you can retry your payment from the Business Dashboard at a later time.
+          </p>
         </div>
 
         <!-- display generic message (no errors or warnings) -->
         <template v-if="(numErrors + numWarnings) < 1">
-          <div class="font-15" v-if="!isRoleStaff">
+          <div
+            v-if="!isRoleStaff"
+            class="font-15"
+          >
             <p>PayBC is normally available:</p>
             <ul>
               <li>Monday to Friday: 6:00am to 9:00pm</li>
@@ -20,41 +36,71 @@
               <li>Sunday: 12:00pm to 12:00am</li>
             </ul>
           </div>
-          <div class="font-15" v-else>
+          <div
+            v-else
+            class="font-15"
+          >
             <p>We are unable to process your payment at this time.</p>
           </div>
         </template>
 
         <!-- display errors -->
-        <div class="font-15 mb-4" v-if="numErrors > 0">
+        <div
+          v-if="numErrors > 0"
+          class="font-15 mb-4"
+        >
           <p>We were unable to process your payment due to the following errors:</p>
-          <div v-for="(error, index) in errors" :key="index" class="d-flex">
+          <div
+            v-for="(error, index) in errors"
+            :key="index"
+            class="d-flex"
+          >
             <span class="flex-shrink-0"><v-icon>mdi-circle-medium</v-icon></span>
-            <span class="flex-grow-1" v-html="error.message" />
+            <span
+              class="flex-grow-1"
+              v-html="error.message"
+            />
           </div>
         </div>
 
         <!-- display warnings-->
-        <div class="font-15 mb-4" v-if="numWarnings > 0">
+        <div
+          v-if="numWarnings > 0"
+          class="font-15 mb-4"
+        >
           <p>Please note the following warnings:</p>
-          <div v-for="(warning, index) in warnings" :key="index" class="d-flex">
+          <div
+            v-for="(warning, index) in warnings"
+            :key="index"
+            class="d-flex"
+          >
             <span class="flex-shrink-0"><v-icon>mdi-circle-medium</v-icon></span>
-            <span class="flex-grow-1" v-html="warning.message" />
+            <span
+              class="flex-grow-1"
+              v-html="warning.message"
+            />
           </div>
         </div>
 
         <template v-if="!isRoleStaff">
-          <p class="font-15">If this error persists, please contact us:</p>
+          <p class="font-15">
+            If this error persists, please contact us:
+          </p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-exit-button" color="primary" text @click="exit()">
-          {{!isRoleStaff ? 'Back to My Dashboard' : 'OK'}}
+        <v-spacer />
+        <v-btn
+          id="dialog-exit-button"
+          color="primary"
+          text
+          @click="exit()"
+        >
+          {{ !isRoleStaff ? 'Back to My Dashboard' : 'OK' }}
         </v-btn>
       </v-card-actions>
     </v-card>

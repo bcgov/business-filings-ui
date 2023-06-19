@@ -1,24 +1,31 @@
 <template>
   <div class="documents-list">
     <v-list class="py-0">
-      <v-list-item v-for="(document, index) in filing.documents" :key="index">
-        <v-btn text color="primary"
+      <v-list-item
+        v-for="(document, index) in filing.documents"
+        :key="index"
+      >
+        <v-btn
+          text
+          color="primary"
           class="download-one-btn"
-          @click="downloadOne(document, index)"
           :disabled="isLoadingOne || isLoadingAll"
           :loading="isLoadingOne && (index === getLoadingOneIndex)"
+          @click="downloadOne(document, index)"
         >
           <v-icon>mdi-file-pdf-outline</v-icon>
-          <span>{{document.title}}</span>
+          <span>{{ document.title }}</span>
         </v-btn>
       </v-list-item>
 
       <v-list-item v-if="filing.documents.length > 1">
-        <v-btn text color="primary"
+        <v-btn
+          text
+          color="primary"
           class="download-all-btn"
-          @click="downloadAll(filing)"
           :disabled="isLoadingOne || isLoadingAll"
           :loading="isLoadingAll"
+          @click="downloadAll(filing)"
         >
           <v-icon>mdi-download</v-icon>
           <span>Download All</span>

@@ -23,7 +23,6 @@ describe('AnnualReport - UI', () => {
 
   it('initializes the store variables properly', () => {
     const wrapper = shallowMount(ArDate)
-    const vm: any = wrapper.vm
 
     expect(rootStore.getCurrentDate).toEqual('2019-07-15')
     expect(rootStore.nextARDate).toEqual('2020-09-18')

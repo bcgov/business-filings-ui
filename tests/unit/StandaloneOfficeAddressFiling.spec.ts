@@ -163,7 +163,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       },
       vuetify
     })
-    const vm: any = wrapper.vm
 
     // set all properties truthy
     await wrapper.setData({
@@ -200,7 +199,6 @@ describe('Standalone Office Address Filing - Part 1 - UI', () => {
       },
       vuetify
     })
-    const vm: any = wrapper.vm
 
     // set all properties falsy
     await wrapper.setData({

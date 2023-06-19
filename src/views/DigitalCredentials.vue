@@ -1,6 +1,5 @@
 <template>
   <v-container id="digital-credentials">
-
     <!-- Digital Credentials Landing -->
     <CredentialsLanding
       v-if="isDigitalCredentialHome"
@@ -10,21 +9,35 @@
     />
 
     <!-- Add Credentials -->
-    <section v-else id="add-digital-credentials">
-
+    <section
+      v-else
+      id="add-digital-credentials"
+    >
       <!-- Add Credentials Header -->
-      <article id="add-digital-credentials-header" class="pt-8">
+      <article
+        id="add-digital-credentials-header"
+        class="pt-8"
+      >
         <v-row no-gutters>
-          <v-col cols="12" lg="11">
+          <v-col
+            cols="12"
+            lg="11"
+          >
             <h1>Generate Business Digital Credentials</h1>
           </v-col>
         </v-row>
       </article>
 
       <!-- Credentials Stepper -->
-      <article id="digital-credentials-stepper" class="mt-8">
+      <article
+        id="digital-credentials-stepper"
+        class="mt-8"
+      >
         <v-row no-gutters>
-          <v-col cols="12" lg="9">
+          <v-col
+            cols="12"
+            lg="9"
+          >
             <Stepper :getSteps="digitalCredentialSteps" />
           </v-col>
         </v-row>
@@ -33,7 +46,10 @@
       <!-- Credentials component flow -->
       <article id="digital-credentials-component-view">
         <v-row no-gutters>
-          <v-col cols="12" lg="9">
+          <v-col
+            cols="12"
+            lg="9"
+          >
             <router-view
               class="py-8"
               :credentialInvitationUrl="credentialInvitationUrl"
@@ -56,7 +72,6 @@
         @cancel="cancel()"
       />
     </section>
-
   </v-container>
 </template>
 

@@ -1,8 +1,8 @@
 <template>
   <div id="standalone-directors">
     <ConfirmDialog
-      attach="#standalone-directors"
       ref="confirm"
+      attach="#standalone-directors"
     />
 
     <FetchErrorDialog
@@ -39,9 +39,9 @@
     />
 
     <StaffPaymentDialog
+      v-model:staffPaymentData="staffPaymentData"
       attach="#standalone-directors"
       :dialog="staffPaymentDialog"
-      :staffPaymentData.sync="staffPaymentData"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
@@ -49,20 +49,38 @@
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
-          <div class="loading-msg">{{loadingMessage}}</div>
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Alternate Loading Spinner -->
     <v-fade-transition>
-      <div class="loading-container grayed-out" v-show="isFetching">
+      <div
+        v-show="isFetching"
+        class="loading-container grayed-out"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg white--text">Fetching updated data</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg white--text">
+            Fetching updated data
+          </div>
         </div>
       </div>
     </v-fade-transition>
@@ -70,22 +88,34 @@
     <!-- Director Change Edit Page -->
     <v-fade-transition hide-on-leave>
       <div v-show="!inFilingReview">
-        <v-container id="standalone-directors-container" class="view-container">
+        <v-container
+          id="standalone-directors-container"
+          class="view-container"
+        >
           <v-row>
-            <v-col cols="12" lg="9">
+            <v-col
+              cols="12"
+              lg="9"
+            >
               <article id="standalone-directors-article">
                 <header>
-                  <h1 id="director-change-header">Director Change</h1>
-                  <p>Select the date of your director changes. If you have director changes that occurred on
-                      different dates, you will need to perform multiple Director Change filings &mdash;
-                      one for each unique date.</p>
+                  <h1 id="director-change-header">
+                    Director Change
+                  </h1>
+                  <p>
+                    Select the date of your director changes. If you have director changes that occurred on
+                    different dates, you will need to perform multiple Director Change filings &mdash;
+                    one for each unique date.
+                  </p>
 
-                  <v-alert type="info" outlined
+                  <v-alert
                     v-if="!isBenBcCccUlc"
+                    type="info"
+                    outlined
                     icon="mdi-information"
                     class="white-background"
                   >
-                    <span>Director changes can be made as far back as {{earliestDateToSet}}.</span>
+                    <span>Director changes can be made as far back as {{ earliestDateToSet }}.</span>
                   </v-alert>
                 </header>
 
@@ -101,7 +131,7 @@
                 <section>
                   <Directors
                     ref="directorsComponent"
-                    :directors.sync="updatedDirectors"
+                    v-model:directors="updatedDirectors"
                     @directorsPaidChange="onDirectorsPaidChange($event)"
                     @directorsFreeChange="onDirectorsFreeChange($event)"
                     @directorFormValid="directorFormValid=$event"
@@ -114,7 +144,11 @@
             </v-col>
 
             <!-- Fee Summary -->
-            <v-col cols="12" lg="3" style="position: relative">
+            <v-col
+              cols="12"
+              lg="3"
+              style="position: relative"
+            >
               <aside>
                 <affix
                   relative-element-selector="#standalone-directors-article"
@@ -131,7 +165,10 @@
           </v-row>
         </v-container>
 
-        <v-container id="standalone-directors-buttons-container" class="list-item">
+        <v-container
+          id="standalone-directors-buttons-container"
+          class="list-item"
+        >
           <div class="buttons-left">
             <v-btn
               id="cod-save-btn"
@@ -180,20 +217,32 @@
     <!-- Director Change Review Page -->
     <v-fade-transition hide-on-leave>
       <div v-show="inFilingReview">
-        <v-container id="standalone-directors-container-review" class="view-container">
+        <v-container
+          id="standalone-directors-container-review"
+          class="view-container"
+        >
           <v-row>
-            <v-col cols="12" lg="9">
+            <v-col
+              cols="12"
+              lg="9"
+            >
               <article id="standalone-directors-article-review">
                 <header>
-                  <h1 id="review-director-change-header">Review: Director Change </h1>
+                  <h1 id="review-director-change-header">
+                    Review: Director Change
+                  </h1>
                 </header>
 
                 <section v-if="complianceDialogMsg">
-                  <v-alert type="info" outlined
+                  <v-alert
+                    type="info"
+                    outlined
                     icon="mdi-information"
                     class="white-background"
                   >
-                    <p class="complianceDialogMsg mb-0">{{complianceDialogMsg.msg}}</p>
+                    <p class="complianceDialogMsg mb-0">
+                      {{ complianceDialogMsg.msg }}
+                    </p>
                   </v-alert>
                 </section>
 
@@ -207,13 +256,17 @@
                 <!-- Certify -->
                 <section>
                   <header>
-                    <h2 id="certify-header">Certify</h2>
-                    <p>Enter the legal name of the person authorized to complete and submit this
-                      Director Change.</p>
+                    <h2 id="certify-header">
+                      Certify
+                    </h2>
+                    <p>
+                      Enter the legal name of the person authorized to complete and submit this
+                      Director Change.
+                    </p>
                   </header>
                   <Certify
-                    :isCertified.sync="isCertified"
-                    :certifiedBy.sync="certifiedBy"
+                    v-model:isCertified="isCertified"
+                    v-model:certifiedBy="certifiedBy"
                     :entityDisplay="displayName()"
                     :message="certifyText(feeCode)"
                     @valid="certifyFormValid=$event"
@@ -223,7 +276,11 @@
             </v-col>
 
             <!-- Fee Summary -->
-            <v-col cols="12" lg="3" style="position: relative">
+            <v-col
+              cols="12"
+              lg="3"
+              style="position: relative"
+            >
               <aside>
                 <affix
                   relative-element-selector="#standalone-directors-article-review"
@@ -239,7 +296,10 @@
           </v-row>
         </v-container>
 
-        <v-container id="standalone-directors-buttons-container-review" class="list-item">
+        <v-container
+          id="standalone-directors-buttons-container-review"
+          class="list-item"
+        >
           <div class="buttons-left">
             <v-btn
               id="cod-back-btn"
@@ -261,9 +321,16 @@
           </div>
 
           <div class="buttons-right">
-            <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-              <template v-slot:activator="{ on }">
-                <div v-on="on" class="d-inline">
+            <v-tooltip
+              top
+              color="#3b6cff"
+              content-class="top-tooltip"
+            >
+              <template #activator="{ on }">
+                <div
+                  class="d-inline"
+                  v-on="on"
+                >
                   <v-btn
                     id="cod-file-pay-btn"
                     color="primary"
@@ -272,7 +339,7 @@
                     :loading="filingPaying"
                     @click="onClickFilePay()"
                   >
-                    <span>{{isPayRequired ? "File and Pay" : "File Now (no fee)"}}</span>
+                    <span>{{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}</span>
                   </v-btn>
                 </div>
               </template>

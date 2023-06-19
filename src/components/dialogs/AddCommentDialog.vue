@@ -1,7 +1,15 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-comment-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="add-comment-dialog"
+  >
     <v-card>
-      <v-card-title id="dialog-title">Add Detail</v-card-title>
+      <v-card-title id="dialog-title">
+        Add Detail
+      </v-card-title>
 
       <v-card-text>
         <DetailComment
@@ -14,20 +22,28 @@
       </v-card-text>
 
       <v-card-actions class="pt-0">
-        <v-spacer></v-spacer>
+        <v-spacer />
         <div class="form__btns">
-          <v-btn text color="primary"
+          <v-btn
             id="dialog-save-button"
+            text
+            color="primary"
             :disabled="!detailCommentValid || saving"
             :loading="saving"
             @click.native="save()"
-          >Save</v-btn>
-          <v-btn text color="secondary"
+          >
+            Save
+          </v-btn>
+          <v-btn
             id="dialog-cancel-button"
+            text
+            color="secondary"
             :disabled="saving"
             :loading="saving"
             @click.native="emitClose(false)"
-          >Cancel</v-btn>
+          >
+            Cancel
+          </v-btn>
         </div>
       </v-card-actions>
     </v-card>

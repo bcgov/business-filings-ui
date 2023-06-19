@@ -1,8 +1,8 @@
 <template>
   <div id="consent-continuation-out">
     <ConfirmDialog
-      attach="#consent-continuation-out"
       ref="confirm"
+      attach="#consent-continuation-out"
     />
 
     <PaymentErrorDialog
@@ -33,9 +33,9 @@
     />
 
     <StaffPaymentDialog
+      v-model:staffPaymentData="staffPaymentData"
       attach="#consent-continuation-out"
       :dialog="staffPaymentDialog"
-      :staffPaymentData.sync="staffPaymentData"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
@@ -43,38 +43,73 @@
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" :size="50" indeterminate />
-          <div class="loading-msg">{{loadingMessage}}</div>
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="consent-container" class="view-container" v-if="dataLoaded">
+    <v-container
+      v-if="dataLoaded"
+      id="consent-container"
+      class="view-container"
+    >
       <v-row>
-        <v-col cols="12" lg="9">
+        <v-col
+          cols="12"
+          lg="9"
+        >
           <article id="consent-article">
             <!-- Page Title -->
             <header>
-              <h1 id="consent-header">Six-Month Consent to Continue Out</h1>
+              <h1 id="consent-header">
+                Six-Month Consent to Continue Out
+              </h1>
             </header>
 
             <!-- Ledger Detail -->
             <section>
               <header>
                 <h2>Ledger Detail</h2>
-                <p class="grey-text">Enter a detail that will appear on the ledger for this entity.</p>
+                <p class="grey-text">
+                  Enter a detail that will appear on the ledger for this entity.
+                </p>
               </header>
-              <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment-section">
-                <v-card flat class="py-8 px-5">
+              <div
+                id="detail-comment-section"
+                :class="{ 'invalid-section': !detailCommentValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
                   <v-row no-gutters>
-                    <v-col cols="12" sm="3" class="pr-4">
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
                       <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
                     </v-col>
-                    <v-col cols="12" sm="9">
-                      <p class="grey-text font-weight-bold">{{defaultComment}}</p>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <p class="grey-text font-weight-bold">
+                        {{ defaultComment }}
+                      </p>
                       <DetailComment
                         ref="detailCommentRef"
                         v-model="detailComment"
@@ -93,9 +128,14 @@
               <header>
                 <h2>Jurisdiction Information</h2>
               </header>
-              <div :class="{ 'invalid-foreign-jurisdiction': !foreignJurisdictionValid && showErrors }"
-                id="foreign-jurisdiction-section">
-                <v-card flat class="pt-6 px-4">
+              <div
+                id="foreign-jurisdiction-section"
+                :class="{ 'invalid-foreign-jurisdiction': !foreignJurisdictionValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="pt-6 px-4"
+                >
                   <ForeignJurisdiction
                     ref="foreignJurisdictionRef"
                     :validateForm="showErrors"
@@ -103,7 +143,8 @@
                     :draftRegion="draftRegion"
                     @update:country="selectedCountry=$event"
                     @update:region="selectedRegion=$event"
-                    @valid="foreignJurisdictionValid=$event"/>
+                    @valid="foreignJurisdictionValid=$event"
+                  />
                 </v-card>
               </div>
             </section>
@@ -116,8 +157,14 @@
                   Copies of the consent to continue out documents will be sent to the email addresses listed below.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery-section">
-                <v-card flat class="py-8 px-5">
+              <div
+                id="document-delivery-section"
+                :class="{ 'invalid-section': !documentDeliveryValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
                   <DocumentDelivery
                     editableCompletingParty="true"
                     :contactValue="getBusinessEmail"
@@ -138,12 +185,15 @@
                   Enter the legal name of the person authorized to complete and submit this filing.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
+              <div
+                id="certify-form-section"
+                :class="{ 'invalid-section': !certifyFormValid && showErrors }"
+              >
                 <Certify
-                  :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   ref="certifyRef"
-                  :isCertified.sync="isCertified"
-                  :certifiedBy.sync="certifiedBy"
+                  v-model:isCertified="isCertified"
+                  v-model:certifiedBy="certifiedBy"
+                  :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
@@ -160,8 +210,14 @@
                   to a plan of arrangement, enter the court order number and select Plan of Arrangement.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order-section">
-                <v-card flat class="py-8 px-5">
+              <div
+                id="court-order-section"
+                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
                   <CourtOrderPoa
                     :autoValidation="showErrors"
                     :courtOrderNumberRequired="false"
@@ -174,11 +230,14 @@
                 </v-card>
               </div>
             </section>
-
           </article>
         </v-col>
 
-        <v-col cols="12" lg="3" style="position: relative">
+        <v-col
+          cols="12"
+          lg="3"
+          style="position: relative"
+        >
           <aside>
             <affix
               relative-element-selector="#consent-article"
@@ -222,9 +281,16 @@
       </div>
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="d-inline">
+        <v-tooltip
+          top
+          color="#3b6cff"
+          content-class="top-tooltip"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline"
+              v-on="on"
+            >
               <v-btn
                 id="consent-file-pay-btn"
                 color="primary"
@@ -233,7 +299,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>{{isPayRequired ? "File and Pay" : "File Now (no fee)"}}</span>
+                <span>{{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}</span>
               </v-btn>
             </div>
           </template>

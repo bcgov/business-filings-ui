@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-unsuccessful-details body-2 pa-4">
+  <div class="payment-unsuccessful-details text-body-2 pa-4">
     <h4>Payment Unsuccessful</h4>
 
     <p class="pt-3 mb-2">

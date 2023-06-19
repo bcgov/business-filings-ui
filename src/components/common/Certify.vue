@@ -1,15 +1,24 @@
 <template>
   <v-card flat>
-    <v-row no-gutters class="pl-4 pr-4 pt-4">
-      <v-col cols="12" sm="3">
+    <v-row
+      no-gutters
+      class="pl-4 pr-4 pt-4"
+    >
+      <v-col
+        cols="12"
+        sm="3"
+      >
         <label class="title-label">Legal Name</label>
       </v-col>
-      <v-col cols="12" sm="9">
+      <v-col
+        cols="12"
+        sm="9"
+      >
         <v-text-field
+          id="certified-by-textfield"
           ref="certifyTextfieldRef"
           filled
           persistent-hint
-          id="certified-by-textfield"
           label="Person's legal name"
           hint="Legal name of authorized person"
           :value="certifiedBy"
@@ -20,15 +29,19 @@
           :value="isCertified"
           @change="emitIsCertified($event)"
         >
-          <template v-slot:label>
+          <template #label>
             <div class="certify-stmt">
-              I, <strong>{{trimmedCertifiedBy || '[Legal Name]'}}</strong>, certify that I have relevant knowledge
-              of the {{entityDisplay || 'association'}} and that I am authorized to make this filing.
+              I, <strong>{{ trimmedCertifiedBy || '[Legal Name]' }}</strong>, certify that I have relevant knowledge
+              of the {{ entityDisplay || 'association' }} and that I am authorized to make this filing.
             </div>
           </template>
         </v-checkbox>
-        <p class="certify-clause"><strong>Date:</strong> {{getCurrentDate}}</p>
-        <p class="certify-clause">{{message}}</p>
+        <p class="certify-clause">
+          <strong>Date:</strong> {{ getCurrentDate }}
+        </p>
+        <p class="certify-clause">
+          {{ message }}
+        </p>
       </v-col>
     </v-row>
   </v-card>

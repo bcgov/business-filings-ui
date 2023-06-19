@@ -1,8 +1,8 @@
 <template>
   <div id="continuation-out">
     <ConfirmDialog
-      attach="#continuation-out"
       ref="confirm"
+      attach="#continuation-out"
     />
 
     <ResumeErrorDialog
@@ -25,38 +25,73 @@
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" :size="50" indeterminate />
-          <div class="loading-msg">{{loadingMessage}}</div>
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="continue-out-container" class="view-container" v-if="dataLoaded">
+    <v-container
+      v-if="dataLoaded"
+      id="continue-out-container"
+      class="view-container"
+    >
       <v-row>
-        <v-col cols="12" lg="9">
+        <v-col
+          cols="12"
+          lg="9"
+        >
           <article id="continue-out-article">
             <!-- Page Title -->
             <header>
-              <h1 id="continue-out-header">Continuation Out</h1>
+              <h1 id="continue-out-header">
+                Continuation Out
+              </h1>
             </header>
 
             <!-- Ledger Detail -->
             <section>
               <header>
                 <h2>Ledger Detail</h2>
-                <p class="grey-text">Enter a detail that will appear on the ledger for this entity.</p>
+                <p class="grey-text">
+                  Enter a detail that will appear on the ledger for this entity.
+                </p>
               </header>
-              <div :class="{ 'invalid-section': !detailCommentValid && showErrors }" id="detail-comment-section">
-                <v-card flat class="py-8 px-5">
+              <div
+                id="detail-comment-section"
+                :class="{ 'invalid-section': !detailCommentValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
                   <v-row no-gutters>
-                    <v-col cols="12" sm="3" class="pr-4">
+                    <v-col
+                      cols="12"
+                      sm="3"
+                      class="pr-4"
+                    >
                       <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
                     </v-col>
-                    <v-col cols="12" sm="9">
-                      <p class="grey-text font-weight-bold">{{defaultComment}}</p>
+                    <v-col
+                      cols="12"
+                      sm="9"
+                    >
+                      <p class="grey-text font-weight-bold">
+                        {{ defaultComment }}
+                      </p>
                       <DetailComment
                         ref="detailCommentRef"
                         v-model="detailComment"
@@ -75,11 +110,14 @@
               <header>
                 <h2>Effective Date of Continuation</h2>
               </header>
-              <div :class="{ 'invalid-section': !effectiveDateValid && showErrors }" id="effective-date-section">
+              <div
+                id="effective-date-section"
+                :class="{ 'invalid-section': !effectiveDateValid && showErrors }"
+              >
                 <EffectiveDate
+                  ref="effectiveDateRef"
                   :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
                   class="pt-6 px-4"
-                  ref="effectiveDateRef"
                   :initialEffectiveDate="initialEffectiveDate"
                   :validateForm="showErrors"
                   @update:effectiveDate="effectiveDate=$event"
@@ -94,13 +132,13 @@
                 <h2>Jurisdiction Information</h2>
               </header>
               <div
-                :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
                 id="jurisdiction-information-section"
+                :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
               >
                 <ForeignJurisdiction
+                  ref="foreignJurisdictionRef"
                   :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
                   class="pt-6 px-4"
-                  ref="foreignJurisdictionRef"
                   :draftCountry="initialCountry"
                   :draftRegion="initialRegion"
                   :validateForm="showErrors"
@@ -116,11 +154,14 @@
               <header>
                 <h2>Business Information</h2>
               </header>
-              <div :class="{ 'invalid-section': !businessNameValid && showErrors }" id="business-information-section">
+              <div
+                id="business-information-section"
+                :class="{ 'invalid-section': !businessNameValid && showErrors }"
+              >
                 <BusinessNameForeign
+                  ref="businessNameForeignRef"
                   :class="{ 'invalid-component': !businessNameValid && showErrors }"
                   class="pt-6 px-4"
-                  ref="businessNameForeignRef"
                   :draftBusinessName="initialBusinessName"
                   :validateForm="showErrors"
                   @update:businessName="businessName=$event"
@@ -137,8 +178,14 @@
                   Copies of the continue out documents will be sent to the email addresses listed below.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !documentDeliveryValid && showErrors }" id="document-delivery-section">
-                <v-card flat class="py-8 px-5">
+              <div
+                id="document-delivery-section"
+                :class="{ 'invalid-section': !documentDeliveryValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
                   <DocumentDelivery
                     :editableCompletingParty="isRoleStaff"
                     :contactValue="getBusinessEmail"
@@ -159,12 +206,15 @@
                   Enter the legal name of the person authorized to complete and submit this filing.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !certifyFormValid && showErrors }" id="certify-form-section">
+              <div
+                id="certify-form-section"
+                :class="{ 'invalid-section': !certifyFormValid && showErrors }"
+              >
                 <Certify
-                  :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   ref="certifyRef"
-                  :isCertified.sync="isCertified"
-                  :certifiedBy.sync="certifiedBy"
+                  isCertified.sync="isCertified"
+                  certifiedBy.sync="certifiedBy"
+                  :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.CONTINUATION_OUT)"
                   @valid="certifyFormValid=$event"
@@ -181,8 +231,14 @@
                   to a plan of arrangement, enter the court order number and select Plan of Arrangement.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !courtOrderValid && showErrors }" id="court-order-section">
-                <v-card flat class="py-8 px-5">
+              <div
+                id="court-order-section"
+                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
+              >
+                <v-card
+                  flat
+                  class="py-8 px-5"
+                >
                   <CourtOrderPoa
                     :autoValidation="showErrors"
                     :courtOrderNumberRequired="false"
@@ -195,11 +251,14 @@
                 </v-card>
               </div>
             </section>
-
           </article>
         </v-col>
 
-        <v-col cols="12" lg="3" style="position: relative">
+        <v-col
+          cols="12"
+          lg="3"
+          style="position: relative"
+        >
           <aside>
             <affix
               relative-element-selector="#continue-out-article"
@@ -243,9 +302,16 @@
       </div>
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="d-inline">
+        <v-tooltip
+          top
+          color="#3b6cff"
+          content-class="top-tooltip"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline"
+              v-on="on"
+            >
               <v-btn
                 id="continue-out-file-pay-btn"
                 color="primary"
@@ -254,7 +320,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>{{isPayRequired ? "File and Pay" : "File Now (no fee)"}}</span>
+                <span>{{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}</span>
               </v-btn>
             </div>
           </template>
@@ -621,7 +687,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
    * or when user retries from Save Error dialog
    * or when user submits from Staff Payment dialog.
    */
-  async onClickFilePay (fromStaffPayment = false): Promise<void> {
+  async onClickFilePay (staffPayment = false): Promise<void> { // eslint-disable-line @typescript-eslint/no-unused-vars
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true

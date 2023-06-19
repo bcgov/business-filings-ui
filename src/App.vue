@@ -1,71 +1,95 @@
 <template>
-  <v-app class="app-container theme--light" id="app">
+  <v-app
+    id="app"
+    class="app-container theme--light"
+  >
     <!-- Dialogs -->
     <DashboardUnavailableDialog
       :dialog="dashboardUnavailableDialog"
+      attach="#app"
       @exit="onClickExit()"
       @retry="onClickRetry()"
-      attach="#app"
     />
 
     <DownloadErrorDialog
       :dialog="downloadErrorDialog"
-      @close="downloadErrorDialog=false"
       attach="#app"
+      @close="downloadErrorDialog=false"
     />
 
     <BusinessAuthErrorDialog
       :dialog="businessAuthErrorDialog"
+      attach="#app"
       @exit="onClickExit()"
       @retry="onClickRetry(true)"
-      attach="#app"
     />
 
     <NameRequestAuthErrorDialog
       :dialog="nameRequestAuthErrorDialog"
+      attach="#app"
       @exit="onClickExit()"
       @retry="onClickRetry(true)"
-      attach="#app"
     />
 
     <NameRequestInvalidDialog
       :dialog="nameRequestInvalidDialog"
       :type="nameRequestInvalidType"
+      attach="#app"
       @exit="onClickExit()"
       @retry="onClickRetry()"
-      attach="#app"
     />
 
     <ConfirmDissolutionDialog
       :dialog="confirmDissolutionDialog"
+      attach="#app"
       @close="confirmDissolutionDialog = false"
       @proceed="dissolveCompany()"
-      attach="#app"
     />
 
     <NotInGoodStandingDialog
       :dialog="notInGoodStandingDialog"
       :message="nigsMessage"
-      @close="notInGoodStandingDialog = false"
       attach="#app"
+      @close="notInGoodStandingDialog = false"
     />
 
     <!-- Loading Dashboard spinner -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingDashboardSpinner">
+      <div
+        v-show="showLoadingDashboardSpinner"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg" v-if="!isSignoutRoute">Loading Dashboard</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div
+            v-if="!isSignoutRoute"
+            class="loading-msg"
+          >
+            Loading Dashboard
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Fetching Data spinner -->
     <v-fade-transition>
-      <div class="loading-container grayed-out" v-show="showFetchingDataSpinner">
+      <div
+        v-show="showFetchingDataSpinner"
+        class="loading-container grayed-out"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg white--text">Fetching Data</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg white--text">
+            Fetching Data
+          </div>
         </div>
       </div>
     </v-fade-transition>
@@ -74,10 +98,15 @@
 
     <!-- Alert banner -->
     <v-alert
-      tile dense
+      v-if="bannerText"
+      tile
+      dense
       type="warning"
-      v-if="bannerText">
-      <div v-html="bannerText" class="mb-0 text-center colour-dk-text"></div>
+    >
+      <div
+        class="mb-0 text-center colour-dk-text"
+        v-html="bannerText"
+      />
     </v-alert>
 
     <div class="app-body">
@@ -94,8 +123,7 @@
       </main>
     </div>
 
-    <SbcFooter :aboutText=aboutText />
-
+    <SbcFooter :aboutText="aboutText" />
   </v-app>
 </template>
 
@@ -148,6 +176,20 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
 export default {
   name: 'App',
 
+  components: {
+    Breadcrumb,
+    ConfirmDissolutionDialog,
+    DashboardUnavailableDialog,
+    DownloadErrorDialog,
+    BusinessAuthErrorDialog,
+    NameRequestAuthErrorDialog,
+    NameRequestInvalidDialog,
+    NotInGoodStandingDialog,
+    SbcHeader,
+    SbcFooter,
+    EntityInfo
+  },
+
   mixins: [
     CommonMixin,
     DateMixin,
@@ -182,20 +224,6 @@ export default {
         CorpTypeCd.SOLE_PROP
       ]
     }
-  },
-
-  components: {
-    Breadcrumb,
-    ConfirmDissolutionDialog,
-    DashboardUnavailableDialog,
-    DownloadErrorDialog,
-    BusinessAuthErrorDialog,
-    NameRequestAuthErrorDialog,
-    NameRequestInvalidDialog,
-    NotInGoodStandingDialog,
-    SbcHeader,
-    SbcFooter,
-    EntityInfo
   },
 
   computed: {
@@ -297,6 +325,16 @@ export default {
     }
   },
 
+  watch: {
+    async '$route' (): Promise<void> {
+      // re-fetch all data when we (re)route to the dashboard
+      // (does not fire on initial dashboard load)
+      if (this.$route.name === Routes.DASHBOARD) {
+        await this.fetchData()
+      }
+    }
+  },
+
   /** Called when component is created. */
   created (): void {
     // listen for reload data events
@@ -314,7 +352,7 @@ export default {
   },
 
   /** Called just before this component is destroyed. */
-  beforeDestroy (): void {
+  beforeUnmount (): void {
     // stop listening for reload data events
     this.$root.$off('reloadData')
   },
@@ -815,16 +853,6 @@ export default {
     /** Direct to Digital Credentials. **/
     viewAddDigitalCredentials (): void {
       this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
-    }
-  },
-
-  watch: {
-    async '$route' (): Promise<void> {
-      // re-fetch all data when we (re)route to the dashboard
-      // (does not fire on initial dashboard load)
-      if (this.$route.name === Routes.DASHBOARD) {
-        await this.fetchData()
-      }
     }
   }
 }

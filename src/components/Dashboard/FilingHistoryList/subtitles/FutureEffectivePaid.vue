@@ -11,7 +11,7 @@
       class="details-btn"
       outlined
       color="primary"
-      :ripple=false
+      :ripple="false"
       @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-information-outline</v-icon>

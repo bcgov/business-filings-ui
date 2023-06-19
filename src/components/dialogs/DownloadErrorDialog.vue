@@ -1,22 +1,39 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="download-error-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="download-error-dialog"
+  >
     <v-card>
       <v-card-title>Unable to Download Document</v-card-title>
 
       <v-card-text>
-        <p class="font-15">We were unable to download your document(s).</p>
+        <p class="font-15">
+          We were unable to download your document(s).
+        </p>
 
         <template v-if="!isRoleStaff">
-          <p class="font-15">If this error persists, please contact us.</p>
+          <p class="font-15">
+            If this error persists, please contact us.
+          </p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-close-button" color="primary" text @click="close()">Close</v-btn>
+        <v-spacer />
+        <v-btn
+          id="dialog-close-button"
+          color="primary"
+          text
+          @click="close()"
+        >
+          Close
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
