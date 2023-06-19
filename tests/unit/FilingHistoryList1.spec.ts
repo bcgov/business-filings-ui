@@ -21,6 +21,7 @@ import PaperFiling from '@/components/Dashboard/FilingHistoryList/filings/PaperF
 import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffFiling.vue'
 import LimitedRestoration from '@/components/Dashboard/FilingHistoryList/filings/LimitedRestoration.vue'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
+import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ContinuationOut.vue'
 import { CorpTypeCd, FilingTypes } from '@bcrs-shared-components/enums'
 import { FilingStatus, FilingSubTypes } from '@/enums'
 
@@ -2449,6 +2450,52 @@ describe('Filing History List - expands Consent to continue out', () => {
     // verify details
     expect(vm.getPanel).toBe(0) // first row is expanded
     expect(wrapper.findComponent(ConsentContinuationOut).exists()).toBe(true)
+
+    jest.resetAllMocks()
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - Expands Continuation Out', () => {
+  it('expands to continue out', async () => {
+    // init store
+    businessStore.setIdentifier('BC1234567')
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'BC1234567',
+        commentsCount: 0,
+        displayName: 'Continuation Out',
+        effectiveDate: '2022-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: FilingTypes.CONTINUATION_OUT,
+        status: FilingStatus.COMPLETED,
+        submittedDate: '2022-11-20 22:17:54 GMT',
+        submitter: 'BCREGTEST',
+        documentsLink: 'http://test'
+      } as any
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    const vm = wrapper.vm as any
+
+    jest.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand panel
+    await button.trigger('click')
+    await flushPromises() // wait for expansion transition
+
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+
+    // verify details
+    expect(vm.getPanel).toBe(0) // first row is expanded
+    expect(wrapper.findComponent(ContinuationOut).exists()).toBe(true)
 
     jest.resetAllMocks()
     wrapper.destroy()

@@ -1,6 +1,7 @@
 export { default as AlterationFiling } from './AlterationFiling.vue'
 export { default as ChangeOfAddress } from './ChangeOfAddress.vue'
 export { default as ConsentContinuationOut } from './ConsentContinuationOut.vue'
+export { default as ContinuationOut } from './ContinuationOut.vue'
 export { default as DefaultFiling } from './DefaultFiling.vue'
 export { default as DissolutionVoluntary } from './DissolutionVoluntary.vue'
 export { default as IncorporationApplication } from './IncorporationApplication.vue'

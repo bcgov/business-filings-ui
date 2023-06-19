@@ -70,6 +70,18 @@ export interface ApiFilingIF {
       }
     }
 
+    // continuation out filings only
+    continuationOut?: {
+      continuationOutDate: IsoDatePacific
+      courtOrder?: any
+      details: string
+      foreignJurisdiction: {
+        country: string
+        region?: string
+      }
+      legalName: string
+    }
+
     // conversion filings only
     conversion?: any // some object
 
