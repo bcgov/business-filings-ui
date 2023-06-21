@@ -397,6 +397,6 @@ section header {
 
 .section-count {
   color: $gray9;
-  font-weight: 500;
+  font-weight: normal;
 }
 </style>
