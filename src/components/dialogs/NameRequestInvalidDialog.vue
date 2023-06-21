@@ -117,7 +117,7 @@ export default class NameRequestInvalidDialog extends Vue {
   @Prop({ default: null }) readonly type!: NameRequestStates
 
   // Pass click events to parent.
-  @Emit() exit () { /* no empty function */ }
-  @Emit() retry () { /* no empty function */ }
+  @Emit() exit () {}
+  @Emit() retry () {}
 }
 </script>

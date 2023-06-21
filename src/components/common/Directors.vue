@@ -1458,7 +1458,7 @@ export default class Directors extends Mixins(CommonMixin, DateMixin, DirectorMi
   /** Emits an event containing the earliest director change date. */
   @Emit('earliestDateToSet')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitEarliestDateToSet (val: string): void { /* no empty function */ }
+  emitEarliestDateToSet (val: string): void {}
 
   /** Emits an event containing this component's paid change state. */
   @Emit('directorsPaidChange')

@@ -138,8 +138,8 @@ export default class ConfirmDissolutionDialog extends Vue {
   }
 
   // Pass click events to parent.
-  @Emit() close () { /* no empty function */ }
-  @Emit() proceed () { /* no empty function */ }
+  @Emit() close () {}
+  @Emit() proceed () {}
 }
 </script>
 

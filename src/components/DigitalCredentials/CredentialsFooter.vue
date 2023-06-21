@@ -53,9 +53,9 @@ export default class CredentialsFooter extends Vue {
 
   @Prop({ default: 'Next' }) readonly nextStepName!: string
 
-  @Emit() back (): void { /* no empty function */ }
-  @Emit() next (): void { /* no empty function */ }
-  @Emit() cancel (): void { /* no empty function */ }
+  @Emit() back (): void {}
+  @Emit() next (): void {}
+  @Emit() cancel (): void {}
 }
 </script>
 

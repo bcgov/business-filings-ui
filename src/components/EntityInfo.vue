@@ -87,20 +87,20 @@ export default class EntityInfo extends Vue {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  emitConfirmDissolution (): void { /* no empty function */ }
+  emitConfirmDissolution (): void {}
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  emitDownloadBusinessSummary (): void { /* no empty function */ }
+  emitDownloadBusinessSummary (): void {}
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitNotInGoodStanding (message: NigsMessage): void { /* no empty function */ }
+  emitNotInGoodStanding (message: NigsMessage): void {}
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  emitViewAddDigitalCredentials (): void { /* no empty function */ }
+  emitViewAddDigitalCredentials (): void {}
 }
 </script>
 

@@ -105,6 +105,6 @@ export default class DeleteErrorDialog extends Vue {
   @Prop({ default: () => [] }) readonly warnings!: any[]
 
   // Pass click event to parent.
-  @Emit() okay () { /* no empty function */ }
+  @Emit() okay () {}
 }
 </script>

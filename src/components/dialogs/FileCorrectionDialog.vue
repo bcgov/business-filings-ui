@@ -120,7 +120,7 @@ export default class FileCorrectionDialog extends Vue {
    */
   @Emit('redirect')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitRedirect (correctionType: CorrectionTypes): void { /* no empty function */ }
+  emitRedirect (correctionType: CorrectionTypes): void {}
 }
 </script>
 

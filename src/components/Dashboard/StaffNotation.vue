@@ -361,7 +361,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
   @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  close (needReload: boolean): void { /* no empty function */ }
+  close (needReload: boolean): void {}
 }
 </script>
 

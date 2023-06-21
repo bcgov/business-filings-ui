@@ -60,6 +60,6 @@ export default class LoadCorrectionDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Pass click event to parent.
-  @Emit() exit () { /* no empty function */ }
+  @Emit() exit () {}
 }
 </script>

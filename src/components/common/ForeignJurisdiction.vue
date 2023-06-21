@@ -191,7 +191,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (valid: boolean): void { /* no empty function */ }
+  emitValid (valid: boolean): void {}
 }
 </script>
 

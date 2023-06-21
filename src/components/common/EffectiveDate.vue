@@ -186,14 +186,14 @@ export default class EffectiveDate extends Mixins(DateMixin) {
    */
   @Emit('update:effectiveDate')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitEffectiveDate (val: string): void { /* no empty function */ }
+  emitEffectiveDate (val: string): void {}
 
   /**
    * Emits an event indicating whether or not this component is valid.
    */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (val: boolean): void { /* no empty function */ }
+  emitValid (val: boolean): void {}
 }
 </script>
 

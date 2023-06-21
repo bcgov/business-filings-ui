@@ -57,7 +57,7 @@ export default class CoaWarningDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Pass click events to parent.
-  @Emit() toggle () { /* no empty function */ }
-  @Emit() proceed () { /* no empty function */ }
+  @Emit() toggle () {}
+  @Emit() proceed () {}
 }
 </script>

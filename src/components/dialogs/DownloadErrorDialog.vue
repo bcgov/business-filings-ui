@@ -59,6 +59,6 @@ export default class DownloadErrorDialog extends Vue {
   @Prop({ default: '' }) readonly attach!: string
 
   // Pass click event to parent.
-  @Emit() close () { /* no empty function */ }
+  @Emit() close () {}
 }
 </script>

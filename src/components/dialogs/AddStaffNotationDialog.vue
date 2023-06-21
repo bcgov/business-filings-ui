@@ -447,7 +447,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
    */
    @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitClose (needReload: boolean): void { /* no empty function */ }
+  emitClose (needReload: boolean): void {}
 }
 </script>
 

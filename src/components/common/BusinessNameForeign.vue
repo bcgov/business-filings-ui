@@ -81,7 +81,7 @@ export default class BusinessNameForeign extends Vue {
   /** Emits an event indicating whether or not the business name is valid. */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (valid: boolean): void { /* no empty function */ }
+  emitValid (valid: boolean): void {}
 }
 </script>
 
