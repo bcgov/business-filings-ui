@@ -23,7 +23,6 @@
           filled
           placeholder="Jurisdiction Country"
           :rules="countryRules"
-          immediate
           menu-props="auto"
           @input="emitChangedCountry($event)"
         />
@@ -37,7 +36,6 @@
           filled
           placeholder="Jurisdiction Region"
           :rules="regionRules"
-          immediate
           @input="emitChangedRegion($event)"
         />
       </v-col>
