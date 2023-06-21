@@ -283,7 +283,7 @@
       <div class="buttons-right">
         <v-tooltip
           top
-          color="#3b6cff"
+          color="tooltipColor"
           content-class="top-tooltip"
         >
           <template #activator="{ on }">

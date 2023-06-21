@@ -28,7 +28,6 @@ module.exports = {
     'vue/no-deprecated-slot-scope-attribute': 'warn',
     'vue/no-deprecated-v-bind-sync': 'off',
     'vue/no-deprecated-v-on-native-modifier': 'warn',
-    'vue/multi-word-component-names': 'off',
     'vue/no-v-for-template-key-on-child': 'warn',
     'vue/no-v-html': 'off',
     'vue/no-v-model-argument': 'warn',
