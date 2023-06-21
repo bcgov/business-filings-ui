@@ -15,7 +15,7 @@
             <section v-if="alertCount > 0" id="dashboard-alerts-section" class="mb-n6">
               <header>
                 <h2 class="mb-3">
-                  <span>Alerts</span>&nbsp;<span class="gray6">({{ alertCount }})</span>
+                  <span>Alerts</span>&nbsp;<span class="section-count">({{ alertCount }})</span>
                 </h2>
               </header>
               <!-- FUTURE: move these to a new Alerts component and inside one expansion panel -->
@@ -29,7 +29,7 @@
             <section id="dashboard-todo-section">
               <header>
                 <h2 class="mb-3">
-                  <span>To Do</span>&nbsp;<span class="gray6">({{todoCount}})</span>
+                  <span>To Do</span>&nbsp;<span class="section-count">({{todoCount}})</span>
                 </h2>
               </header>
               <LegalObligation />
@@ -43,7 +43,7 @@
             <section id="dashboard-filing-history-section">
               <header>
                 <h2>
-                  <span>Recent Filing History</span>&nbsp;<span class="gray6">({{getHistoryCount}})</span>
+                  <span>Recent Filing History</span>&nbsp;<span class="section-count">({{getHistoryCount}})</span>
                 </h2>
                 <StaffNotation
                   v-if="isRoleStaff && !!businessId"
@@ -374,6 +374,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
 section header {
   display: flex;
   flex-direction: row;
@@ -391,5 +393,10 @@ section header {
 
 .pending-tooltip {
   max-width: 16.5rem;
+}
+
+.section-count {
+  color: $gray9;
+  font-weight: 500;
 }
 </style>

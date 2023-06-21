@@ -170,7 +170,7 @@ export default class FilingTemplate extends Vue {
 }
 
 .item-header-subtitle {
-  color: $gray6;
+  color: $gray7;
   margin-top: 0.5rem;
 }
 
