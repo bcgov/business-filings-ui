@@ -39,7 +39,7 @@
             <section id="dashboard-todo-section">
               <header>
                 <h2 class="mb-3">
-                  <span>To Do</span>&nbsp;<span class="gray6">({{ todoCount }})</span>
+                  <span>To Do</span>&nbsp;<span class="section-count">({{ todoCount }})</span>
                 </h2>
               </header>
               <LegalObligation />
@@ -53,7 +53,7 @@
             <section id="dashboard-filing-history-section">
               <header>
                 <h2>
-                  <span>Recent Filing History</span>&nbsp;<span class="gray6">({{ getHistoryCount }})</span>
+                  <span>Recent Filing History</span>&nbsp;<span class="section-count">({{ getHistoryCount }})</span>
                 </h2>
                 <StaffNotation
                   v-if="isRoleStaff && !!businessId"
