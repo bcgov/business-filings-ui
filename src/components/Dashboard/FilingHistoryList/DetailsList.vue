@@ -26,12 +26,12 @@
         class="pl-0 pr-0 detail-body"
       >
         <v-list-item-content>
-          <v-list-item-title class="text-body-2">
+          <v-list-item-title class="body-2">
             <strong v-if="!isRoleStaff">BC Registries Staff</strong>
             <strong v-else>{{ comment.submitterDisplayName || 'N/A' }}</strong>
             ({{ DateUtilities.apiToPacificDateTime(comment.timestamp) }})
           </v-list-item-title>
-          <v-list-item-subtitle class="text-body-2">
+          <v-list-item-subtitle class="body-2">
             <div class="pre-line">
               {{ comment.comment }}
             </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-pending-details text-body-2 pa-4">
+  <div class="payment-pending-details body-2 pa-4">
     <h4>Payment Incomplete</h4>
 
     <p class="pt-3 mb-2">

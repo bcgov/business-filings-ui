@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="filing"
-    class="limited-restoration-extension-filing text-body-2"
+    class="limited-restoration-extension-filing body-2"
   >
     <h4>Extension of Limited Restoration</h4>
 

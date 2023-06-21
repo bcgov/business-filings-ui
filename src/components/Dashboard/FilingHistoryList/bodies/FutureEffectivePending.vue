@@ -1,5 +1,5 @@
 <template>
-  <div class="future-effective-pending text-body-2">
+  <div class="future-effective-pending body-2">
     <h4>{{ _.subtitle }}</h4>
 
     <p>

@@ -10,7 +10,7 @@
       <span class="ml-1">Detail</span>
     </h4>
 
-    <p class="text-body-2 detail-body pre-line pt-4 mb-0">
+    <p class="body-2 detail-body pre-line pt-4 mb-0">
       {{ comment }}
     </p>
   </div>

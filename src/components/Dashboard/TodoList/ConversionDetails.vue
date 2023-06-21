@@ -1,7 +1,7 @@
 <template>
   <div
     id="conversion-details"
-    class="text-body-2"
+    class="body-2"
   >
     <p class="mb-2">
       BC Registries is missing information about this business.

@@ -424,7 +424,7 @@
           <template v-else-if="isStatusDraft(item) && isTypeCorrection(item)">
             <div
               data-test-class="correction-draft"
-              class="todo-list-detail text-body-2"
+              class="todo-list-detail body-2"
             >
               <p class="list-item__subtitle">
                 This filing is in review and has been saved as a draft.<br>
@@ -440,7 +440,7 @@
           <template v-else-if="isTypeCorrection(item)">
             <div
               data-test-class="correction-pending"
-              class="todo-list-detail text-body-2"
+              class="todo-list-detail body-2"
             >
               <p class="list-item__subtitle">
                 This filing is pending review by Registry Staff.<br>
@@ -1451,7 +1451,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
-      case FilingTypes.CONVERSION: { // Curly braces to fix "Unexpected lexical declaration in case block"
+      case FilingTypes.CONVERSION: {
         // go to conversion filing
         const url = `${this.getEditUrl}${this.getIdentifier}/conversion`
         navigate(url)

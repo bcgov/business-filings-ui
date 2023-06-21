@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-pending-online-banking-details text-body-2 pa-4">
+  <div class="payment-pending-online-banking-details body-2 pa-4">
     <h4>Online Banking Payment Pending</h4>
 
     <p class="pt-3 mb-2">

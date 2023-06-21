@@ -1,5 +1,5 @@
 <template>
-  <div class="payment-incomplete-details text-body-2 pa-4">
+  <div class="payment-incomplete-details body-2 pa-4">
     <h4>Payment Incomplete - {{ title }}</h4>
 
     <p

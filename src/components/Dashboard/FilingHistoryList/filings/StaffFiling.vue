@@ -22,7 +22,7 @@
     </template>
 
     <template #body>
-      <div class="staff-filing-details text-body-2">
+      <div class="staff-filing-details body-2">
         <p
           v-if="orderDetails"
           class="mt-4"

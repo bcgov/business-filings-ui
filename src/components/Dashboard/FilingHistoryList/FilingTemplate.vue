@@ -58,7 +58,7 @@
         <!-- is this a generic paid (not yet completed) filing? -->
         <div
           v-if="isStatusPaid"
-          class="text-body-2"
+          class="body-2"
         >
           <h4 class="mt-4">
             Filing Pending
