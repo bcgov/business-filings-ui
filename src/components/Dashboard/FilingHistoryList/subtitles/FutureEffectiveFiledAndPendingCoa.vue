@@ -49,6 +49,6 @@ export default class FutureEffectiveFiledAndPendingCoa extends Vue {
 }
 
 .future-effective-filed-and-pending-coa {
-  color: $gray6;
+  color: $gray7;
 }
 </style>

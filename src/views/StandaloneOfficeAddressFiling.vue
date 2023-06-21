@@ -865,7 +865,7 @@ article {
 
 header p,
 section p {
-  color: $gray6;
+  color: $gray7;
 }
 
 section + section {

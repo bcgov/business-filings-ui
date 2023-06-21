@@ -40,7 +40,7 @@ export default class FiledAndPendingPaid extends Vue {
 @import "@/assets/styles/theme.scss";
 
 .filed-and-pending-paid {
-  color: $gray6;
+  color: $gray7;
 }
 
 .details-btn {

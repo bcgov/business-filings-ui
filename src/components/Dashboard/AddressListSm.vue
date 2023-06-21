@@ -271,7 +271,7 @@ $icon-width: 2.75rem;
 
 // Complete filing required styling
 .complete-filing {
-  color: $gray6;
+  color: $gray7;
   font-size: $px-14;
   white-space: pre-wrap;
 }

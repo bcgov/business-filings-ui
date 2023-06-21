@@ -1484,7 +1484,7 @@ ul {
 // Director Display
 .director-info {
   display: flex;
-  color: $gray6;
+  color: $gray7;
 
   .status {
     flex: 1 1 auto;

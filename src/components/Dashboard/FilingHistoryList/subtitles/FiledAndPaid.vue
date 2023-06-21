@@ -22,6 +22,6 @@ export default class FiledAndPaid extends Vue {
 @import "@/assets/styles/theme.scss";
 
 .filed-and-paid {
-  color: $gray6;
+  color: $gray7;
 }
 </style>

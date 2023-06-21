@@ -59,7 +59,7 @@ export default class FutureEffectivePaid extends Vue {
 @import "@/assets/styles/theme.scss";
 
 .future-effective-paid {
-  color: $gray6;
+  color: $gray7;
 }
 
 .details-btn {

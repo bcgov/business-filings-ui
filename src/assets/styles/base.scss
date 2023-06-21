@@ -232,7 +232,7 @@ ul.list {
 }
 
 .list-item__subtitle {
-  color: $gray6;
+  color: $gray7;
 }
 
 .list-item__actions {
@@ -259,13 +259,9 @@ ul.list {
 
 .no-results__subtitle {
   margin-top: 0.25rem;
-  color: $gray6;
+  color: $gray7;
   @extend .font-14;
   font-weight: 500;
-}
-
-.gray6 {
-  color: $gray6;
 }
 
 .white-background {

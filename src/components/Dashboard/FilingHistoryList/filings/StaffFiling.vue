@@ -86,7 +86,7 @@ export default class StaffFiling extends Vue {
 @import "@/assets/styles/theme.scss";
 
 .item-header-subtitle {
-  color: $gray6;
+  color: $gray7;
   margin-top: 0.5rem;
 }
 
