@@ -114,7 +114,7 @@
 
                   <label class="address-sub-header">Delivery Address</label>
                   <div class="address-wrapper">
-                    <base-address
+                    <BaseAddress
                       ref="baseAddressNew"
                       :editing="true"
                       :schema="addressSchema"
@@ -134,7 +134,7 @@
                     <div v-if="!inheritDeliveryAddress">
                       <label class="address-sub-header">Mailing Address</label>
                       <div class="address-wrapper">
-                        <base-address
+                        <BaseAddress
                           ref="mailAddressNew"
                           :editing="true"
                           :schema="addressSchema"
@@ -322,7 +322,7 @@
                   class="director-info"
                 >
                   <div class="address">
-                    <base-address :address="dir.deliveryAddress" />
+                    <BaseAddress :address="dir.deliveryAddress" />
                   </div>
 
                   <div
@@ -332,7 +332,7 @@
                     <span v-if="isSame(dir.deliveryAddress, dir.mailingAddress)">
                       Same as Delivery Address
                     </span>
-                    <base-address
+                    <BaseAddress
                       v-else
                       :address="dir.mailingAddress"
                     />
@@ -504,7 +504,7 @@
                   <div v-show="editFormShowHide.showAddress">
                     <label class="address-sub-header">Delivery Address</label>
                     <div class="address-wrapper">
-                      <base-address
+                      <BaseAddress
                         ref="baseAddressEdit"
                         :key="activeIndex"
                         :address="dir.deliveryAddress"
@@ -526,7 +526,7 @@
                       <div v-if="!inheritDeliveryAddress">
                         <label class="address-sub-header">Mailing Address</label>
                         <div class="address-wrapper">
-                          <base-address
+                          <BaseAddress
                             ref="mailAddressEdit"
                             :key="activeIndex"
                             :address="dir.mailingAddress"

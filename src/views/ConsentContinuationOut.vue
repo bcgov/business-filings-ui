@@ -33,7 +33,7 @@
     />
 
     <StaffPaymentDialog
-      v-model:staffPaymentData="staffPaymentData"
+      :staffPaymentData.sync="staffPaymentData"
       attach="#consent-continuation-out"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
@@ -191,8 +191,8 @@
               >
                 <Certify
                   ref="certifyRef"
-                  v-model:isCertified="isCertified"
-                  v-model:certifiedBy="certifiedBy"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"

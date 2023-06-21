@@ -39,7 +39,7 @@
     />
 
     <StaffPaymentDialog
-      v-model:staffPaymentData="staffPaymentData"
+      :staffPaymentData.sync="staffPaymentData"
       attach="#annual-report"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
@@ -155,7 +155,7 @@
                 </header>
                 <OfficeAddresses
                   ref="officeAddressesComponent"
-                  v-model:addresses="updatedAddresses"
+                  :addresses.sync="updatedAddresses"
                   :componentEnabled="allowChange('coa')"
                   @original="originalAddresses=$event"
                   @modified="officeModifiedEventHandler($event)"
@@ -180,7 +180,7 @@
                 </header>
                 <Directors
                   ref="directorsComponent"
-                  v-model:directors="updatedDirectors"
+                  :directors.sync="updatedDirectors"
                   :componentEnabled="allowChange('cod')"
                   @original="originalDirectors=$event"
                   @directorsPaidChange="directorsPaidChange"
@@ -267,8 +267,8 @@
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
               <Certify
-                v-model:isCertified="isCertified"
-                v-model:certifiedBy="certifiedBy"
+                :isCertified.sync="isCertified"
+                :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
                 :message="certifyMessage"
                 @valid="certifyFormValid=$event"

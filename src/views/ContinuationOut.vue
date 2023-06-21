@@ -687,7 +687,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
    * or when user retries from Save Error dialog
    * or when user submits from Staff Payment dialog.
    */
-  // eslint-disable-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async onClickFilePay (staffPayment = false): Promise<void> {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {

@@ -39,7 +39,7 @@
     />
 
     <StaffPaymentDialog
-      v-model:staffPaymentData="staffPaymentData"
+      :staffPaymentData.sync="staffPaymentData"
       attach="#standalone-directors"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
@@ -131,7 +131,7 @@
                 <section>
                   <Directors
                     ref="directorsComponent"
-                    v-model:directors="updatedDirectors"
+                    :directors.sync="updatedDirectors"
                     @directorsPaidChange="onDirectorsPaidChange($event)"
                     @directorsFreeChange="onDirectorsFreeChange($event)"
                     @directorFormValid="directorFormValid=$event"
@@ -265,8 +265,8 @@
                     </p>
                   </header>
                   <Certify
-                    v-model:isCertified="isCertified"
-                    v-model:certifiedBy="certifiedBy"
+                    :isCertified.sync="isCertified"
+                    :certifiedBy.sync="certifiedBy"
                     :entityDisplay="displayName()"
                     :message="certifyText(feeCode)"
                     @valid="certifyFormValid=$event"

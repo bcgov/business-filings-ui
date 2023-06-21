@@ -39,7 +39,7 @@
     />
 
     <StaffPaymentDialog
-      v-model:staffPaymentData="staffPaymentData"
+      :staffPaymentData.sync="staffPaymentData"
       attach="#standalone-office-address"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
@@ -123,7 +123,7 @@
             <section>
               <OfficeAddresses
                 ref="officeAddressesComponent"
-                v-model:addresses="updatedAddresses"
+                :addresses.sync="updatedAddresses"
                 @modified="officeModifiedEventHandler($event)"
                 @valid="addressesFormValid=$event"
               />
@@ -141,8 +141,8 @@
                 </p>
               </header>
               <Certify
-                v-model:isCertified="isCertified"
-                v-model:certifiedBy="certifiedBy"
+                :isCertified.sync="isCertified"
+                :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
                 :message="certifyText(feeCode)"
                 @valid="certifyFormValid=$event"

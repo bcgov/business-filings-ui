@@ -84,7 +84,7 @@
               <v-expand-transition>
                 <div class="director-info">
                   <div class="address">
-                    <base-address :address="director.deliveryAddress" />
+                    <BaseAddress :address="director.deliveryAddress" />
                   </div>
 
                   <div
@@ -94,7 +94,7 @@
                     <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                       Same as Delivery Address
                     </span>
-                    <base-address
+                    <BaseAddress
                       v-else
                       :address="director.mailingAddress"
                     />
@@ -212,7 +212,7 @@
                 <v-expand-transition>
                   <div class="director-info">
                     <div class="address">
-                      <base-address :address="director.deliveryAddress" />
+                      <BaseAddress :address="director.deliveryAddress" />
                     </div>
                     <div
                       v-if="isBenBcCccUlc"
@@ -221,7 +221,7 @@
                       <span v-if="isSame(director.deliveryAddress, director.mailingAddress)">
                         Same as Delivery Address
                       </span>
-                      <base-address
+                      <BaseAddress
                         v-else
                         :address="director.mailingAddress"
                       />

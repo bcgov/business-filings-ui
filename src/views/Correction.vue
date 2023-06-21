@@ -39,7 +39,7 @@
     />
 
     <StaffPaymentDialog
-      v-model:staffPaymentData="staffPaymentData"
+      :staffPaymentData.sync="staffPaymentData"
       attach="#correction"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
@@ -119,8 +119,8 @@
                 <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
               <Certify
-                v-model:isCertified="isCertified"
-                v-model:certifiedBy="certifiedBy"
+                :isCertified.sync="isCertified"
+                :certifiedBy.sync="certifiedBy"
                 :entityDisplay="displayName()"
                 :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                 @valid="certifyFormValid=$event"

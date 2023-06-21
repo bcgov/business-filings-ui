@@ -81,8 +81,7 @@
                 </h2>
               </header>
               <div
-                class="scrollable-container"
-                style="max-height: 49rem"
+                class="scrollable-container scrollable-container-height"
               >
                 <v-card flat>
                   <CustodianListSm :custodians="custodians" />
@@ -179,8 +178,7 @@
               </header>
 
               <div
-                class="scrollable-container"
-                style="max-height: 49rem"
+                class="scrollable-container scrollable-container-height"
               >
                 <v-card flat>
                   <ProprietorPartnersListSm
@@ -215,8 +213,7 @@
               </header>
 
               <div
-                class="scrollable-container"
-                style="max-height: 49rem"
+                class="scrollable-container scrollable-container-height"
               >
                 <v-card flat>
                   <DirectorListSm
@@ -271,7 +268,7 @@ export default {
     ProprietorPartnersListSm,
     StaffNotation,
     TodoList
-  }, // eslint-disable-line vue/multi-word-component-names
+  },
 
   mixins: [
     AllowableActionsMixin,
@@ -457,5 +454,9 @@ section header {
 .section-count {
   color: $gray9;
   font-weight: normal;
+}
+
+.scrollable-container-height {
+  max-height: 49rem;
 }
 </style>
