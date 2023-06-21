@@ -31,7 +31,7 @@ module.exports = {
     'vue/no-v-html': 'off',
     'vue/no-v-model-argument': 'warn',
     'vue/v-on-event-hyphenation': 'off',
-    'vuetify/no-deprecated-classes': 'off',
+    'vuetify/no-deprecated-classes': 'warn',
     '@typescript-eslint/ban-types': 'warn',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
