@@ -1,15 +1,25 @@
 <template>
-  <div id="entity-info" :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }">
+  <div
+    id="entity-info"
+    :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }"
+  >
     <v-container class="pt-0 pb-0">
-      <v-row no-gutters class="pt-3 pb-4">
-        <v-col class="flex-column d-flex justify-space-between" cols="12" md="9">
+      <v-row
+        no-gutters
+        class="pt-3 pb-4"
+      >
+        <v-col
+          class="flex-column d-flex justify-space-between"
+          cols="12"
+          md="9"
+        >
           <EntityHeader
             :businessId="businessId"
             :tempRegNumber="tempRegNumber"
           />
           <EntityMenu
-            class="mt-2 ml-n3"
             v-if="!isInLocalFilingPage"
+            class="mt-2 ml-n3"
             :businessId="businessId"
             @confirmDissolution="emitConfirmDissolution()"
             @downloadBusinessSummary="emitDownloadBusinessSummary()"
@@ -18,7 +28,10 @@
           />
         </v-col>
 
-        <v-col cols="12" md="3">
+        <v-col
+          cols="12"
+          md="3"
+        >
           <EntityDefinitions
             :businessId="businessId"
             class="mt-3"
@@ -74,19 +87,20 @@ export default class EntityInfo extends Vue {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  emitConfirmDissolution (): void { /* no empty function */ }
+  emitConfirmDissolution (): void {}
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  emitDownloadBusinessSummary (): void { /* no empty function */ }
+  emitDownloadBusinessSummary (): void {}
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
-  emitNotInGoodStanding (message: NigsMessage): void { /* no empty function */ }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitNotInGoodStanding (message: NigsMessage): void {}
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  emitViewAddDigitalCredentials (): void { /* no empty function */ }
+  emitViewAddDigitalCredentials (): void {}
 }
 </script>
 

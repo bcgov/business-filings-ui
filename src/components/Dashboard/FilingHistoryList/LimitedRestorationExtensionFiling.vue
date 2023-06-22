@@ -1,5 +1,8 @@
 <template>
-  <div v-if="filing" class="limited-restoration-extension-filing body-2">
+  <div
+    v-if="filing"
+    class="limited-restoration-extension-filing body-2"
+  >
     <h4>Extension of Limited Restoration</h4>
 
     <p>

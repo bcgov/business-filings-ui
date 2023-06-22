@@ -39,9 +39,9 @@
     />
 
     <StaffPaymentDialog
+      :staffPaymentData.sync="staffPaymentData"
       attach="#annual-report"
       :dialog="staffPaymentDialog"
-      :staffPaymentData.sync="staffPaymentData"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
@@ -49,44 +49,79 @@
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
-          <div class="loading-msg">{{loadingMessage}}</div>
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Alternate Loading Spinner -->
     <v-fade-transition>
-      <div class="loading-container grayed-out" v-show="isFetching">
+      <div
+        v-show="isFetching"
+        class="loading-container grayed-out"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg white--text">Fetching updated data</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg white--text">
+            Fetching updated data
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="annual-report-container" class="view-container">
+    <v-container
+      id="annual-report-container"
+      class="view-container"
+    >
       <v-row>
-        <v-col cols="12" lg="9">
+        <v-col
+          cols="12"
+          lg="9"
+        >
           <section id="annual-report-main-section">
             <!-- COOPs only: -->
-            <article v-if="isCoop" class="annual-report-article">
+            <article
+              v-if="isCoop"
+              class="annual-report-article"
+            >
               <!-- Page Title -->
               <header>
-                <h1 id="annual-report-header">File {{ARFilingYear}} Annual Report
-                  <span class="font-italic" v-if="getReportState"> &mdash; {{getReportState}}</span>
+                <h1 id="annual-report-header">
+                  File {{ ARFilingYear }} Annual Report
+                  <span
+                    v-if="getReportState"
+                    class="font-italic"
+                  > &mdash; {{ getReportState }}</span>
                 </h1>
-                <p>Select your Annual General Meeting date, then verify or change your Office Addresses
-                  and Directors</p>
+                <p>
+                  Select your Annual General Meeting date, then verify or change your Office Addresses
+                  and Directors
+                </p>
               </header>
 
               <!-- Annual General Meeting Date -->
               <section>
                 <header>
-                  <h2 id="agm-date-header">1. Annual General Meeting Date</h2>
+                  <h2 id="agm-date-header">
+                    1. Annual General Meeting Date
+                  </h2>
                   <p>Select your Annual General Meeting (AGM) date</p>
                 </header>
                 <AgmDate
@@ -105,9 +140,16 @@
               <!-- Registered Office Addresses -->
               <section v-show="agmDateValid">
                 <header>
-                  <h2 id="addresses-header">2. Registered Office Addresses
-                    <span class="as-of-date" v-if="agmDate">(as of {{ARFilingYear}} Annual General Meeting)</span>
-                    <span class="as-of-date" v-else>(as of {{asOfDate}})</span>
+                  <h2 id="addresses-header">
+                    2. Registered Office Addresses
+                    <span
+                      v-if="agmDate"
+                      class="as-of-date"
+                    >(as of {{ ARFilingYear }} Annual General Meeting)</span>
+                    <span
+                      v-else
+                      class="as-of-date"
+                    >(as of {{ asOfDate }})</span>
                   </h2>
                   <p>Verify or change your Registered Office Addresses</p>
                 </header>
@@ -124,11 +166,17 @@
               <!-- Directors -->
               <section v-show="agmDateValid">
                 <header>
-                  <h2 id="directors-header">3. Directors</h2>
-                  <p v-if="allowChange('cod')">Tell us who was elected or appointed and who ceased to be
-                    a director at your {{ARFilingYear}} AGM</p>
-                  <p v-else>This is your list of directors active as of {{asOfDate}}, including
-                    directors that were ceased at a later date</p>
+                  <h2 id="directors-header">
+                    3. Directors
+                  </h2>
+                  <p v-if="allowChange('cod')">
+                    Tell us who was elected or appointed and who ceased to be
+                    a director at your {{ ARFilingYear }} AGM
+                  </p>
+                  <p v-else>
+                    This is your list of directors active as of {{ asOfDate }}, including
+                    directors that were ceased at a later date
+                  </p>
                 </header>
                 <Directors
                   ref="directorsComponent"
@@ -144,11 +192,18 @@
             </article>
 
             <!-- BEN/BC/CCC/ULC only: -->
-            <article v-else-if="isBenBcCccUlc" class="annual-report-article">
+            <article
+              v-else-if="isBenBcCccUlc"
+              class="annual-report-article"
+            >
               <!-- Page Title -->
               <header>
-                <h1 id="annual-report-header-BC">File {{ARFilingYear}} Annual Report
-                  <span style="font-style: italic" v-if="getReportState"> &mdash; {{getReportState}}</span>
+                <h1 id="annual-report-header-BC">
+                  File {{ ARFilingYear }} Annual Report
+                  <span
+                    v-if="getReportState"
+                    style="font-style: italic"
+                  > &mdash; {{ getReportState }}</span>
                 </h1>
                 <p>Please review all the information before you file and pay</p>
               </header>
@@ -169,7 +224,9 @@
               <!-- Business Details -->
               <section>
                 <header>
-                  <h2 id="business-details-header">1. Business Details</h2>
+                  <h2 id="business-details-header">
+                    1. Business Details
+                  </h2>
                 </header>
                 <ArDate />
                 <br>
@@ -182,7 +239,9 @@
               <!-- Directors -->
               <section>
                 <header>
-                  <h2 id="directors-header-BC">2. Directors</h2>
+                  <h2 id="directors-header-BC">
+                    2. Directors
+                  </h2>
                 </header>
                 <SummaryDirectors
                   :directors="originalDirectors"
@@ -193,8 +252,18 @@
             <!-- Certify -->
             <section v-show="isBenBcCccUlc || agmDateValid">
               <header>
-                <h2 v-if="isCoop" id="certify-header">4. Certify</h2>
-                <h2 v-else-if="isBenBcCccUlc" id="certify-header">3. Certify</h2>
+                <h2
+                  v-if="isCoop"
+                  id="certify-header"
+                >
+                  4. Certify
+                </h2>
+                <h2
+                  v-else-if="isBenBcCccUlc"
+                  id="certify-header"
+                >
+                  3. Certify
+                </h2>
                 <p>Enter the legal name of the person authorized to complete and submit this Annual Report</p>
               </header>
               <Certify
@@ -208,7 +277,11 @@
           </section>
         </v-col>
 
-        <v-col cols="12" lg="3" style="position: relative">
+        <v-col
+          cols="12"
+          lg="3"
+          style="position: relative"
+        >
           <aside>
             <affix
               relative-element-selector="#annual-report-main-section"
@@ -226,18 +299,26 @@
     </v-container>
 
     <!-- Buttons ( COOP only ) -->
-    <v-container v-if="isCoop" id="coop-buttons-container" class="list-item">
+    <v-container
+      v-if="isCoop"
+      id="coop-buttons-container"
+      class="list-item"
+    >
       <div class="buttons-left">
-        <v-btn id="ar-save-btn" large
+        <v-btn
           v-if="isCurrentFilingEditable"
+          id="ar-save-btn"
+          large
           :disabled="busySaving"
           :loading="saving"
           @click="onClickSave()"
         >
           <span>Save</span>
         </v-btn>
-        <v-btn id="ar-save-resume-btn" large
+        <v-btn
           v-if="isCurrentFilingEditable"
+          id="ar-save-resume-btn"
+          large
           :disabled="busySaving"
           :loading="savingResuming"
           @click="onClickSaveResume()"
@@ -247,9 +328,16 @@
       </div>
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="d-inline">
+        <v-tooltip
+          top
+          color="tooltipColor"
+          content-class="top-tooltip"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline"
+              v-on="on"
+            >
               <v-btn
                 v-if="isCurrentFilingEditable"
                 id="ar-file-pay-btn"
@@ -259,7 +347,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                {{isPayRequired ? "File and Pay" : "File Now (no fee)"}}
+                {{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}
               </v-btn>
             </div>
           </template>
@@ -279,13 +367,24 @@
     </v-container>
 
     <!-- Buttons ( BEN/BC/CCC/ULC only ) -->
-    <v-container v-else-if="isBenBcCccUlc" id="bcorp-buttons-container" class="list-item">
-      <div class="buttons-left"></div>
+    <v-container
+      v-else-if="isBenBcCccUlc"
+      id="bcorp-buttons-container"
+      class="list-item"
+    >
+      <div class="buttons-left" />
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="d-inline">
+        <v-tooltip
+          top
+          color="tooltipColor"
+          content-class="top-tooltip"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline"
+              v-on="on"
+            >
               <v-btn
                 id="ar-file-pay-bc-btn"
                 color="primary"

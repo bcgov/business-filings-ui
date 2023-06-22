@@ -1,9 +1,29 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="not-in-good-standing-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="not-in-good-standing-dialog"
+  >
     <v-card class="pa-5">
-      <v-card-subtitle class="pt-5" align="center">
-        <v-icon color="error" large>mdi-information-outline</v-icon>
-        <v-btn small text color="primary" class="close-btn" @click="close()">
+      <v-card-subtitle
+        class="pt-5"
+        align="center"
+      >
+        <v-icon
+          color="error"
+          large
+        >
+          mdi-information-outline
+        </v-icon>
+        <v-btn
+          small
+          text
+          color="primary"
+          class="close-btn"
+          @click="close()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-subtitle>
@@ -50,7 +70,10 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-row no-gutters justify="center">
+        <v-row
+          no-gutters
+          justify="center"
+        >
           <v-btn
             id="dialog-close-button"
             class="mr-2 action-btn"
@@ -92,7 +115,7 @@ export default class NotInGoodStandingDialog extends Vue {
   }
 
   // Pass click event to parent.
-  @Emit() close () { /* no empty function */ }
+  @Emit() close () {}
 }
 </script>
 

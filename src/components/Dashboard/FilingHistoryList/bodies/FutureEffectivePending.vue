@@ -1,14 +1,14 @@
 <template>
   <div class="future-effective-pending body-2">
-    <h4>{{_.subtitle}}</h4>
+    <h4>{{ _.subtitle }}</h4>
 
     <p>
-      The {{_.filingLabel}} date and time for {{getLegalName || 'this company'}}
-      has been recorded as <strong>{{effectiveDateTime}}</strong>.
+      The {{ _.filingLabel }} date and time for {{ getLegalName || 'this company' }}
+      has been recorded as <strong>{{ effectiveDateTime }}</strong>.
     </p>
 
     <p v-if="fileNumber">
-      Court Order Number: {{filing.courtOrderNumber}}
+      Court Order Number: {{ filing.courtOrderNumber }}
     </p>
 
     <p v-if="hasEffectOfOrder">

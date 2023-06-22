@@ -1,9 +1,15 @@
 <template>
   <div id="office-addresses">
     <v-card flat>
-      <ul class="list address-list" :class="{ 'show-address-form' : showAddressForm }">
+      <ul
+        class="list address-list"
+        :class="{ 'show-address-form' : showAddressForm }"
+      >
         <!-- Registered Office Section -->
-        <div class="address-edit-header" v-if="showAddressForm">
+        <div
+          v-if="showAddressForm"
+          class="address-edit-header"
+        >
           <label class="address-edit-title">Registered Office</label>
         </div>
 
@@ -30,30 +36,32 @@
               <v-expand-transition>
                 <div class="address-block__actions">
                   <v-btn
+                    v-if="!showAddressForm && componentEnabled"
+                    id="reg-off-addr-change-btn"
                     color="primary"
                     text
-                    id="reg-off-addr-change-btn"
                     small
-                    v-if="!showAddressForm && componentEnabled"
                     @click="showAddressForm=true"
                   >
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon small>
+                      mdi-pencil
+                    </v-icon>
                     <span>Change</span>
                   </v-btn>
-                  <br />
+                  <br>
                   <v-btn
+                    v-if="!showAddressForm && anyModified"
+                    id="reg-off-addr-reset-btn"
                     class="reset-btn"
                     color="error"
-                    id="reg-off-addr-reset-btn"
                     outlined
                     small
-                    v-if="!showAddressForm && anyModified"
                     @click="resetAddresses()"
                   >
                     <span>Reset</span>
                   </v-btn>
                 </div>
-                </v-expand-transition>
+              </v-expand-transition>
             </div>
           </div>
         </li>
@@ -63,21 +71,24 @@
           <div class="meta-container">
             <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
             <div class="meta-container__inner">
-              <label v-if="!showAddressForm
-                && !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
+              <label
+                v-if="!showAddressForm
+                  && !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
               >
                 <strong>Mailing Address</strong>
               </label>
               <div class="form__row">
                 <v-checkbox
-                  class="inherit-checkbox"
-                  label="Same as Delivery Address"
                   v-if="showAddressForm"
                   v-model="inheritDeliveryAddress"
+                  class="inherit-checkbox"
+                  label="Same as Delivery Address"
                 />
               </div>
-              <div class="address-wrapper" v-if="showAddressForm ||
-                !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
+              <div
+                v-if="showAddressForm ||
+                  !isSame(deliveryAddress, mailingAddress, ['actions','addressType'])"
+                class="address-wrapper"
               >
                 <mailing-address
                   v-if="!showAddressForm || !inheritDeliveryAddress"
@@ -88,19 +99,25 @@
                   @valid="mailingAddressValid=$event"
                 />
               </div>
-              <span v-else id="regMailSameAsDeliv">Mailing Address same as above</span>
+              <span
+                v-else
+                id="regMailSameAsDeliv"
+              >Mailing Address same as above</span>
             </div>
           </div>
         </li>
 
         <div v-if="isBenBcCccUlc">
-          <div class="address-edit-header" v-if="showAddressForm">
+          <div
+            v-if="showAddressForm"
+            class="address-edit-header"
+          >
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
-              class="records-inherit-checkbox"
-              label="Same as Registered Office"
               v-if="showAddressForm"
               v-model="inheritRegisteredAddress"
+              class="records-inherit-checkbox"
+              label="Same as Registered Office"
             />
           </div>
 
@@ -131,21 +148,24 @@
               <div class="meta-container">
                 <label>{{ showAddressForm ? "Mailing Address" : "" }}</label>
                 <div class="meta-container__inner">
-                  <label v-if="!showAddressForm &&
-                    !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
+                  <label
+                    v-if="!showAddressForm &&
+                      !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
                   >
                     <strong>Mailing Address</strong>
                   </label>
                   <div class="form__row">
                     <v-checkbox
-                      class="inherit-checkbox"
-                      label="Same as Delivery Address"
                       v-if="showAddressForm"
                       v-model="inheritRecDeliveryAddress"
+                      class="inherit-checkbox"
+                      label="Same as Delivery Address"
                     />
                   </div>
-                  <div class="address-wrapper" v-if="showAddressForm ||
-                    !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
+                  <div
+                    v-if="showAddressForm ||
+                      !isSame(recDeliveryAddress, recMailingAddress, ['actions','addressType'])"
+                    class="address-wrapper"
                   >
                     <mailing-address
                       v-if="!showAddressForm || !inheritRecDeliveryAddress"
@@ -156,14 +176,20 @@
                       @valid="recMailingAddressValid=$event"
                     />
                   </div>
-                  <span v-else id="recMailSameAsDeliv">Mailing Address same as above</span>
+                  <span
+                    v-else
+                    id="recMailSameAsDeliv"
+                  >Mailing Address same as above</span>
                 </div>
               </div>
             </li>
           </div>
 
           <div v-else>
-            <li class="address-list-container" v-if="!showAddressForm">
+            <li
+              v-if="!showAddressForm"
+              class="address-list-container"
+            >
               <div class="meta-container">
                 <label>Records Office</label>
                 <div class="meta-container__inner">
@@ -176,11 +202,14 @@
 
         <!-- Form Button Section -->
         <li>
-          <div class="form__row form__btns" v-show="showAddressForm">
+          <div
+            v-show="showAddressForm"
+            class="form__row form__btns"
+          >
             <v-btn
+              id="reg-off-update-addr-btn"
               class="update-btn"
               color="primary"
-              id="reg-off-update-addr-btn"
               :disabled="!formValid"
               @click="updateAddresses()"
             >

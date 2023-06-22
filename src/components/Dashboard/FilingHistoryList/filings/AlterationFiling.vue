@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="alteration-filing" :filing="filing" :index="index">
+  <FilingTemplate
+    class="alteration-filing"
+    :filing="filing"
+    :index="index"
+  >
     <template #subtitle>
       <FiledAndPendingPaid
         v-if="isFutureEffectivePending"
@@ -19,12 +23,12 @@
     <template #body>
       <FutureEffectivePending
         v-if="isFutureEffectivePending"
-        :filing=filing
+        :filing="filing"
       />
 
       <FutureEffective
         v-else-if="isFutureEffective"
-        :filing=filing
+        :filing="filing"
       />
 
       <div
@@ -40,11 +44,17 @@
           on <DateTooltip :date="effectiveDate" />.
         </p>
 
-        <p v-if="courtOrderNumber" class="mb-0">
+        <p
+          v-if="courtOrderNumber"
+          class="mb-0"
+        >
           Court Order Number: {{ courtOrderNumber }}
         </p>
 
-        <p v-if="isArrangement" class="mt-0">
+        <p
+          v-if="isArrangement"
+          class="mt-0"
+        >
           Pursuant to a Plan of Arrangement
         </p>
       </div>

@@ -108,7 +108,8 @@ async function start () {
             appDkBlue: '#38598a', // same as $app-dk-blue
             error: '#d3272c', // same as $app-red
             success: '#1a9031', // same as $app-green
-            alert: '#F8661A' // same as $app-alert
+            alert: '#F8661A', // same as $app-alert
+            tooltipColor: '#3b6cff' // same as $app-tooltip-color
           }
         }
       }

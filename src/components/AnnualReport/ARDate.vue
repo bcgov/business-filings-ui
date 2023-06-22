@@ -1,10 +1,14 @@
 <template>
-  <v-card flat class="ar-date-container" v-if="isBenBcCccUlc">
+  <v-card
+    v-if="isBenBcCccUlc"
+    flat
+    class="ar-date-container"
+  >
     <div class="timeline">
       <label>Annual Report Date</label>
-      <span class="date ar-date">{{formatYyyyMmDd(nextARDate)}}</span>
+      <span class="date ar-date">{{ formatYyyyMmDd(nextARDate) }}</span>
       <label>Filing Date</label>
-      <span class="date file-date">Today ({{formatYyyyMmDd(getCurrentDate)}})</span>
+      <span class="date file-date">Today ({{ formatYyyyMmDd(getCurrentDate) }})</span>
     </div>
   </v-card>
 </template>

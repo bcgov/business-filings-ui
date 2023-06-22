@@ -1,14 +1,14 @@
 <template>
   <div class="future-effective body-2">
-    <h4>{{_.subtitle}}</h4>
+    <h4>{{ _.subtitle }}</h4>
 
     <p>
-      The {{_.filingLabel}} date and time for {{getLegalName || 'this company'}}
-      will be <strong>{{effectiveDateTime}}</strong>.
+      The {{ _.filingLabel }} date and time for {{ getLegalName || 'this company' }}
+      will be <strong>{{ effectiveDateTime }}</strong>.
     </p>
 
     <p v-if="fileNumber">
-      Court Order Number: {{filing.courtOrderNumber}}
+      Court Order Number: {{ filing.courtOrderNumber }}
     </p>
 
     <p v-if="hasEffectOfOrder">
@@ -16,12 +16,14 @@
     </p>
 
     <p>
-      If you wish to change the information in this {{_.filingLabel}}, you must contact BC
-      Registries staff to file a withdrawal. Withdrawing this {{_.filingTitle}} will remove
-      this {{_.filingLabel}} and all associated information, and will incur a $20.00 fee.
+      If you wish to change the information in this {{ _.filingLabel }}, you must contact BC
+      Registries staff to file a withdrawal. Withdrawing this {{ _.filingTitle }} will remove
+      this {{ _.filingLabel }} and all associated information, and will incur a $20.00 fee.
     </p>
 
-    <h4 class="font-14">BC Registries Contact Information:</h4>
+    <h4 class="font-14">
+      BC Registries Contact Information:
+    </h4>
 
     <ContactInfo class="mt-4" />
   </div>

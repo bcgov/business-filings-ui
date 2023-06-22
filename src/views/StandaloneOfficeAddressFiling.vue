@@ -1,8 +1,8 @@
 <template>
   <div id="standalone-office-address">
     <ConfirmDialog
-      attach="#standalone-office-address"
       ref="confirm"
+      attach="#standalone-office-address"
     />
 
     <FetchErrorDialog
@@ -39,9 +39,9 @@
     />
 
     <StaffPaymentDialog
+      :staffPaymentData.sync="staffPaymentData"
       attach="#standalone-office-address"
       :dialog="staffPaymentDialog"
-      :staffPaymentData.sync="staffPaymentData"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
@@ -49,37 +49,69 @@
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" :size="50" indeterminate></v-progress-circular>
-          <div class="loading-msg">{{loadingMessage}}</div>
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Alternate Loading Spinner -->
     <v-fade-transition>
-      <div class="loading-container grayed-out" v-show="isFetching">
+      <div
+        v-show="isFetching"
+        class="loading-container grayed-out"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg white--text">Fetching updated data</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg white--text">
+            Fetching updated data
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="standalone-office-address-container" class="view-container">
+    <v-container
+      id="standalone-office-address-container"
+      class="view-container"
+    >
       <v-row>
-        <v-col cols="12" lg="9">
+        <v-col
+          cols="12"
+          lg="9"
+        >
           <article id="standalone-office-address-article">
             <header>
-              <h1 id="address-change-header">Address Change</h1>
+              <h1 id="address-change-header">
+                Address Change
+              </h1>
 
-              <p v-if="isCoop">Please change your Registered Office Address.</p>
-              <p v-else-if="isBenBcCccUlc">Please change your Registered Office Address and Records Address.</p>
+              <p v-if="isCoop">
+                Please change your Registered Office Address.
+              </p>
+              <p v-else-if="isBenBcCccUlc">
+                Please change your Registered Office Address and Records Address.
+              </p>
 
-              <v-alert type="info" outlined
+              <v-alert
                 v-if="isBenBcCccUlc"
+                type="info"
+                outlined
                 icon="mdi-information"
                 class="white-background"
               >
@@ -100,9 +132,13 @@
             <!-- Certify -->
             <section>
               <header>
-                <h2 id="certify-header">Certify</h2>
-                <p>Enter the legal name of the person authorized to complete and submit this
-                  Address Change.</p>
+                <h2 id="certify-header">
+                  Certify
+                </h2>
+                <p>
+                  Enter the legal name of the person authorized to complete and submit this
+                  Address Change.
+                </p>
               </header>
               <Certify
                 :isCertified.sync="isCertified"
@@ -115,7 +151,11 @@
           </article>
         </v-col>
 
-        <v-col cols="12" lg="3" style="position: relative">
+        <v-col
+          cols="12"
+          lg="3"
+          style="position: relative"
+        >
           <aside>
             <affix
               relative-element-selector="#standalone-office-address-article"
@@ -133,7 +173,10 @@
     </v-container>
 
     <!-- Buttons -->
-    <v-container id="standalone-office-address-buttons-container" class="list-item">
+    <v-container
+      id="standalone-office-address-buttons-container"
+      class="list-item"
+    >
       <div class="buttons-left">
         <v-btn
           id="coa-save-btn"
@@ -156,19 +199,26 @@
       </div>
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="d-inline">
-            <v-btn
-              id="coa-file-pay-btn"
-              color="primary"
-              large
-              :disabled="!isPageValid || busySaving"
-              :loading="filingPaying"
-              @click="onClickFilePay()"
+        <v-tooltip
+          top
+          color="tooltipColor"
+          content-class="top-tooltip"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline"
+              v-on="on"
             >
-              <span>{{isPayRequired ? "File and Pay" : "File Now (no fee)"}}</span>
-            </v-btn>
+              <v-btn
+                id="coa-file-pay-btn"
+                color="primary"
+                large
+                :disabled="!isPageValid || busySaving"
+                :loading="filingPaying"
+                @click="onClickFilePay()"
+              >
+                <span>{{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}</span>
+              </v-btn>
             </div>
           </template>
           Ensure all of your information is entered correctly before you File.<br>

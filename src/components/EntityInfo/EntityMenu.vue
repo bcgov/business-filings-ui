@@ -12,8 +12,10 @@
     <!-- View and Change Business Information -->
     <span v-if="isBusiness && !isHistorical">
       <v-btn
-        small text color="primary"
         id="company-information-button"
+        small
+        text
+        color="primary"
         :disabled="!isAllowed(AllowableActions.BUSINESS_INFORMATION)"
         @click="promptChangeCompanyInfo()"
       >
@@ -21,9 +23,19 @@
         <span class="font-13 ml-1">View and Change Business Information</span>
       </v-btn>
 
-      <v-tooltip v-if="isPendingDissolution" top content-class="top-tooltip" transition="fade-transition">
-        <template v-slot:activator="{ on }">
-          <v-icon color="orange darken-2" size="24px" class="pr-2" v-on="on">mdi-alert</v-icon>
+      <v-tooltip
+        v-if="isPendingDissolution"
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+      >
+        <template #activator="{ on }">
+          <v-icon
+            color="orange darken-2"
+            size="24px"
+            class="pr-2"
+            v-on="on"
+          >mdi-alert</v-icon>
         </template>
         You cannot view or change business information while the business is pending dissolution.
       </v-tooltip>
@@ -31,15 +43,25 @@
 
     <!-- Download Business Summary -->
     <span v-if="isAllowed(AllowableActions.BUSINESS_SUMMARY)">
-      <v-tooltip top content-class="top-tooltip" transition="fade-transition">
-        <template v-slot:activator="{ on }">
+      <v-tooltip
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+      >
+        <template #activator="{ on }">
           <v-btn
-            small text color="primary"
             id="download-summary-button"
+            small
+            text
+            color="primary"
             @click="emitDownloadBusinessSummary()"
             v-on="on"
           >
-            <img src="@/assets/images/business_summary_icon.svg" alt="" class="pa-1">
+            <img
+              src="@/assets/images/business_summary_icon.svg"
+              alt=""
+              class="pa-1"
+            >
             <span class="font-13 ml-1">Business Summary</span>
           </v-btn>
         </template>
@@ -49,11 +71,17 @@
 
     <!-- View/Add Digital Credentials -->
     <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
-      <v-tooltip top content-class="top-tooltip" transition="fade-transition">
-        <template v-slot:activator="{ on }">
+      <v-tooltip
+        top
+        content-class="top-tooltip"
+        transition="fade-transition"
+      >
+        <template #activator="{ on }">
           <v-btn
-            small text color="primary"
             id="view-add-digital-credentials-button"
+            small
+            text
+            color="primary"
             @click="emitViewAddDigitalCredentials()"
             v-on="on"
           >
@@ -67,25 +95,44 @@
 
     <!-- More Actions -->
     <span v-if="isBusiness && !isHistorical">
-      <v-menu offset-y transition="slide-y-transition" v-model="expand">
-        <template v-slot:activator="{ on }">
-          <v-btn small text color="primary" class="menu-btn" v-on="on">
+      <v-menu
+        v-model="expand"
+        offset-y
+        transition="slide-y-transition"
+      >
+        <template #activator="{ on }">
+          <v-btn
+            small
+            text
+            color="primary"
+            class="menu-btn"
+            v-on="on"
+          >
             <span class="font-13 ml-1">More Actions</span>
-            <v-icon medium v-if="expand">mdi-menu-up</v-icon>
-            <v-icon medium v-else>mdi-menu-down</v-icon>
+            <v-icon
+              v-if="expand"
+              medium
+            >mdi-menu-up</v-icon>
+            <v-icon
+              v-else
+              medium
+            >mdi-menu-down</v-icon>
           </v-btn>
         </template>
 
         <v-list dense>
           <v-list-item-group color="primary">
             <!-- Dissolve Business -->
-            <v-tooltip right content-class="right-tooltip">
-              <template v-slot:activator="{ on }">
+            <v-tooltip
+              right
+              content-class="right-tooltip"
+            >
+              <template #activator="{ on }">
                 <v-list-item
                   id="dissolution-list-item"
+                  :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
                   v-on="on"
                   @click="promptDissolve()"
-                  :disabled="!isAllowed(AllowableActions.VOLUNTARY_DISSOLUTION)"
                 >
                   <v-list-item-title>
                     <span class="app-blue">Dissolve this Business</span>
@@ -97,14 +144,17 @@
             </v-tooltip>
 
             <!-- Consent to Continue Out -->
-            <v-tooltip right content-class="right-tooltip">
-              <template v-slot:activator="{ on }">
+            <v-tooltip
+              right
+              content-class="right-tooltip"
+            >
+              <template #activator="{ on }">
                 <v-list-item
                   v-if="isBenBcCccUlc || isCoop"
                   id="cco-list-item"
+                  :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
                   v-on="on"
                   @click="goToConsentContinuationOutFiling()"
-                  :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
                 >
                   <v-list-item-title>
                     <span class="app-blue">Consent to Continue Out</span>
@@ -193,20 +243,20 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** Emits an event to confirm dissolution. */
   @Emit('confirmDissolution')
-  emitConfirmDissolution (): void { /* no empty function */ }
+  emitConfirmDissolution (): void {}
 
   /** Emits an event to download the business summary. */
   @Emit('downloadBusinessSummary')
-  emitDownloadBusinessSummary (): void { /* no empty function */ }
+  emitDownloadBusinessSummary (): void {}
 
   /** Emits an event to indicate business is not in good standing. */
   @Emit('notInGoodStanding')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitNotInGoodStanding (message: NigsMessage): void { /* no empty function */ }
+  emitNotInGoodStanding (message: NigsMessage): void {}
 
   /** Emits an event to view / add digital credentials. */
   @Emit('viewAddDigitalCredentials')
-  emitViewAddDigitalCredentials (): void { /* no empty function */ }
+  emitViewAddDigitalCredentials (): void {}
 }
 </script>
 

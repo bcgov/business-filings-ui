@@ -104,7 +104,6 @@ describe('Documents List', () => {
     }
 
     const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
-    const vm = wrapper.vm as any
     await Vue.nextTick()
 
     const documentBtns = wrapper.findAll('.download-one-btn')
@@ -144,7 +143,6 @@ describe('Documents List', () => {
     }
 
     const wrapper = mount(DocumentsList, { propsData: { filing }, vuetify })
-    const vm = wrapper.vm as any
     await Vue.nextTick()
 
     const documentBtns = wrapper.findAll('.download-one-btn')

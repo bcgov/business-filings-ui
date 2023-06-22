@@ -1,6 +1,12 @@
 <template>
-  <v-card outlined id="important-message" class="rounded-md">
-    <p class="px-3 ma-4"><strong>Important: </strong>{{ message }}</p>
+  <v-card
+    id="important-message"
+    outlined
+    class="rounded-md"
+  >
+    <p class="px-3 ma-4">
+      <strong>Important: </strong>{{ message }}
+    </p>
   </v-card>
 </template>
 

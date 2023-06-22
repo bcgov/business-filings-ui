@@ -1,8 +1,8 @@
 <template>
   <div id="correction">
     <ConfirmDialog
-      attach="#correction"
       ref="confirm"
+      attach="#correction"
     />
 
     <LoadCorrectionDialog
@@ -39,9 +39,9 @@
     />
 
     <StaffPaymentDialog
+      :staffPaymentData.sync="staffPaymentData"
       attach="#correction"
       :dialog="staffPaymentDialog"
-      :staffPaymentData.sync="staffPaymentData"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
@@ -49,36 +49,60 @@
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
-      <div class="loading-container" v-show="showLoadingContainer">
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" :size="50" indeterminate />
-          <div class="loading-msg">{{loadingMessage}}</div>
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
         </div>
       </div>
     </v-fade-transition>
 
     <!-- Main Body -->
-    <v-container id="correction-container" class="view-container" v-show="dataLoaded">
+    <v-container
+      v-show="dataLoaded"
+      id="correction-container"
+      class="view-container"
+    >
       <v-row>
-        <v-col cols="12" lg="9">
+        <v-col
+          cols="12"
+          lg="9"
+        >
           <article id="correction-article">
             <!-- Page Title -->
             <header>
-              <h1 id="correction-header">Correction &mdash; {{title}}</h1>
-              <p class="text-black">Original Filing Date: {{originalFilingDate}}</p>
+              <h1 id="correction-header">
+                Correction &mdash; {{ title }}
+              </h1>
+              <p class="text-black">
+                Original Filing Date: {{ originalFilingDate }}
+              </p>
             </header>
 
             <!-- Detail -->
             <section>
               <header>
-                <h2 id="correction-step-1-header">1. Detail</h2>
+                <h2 id="correction-step-1-header">
+                  1. Detail
+                </h2>
                 <p>Enter a detail that will appear on the ledger for this entity.</p>
-                <p class="black--text mb-0">{{defaultComment}}</p>
+                <p class="black--text mb-0">
+                  {{ defaultComment }}
+                </p>
               </header>
               <v-card flat>
                 <DetailComment
-                  class="px-4 py-2"
                   v-model="detailComment"
+                  class="px-4 py-2"
                   placeholder="Add a Detail that will appear on the ledger for this entity."
                   :maxLength="maxDetailCommentLength"
                   @valid="detailCommentValid=$event"
@@ -89,7 +113,9 @@
             <!-- Certify -->
             <section>
               <header>
-                <h2 id="correction-step-2-header">2. Certify</h2>
+                <h2 id="correction-step-2-header">
+                  2. Certify
+                </h2>
                 <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
               </header>
               <Certify
@@ -103,7 +129,11 @@
           </article>
         </v-col>
 
-        <v-col cols="12" lg="3" style="position: relative">
+        <v-col
+          cols="12"
+          lg="3"
+          style="position: relative"
+        >
           <aside>
             <affix
               relative-element-selector="#correction-article"
@@ -147,9 +177,16 @@
       </div>
 
       <div class="buttons-right">
-        <v-tooltip top color="#3b6cff" content-class="top-tooltip">
-          <template v-slot:activator="{ on }">
-            <div v-on="on" class="d-inline">
+        <v-tooltip
+          top
+          color="tooltipColor"
+          content-class="top-tooltip"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline"
+              v-on="on"
+            >
               <v-btn
                 id="correction-file-pay-btn"
                 color="primary"
@@ -158,7 +195,7 @@
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
-                <span>{{isPayRequired ? "File and Pay" : "File Now (no fee)"}}</span>
+                <span>{{ isPayRequired ? "File and Pay" : "File Now (no fee)" }}</span>
               </v-btn>
             </div>
           </template>

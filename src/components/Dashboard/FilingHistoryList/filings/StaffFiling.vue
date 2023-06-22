@@ -1,34 +1,53 @@
 <template>
-  <FilingTemplate class="staff-filing" :filing="filing" :index="index">
+  <FilingTemplate
+    class="staff-filing"
+    :filing="filing"
+    :index="index"
+  >
     <template #title>
-      <v-icon v-if="isTypeCourtOrder" class="pr-1">mdi-gavel</v-icon>
-      <span>{{filing.displayName}}</span>
+      <v-icon
+        v-if="isTypeCourtOrder"
+        class="pr-1"
+      >
+        mdi-gavel
+      </v-icon>
+      <span>{{ filing.displayName }}</span>
     </template>
 
     <template #subtitle>
       <div class="item-header-subtitle filed-staff">
-        <span v-if="putBackOnOrAdminDissolution">FILED<FiledLabel :filing="filing"/></span>
-        <span v-else><FiledLabel :filing="filing"/></span>
+        <span v-if="putBackOnOrAdminDissolution">FILED<FiledLabel :filing="filing" /></span>
+        <span v-else><FiledLabel :filing="filing" /></span>
       </div>
     </template>
 
     <template #body>
       <div class="staff-filing-details body-2">
-        <p v-if="orderDetails" class="mt-4" v-html="orderDetails" />
+        <p
+          v-if="orderDetails"
+          class="mt-4"
+          v-html="orderDetails"
+        />
 
         <!-- if we have documents, show them -->
         <!-- NB: only court orders have documents - see also FilingTemplate.vue -->
         <DocumentsList
           v-if="isTypeCourtOrder && filing.documents && filing.documents.length > 0"
           class="mt-4"
-          :filing=filing
+          :filing="filing"
         />
 
-        <p v-if="fileNumber" class="mt-4">
+        <p
+          v-if="fileNumber"
+          class="mt-4"
+        >
           Court Order Number: {{ fileNumber }}
         </p>
 
-        <p v-if="hasEffectOfOrder" class="mt-4">
+        <p
+          v-if="hasEffectOfOrder"
+          class="mt-4"
+        >
           Pursuant to a Plan of Arrangement
         </p>
       </div>

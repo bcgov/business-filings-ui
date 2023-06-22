@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="paper-filing" :filing="filing" :index="index">
+  <FilingTemplate
+    class="paper-filing"
+    :filing="filing"
+    :index="index"
+  >
     <template #body>
       <p>
         This filing is available on paper only. To request copies of paper documents,

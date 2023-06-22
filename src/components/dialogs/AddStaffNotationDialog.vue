@@ -1,36 +1,51 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="add-staff-notation-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="add-staff-notation-dialog"
+  >
     <v-card>
       <v-card-title>
-        <span id="dialog-title" class="font-weight-bold">
-          <template v-if="isPutBackOn" >Correction - {{displayName}}</template>
-          <template v-else-if="isAdministrativeDissolution">{{displayName}}</template>
+        <span
+          id="dialog-title"
+          class="font-weight-bold"
+        >
+          <template v-if="isPutBackOn">Correction - {{ displayName }}</template>
+          <template v-else-if="isAdministrativeDissolution">{{ displayName }}</template>
           <template v-else-if="isAdministerFreeze">
-            {{!isAdminFrozen ? displayName : displayName.replace('Freeze', 'Unfreeze')}}
+            {{ !isAdminFrozen ? displayName : displayName.replace('Freeze', 'Unfreeze') }}
           </template>
-          <template v-else >Add a {{displayName}}</template>
+          <template v-else>Add a {{ displayName }}</template>
         </span>
       </v-card-title>
 
       <v-card-text class="font-16">
         <p v-if="isAdministrativeDissolution">
-          You are about to dissolve <strong><span class="text-uppercase">{{getLegalName}}</span>,
-          {{getIdentifier}}</strong>.
+          You are about to dissolve <strong><span class="text-uppercase">{{ getLegalName }}</span>,
+            {{ getIdentifier }}</strong>.
         </p>
 
         <p v-if="isPutBackOn">
-          You are about to put <strong><span class="text-uppercase">{{getLegalName}}</span>,
-          {{getIdentifier}}</strong> back on the register.
+          You are about to put <strong><span class="text-uppercase">{{ getLegalName }}</span>,
+            {{ getIdentifier }}</strong> back on the register.
         </p>
 
         <p v-if="isAdministerFreeze">
           You are about to {{ !isAdminFrozen ? 'freeze' : 'unfreeze' }}
-          <span class="text-uppercase font-weight-bold">{{getLegalName}}</span>, {{getIdentifier}}.
+          <span class="text-uppercase font-weight-bold">{{ getLegalName }}</span>, {{ getIdentifier }}.
         </p>
 
-        <v-form ref="notationFormRef" id="notation-form">
-          <p id="notation-text" :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }">
-            Enter a {{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'detail' : displayName}}
+        <v-form
+          id="notation-form"
+          ref="notationFormRef"
+        >
+          <p
+            id="notation-text"
+            :class="{ 'mt-4': isAdministrativeDissolution || isPutBackOn }"
+          >
+            Enter a {{ (isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'detail' : displayName }}
             that will appear on the ledger for this entity:
           </p>
 
@@ -53,16 +68,16 @@
 
           <ul class="ml-2">
             <li>Use a white background and a legible font with contrasting font colour</li>
-            <li>PDF file type (maximum {{MAX_FILE_SIZE}} MB file size)</li>
+            <li>PDF file type (maximum {{ MAX_FILE_SIZE }} MB file size)</li>
           </ul>
 
           <div class="d-flex mt-4">
             <span class="font-weight-bold">Upload File</span>
             <FileUploadPdf
               ref="fileUploadRef"
-              class="ml-12 flex-grow-1"
               :file.sync="file"
               :fileKey.sync="fileKey"
+              class="ml-12 flex-grow-1"
               :isRequired="enableValidation && isCourtOrder && !notation"
               :customErrorMSg="courtOrderCustomValidationMsg"
               :maxSize="MAX_FILE_SIZE"
@@ -74,22 +89,29 @@
           </div>
         </template>
 
-        <v-divider v-if="isCourtOrder" class="mt-4" />
+        <v-divider
+          v-if="isCourtOrder"
+          class="mt-4"
+        />
 
-        <p class="mt-4" v-if="!isAdministerFreeze">
+        <p
+          v-if="!isAdministerFreeze"
+          class="mt-4"
+        >
           If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
           to a plan of arrangement, enter the court order number and select Plan of Arrangement.
         </p>
 
-        <CourtOrderPoa v-if="!isAdministerFreeze"
+        <CourtOrderPoa
+          v-if="!isAdministerFreeze"
           ref="courtOrderPoaRef"
-          class="mt-4"
-          @emitCourtNumber="courtOrderNumber = $event"
-          @emitPoa="planOfArrangement = $event"
-          :displaySideLabels="false"
           :key="courtOrderPoaKey"
+          class="mt-4"
+          :displaySideLabels="false"
           :autoValidation="enableValidation"
           :courtOrderNumberRequired="courtOrderNumberRequired"
+          @emitCourtNumber="courtOrderNumber = $event"
+          @emitPoa="planOfArrangement = $event"
         />
       </v-card-text>
 
@@ -98,16 +120,20 @@
       <v-card-actions>
         <v-spacer />
         <div class="form__btns">
-          <v-btn text color="primary"
+          <v-btn
             id="dialog-save-button"
+            text
+            color="primary"
             class="font-weight-bold"
             :loading="saving"
             @click.native="onSave()"
           >
-            <span>{{(isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'File' : 'Save'}}</span>
+            <span>{{ (isAdministrativeDissolution || isPutBackOn || isAdministerFreeze) ? 'File' : 'Save' }}</span>
           </v-btn>
-          <v-btn text color="primary"
+          <v-btn
             id="dialog-cancel-button"
+            text
+            color="primary"
             :disabled="saving"
             @click.native="emitClose(false)"
           >
@@ -421,7 +447,7 @@ export default class AddStaffNotationDialog extends Mixins(DateMixin) {
    */
    @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitClose (needReload: boolean): void { /* no empty function */ }
+  emitClose (needReload: boolean): void {}
 }
 </script>
 

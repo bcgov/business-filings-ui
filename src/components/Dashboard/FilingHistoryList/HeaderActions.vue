@@ -5,7 +5,7 @@
       class="expand-btn"
       outlined
       color="primary"
-      :ripple=false
+      :ripple="false"
       @click.stop="toggleFilingHistoryItem(index)"
     >
       <template v-if="filing.availableOnPaperOnly">
@@ -23,27 +23,47 @@
     </v-btn>
 
     <!-- the drop-down menu -->
-    <v-menu offset-y left transition="slide-y-transition" v-if="isRoleStaff && isBusiness">
-      <template v-slot:activator="{ on }">
-        <v-btn text v-on="on" class="menu-btn app-blue pa-1" click.stop>
+    <v-menu
+      v-if="isRoleStaff && isBusiness"
+      offset-y
+      left
+      transition="slide-y-transition"
+    >
+      <template #activator="{ on }">
+        <v-btn
+          text
+          class="menu-btn app-blue pa-1"
+          click.stop
+          v-on="on"
+        >
           <v-icon>mdi-menu-down</v-icon>
         </v-btn>
       </template>
 
       <v-list dense>
         <v-list-item-group color="primary">
-          <v-list-item :disabled="disableCorrection()" @click.stop="correctThisFiling(filing)">
+          <v-list-item
+            :disabled="disableCorrection()"
+            @click.stop="correctThisFiling(filing)"
+          >
             <v-list-item-icon>
-              <v-icon color="primary">mdi-file-document-edit-outline</v-icon>
+              <v-icon color="primary">
+                mdi-file-document-edit-outline
+              </v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="file-correction-item" >
+            <v-list-item-title class="file-correction-item">
               <span class="app-blue">File a Correction</span>
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)" @click.stop="showCommentDialog(filing)">
+          <v-list-item
+            :disabled="!isAllowed(AllowableActions.DETAIL_COMMENT)"
+            @click.stop="showCommentDialog(filing)"
+          >
             <v-list-item-icon>
-              <v-icon color="primary">mdi-comment-plus</v-icon>
+              <v-icon color="primary">
+                mdi-comment-plus
+              </v-icon>
             </v-list-item-icon>
             <v-list-item-title class="add-detail-comment-item">
               <span class="app-blue">Add Detail</span>

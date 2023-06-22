@@ -1,6 +1,5 @@
-import { ConfigurationStateIF, KeyValueIF } from '@/interfaces'
+import { ConfigurationStateIF } from '@/interfaces'
 import { defineStore } from 'pinia'
-import Vue from 'vue'
 import axios from '@/axios-auth'
 
 export const useConfigurationStore = defineStore('configuration', {

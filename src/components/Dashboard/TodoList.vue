@@ -9,22 +9,26 @@
       :dialog="deleteErrorDialog"
       :errors="deleteErrors"
       :warnings="deleteWarnings"
-      @okay="resetErrors()"
       attach="#todo-list"
+      @okay="resetErrors()"
     />
 
     <CancelPaymentErrorDialog
       :dialog="cancelPaymentErrorDialog"
       :errors="cancelPaymentErrors"
-      @okay="resetCancelPaymentErrors()"
       attach="#todo-list"
+      @okay="resetCancelPaymentErrors()"
     />
 
-    <v-expansion-panels v-if="showTodoPanel" accordion v-model="panel">
+    <v-expansion-panels
+      v-if="showTodoPanel"
+      v-model="panel"
+      accordion
+    >
       <v-expansion-panel
-        class="align-items-top todo-item px-6 py-5"
         v-for="(item, index) in orderedTodoItems"
         :key="index"
+        class="align-items-top todo-item px-6 py-5"
         :class="{
           'disabled': !item.enabled,
           'pay-error': isStatusDraft(item) && isPayError(item)
@@ -41,50 +45,80 @@
                 {{ item.title }}
 
                 <!-- red details button -->
-                <v-btn v-if="showDetailsBtnRed(item)" class="expand-btn ml-1" text color="error" :ripple=false>
+                <v-btn
+                  v-if="showDetailsBtnRed(item)"
+                  class="expand-btn ml-1"
+                  text
+                  color="error"
+                  :ripple="false"
+                >
                   <v-icon>mdi-information-outline</v-icon>
                   <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                 </v-btn>
 
                 <!-- blue details button -->
-                <v-btn v-else-if="showDetailsBtnBlue(item)" class="expand-btn ml-1" text color="primary" :ripple=false>
+                <v-btn
+                  v-else-if="showDetailsBtnBlue(item)"
+                  class="expand-btn ml-1"
+                  text
+                  color="primary"
+                  :ripple="false"
+                >
                   <v-icon>mdi-information-outline</v-icon>
                   <span>{{ (panel === index) ? "Hide Details" : "View Details" }}</span>
                 </v-btn>
               </h3>
 
               <!-- Annual Report verify checkbox -->
-              <div v-if="showAnnualReportCheckbox(item)" class="list-item__subtitle pt-4">
+              <div
+                v-if="showAnnualReportCheckbox(item)"
+                class="list-item__subtitle pt-4"
+              >
                 <p>Verify your Office Address and Current Directors before filing your Annual Report.</p>
                 <v-checkbox
                   id="enable-checkbox"
+                  v-model="enableCheckbox[index]"
                   class="todo-list-checkbox"
                   label="All information about the Office Addresses and Current Directors is correct."
                   :disabled="!item.enabled || isCoaPending"
-                  v-model="enableCheckbox[index]"
                   @click.stop
                 />
               </div>
 
-              <div v-else class="list-item__subtitle">
+              <div
+                v-else
+                class="list-item__subtitle"
+              >
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- new todo task -->
-                <div v-if="isStatusNew(item)" class="todo-subtitle">
+                <div
+                  v-if="isStatusNew(item)"
+                  class="todo-subtitle"
+                >
                   <span v-if="!!item.subtitle">{{ item.subtitle }}</span>
                 </div>
 
                 <!-- draft with pay error -->
-                <div v-else-if="isStatusDraft(item) && isPayError(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusDraft(item) && isPayError(item)"
+                  class="todo-subtitle"
+                >
                   <span>PAYMENT INCOMPLETE</span>
                 </div>
 
                 <!-- draft alteration to a BEN not in good standing -->
-                <div v-else-if="isStatusDraft(item) && item.isAlteringToBen && !isGoodStanding"
+                <div
+                  v-else-if="isStatusDraft(item) && item.isAlteringToBen && !isGoodStanding"
                   class="todo-subtitle mt-4 flex-column align-start"
                 >
                   <p class="app-red font-weight-bold">
-                    <v-icon small color="error">mdi-alert</v-icon>
+                    <v-icon
+                      small
+                      color="error"
+                    >
+                      mdi-alert
+                    </v-icon>
                     This business is not in good standing.
                   </p>
 
@@ -101,22 +135,34 @@
                 </div>
 
                 <!-- draft incorporation -->
-                <div v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusDraft(item) && isTypeIncorporationApplication(item)"
+                  class="todo-subtitle"
+                >
                   <span>{{ item.subtitle }}</span>
                 </div>
 
                 <!-- draft registration -->
-                <div v-else-if="isStatusDraft(item) && isTypeRegistration(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusDraft(item) && isTypeRegistration(item)"
+                  class="todo-subtitle"
+                >
                   <span>{{ item.subtitle }}</span>
                 </div>
 
                 <!-- draft other -->
-                <div v-else-if="isStatusDraft(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusDraft(item)"
+                  class="todo-subtitle"
+                >
                   <span>DRAFT</span>
                 </div>
 
                 <!-- pending filing -->
-                <div v-else-if="isStatusPending(item) || isStatusPendingCorrection(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusPending(item) || isStatusPendingCorrection(item)"
+                  class="todo-subtitle"
+                >
                   <template v-if="isTypeCorrection(item) || isTypeAlteration(item)">
                     <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                     <span v-else>FILING PENDING</span>
@@ -124,7 +170,7 @@
 
                   <template v-else>
                     <span>FILING PENDING</span>
-                    <span class="vert-pipe"></span>
+                    <span class="vert-pipe" />
                     <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                     <span v-else-if="EnumUtilities.isPayMethodOnlineBanking(item)">ONLINE BANKING PAYMENT PENDING</span>
                     <span v-else>PAYMENT INCOMPLETE</span>
@@ -132,17 +178,23 @@
                 </div>
 
                 <!-- error filing -->
-                <div v-else-if="isStatusError(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusError(item)"
+                  class="todo-subtitle"
+                >
                   <span>FILING PENDING</span>
-                  <span class="vert-pipe"></span>
+                  <span class="vert-pipe" />
                   <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                   <span v-else>PAYMENT UNSUCCESSFUL</span>
                 </div>
 
                 <!-- paid filing -->
-                <div v-else-if="isStatusPaid(item)" class="todo-subtitle">
+                <div
+                  v-else-if="isStatusPaid(item)"
+                  class="todo-subtitle"
+                >
                   <span>FILING PENDING</span>
-                  <span class="vert-pipe"></span>
+                  <span class="vert-pipe" />
                   <span v-if="inProcessFiling === item.filingId">PROCESSING...</span>
                   <span v-else>PAID</span>
                 </div>
@@ -153,14 +205,20 @@
               <div style="width:100%">
                 <!-- BEN/BC/CCC/ULC AR special case -->
                 <template v-if="isBenBcCccUlc && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
-                  <p class="date-subtitle">Due: {{item.arDueDate}}</p>
+                  <p class="date-subtitle">
+                    Due: {{ item.arDueDate }}
+                  </p>
                 </template>
 
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
                 <!-- this loading button pre-empts all buttons below -->
                 <template v-if="inProcessFiling === item.filingId">
-                  <v-btn text loading disabled />
+                  <v-btn
+                    text
+                    loading
+                    disabled
+                  />
                 </template>
 
                 <!-- new annual report -->
@@ -188,8 +246,9 @@
                 </template>
 
                 <!-- non-staff see no buttons for correction or conversion or restoration or Continuation Out -->
-                <template v-else-if="!isRoleStaff && (isTypeCorrection(item) || isTypeConversion(item) ||
-                  EnumUtilities.isTypeRestoration(item) || EnumUtilities.isTypeContinuationOut(item))"
+                <template
+                  v-else-if="!isRoleStaff && (isTypeCorrection(item) || isTypeConversion(item) ||
+                    EnumUtilities.isTypeRestoration(item) || EnumUtilities.isTypeContinuationOut(item))"
                 >
                   <!-- no action button in this case -->
                 </template>
@@ -213,14 +272,17 @@
                   </v-btn>
 
                   <!-- dropdown menu -->
-                  <v-menu offset-y left>
-                    <template v-slot:activator="{ on }">
+                  <v-menu
+                    offset-y
+                    left
+                  >
+                    <template #activator="{ on }">
                       <v-btn
-                        v-on="on"
                         id="menu-activator"
                         class="actions__more-actions__btn px-0"
                         color="primary"
                         :disabled="!item.enabled"
+                        v-on="on"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -231,7 +293,13 @@
                         id="btn-draft-delete"
                         @click.stop="confirmDeleteDraft(item)"
                       >
-                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
+                        <v-icon
+                          class="pr-1"
+                          color="primary"
+                          size="18px"
+                        >
+                          mdi-delete-forever
+                        </v-icon>
                         <v-list-item-title v-if="EnumUtilities.isTypeDissolutionVoluntary(item)">
                           Delete {{ todoListTitle }}
                         </v-list-item-title>
@@ -251,9 +319,15 @@
                         id="btn-delete-application"
                         @click.stop="confirmDeleteApplication(item)"
                       >
-                        <v-icon class="pr-1" color="primary" size="18px">mdi-delete-forever</v-icon>
+                        <v-icon
+                          class="pr-1"
+                          color="primary"
+                          size="18px"
+                        >
+                          mdi-delete-forever
+                        </v-icon>
                         <v-list-item-title>
-                          Delete {{EnumUtilities.filingTypeToName(item.name)}}
+                          Delete {{ EnumUtilities.filingTypeToName(item.name) }}
                         </v-list-item-title>
                       </v-list-item>
                     </v-list>
@@ -262,7 +336,8 @@
 
                 <!-- pending filing -->
                 <template v-else-if="isStatusPending(item)">
-                  <v-btn v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
+                  <v-btn
+                    v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
                     class="btn-change-payment-type"
                     color="primary"
                     :disabled="!item.enabled"
@@ -270,7 +345,8 @@
                   >
                     <span>Change Payment Type</span>
                   </v-btn>
-                  <v-btn v-else
+                  <v-btn
+                    v-else
                     class="btn-resume-payment"
                     color="primary"
                     :disabled="!item.enabled"
@@ -280,14 +356,17 @@
                   </v-btn>
 
                   <!-- dropdown menu -->
-                  <v-menu offset-y left>
-                    <template v-slot:activator="{ on }">
+                  <v-menu
+                    offset-y
+                    left
+                  >
+                    <template #activator="{ on }">
                       <v-btn
-                        v-on="on"
                         id="menu-activator"
                         class="actions__more-actions__btn px-0"
                         color="primary"
                         :disabled="!item.enabled"
+                        v-on="on"
                         @click.native.stop
                       >
                         <v-icon>mdi-menu-down</v-icon>
@@ -330,21 +409,28 @@
 
           <!-- does this item have an incomplete payment? -->
           <template v-if="isStatusDraft(item) && isPayError(item)">
-            <PaymentIncomplete :filing=item />
+            <PaymentIncomplete :filing="item" />
           </template>
 
           <!-- is this a conversion in any status? -->
           <template v-else-if="isTypeConversion(item)">
-            <ConversionDetails :filing=item class="mb-4" />
+            <ConversionDetails
+              :filing="item"
+              class="mb-4"
+            />
           </template>
 
           <!-- is this a draft correction? -->
           <template v-else-if="isStatusDraft(item) && isTypeCorrection(item)">
-            <div data-test-class="correction-draft" class="todo-list-detail body-2">
-              <p class="list-item__subtitle">This filing is in review and has been saved as a draft.<br />
+            <div
+              data-test-class="correction-draft"
+              class="todo-list-detail body-2"
+            >
+              <p class="list-item__subtitle">
+                This filing is in review and has been saved as a draft.<br>
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
-              <v-divider class="my-6"></v-divider>
+              <v-divider class="my-6" />
               <!-- the correction comment -->
               <CorrectionComment :comment="item.comment" />
             </div>
@@ -352,27 +438,35 @@
 
           <!-- is this a correction in any other status? -->
           <template v-else-if="isTypeCorrection(item)">
-            <div data-test-class="correction-pending" class="todo-list-detail body-2">
-              <p class="list-item__subtitle">This filing is pending review by Registry Staff.<br />
+            <div
+              data-test-class="correction-pending"
+              class="todo-list-detail body-2"
+            >
+              <p class="list-item__subtitle">
+                This filing is pending review by Registry Staff.<br>
                 Normal processing times are 2 to 5 business days. Priority processing times are 1 to 2 business days.
               </p>
-              <v-divider class="my-6"></v-divider>
+              <v-divider class="my-6" />
               <!-- the correction comment -->
               <CorrectionComment :comment="item.comment" />
             </div>
           </template>
 
           <!-- is this a draft IA or Registration? -->
-          <template v-else-if="isStatusDraft(item) &&
-            (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
+          <template
+            v-else-if="isStatusDraft(item) &&
+              (isTypeIncorporationApplication(item) || isTypeRegistration(item))"
           >
             <NameRequestInfo :nameRequest="item.nameRequest" />
           </template>
 
           <!-- does this item have a pending payment? -->
           <template v-else-if="isStatusPending(item)">
-            <PaymentPendingOnlineBanking v-if="EnumUtilities.isPayMethodOnlineBanking(item)" :filing=item
-              class="mb-6" />
+            <PaymentPendingOnlineBanking
+              v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
+              :filing="item"
+              class="mb-6"
+            />
             <PaymentPending v-else />
           </template>
 
@@ -390,10 +484,18 @@
     </v-expansion-panels>
 
     <!-- No Results Message -->
-    <v-card class="no-results" flat v-if="!showTodoPanel">
+    <v-card
+      v-if="!showTodoPanel"
+      class="no-results"
+      flat
+    >
       <v-card-text>
-        <div class="no-results__title">You don't have anything to do yet</div>
-        <div class="no-results__subtitle">Filings that require your attention will appear here</div>
+        <div class="no-results__title">
+          You don't have anything to do yet
+        </div>
+        <div class="no-results__subtitle">
+          Filings that require your attention will appear here
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -1349,11 +1451,12 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.setCurrentFilingStatus(FilingStatus.NEW)
         this.$router.push({ name: Routes.ANNUAL_REPORT, params: { filingId: '0' } }) // 0 means "new AR"
         break
-      case FilingTypes.CONVERSION:
+      case FilingTypes.CONVERSION: {
         // go to conversion filing
         const url = `${this.getEditUrl}${this.getIdentifier}/conversion`
         navigate(url)
         break
+      }
       default:
         // eslint-disable-next-line no-console
         console.log('doFileNow(), invalid type for task =', item)

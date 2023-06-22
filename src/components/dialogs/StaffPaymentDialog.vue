@@ -1,11 +1,21 @@
 <template>
-  <v-dialog ref="dialog" v-model="dialog" width="45rem" persistent :attach="attach"
+  <v-dialog
+    ref="dialog"
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
     content-class="staff-payment-dialog"
   >
     <v-card>
       <v-card-title class="d-flex justify-space-between">
         <div>Staff Payment</div>
-        <v-btn icon large class="dialog-close float-right" @click="exit()">
+        <v-btn
+          icon
+          large
+          class="dialog-close float-right"
+          @click="exit()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -105,7 +115,8 @@ export default class StaffPaymentDialog extends Vue {
 
   // Pass updated staff payment data to parent.
   @Emit('update:staffPaymentData')
-  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void { /* no empty function */ }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitStaffPaymentData (staffPaymentData: StaffPaymentIF): void {}
 }
 </script>
 

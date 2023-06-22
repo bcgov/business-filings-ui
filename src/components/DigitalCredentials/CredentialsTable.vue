@@ -1,5 +1,8 @@
 <template>
-  <div id="credentials-table" class="mt-8">
+  <div
+    id="credentials-table"
+    class="mt-8"
+  >
     <header class="credentials-table-header">
       <label class="font-weight-bold pl-2">Your Digital Credentials</label>
     </header>
@@ -14,14 +17,14 @@
         :headers="credentialsTableHeaders"
         no-data-text="All digital credentials associated with this business will appear here."
       >
-        <template v-slot:[`item.credentialType`]="{ item }">
-          {{formatCredentialType(item.credentialType)}}
+        <template #[`item.credentialType`]="{ item }">
+          {{ formatCredentialType(item.credentialType) }}
         </template>
-        <template v-slot:[`item.isIssued`]="{ item }">
+        <template #[`item.isIssued`]="{ item }">
           {{ item.isIssued ? 'Issued' : 'Pending' }}
         </template>
-        <template v-slot:[`item.dateOfIssue`]="{ item }">
-          {{apiToPacificDate(item.dateOfIssue) || '-'}}
+        <template #[`item.dateOfIssue`]="{ item }">
+          {{ apiToPacificDate(item.dateOfIssue) || '-' }}
         </template>
       </v-data-table>
     </v-card>

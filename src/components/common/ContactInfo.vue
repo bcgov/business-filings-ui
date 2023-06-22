@@ -1,19 +1,52 @@
 <template>
   <ul class="contact-info pl-0">
-    <li class="contact-container" v-if="!hidePhoneTollFree">
-      <v-icon class="contact-icon" size="18px">mdi-phone</v-icon>
+    <li
+      v-if="!hidePhoneTollFree"
+      class="contact-container"
+    >
+      <v-icon
+        class="contact-icon"
+        size="18px"
+      >
+        mdi-phone
+      </v-icon>
       <span class="px-2">Canada and U.S. Toll Free:</span>
-      <a href="tel:+1-877-526-1526" class="contact-value">1-877-526-1526</a>
+      <a
+        href="tel:+1-877-526-1526"
+        class="contact-value"
+      >1-877-526-1526</a>
     </li>
-    <li class="contact-container" v-if="!hidePhoneVictoria">
-      <v-icon class="contact-icon" size="18px">mdi-phone</v-icon>
+    <li
+      v-if="!hidePhoneVictoria"
+      class="contact-container"
+    >
+      <v-icon
+        class="contact-icon"
+        size="18px"
+      >
+        mdi-phone
+      </v-icon>
       <span class="px-2">Victoria Office:</span>
-      <a href="tel:+1-250-387-7848" class="contact-value">250-387-7848</a>
+      <a
+        href="tel:+1-250-387-7848"
+        class="contact-value"
+      >250-387-7848</a>
     </li>
-    <li class="contact-container" v-if="!hideEmail">
-      <v-icon class="contact-icon" size="18px">mdi-email</v-icon>
+    <li
+      v-if="!hideEmail"
+      class="contact-container"
+    >
+      <v-icon
+        class="contact-icon"
+        size="18px"
+      >
+        mdi-email
+      </v-icon>
       <span class="px-2">Email:</span>
-      <a href="mailto:BCRegistries@gov.bc.ca" class="contact-value">BCRegistries@gov.bc.ca</a>
+      <a
+        href="mailto:BCRegistries@gov.bc.ca"
+        class="contact-value"
+      >BCRegistries@gov.bc.ca</a>
     </li>
   </ul>
 </template>

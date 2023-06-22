@@ -1,33 +1,64 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="cancel-payment-error-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="cancel-payment-error-dialog"
+  >
     <v-card>
-      <v-card-title id="dialog-title" data-test-id="cancel-pay-dialog-title">
+      <v-card-title
+        id="dialog-title"
+        data-test-id="cancel-pay-dialog-title"
+      >
         Unable to Cancel Payment
       </v-card-title>
 
-      <v-card-text id="dialog-text" data-test-id="cancel-pay-dialog-text">
-        <p class="font-15" v-if="errors.length < 1">
+      <v-card-text
+        id="dialog-text"
+        data-test-id="cancel-pay-dialog-text"
+      >
+        <p
+          v-if="errors.length < 1"
+          class="font-15"
+        >
           We were unable to cancel your payment.
         </p>
-        <p class="font-15" v-else>
+        <p
+          v-else
+          class="font-15"
+        >
           We were unable to cancel your payment due to the following errors:
         </p>
-        <p class="font-15" v-for="(error, index) in errors" :key="index">
-          {{error.error || error.message}}
+        <p
+          v-for="(error, index) in errors"
+          :key="index"
+          class="font-15"
+        >
+          {{ error.error || error.message }}
         </p>
 
         <template v-if="!isRoleStaff">
-          <p class="font-15">If you need help, please contact us.</p>
+          <p class="font-15">
+            If you need help, please contact us.
+          </p>
           <ContactInfo class="mt-5" />
         </template>
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-ok-btn" color="primary" text @click="okay()"
-          data-test-id="cancel-pay-dialog-ok-btn">OK</v-btn>
+        <v-spacer />
+        <v-btn
+          id="dialog-ok-btn"
+          color="primary"
+          text
+          data-test-id="cancel-pay-dialog-ok-btn"
+          @click="okay()"
+        >
+          OK
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -56,6 +87,6 @@ export default class CancelPaymentErrorDialog extends Vue {
   @Prop({ default: () => [] }) readonly errors!: any[]
 
   // Pass click event to parent.
-  @Emit() okay () { /* no empty function */ }
+  @Emit() okay () {}
 }
 </script>

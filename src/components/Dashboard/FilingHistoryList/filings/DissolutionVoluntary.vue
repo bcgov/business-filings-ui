@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="dissolution-voluntary" :filing="filing" :index="index">
+  <FilingTemplate
+    class="dissolution-voluntary"
+    :filing="filing"
+    :index="index"
+  >
     <template #subtitle>
       <FiledAndPendingPaid
         v-if="isFutureEffectivePending"
@@ -19,12 +23,12 @@
     <template #body>
       <FutureEffectivePending
         v-if="isFutureEffectivePending"
-        :filing=filing
+        :filing="filing"
       />
 
       <FutureEffective
         v-else-if="isFutureEffective"
-        :filing=filing
+        :filing="filing"
       />
 
       <div

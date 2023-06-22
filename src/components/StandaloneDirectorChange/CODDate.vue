@@ -1,5 +1,8 @@
 <template>
-  <v-card flat class="cod-date-container">
+  <v-card
+    flat
+    class="cod-date-container"
+  >
     <div class="meta-container">
       <label>Director Change Date</label>
 
@@ -10,37 +13,42 @@
           :nudge-right="40"
           transition="scale-transition"
           offset-y
-          min-width="18rem">
-          <template v-slot:activator="{ on }">
+          min-width="18rem"
+        >
+          <template #activator="{ on }">
             <v-text-field
               id="cod-textfield"
-              data-test-id="cod-date-text"
               v-model="dateFormatted"
+              data-test-id="cod-date-text"
               :rules="codDateRules"
               label="Enter your Director Change Date"
               hint="YYYY/MM/DD"
               append-icon="mdi-calendar"
-              v-on="on"
               filled
+              v-on="on"
             />
           </template>
           <v-date-picker
             id="cod-datepicker"
-            data-test-id="cod-date-picker"
             v-model="date"
-            :min=minDate
-            :max=maxDate
+            data-test-id="cod-date-picker"
+            :min="minDate"
+            :max="maxDate"
             no-title
             @input="menu=true"
           />
         </v-menu>
 
-        <div class="validationErrorInfo" v-if="$v.dateFormatted.isNotNull" data-test-id="cod-validation-error">
+        <div
+          v-if="$v.dateFormatted.isNotNull"
+          class="validationErrorInfo"
+          data-test-id="cod-validation-error"
+        >
           <span v-if="!$v.dateFormatted.isValidFormat">
             Date must be in format YYYY/MM/DD.
           </span>
           <span v-else-if="!$v.dateFormatted.isValidCodDate">
-            Please enter a day between {{formatDate(minDate, false)}} and {{formatDate(maxDate, false)}}.
+            Please enter a day between {{ formatDate(minDate, false) }} and {{ formatDate(maxDate, false) }}.
           </span>
         </div>
       </div>
@@ -182,14 +190,14 @@ export default class CodDate extends Mixins(DateMixin) {
    */
   @Emit('codDate')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitCodDate (val: string): void { /* no empty function */ }
+  emitCodDate (val: string): void {}
 
   /**
    * Emits an event indicating whether or not this component is valid.
    */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (val: boolean): void { /* no empty function */ }
+  emitValid (val: boolean): void {}
 }
 </script>
 

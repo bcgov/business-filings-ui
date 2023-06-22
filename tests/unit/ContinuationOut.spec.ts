@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useBusinessStore, useRootStore } from '@/stores'
 import ContinuationOut from '@/views/ContinuationOut.vue'
 import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
   from '@/components/dialogs'
@@ -28,7 +28,6 @@ const localVue = createLocalVue()
 localVue.use(VueRouter)
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
-const configurationStore = useConfigurationStore()
 const rootStore = useRootStore()
 
 describe('Continuation Out view', () => {

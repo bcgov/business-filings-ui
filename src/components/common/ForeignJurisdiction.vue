@@ -1,34 +1,41 @@
 <template>
-  <v-card flat id="foreign-jurisdiction">
+  <v-card
+    id="foreign-jurisdiction"
+    flat
+  >
     <v-row no-gutters>
-      <v-col cols="12" sm="3">
+      <v-col
+        cols="12"
+        sm="3"
+      >
         <label class="title-label">Jurisdiction</label>
       </v-col>
-      <v-col cols="12" sm="9">
+      <v-col
+        cols="12"
+        sm="9"
+      >
         <v-select
-          ref="countrySelectRef"
           id="country-selector"
+          ref="countrySelectRef"
+          v-model="selectedCountryName"
           :items="getCountries()"
           item-text="name"
-          v-model="selectedCountryName"
           filled
           placeholder="Jurisdiction Country"
           :rules="countryRules"
-          immediate: true
           menu-props="auto"
           @input="emitChangedCountry($event)"
         />
         <v-select
-          ref="regionSelectRef"
           v-if="canadaUsaRegions.length > 0"
           id="region-selector"
+          ref="regionSelectRef"
+          v-model="selectedRegionName"
           :items="canadaUsaRegions"
           item-text="name"
-          v-model="selectedRegionName"
           filled
           placeholder="Jurisdiction Region"
           :rules="regionRules"
-          immediate: true
           @input="emitChangedRegion($event)"
         />
       </v-col>
@@ -180,7 +187,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   /** Emits an event indicating whether or not the form is valid. */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (valid: boolean): void { /* no empty function */ }
+  emitValid (valid: boolean): void {}
 }
 </script>
 

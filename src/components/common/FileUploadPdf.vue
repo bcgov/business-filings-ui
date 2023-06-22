@@ -1,6 +1,7 @@
 <template>
   <v-file-input
     id="file-upload-pdf"
+    :key="count"
     dense
     filled
     show-size
@@ -9,7 +10,6 @@
     accept=".pdf"
     label="Select a file to upload"
     :value="file"
-    :key="count"
     :error-messages="errorMessages"
     @change="onChange($event)"
   />
@@ -266,11 +266,11 @@ export default class FileUploadPdf extends Vue {
 
   @Emit('update:file')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateFile (file: File): void { /* no empty function */ }
+  updateFile (file: File): void {}
 
   @Emit('update:fileKey')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updateFileKey (fileKey: string): void { /* no empty function */ }
+  updateFileKey (fileKey: string): void {}
 }
 </script>
 

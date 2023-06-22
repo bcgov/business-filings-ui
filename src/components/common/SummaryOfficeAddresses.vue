@@ -17,16 +17,20 @@
       <!-- Registered Mailing Address -->
       <li class="address-list-container">
         <div class="meta-container">
-          <label></label>
-          <div class="meta-container__inner"
+          <label />
+          <div
             v-if="!isSame(registeredDeliveryAddress, registeredMailingAddress)"
+            class="meta-container__inner"
           >
             <label><strong>Mailing Address</strong></label>
             <div class="address-wrapper">
               <mailing-address :address="registeredMailingAddress" />
             </div>
           </div>
-          <span id="regMailSameAsDeliv" v-else>Mailing Address same as above</span>
+          <span
+            v-else
+            id="regMailSameAsDeliv"
+          >Mailing Address same as above</span>
         </div>
       </li>
 
@@ -48,9 +52,10 @@
         <!-- Records Mailing Address -->
         <li class="address-list-container">
           <div class="meta-container">
-            <label></label>
-            <div class="meta-container__inner"
+            <label />
+            <div
               v-if="!isSame(recordsDeliveryAddress, recordsMailingAddress)"
+              class="meta-container__inner"
             >
               <label>Mailing Address</label>
               <div class="address-wrapper">

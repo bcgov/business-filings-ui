@@ -1,12 +1,16 @@
 <template>
-  <v-menu v-if="dialogObj != null"
+  <v-menu
+    v-if="dialogObj != null"
     :close-on-content-click="false"
     :nudge-width="200"
     offset-y
     max-width="18rem"
   >
-    <template v-slot:activator="{ on }">
-      <span class="warning-text" v-on="on">
+    <template #activator="{ on }">
+      <span
+        class="warning-text"
+        v-on="on"
+      >
         <v-icon class="warning-icon">mdi-information-outline</v-icon>
         &nbsp;
         {{ dialogObj.title }}
@@ -15,7 +19,7 @@
     <v-card>
       <v-list-item>
         <v-list-item-content>
-         {{ dialogObj.msg }}
+          {{ dialogObj.msg }}
         </v-list-item-content>
       </v-list-item>
     </v-card>

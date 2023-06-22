@@ -1,16 +1,27 @@
 <template>
   <div id="firms-address-list">
     <div :disabled="disabled">
-      <div id="business-address-panel" class="align-items-top" :class="{ 'disabled': disabled }">
-        <div v-if="showCompleteYourFilingMessage" class="pt-4 pb-4">
+      <div
+        id="business-address-panel"
+        class="align-items-top"
+        :class="{ 'disabled': disabled }"
+      >
+        <div
+          v-if="showCompleteYourFilingMessage"
+          class="pt-4 pb-4"
+        >
           <v-list class="pt-0 pb-0">
             <!-- Delivery Address -->
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-truck</v-icon>
+                <v-icon color="primary">
+                  mdi-truck
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
@@ -19,10 +30,14 @@
 
             <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-email-outline</v-icon>
+                <v-icon color="primary">
+                  mdi-email-outline
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
@@ -31,19 +46,33 @@
           </v-list>
         </div>
 
-        <div v-else class="pt-4 pb-4">
+        <div
+          v-else
+          class="pt-4 pb-4"
+        >
           <v-list class="pt-0 pb-0">
             <!-- Delivery Address -->
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-truck</v-icon>
+                <v-icon color="primary">
+                  mdi-truck
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle v-if="businessAddress">
-                  <ul class="address-subtitle pre-line" v-if="businessAddress.deliveryAddress">
-                    <li class="address-line1">{{ businessAddress.deliveryAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ businessAddress.deliveryAddress.streetAddressAdditional }}</li>
+                  <ul
+                    v-if="businessAddress.deliveryAddress"
+                    class="address-subtitle pre-line"
+                  >
+                    <li class="address-line1">
+                      {{ businessAddress.deliveryAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ businessAddress.deliveryAddress.streetAddressAdditional }}
+                    </li>
                     <li class="address-line3">
                       {{ businessAddress.deliveryAddress.addressCity }}
                       {{ businessAddress.deliveryAddress.addressRegion }}
@@ -53,13 +82,20 @@
                       <span>{{ getCountryName(businessAddress.deliveryAddress.addressCountry) }}</span>
                     </li>
                   </ul>
-                  <ul class="address-subtitle pre-line" v-else>
-                    <li class="delivery-address-not-entered">(Not entered)</li>
+                  <ul
+                    v-else
+                    class="address-subtitle pre-line"
+                  >
+                    <li class="delivery-address-not-entered">
+                      (Not entered)
+                    </li>
                   </ul>
                 </v-list-item-subtitle>
                 <v-list-item-subtitle v-else>
                   <ul class="address-subtitle pre-line">
-                    <li class="delivery-address-not-entered">(Not entered)</li>
+                    <li class="delivery-address-not-entered">
+                      (Not entered)
+                    </li>
                   </ul>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -68,19 +104,32 @@
             <!-- Mailing Address -->
             <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-email-outline</v-icon>
+                <v-icon color="primary">
+                  mdi-email-outline
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle v-if="businessAddress">
                   <div v-if="businessAddress.mailingAddress">
-                    <span class="same-as-above"
-                      v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])">
+                    <span
+                      v-if="isSame(businessAddress.deliveryAddress, businessAddress.mailingAddress, ['id'])"
+                      class="same-as-above"
+                    >
                       Same as above
                     </span>
-                    <ul v-else class="address-subtitle pre-line">
-                      <li class="address-line1">{{ businessAddress.mailingAddress.streetAddress }}</li>
-                      <li class="address-line2">{{ businessAddress.mailingAddress.streetAddressAdditional }}</li>
+                    <ul
+                      v-else
+                      class="address-subtitle pre-line"
+                    >
+                      <li class="address-line1">
+                        {{ businessAddress.mailingAddress.streetAddress }}
+                      </li>
+                      <li class="address-line2">
+                        {{ businessAddress.mailingAddress.streetAddressAdditional }}
+                      </li>
                       <li class="address-line3">
                         {{ businessAddress.mailingAddress.addressCity }}
                         {{ businessAddress.mailingAddress.addressRegion }}
@@ -91,7 +140,10 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="mailing-address-not-entered" v-else>
+                  <div
+                    v-else
+                    class="mailing-address-not-entered"
+                  >
                     <span>(Not entered)</span>
                   </div>
                 </v-list-item-subtitle>

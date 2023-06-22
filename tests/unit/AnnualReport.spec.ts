@@ -1594,7 +1594,6 @@ describe('Annual Report - Part 5 - Data', () => {
 
 describe('Annual Report - Part 5B - Data (BCOMP)', () => {
   let wrapper: Wrapper<Vue>
-  let vm: any
   let spy: any
 
   const currentFilingYear = 2018
@@ -1660,7 +1659,6 @@ describe('Annual Report - Part 5B - Data (BCOMP)', () => {
       },
       vuetify
     })
-    vm = wrapper.vm
 
     // no need to set up directors or office addresses - just use initial values
 

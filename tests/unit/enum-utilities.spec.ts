@@ -1,8 +1,6 @@
 import EnumUtilities from '@/services/enum-utilities'
 
 describe('Enum Utilities', () => {
-  let vm: any
-
   it('returns correct values for filing state helpers', () => {
     expect(EnumUtilities.isStatusCancelled({ status: 'CANCELLED' })).toBe(true)
     expect(EnumUtilities.isStatusCompleted({ status: 'COMPLETED' })).toBe(true)

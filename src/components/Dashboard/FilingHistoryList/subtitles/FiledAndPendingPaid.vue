@@ -8,7 +8,7 @@
       class="details-btn"
       outlined
       color="orange darken-2"
-      :ripple=false
+      :ripple="false"
       @click.stop="toggleFilingHistoryItem(index)"
     >
       <v-icon>mdi-alert</v-icon>

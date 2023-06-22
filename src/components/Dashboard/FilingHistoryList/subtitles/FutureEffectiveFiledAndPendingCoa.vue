@@ -2,10 +2,18 @@
   <div class="future-effective-filed-and-pending-coa">
     <span>FILED AND PENDING <FiledLabel :filing="filing" /></span>
 
-    <v-tooltip top content-class="pending-tooltip">
-      <template v-slot:activator="{ on }">
-        <div class="pending-alert" v-on="on">
-          <v-icon color="orange darken-2">mdi-alert</v-icon>
+    <v-tooltip
+      top
+      content-class="pending-tooltip"
+    >
+      <template #activator="{ on }">
+        <div
+          class="pending-alert"
+          v-on="on"
+        >
+          <v-icon color="orange darken-2">
+            mdi-alert
+          </v-icon>
         </div>
       </template>
       The updated office addresses will be legally effective on

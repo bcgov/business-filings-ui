@@ -1,32 +1,62 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="file-correction-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="file-correction-dialog"
+  >
     <v-card>
-      <v-card-title class="pt-8">Correction Filing</v-card-title>
+      <v-card-title class="pt-8">
+        Correction Filing
+      </v-card-title>
 
       <v-card-text class="font-15">
-        <p>Select who caused the correction. If client, completing party information and certification
-          will be required. If staff, completing party information and certification will not be required.</p>
+        <p>
+          Select who caused the correction. If client, completing party information and certification
+          will be required. If staff, completing party information and certification will not be required.
+        </p>
         <v-radio-group v-model="correctionType">
-          <v-radio id="correct-client-radio" class="mb-0 pt-2" label="Client Error" :value="CorrectionTypes.CLIENT" />
-          <v-radio id="correct-staff-radio" class="mb-0 pt-2" label="Staff Error" :value="CorrectionTypes.STAFF" />
+          <v-radio
+            id="correct-client-radio"
+            class="mb-0 pt-2"
+            label="Client Error"
+            :value="CorrectionTypes.CLIENT"
+          />
+          <v-radio
+            id="correct-staff-radio"
+            class="mb-0 pt-2"
+            label="Staff Error"
+            :value="CorrectionTypes.STAFF"
+          />
         </v-radio-group>
         <template v-if="!hasChosenCorrection">
-          <p class="font-15 option-error">Choose one option to proceed</p>
+          <p class="font-15 option-error">
+            Choose one option to proceed
+          </p>
         </template>
       </v-card-text>
 
       <v-card-actions class="py-10">
-        <v-btn outlined large
+        <v-btn
+          id="dialog-exit-button"
+          outlined
+          large
           class="mr-2"
           color="primary"
-          id="dialog-exit-button"
           @click="exit()"
-        >Cancel</v-btn>
-        <v-btn depressed large
-          color="primary"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
           id="dialog-start-button"
+          depressed
+          large
+          color="primary"
           @click="checkToStart()"
-        >Start Correction</v-btn>
+        >
+          Start Correction
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -89,7 +119,8 @@ export default class FileCorrectionDialog extends Vue {
    * Redirect to start correction.
    */
   @Emit('redirect')
-  emitRedirect (correctionType: CorrectionTypes): void { /* no empty function */ }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  emitRedirect (correctionType: CorrectionTypes): void {}
 }
 </script>
 

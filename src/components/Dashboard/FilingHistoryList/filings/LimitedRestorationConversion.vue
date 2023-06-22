@@ -1,5 +1,9 @@
 <template>
-  <FilingTemplate class="limited-restoration-conversion" :filing="filing" :index="index">
+  <FilingTemplate
+    class="limited-restoration-conversion"
+    :filing="filing"
+    :index="index"
+  >
     <!-- just use all fallback slots -->
   </FilingTemplate>
 </template>

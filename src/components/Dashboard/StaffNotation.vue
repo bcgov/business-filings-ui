@@ -1,63 +1,81 @@
 <template>
-  <div id="staff-notation" :class="{ 'add-scrollbar-offset': addScrollbarOffset }">
+  <div
+    id="staff-notation"
+    :class="{ 'add-scrollbar-offset': addScrollbarOffset }"
+  >
     <AddStaffNotationDialog
       :dialog="isAddingRegistrarsNotation"
-      @close="hideRegistrarsNotationDialog($event)"
       attach="#staff-notation"
       :displayName="FilingNames.REGISTRARS_NOTATION"
       :name="FilingTypes.REGISTRARS_NOTATION"
+      @close="hideRegistrarsNotationDialog($event)"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingRegistrarsOrder"
-      @close="hideRegistrarsOrderDialog($event)"
       attach="#staff-notation"
       :displayName="FilingNames.REGISTRARS_ORDER"
       :name="FilingTypes.REGISTRARS_ORDER"
+      @close="hideRegistrarsOrderDialog($event)"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingCourtOrder"
-      @close="hideCourtOrderDialog($event)"
       attach="#staff-notation"
       :displayName="FilingNames.COURT_ORDER"
       :name="FilingTypes.COURT_ORDER"
       courtOrderNumberRequired="true"
+      @close="hideCourtOrderDialog($event)"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingAdministrativeDissolution"
-      @close="hideAdministrativeDissolutionDialog($event)"
       attach="#staff-notation"
       :displayName="FilingNames.DISSOLUTION_ADMINISTRATIVE"
       :name="FilingTypes.DISSOLUTION"
       :dissolutionType="FilingSubTypes.DISSOLUTION_ADMINISTRATIVE"
+      @close="hideAdministrativeDissolutionDialog($event)"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingPutBackOn"
-      @close="hidePutBackOnDialog($event)"
       attach="#staff-notation"
       :displayName="FilingNames.PUT_BACK_ON"
       :name="FilingTypes.PUT_BACK_ON"
+      @close="hidePutBackOnDialog($event)"
     />
 
     <AddStaffNotationDialog
       :dialog="isAddingAdministerFreeze"
-      @close="hideAdministerFreezeDialog($event)"
       attach="#staff-notation"
       :displayName="FilingNames.ADMIN_FREEZE"
       :name="FilingTypes.ADMIN_FREEZE"
+      @close="hideAdministerFreezeDialog($event)"
     />
 
     <div class="staff-notation-container">
-      <v-menu offset-y transition="slide-y-transition" v-model="expand">
-        <template v-slot:activator="{ on }">
-          <v-btn text color="primary" class="menu-btn pr-3" v-on="on">
-            <v-icon color="primary">mdi-plus</v-icon>
+      <v-menu
+        v-model="expand"
+        offset-y
+        transition="slide-y-transition"
+      >
+        <template #activator="{ on }">
+          <v-btn
+            text
+            color="primary"
+            class="menu-btn pr-3"
+            v-on="on"
+          >
+            <v-icon color="primary">
+              mdi-plus
+            </v-icon>
             <span>Add Staff Filing</span>
-            <v-icon v-if="expand">mdi-menu-up</v-icon>
-            <v-icon v-else>mdi-menu-down</v-icon>
+            <v-icon v-if="expand">
+              mdi-menu-up
+            </v-icon>
+            <v-icon v-else>
+              mdi-menu-down
+            </v-icon>
           </v-btn>
         </template>
 
@@ -65,8 +83,8 @@
           <v-list-item-group color="primary">
             <v-list-item
               data-type="registrars-notation"
-              @click="showRegistrarsNotationDialog()"
               :disabled="!isAllowed(AllowableActions.REGISTRARS_NOTATION)"
+              @click="showRegistrarsNotationDialog()"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Notation</span>
@@ -75,8 +93,8 @@
 
             <v-list-item
               data-type="registrars-order"
-              @click="showRegistrarsOrderDialog()"
               :disabled="!isAllowed(AllowableActions.REGISTRARS_ORDER)"
+              @click="showRegistrarsOrderDialog()"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Registrar's Order</span>
@@ -85,8 +103,8 @@
 
             <v-list-item
               data-type="court-order"
-              @click="showCourtOrderDialog()"
               :disabled="!isAllowed(AllowableActions.COURT_ORDER)"
+              @click="showCourtOrderDialog()"
             >
               <v-list-item-title>
                 <span class="app-blue">Add Court Order</span>
@@ -96,8 +114,8 @@
             <v-list-item
               v-if="isFirm"
               data-type="record-conversion"
-              @click="goToConversionFiling()"
               :disabled="!isAllowed(AllowableActions.RECORD_CONVERSION)"
+              @click="goToConversionFiling()"
             >
               <v-list-item-title>
                 <span class="app-blue">Record Conversion</span>
@@ -107,8 +125,8 @@
             <v-list-item
               v-if="!isHistorical"
               data-type="administrative-dissolution"
-              @click="showAdministrativeDissolutionDialog()"
               :disabled="!isAllowed(AllowableActions.ADMINISTRATIVE_DISSOLUTION)"
+              @click="showAdministrativeDissolutionDialog()"
             >
               <v-list-item-title>
                 <span class="app-blue">Administrative Dissolution</span>
@@ -148,8 +166,8 @@
             <v-list-item
               v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
               data-type="consent-continue-out"
-              @click="goToConsentContinuationOutFiling()"
               :disabled="!isAllowed(AllowableActions.CONSENT_CONTINUATION_OUT)"
+              @click="goToConsentContinuationOutFiling()"
             >
               <v-list-item-title>
                 <span class="app-blue">Consent to Continuation Out</span>
@@ -159,8 +177,8 @@
             <v-list-item
               v-if="!isHistorical && (isBenBcCccUlc || isCoop)"
               data-type="continue-out"
-              @click="goToContinuationOutFiling()"
               :disabled="!isAllowed(AllowableActions.CONTINUATION_OUT)"
+              @click="goToContinuationOutFiling()"
             >
               <v-list-item-title>
                 <span class="app-blue">Continue Out</span>
@@ -343,7 +361,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
 
   @Emit('close')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  close (needReload: boolean): void { /* no empty function */ }
+  close (needReload: boolean): void {}
 }
 </script>
 

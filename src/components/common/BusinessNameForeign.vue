@@ -1,13 +1,22 @@
 <template>
-  <v-card flat id="business-name-foreign-jurisdiction">
+  <v-card
+    id="business-name-foreign-jurisdiction"
+    flat
+  >
     <v-row no-gutters>
-      <v-col cols="12" sm="3">
+      <v-col
+        cols="12"
+        sm="3"
+      >
         <label class="title-label">Business Name in the Foreign Jurisdiction</label>
       </v-col>
-      <v-col cols="12" sm="9">
+      <v-col
+        cols="12"
+        sm="9"
+      >
         <v-text-field
-          ref="textarea"
           id="business-name-text-field"
+          ref="textarea"
           filled
           label="Business Name in the Foreign Jurisdiction"
           :value="draftBusinessName"
@@ -72,7 +81,7 @@ export default class BusinessNameForeign extends Vue {
   /** Emits an event indicating whether or not the business name is valid. */
   @Emit('valid')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitValid (valid: boolean): void { /* no empty function */ }
+  emitValid (valid: boolean): void {}
 }
 </script>
 

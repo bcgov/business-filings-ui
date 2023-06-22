@@ -1,7 +1,12 @@
 <template>
-  <div class="correction-comment" v-if="comment">
+  <div
+    v-if="comment"
+    class="correction-comment"
+  >
     <h4>
-      <v-icon small>mdi-message-reply</v-icon>
+      <v-icon small>
+        mdi-message-reply
+      </v-icon>
       <span class="ml-1">Detail</span>
     </h4>
 

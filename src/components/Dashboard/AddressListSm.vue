@@ -9,26 +9,43 @@
     </template>
 
     <!-- when "disabled", expand all panels and disable expansion -->
-    <v-expansion-panels v-else accordion multiple :value="expansionValue" :disabled="disabled">
+    <v-expansion-panels
+      v-else
+      accordion
+      multiple
+      :value="expansionValue"
+      :disabled="disabled"
+    >
       <!-- Registered Office -->
-      <v-expansion-panel id="registered-office-panel"
+      <v-expansion-panel
+        id="registered-office-panel"
         class="align-items-top"
         :class="{
           'address-overlay': isCoaPending,
           'disabled': disabled
-        }">
+        }"
+      >
         <v-expansion-panel-header id="registered-office-panel-toggle">
-          <div class="list-item__title">Registered Office</div>
+          <div class="list-item__title">
+            Registered Office
+          </div>
         </v-expansion-panel-header>
 
-        <v-expansion-panel-content v-if="showCompleteYourFilingMessage" class="panel-wrapper pt-0 pb-0">
+        <v-expansion-panel-content
+          v-if="showCompleteYourFilingMessage"
+          class="panel-wrapper pt-0 pb-0"
+        >
           <v-list class="pt-0 pb-0">
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-truck</v-icon>
+                <v-icon color="primary">
+                  mdi-truck
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
@@ -37,10 +54,14 @@
 
             <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-email-outline</v-icon>
+                <v-icon color="primary">
+                  mdi-email-outline
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
@@ -49,24 +70,41 @@
           </v-list>
         </v-expansion-panel-content>
 
-        <v-expansion-panel-content v-else class="panel-wrapper pt-0 pb-0">
-          <v-list class="pt-0 pb-0" v-if="registeredAddress">
-            <v-list-item class="delivery-address-list-item"
+        <v-expansion-panel-content
+          v-else
+          class="panel-wrapper pt-0 pb-0"
+        >
+          <v-list
+            v-if="registeredAddress"
+            class="pt-0 pb-0"
+          >
+            <v-list-item
               v-if="registeredAddress.deliveryAddress"
+              class="delivery-address-list-item"
               :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-truck</v-icon>
+                <v-icon color="primary">
+                  mdi-truck
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <ul class="address-subtitle pre-line">
-                    <li class="address-line1">{{ registeredAddress.deliveryAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ registeredAddress.deliveryAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ registeredAddress.deliveryAddress.addressCity }}
-                                              {{ registeredAddress.deliveryAddress.addressRegion }}
-                                              {{ registeredAddress.deliveryAddress.postalCode }}</li>
+                    <li class="address-line1">
+                      {{ registeredAddress.deliveryAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ registeredAddress.deliveryAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ registeredAddress.deliveryAddress.addressCity }}
+                      {{ registeredAddress.deliveryAddress.addressRegion }}
+                      {{ registeredAddress.deliveryAddress.postalCode }}
+                    </li>
                     <li class="address-line4">
                       <span>{{ getCountryName(registeredAddress.deliveryAddress.addressCountry) }}</span>
                     </li>
@@ -75,27 +113,42 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item"
+            <v-list-item
               v-if="registeredAddress.mailingAddress"
+              class="mailing-address-list-item"
               :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-email-outline</v-icon>
+                <v-icon color="primary">
+                  mdi-email-outline
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above"
+                  <div
                     v-if="isSame(registeredAddress.deliveryAddress, registeredAddress.mailingAddress, 'id')"
+                    class="same-as-above"
                   >
                     <span>Same as above</span>
                   </div>
-                  <ul v-else class="address-subtitle pre-line">
-                    <li class="address-line1">{{ registeredAddress.mailingAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ registeredAddress.mailingAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ registeredAddress.mailingAddress.addressCity }}
-                                              {{ registeredAddress.mailingAddress.addressRegion }}
-                                              {{ registeredAddress.mailingAddress.postalCode }}</li>
+                  <ul
+                    v-else
+                    class="address-subtitle pre-line"
+                  >
+                    <li class="address-line1">
+                      {{ registeredAddress.mailingAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ registeredAddress.mailingAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ registeredAddress.mailingAddress.addressCity }}
+                      {{ registeredAddress.mailingAddress.addressRegion }}
+                      {{ registeredAddress.mailingAddress.postalCode }}
+                    </li>
                     <li class="address-line4">
                       <span>{{ getCountryName(registeredAddress.mailingAddress.addressCountry) }}</span>
                     </li>
@@ -108,8 +161,9 @@
       </v-expansion-panel>
 
       <!-- Records Office (BEN/BC/CCC/ULC and CORPs) -->
-      <v-expansion-panel id="records-office-panel"
+      <v-expansion-panel
         v-if="isBenBcCccUlc || isCorp"
+        id="records-office-panel"
         class="align-items-top"
         :class="{
           'address-overlay': isCoaPending,
@@ -117,17 +171,26 @@
         }"
       >
         <v-expansion-panel-header id="records-office-panel-toggle">
-          <div class="list-item__title">Records Office</div>
+          <div class="list-item__title">
+            Records Office
+          </div>
         </v-expansion-panel-header>
 
-        <v-expansion-panel-content v-if="showCompleteYourFilingMessage" class="panel-wrapper">
+        <v-expansion-panel-content
+          v-if="showCompleteYourFilingMessage"
+          class="panel-wrapper"
+        >
           <v-list class="pt-0 pb-0">
             <v-list-item class="delivery-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-truck</v-icon>
+                <v-icon color="primary">
+                  mdi-truck
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
@@ -136,10 +199,14 @@
 
             <v-list-item class="mailing-address-list-item">
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-email-outline</v-icon>
+                <v-icon color="primary">
+                  mdi-email-outline
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <span class="complete-filing">Complete your filing to display</span>
                 </v-list-item-subtitle>
@@ -148,24 +215,41 @@
           </v-list>
         </v-expansion-panel-content>
 
-        <v-expansion-panel-content class="panel-wrapper" v-else>
-          <v-list class="pt-0 pb-0" v-if="recordsAddress">
-            <v-list-item class="delivery-address-list-item"
+        <v-expansion-panel-content
+          v-else
+          class="panel-wrapper"
+        >
+          <v-list
+            v-if="recordsAddress"
+            class="pt-0 pb-0"
+          >
+            <v-list-item
               v-if="recordsAddress.deliveryAddress"
+              class="delivery-address-list-item"
               :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-truck</v-icon>
+                <v-icon color="primary">
+                  mdi-truck
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Delivery Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Delivery Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
                   <ul class="address-subtitle pre-line">
-                    <li class="address-line1">{{ recordsAddress.deliveryAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ recordsAddress.deliveryAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ recordsAddress.deliveryAddress.addressCity }}
-                                              {{ recordsAddress.deliveryAddress.addressRegion }}
-                                              {{ recordsAddress.deliveryAddress.postalCode }}</li>
+                    <li class="address-line1">
+                      {{ recordsAddress.deliveryAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ recordsAddress.deliveryAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ recordsAddress.deliveryAddress.addressCity }}
+                      {{ recordsAddress.deliveryAddress.addressRegion }}
+                      {{ recordsAddress.deliveryAddress.postalCode }}
+                    </li>
                     <li class="address-line4">
                       <span>{{ getCountryName(recordsAddress.deliveryAddress.addressCountry) }}</span>
                     </li>
@@ -174,27 +258,42 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item class="mailing-address-list-item"
+            <v-list-item
               v-if="recordsAddress.mailingAddress"
+              class="mailing-address-list-item"
               :class="{ 'address-overlay': isCoaPending }"
             >
               <v-list-item-icon class="address-icon mr-0">
-                <v-icon color="primary">mdi-email-outline</v-icon>
+                <v-icon color="primary">
+                  mdi-email-outline
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="mb-2 address-title">Mailing Address</v-list-item-title>
+                <v-list-item-title class="mb-2 address-title">
+                  Mailing Address
+                </v-list-item-title>
                 <v-list-item-subtitle>
-                  <div class="same-as-above"
+                  <div
                     v-if="isSame(recordsAddress.deliveryAddress, recordsAddress.mailingAddress, 'id')"
+                    class="same-as-above"
                   >
                     <span>Same as above</span>
                   </div>
-                  <ul v-else class="address-subtitle pre-line">
-                    <li class="address-line1">{{ recordsAddress.mailingAddress.streetAddress }}</li>
-                    <li class="address-line2">{{ recordsAddress.mailingAddress.streetAddressAdditional }}</li>
-                    <li class="address-line3">{{ recordsAddress.mailingAddress.addressCity }}
-                                              {{ recordsAddress.mailingAddress.addressRegion }}
-                                              {{ recordsAddress.mailingAddress.postalCode }}</li>
+                  <ul
+                    v-else
+                    class="address-subtitle pre-line"
+                  >
+                    <li class="address-line1">
+                      {{ recordsAddress.mailingAddress.streetAddress }}
+                    </li>
+                    <li class="address-line2">
+                      {{ recordsAddress.mailingAddress.streetAddressAdditional }}
+                    </li>
+                    <li class="address-line3">
+                      {{ recordsAddress.mailingAddress.addressCity }}
+                      {{ recordsAddress.mailingAddress.addressRegion }}
+                      {{ recordsAddress.mailingAddress.postalCode }}
+                    </li>
                     <li class="address-line4">
                       <span>{{ getCountryName(recordsAddress.mailingAddress.addressCountry) }}</span>
                     </li>

@@ -1,30 +1,63 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="confirm-dissolution-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="confirm-dissolution-dialog"
+  >
     <v-card class="pa-5">
-      <v-card-subtitle class="pt-5" align="center">
-        <v-icon color="error" large>mdi-information-outline</v-icon>
-        <v-btn small text color="primary" class="close-btn" @click="close()">
+      <v-card-subtitle
+        class="pt-5"
+        align="center"
+      >
+        <v-icon
+          color="error"
+          large
+        >
+          mdi-information-outline
+        </v-icon>
+        <v-btn
+          small
+          text
+          color="primary"
+          class="close-btn"
+          @click="close()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-subtitle>
 
       <v-card-text>
-        <p class="warning-title" id="dialog-title">
-          {{getModalTitle}}
+        <p
+          id="dialog-title"
+          class="warning-title"
+        >
+          {{ getModalTitle }}
         </p>
-        <p class="warning-text" id="dialog-text">
+        <p
+          id="dialog-text"
+          class="warning-text"
+        >
           You are about to {{ dissolutionType }} <strong>{{ getLegalName || 'this company' }}</strong>;
           once this process is completed and the required documents are filed, the {{ entityTitle }} will be
           struck from the register and dissolved, ceasing to be {{ subEntityTitle }} under the
           {{ entityAct }} Act.
         </p>
-        <p v-if=additionalLabel class="warning-text" id="dialog-text">
+        <p
+          v-if="additionalLabel"
+          id="dialog-text"
+          class="warning-text"
+        >
           <strong>{{ additionalLabel }}</strong>
         </p>
       </v-card-text>
 
       <v-card-actions>
-        <v-row no-gutters justify="center">
+        <v-row
+          no-gutters
+          justify="center"
+        >
           <v-btn
             id="dialog-close-button"
             class="mr-4 action-btn"
@@ -40,7 +73,7 @@
             color="primary"
             @click="proceed()"
           >
-            <span>{{getConfirmButtonText}}</span>
+            <span>{{ getConfirmButtonText }}</span>
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-row>
@@ -105,8 +138,8 @@ export default class ConfirmDissolutionDialog extends Vue {
   }
 
   // Pass click events to parent.
-  @Emit() close () { /* no empty function */ }
-  @Emit() proceed () { /* no empty function */ }
+  @Emit() close () {}
+  @Emit() proceed () {}
 }
 </script>
 

@@ -2,41 +2,74 @@
   <dl id="entity-definitions">
     <!-- Registration Date -->
     <template v-if="!!registrationDate">
-      <dt class="mr-2">Registration Date:</dt>
-      <dd id="registration-date">{{ registrationDate }}</dd>
+      <dt class="mr-2">
+        Registration Date:
+      </dt>
+      <dd id="registration-date">
+        {{ registrationDate }}
+      </dd>
     </template>
 
     <!-- Registration Number -->
     <template v-if="!!registrationNumber">
-      <dt class="mr-2">Registration Number:</dt>
-      <dd id="registration-number">{{ registrationNumber }}</dd>
+      <dt class="mr-2">
+        Registration Number:
+      </dt>
+      <dd id="registration-number">
+        {{ registrationNumber }}
+      </dd>
     </template>
 
     <!-- Business Number -->
     <template v-if="!!businessNumber">
-      <dt class="mr-2">Business Number:</dt>
-      <dd id="business-number">{{ businessNumber }}</dd>
+      <dt class="mr-2">
+        Business Number:
+      </dt>
+      <dd id="business-number">
+        {{ businessNumber }}
+      </dd>
     </template>
 
     <!-- Incorporation Number -->
     <template v-if="!!incorporationNumber">
-      <dt class="mr-2">Incorporation Number:</dt>
-      <dd id="incorporation-number">{{ incorporationNumber }}</dd>
+      <dt class="mr-2">
+        Incorporation Number:
+      </dt>
+      <dd id="incorporation-number">
+        {{ incorporationNumber }}
+      </dd>
     </template>
 
     <!-- NR Number -->
     <template v-if="!!nameRequestNumber">
-      <dt class="mr-2">Name Request Number:</dt>
-      <dd id="name-request-number">{{ nameRequestNumber }}</dd>
+      <dt class="mr-2">
+        Name Request Number:
+      </dt>
+      <dd id="name-request-number">
+        {{ nameRequestNumber }}
+      </dd>
     </template>
 
     <!-- Email -->
     <template v-if="!!email">
-      <dt class="mr-2">Email:</dt>
-      <dd id="email" class="cursor-pointer" @click="editBusinessProfile()">
+      <dt class="mr-2">
+        Email:
+      </dt>
+      <dd
+        id="email"
+        class="cursor-pointer"
+        @click="editBusinessProfile()"
+      >
         <span>{{ email }}</span>
-        <v-btn id="change-email-button" small text color="primary">
-          <v-icon small>mdi-pencil</v-icon>
+        <v-btn
+          id="change-email-button"
+          small
+          text
+          color="primary"
+        >
+          <v-icon small>
+            mdi-pencil
+          </v-icon>
           <span>Change</span>
         </v-btn>
       </dd>
@@ -44,11 +77,24 @@
 
     <!-- Phone -->
     <template v-if="!!phone">
-      <dt class="mr-2">Phone:</dt>
-      <dd id="phone" class="cursor-pointer" @click="editBusinessProfile()">
+      <dt class="mr-2">
+        Phone:
+      </dt>
+      <dd
+        id="phone"
+        class="cursor-pointer"
+        @click="editBusinessProfile()"
+      >
         <span>{{ phone }}</span>
-        <v-btn id="change-phone-button" small text color="primary">
-          <v-icon small>mdi-pencil</v-icon>
+        <v-btn
+          id="change-phone-button"
+          small
+          text
+          color="primary"
+        >
+          <v-icon small>
+            mdi-pencil
+          </v-icon>
           <span>Change</span>
         </v-btn>
       </dd>

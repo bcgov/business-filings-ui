@@ -1,9 +1,11 @@
 <template>
   <section id="issue-credentials">
-
     <article id="issue-credentials-header">
       <v-row no-gutters>
-        <v-col cols="12" lg="11">
+        <v-col
+          cols="12"
+          lg="11"
+        >
           <h3>Issue Credential to Digital Wallet</h3>
           <p class="mt-4 font-14">
             <span v-if="hasRegisteredWallet">
@@ -24,37 +26,60 @@
 
     <article v-if="hasRegisteredWallet">
       <v-row no-gutters>
-        <v-col cols="12" lg="12">
-          <v-card flat rounded class="px-2 mt-3">
+        <v-col
+          cols="12"
+          lg="12"
+        >
+          <v-card
+            flat
+            rounded
+            class="px-2 mt-3"
+          >
             <v-card-text class="px-6 py-8">
-
               <!-- Credential Offer -->
               <v-row no-gutters>
-                <v-col cols="12" lg="8" class="ma-auto">
+                <v-col
+                  cols="12"
+                  lg="8"
+                  class="ma-auto"
+                >
                   <h4>Business Digital Credential</h4>
                 </v-col>
-                <v-col cols="12" lg="4" class="pr-2">
+                <v-col
+                  cols="12"
+                  lg="4"
+                  class="pr-2"
+                >
                   <v-btn
                     v-if="issuedCredentials.length === 0"
                     id="next-btn"
-                    large color="primary"
+                    large
+                    color="primary"
                     class="font-weight-bold px-6 float-right"
                     :loading="isSendingOffer"
                     @click="sendCredentialOffer(DigitalCredentialTypes.BUSINESS)"
-                  >Send Credential Offer</v-btn>
+                  >
+                    Send Credential Offer
+                  </v-btn>
 
                   <div v-else-if="isPendingAcceptedOffer">
-                    <v-icon class="pr-2 alert-text">mdi-wallet</v-icon>
+                    <v-icon class="pr-2 alert-text">
+                      mdi-wallet
+                    </v-icon>
                     <span class="font-weight-bold alert-text">Check Digital Wallet for Offer</span>
                   </div>
 
                   <div v-else>
-                    <v-icon color="success" class="pr-2">mdi-check</v-icon>
+                    <v-icon
+                      color="success"
+                      class="pr-2"
+                    >
+                      mdi-check
+                    </v-icon>
                     <span class="success-text font-weight-bold">Credential Successfully Stored</span>
                   </div>
                 </v-col>
               </v-row>
-
             </v-card-text>
           </v-card>
         </v-col>
@@ -62,13 +87,24 @@
     </article>
 
     <!-- Navigate back section when no selections made -->
-    <article v-else id="no-credentials-msg" @click="back()">
-      <v-card flat rounded class="pa-3">
+    <article
+      v-else
+      id="no-credentials-msg"
+      @click="back()"
+    >
+      <v-card
+        flat
+        rounded
+        class="pa-3"
+      >
         <v-card-text>
           <v-row no-gutters>
             <v-col cols="12">
               <span class="font-16">
-                <v-icon class="pr-1" color="primary">mdi-arrow-left</v-icon>
+                <v-icon
+                  class="pr-1"
+                  color="primary"
+                >mdi-arrow-left</v-icon>
                 Go back to the previous step to register a digital wallet with this business.
               </span>
             </v-col>
@@ -97,7 +133,7 @@ export default class IssueCredentials extends Vue {
     return !this.issuedCredentials[0]?.isIssued
   }
 
-  @Emit() back (): void { /* no empty function */ }
+  @Emit() back (): void {}
 
   @Emit('sendCredentialOffer')
   sendCredentialOffer (credentialType: DigitalCredentialTypes) {

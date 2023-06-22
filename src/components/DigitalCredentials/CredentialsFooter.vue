@@ -1,5 +1,8 @@
 <template>
-  <v-container id="credentials-footer" class="list-item px-0 pb-1">
+  <v-container
+    id="credentials-footer"
+    class="list-item px-0 pb-1"
+  >
     <div class="buttons-right">
       <v-btn
         v-if="currentStepIndex > 0"
@@ -21,7 +24,9 @@
         @click="next()"
       >
         <span>{{ nextStepName }}</span>
-        <v-icon v-if="currentStepIndex !== lastStepIndex">mdi-chevron-right</v-icon>
+        <v-icon v-if="currentStepIndex !== lastStepIndex">
+          mdi-chevron-right
+        </v-icon>
       </v-btn>
 
       <v-btn
@@ -48,9 +53,9 @@ export default class CredentialsFooter extends Vue {
 
   @Prop({ default: 'Next' }) readonly nextStepName!: string
 
-  @Emit() back (): void { /* no empty function */ }
-  @Emit() next (): void { /* no empty function */ }
-  @Emit() cancel (): void { /* no empty function */ }
+  @Emit() back (): void {}
+  @Emit() next (): void {}
+  @Emit() cancel (): void {}
 }
 </script>
 

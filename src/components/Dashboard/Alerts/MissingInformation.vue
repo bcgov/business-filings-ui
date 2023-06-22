@@ -1,14 +1,33 @@
 <template>
-  <v-expansion-panels v-model="panel" id="missing-information-container">
+  <v-expansion-panels
+    id="missing-information-container"
+    v-model="panel"
+  >
     <v-expansion-panel class="mb-6">
-      <v-expansion-panel-header hide-actions class="d-flex justify-space-between px-6 py-5">
+      <v-expansion-panel-header
+        hide-actions
+        class="d-flex justify-space-between px-6 py-5"
+      >
         <h3>
-          <v-icon left color="orange darken-2">mdi-alert</v-icon>
+          <v-icon
+            left
+            color="orange darken-2"
+          >
+            mdi-alert
+          </v-icon>
           <span>Missing information</span>
         </h3>
-        <v-btn text color="primary" class="details-btn my-n1" @click.stop="togglePanel()">
+        <v-btn
+          text
+          color="primary"
+          class="details-btn my-n1"
+          @click.stop="togglePanel()"
+        >
           <span color="primary">{{ panel === 0 ? "Hide Details" : "View Details" }}</span>
-          <v-icon right color="primary">
+          <v-icon
+            right
+            color="primary"
+          >
             {{ panel === 0 ? "mdi-chevron-up" : "mdi-chevron-down" }}
           </v-icon>
         </v-btn>

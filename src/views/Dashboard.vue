@@ -2,17 +2,27 @@
   <div id="dashboard">
     <CoaWarningDialog
       :dialog="coaWarningDialog"
+      attach="#dashboard"
       @toggle="toggleCoaWarning()"
       @proceed="goToStandaloneAddresses()"
-      attach="#dashboard"
     />
 
-    <v-container id="dashboard-container" class="view-container">
+    <v-container
+      id="dashboard-container"
+      class="view-container"
+    >
       <article id="dashboard-article">
         <v-row class="mt-n9">
-          <v-col cols="12" md="9">
+          <v-col
+            cols="12"
+            md="9"
+          >
             <!-- Alerts section-->
-            <section v-if="alertCount > 0" id="dashboard-alerts-section" class="mb-n6">
+            <section
+              v-if="alertCount > 0"
+              id="dashboard-alerts-section"
+              class="mb-n6"
+            >
               <header>
                 <h2 class="mb-3">
                   <span>Alerts</span>&nbsp;<span class="section-count">({{ alertCount }})</span>
@@ -29,7 +39,7 @@
             <section id="dashboard-todo-section">
               <header>
                 <h2 class="mb-3">
-                  <span>To Do</span>&nbsp;<span class="section-count">({{todoCount}})</span>
+                  <span>To Do</span>&nbsp;<span class="section-count">({{ todoCount }})</span>
                 </h2>
               </header>
               <LegalObligation />
@@ -43,7 +53,7 @@
             <section id="dashboard-filing-history-section">
               <header>
                 <h2>
-                  <span>Recent Filing History</span>&nbsp;<span class="section-count">({{getHistoryCount}})</span>
+                  <span>Recent Filing History</span>&nbsp;<span class="section-count">({{ getHistoryCount }})</span>
                 </h2>
                 <StaffNotation
                   v-if="isRoleStaff && !!businessId"
@@ -58,13 +68,21 @@
             </section>
           </v-col>
 
-          <v-col cols="12" md="3" style="position: relative">
+          <v-col
+            cols="12"
+            md="3"
+            style="position: relative"
+          >
             <!-- Custodian of Records -->
             <section v-if="isHistorical && custodians.length > 0">
               <header class="aside-header mb-3">
-                <h2 data-test-id="dashboard-custodians-subtitle">Custodian of Records</h2>
+                <h2 data-test-id="dashboard-custodians-subtitle">
+                  Custodian of Records
+                </h2>
               </header>
-              <div class="scrollable-container" style="max-height: 49rem">
+              <div
+                class="scrollable-container scrollable-container-height"
+              >
                 <v-card flat>
                   <CustodianListSm :custodians="custodians" />
                 </v-card>
@@ -79,30 +97,42 @@
                 </h2>
 
                 <v-scale-transition>
-                  <v-tooltip top content-class="pending-tooltip">
-                    <template v-slot:activator="{ on }">
-                      <v-chip small label color="yellow" text-color="black"
-                        class="pending-chip"
+                  <v-tooltip
+                    top
+                    content-class="pending-tooltip"
+                  >
+                    <template #activator="{ on }">
+                      <v-chip
                         v-show="isCoaPending"
+                        small
+                        label
+                        color="yellow"
+                        text-color="black"
+                        class="pending-chip"
                         v-on="on"
                       >
                         <span>Pending</span>
                       </v-chip>
                     </template>
                     The updated office addresses will be legally effective on
-                    {{dateToPacificDateTime(coaEffectiveDate)}}.
+                    {{ dateToPacificDateTime(coaEffectiveDate) }}.
                     No other filings are allowed until then.
                   </v-tooltip>
                 </v-scale-transition>
 
-                <v-btn v-if="!isHistorical"
-                  text small color="primary"
+                <v-btn
+                  v-if="!isHistorical"
                   id="standalone-addresses-button"
+                  text
+                  small
+                  color="primary"
                   class="change-btn"
                   :disabled="!isAllowed(AllowableActions.ADDRESS_CHANGE)"
                   @click.native.stop="onAddressChangeClick()"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
+                  <v-icon small>
+                    mdi-pencil
+                  </v-icon>
                   <span>Change</span>
                 </v-btn>
               </header>
@@ -118,21 +148,38 @@
             <!-- Proprietor / Partners -->
             <section v-if="isFirm">
               <header class="aside-header mb-3">
-                <h2 v-if="isSoleProp" data-test-id="dashboard-proprietor-subtitle">Proprietor</h2>
-                <h2 v-if="isPartnership" data-test-id="dashboard-partners-subtitle">Partners</h2>
-                <v-btn text small color="primary"
-                  id="change-proprietor-partners-button"
-                  class="change-btn"
+                <h2
+                  v-if="isSoleProp"
+                  data-test-id="dashboard-proprietor-subtitle"
+                >
+                  Proprietor
+                </h2>
+                <h2
+                  v-if="isPartnership"
+                  data-test-id="dashboard-partners-subtitle"
+                >
+                  Partners
+                </h2>
+                <v-btn
                   v-if="!isHistorical"
+                  id="change-proprietor-partners-button"
+                  text
+                  small
+                  color="primary"
+                  class="change-btn"
                   :disabled="!isAllowed(AllowableActions.DIRECTOR_CHANGE)"
                   @click.native.stop="goToChangeFiling()"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
+                  <v-icon small>
+                    mdi-pencil
+                  </v-icon>
                   <span>Change</span>
                 </v-btn>
               </header>
 
-              <div class="scrollable-container" style="max-height: 49rem">
+              <div
+                class="scrollable-container scrollable-container-height"
+              >
                 <v-card flat>
                   <ProprietorPartnersListSm
                     :showCompleteYourFilingMessage="isAppTask"
@@ -145,20 +192,29 @@
             <!-- Current Directors-->
             <section v-else>
               <header class="aside-header mb-3">
-                <h2 data-test-id="dashboard-directors-subtitle">Current Directors</h2>
-                <v-btn v-if="!isHistorical"
-                  text small color="primary"
+                <h2 data-test-id="dashboard-directors-subtitle">
+                  Current Directors
+                </h2>
+                <v-btn
+                  v-if="!isHistorical"
                   id="standalone-directors-button"
+                  text
+                  small
+                  color="primary"
                   class="change-btn"
                   :disabled="!isAllowed(AllowableActions.DIRECTOR_CHANGE)"
                   @click.native.stop="goToStandaloneDirectors()"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
+                  <v-icon small>
+                    mdi-pencil
+                  </v-icon>
                   <span>Change</span>
                 </v-btn>
               </header>
 
-              <div class="scrollable-container" style="max-height: 49rem">
+              <div
+                class="scrollable-container scrollable-container-height"
+              >
                 <v-card flat>
                   <DirectorListSm
                     :showCompleteYourFilingMessage="isAppTask"
@@ -196,14 +252,7 @@ import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixi
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 
 export default {
-  name: 'Dashboard', // eslint-disable-line vue/multi-word-component-names
-
-  mixins: [
-    AllowableActionsMixin,
-    CommonMixin,
-    DateMixin,
-    EnumMixin
-  ],
+  name: 'Dashboard',
 
   components: {
     AddressListSm,
@@ -220,6 +269,13 @@ export default {
     StaffNotation,
     TodoList
   },
+
+  mixins: [
+    AllowableActionsMixin,
+    CommonMixin,
+    DateMixin,
+    EnumMixin
+  ],
 
   data () {
     return {
@@ -398,5 +454,9 @@ section header {
 .section-count {
   color: $gray9;
   font-weight: normal;
+}
+
+.scrollable-container-height {
+  max-height: 49rem;
 }
 </style>
