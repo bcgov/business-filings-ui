@@ -3,7 +3,7 @@
     id="entity-info"
     :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }"
   >
-    <v-container class="pt-0 pb-0">
+    <v-container class="py-0">
       <v-row
         no-gutters
         class="py-7"
