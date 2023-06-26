@@ -6,7 +6,7 @@
     <v-container class="pt-0 pb-0">
       <v-row
         no-gutters
-        class="pt-7 pb-7"
+        class="py-7"
       >
         <v-col
           class="flex-column d-flex justify-space-between"
