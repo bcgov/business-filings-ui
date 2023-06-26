@@ -28,7 +28,7 @@
       >
         <v-chip
           id="historical-chip"
-          class="primary mt-n1 pointer-events-none font-weight-bold"
+          class="primary mt-n1 pointer-events-none"
           small
           label
           text-color="white"
@@ -47,7 +47,7 @@
           id="limited-restoration"
         >
           <v-chip
-            class="primary mt-n1 pointer-events-none font-weight-bold"
+            class="primary mt-n1 pointer-events-none"
             small
             label
             text-color="white"
@@ -59,7 +59,7 @@
           id="authorized-to-continue-out"
         >
           <v-chip
-            class="primary mt-n1 pointer-events-none font-weight-bold"
+            class="primary mt-n1 pointer-events-none"
             :class="{ 'ml-3': isInLimitedRestoration }"
             small
             label
@@ -156,5 +156,11 @@ export default class EntityHeader extends Vue {
 // vertical lines between items:
 #active-util {
   border-left: 1px solid $gray3;
+}
+
+// Style for badges
+:deep(.v-chip.v-size--small) {
+  height: 19px;
+  font-size: 10px;
 }
 </style>
