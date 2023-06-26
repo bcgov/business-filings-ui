@@ -212,8 +212,8 @@
               >
                 <Certify
                   ref="certifyRef"
-                  isCertified.sync="isCertified"
-                  certifiedBy.sync="certifiedBy"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-component': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.CONTINUATION_OUT)"
