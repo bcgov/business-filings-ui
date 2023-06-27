@@ -3,10 +3,10 @@
     id="entity-info"
     :class=" { 'staff': isRoleStaff, 'hover': showHoverStyle }"
   >
-    <v-container class="pt-0 pb-0">
+    <v-container class="py-0">
       <v-row
         no-gutters
-        class="pt-3 pb-4"
+        class="py-7"
       >
         <v-col
           class="flex-column d-flex justify-space-between"
@@ -34,7 +34,6 @@
         >
           <EntityDefinitions
             :businessId="businessId"
-            class="mt-3"
           />
         </v-col>
       </v-row>
