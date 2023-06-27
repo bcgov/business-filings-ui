@@ -161,6 +161,6 @@ export default class EntityHeader extends Vue {
 // Style for badges
 :deep(.v-chip.v-size--small) {
   height: 19px;
-  font-size: 10px;
+  font-size: $px-10;
 }
 </style>
