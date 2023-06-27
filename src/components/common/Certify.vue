@@ -20,7 +20,6 @@
           filled
           persistent-hint
           label="Person's legal name"
-          hint="Legal name of authorized person"
           :value="certifiedBy"
           :rules="[ v => !!v || 'A person\'s legal name is required.']"
           @input="emitCertifiedBy($event)"
@@ -36,7 +35,7 @@
             </div>
           </template>
         </v-checkbox>
-        <p class="certify-clause">
+        <p class="certify-clause date">
           <strong>Date:</strong> {{ getCurrentDate }}
         </p>
         <p class="certify-clause">
@@ -123,6 +122,10 @@ export default class Certify extends Vue {
   padding-left: 2rem;
   color: black;
   font-size: $px-14;
+}
+
+.date {
+  color: $gray7;
 }
 
 .certify-stmt {

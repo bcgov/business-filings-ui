@@ -8,10 +8,11 @@
       ref="textarea"
       auto-grow
       rows="5"
+      persistent-hint
       :counter="maxLength"
       :rules="rules"
       :value="value"
-      :placeholder="placeholder"
+      :label="placeholder"
       :autofocus="autofocus"
       @input="emitInput($event)"
     />
