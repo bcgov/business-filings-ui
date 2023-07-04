@@ -901,7 +901,7 @@ section p {
   color: $gray9;
 }
 
-.detail-comment {
+.detail-comment-input {
   ::v-deep(.placeholder) {
     color: $gray7;
     font-style: italic;
