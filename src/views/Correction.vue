@@ -901,9 +901,12 @@ section p {
   color: $gray9;
 }
 
-.detail-comment-input::placeholder {
-  color: $gray7;
-  font-style: italic;
+
+.detail-comment-input {
+  :deep(placeholder) {
+    color: $gray7;
+    font-style: italic;
+  }
 }
 
 .subtitle {
@@ -926,8 +929,10 @@ h2 {
   font-size: 1.125rem;
 }
 
-.detail-comment::placeholder {
-  color: $gray7;
+.detail-comment {
+  :deep(placeholder) {
+    color: $gray7;
+  }
 }
 
 // Save & Filing Buttons
