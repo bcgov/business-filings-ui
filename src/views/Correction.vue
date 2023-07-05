@@ -902,7 +902,7 @@ section p {
 }
 
 .detail-comment-input {
-  ::v-deep(.placeholder) {
+  :deep(.placeholder) {
     color: $gray7;
     font-style: italic;
   }
@@ -929,7 +929,7 @@ h2 {
 }
 
 .detail-comment {
-  ::v-deep(.placeholder) {
+  :deep(.placeholder) {
     color: $gray7;
   }
 }
