@@ -35,7 +35,7 @@
             </div>
           </template>
         </v-checkbox>
-        <p class="certify-clause date">
+        <p class="certify-clause signature-date">
           <strong>Date:</strong> {{ getCurrentDate }}
         </p>
         <p class="certify-clause">
@@ -124,7 +124,7 @@ export default class Certify extends Vue {
   font-size: $px-14;
 }
 
-.date {
+.signature-date {
   color: $gray7;
 }
 
