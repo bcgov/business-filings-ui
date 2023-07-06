@@ -91,10 +91,15 @@
             <!-- Detail -->
             <section>
               <header>
-                <h2 class="correction-header" id="correction-step-1-header">
+                <h2
+                  id="correction-step-1-header"
+                  class="correction-header"
+                >
                   1. Detail
                 </h2>
-                <p class="subtitle">Enter a detail that will appear on the ledger for this entity.</p>
+                <p class="subtitle">
+                  Enter a detail that will appear on the ledger for this entity.
+                </p>
               </header>
               <v-card flat>
                 <DetailComment
@@ -112,10 +117,15 @@
             <!-- Certify -->
             <section>
               <header>
-                <h2 class="correction-header" id="correction-step-2-header">
+                <h2
+                  id="correction-step-2-header"
+                  class="correction-header"
+                >
                   2. Certify
                 </h2>
-                <p class="subtitle">Enter the legal name of the person authorized to complete and submit this correction.</p>
+                <p class="subtitle">
+                  Enter the legal name of the person authorized to complete and submit this correction.
+                </p>
               </header>
               <Certify
                 ref="certifyRef"
@@ -590,14 +600,6 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
 
     if (!this.isPageValid) {
       this.showErrors = true
-
-      // Show error messages of components if invalid
-      if (!this.detailCommentValid) {
-        this.$refs.detailCommentRef.$refs.textarea.error = true
-      }
-      if (!this.certifyFormValid) {
-        this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
-      }
 
       return
     }

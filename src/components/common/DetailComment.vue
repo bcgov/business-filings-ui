@@ -56,6 +56,11 @@ export default class DetailComment extends Vue {
   /** Autofocus passed into this component (optional). */
   @Prop({ default: false }) readonly autofocus!: boolean
 
+  /** Prompt the validations. Used for global validations. */
+  @Prop({ default: false }) readonly validateForm!: boolean
+
+  detailedComment = ''
+
   /** Called when component is created. */
   created (): void {
     // inform parent of initial validity
@@ -70,6 +75,15 @@ export default class DetailComment extends Vue {
   @Debounce(300)
   onValueChanged (val: string): void {
     this.emitValid(val)
+  }
+
+  /** Validate business name field */
+  @Watch('validateForm')
+  validateBusinessName (): void {
+    if (this.validateForm && !this.detailedComment) {
+      this.$refs.textarea.validate()
+      this.$refs.textarea.error = true
+    }
   }
 
   /** Emits an event with the changed comment (ie, updated v-model). */
