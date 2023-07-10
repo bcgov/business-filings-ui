@@ -103,15 +103,15 @@
               </header>
               <v-card flat>
                 <div :class="{ 'invalid-section': !detailCommentValid && showErrors}">
-                <DetailComment
-                  ref="detailCommentRef"
-                  v-model="detailComment"
-                  class="detail-comment px-4 py-2"
-                  placeholder="Add a Detail that will appear on the ledger for this entity."
-                  :maxLength="maxDetailCommentLength"
-                  :validateForm="showErrors"
-                  @valid="detailCommentValid=$event"
-                />
+                  <DetailComment
+                    ref="detailCommentRef"
+                    v-model="detailComment"
+                    class="detail-comment px-4 py-2"
+                    placeholder="Add a Detail that will appear on the ledger for this entity."
+                    :maxLength="maxDetailCommentLength"
+                    :validateForm="showErrors"
+                    @valid="detailCommentValid=$event"
+                  />
                 </div>
               </v-card>
             </section>
@@ -602,10 +602,10 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     // prevent double saving
     if (this.busySaving) return
 
-    // scroll to error components
     if (!this.isPageValid) {
       this.showErrors = true
 
+      // scroll to error components
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
