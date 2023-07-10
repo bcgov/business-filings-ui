@@ -89,7 +89,7 @@
             </header>
 
             <!-- Detail -->
-            <section>
+            <section id="detail-comment-section">
               <header>
                 <h2
                   id="correction-step-1-header"
@@ -102,6 +102,7 @@
                 </p>
               </header>
               <v-card flat>
+                <div :class="{ 'invalid-section': !detailCommentValid && showErrors}">
                 <DetailComment
                   ref="detailCommentRef"
                   v-model="detailComment"
@@ -111,11 +112,12 @@
                   :validateForm="showErrors"
                   @valid="detailCommentValid=$event"
                 />
+                </div>
               </v-card>
             </section>
 
             <!-- Certify -->
-            <section>
+            <section id="certify-form-section">
               <header>
                 <h2
                   id="correction-step-2-header"
@@ -127,15 +129,17 @@
                   Enter the legal name of the person authorized to complete and submit this correction.
                 </p>
               </header>
-              <Certify
-                ref="certifyRef"
-                :isCertified.sync="isCertified"
-                :certifiedBy.sync="certifiedBy"
-                :validateForm="showErrors"
-                :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
-                @valid="certifyFormValid=$event"
-              />
+              <div :class="{ 'invalid-section': !certifyFormValid && showErrors}">
+                <Certify
+                  ref="certifyRef"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
+                  :validateForm="showErrors"
+                  :entityDisplay="displayName()"
+                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  @valid="certifyFormValid=$event"
+                />
+              </div>
             </section>
           </article>
         </v-col>
@@ -598,9 +602,11 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     // prevent double saving
     if (this.busySaving) return
 
+    // scroll to error components
     if (!this.isPageValid) {
       this.showErrors = true
 
+      await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
 
@@ -849,6 +855,20 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
         this.saveErrorReason = null
         this.onClickFilePayFinish()
         break
+    }
+  }
+
+  /** Array of valid components. Must match validFlags. */
+  readonly validComponents = [
+    'detail-comment-section',
+    'certify-form-section'
+  ]
+
+  /** Object of valid flags. Must match validComponents. */
+  get validFlags (): object {
+    return {
+      detailComment: this.detailCommentValid,
+      certifyForm: this.certifyFormValid
     }
   }
 
