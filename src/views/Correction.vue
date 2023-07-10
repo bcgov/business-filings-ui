@@ -84,7 +84,7 @@
                 Correction &mdash; {{ title }}
               </h1>
               <p class="subtitle">
-                Correction for Record Conversion, filed on {{ originalFilingDate }}
+                Correction for {{ title }}, filed on {{ originalFilingDate }}
               </p>
             </header>
 
@@ -103,15 +103,15 @@
               </header>
               <v-card flat>
                 <div :class="{ 'invalid-section': !detailCommentValid && showErrors}">
-                  <DetailComment
-                    ref="detailCommentRef"
-                    v-model="detailComment"
-                    class="detail-comment px-4 py-2"
-                    placeholder="Add a Detail that will appear on the ledger for this entity."
-                    :maxLength="maxDetailCommentLength"
-                    :validateForm="showErrors"
-                    @valid="detailCommentValid=$event"
-                  />
+                <DetailComment
+                  ref="detailCommentRef"
+                  v-model="detailComment"
+                  class="detail-comment px-4 py-2"
+                  placeholder="Add a Detail that will appear on the ledger for this entity."
+                  :maxLength="maxDetailCommentLength"
+                  :validateForm="showErrors"
+                  @valid="detailCommentValid=$event"
+                />
                 </div>
               </v-card>
             </section>
