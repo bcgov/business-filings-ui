@@ -25,7 +25,7 @@
           @input="emitCertifiedBy($event)"
         />
         <v-checkbox
-          ref="checkbox"
+          ref="checkboxRef"
           :value="isCertified"
           @change="emitIsCertified($event)"
         >
@@ -57,7 +57,7 @@ export default class Certify extends Vue {
   // Refs
   $refs!: {
     certifyTextfieldRef: any,
-    checkbox: any
+    checkboxRef: any
   }
 
   @Getter(useRootStore) getCurrentDate!: string
@@ -79,7 +79,7 @@ export default class Certify extends Vue {
 
   certifyName = ''
 
-  checkboxState = false;
+  checkboxState = false
 
   /** Called when component is created. */
   created (): void {
@@ -102,8 +102,8 @@ export default class Certify extends Vue {
     }
 
     if (this.validateForm && !this.checkboxState) {
-      this.$refs.checkbox.validate()
-      this.$refs.checkbox.error = true
+      this.$refs.checkboxRef.validate()
+      this.$refs.checkboxRef.error = true
     }
   }
 

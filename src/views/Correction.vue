@@ -102,7 +102,6 @@
                 </p>
               </header>
               <v-card flat>
-                <div :class="{ 'invalid-section': !detailCommentValid && showErrors}">
                 <DetailComment
                   ref="detailCommentRef"
                   v-model="detailComment"
@@ -111,8 +110,8 @@
                   :maxLength="maxDetailCommentLength"
                   :validateForm="showErrors"
                   @valid="detailCommentValid=$event"
+                  :class="{ 'invalid-section': !detailCommentValid && showErrors}"
                 />
-                </div>
               </v-card>
             </section>
 
@@ -129,7 +128,6 @@
                   Enter the legal name of the person authorized to complete and submit this correction.
                 </p>
               </header>
-              <div :class="{ 'invalid-section': !certifyFormValid && showErrors}">
                 <Certify
                   ref="certifyRef"
                   :isCertified.sync="isCertified"
@@ -138,8 +136,8 @@
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
+                  :class="{ 'invalid-section': !certifyFormValid && showErrors}"
                 />
-              </div>
             </section>
           </article>
         </v-col>
