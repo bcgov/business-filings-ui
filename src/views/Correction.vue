@@ -83,48 +83,61 @@
               <h1 id="correction-header">
                 Correction &mdash; {{ title }}
               </h1>
-              <p class="text-black">
-                Original Filing Date: {{ originalFilingDate }}
+              <p class="subtitle">
+                Correction for {{ title }}, filed on {{ originalFilingDate }}
               </p>
             </header>
 
             <!-- Detail -->
-            <section>
+            <section id="detail-comment-section">
               <header>
-                <h2 id="correction-step-1-header">
+                <h2
+                  id="correction-step-1-header"
+                  class="correction-header"
+                >
                   1. Detail
                 </h2>
-                <p>Enter a detail that will appear on the ledger for this entity.</p>
-                <p class="black--text mb-0">
-                  {{ defaultComment }}
+                <p class="subtitle">
+                  Enter a detail that will appear on the ledger for this entity.
                 </p>
               </header>
               <v-card flat>
                 <DetailComment
+                  ref="detailCommentRef"
                   v-model="detailComment"
-                  class="px-4 py-2"
+                  class="detail-comment px-4 py-2"
                   placeholder="Add a Detail that will appear on the ledger for this entity."
                   :maxLength="maxDetailCommentLength"
+                  :validateForm="showErrors"
                   @valid="detailCommentValid=$event"
+                  :class="{ 'invalid-section': !detailCommentValid && showErrors}"
                 />
               </v-card>
             </section>
 
             <!-- Certify -->
-            <section>
+            <section id="certify-form-section">
               <header>
-                <h2 id="correction-step-2-header">
+                <h2
+                  id="correction-step-2-header"
+                  class="correction-header"
+                >
                   2. Certify
                 </h2>
-                <p>Enter the legal name of the person authorized to complete and submit this correction.</p>
+                <p class="subtitle">
+                  Enter the legal name of the person authorized to complete and submit this correction.
+                </p>
               </header>
-              <Certify
-                :isCertified.sync="isCertified"
-                :certifiedBy.sync="certifiedBy"
-                :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
-                @valid="certifyFormValid=$event"
-              />
+                <Certify
+                  ref="certifyRef"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
+                  :validateForm="showErrors"
+                  :entityDisplay="displayName()"
+                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  @valid="certifyFormValid=$event"
+                  :class="{ 'invalid-section': !certifyFormValid && showErrors}"
+                />
             </section>
           </article>
         </v-col>
@@ -191,7 +204,7 @@
                 id="correction-file-pay-btn"
                 color="primary"
                 large
-                :disabled="!isPageValid || busySaving"
+                :disabled="busySaving"
                 :loading="filingPaying"
                 @click="onClickFilePay()"
               >
@@ -248,6 +261,8 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
+    certifyRef: Certify,
+    detailCommentRef: DetailComment,
     confirm: ConfirmDialogType
   }
 
@@ -282,6 +297,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
+  showErrors = false // true when we press on File and Pay (trigger validation)
   filingId = 0 // id of this correction filing
   savedFiling: any = null // filing during save
   correctedFilingId = 0 // id of filing to correct
@@ -584,6 +600,14 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     // prevent double saving
     if (this.busySaving) return
 
+    if (!this.isPageValid) {
+      this.showErrors = true
+
+      // scroll to error components
+      await this.validateAndScroll(this.validFlags, this.validComponents)
+      return
+    }
+
     // if this is a staff user clicking File and Pay (not Submit)
     // then detour via Staff Payment dialog
     if (this.isRoleStaff && !fromStaffPayment) {
@@ -832,6 +856,20 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, EnumMixin
     }
   }
 
+  /** Array of valid components. Must match validFlags. */
+  readonly validComponents = [
+    'detail-comment-section',
+    'certify-form-section'
+  ]
+
+  /** Object of valid flags. Must match validComponents. */
+  get validFlags (): object {
+    return {
+      detailComment: this.detailCommentValid,
+      certifyForm: this.certifyFormValid
+    }
+  }
+
   @Watch('detailCommentValid')
   onDetailCommentValidChanged (): void {
     this.haveChanges = true
@@ -877,6 +915,23 @@ section p {
   color: $gray7;
 }
 
+.correction-header {
+  font-size: 18px;
+  font-weight: bold;
+  color: $gray9;
+}
+
+.detail-comment-input {
+  :deep(.placeholder) {
+    color: $gray7;
+    font-style: italic;
+  }
+}
+
+.subtitle {
+  color: $gray7;
+}
+
 section + section {
   margin-top: 3rem;
 }
@@ -891,6 +946,12 @@ h2 {
   margin-bottom: 0.25rem;
   margin-top: 3rem;
   font-size: 1.125rem;
+}
+
+.detail-comment {
+  :deep(.placeholder) {
+    color: $gray7;
+  }
 }
 
 // Save & Filing Buttons

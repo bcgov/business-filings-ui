@@ -20,12 +20,12 @@
           filled
           persistent-hint
           label="Person's legal name"
-          hint="Legal name of authorized person"
           :value="certifiedBy"
           :rules="[ v => !!v || 'A person\'s legal name is required.']"
           @input="emitCertifiedBy($event)"
         />
         <v-checkbox
+          ref="checkboxRef"
           :value="isCertified"
           @change="emitIsCertified($event)"
         >
@@ -36,7 +36,7 @@
             </div>
           </template>
         </v-checkbox>
-        <p class="certify-clause">
+        <p class="certify-clause signature-date">
           <strong>Date:</strong> {{ getCurrentDate }}
         </p>
         <p class="certify-clause">
@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { useRootStore } from '@/stores'
 
@@ -56,7 +56,8 @@ import { useRootStore } from '@/stores'
 export default class Certify extends Vue {
   // Refs
   $refs!: {
-    certifyTextfieldRef: any
+    certifyTextfieldRef: any,
+    checkboxRef: any
   }
 
   @Getter(useRootStore) getCurrentDate!: string
@@ -73,6 +74,13 @@ export default class Certify extends Vue {
   /** Entity Display prop. */
   @Prop({ default: '' }) readonly entityDisplay!: string
 
+  /** Prompt the validations. Used for global validations. */
+  @Prop({ default: false }) readonly validateForm!: boolean
+
+  certifyName = ''
+
+  checkboxState = false
+
   /** Called when component is created. */
   created (): void {
     // inform parent of initial validity
@@ -83,6 +91,20 @@ export default class Certify extends Vue {
   get trimmedCertifiedBy (): string {
     // remove repeated inline whitespace, and leading/trailing whitespace
     return this.certifiedBy && this.certifiedBy.replace(/\s+/g, ' ').trim()
+  }
+
+  /** Validate business name field */
+  @Watch('validateForm')
+  validateBusinessName (): void {
+    if (this.validateForm && !this.certifyName) {
+      this.$refs.certifyTextfieldRef.validate()
+      this.$refs.certifyTextfieldRef.error = true
+    }
+
+    if (this.validateForm && !this.checkboxState) {
+      this.$refs.checkboxRef.validate()
+      this.$refs.checkboxRef.error = true
+    }
   }
 
   /** Emits an event to update the Certified By prop. */
@@ -123,6 +145,10 @@ export default class Certify extends Vue {
   padding-left: 2rem;
   color: black;
   font-size: $px-14;
+}
+
+.signature-date {
+  color: $gray7;
 }
 
 .certify-stmt {
