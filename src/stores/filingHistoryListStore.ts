@@ -315,7 +315,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     },
 
     showCommentDialog (filing: ApiFilingIF): void {
-      this.current = filing
+      this.currentFiling = filing
       this.addCommentDialog = true
     },
 
