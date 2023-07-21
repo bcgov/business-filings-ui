@@ -3,7 +3,7 @@
 // instead of working "forwards" from the data.
 //
 
-import axios from '@/axios-auth'
+import { AuthServices } from '@/services'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import Vue from 'vue'
@@ -65,19 +65,21 @@ describe('TodoList - common expansion panel header tests', () => {
     rootStore.tasks = []
     businessStore.businessInfo = Object.assign(businessStore.businessInfo, { identifier: 'testIdentifier' })
 
-    const affiliationInvitationsForEntityUrl = 'entity/testIdentifier/affiliations/invitations'
-
     const sandbox = sinon.createSandbox()
-    const axiosGet = sandbox.stub(axios, 'get')
-
+    const fetchAffiliationInvites = sandbox.stub(AuthServices, 'fetchAffiliationInvitations')
     // feature flag override
-    sandbox.stub(utils, 'GetFeatureFlag')
-      .withArgs('enable-affiliation-invitation-request-access')
+    const featureFlag = sandbox.stub(utils, 'GetFeatureFlag')
+
+    featureFlag.withArgs('enable-affiliation-invitation-request-access')
       .returns(true)
 
-    axiosGet.withArgs(affiliationInvitationsForEntityUrl).returns(new Promise(
+    fetchAffiliationInvites.returns(new Promise(
       resolve => resolve(
         {
+          config: undefined,
+          headers: undefined,
+          status: 200,
+          statusText: '',
           data: {
             affiliationInvitations: [
               // returns 3 items, but only 1st one should be displayed
@@ -106,7 +108,7 @@ describe('TodoList - common expansion panel header tests', () => {
                 fromOrg: { name: 'Some other org', id: 8787 }
               },
               {
-                id: 17,
+                id: 19,
                 type: 'MagicLink',
                 status: 'ACTIVE',
                 business: {
@@ -126,9 +128,6 @@ describe('TodoList - common expansion panel header tests', () => {
     await Vue.nextTick()
     await flushPromises()
 
-    // expect axios get call
-    expect(axiosGet.calledWith(affiliationInvitationsForEntityUrl))
-
     expect(wrapper.findAll('.todo-item').length).toEqual(1)
     // verify title starts with
     expect(wrapper.find('.list-item__title').text())
@@ -146,7 +145,8 @@ describe('TodoList - common expansion panel header tests', () => {
     expect(actionBtns.length).toBe(2)
     expect(['Authorize', 'Do not authorize'].every(btnText => btnTexts.includes(btnText)))
 
-    axiosGet.restore()
+    fetchAffiliationInvites.restore()
+    featureFlag.restore()
     wrapper.destroy()
   })
 
