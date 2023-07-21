@@ -3,6 +3,9 @@
 // instead of working "forwards" from the data.
 //
 
+import axios from '@/axios-auth'
+import flushPromises from 'flush-promises'
+import sinon from 'sinon'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
@@ -13,6 +16,7 @@ import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { FilingStatus, FilingSubTypes } from '@/enums'
+import { ApiBusinessIF } from '@/interfaces'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -54,6 +58,90 @@ describe('TodoList - common expansion panel header tests', () => {
     expect(vm.$el.querySelector('.no-results')).toBeDefined()
     expect(vm.$el.querySelector('.no-results').textContent).toContain('You don\'t have anything to do yet')
 
+    wrapper.destroy()
+  })
+
+  it('display affiliation invitation todo (request access, open)', async () => {
+    rootStore.tasks = []
+    businessStore.businessInfo = Object.assign(businessStore.businessInfo, { identifier: 'testIdentifier' })
+
+    const affiliationInvitationsForEntityUrl = 'entity/testIdentifier/affiliations/invitations'
+
+    const sandbox = sinon.createSandbox()
+    const axiosGet = sandbox.stub(axios, 'get')
+
+    axiosGet.withArgs(affiliationInvitationsForEntityUrl).returns(new Promise(
+      resolve => resolve(
+        {
+          data: {
+            affiliationInvitations: [
+              // returns 3 items, but only 1st one should be displayed
+              {
+                id: 12,
+                type: 'RequestAccess',
+                status: 'ACTIVE',
+                business: {
+                  businessIdentifier: 'BC0871427',
+                  name: '0871427 B.C. LTD.',
+                  corpType: { code: 'BC' }
+                },
+                toOrg: { name: 'Two Monkeys are friends Corp.', id: 3113 },
+                fromOrg: { name: 'Tree Frog Design Inc.', id: 1114 }
+              },
+              {
+                id: 17,
+                type: 'RequestAccess',
+                status: 'DELETED',
+                business: {
+                  businessIdentifier: 'BC0871427',
+                  name: '0871427 B.C. LTD.',
+                  corpType: { code: 'BC' }
+                },
+                toOrg: { name: 'Two Monkeys are friends Corp.', id: 3113 },
+                fromOrg: { name: 'Some other org', id: 8787 }
+              },
+              {
+                id: 17,
+                type: 'MagicLink',
+                status: 'ACTIVE',
+                business: {
+                  businessIdentifier: 'BC0871427',
+                  name: '0871427 B.C. LTD.',
+                  corpType: { code: 'BC' }
+                },
+                toOrg: { name: 'Two Monkeys are friends Corp.', id: 3113 },
+                fromOrg: { name: 'Some third org', id: 8787 }
+              }
+            ]
+          }
+        }
+      )))
+
+    const wrapper = mount(TodoList, { vuetify })
+    await Vue.nextTick()
+    await flushPromises()
+
+    // expect axios get call
+    expect(axiosGet.calledWith(affiliationInvitationsForEntityUrl))
+
+    expect(wrapper.findAll('.todo-item').length).toEqual(1)
+    // verify title starts with
+    expect(wrapper.find('.list-item__title').text())
+      .toContain('Request for authorization to mange this business')
+
+    // verify subtitle has information
+    expect(wrapper.find('.todo-subtitle').text()).toBe('From: Tree Frog Design Inc.')
+
+    // verify both buttons authorize and do not authorize are visible
+    const actionBtns = wrapper.findAll('.width-45-float-right')
+
+    const { wrappers } = actionBtns
+    const btnTexts = wrappers.map(actionBtn => actionBtn.text())
+
+    expect(actionBtns.length).toBe(2)
+    expect(['Authorize', 'Do not authorize'].every(btnText => btnTexts.includes(btnText)))
+
+    axiosGet.restore()
     wrapper.destroy()
   })
 
