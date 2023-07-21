@@ -255,6 +255,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -296,6 +297,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -337,6 +339,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -390,6 +393,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -445,6 +449,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -503,6 +508,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -565,6 +571,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -616,6 +623,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -677,6 +685,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -732,6 +741,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -788,6 +798,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
@@ -837,6 +848,7 @@ describe('TodoList - UI', () => {
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
     await Vue.nextTick()
+    await flushPromises()
 
     expect(vm.todoItems.length).toEqual(1)
     expect(vm.$el.querySelectorAll('.todo-item').length).toEqual(1)
