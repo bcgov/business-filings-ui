@@ -16,7 +16,7 @@ import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { FilingStatus, FilingSubTypes } from '@/enums'
-import { ApiBusinessIF } from '@/interfaces'
+import * as utils from '@/utils'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -69,6 +69,11 @@ describe('TodoList - common expansion panel header tests', () => {
 
     const sandbox = sinon.createSandbox()
     const axiosGet = sandbox.stub(axios, 'get')
+
+    // feature flag override
+    sandbox.stub(utils, 'GetFeatureFlag')
+      .withArgs('enable-affiliation-invitation-request-access')
+      .returns(true)
 
     axiosGet.withArgs(affiliationInvitationsForEntityUrl).returns(new Promise(
       resolve => resolve(

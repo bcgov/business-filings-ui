@@ -558,12 +558,12 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
 
 @Component({
   components: {
-    AffiliationInvitationDetails,
     // dialogs
     CancelPaymentErrorDialog,
     ConfirmDialog,
     DeleteErrorDialog,
     // components
+    AffiliationInvitationDetails,
     ConversionDetails,
     CorrectionComment,
     NameRequestInfo,
@@ -593,7 +593,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   panel: number = null // currently expanded panel
   checkTimer: number = null
   inProcessFiling: number = null
-  FilingStatus = FilingStatus
 
   @Prop({ default: null }) readonly highlightId!: number
 
@@ -620,6 +619,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   // for template
   readonly EnumUtilities = EnumUtilities
+  readonly FilingStatus = FilingStatus
 
   /** Whether a COA is pending. */
   get isCoaPending (): boolean {
