@@ -58,7 +58,7 @@
 
                 <!-- blue details button -->
                 <v-btn
-                  v-else-if="showDetailsBtnBlue(item)"
+                  v-else-if="showDetailsBtnBlue(item) || isAffiliationInvitation(item)"
                   class="expand-btn ml-1"
                   text
                   color="primary"
@@ -91,9 +91,10 @@
               >
                 <!-- NB: blocks below are mutually exclusive, and order is important -->
 
+                <!-- affiliation invitation todo task -->
                 <!-- new todo task -->
                 <div
-                  v-if="isStatusNew(item)"
+                  v-if="isStatusNew(item) || isAffiliationInvitation(item)"
                   class="todo-subtitle"
                 >
                   <span v-if="!!item.subtitle">{{ item.subtitle }}</span>
@@ -201,7 +202,32 @@
               </div> <!-- end of other subtitles -->
             </div> <!-- end of todo label -->
 
-            <div class="list-item__actions">
+            <!-- Affiliation invite todo actions -->
+            <div
+              v-if="isAffiliationInvitation(item)"
+              class="list-item__actions"
+              style="flex: 1"
+            >
+              <v-btn
+                class="ma-1 width-45-float-right"
+                color="primary"
+                @click.native.stop="authorizeAffiliationInvitation(true, item)"
+              >
+                <span>Authorize</span>
+              </v-btn>
+              <v-btn
+                class="ma-1 width-45-float-right"
+                outlined
+                color="primary"
+                @click.native.stop="authorizeAffiliationInvitation(false, item)"
+              >
+                <span>Do not authorize</span>
+              </v-btn>
+            </div>
+            <div
+              v-else
+              class="list-item__actions"
+            >
               <div style="width:100%">
                 <!-- BEN/BC/CCC/ULC AR special case -->
                 <template v-if="isBenBcCccUlc && item.enabled && isTypeAnnualReport(item) && isStatusNew(item)">
@@ -407,6 +433,11 @@
         <v-expansion-panel-content>
           <!-- NB: blocks below are mutually exclusive, and order is important -->
 
+          <!-- affiliation invitation todo details -->
+          <template v-if="isAffiliationInvitation(item)">
+            <AffiliationInvitationDetails :affiliationInvitationTodo="item" />
+          </template>
+
           <!-- does this item have an incomplete payment? -->
           <template v-if="isStatusDraft(item) && isPayError(item)">
             <PaymentIncomplete :filing="item" />
@@ -505,9 +536,10 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import axios from '@/axios-auth'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
 import { NameRequestInfo, ContactInfo } from '@/components/common'
+import AffiliationInvitationDetails from './TodoList/AffiliationInvitationDetails.vue'
 import ConversionDetails from './TodoList/ConversionDetails.vue'
 import CorrectionComment from './TodoList/CorrectionComment.vue'
 import PaymentIncomplete from './TodoList/PaymentIncomplete.vue'
@@ -517,7 +549,7 @@ import PaymentPendingOnlineBanking from './TodoList/PaymentPendingOnlineBanking.
 import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
-import { EnumUtilities, LegalServices, PayServices } from '@/services/'
+import { AuthServices, EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingSubTypes, FilingTypes, Routes } from '@/enums'
 import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
   from '@/interfaces'
@@ -526,6 +558,7 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
 
 @Component({
   components: {
+    AffiliationInvitationDetails,
     // dialogs
     CancelPaymentErrorDialog,
     ConfirmDialog,
@@ -560,11 +593,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   panel: number = null // currently expanded panel
   checkTimer: number = null
   inProcessFiling: number = null
+  FilingStatus = FilingStatus
 
   @Prop({ default: null }) readonly highlightId!: number
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useConfigurationStore) getBusinessUrl!: string
+  @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useBusinessStore) getBusinessWarnings!: Array<BusinessWarningIF>
   @Getter(useConfigurationStore) getCreateUrl!: string
   @Getter(useConfigurationStore) getEditUrl!: string
@@ -684,6 +719,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       }
     }
 
+    await this.loadAffiliationInvitationsTodo()
+
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', this.todoItems.length)
 
@@ -794,6 +831,70 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       // eslint-disable-next-line no-console
       console.log('ERROR - invalid header or business in todo =', todo)
     }
+  }
+
+  /** check if the item is actually affiliation invite todo; (not a regular filing item). */
+  isAffiliationInvitation (item): boolean {
+    return item.status === FilingStatus.AFFILIATION_INVITATION_PENDING
+  }
+
+  authorizeAffiliationInvitation (isAuthorized, affiliationInvitationTodo): void {
+    AuthServices.authorizeAffiliationInvitation(
+      this.getAuthApiUrl,
+      this.getIdentifier,
+      affiliationInvitationTodo.affiliationId,
+      isAuthorized
+    )
+      .then()
+      .catch(err => {
+        // eslint-disable-line no-console
+        console.log('failed the call for authorization of affiliation invitation', err)
+      })
+  }
+
+  _buildTodoItemIfFromAffiliationInvitation (affiliationInvitation) {
+    const newTodo: TodoItemIF = {
+      draftTitle: undefined,
+      enabled: true,
+      filingId: -1, // not a filing
+      name: undefined,
+      order: 0,
+      subtitle: `From: ${affiliationInvitation.fromOrg.name}`,
+      status: FilingStatus.AFFILIATION_INVITATION_PENDING,
+      title: 'Request for authorization to mange this business',
+      affiliationInvitationDetails: {
+        id: affiliationInvitation.id,
+        fromOrgName: affiliationInvitation.fromOrg.name,
+        additionalMessage: affiliationInvitation.additionalMessage
+      }
+    }
+
+    return newTodo
+  }
+
+  /** Loads Org Affiliations invitation todo **/
+  async loadAffiliationInvitationsTodo () {
+    // feature-flag-it
+    if (!GetFeatureFlag('enable-affiliation-invitation-request-access')) {
+      return
+    }
+
+    // load all the invitations here and push them into todo items
+    const affiliationInvitations =
+      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier)
+        .then(response => response?.data?.affiliationInvitations)
+        .catch((err) => {
+          console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
+          return []
+        })
+
+    affiliationInvitations.forEach(affiliationInvitation => {
+      // only active (pending) affiliation invitations are to be converted into todo item for now
+      if (affiliationInvitation.type === 'RequestAccess' && affiliationInvitation.status === 'ACTIVE') {
+        const newTodo = this._buildTodoItemIfFromAffiliationInvitation(affiliationInvitation)
+        this.todoItems.push(newTodo)
+      }
+    })
   }
 
   /** Loads a NEW Conversion todo. */
@@ -1842,6 +1943,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
+
+.width-45-float-right {
+  width: 45%;
+  float: right;
+}
 
 .todo-item {
   // disable expansion generally
