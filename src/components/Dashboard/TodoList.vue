@@ -837,7 +837,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   /** check if the item is actually affiliation invite todo; (not a regular filing item). */
   isAffiliationInvitation (item): boolean {
     // check that affiliation invitation details are set
-    return !!item.affiliationInvitationDetails?.id
+    return !!item.affiliationInvitationDetails
   }
 
   authorizeAffiliationInvitation (isAuthorized, affiliationInvitationTodo): void {
