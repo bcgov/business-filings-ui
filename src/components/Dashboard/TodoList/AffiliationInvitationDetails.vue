@@ -12,17 +12,20 @@
     </p>
     <p>
       Allowing {{ affiliationInvitationTodo.affiliationInvitationDetails.fromOrgName }} to manage all Registries
-      activities for {{ getEntityName || 'Unknown name' }}, will
+      activities for {{ getEntityName || 'Unknown name' }} will
       allow it to do the following (including but not limited to):
     </p>
     <ul>
-      <li>Authorization of accounts to manage the business,</li>
-      <li>Appointment and cessation of directors,</li>
-      <li>Dissolution of the business,</li>
-      <li>Filing of Annual Reports, and</li>
-      <li>Changing the records office of the business.</li>
+      <li>Appoint and cease directors,</li>
+      <li>File dissolution,</li>
+      <li>File Annual Reports,</li>
+      <li>Change the records office of the business, and</li>
+      <li>Authorize other accounts to manage this business.</li>
     </ul>
-    <div class="mt-4">
+    <div
+      v-if="affiliationInvitationTodo.affiliationInvitationDetails.additionalMessage"
+      class="mt-4"
+    >
       <p>
         Requestor message:
       </p>

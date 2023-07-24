@@ -58,7 +58,7 @@
 
                 <!-- blue details button -->
                 <v-btn
-                  v-else-if="showDetailsBtnBlue(item) || isAffiliationInvitation(item)"
+                  v-else-if="showDetailsBtnBlue(item)"
                   class="expand-btn ml-1"
                   text
                   color="primary"
@@ -209,14 +209,14 @@
               style="flex: 1"
             >
               <v-btn
-                class="ma-1 width-45-float-right"
+                class="ma-1 affiliation-invitation-action-button"
                 color="primary"
                 @click.native.stop="authorizeAffiliationInvitation(true, item)"
               >
                 <span>Authorize</span>
               </v-btn>
               <v-btn
-                class="ma-1 width-45-float-right"
+                class="ma-1 affiliation-invitation-action-button"
                 outlined
                 color="primary"
                 @click.native.stop="authorizeAffiliationInvitation(false, item)"
@@ -691,6 +691,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     if (this.isStatusDraft(item) && this.isTypeRegistration(item) &&
       item.nameRequest) return true
     if (this.isStatusPending(item)) return true
+    if (this.isAffiliationInvitation(item)) return true
     return false
   }
 
@@ -707,6 +708,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   async loadData (): Promise<void> {
     this.todoItems = []
 
+    await this.loadAffiliationInvitationsTodo()
+
     // create 'task items' list from 'tasks' array from API
     for (const task of this.getTasks) {
       if (task.task?.todo) {
@@ -718,8 +721,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         console.log('ERROR - got unknown task =', task)
       }
     }
-
-    await this.loadAffiliationInvitationsTodo()
 
     // report number of items back to parent (dashboard)
     this.$emit('todo-count', this.todoItems.length)
@@ -835,7 +836,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   /** check if the item is actually affiliation invite todo; (not a regular filing item). */
   isAffiliationInvitation (item): boolean {
-    return item.status === FilingStatus.AFFILIATION_INVITATION_PENDING
+    // check that affiliation invitation details are set
+    return !!item.affiliationInvitationDetails?.id
   }
 
   authorizeAffiliationInvitation (isAuthorized, affiliationInvitationTodo): void {
@@ -852,26 +854,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       })
   }
 
-  _buildTodoItemIfFromAffiliationInvitation (affiliationInvitation) {
-    const newTodo: TodoItemIF = {
-      draftTitle: undefined,
-      enabled: true,
-      filingId: -1, // not a filing
-      name: undefined,
-      order: 0,
-      subtitle: `From: ${affiliationInvitation.fromOrg.name}`,
-      status: FilingStatus.AFFILIATION_INVITATION_PENDING,
-      title: 'Request for authorization to mange this business',
-      affiliationInvitationDetails: {
-        id: affiliationInvitation.id,
-        fromOrgName: affiliationInvitation.fromOrg.name,
-        additionalMessage: affiliationInvitation.additionalMessage
-      }
-    }
-
-    return newTodo
-  }
-
   /** Loads Org Affiliations invitation todo **/
   async loadAffiliationInvitationsTodo () {
     // feature-flag-it
@@ -879,19 +861,40 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       return
     }
 
+    function buildTodoItemIfFromAffiliationInvitation (affiliationInvitation, order: number) {
+      const newTodo: TodoItemIF = {
+        draftTitle: null,
+        enabled: true,
+        filingId: -1, // not a filing
+        name: null,
+        order: order,
+        subtitle: `From: ${affiliationInvitation.fromOrg.name}`,
+        status: null,
+        title: 'Request for authorization to manage this business',
+        affiliationInvitationDetails: {
+          id: affiliationInvitation.id,
+          fromOrgName: affiliationInvitation.fromOrg.name,
+          additionalMessage: affiliationInvitation.additionalMessage
+        }
+      }
+
+      return newTodo
+    }
+
     // load all the invitations here and push them into todo items
-    const affiliationInvitations =
+    const response =
       await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier)
-        .then(response => response?.data?.affiliationInvitations)
         .catch((err) => {
           console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
-          return []
+          return null
         })
+
+    const affiliationInvitations = response?.data?.affiliationInvitations ? response.data.affiliationInvitations : []
 
     affiliationInvitations.forEach(affiliationInvitation => {
       // only active (pending) affiliation invitations are to be converted into todo item for now
       if (affiliationInvitation.type === 'RequestAccess' && affiliationInvitation.status === 'ACTIVE') {
-        const newTodo = this._buildTodoItemIfFromAffiliationInvitation(affiliationInvitation)
+        const newTodo = buildTodoItemIfFromAffiliationInvitation(affiliationInvitation, this.todoItems.length)
         this.todoItems.push(newTodo)
       }
     })
@@ -1944,7 +1947,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 <style lang="scss" scoped>
 @import "@/assets/styles/theme.scss";
 
-.width-45-float-right {
+.affiliation-invitation-action-button {
   width: 45%;
   float: right;
 }

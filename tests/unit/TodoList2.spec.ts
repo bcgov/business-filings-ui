@@ -125,19 +125,18 @@ describe('TodoList - common expansion panel header tests', () => {
       )))
 
     const wrapper = mount(TodoList, { vuetify })
-    await Vue.nextTick()
     await flushPromises()
 
     expect(wrapper.findAll('.todo-item').length).toEqual(1)
     // verify title starts with
     expect(wrapper.find('.list-item__title').text())
-      .toContain('Request for authorization to mange this business')
+      .toContain('Request for authorization to manage this business')
 
     // verify subtitle has information
     expect(wrapper.find('.todo-subtitle').text()).toBe('From: Tree Frog Design Inc.')
 
     // verify both buttons authorize and do not authorize are visible
-    const actionBtns = wrapper.findAll('.width-45-float-right')
+    const actionBtns = wrapper.findAll('.affiliation-invitation-action-button')
 
     const { wrappers } = actionBtns
     const btnTexts = wrappers.map(actionBtn => actionBtn.text())
