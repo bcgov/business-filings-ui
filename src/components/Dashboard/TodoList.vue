@@ -5,6 +5,28 @@
       attach="#todo-list"
     />
 
+    <GenericErrorDialog
+      :dialog="fetchAffiliationInvitationsErrorDialog"
+      attach="#todo-list"
+      @okay="fetchAffiliationInvitationsErrorDialog=false"
+    >
+      <template #errorTitle>
+        <v-icon
+          large
+          color="error"
+        >
+          mdi-alert-circle-outline
+        </v-icon>
+        <span class="ml-3">Error retrieving affiliation invitations.</span>
+      </template>
+      <template #errorMessage>
+        <div class="text-center">
+          There was an error retrieving pending affiliation invitations.
+          <br> Please try again later.
+        </div>
+      </template>
+    </GenericErrorDialog>
+
     <DeleteErrorDialog
       :dialog="deleteErrorDialog"
       :errors="deleteErrors"
@@ -555,6 +577,7 @@ import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDial
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import GenericErrorDialog from '@/components/dialogs/GenericErrorDialog.vue'
 
 @Component({
   components: {
@@ -562,6 +585,7 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
     CancelPaymentErrorDialog,
     ConfirmDialog,
     DeleteErrorDialog,
+    GenericErrorDialog,
     // components
     AffiliationInvitationDetails,
     ConversionDetails,
@@ -593,6 +617,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   panel: number = null // currently expanded panel
   checkTimer: number = null
   inProcessFiling: number = null
+  fetchAffiliationInvitationsErrorDialog = false
 
   @Prop({ default: null }) readonly highlightId!: number
 
@@ -886,6 +911,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier)
         .catch((err) => {
           console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
+          this.fetchAffiliationInvitationsErrorDialog = true
           return null
         })
 
