@@ -4,7 +4,6 @@
     width="45rem"
     persistent
     :attach="attach"
-    content-class="delete-error-dialog"
   >
     <v-card>
       <v-card-title id="generic-error-dialog-title">
@@ -45,7 +44,7 @@ import { ContactInfo } from '@/components/common'
 @Component({
   components: { ContactInfo }
 })
-export default class DeleteErrorDialog extends Vue {
+export default class GenericErrorDialog extends Vue {
   /** Prop to display the dialog. */
   @Prop({ default: false }) readonly dialog!: boolean
 
