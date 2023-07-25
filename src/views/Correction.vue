@@ -101,7 +101,7 @@
                   Enter a detail that will appear on the ledger for this entity.
                 </p>
               </header>
-              <v-card flat>
+              <div :class="{ 'invalid-section': !detailCommentValid && showErrors}">
                 <DetailComment
                   ref="detailCommentRef"
                   v-model="detailComment"
@@ -109,10 +109,9 @@
                   placeholder="Add a Detail that will appear on the ledger for this entity."
                   :maxLength="maxDetailCommentLength"
                   :validateForm="showErrors"
-                  :class="{ 'invalid-section': !detailCommentValid && showErrors}"
                   @valid="detailCommentValid=$event"
                 />
-              </v-card>
+              </div>
             </section>
 
             <!-- Certify -->
@@ -128,16 +127,17 @@
                   Enter the legal name of the person authorized to complete and submit this correction.
                 </p>
               </header>
-              <Certify
-                ref="certifyRef"
-                :isCertified.sync="isCertified"
-                :certifiedBy.sync="certifiedBy"
-                :validateForm="showErrors"
-                :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
-                :class="{ 'invalid-section': !certifyFormValid && showErrors}"
-                @valid="certifyFormValid=$event"
-              />
+              <div :class="{ 'invalid-section': !certifyFormValid && showErrors}">
+                <Certify
+                  ref="certifyRef"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
+                  :validateForm="showErrors"
+                  :entityDisplay="displayName()"
+                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  @valid="certifyFormValid=$event"
+                />
+              </div>
             </section>
           </article>
         </v-col>

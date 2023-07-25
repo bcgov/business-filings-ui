@@ -115,6 +115,12 @@ export default class DetailComment extends Vue {
       padding-top: 0.5rem;
       padding-left: 0.5rem;
     }
+
+    .theme--light.v-label {
+      padding-left: 12px;
+      padding-bottom: 12px;
+      margin-top: -3px;
+    }
   }
 }
 </style>
