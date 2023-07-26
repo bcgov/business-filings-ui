@@ -8,18 +8,11 @@
     <GenericErrorDialog
       :dialog="fetchAffiliationInvitationsErrorDialog"
       attach="#todo-list"
+      icon-color="error"
+      summary="Error retrieving affiliation invitations."
       @okay="fetchAffiliationInvitationsErrorDialog=false"
     >
-      <template #errorTitle>
-        <v-icon
-          large
-          color="error"
-        >
-          mdi-alert-circle-outline
-        </v-icon>
-        <span class="ml-3">Error retrieving affiliation invitations.</span>
-      </template>
-      <template #errorMessage>
+      <template #description>
         <div class="text-center">
           There was an error retrieving pending affiliation invitations.
           <br> Please try again later.
