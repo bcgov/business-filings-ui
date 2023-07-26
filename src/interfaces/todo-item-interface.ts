@@ -52,4 +52,11 @@ export interface TodoItemIF {
 
   // dissolutions and restorations only
   filingSubType?: FilingSubTypes
+
+  // affiliation invitations only
+  affiliationInvitationDetails?: {
+    id: number
+    fromOrgName: string
+    additionalMessage?: string
+  }
 }
