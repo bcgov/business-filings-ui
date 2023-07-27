@@ -36,4 +36,34 @@ export default class AuthServices {
     const url = `${authApiUrl}entities/${businessId}`
     return axios.get(url)
   }
+
+  /**
+   * Fetches affiliation invites tied to this entity.
+   * @param authApiUrl
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns the axios response
+   */
+  static async fetchAffiliationInvitations (authApiUrl: string, businessId: string) {
+    const url = `${authApiUrl}entity/${businessId}/affiliations/invitations`
+    return axios.get(url)
+  }
+
+  /**
+   * Authorizes or refuses authorization for this invitation.
+   * @param authApiUrl
+   * @param businessId the business identifier (aka entity inc no)
+   * @param affiliationInvitationId id of affiliation to approve or not
+   * @param isAuthorized boolean stating if invitation is authorized (true) or not authorized (false)
+   * @returns the axios response
+   */
+  static async authorizeAffiliationInvitation (
+    authApiUrl: string,
+    businessId: string,
+    affiliationInvitationId: number,
+    isAuthorized: boolean) {
+    const url =
+      authApiUrl +
+      `entities/${businessId}/affiliation/invitation/${affiliationInvitationId}/authorize?isAuthorized=${isAuthorized}`
+    return axios.get(url)
+  }
 }
