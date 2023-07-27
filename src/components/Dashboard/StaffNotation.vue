@@ -226,7 +226,6 @@ import {
 import { AddStaffNotationDialog } from '@/components/dialogs'
 import { AllowableActionsMixin, FilingMixin } from '@/mixins'
 import { LegalServices } from '@/services'
-import { ActionBindingIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -257,7 +256,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
 
-  @Action(useRootStore) setFetchingDataSpinner!: ActionBindingIF
+  @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
 
   showRegistrarsNotationDialog (): void {
     this.isAddingRegistrarsNotation = true

@@ -519,7 +519,7 @@ import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingSubTypes, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
+import { ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
   from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
@@ -577,11 +577,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
 
-  @Action(useRootStore) setARFilingYear!: ActionBindingIF
-  @Action(useRootStore) setArMinDate!: ActionBindingIF
-  @Action(useRootStore) setArMaxDate!: ActionBindingIF
-  @Action(useRootStore) setNextARDate!: ActionBindingIF
-  @Action(useRootStore) setCurrentFilingStatus!: ActionBindingIF
+  @Action(useRootStore) setARFilingYear!: (x: number) => void
+  @Action(useRootStore) setArMinDate!: (x: string) => void
+  @Action(useRootStore) setArMaxDate!: (x: string) => void
+  @Action(useRootStore) setNextARDate!: (x: string) => void
+  @Action(useRootStore) setCurrentFilingStatus!: (x: FilingStatus) => void
 
   // for template
   readonly EnumUtilities = EnumUtilities
