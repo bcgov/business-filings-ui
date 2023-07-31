@@ -84,7 +84,7 @@ import { Action, Getter } from 'pinia-class'
 import { AddCommentDialog, DownloadErrorDialog, FileCorrectionDialog, LoadCorrectionDialog }
   from '@/components/dialogs'
 import { CorrectionTypes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF, CorrectionFilingIF } from '@/interfaces'
+import { ApiFilingIF, CorrectionFilingIF } from '@/interfaces'
 import { FilingMixin } from '@/mixins'
 import { EnumUtilities, LegalServices } from '@/services/'
 import { navigate } from '@/utils'
@@ -117,8 +117,8 @@ export default class FilingHistoryList extends Mixins(FilingMixin) {
   @Getter(useFilingHistoryListStore) isLoadCorrectionDialog!: boolean
   @Getter(useFilingHistoryListStore) isFileCorrectionDialog!: boolean
 
-  @Action(useFilingHistoryListStore) hideCommentDialog!: ActionBindingIF
-  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) hideCommentDialog!: (x: boolean) => Promise<void>
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
   @Action(useFilingHistoryListStore) setDownloadErrorDialog!: (x: boolean) => void
   @Action(useRootStore) setFetchingDataSpinner!: (x: boolean) => void
   @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void

@@ -9,7 +9,7 @@
     <v-card>
       <v-container>
         <v-row justify="center">
-          <v-col cols="2"></v-col>
+          <v-col cols="2" />
           <v-col
             cols="8"
             lg="8"

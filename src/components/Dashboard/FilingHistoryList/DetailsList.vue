@@ -45,7 +45,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
 import { DateUtilities } from '@/services'
 import { useFilingHistoryListStore, useRootStore } from '@/stores'
 
@@ -65,7 +65,7 @@ export default class DetailsList extends Vue {
   /** Whether current user has staff role. */
   @Getter(useRootStore) isRoleStaff!: boolean
 
-  @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
+  @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
 }
 </script>
 
