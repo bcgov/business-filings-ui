@@ -133,6 +133,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :validateForm="showErrors"
+                  :class="{ 'invalid-certify': !certifyFormValid && showErrors}"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
@@ -192,8 +193,8 @@
       <div class="buttons-right">
         <v-tooltip
           top
-          color="tooltipColor"
           content-class="top-tooltip"
+          transition="fade-transition"
         >
           <template #activator="{ on }">
             <div
@@ -954,6 +955,10 @@ h2 {
   }
 }
 
+.v-tooltip__content {
+  margin-top: -10px;
+}
+
 // Save & Filing Buttons
 #correction-buttons-container {
   padding-top: 2rem;
@@ -973,6 +978,14 @@ h2 {
 
   #correction-cancel-btn {
     margin-left: 0.5rem;
+  }
+}
+
+:deep() {
+  .invalid-certify {
+    .certify-stmt, .title-label {
+      color: $app-red;
+    }
   }
 }
 </style>
