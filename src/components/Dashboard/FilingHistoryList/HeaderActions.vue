@@ -79,7 +79,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { AllowableActions, FilingTypes, Routes } from '@/enums'
-import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
 import { AllowableActionsMixin } from '@/mixins'
 import { EnumUtilities } from '@/services'
 import { useBusinessStore, useFilingHistoryListStore } from '@/stores'
@@ -93,10 +93,10 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
 
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
 
-  @Action(useFilingHistoryListStore) showCommentDialog!: ActionBindingIF
+  @Action(useFilingHistoryListStore) showCommentDialog!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setCurrentFiling!: (x: ApiFilingIF) => void
   @Action(useFilingHistoryListStore) setFileCorrectionDialog!: (x: boolean) => void
-  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
 
   /** Whether this entity is a business (and not a temporary registration). */
   get isBusiness (): boolean {

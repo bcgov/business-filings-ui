@@ -13,8 +13,6 @@ export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF,
 
 // must come before other interfaces that use it
 export * from './officer-interface'
-
-export * from './action-interface'
 export * from './address-interfaces'
 export * from './alert-message-interface'
 export * from './api-filing-interface'
