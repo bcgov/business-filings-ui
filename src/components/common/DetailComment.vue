@@ -6,6 +6,8 @@
     <v-textarea
       id="detail-comment-textarea"
       ref="textarea"
+      class="pt-2"
+      filled
       auto-grow
       rows="5"
       persistent-hint
@@ -119,7 +121,6 @@ export default class DetailComment extends Vue {
     .theme--light.v-label {
       padding-left: 12px;
       padding-bottom: 12px;
-      margin-top: -3px;
     }
   }
 }
