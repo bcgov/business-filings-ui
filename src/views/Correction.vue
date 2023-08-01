@@ -982,6 +982,8 @@ h2 {
 }
 
 :deep() {
+
+  // To ensure validation for Certify
   .invalid-certify {
     .certify-stmt, .title-label {
       color: $app-red;
