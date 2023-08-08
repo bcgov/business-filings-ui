@@ -118,7 +118,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action } from 'pinia-class'
-import { ActionBindingIF, ApiFilingIF } from '@/interfaces'
+import { ApiFilingIF } from '@/interfaces'
 import { EnumUtilities } from '@/services'
 import { FilingNames } from '@/enums'
 import { ContactInfo } from '@/components/common'
@@ -143,7 +143,7 @@ export default class FilingTemplate extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
-  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: ActionBindingIF
+  @Action(useFilingHistoryListStore) toggleFilingHistoryItem!: (x: number) => Promise<void>
 
   /** Whether this filing is in Paid status. */
   get isStatusPaid (): boolean {

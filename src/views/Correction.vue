@@ -101,7 +101,7 @@
                   Enter a detail that will appear on the ledger for this entity.
                 </p>
               </header>
-              <v-card flat>
+              <div :class="{ 'invalid-section': !detailCommentValid && showErrors}">
                 <DetailComment
                   ref="detailCommentRef"
                   v-model="detailComment"
@@ -109,10 +109,9 @@
                   placeholder="Add a Detail that will appear on the ledger for this entity."
                   :maxLength="maxDetailCommentLength"
                   :validateForm="showErrors"
-                  :class="{ 'invalid-section': !detailCommentValid && showErrors}"
                   @valid="detailCommentValid=$event"
                 />
-              </v-card>
+              </div>
             </section>
 
             <!-- Certify -->
@@ -128,16 +127,18 @@
                   Enter the legal name of the person authorized to complete and submit this correction.
                 </p>
               </header>
-              <Certify
-                ref="certifyRef"
-                :isCertified.sync="isCertified"
-                :certifiedBy.sync="certifiedBy"
-                :validateForm="showErrors"
-                :entityDisplay="displayName()"
-                :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
-                :class="{ 'invalid-section': !certifyFormValid && showErrors}"
-                @valid="certifyFormValid=$event"
-              />
+              <div :class="{ 'invalid-section': !certifyFormValid && showErrors}">
+                <Certify
+                  ref="certifyRef"
+                  :isCertified.sync="isCertified"
+                  :certifiedBy.sync="certifiedBy"
+                  :validateForm="showErrors"
+                  :class="{ 'invalid-certify': !certifyFormValid && showErrors}"
+                  :entityDisplay="displayName()"
+                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  @valid="certifyFormValid=$event"
+                />
+              </div>
             </section>
           </article>
         </v-col>
@@ -192,8 +193,8 @@
       <div class="buttons-right">
         <v-tooltip
           top
-          color="tooltipColor"
           content-class="top-tooltip"
+          transition="fade-transition"
         >
           <template #activator="{ on }">
             <div
@@ -954,6 +955,10 @@ h2 {
   }
 }
 
+.v-tooltip__content {
+  margin-top: -10px;
+}
+
 // Save & Filing Buttons
 #correction-buttons-container {
   padding-top: 2rem;
@@ -973,6 +978,16 @@ h2 {
 
   #correction-cancel-btn {
     margin-left: 0.5rem;
+  }
+}
+
+:deep() {
+
+  // To ensure validation for Certify
+  .invalid-certify {
+    .certify-stmt, .title-label {
+      color: $app-red;
+    }
   }
 }
 </style>

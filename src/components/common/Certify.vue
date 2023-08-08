@@ -120,6 +120,7 @@ export default class Certify extends Vue {
   @Emit('update:isCertified')
   emitIsCertified (isCertified: boolean): boolean {
     this.emitValid(!!this.trimmedCertifiedBy && isCertified)
+    this.checkboxState = isCertified
     return isCertified
   }
 
