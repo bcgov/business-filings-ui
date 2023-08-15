@@ -858,14 +858,19 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     return !!item.affiliationInvitationDetails
   }
 
-  authorizeAffiliationInvitation (isAuthorized, affiliationInvitationTodo): void {
+  authorizeAffiliationInvitation (isAuthorized, affiliationInvitationTodo: TodoItemIF): void {
+    const currentItems:Array<TodoItemIF> = this.todoItems
     AuthServices.authorizeAffiliationInvitation(
       this.getAuthApiUrl,
-      this.getIdentifier,
-      affiliationInvitationTodo.affiliationId,
+      affiliationInvitationTodo.affiliationInvitationDetails.id,
       isAuthorized
     )
-      .then()
+      .then(() => {
+        const index = currentItems.indexOf(affiliationInvitationTodo)
+        if (index > -1) {
+          currentItems.splice(index, 1)
+        }
+      })
       .catch(err => {
         // eslint-disable-line no-console
         console.log('failed the call for authorization of affiliation invitation', err)
@@ -892,7 +897,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         affiliationInvitationDetails: {
           id: affiliationInvitation.id,
           fromOrgName: affiliationInvitation.fromOrg.name,
-          additionalMessage: affiliationInvitation.additionalMessage
+          additionalMessage: affiliationInvitation.additionalMessage ? affiliationInvitation.additionalMessage : ''
         }
       }
 
@@ -900,8 +905,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
 
     // load all the invitations here and push them into todo items
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const response =
-      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier)
+      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, accountId)
         .catch((err) => {
           console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
           this.fetchAffiliationInvitationsErrorDialog = true
@@ -912,7 +918,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     affiliationInvitations.forEach(affiliationInvitation => {
       // only active (pending) affiliation invitations are to be converted into todo item for now
-      if (affiliationInvitation.type === 'RequestAccess' && affiliationInvitation.status === 'ACTIVE') {
+      if (affiliationInvitation.type === 'REQUEST' && affiliationInvitation.status === 'PENDING') {
         const newTodo = buildTodoItemIfFromAffiliationInvitation(affiliationInvitation, this.todoItems.length)
         this.todoItems.push(newTodo)
       }

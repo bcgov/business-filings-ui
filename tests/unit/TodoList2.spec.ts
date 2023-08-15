@@ -85,36 +85,39 @@ describe('TodoList - common expansion panel header tests', () => {
               // returns 3 items, but only 1st one should be displayed
               {
                 id: 12,
-                type: 'RequestAccess',
-                status: 'ACTIVE',
-                business: {
+                type: 'REQUEST',
+                status: 'PENDING',
+                entity: {
                   businessIdentifier: 'BC0871427',
                   name: '0871427 B.C. LTD.',
-                  corpType: { code: 'BC' }
+                  corpType: 'BC',
+                  state: 'ACTIVE'
                 },
                 toOrg: { name: 'Two Monkeys are friends Corp.', id: 3113 },
                 fromOrg: { name: 'Tree Frog Design Inc.', id: 1114 }
               },
               {
                 id: 17,
-                type: 'RequestAccess',
-                status: 'DELETED',
-                business: {
-                  businessIdentifier: 'BC0871427',
+                type: 'EMAIL',
+                status: 'PENDING',
+                entity: {
+                  businessIdentifier: 'BC0871428',
                   name: '0871427 B.C. LTD.',
-                  corpType: { code: 'BC' }
+                  corpType: 'BC',
+                  state: 'ACTIVE'
                 },
                 toOrg: { name: 'Two Monkeys are friends Corp.', id: 3113 },
                 fromOrg: { name: 'Some other org', id: 8787 }
               },
               {
                 id: 19,
-                type: 'MagicLink',
-                status: 'ACTIVE',
-                business: {
-                  businessIdentifier: 'BC0871427',
+                type: 'EMAIL',
+                status: 'PENDING',
+                entity: {
+                  businessIdentifier: 'BC0871429',
                   name: '0871427 B.C. LTD.',
-                  corpType: { code: 'BC' }
+                  corpType: 'BC',
+                  state: 'ACTIVE'
                 },
                 toOrg: { name: 'Two Monkeys are friends Corp.', id: 3113 },
                 fromOrg: { name: 'Some third org', id: 8787 }
