@@ -580,8 +580,19 @@ import PaymentUnsuccessful from './TodoList/PaymentUnsuccessful.vue'
 import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices, PayServices } from '@/services/'
-import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingSubTypes, FilingTypes, Routes } from '@/enums'
 import {
+  AffiliationInvitationStatus,
+  AffiliationInvitationType,
+  AllowableActions,
+  CorpTypeCd,
+  FilingNames,
+  FilingStatus,
+  FilingSubTypes,
+  FilingTypes,
+  Routes
+} from '@/enums'
+import {
+  AffiliationInvitationIF,
   ApiFilingIF,
   ApiTaskIF,
   BusinessWarningIF,
@@ -592,11 +603,6 @@ import {
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import GenericErrorDialog from '@/components/dialogs/GenericErrorDialog.vue'
-import {
-  AffiliationInvitationIF,
-  AffiliationInvitationStatus,
-  AffiliationInvitationType
-} from '@/interfaces/affiliation-invitation-interface'
 
 @Component({
   components: {

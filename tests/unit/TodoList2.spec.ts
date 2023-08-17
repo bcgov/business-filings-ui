@@ -15,9 +15,8 @@ import { useBusinessStore, useRootStore } from '@/stores'
 import TodoList from '@/components/Dashboard/TodoList.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { FilingStatus, FilingSubTypes } from '@/enums'
+import { AffiliationInvitationStatus, AffiliationInvitationType, FilingStatus, FilingSubTypes } from '@/enums'
 import * as utils from '@/utils'
-import { AffiliationInvitationStatus, AffiliationInvitationType } from '@/interfaces/affiliation-invitation-interface'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
