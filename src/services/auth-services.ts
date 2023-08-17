@@ -60,11 +60,8 @@ export default class AuthServices {
     authApiUrl: string,
     affiliationInvitationId: number,
     isAuthorized: boolean) {
-    let authorizePath = `affiliationInvitations/${affiliationInvitationId}/authorization/refuse`
-
-    if (isAuthorized) {
-      authorizePath = `affiliationInvitations/${affiliationInvitationId}/authorization/accept`
-    }
+    const action = isAuthorized ? 'accept' : 'refuse'
+    const authorizePath = `affiliationInvitations/${affiliationInvitationId}/authorization/${action}`
 
     const url =
       authApiUrl + authorizePath

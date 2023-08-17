@@ -20,6 +20,21 @@
       </template>
     </GenericErrorDialog>
 
+    <GenericErrorDialog
+      :dialog="authorizeAffiliationInvitationErrorDialog"
+      attach="#todo-list"
+      icon-color="error"
+      summary="Error updating affiliation invitation."
+      @okay="authorizeAffiliationInvitationErrorDialog=false"
+    >
+      <template #description>
+        <div class="text-center">
+          An error happened while updating affiliation invitation.
+          <br> Please try again later.
+        </div>
+      </template>
+    </GenericErrorDialog>
+
     <DeleteErrorDialog
       :dialog="deleteErrorDialog"
       :errors="deleteErrors"
@@ -553,7 +568,7 @@ import { Action, Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { GetFeatureFlag, navigate } from '@/utils'
 import { CancelPaymentErrorDialog, ConfirmDialog, DeleteErrorDialog } from '@/components/dialogs'
-import { NameRequestInfo, ContactInfo } from '@/components/common'
+import { ContactInfo, NameRequestInfo } from '@/components/common'
 import AffiliationInvitationDetails from './TodoList/AffiliationInvitationDetails.vue'
 import ConversionDetails from './TodoList/ConversionDetails.vue'
 import CorrectionComment from './TodoList/CorrectionComment.vue'
@@ -566,11 +581,22 @@ import VueRouter from 'vue-router'
 import { AllowableActionsMixin, DateMixin, EnumMixin } from '@/mixins'
 import { AuthServices, EnumUtilities, LegalServices, PayServices } from '@/services/'
 import { AllowableActions, CorpTypeCd, FilingNames, FilingStatus, FilingSubTypes, FilingTypes, Routes } from '@/enums'
-import { ApiFilingIF, ApiTaskIF, BusinessWarningIF, ConfirmDialogType, TodoItemIF, TodoListResourceIF }
-  from '@/interfaces'
+import {
+  ApiFilingIF,
+  ApiTaskIF,
+  BusinessWarningIF,
+  ConfirmDialogType,
+  TodoItemIF,
+  TodoListResourceIF
+} from '@/interfaces'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import GenericErrorDialog from '@/components/dialogs/GenericErrorDialog.vue'
+import {
+  AffiliationInvitationIF,
+  AffiliationInvitationStatus,
+  AffiliationInvitationType
+} from '@/interfaces/affiliation-invitation-interface'
 
 @Component({
   components: {
@@ -611,6 +637,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   checkTimer: number = null
   inProcessFiling: number = null
   fetchAffiliationInvitationsErrorDialog = false
+  authorizeAffiliationInvitationErrorDialog = false
 
   @Prop({ default: null }) readonly highlightId!: number
 
@@ -858,23 +885,21 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     return !!item.affiliationInvitationDetails
   }
 
-  authorizeAffiliationInvitation (isAuthorized, affiliationInvitationTodo: TodoItemIF): void {
-    const currentItems:Array<TodoItemIF> = this.todoItems
-    AuthServices.authorizeAffiliationInvitation(
+  async authorizeAffiliationInvitation (isAuthorized: boolean, affiliationInvitationTodo: TodoItemIF) {
+    const response = await AuthServices.authorizeAffiliationInvitation(
       this.getAuthApiUrl,
       affiliationInvitationTodo.affiliationInvitationDetails.id,
       isAuthorized
-    )
-      .then(() => {
-        const index = currentItems.indexOf(affiliationInvitationTodo)
-        if (index > -1) {
-          currentItems.splice(index, 1)
-        }
-      })
-      .catch(err => {
-        // eslint-disable-line no-console
-        console.log('failed the call for authorization of affiliation invitation', err)
-      })
+    ).catch(err => {
+      // eslint-disable-line no-console
+      console.log('failed the call for authorization of affiliation invitation', err)
+      this.authorizeAffiliationInvitationErrorDialog = true
+    })
+
+    const index = this.todoItems.indexOf(affiliationInvitationTodo)
+    if (response?.status === 200 && index > -1) {
+      this.todoItems.splice(index, 1)
+    }
   }
 
   /** Loads Org Affiliations invitation todo **/
@@ -884,7 +909,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       return
     }
 
-    function buildTodoItemIfFromAffiliationInvitation (affiliationInvitation, order: number) {
+    function buildTodoItemIfFromAffiliationInvitation (affiliationInvitation: AffiliationInvitationIF, order: number) {
       const newTodo: TodoItemIF = {
         draftTitle: null,
         enabled: true,
@@ -897,7 +922,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         affiliationInvitationDetails: {
           id: affiliationInvitation.id,
           fromOrgName: affiliationInvitation.fromOrg.name,
-          additionalMessage: affiliationInvitation.additionalMessage ? affiliationInvitation.additionalMessage : ''
+          additionalMessage: affiliationInvitation.additionalMessage || ''
         }
       }
 
@@ -914,11 +939,13 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
           return null
         })
 
-    const affiliationInvitations = response?.data?.affiliationInvitations ? response.data.affiliationInvitations : []
+    const affiliationInvitations: Array<AffiliationInvitationIF> =
+      response?.data?.affiliationInvitations ? response.data.affiliationInvitations : []
 
     affiliationInvitations.forEach(affiliationInvitation => {
       // only active (pending) affiliation invitations are to be converted into todo item for now
-      if (affiliationInvitation.type === 'REQUEST' && affiliationInvitation.status === 'PENDING') {
+      if (affiliationInvitation.type === AffiliationInvitationType.REQUEST &&
+        affiliationInvitation.status === AffiliationInvitationStatus.PENDING) {
         const newTodo = buildTodoItemIfFromAffiliationInvitation(affiliationInvitation, this.todoItems.length)
         this.todoItems.push(newTodo)
       }
@@ -1863,7 +1890,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const url = `businesses/${id}/filings/${item.filingId}`
 
     await axios.delete(url).then(res => {
-      if (!res) { throw new Error('Invalid API response') }
+      if (!res) {
+        throw new Error('Invalid API response')
+      }
 
       if (refreshDashboard) {
         // emit event to reload all data
@@ -1923,7 +1952,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const url = `businesses/${this.getIdentifier}/filings/${item.filingId}`
 
     await axios.patch(url, {}).then(res => {
-      if (!res) { throw new Error('Invalid API response') }
+      if (!res) {
+        throw new Error('Invalid API response')
+      }
 
       // emit event to reload all data
       this.$root.$emit('reloadData')
@@ -2000,6 +2031,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   // specifically enable events on this div
   .todo-list-detail {
     pointer-events: auto;
+
     p {
       color: $gray7;
       margin-top: 1rem;

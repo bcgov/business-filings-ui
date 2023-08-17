@@ -17,6 +17,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { FilingStatus, FilingSubTypes } from '@/enums'
 import * as utils from '@/utils'
+import { AffiliationInvitationStatus, AffiliationInvitationType } from '@/interfaces/affiliation-invitation-interface'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -85,8 +86,8 @@ describe('TodoList - common expansion panel header tests', () => {
               // returns 3 items, but only 1st one should be displayed
               {
                 id: 12,
-                type: 'REQUEST',
-                status: 'PENDING',
+                type: AffiliationInvitationType.REQUEST,
+                status: AffiliationInvitationStatus.PENDING,
                 entity: {
                   businessIdentifier: 'BC0871427',
                   name: '0871427 B.C. LTD.',
@@ -98,8 +99,8 @@ describe('TodoList - common expansion panel header tests', () => {
               },
               {
                 id: 17,
-                type: 'EMAIL',
-                status: 'PENDING',
+                type: AffiliationInvitationType.EMAIL,
+                status: AffiliationInvitationStatus.PENDING,
                 entity: {
                   businessIdentifier: 'BC0871428',
                   name: '0871427 B.C. LTD.',
@@ -111,8 +112,8 @@ describe('TodoList - common expansion panel header tests', () => {
               },
               {
                 id: 19,
-                type: 'EMAIL',
-                status: 'PENDING',
+                type: AffiliationInvitationType.EMAIL,
+                status: AffiliationInvitationStatus.PENDING,
                 entity: {
                   businessIdentifier: 'BC0871429',
                   name: '0871427 B.C. LTD.',
