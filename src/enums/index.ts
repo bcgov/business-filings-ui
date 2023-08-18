@@ -17,6 +17,7 @@ export * from './roles'
 export * from './routes'
 export * from './saveErrorReasons'
 export * from './digitalCredentialTypes'
+export * from './affiliationInvitation'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
