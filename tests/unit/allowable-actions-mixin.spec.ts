@@ -248,7 +248,7 @@ describe('Allowable Actions Mixin', () => {
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(true)
   })
 
-  xit('identifies whether Digital Credentials is allowed', () => {
+  it.skip('identifies whether Digital Credentials is allowed', () => {
     // FUTURE: implement
   })
 

@@ -14,7 +14,7 @@ setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 const rootStore = useRootStore()
 
-xdescribe('Dissolution Filing', () => {
+describe.skip('Dissolution Filing', () => {
   it('Displays expected content with a null filing', () => {
     const wrapper = mount(DissolutionVoluntary, {
       vuetify,

@@ -1190,7 +1190,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('displays a FILING PENDING - PAYMENT INCOMPLETE task', async () => {
+  it.skip('displays a FILING PENDING - PAYMENT INCOMPLETE task', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1237,7 +1237,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('displays a FILING PENDING - PAYMENT UNSUCCESSFUL task', async () => {
+  it.skip('displays a FILING PENDING - PAYMENT UNSUCCESSFUL task', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1284,7 +1284,7 @@ describe('TodoList - UI - BCOMPs', () => {
     wrapper.destroy()
   })
 
-  xit('displays a FILING PENDING - PAID task', async () => {
+  it.skip('displays a FILING PENDING - PAID task', async () => {
     // init store
     rootStore.tasks = [
       {
@@ -1409,7 +1409,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
   })
 
-  xit('displays a DRAFT numbered company IA', async () => {
+  it.skip('displays a DRAFT numbered company IA', async () => {
     // init store
     rootStore.nameRequest = null
     rootStore.tasks = [
@@ -1456,7 +1456,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  xit('displays a DRAFT named company IA', async () => {
+  it.skip('displays a DRAFT named company IA', async () => {
     // init store
     rootStore.nameRequest = {}
     businessStore.setLegalName('My Business Inc')
@@ -1504,7 +1504,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  xit('displays a PENDING numbered company IA', async () => {
+  it.skip('displays a PENDING numbered company IA', async () => {
     // init store
     rootStore.nameRequest = null
     rootStore.tasks = [
@@ -1551,7 +1551,7 @@ describe('TodoList - UI - Incorp Apps', () => {
     wrapper.destroy()
   })
 
-  xit('displays a PENDING named company IA', async () => {
+  it.skip('displays a PENDING named company IA', async () => {
     // init store
     rootStore.nameRequest = {}
     businessStore.setLegalName('My Business Inc')

@@ -11,7 +11,7 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-xdescribe('Incorporation Application Filing', () => {
+describe.skip('Incorporation Application Filing', () => {
   it('Displays expected content with entityName', () => {
     businessStore.setLegalName('My Business')
     businessStore.setIdentifier(null)
