@@ -9,6 +9,7 @@ import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import flushPromises from 'flush-promises'
+import { vi } from 'vitest'
 
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'
@@ -1119,7 +1120,7 @@ describe('TodoList - UI - BCOMPs', () => {
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
-    jest.spyOn(vm, 'isCoaPending', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isCoaPending', 'get').mockReturnValue(true)
     await Vue.nextTick()
 
     expect(vm.todoItems.length).toEqual(1)
@@ -1143,7 +1144,7 @@ describe('TodoList - UI - BCOMPs', () => {
     expect(wrapper.find('.list-item__actions .v-btn').attributes('disabled')).toBe('disabled')
     expect(button.querySelector('.v-btn__content').textContent).toContain('File Annual Report')
 
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -1613,7 +1614,7 @@ describe('TodoList - Click Tests', () => {
 
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // set configurations
     const configuration = {
@@ -1946,7 +1947,7 @@ describe('TodoList - Click Tests - BCOMPs', () => {
 
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
 
     // set configurations
@@ -2198,7 +2199,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
 
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -2305,7 +2306,7 @@ describe('TodoList - Click Tests - Corrections', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // init session storage and store
     sessionStorage.clear()
@@ -2446,7 +2447,7 @@ describe('TodoList - Click Tests - Alterations', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // init session storage and store
     sessionStorage.clear()
@@ -2513,7 +2514,7 @@ describe('TodoList - Delete Draft', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -2707,7 +2708,7 @@ describe('TodoList - Cancel Payment', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -2863,7 +2864,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // init store
     sessionStorage.clear()
@@ -2945,7 +2946,7 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     sessionStorage.clear()
     const configuration = {

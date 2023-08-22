@@ -289,7 +289,7 @@ export default {
 
     /** The About text. */
     aboutText (): string {
-      return process.env.ABOUT_TEXT
+      return import.meta.env.ABOUT_TEXT
     },
 
     /** Get banner text. */
@@ -402,7 +402,7 @@ export default {
 
       // store today's date every time the dashboard is loaded
       const jsDate: Date = await this.getServerDate()
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         // eslint-disable-next-line no-console
         console.info(`It is currently ${this.dateToPacificDateTime(jsDate)}.`)
       }

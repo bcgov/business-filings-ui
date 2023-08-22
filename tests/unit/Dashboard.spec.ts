@@ -8,6 +8,7 @@ import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { AllowableActions, CorpTypeCd } from '@/enums'
+import { vi } from 'vitest'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'
@@ -78,7 +79,7 @@ describe('Dashboard - UI', () => {
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
     businessStore.setAllowedActions({
       filing: {
         filingTypes: [
@@ -102,7 +103,7 @@ describe('Dashboard - UI', () => {
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
     businessStore.setAllowedActions({
       filing: {
         filingTypes: []

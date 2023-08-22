@@ -10,10 +10,11 @@ import axios from '@/axios-auth'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
+import { vi } from 'vitest'
 
-// mock fetch() as it is not defined in Jest
+// mock fetch() as it is not defined in Vitest
 // NB: it should be `global.fetch` but that doesn't work and this does
-window.fetch = jest.fn().mockImplementation(() => {
+window.fetch = vi.fn().mockImplementation(() => {
   return {
     headers: { get: () => new Date() },
     ok: true,

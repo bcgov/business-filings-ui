@@ -15,6 +15,7 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { ConfigJson } from '@/resources/business-config'
 import { CorpTypeCd, FilingStatus } from '@/enums'
+import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -537,7 +538,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -728,7 +729,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that new filing was created
     const button = wrapper.find('#coa-file-pay-btn')
@@ -787,7 +788,7 @@ describe('Standalone Office Address Filing - Part 3 - Submitting', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that draft filing was fetched
 
@@ -818,7 +819,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1020,7 +1021,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     vm.totalFee = 100
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that new filing was created
 
@@ -1080,7 +1081,7 @@ describe('Standalone Office Address Filing - Part 3B - Submitting (BCOMP)', () =
     vm.totalFee = 100
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that draft filing was fetched
 
@@ -1111,7 +1112,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1191,7 +1192,7 @@ describe('Standalone Office Address Filing - Part 4 - Saving', () => {
       })
 
       // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+      expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
       // FUTURE: verify that new filing was created
 
@@ -1241,7 +1242,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1329,7 +1330,7 @@ describe('Standalone Office Address Filing - Part 4B - Saving (BCOMP)', () => {
       })
 
       // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+      expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
       // FUTURE: verify that new filing was created
 
@@ -1563,7 +1564,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1726,7 +1727,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     })
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that new filing was created
 
@@ -1776,7 +1777,7 @@ describe('Standalone Office Address Filing - Part 6 - Error/Warning Dialogs', ()
     })
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that new filing was created
 
@@ -1803,7 +1804,7 @@ describe('Standalone Office Address Filing - payment required error', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {

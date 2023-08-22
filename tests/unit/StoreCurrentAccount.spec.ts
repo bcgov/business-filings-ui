@@ -3,6 +3,7 @@ import { getVuexStore, useAuthenticationStore } from '@/stores'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import { vi } from 'vitest'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -25,7 +26,7 @@ describe('testing current account module', () => {
   }
 
   it('fetches current account from session storage - PREMIUM', async () => {
-    jest.isolateModules(() => async () => {
+    vi.isolateModules(() => async () => {
       const SbcHeader = require('sbc-common-components/src/components/SbcHeader.vue').default
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })
@@ -37,7 +38,7 @@ describe('testing current account module', () => {
   })
 
   it('fetches current account from session storage - SBC_STAFF', async () => {
-    jest.isolateModules(() => async () => {
+    vi.isolateModules(() => async () => {
       const SbcHeader = require('sbc-common-components/src/components/SbcHeader.vue').default
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })

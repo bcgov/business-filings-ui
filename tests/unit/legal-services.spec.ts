@@ -1,10 +1,11 @@
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import LegalServices from '@/services/legal-services'
+import { vi } from 'vitest'
 
-// mock some window.URL functions that are not defined in Jest
-window.URL.createObjectURL = jest.fn()
-window.URL.revokeObjectURL = jest.fn()
+// mock some window.URL functions that are not defined in Vitest
+window.URL.createObjectURL = vi.fn()
+window.URL.revokeObjectURL = vi.fn()
 
 describe('Legal Services', () => {
   let get: any

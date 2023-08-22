@@ -10,6 +10,7 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import LegalServices from '@/services/legal-services'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, FilingSubTypes, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 Vue.use(Vuetify)
 
@@ -31,7 +32,7 @@ describe('StaffNotation', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const configuration = {
       VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
@@ -449,8 +450,8 @@ describe('StaffNotation', () => {
     const wrapper = mount(StaffNotation, { vuetify, localVue })
 
     // spy on build and create methods
-    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
-    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+    const buildRestorationFiling = vi.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = vi.spyOn((LegalServices as any), 'createFiling')
 
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -488,8 +489,8 @@ describe('StaffNotation', () => {
     const wrapper = mount(StaffNotation, { vuetify, localVue })
 
     // spy on build and create methods
-    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
-    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+    const buildRestorationFiling = vi.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = vi.spyOn((LegalServices as any), 'createFiling')
 
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -538,8 +539,8 @@ describe('StaffNotation', () => {
     const wrapper = mount(StaffNotation, { vuetify, localVue })
 
     // spy on build and create methods
-    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
-    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+    const buildRestorationFiling = vi.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = vi.spyOn((LegalServices as any), 'createFiling')
 
     // open menu
     await wrapper.find('.menu-btn').trigger('click')

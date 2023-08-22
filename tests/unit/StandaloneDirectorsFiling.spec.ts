@@ -18,6 +18,7 @@ import mockRouter from './mockRouter'
 import { ConfigJson } from '@/resources/business-config'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingCodes, FilingStatus } from '@/enums'
+import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -551,7 +552,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // set configurations
     const configuration = {
@@ -730,7 +731,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     await wrapper.setData({ totalFee: 100 })
 
     // sanity checks
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
     expect(vm.isEditPageValid).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
@@ -795,7 +796,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     await wrapper.setData({ totalFee: 100 })
 
     // sanity checks
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
     expect(vm.isEditPageValid).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
@@ -865,7 +866,7 @@ describe('Standalone Directors Filing - Part 3A - Submitting filing that needs t
     await wrapper.setData({ totalFee: 100 })
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
     expect(vm.isEditPageValid).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
@@ -995,7 +996,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1079,7 +1080,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
       rootStore.setFilingData([{} as any]) // dummy data
 
       // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+      expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
       // FUTURE: verify that new filing was created
 
@@ -1122,7 +1123,7 @@ describe('Standalone Directors Filing - Part 4 - Saving', () => {
     rootStore.setFilingData([{} as any]) // dummy data
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // FUTURE: verify that new filing was created
 
@@ -1303,7 +1304,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1465,7 +1466,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       rootStore.setFilingData([{} as any]) // dummy data
 
       // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+      expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
       // FUTURE: verify that draft filing was fetched
 
@@ -1502,7 +1503,7 @@ describe('Standalone Directors Filing - Part 6 - Error/Warning Dialogs', () => {
       rootStore.setFilingData([{} as any]) // dummy data
 
       // sanity check
-      expect(jest.isMockFunction(window.location.assign)).toBe(true)
+      expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
       // FUTURE: verify that draft filing was fetched
 
@@ -1530,7 +1531,7 @@ describe('Standalone Directors Filing - payment required error', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {

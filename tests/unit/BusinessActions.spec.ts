@@ -2,6 +2,7 @@ import LegalServices from '@/services/legal-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore } from '@/stores'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { vi } from 'vitest'
 
 describe('Business Actions', () => {
   setActivePinia(createPinia())
@@ -21,7 +22,7 @@ describe('Business Actions', () => {
       legalType: 'BC',
       stateFiling: 'dummy_url'
     }
-    jest.spyOn(LegalServices, 'fetchBusiness').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchBusiness').mockImplementation((): any => {
       return Promise.resolve(sampleBusinessInfo)
     })
 

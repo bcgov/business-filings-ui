@@ -638,7 +638,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       await this.fetchDraftFiling()
       // fetch original office addresses and directors
       // update working data only if it wasn't in the draft
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         const isEmptyAddresses =
           (isEmpty(this.updatedAddresses.recordsOffice) && isEmpty(this.updatedAddresses.registeredOffice))
         await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, isEmptyAddresses)
@@ -648,7 +648,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
       // this is a new filing
       this.loadingMessage = `Preparing Your ${this.ARFilingYear} Annual Report`
       // fetch original office addresses and directors + update working data
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
         await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
       }
@@ -1278,7 +1278,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
     // fetch original office addresses and directors with new date + update working data
     // (this will overwrite the current data)
     this.isFetching = true
-    if (!this.isJestRunning) {
+    if (!this.isVitestRunning) {
       await this.$refs.officeAddressesComponent.getOrigAddresses(this.asOfDate, true)
       await this.$refs.directorsComponent.getOrigDirectors(this.asOfDate, true)
     }

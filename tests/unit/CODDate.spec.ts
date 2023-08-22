@@ -6,6 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { vi } from 'vitest'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
@@ -124,7 +125,7 @@ describe('COD Date - COOPs', () => {
     })
 
     // force all dates to appear valid
-    jest.spyOn((wrapper.vm as any), 'isValidDate').mockImplementation(() => true)
+    vi.spyOn((wrapper.vm as any), 'isValidDate').mockImplementation(() => true)
 
     // verify initial validators and error message
     expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(false)
@@ -153,7 +154,7 @@ describe('COD Date - COOPs', () => {
     })
 
     // force all dates to appear valid
-    jest.spyOn((wrapper.vm as any), 'isValidDate').mockImplementation(() => true)
+    vi.spyOn((wrapper.vm as any), 'isValidDate').mockImplementation(() => true)
 
     // verify initial validators and error message
     expect(wrapper.vm.$v.dateFormatted.isNotNull).toBe(false)

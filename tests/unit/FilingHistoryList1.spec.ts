@@ -7,6 +7,7 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
+import { vi } from 'vitest'
 
 // Components and sub-components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'
@@ -283,7 +284,7 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify no row is expanded
     expect(vm.getPanel).toBeNull()
@@ -343,7 +344,7 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     expect(wrapper.find('.item-header__title').text()).toContain('Full Restoration Application')
 
@@ -405,7 +406,7 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     expect(wrapper.find('.item-header__title').text()).toContain('Limited Restoration Application')
 
@@ -534,7 +535,7 @@ describe('Filing History List - misc functionality', () => {
     //
 
     // no conditions
-    jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
     expect(vm.disableCorrection({ ...item })).toBe(false)
 
     // conditions[2]: FE filing that is Completed or Corrected
@@ -784,7 +785,7 @@ describe('Filing History List - redirections', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const configuration = {
       VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
@@ -1477,7 +1478,7 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     expect(vm.getFilings.length).toEqual(1)
 
@@ -1624,7 +1625,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1689,7 +1690,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1754,7 +1755,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1818,7 +1819,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -2434,7 +2435,7 @@ describe('Filing History List - expands Consent to continue out', () => {
     const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
 
-    jest.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+    vi.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -2451,7 +2452,7 @@ describe('Filing History List - expands Consent to continue out', () => {
     expect(vm.getPanel).toBe(0) // first row is expanded
     expect(wrapper.findComponent(ConsentContinuationOut).exists()).toBe(true)
 
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     wrapper.destroy()
   })
 })
@@ -2480,7 +2481,7 @@ describe('Filing History List - Expands Continuation Out', () => {
     const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
 
-    jest.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+    vi.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -2497,7 +2498,7 @@ describe('Filing History List - Expands Continuation Out', () => {
     expect(vm.getPanel).toBe(0) // first row is expanded
     expect(wrapper.findComponent(ContinuationOut).exists()).toBe(true)
 
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     wrapper.destroy()
   })
 })

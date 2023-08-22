@@ -56,7 +56,7 @@ jobs:
       - name: Install dependencies
         run: |
           make setup
-      - name: Test with Jest
+      - name: Test with Vitest
         id: test
         run: |
           make test

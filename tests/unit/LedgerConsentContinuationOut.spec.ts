@@ -3,10 +3,11 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
 import { createPinia, setActivePinia } from 'pinia'
+import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] The v-expansion-panel component must be used inside a
 // v-expansion-panels"
-console.warn = jest.fn()
+console.warn = vi.fn()
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

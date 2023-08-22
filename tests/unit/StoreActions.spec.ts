@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { useRootStore } from '@/stores/rootStore'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { vi } from 'vitest'
 
 describe('Business Actions', () => {
   setActivePinia(createPinia())
@@ -26,7 +27,7 @@ describe('Business Actions', () => {
         name: 'dissolution'
       }
     }
-    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
 
@@ -55,7 +56,7 @@ describe('Business Actions', () => {
         name: 'consentContinuationOut'
       }
     }
-    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
 

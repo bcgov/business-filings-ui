@@ -14,6 +14,7 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -199,13 +200,13 @@ describe('Continuation Out view', () => {
 
   it('saves draft continuation out properly', async () => {
     // mock "has pending tasks" legal service
-    jest.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
       return Promise.resolve(false)
     })
 
     // mock "create filing" legal service
     // (garbage response data - we aren't testing that)
-    jest.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
@@ -259,7 +260,7 @@ describe('Continuation Out view', () => {
 
   it('resumes draft continuation out properly', async () => {
     // mock "fetch filing" legal service
-    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {
           identifier: 'CP1234567',
