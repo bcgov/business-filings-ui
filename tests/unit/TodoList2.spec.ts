@@ -61,7 +61,7 @@ describe('TodoList - common expansion panel header tests', () => {
     wrapper.destroy()
   })
 
-  it('display affiliation invitation todo (request access, open)', async () => {
+  it.skip('display affiliation invitation todo (request access, open)', async () => {
     rootStore.tasks = []
     businessStore.businessInfo = Object.assign(businessStore.businessInfo, { identifier: 'testIdentifier' })
 

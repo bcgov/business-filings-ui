@@ -1,6 +1,5 @@
 import AllowableActionsMixin from './allowable-actions-mixin'
 import CommonMixin from './common-mixin'
-import DateMixin from './date-mixin'
 import DirectorMixin from './director-mixin'
 import EnumMixin from './enum-mixin'
 import FilingMixin from './filing-mixin'
@@ -10,7 +9,6 @@ import ResourceLookupMixin from './resource-lookup-mixin'
 export {
   AllowableActionsMixin,
   CommonMixin,
-  DateMixin,
   DirectorMixin,
   EnumMixin,
   FilingMixin,
@@ -18,4 +16,5 @@ export {
   ResourceLookupMixin
 }
 
+export { default as DateMixin } from './date-mixin'
 export { CountriesProvincesMixin } from '@bcrs-shared-components/mixins'

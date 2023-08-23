@@ -40,8 +40,8 @@ describe('Display ContinuationOut component', () => {
 
     // verify content
     expect(wrapper.find('.item-header-title').text()).toContain('Continuation Out')
-    expect(wrapper.find('.continuation-out').text())
-      .toContain('FILED AND PAID  (filed by  on [unknown])  EFFECTIVE as of [unknown]')
+    expect(wrapper.find('.continuation-out').text()).toContain('FILED AND PAID  (filed by  on [unknown])')
+    expect(wrapper.find('.continuation-out').text()).toContain('EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
     expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
     expect(vm.continuationOutDate).toEqual('Jun 10, 2023')

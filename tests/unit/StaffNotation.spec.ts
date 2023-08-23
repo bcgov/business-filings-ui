@@ -464,6 +464,7 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+    await Vue.nextTick()
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith('https://create.url/?id=BC1234567')
@@ -503,6 +504,8 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+    await Vue.nextTick()
+    await Vue.nextTick()
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(
@@ -553,6 +556,9 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+    await Vue.nextTick()
+    await Vue.nextTick()
+    await Vue.nextTick()
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(

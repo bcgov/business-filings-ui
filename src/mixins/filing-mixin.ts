@@ -1,5 +1,5 @@
 import { Component } from 'vue-property-decorator'
-import { DateMixin } from '@/mixins'
+import DateMixin from './date-mixin'
 import { Action, Getter } from 'pinia-class'
 import {
   CorrectionFilingIF,

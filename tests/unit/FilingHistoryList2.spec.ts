@@ -29,7 +29,7 @@ const businessStore = useBusinessStore()
 const filingHistoryListStore = useFilingHistoryListStore()
 
 // Helper functions
-const itIf = (condition) => condition ? it : xit
+const itIf = (condition) => condition ? it : it.skip
 const isPaperOnly = (filing) => filing.availableOnPaperOnly
 const isCorrection = (filing) => !!filing.correctedFilingId
 const isCorrected = (filing) => !!filing.correctionFilingId
