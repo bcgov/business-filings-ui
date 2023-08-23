@@ -70,11 +70,11 @@ describe('TodoList - common expansion panel header tests', () => {
 
     // feature flag override
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (name) => {
-        if (name === 'enable-affiliation-invitation-request-access') {
+      (flag) => {
+        if (flag === 'enable-affiliation-invitation-request-access') {
           return true
         } else {
-          return ''
+          return false
         }
       })
 
