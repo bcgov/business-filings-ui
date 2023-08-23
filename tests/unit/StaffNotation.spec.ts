@@ -504,6 +504,8 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+
+    // need to update DOM to not get previous test results
     await Vue.nextTick()
     await Vue.nextTick()
 
@@ -556,6 +558,8 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+
+    // need to update DOM to not get previous test results
     await Vue.nextTick()
     await Vue.nextTick()
     await Vue.nextTick()
