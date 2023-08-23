@@ -25,8 +25,8 @@ describe('testing current account module', () => {
     }
   }
 
-  it.skip('fetches current account from session storage - PREMIUM', async () => {
-    vi.isolateModules(() => async () => {
+  it('fetches current account from session storage - PREMIUM', async () => {
+    vi.fn(() => async () => {
       const SbcHeader = require('sbc-common-components/src/components/SbcHeader.vue').default
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })
@@ -37,8 +37,8 @@ describe('testing current account module', () => {
     })
   })
 
-  it.skip('fetches current account from session storage - SBC_STAFF', async () => {
-    vi.isolateModules(() => async () => {
+  it('fetches current account from session storage - SBC_STAFF', async () => {
+    vi.fn(() => async () => {
       const SbcHeader = require('sbc-common-components/src/components/SbcHeader.vue').default
       const store = await getVuexStore() as any // remove typings for unit tests
       shallowMount(SbcHeader, { store, localVue })
