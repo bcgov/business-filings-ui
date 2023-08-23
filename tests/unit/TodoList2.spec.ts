@@ -61,17 +61,22 @@ describe('TodoList - common expansion panel header tests', () => {
     wrapper.destroy()
   })
 
-  it.skip('display affiliation invitation todo (request access, open)', async () => {
+  it('display affiliation invitation todo (request access, open)', async () => {
     rootStore.tasks = []
     businessStore.businessInfo = Object.assign(businessStore.businessInfo, { identifier: 'testIdentifier' })
 
     const sandbox = sinon.createSandbox()
     const fetchAffiliationInvites = sandbox.stub(AuthServices, 'fetchAffiliationInvitations')
-    // feature flag override
-    const featureFlag = sandbox.stub(utils, 'GetFeatureFlag')
 
-    featureFlag.withArgs('enable-affiliation-invitation-request-access')
-      .returns(true)
+    // feature flag override
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
+      (name) => {
+        if (name === 'enable-affiliation-invitation-request-access') {
+          return true
+        } else {
+          return ''
+        }
+      })
 
     fetchAffiliationInvites.returns(new Promise(
       resolve => resolve(
@@ -148,7 +153,7 @@ describe('TodoList - common expansion panel header tests', () => {
     expect(['Authorize', 'Do not authorize'].every(btnText => btnTexts.includes(btnText)))
 
     fetchAffiliationInvites.restore()
-    featureFlag.restore()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
