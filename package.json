@@ -10,7 +10,7 @@
     "serve": "vite preview",
     "lint": "eslint . --ext .js,.ts,.vue",
     "test:unit": "vitest run",
-    "test:coverage": "vitest run --silent"
+    "test:coverage": "vitest run --coverage --silent"
   },
   "dependencies": {
     "@babel/compat-data": "^7.21.5",
@@ -62,6 +62,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "@vitejs/plugin-vue2": "^2.2.0",
+    "@vitest/coverage-v8": "^0.34.2",
     "@volar-plugins/vetur": "latest",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
