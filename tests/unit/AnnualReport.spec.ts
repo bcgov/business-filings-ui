@@ -751,7 +751,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -935,7 +935,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1011,7 +1011,7 @@ describe('Annual Report - Part 3 - Submitting', () => {
     vm.totalFee = 100
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     const button = wrapper.find('#ar-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()
@@ -1035,7 +1035,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1144,7 +1144,7 @@ describe('Annual Report - Part 3B - Submitting (BCOMP)', () => {
     await Vue.nextTick()
 
     // sanity checks
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
     expect(vm.isPageValid).toEqual(true)
     expect(vm.busySaving).toEqual(false)
 
@@ -1752,7 +1752,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
@@ -1891,7 +1891,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     expect(vm.isPageValid).toEqual(true)
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // stub address data
     await wrapper.setData({
@@ -1930,7 +1930,7 @@ describe('Annual Report - Part 6 - Error/Warning Dialogs', () => {
     expect(vm.isPageValid).toEqual(true)
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     // stub address data
     await wrapper.setData({
@@ -2076,7 +2076,7 @@ describe('Annual Report - payment required error', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {

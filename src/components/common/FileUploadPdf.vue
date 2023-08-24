@@ -20,6 +20,7 @@ import { AxiosResponse } from 'axios'
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -43,14 +44,14 @@ export default class FileUploadPdf extends Vue {
   /** Custom errors messages, use to put component into manual error mode. */
   errorMessages = [] as Array<string>
 
-  private pdfjsLib: any
+  pdfjsLib: any
 
-  created () {
-    // NB: we load the lib and worker this way to avoid a memory leak (esp in unit tests)
-    // NB: must use require instead of import or this doesn't work
-    // NB: must use legacy build for unit tests not running in Node 18+
-    this.pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js')
-    this.pdfjsLib.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
+  async created () {
+    /** Load the lib and worker this way to avoid a memory leak (esp in unit tests)
+     *  Must use legacy build for unit tests not running in Node 18+
+     */
+    this.pdfjsLib = pdfjs
+    this.pdfjsLib.GlobalWorkerOptions.workerSrc = await import('pdfjs-dist/legacy/build/pdf.worker.entry')
   }
 
   /** Clears data and local state. */

@@ -533,14 +533,14 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
       await this.fetchDraftFiling()
       // fetch original directors
       // update working data only if it wasn't in the draft
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         await this.$refs.directorsComponent.getOrigDirectors(this.initialCodDate, isEmpty(this.updatedDirectors))
       }
     } else {
       // this is a new filing
       this.loadingMessage = 'Preparing Your Director Change'
       // fetch original directors + update working data
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         await this.$refs.directorsComponent.getOrigDirectors(this.initialCodDate, true)
       }
     }
@@ -1007,7 +1007,7 @@ export default class StandaloneDirectorsFiling extends Mixins(CommonMixin, DateM
     // fetch original directors with new date + update working data
     // (this will overwrite the current data)
     this.isFetching = true
-    if (!this.isJestRunning) {
+    if (!this.isVitestRunning) {
       await this.$refs.directorsComponent.getOrigDirectors(this.codDate, true)
     }
     this.isFetching = false

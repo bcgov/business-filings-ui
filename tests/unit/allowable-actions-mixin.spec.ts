@@ -17,9 +17,9 @@ const businessStore = useBusinessStore()
 
 // mock the entire module
 // it's the only way to override any exported function
-jest.mock('@/utils/feature-flags', () => {
+vi.mock('@/utils/feature-flags', () => {
   // we just care about this one function
-  return { GetFeatureFlag: jest.fn() }
+  return { GetFeatureFlag: vi.fn() }
 })
 
 describe('Allowable Actions Mixin', () => {
@@ -36,7 +36,7 @@ describe('Allowable Actions Mixin', () => {
 
   function setFeatureFlag (val: any) {
     // return the value we want for the test
-    jest.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue(val)
+    vi.spyOn(FeatureFlags, 'GetFeatureFlag').mockReturnValue(val)
   }
 
   beforeAll(async () => {
@@ -55,7 +55,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Address Change is allowed - firm', () => {
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -67,7 +67,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Address Change is allowed - other', () => {
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -99,8 +99,8 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Information is allowed - Coop', () => {
-    jest.spyOn(vm, 'isCoop', 'get').mockReturnValue(true)
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isCoop', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
     // verify allowed filing type but no feature flag
     setAllowedFilingType({ name: FilingTypes.SPECIAL_RESOLUTION })
@@ -119,8 +119,8 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Information is allowed - firm', () => {
-    jest.spyOn(vm, 'isCoop', 'get').mockReturnValue(false)
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isCoop', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -132,8 +132,8 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Information is allowed - other', () => {
-    jest.spyOn(vm, 'isCoop', 'get').mockReturnValue(false)
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isCoop', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -145,7 +145,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Business Summary is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify business but no feature flag
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
@@ -164,7 +164,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Consent Continuation Out is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 
     // verify allowed filing type but no feature flag
     setAllowedFilingType({ name: FilingTypes.CONSENT_CONTINUATION_OUT })
@@ -183,7 +183,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Continuation Out is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 
     // verify allowed filing type but no feature flag
     setAllowedFilingType({ name: FilingTypes.CONTINUATION_OUT })
@@ -202,7 +202,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Correction is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
 
     // verify allowed filing type but no feature flag
     setAllowedFilingType({ name: FilingTypes.CORRECTION })
@@ -233,26 +233,26 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether Detail Comment allowed', () => {
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify staff but no business
-    jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(false)
 
     // verify both staff and business
-    jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.DETAIL_COMMENT)).toBe(true)
   })
 
-  xit('identifies whether Digital Credentials is allowed', () => {
+  it.skip('identifies whether Digital Credentials is allowed', () => {
     // FUTURE: implement
   })
 
   it('identifies whether Director Change is allowed - firm', () => {
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(true)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -264,7 +264,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Director Change is allowed - other', () => {
-    jest.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isFirm', 'get').mockReturnValue(false)
 
     // verify no allowed filing type
     setAllowedFilingType()
@@ -362,16 +362,16 @@ describe('Allowable Actions Mixin', () => {
   it('identifies whether Staff Comment allowed', () => {
     // verify business but not staff
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
-    jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(false)
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify staff but no business
-    jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.removeItem('BUSINESS_ID')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(false)
 
     // verify both staff and business
-    jest.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'isRoleStaff', 'get').mockReturnValue(true)
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     expect(vm.isAllowed(AllowableActions.STAFF_COMMENT)).toBe(true)
   })
@@ -387,7 +387,7 @@ describe('Allowable Actions Mixin', () => {
   })
 
   it('identifies whether Voluntary Dissolution is allowed', () => {
-    jest.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
+    vi.spyOn(vm, 'getLegalType', 'get').mockReturnValue(CorpTypeCd.BC_COMPANY)
 
     // verify allowed filing type but no feature flag
     setAllowedFilingType({ name: FilingTypes.DISSOLUTION })

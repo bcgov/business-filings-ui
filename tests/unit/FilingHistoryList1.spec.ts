@@ -94,7 +94,7 @@ describe('Filing History List - misc functionality', () => {
     wrapper.destroy()
   })
 
-  xit('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
+  it.skip('shows the filing date in the correct format "Mmm dd, yyyy"', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     filingHistoryListStore.setFilings(SAMPLE_FILINGS as any)
@@ -112,7 +112,7 @@ describe('Filing History List - misc functionality', () => {
     wrapper.destroy()
   })
 
-  xit('displays multiple filing items', async () => {
+  it.skip('displays multiple filing items', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     filingHistoryListStore.setFilings([
@@ -259,7 +259,7 @@ describe('Filing History List - misc functionality', () => {
     wrapper.destroy()
   })
 
-  xit('expands a regular filing', async () => {
+  it.skip('expands a regular filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     filingHistoryListStore.setFilings([
@@ -283,7 +283,7 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify no row is expanded
     expect(vm.getPanel).toBeNull()
@@ -313,7 +313,7 @@ describe('Filing History List - misc functionality', () => {
     wrapper.destroy()
   })
 
-  xit('expands a full restoration filing', async () => {
+  it.skip('expands a full restoration filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     filingHistoryListStore.setFilings([
@@ -343,7 +343,7 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     expect(wrapper.find('.item-header__title').text()).toContain('Full Restoration Application')
 
@@ -370,7 +370,7 @@ describe('Filing History List - misc functionality', () => {
     wrapper.destroy()
   })
 
-  xit('expands a limited restoration filing', async () => {
+  it.skip('expands a limited restoration filing', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     filingHistoryListStore.setFilings([
@@ -405,7 +405,7 @@ describe('Filing History List - misc functionality', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     expect(wrapper.find('.item-header__title').text()).toContain('Limited Restoration Application')
 
@@ -451,7 +451,7 @@ describe('Filing History List - misc functionality', () => {
   })
 
   // FUTURE: show and verify the tooltip
-  xit('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
+  it.skip('displays the tooltip when the filing is a BCOMP Future Effective COA', async () => {
     // init store
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
     businessStore.setIdentifier('BC0007291')
@@ -496,7 +496,7 @@ describe('Filing History List - misc functionality', () => {
   //   expect(vm.isEffectiveDateFuture(past)).toBe(false)
   // })
 
-  xit('disables corrections when "disable changes" prop is set', async () => {
+  it.skip('disables corrections when "disable changes" prop is set', async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     filingHistoryListStore.setFilings([])
@@ -511,7 +511,7 @@ describe('Filing History List - misc functionality', () => {
     expect(vm.disableCorrection({})).toBe(true)
   })
 
-  xit('returns correct values for disableCorrection()', async () => {
+  it.skip('returns correct values for disableCorrection()', async () => {
     filingHistoryListStore.setFilings([])
 
     const wrapper = mount(FilingHistoryList, {
@@ -534,7 +534,7 @@ describe('Filing History List - misc functionality', () => {
     //
 
     // no conditions
-    jest.spyOn(vm, 'isAllowed').mockReturnValue(true)
+    vi.spyOn(vm, 'isAllowed').mockReturnValue(true)
     expect(vm.disableCorrection({ ...item })).toBe(false)
 
     // conditions[2]: FE filing that is Completed or Corrected
@@ -784,7 +784,7 @@ describe('Filing History List - redirections', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const configuration = {
       VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
@@ -1039,7 +1039,7 @@ describe('Filing History List - redirections', () => {
 })
 
 describe('Filing History List - incorporation applications', () => {
-  xit('displays an "empty" IA filing', async () => {
+  it.skip('displays an "empty" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     filingHistoryListStore.setFilings([])
@@ -1057,7 +1057,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays actual title for a named company IA', async () => {
+  it.skip('displays actual title for a named company IA', async () => {
     // init store
     rootStore.nameRequest = null
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
@@ -1099,7 +1099,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays default title for a numbered company IA', async () => {
+  it.skip('displays default title for a numbered company IA', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -1140,7 +1140,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a "future effective" IA filing', async () => {
+  it.skip('displays a "future effective" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -1202,7 +1202,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a "future effective pending" IA filing', async () => {
+  it.skip('displays a "future effective pending" IA filing', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
@@ -1265,7 +1265,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a Paid IA (temp reg number mode)', async () => {
+  it.skip('displays a Paid IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
@@ -1328,7 +1328,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a Completed IA (temp reg number mode)', async () => {
+  it.skip('displays a Completed IA (temp reg number mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -1389,7 +1389,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a Paid IA (business mode)', async () => {
+  it.skip('displays a Paid IA (business mode)', async () => {
     // init store
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
@@ -1452,7 +1452,7 @@ describe('Filing History List - incorporation applications', () => {
     wrapper.destroy()
   })
 
-  xit('displays a Completed IA (business mode)', async () => {
+  it.skip('displays a Completed IA (business mode)', async () => {
     // init store
     sessionStorage.setItem('BUSINESS_ID', 'BC1234567')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -1477,7 +1477,7 @@ describe('Filing History List - incorporation applications', () => {
     const vm = wrapper.vm as any
     await Vue.nextTick()
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     expect(vm.getFilings.length).toEqual(1)
 
@@ -1535,7 +1535,7 @@ describe('Filing History List - paper only and other filings', () => {
     if (wrapper) wrapper.destroy()
   })
 
-  xit('displays a "paper only" AR (other) filing', async () => {
+  it.skip('displays a "paper only" AR (other) filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: true,
@@ -1587,7 +1587,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays an "empty" alteration filing', async () => {
+  it.skip('displays an "empty" alteration filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1624,7 +1624,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1647,7 +1647,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays a "future effective" alteration filing', async () => {
+  it.skip('displays a "future effective" alteration filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1689,7 +1689,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1712,7 +1712,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays a "future effective pending" alteration filing', async () => {
+  it.skip('displays a "future effective pending" alteration filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1754,7 +1754,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1777,7 +1777,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays a "full" alteration filing', async () => {
+  it.skip('displays a "full" alteration filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1818,7 +1818,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(vm.getPanel).toBeNull() // no row is expanded
     expect(wrapper.find('.no-results').exists()).toBe(false)
 
-    // jest.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
+    // vi.spyOn(vm, 'loadDocuments').mockImplementation(() => Promise.resolve([]))
 
     // verify View Documents button and toggle panel
     const detailsBtn = wrapper.find('.expand-btn')
@@ -1841,7 +1841,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays a Registrar\'s Notation (staff only) filing', async () => {
+  it.skip('displays a Registrar\'s Notation (staff only) filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1897,7 +1897,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays a Registrar\'s Order (staff only) filing', async () => {
+  it.skip('displays a Registrar\'s Order (staff only) filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -1953,7 +1953,7 @@ describe('Filing History List - paper only and other filings', () => {
     expect(wrapper.findComponent(DetailsList).exists()).toBe(false)
   })
 
-  xit('displays a Court Order (staff only) filing', async () => {
+  it.skip('displays a Court Order (staff only) filing', async () => {
     filingHistoryListStore.setFilings([
       {
         availableOnPaperOnly: false,
@@ -2058,7 +2058,7 @@ describe('Filing History List - with Court Order documents', () => {
     wrapper.destroy()
   })
 
-  xit('display the documents list when documents are present on a filing', async () => {
+  it.skip('display the documents list when documents are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_COURT_ORDER_DOCUMENTS_LINK] as any)
 
@@ -2113,7 +2113,7 @@ describe('Filing History List - with documents', () => {
     submitter: 'Cameron'
   }
 
-  xit('does not display the documents list when no documents are present on a filing', async () => {
+  it.skip('does not display the documents list when no documents are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
@@ -2145,7 +2145,7 @@ describe('Filing History List - with documents', () => {
     wrapper.destroy()
   })
 
-  xit('display the documents list when documents are present on a filing', async () => {
+  it.skip('display the documents list when documents are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
@@ -2186,7 +2186,7 @@ describe('Filing History List - with documents', () => {
     wrapper.destroy()
   })
 
-  xit('computes proper document titles from the documents data', async () => {
+  it.skip('computes proper document titles from the documents data', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_DOCUMENTS_LINK] as any)
 
@@ -2302,7 +2302,7 @@ describe('Filing History List - detail comments', () => {
     wrapper.destroy()
   })
 
-  xit('does not display the details list when no comments are present on a filing', async () => {
+  it.skip('does not display the details list when no comments are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_COMMENTS_LINK] as any)
 
@@ -2330,7 +2330,7 @@ describe('Filing History List - detail comments', () => {
     wrapper.destroy()
   })
 
-  xit('displays the details list when comments are present on a filing', async () => {
+  it.skip('displays the details list when comments are present on a filing', async () => {
     // init store
     filingHistoryListStore.setFilings([FILING_WITH_COMMENTS_LINK] as any)
 
@@ -2434,7 +2434,7 @@ describe('Filing History List - expands Consent to continue out', () => {
     const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
 
-    jest.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+    vi.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -2451,7 +2451,7 @@ describe('Filing History List - expands Consent to continue out', () => {
     expect(vm.getPanel).toBe(0) // first row is expanded
     expect(wrapper.findComponent(ConsentContinuationOut).exists()).toBe(true)
 
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     wrapper.destroy()
   })
 })
@@ -2480,7 +2480,7 @@ describe('Filing History List - Expands Continuation Out', () => {
     const wrapper = mount(FilingHistoryList, { vuetify })
     const vm = wrapper.vm as any
 
-    jest.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+    vi.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
 
     // verify View Documents button
     const button = wrapper.find('.expand-btn')
@@ -2497,7 +2497,7 @@ describe('Filing History List - Expands Continuation Out', () => {
     expect(vm.getPanel).toBe(0) // first row is expanded
     expect(wrapper.findComponent(ContinuationOut).exists()).toBe(true)
 
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     wrapper.destroy()
   })
 })

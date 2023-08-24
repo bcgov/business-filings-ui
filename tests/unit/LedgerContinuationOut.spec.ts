@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 
 // mock the console.warn function to hide "[Vuetify] The v-expansion-panel component must be used inside a
 // v-expansion-panels"
-console.warn = jest.fn()
+console.warn = vi.fn()
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -39,8 +39,8 @@ describe('Display ContinuationOut component', () => {
 
     // verify content
     expect(wrapper.find('.item-header-title').text()).toContain('Continuation Out')
-    expect(wrapper.find('.continuation-out').text())
-      .toContain('FILED AND PAID  (filed by  on [unknown])  EFFECTIVE as of [unknown]')
+    expect(wrapper.find('.continuation-out').text()).toContain('FILED AND PAID  (filed by  on [unknown])')
+    expect(wrapper.find('.continuation-out').text()).toContain('EFFECTIVE as of [unknown]')
     expect(wrapper.find('.expand-btn').text()).toContain('View Documents')
     expect(wrapper.find('.v-expansion-panel-content').exists()).toBe(false)
     expect(vm.continuationOutDate).toEqual('Jun 10, 2023')

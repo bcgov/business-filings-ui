@@ -77,7 +77,7 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('sets No AGM when checkbox is checked', async () => {
+  it.skip('sets No AGM when checkbox is checked', async () => {
     await wrapper.setData({ noAgm: true })
     vm.onCheckboxChanged(true)
 
@@ -121,7 +121,7 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('clears AGM Date when AGM Date prop is set to empty', async () => {
+  it.skip('clears AGM Date when AGM Date prop is set to empty', async () => {
     await wrapper.setProps({ newAgmDate: '' })
 
     // verify local variables
@@ -140,7 +140,7 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([false])
   })
 
-  xit('sets No AGM when No AGM prop is set to true', async () => {
+  it.skip('sets No AGM when No AGM prop is set to true', async () => {
     await wrapper.setProps({ newNoAgm: true })
 
     // verify local variables
@@ -159,7 +159,7 @@ describe('AgmDate', () => {
     expect(valids[0]).toEqual([true])
   })
 
-  xit('displays disabled address change message when allowCoa is false', async () => {
+  it.skip('displays disabled address change message when allowCoa is false', async () => {
     await wrapper.setData({ dateText: '2019-07-15' })
     await wrapper.setProps({ allowCoa: false })
 
@@ -169,7 +169,7 @@ describe('AgmDate', () => {
     )
   })
 
-  xit('displays disabled director change message when allowCod is false', async () => {
+  it.skip('displays disabled director change message when allowCod is false', async () => {
     await wrapper.setData({ dateText: '2019-07-15' })
     await wrapper.setProps({ allowCod: false })
 
@@ -179,7 +179,7 @@ describe('AgmDate', () => {
     )
   })
 
-  xit('displays disabled address + director change message when allowCoa and allowCod are both false', async () => {
+  it.skip('displays disabled address + director change message when allowCoa and allowCod are both false', async () => {
     await wrapper.setData({ dateText: '2019-07-15' })
     await wrapper.setProps({ allowCoa: false, allowCod: false })
 

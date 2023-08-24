@@ -78,7 +78,7 @@ describe('Dashboard - UI', () => {
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
     businessStore.setAllowedActions({
       filing: {
         filingTypes: [
@@ -102,7 +102,7 @@ describe('Dashboard - UI', () => {
     const localWrapper: Wrapper<Vue> = shallowMount(Dashboard, { vuetify, mocks: { $route } })
     const localVm: any = localWrapper.vm
 
-    jest.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
+    vi.spyOn(vm, 'isHistorical', 'get').mockReturnValue(false)
     businessStore.setAllowedActions({
       filing: {
         filingTypes: []

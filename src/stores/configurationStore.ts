@@ -128,11 +128,11 @@ export const useConfigurationStore = defineStore('configuration', {
     loadConfiguration (): Promise<any> {
       // need to return a promise because action is called via dispatch
       return new Promise((resolve) => {
-        this.setConfiguration(process.env)
-        this.setSessionVariables(process.env)
+        this.setConfiguration(import.meta.env)
+        this.setSessionVariables(import.meta.env)
         this.setAxiosBaseUrl(this.getLegalApiUrl)
 
-        resolve(process.env)
+        resolve(import.meta.env)
       })
     }
   }

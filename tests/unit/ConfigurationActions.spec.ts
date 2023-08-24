@@ -3,36 +3,36 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useConfigurationStore } from '@/stores'
 
 // mock the console.info function to hide the output
-console.info = jest.fn()
+console.info = vi.fn()
 
 describe('Configuration Actions', () => {
   setActivePinia(createPinia())
   const configurationStore = useConfigurationStore()
 
   // init environment variable
-  process.env.BASE_URL = '/business/'
-  process.env.VUE_APP_PATH = '/business'
-  process.env.VUE_APP_ADDRESS_COMPLETE_KEY = 'address complete key'
-  process.env.VUE_APP_AUTH_API_URL = 'auth api url'
-  process.env.VUE_APP_AUTH_API_VERSION = '/auth api version'
-  process.env.VUE_APP_AUTH_WEB_URL = 'auth web url'
-  process.env.VUE_APP_BUSINESSES_URL = 'businesses url'
-  process.env.VUE_APP_BUSINESS_CREATE_URL = 'business create url'
-  process.env.VUE_APP_BUSINESS_EDIT_URL = 'business edit url'
-  process.env.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID = 'business filing ld client id'
-  process.env.VUE_APP_DASHBOARD_URL = 'dashboard url'
-  process.env.VUE_APP_LEGAL_API_URL = 'legal api url'
-  process.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal api version 2'
-  process.env.VUE_APP_PAY_API_URL = 'pay api url'
-  process.env.VUE_APP_PAY_API_VERSION = '/pay api version'
-  process.env.VUE_APP_REGISTRY_HOME_URL = 'registry home url'
-  process.env.VUE_APP_SENTRY_DSN = 'sentry dsn'
-  process.env.VUE_APP_SITEMINDER_LOGOUT_URL = 'siteminder logout url'
-  process.env.VUE_APP_STATUS_API_URL = 'status api url'
-  process.env.VUE_APP_STATUS_API_VERSION = '/status api version'
-  process.env.VUE_APP_KEYCLOAK_AUTH_URL = 'keycloak url'
-  process.env.VUE_APP_KEYCLOAK_REALM = 'keycloak realm'
-  process.env.VUE_APP_KEYCLOAK_CLIENTID = 'keycloak clientid'
+  import.meta.env.BASE_URL = '/business/'
+  import.meta.env.VUE_APP_PATH = '/business'
+  import.meta.env.VUE_APP_ADDRESS_COMPLETE_KEY = 'address complete key'
+  import.meta.env.VUE_APP_AUTH_API_URL = 'auth api url'
+  import.meta.env.VUE_APP_AUTH_API_VERSION = '/auth api version'
+  import.meta.env.VUE_APP_AUTH_WEB_URL = 'auth web url'
+  import.meta.env.VUE_APP_BUSINESSES_URL = 'businesses url'
+  import.meta.env.VUE_APP_BUSINESS_CREATE_URL = 'business create url'
+  import.meta.env.VUE_APP_BUSINESS_EDIT_URL = 'business edit url'
+  import.meta.env.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID = 'business filing ld client id'
+  import.meta.env.VUE_APP_DASHBOARD_URL = 'dashboard url'
+  import.meta.env.VUE_APP_LEGAL_API_URL = 'legal api url'
+  import.meta.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal api version 2'
+  import.meta.env.VUE_APP_PAY_API_URL = 'pay api url'
+  import.meta.env.VUE_APP_PAY_API_VERSION = '/pay api version'
+  import.meta.env.VUE_APP_REGISTRY_HOME_URL = 'registry home url'
+  import.meta.env.VUE_APP_SENTRY_DSN = 'sentry dsn'
+  import.meta.env.VUE_APP_SITEMINDER_LOGOUT_URL = 'siteminder logout url'
+  import.meta.env.VUE_APP_STATUS_API_URL = 'status api url'
+  import.meta.env.VUE_APP_STATUS_API_VERSION = '/status api version'
+  import.meta.env.VUE_APP_KEYCLOAK_AUTH_URL = 'keycloak url'
+  import.meta.env.VUE_APP_KEYCLOAK_REALM = 'keycloak realm'
+  import.meta.env.VUE_APP_KEYCLOAK_CLIENTID = 'keycloak clientid'
 
   it('fetches and loads the configuration to the store', async () => {
     // mock window.location getters

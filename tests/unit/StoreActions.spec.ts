@@ -26,7 +26,7 @@ describe('Business Actions', () => {
         name: 'dissolution'
       }
     }
-    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
 
@@ -55,7 +55,7 @@ describe('Business Actions', () => {
         name: 'consentContinuationOut'
       }
     }
-    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleStateFiling)
     })
 

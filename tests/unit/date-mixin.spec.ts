@@ -18,7 +18,7 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: fix so this works in GH CI action
-  xit('returns correct values for dateToYyyyMmDd()', () => {
+  it.skip('returns correct values for dateToYyyyMmDd()', () => {
     expect(vm.dateToYyyyMmDd(null)).toBeNull()
     expect(vm.dateToYyyyMmDd(new Date('not a date'))).toBeNull()
     // verify that GMT/UTC is correctly converted to Pacific
@@ -80,7 +80,7 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: fix so this works in GH CI action
-  xit('returns correct values for yyyyMmDdToApi()', () => {
+  it.skip('returns correct values for yyyyMmDdToApi()', () => {
     expect(vm.yyyyMmDdToApi('2021-01-01')).toBe('2021-01-01T08:00:00.000+00:00') // PST
     expect(vm.yyyyMmDdToApi('2021-07-01')).toBe('2021-07-01T07:00:00.000+00:00') // PDT
     expect(vm.yyyyMmDdToApi('2023/05/03')).toBe('2023-05-03T07:00:00.000+00:00')

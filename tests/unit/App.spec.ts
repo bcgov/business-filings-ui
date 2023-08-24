@@ -11,9 +11,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import App from '@/App.vue'
 
-// mock fetch() as it is not defined in Jest
+// mock fetch() as it is not defined in Vitest
 // NB: it should be `global.fetch` but that doesn't work and this does
-window.fetch = jest.fn().mockImplementation(() => {
+window.fetch = vi.fn().mockImplementation(() => {
   return {
     headers: { get: () => new Date() },
     ok: true,
@@ -604,7 +604,7 @@ describe('App as a COOP', () => {
     expect(rootStore.tasks[2].task.todo.header.ARFilingYear).toBe(2019)
   })
 
-  xit('fetches Filings properly', () => {
+  it.skip('fetches Filings properly', () => {
     expect(filingHistoryListStore.filings.length).toBe(3)
     expect(filingHistoryListStore.filings[0].name).toBe('annualReport')
     expect(filingHistoryListStore.filings[1].name).toBe('changeOfDirectors')
@@ -852,7 +852,7 @@ describe('App as a BCOMP', () => {
     expect(rootStore.tasks[2].task.todo.header.ARFilingYear).toBe(2019)
   })
 
-  xit('fetches Filings properly', () => {
+  it.skip('fetches Filings properly', () => {
     expect(filingHistoryListStore.filings.length).toBe(3)
     expect(filingHistoryListStore.filings[0].name).toBe('annualReport')
     expect(filingHistoryListStore.filings[1].name).toBe('changeOfDirectors')
@@ -1421,7 +1421,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
     expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
-  xit('fetches IA filing properly', () => {
+  it.skip('fetches IA filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
     expect(businessStore.getLegalName).toBe('My Name Request')
@@ -1568,7 +1568,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
     expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
-  xit('fetches IA filing properly', () => {
+  it.skip('fetches IA filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('BEN')
     expect(businessStore.getLegalName).toBe('My Name Request')
@@ -1972,7 +1972,7 @@ describe('App as a COMPLETED Registration Application', () => {
     expect(businessStore.getLegalName).toBe('My Name Request')
   })
 
-  xit('fetches Registration filing properly', () => {
+  it.skip('fetches Registration filing properly', () => {
     expect(businessStore.getIdentifier).toBe('T123456789')
     expect(businessStore.getLegalType).toBe('SP')
     expect(businessStore.getLegalName).toBe('My Name Request')

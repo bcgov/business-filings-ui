@@ -13,7 +13,7 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-xdescribe('Future Effective Pending', () => {
+describe.skip('Future Effective Pending', () => {
   it('Displays expected content with a null filing', () => {
     const wrapper = mount(FutureEffectivePending, {
       vuetify,

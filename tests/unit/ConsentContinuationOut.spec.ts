@@ -172,13 +172,13 @@ describe('Consent to Continuation Out view', () => {
 
   it('saves draft consent to continuation out properly', async () => {
     // mock "has pending tasks" legal service
-    jest.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
       return Promise.resolve(false)
     })
 
     // mock "create filing" legal service
     // (garbage response data - we aren't testing that)
-    jest.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
@@ -218,13 +218,13 @@ describe('Consent to Continuation Out view', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
   it('resumes draft consent to continuation out properly with FAS staff payment', async () => {
     // mock "fetch filing" legal service
-    jest.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {
           identifier: 'CP1234567',
@@ -282,7 +282,7 @@ describe('Consent to Continuation Out view', () => {
     expect(vm.draftCountry).toBe('CA')
     expect(vm.draftRegion).toBe('AB')
 
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 })
@@ -293,7 +293,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // set configurations
     const configuration = {
@@ -364,7 +364,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
   afterEach(() => {
     sinon.restore()
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   afterAll(() => {
@@ -400,13 +400,13 @@ describe('Consent to Continue Out for general user and IAs only', () => {
 
   it('saves draft consent to continuation out properly', async () => {
     // mock "has pending tasks" legal service
-    jest.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'hasPendingTasks').mockImplementation((): any => {
       return Promise.resolve(false)
     })
 
     // mock "create filing" legal service
     // (garbage response data - we aren't testing that)
-    jest.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'createFiling').mockImplementation((): any => {
       return Promise.resolve({
         business: {},
         header: { filingId: 456 },
@@ -446,7 +446,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     // verify new Filing ID
     expect(vm.filingId).toBe(456)
 
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -489,7 +489,7 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     vm.totalFee = 350
 
     // sanity check
-    expect(jest.isMockFunction(window.location.assign)).toBe(true)
+    expect(vi.isMockFunction(window.location.assign)).toBe(true)
 
     const button = wrapper.find('#consent-file-pay-btn')
     expect(button.attributes('disabled')).toBeUndefined()

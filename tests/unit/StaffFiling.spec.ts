@@ -6,7 +6,7 @@ import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffF
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-xdescribe('Staff Filing', () => {
+describe.skip('Staff Filing', () => {
   it('displays no content with a null filing', () => {
     const wrapper = mount(StaffFiling, {
       vuetify,

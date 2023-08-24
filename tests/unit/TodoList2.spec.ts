@@ -67,11 +67,16 @@ describe('TodoList - common expansion panel header tests', () => {
 
     const sandbox = sinon.createSandbox()
     const fetchAffiliationInvites = sandbox.stub(AuthServices, 'fetchAffiliationInvitations')
-    // feature flag override
-    const featureFlag = sandbox.stub(utils, 'GetFeatureFlag')
 
-    featureFlag.withArgs('enable-affiliation-invitation-request-access')
-      .returns(true)
+    // feature flag override
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
+      (flag) => {
+        if (flag === 'enable-affiliation-invitation-request-access') {
+          return true
+        } else {
+          return false
+        }
+      })
 
     fetchAffiliationInvites.returns(new Promise(
       resolve => resolve(
@@ -148,11 +153,11 @@ describe('TodoList - common expansion panel header tests', () => {
     expect(['Authorize', 'Do not authorize'].every(btnText => btnTexts.includes(btnText)))
 
     fetchAffiliationInvites.restore()
-    featureFlag.restore()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
-  xit('displays disabled task', async () => {
+  it.skip('displays disabled task', async () => {
     // NB: this should only be NEW tasks (ie, blocked by another task)
     // verify class
     // verify disabled actions
@@ -160,7 +165,7 @@ describe('TodoList - common expansion panel header tests', () => {
 
   })
 
-  xit('displays draft task with pay error', async () => {
+  it.skip('displays draft task with pay error', async () => {
     // verify class
     // verify red top border
     // verify title
@@ -168,7 +173,7 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify details expand-btn
   })
 
-  xit('displays draft correction without comments', async () => {
+  it.skip('displays draft correction without comments', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -176,7 +181,7 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  xit('displays draft correction with comments', async () => {
+  it.skip('displays draft correction with comments', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -185,7 +190,7 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  xit('displays draft correction as non-staff', async () => {
+  it.skip('displays draft correction as non-staff', async () => {
     // verify no resume button
     // verify no delete draft button
   })
@@ -318,7 +323,7 @@ describe('TodoList - common expansion panel header tests', () => {
     wrapper.destroy()
   })
 
-  xit('displays draft alteration without comments', async () => {
+  it.skip('displays draft alteration without comments', async () => {
     // verify title
     // verify sub-title
     // verify detaild expand-btn
@@ -326,7 +331,7 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  xit('displays draft alteration with comments', async () => {
+  it.skip('displays draft alteration with comments', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -335,91 +340,91 @@ describe('TodoList - common expansion panel header tests', () => {
     // verify no delete draft button
   })
 
-  xit('displays draft alteration as staff', async () => {
+  it.skip('displays draft alteration as staff', async () => {
     // verify resume button
     // verify delete draft button
   })
 
-  xit('displays new task with subtitle', async () => {
+  it.skip('displays new task with subtitle', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
   })
 
-  xit('displays new task without subtitle', async () => {
+  it.skip('displays new task without subtitle', async () => {
     // verify title
     // verify no sub-title
     // verify no details expand-btn
   })
 
-  xit('displays draft IA for numbered company', async () => {
+  it.skip('displays draft IA for numbered company', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify "incorporate a numbered company" button
   })
 
-  xit('displays draft IA for named business', async () => {
+  it.skip('displays draft IA for named business', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
     // verify "incorporate using this nr" button
   })
 
-  xit('displays correction-pending correction', async () => {
+  it.skip('displays correction-pending correction', async () => {
     // verify title
     // verify sub-title
     // verify comments "button"
     // verify no action buttons
   })
 
-  xit('displays correction-pending alteration', async () => {
+  it.skip('displays correction-pending alteration', async () => {
     // verify title
     // verify sub-title
     // verify comments "button"
     // verify no action buttons
   })
 
-  xit('displays pending task in process', async () => {
+  it.skip('displays pending task in process', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify loading button
   })
 
-  xit('displays pending task with online banking pay method', async () => {
+  it.skip('displays pending task with online banking pay method', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
   })
 
-  xit('displays pending task with other pay method', async () => {
+  it.skip('displays pending task with other pay method', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
   })
 
-  xit('displays error task in process', async () => {
+  it.skip('displays error task in process', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify loading button
   })
 
-  xit('displays error task', async () => {
+  it.skip('displays error task', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
   })
 
-  xit('displays paid task in process', async () => {
+  it.skip('displays paid task in process', async () => {
     // verify title
     // verify sub-title
     // verify no details expand-btn
     // verify loading button
   })
 
-  xit('displays paid task', async () => {
+  it.skip('displays paid task', async () => {
     // verify title
     // verify sub-title
     // verify details expand-btn
@@ -427,15 +432,15 @@ describe('TodoList - common expansion panel header tests', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - common actions list tests', () => {
+describe.skip('TodoList - common actions list tests', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - common expansion panel content tests', () => {
+describe.skip('TodoList - common expansion panel content tests', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - tests specific to Cooperatives', () => {
+describe.skip('TodoList - tests specific to Cooperatives', () => {
   // beforeAll(() => {
   // sessionStorage.clear()
   // sessionStorage.setItem('BUSINESS_ID', 'CP0001191')
@@ -449,7 +454,7 @@ xdescribe('TodoList - tests specific to Cooperatives', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - tests specific to corporations (BEN, etc)', () => {
+describe.skip('TodoList - tests specific to corporations (BEN, etc)', () => {
   beforeAll(() => {
     sessionStorage.clear()
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
@@ -467,7 +472,7 @@ xdescribe('TodoList - tests specific to corporations (BEN, etc)', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - tests specific to Incorporation Applications', () => {
+describe.skip('TodoList - tests specific to Incorporation Applications', () => {
   // beforeAll(() => {
   // sessionStorage.clear()
   // sessionStorage.setItem('TEMP_REG_NUMBER', 'TaAbBcC123')
@@ -479,7 +484,7 @@ xdescribe('TodoList - tests specific to Incorporation Applications', () => {
 })
 
 // FUTURE: implement this
-xdescribe('TodoList - tests specific to Name Requests', () => {
+describe.skip('TodoList - tests specific to Name Requests', () => {
   // this functionality is current disabled in the code
   // FUTURE: implement appropriate unit tests here
 })

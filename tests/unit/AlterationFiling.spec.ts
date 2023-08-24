@@ -11,7 +11,7 @@ const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const businessStore = useBusinessStore()
 
-xdescribe('Alteration Filing', () => {
+describe.skip('Alteration Filing', () => {
   it('Displays expected content with a null filing', () => {
     const wrapper = mount(AlterationFiling, {
       vuetify,

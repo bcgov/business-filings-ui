@@ -21,7 +21,7 @@ describe('Business Actions', () => {
       legalType: 'BC',
       stateFiling: 'dummy_url'
     }
-    jest.spyOn(LegalServices, 'fetchBusiness').mockImplementation((): any => {
+    vi.spyOn(LegalServices, 'fetchBusiness').mockImplementation((): any => {
       return Promise.resolve(sampleBusinessInfo)
     })
 

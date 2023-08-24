@@ -7,7 +7,7 @@ import { ContactInfo } from '@/components/common'
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-xdescribe('Paper Filing', () => {
+describe.skip('Paper Filing', () => {
   it('Displays expected content', () => {
     const wrapper = mount(PaperFiling, { vuetify })
 

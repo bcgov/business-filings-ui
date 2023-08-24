@@ -393,7 +393,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       await this.fetchDraftFiling()
       // fetch original office addresses
       // update working data only if it wasn't in the draft
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         const isEmptyAddresses =
           (isEmpty(this.updatedAddresses.recordsOffice) && isEmpty(this.updatedAddresses.registeredOffice))
         await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, isEmptyAddresses)
@@ -402,7 +402,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
       // this is a new filing
       this.loadingMessage = 'Preparing Your Address Change'
       // fetch original office addresses + update working data
-      if (!this.isJestRunning) {
+      if (!this.isVitestRunning) {
         await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
       }
     }
@@ -866,7 +866,7 @@ export default class StandaloneOfficeAddressFiling extends Mixins(CommonMixin, D
     // fetch original office addresses with new date + update working data
     // (this will overwrite the current data)
     this.isFetching = true
-    if (!this.isJestRunning) {
+    if (!this.isVitestRunning) {
       await this.$refs.officeAddressesComponent.getOrigAddresses(this.coaDate, true)
     }
     this.isFetching = false

@@ -10,6 +10,7 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import LegalServices from '@/services/legal-services'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, FilingSubTypes, FilingTypes } from '@/enums'
+import { waitForUpdate } from '../wait-for-update'
 
 Vue.use(Vuetify)
 
@@ -31,7 +32,7 @@ describe('StaffNotation', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const configuration = {
       VUE_APP_BUSINESS_CREATE_URL: 'https://create.url/',
@@ -449,8 +450,8 @@ describe('StaffNotation', () => {
     const wrapper = mount(StaffNotation, { vuetify, localVue })
 
     // spy on build and create methods
-    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
-    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+    const buildRestorationFiling = vi.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = vi.spyOn((LegalServices as any), 'createFiling')
 
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -463,6 +464,7 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+    await Vue.nextTick()
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith('https://create.url/?id=BC1234567')
@@ -488,8 +490,8 @@ describe('StaffNotation', () => {
     const wrapper = mount(StaffNotation, { vuetify, localVue })
 
     // spy on build and create methods
-    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
-    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+    const buildRestorationFiling = vi.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = vi.spyOn((LegalServices as any), 'createFiling')
 
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -502,6 +504,9 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+
+    // need to update DOM to not get previous test results
+    await waitForUpdate(2)
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(
@@ -538,8 +543,8 @@ describe('StaffNotation', () => {
     const wrapper = mount(StaffNotation, { vuetify, localVue })
 
     // spy on build and create methods
-    const buildRestorationFiling = jest.spyOn((wrapper.vm as any), 'buildRestorationFiling')
-    const createFiling = jest.spyOn((LegalServices as any), 'createFiling')
+    const buildRestorationFiling = vi.spyOn((wrapper.vm as any), 'buildRestorationFiling')
+    const createFiling = vi.spyOn((LegalServices as any), 'createFiling')
 
     // open menu
     await wrapper.find('.menu-btn').trigger('click')
@@ -552,6 +557,9 @@ describe('StaffNotation', () => {
     // verify that build and create methods were called
     expect(buildRestorationFiling).toHaveBeenCalled()
     expect(createFiling).toHaveBeenCalled()
+
+    // need to update DOM to not get previous test results
+    await waitForUpdate(3)
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(

@@ -217,7 +217,7 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const configuration = {
       VUE_APP_BUSINESS_EDIT_URL: 'https://edit.url/'
@@ -433,7 +433,7 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
   beforeAll(() => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
   })
 
   afterAll(() => {
