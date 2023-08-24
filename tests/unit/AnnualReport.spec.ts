@@ -18,7 +18,6 @@ import ArDate from '@/components/AnnualReport/ARDate.vue'
 import { Certify, OfficeAddresses, SummaryDirectors, SummaryOfficeAddresses } from '@/components/common'
 import { ConfigJson } from '@/resources/business-config'
 import { CorpTypeCd, FilingStatus } from '@/enums'
-import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings

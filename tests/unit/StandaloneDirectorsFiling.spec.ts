@@ -18,7 +18,6 @@ import mockRouter from './mockRouter'
 import { ConfigJson } from '@/resources/business-config'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingCodes, FilingStatus } from '@/enums'
-import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings

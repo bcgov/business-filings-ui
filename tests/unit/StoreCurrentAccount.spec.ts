@@ -3,7 +3,6 @@ import { getVuexStore, useAuthenticationStore } from '@/stores'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { vi } from 'vitest'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

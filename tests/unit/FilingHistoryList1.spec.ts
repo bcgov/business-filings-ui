@@ -7,7 +7,6 @@ import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, use
 import flushPromises from 'flush-promises'
 import axios from '@/axios-auth'
 import sinon from 'sinon'
-import { vi } from 'vitest'
 
 // Components and sub-components
 import FilingHistoryList from '@/components/Dashboard/FilingHistoryList.vue'

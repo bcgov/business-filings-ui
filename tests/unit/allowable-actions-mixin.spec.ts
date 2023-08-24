@@ -8,7 +8,6 @@ import MixinTester from '@/mixin-tester.vue'
 import { AllowableActions, FilingSubTypes, FilingTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypeIF } from '@/interfaces'
-import { vi } from 'vitest'
 
 Vue.use(Vuetify)
 

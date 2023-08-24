@@ -3,7 +3,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { useRootStore } from '@/stores/rootStore'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { vi } from 'vitest'
 
 describe('Business Actions', () => {
   setActivePinia(createPinia())

@@ -8,7 +8,6 @@ import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore } from '@/stores'
 import { AllowableActions, CorpTypeCd } from '@/enums'
-import { vi } from 'vitest'
 
 // Components
 import Dashboard from '@/views/Dashboard.vue'

@@ -8,7 +8,6 @@ import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
 import { AllowableActions, CorpTypeCd, EntityState, EntityStatus } from '@/enums'
-import { vi } from 'vitest'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)

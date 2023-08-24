@@ -11,7 +11,6 @@ import LegalServices from '@/services/legal-services'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, FilingSubTypes, FilingTypes } from '@/enums'
 import { waitForUpdate } from '../wait-for-update'
-import { vi } from 'vitest'
 
 Vue.use(Vuetify)
 

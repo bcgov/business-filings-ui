@@ -1,7 +1,6 @@
 import { setBaseRouteAndBusinessId } from '@/utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useConfigurationStore } from '@/stores'
-import { vi } from 'vitest'
 
 // mock the console.info function to hide the output
 console.info = vi.fn()

@@ -15,7 +15,6 @@ import VueRouter from 'vue-router'
 import mockRouter from './mockRouter'
 import { ConfigJson } from '@/resources/business-config'
 import { CorpTypeCd, FilingStatus } from '@/enums'
-import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings

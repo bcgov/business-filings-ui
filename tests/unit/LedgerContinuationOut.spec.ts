@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ContinuationOut.vue'
 import { createPinia, setActivePinia } from 'pinia'
-import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] The v-expansion-panel component must be used inside a
 // v-expansion-panels"

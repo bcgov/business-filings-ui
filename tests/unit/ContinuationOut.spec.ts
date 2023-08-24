@@ -14,7 +14,6 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings

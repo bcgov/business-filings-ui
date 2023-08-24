@@ -9,7 +9,6 @@ import mockRouter from './mockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import flushPromises from 'flush-promises'
-import { vi } from 'vitest'
 
 // Components
 import TodoList from '@/components/Dashboard/TodoList.vue'

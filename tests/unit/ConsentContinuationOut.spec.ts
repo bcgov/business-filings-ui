@@ -17,7 +17,6 @@ import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingStatus } from '@/enums'
-import { vi } from 'vitest'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings

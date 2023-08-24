@@ -6,7 +6,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import CodDate from '@/components/StandaloneDirectorChange/CODDate.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { vi } from 'vitest'
 
 // suppress "Avoid mutating a prop directly" warnings
 // ref: https://github.com/vuejs/vue-test-utils/issues/532
