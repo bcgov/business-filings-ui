@@ -10,6 +10,7 @@ import StaffNotation from '@/components/Dashboard/StaffNotation.vue'
 import LegalServices from '@/services/legal-services'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { EntityState, FilingSubTypes, FilingTypes } from '@/enums'
+import { waitForUpdate } from '../wait-for-update'
 import { vi } from 'vitest'
 
 Vue.use(Vuetify)
@@ -506,8 +507,7 @@ describe('StaffNotation', () => {
     expect(createFiling).toHaveBeenCalled()
 
     // need to update DOM to not get previous test results
-    await Vue.nextTick()
-    await Vue.nextTick()
+    await waitForUpdate(2)
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(
@@ -560,9 +560,7 @@ describe('StaffNotation', () => {
     expect(createFiling).toHaveBeenCalled()
 
     // need to update DOM to not get previous test results
-    await Vue.nextTick()
-    await Vue.nextTick()
-    await Vue.nextTick()
+    await waitForUpdate(3)
 
     // verify redirection
     expect(window.location.assign).toHaveBeenCalledWith(
