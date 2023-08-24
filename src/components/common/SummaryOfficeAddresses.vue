@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { CommonMixin } from '@/mixins'
 import { AddressIF, OfficeAddressIF } from '@/interfaces'
 
