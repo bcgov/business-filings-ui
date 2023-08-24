@@ -9,8 +9,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint . --ext .js,.ts,.vue",
-    "test:unit": "vitest run --silent",
-    "test:coverage": "vitest run --coverage"
+    "test:unit": "vitest run",
+    "test:coverage": "vitest run --silent"
   },
   "dependencies": {
     "@babel/compat-data": "^7.21.5",
