@@ -258,6 +258,34 @@ describe('Entity Menu - View and Change Business Information click tests', () =>
 
     wrapper.destroy()
   })
+
+  it('redirects to special-resolution for Coop', async () => {
+    // init session storage
+    sessionStorage.clear()
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2299" }')
+
+    // init store
+    businessStore.setIdentifier('CP1234567')
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    businessStore.setState(EntityState.ACTIVE)
+
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'CP1234567' }
+    })
+    await Vue.nextTick()
+
+    await wrapper.find('#company-information-button').trigger('click')
+
+    // verify redirection
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    const editUrl = 'https://edit.url/CP1234567/special-resolution'
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '?accountid=' + accountId)
+
+    wrapper.destroy()
+  })
 })
 
 describe('Entity Menu - Dissolve this Business click tests', () => {

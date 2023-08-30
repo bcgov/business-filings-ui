@@ -204,23 +204,19 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   /**
-   * Emits an event to display NIGS dialog if company is not in good standing.
+   * Emits an event to display NIGS dialog if company is not in good standing except Coop
    * Otherwise, navigates to the Edit UI to view or change company information.
    */
   promptChangeCompanyInfo (): void {
-    if (!this.isGoodStanding) {
+    const base = `${this.getEditUrl}${this.getIdentifier}`
+
+    if (this.isCoop) {
+      navigate(`${base}/special-resolution`)
+    } else if (!this.isGoodStanding) {
       this.emitNotInGoodStanding(NigsMessage.CHANGE_COMPANY_INFO)
     } else {
-      let url = `${this.getEditUrl}${this.getIdentifier}`
-      // Append appropriate route based on entity type
-      if (this.isFirm) {
-        url += '/change'
-      } else if (this.isCoop) {
-        url += '/special-resolution'
-      } else {
-        url += '/alteration'
-      }
-      navigate(url)
+      const route = this.isFirm ? '/change' : '/alteration'
+      navigate(`${base}${route}`)
     }
   }
 
