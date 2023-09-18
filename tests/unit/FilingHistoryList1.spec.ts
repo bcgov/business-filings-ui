@@ -1041,6 +1041,8 @@ describe('Filing History List - redirections', () => {
     // init data
     sessionStorage.setItem('BUSINESS_ID', 'CP1002587')
     sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+    expect(sessionStorage.getItem('BUSINESS_ID')).toEqual('CP1002587')
+    expect(sessionStorage.getItem('CURRENT_ACCOUNT')).toEqual('{ "id": "2288" }')
     businessStore.setLegalType(CorpTypeCd.COOP)
     rootStore.keycloakRoles = ['staff']
     businessStore.setIdentifier('CP1002587')
