@@ -1036,6 +1036,74 @@ describe('Filing History List - redirections', () => {
     sessionStorage.removeItem('BUSINESS_ID')
     wrapper.destroy()
   })
+
+  it('redirects to Edit URL when filing an CP IA correction', async () => {
+    // init data
+    sessionStorage.setItem('BUSINESS_ID', 'CP1002587')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": "2288" }')
+    businessStore.setLegalType(CorpTypeCd.COOP)
+    rootStore.keycloakRoles = ['staff']
+    businessStore.setIdentifier('CP1002587')
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdenfier: 'CP1002587',
+        commentsCount: 0,
+        displayName: 'Incorporation Application',
+        effectiveDate: '2020-05-06 19:00:00 GMT', // past date
+        filingId: 85114,
+        filingLink: 'businesses/CP1002587/filings/85114',
+        isFutureEffective: false,
+        name: FilingTypes.INCORPORATION_APPLICATION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: 'Tue, 28 Apr 2020 19:14:45 GMT',
+        submitter: 'Jia'
+      } as any
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+
+    // sanity check
+    expect(vm.getFilings.length).toEqual(1)
+
+    // find and click the drop-down menu button
+    const menuButton = wrapper.find('.menu-btn')
+    expect(menuButton).toBeDefined()
+    await menuButton.trigger('click')
+
+    // find and click the "File a Correction" menu item
+    const fileCorrectionItem = wrapper.find('.file-correction-item')
+    expect(fileCorrectionItem.exists()).toBe(true)
+    await fileCorrectionItem.trigger('click')
+
+    // verify to display the correction dialog modal
+    const fileCorrectionDialog = wrapper.find('.file-correction-dialog')
+    expect(fileCorrectionDialog.exists()).toBe(true)
+
+    // verify radio buttons for client and staff
+    const clientRadioBtn = wrapper.find('#correct-client-radio')
+    expect(clientRadioBtn.exists()).toBe(true)
+
+    // click the staff radio button
+    const staffRadioBtn = wrapper.find('#correct-staff-radio')
+    expect(staffRadioBtn.exists()).toBe(true)
+    await staffRadioBtn.trigger('click')
+
+    // verify redirection
+    const startCorrectionBtn = wrapper.find('#dialog-start-button')
+    expect(startCorrectionBtn.exists()).toBe(true)
+    await startCorrectionBtn.trigger('click')
+    await Vue.nextTick()
+
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    const editUrl = 'https://edit.url/BC1234567/correction/?correction-id=110514'
+    expect(window.location.assign).toHaveBeenCalledWith(editUrl + '&accountid=' + accountId)
+
+    sessionStorage.removeItem('BUSINESS_ID')
+    wrapper.destroy()
+  })
 })
 
 describe('Filing History List - incorporation applications', () => {
