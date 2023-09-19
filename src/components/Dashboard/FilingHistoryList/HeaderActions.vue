@@ -125,7 +125,8 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       !EnumUtilities.isStatusCompleted(this.filing) &&
       !EnumUtilities.isStatusCorrected(this.filing)
     )
-    conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) && !this.isBenBcCccUlc)
+    conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) &&
+      !this.isBenBcCccUlc && !this.isCoop)
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) &&
       !this.isFirm && !this.isBenBcCccUlc &&
