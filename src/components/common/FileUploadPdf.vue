@@ -211,7 +211,7 @@ export default class FileUploadPdf extends Vue {
       const perms = await document.getPermissions()
       return { isEncrypted: false, isContentLocked: !!perms }
     } catch (error) {
-      if ((error as any).name === 'PasswordException') {
+      if (error.name === 'PasswordException') {
         return { isEncrypted: true, isContentLocked: true }
       }
     }
