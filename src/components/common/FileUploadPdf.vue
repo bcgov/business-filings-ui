@@ -207,15 +207,15 @@ export default class FileUploadPdf extends Vue {
     try {
       const arrayBuffer = await file.arrayBuffer()
       const data = new Uint8Array(arrayBuffer) // put it in a Uint8Array
-      const document = await this.pdfjsLib.getDocument({ data: data }).promise
+      const document = await this.pdfjsLib.getDocument({ data }).promise
       const perms = await document.getPermissions()
       return { isEncrypted: false, isContentLocked: !!perms }
-    } catch (err) {
-      if (err.name === 'PasswordException') {
+    } catch (error) {
+      if ((error as any).name === 'PasswordException') {
         return { isEncrypted: true, isContentLocked: true }
       }
-      throw err // re-throw any other error
     }
+    return { isEncrypted: false, isContentLocked: false }
   }
 
   /**
