@@ -42,13 +42,22 @@ export default defineConfig(() => {
       port: 8080
     },
     test: {
-      // simulate DOM with happy-dom
-      environment: 'happy-dom',
+      // simulate DOM with jsdom
+      environment: 'jsdom',
+
       // enable jest-like global test APIs
       globals: true,
+
       setupFiles: ['./tests/setup.ts'],
+
       // enable threads to speed up test running
       threads: true,
+
+      // optionally disable threads to work around canvas module warnings
+      // but this causes more tests to fail
+      // ref: https://github.com/vitest-dev/vitest/issues/740
+      // threads: false,
+
       // hide Vue Devtools message
       onConsoleLog: function (log) {
         if (log.includes('Download the Vue Devtools extension')) {

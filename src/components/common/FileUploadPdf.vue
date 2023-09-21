@@ -162,6 +162,7 @@ export default class FileUploadPdf extends Vue {
     // try to retrieve file info
     const fileInfo = await this.retrieveFileInfo(file).catch(() => null as PdfInfoIF)
     if (fileInfo === null) {
+      console.log('Error: failed to retrieve file info') // eslint-disable-line no-console
       this.errorMessages = ['Invalid PDF']
       return false
     }
@@ -182,6 +183,7 @@ export default class FileUploadPdf extends Vue {
     if (this.pageSize) {
       const valid = await this.isPageSize(file, this.pageSize).catch(() => null as boolean)
       if (valid === null) {
+        console.log('Error: failed to check page size') // eslint-disable-line no-console
         this.errorMessages = ['Invalid PDF']
         return false
       }
@@ -205,7 +207,7 @@ export default class FileUploadPdf extends Vue {
     try {
       const arrayBuffer = await file.arrayBuffer()
       const data = new Uint8Array(arrayBuffer) // put it in a Uint8Array
-      const document = await this.pdfjsLib.getDocument({ data: data })
+      const document = await this.pdfjsLib.getDocument({ data: data }).promise
       const perms = await document.getPermissions()
       return { isEncrypted: false, isContentLocked: !!perms }
     } catch (err) {

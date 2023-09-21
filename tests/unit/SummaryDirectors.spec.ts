@@ -25,7 +25,7 @@ document.body.setAttribute('data-app', 'true')
 describe('Directors as a COOP', () => {
   let vm: any
 
-  beforeEach(done => {
+  beforeEach(async () => {
     // init store
     businessStore.setIdentifier('CP0001191')
     businessStore.setLegalType(CorpTypeCd.COOP)
@@ -92,9 +92,7 @@ describe('Directors as a COOP', () => {
     const instance = new Constructor({ propsData: { directors }, vuetify })
     vm = instance.$mount()
 
-    Vue.nextTick(() => {
-      done()
-    })
+    await Vue.nextTick()
   })
 
   afterEach(() => {
@@ -162,7 +160,7 @@ describe('Directors as a COOP', () => {
 describe('Directors as a BCOMP', () => {
   let vm: any
 
-  beforeEach(done => {
+  beforeEach(async () => {
     // init store
     businessStore.setIdentifier('BC0007291')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
@@ -256,9 +254,7 @@ describe('Directors as a BCOMP', () => {
     const instance = new Constructor({ propsData: { directors }, vuetify })
     vm = instance.$mount()
 
-    Vue.nextTick(() => {
-      done()
-    })
+    await Vue.nextTick()
   })
 
   afterEach(() => {
