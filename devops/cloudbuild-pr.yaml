@@ -1,6 +1,6 @@
 steps:
   # install / setup ci
-  - name: node:16.14.2
+  - name: node:20.5.1
     entrypoint: npm
     args: ['install']
 
@@ -13,7 +13,7 @@ steps:
   #
   # Generate the static site
   #
-  - name: node:16.14.2
+  - name: node:20.5.1
     entrypoint: npm
     env:
       - 'VUE_APP_ADDRESS_COMPLETE_KEY=$_VUE_APP_ADDRESS_COMPLETE_KEY'
