@@ -2011,6 +2011,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
 .affiliation-invitation-action-button {
   width: 45%;
+  min-width: 120px !important;
   float: right;
 }
 
