@@ -60,6 +60,7 @@
                   application.
                 </p>
                 <a
+                  class="text-decoration-none"
                   href=""
                   target="_blank"
                 >Signup to be part of the business licence credential pilot </a>
@@ -75,6 +76,8 @@
                   code with your BC wallet and accept the request for proof.
                 </p>
                 <a
+                  class="text-decoration-none"
+
                   href=""
                   target="_blank"
                 > View step by step instructions </a>
@@ -87,10 +90,15 @@
                 </v-card-title>
                 <v-card-text>
                   <a
+                    class="text-decoration-none"
+
                     href=""
                     target="_blank"
                   >Find solutions</a> to common issues people experience or contact us at
-                  <a href="mailto:BCRegistries@gov.bc.ca">BCRegistries@gov.bc.ca</a>.
+                  <a
+                    class="text-decoration-none"
+                    href="mailto:BCRegistries@gov.bc.ca"
+                  >BCRegistries@gov.bc.ca</a>.
                 </v-card-text>
               </v-container>
             </v-card>
