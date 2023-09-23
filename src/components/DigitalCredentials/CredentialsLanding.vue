@@ -8,7 +8,15 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col>TODO: Add picture here</v-col>
+                    <v-col class="d-flex align-center">
+                      <v-img
+                        src="/src/assets/images/digital_credentials.svg"
+                      />
+                      <!-- FIXME: Path aliases don't seem to be working -->
+                      <!-- <v-img
+                        src="@/assets/images/digital_credentials.svg"
+                      /> -->
+                    </v-col>
                     <v-col>
                       <h1>Business Card Credentials</h1>
                       <p class="mt-4">
@@ -21,15 +29,17 @@
                         credentials on your phone using a digital wallet app. When a service provider asks for a digital
                         credential, you use the digital wallet app to show it.
                       </p>
-                      <v-btn
-                        id="add-credential-btn"
-                        color="primary"
-                        class="mt-4 font-weight-bold pa-6"
-                        large
-                        @click="addCredentials()"
-                      >
-                        <span>Get your Business Card Credential</span>
-                      </v-btn>
+                      <div class="d-flex justify-center justify-sm-start">
+                        <v-btn
+                          id="add-credential-btn"
+                          color="primary"
+                          class="mt-4 font-weight-bold pa-6"
+                          large
+                          @click="addCredentials()"
+                        >
+                          <span>Get your Business Card Credential</span>
+                        </v-btn>
+                      </div>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -38,7 +48,9 @@
           </v-col>
           <v-col>
             <v-card class="mb-3">
-              <v-card-title class="font-weight-bold">
+              <v-card-title
+                class="font-weight-bold word-wrap"
+              >
                 Where to use your Business Card
               </v-card-title>
               <v-card-text>
@@ -54,7 +66,7 @@
               </v-card-text>
             </v-card>
             <v-card class="mb-3">
-              <v-card-title class="font-weight-bold">
+              <v-card-title class="font-weight-bold word-wrap">
                 How to use your Business Card
               </v-card-title>
               <v-card-text>
@@ -70,7 +82,7 @@
             </v-card>
             <v-card class="mb-3">
               <v-container>
-                <v-card-title class="font-weight-bold">
+                <v-card-title class="font-weight-bold word-wrap">
                   Need more help?
                 </v-card-title>
                 <v-card-text>
@@ -121,3 +133,9 @@ export default class CredentialsLanding extends Vue {
   addCredentials () {}
 }
 </script>
+
+<style scoped lang="scss">
+  .word-wrap {
+    word-break: normal;
+  }
+</style>
