@@ -1,6 +1,6 @@
 <template>
   <v-file-input
-    id="file-upload-pdf"
+    class="file-upload-pdf"
     :key="count"
     dense
     filled
