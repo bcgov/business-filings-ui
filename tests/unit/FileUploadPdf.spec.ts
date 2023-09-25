@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
-import { PageSizes } from '@/enums/PageSizes'
 import { waitForUpdate } from '../wait-for-update'
 import { vi } from 'vitest'
 
@@ -144,7 +143,6 @@ describe('FileUploadPdf component', () => {
     const data = fs.readFileSync('./tests/unit/test-data/encrypted.pdf', 'utf8')
     const encryptedPdf = new File([data], 'encrypted.pdf', { type: 'application/pdf' })
     const wrapper = mount(FileUploadPdf, {
-      propsData: { pdfPageSize: PageSizes.LETTER_PORTRAIT },
       vuetify
     })
 
@@ -167,7 +165,6 @@ describe('FileUploadPdf component', () => {
     const encryptedPdf =
       new File([data], 'copyPrintEditContentLocked.pdf', { type: 'application/pdf' })
     const wrapper = mount(FileUploadPdf, {
-      propsData: { pdfPageSize: PageSizes.LETTER_PORTRAIT },
       vuetify
     })
 
