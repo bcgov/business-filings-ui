@@ -8,8 +8,26 @@ import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
+// Note: the following arrayBuffer code is needed as vitest does not provide arrayBuffer
+//  and this is required to test the scenarios where the pdf.js library is used.
+File.prototype.arrayBuffer = File.prototype.arrayBuffer || myArrayBuffer as any
+Blob.prototype.arrayBuffer = Blob.prototype.arrayBuffer || myArrayBuffer as any
+
 // mock the console.log function to hide PDF library warnings (due to invalid mocked PDF files)
 console.log = vi.fn()
+
+function myArrayBuffer () {
+  // this: File or Blob
+  return new Promise(resolve => {
+    const fr = new FileReader()
+    fr.onload = () => {
+      resolve(fr.result)
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    fr.readAsArrayBuffer(this)
+  })
+}
 
 describe('FileUploadPdf component', () => {
   // mock some large PDF files
@@ -113,10 +131,10 @@ describe('FileUploadPdf component', () => {
     inputValue = elevenMBFile.name
     inputFilesGet.mockReturnValue([elevenMBFile])
     await fileInput.trigger('change')
-    await waitForUpdate(1)
+    await waitForUpdate(2)
     const messages = wrapper.findAll('.error--text .v-messages__message')
     expect(messages.length).toBe(1)
-    expect(messages.at(0).text()).toBe('An error occurred while uploading. Please try again.')
+    expect(messages.at(0).text()).toBe('Invalid PDF')
 
     wrapper.destroy()
   })
@@ -135,7 +153,7 @@ describe('FileUploadPdf component', () => {
     inputValue = encryptedPdf.name
     inputFilesGet.mockReturnValue([encryptedPdf])
     await fileInput.trigger('change')
-    await waitForUpdate(1)
+    await waitForUpdate(2)
     const messages = wrapper.findAll('.error--text .v-messages__message')
     expect(messages.length).toBe(1)
     expect(messages.at(0).text()).toBe('File must be unencrypted')
@@ -158,7 +176,7 @@ describe('FileUploadPdf component', () => {
     inputValue = encryptedPdf.name
     inputFilesGet.mockReturnValue([encryptedPdf])
     await fileInput.trigger('change')
-    await waitForUpdate(1)
+    await waitForUpdate(2)
     const messages = wrapper.findAll('.error--text .v-messages__message')
     expect(messages.length).toBe(1)
     expect(messages.at(0).text()).toBe('File content cannot be locked')
