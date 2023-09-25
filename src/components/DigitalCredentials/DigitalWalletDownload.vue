@@ -1,3 +1,4 @@
+<!-- DEPRECATED: Can remove this -->
 <template>
   <section id="digital-wallet-download">
     <article id="digital-wallet-header">

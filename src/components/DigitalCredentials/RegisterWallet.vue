@@ -1,3 +1,4 @@
+<!-- DEPRECATED: Can remove this -->
 <template>
   <section id="register-wallet">
     <article id="register-wallet-header">
