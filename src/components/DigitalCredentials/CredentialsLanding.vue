@@ -35,7 +35,7 @@
                           color="primary"
                           class="mt-4 font-weight-bold pa-6"
                           large
-                          @click="addCredentials()"
+                          @click="issueCredentials()"
                         >
                           <span>Get your Business Card Credential</span>
                         </v-btn>
@@ -137,8 +137,8 @@ export default class CredentialsLanding extends Vue {
   @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>;
 
   // Pass add event to parent.
-  @Emit('addCredentials')
-  addCredentials () {}
+  @Emit('issueCredentials')
+  issueCredentials () {}
 }
 </script>
 

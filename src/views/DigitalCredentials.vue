@@ -5,10 +5,11 @@
       v-if="isDigitalCredentialHome"
       class="py-8"
       :issuedCredentials="issuedCredentials"
-      @addCredentials="addCredentials()"
+      @issueCredentials="issueCredentials()"
     />
 
     <!-- Add Credentials -->
+    <!-- DEPRECATED -->
     <section
       v-else
       id="add-digital-credentials"
@@ -82,9 +83,11 @@ import {
   RegisterWallet,
   CredentialsLanding,
   CredentialsFooter,
+  CredentialsStepper,
   DigitalWalletDownload,
   IssueCredentials
 } from '@/components/DigitalCredentials'
+// DEPRECATED:
 import { Stepper } from '@/components/common'
 import { DigitalCredentialTypes, Routes } from '@/enums'
 import { DigitalCredentialsIF, StepsIF } from '@/interfaces'
@@ -95,6 +98,8 @@ import { useBusinessStore } from '@/stores'
   components: {
     CredentialsLanding,
     CredentialsFooter,
+    CredentialsStepper,
+    // DEPRECATED:
     Stepper
   }
 })
@@ -148,8 +153,8 @@ export default class DigitalCredentials extends Vue {
     return this.digitalCredentialSteps[this.currentStepIndex + 1]?.text || 'Done'
   }
 
-  addCredentials (): void {
-    this.$router.push({ path: `${Routes.DIGITAL_CREDENTIALS}/${Routes.DOWNLOAD_WALLET}` })
+  issueCredentials (): void {
+    this.$router.push({ path: `${Routes.DIGITAL_CREDENTIALS}/${Routes.ISSUE}` })
   }
 
   back (): void {
