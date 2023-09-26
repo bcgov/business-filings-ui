@@ -338,12 +338,12 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches a digital credentials connection information.
+   * Fetches a list of digital credential connections.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
-  static async fetchCredentialConnection (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connection`
+  static async fetchCredentialConnections (businessId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections`
     return axios.get(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -353,12 +353,12 @@ export default class LegalServices {
   }
 
   /**
-   * Issues a digital credentials offer.
+   * Sends a digital credentials offer.
    * @param businessId The business identifier (aka entity inc no)
    * @param credentialType The credential offer type
    * @returns the axios response
    */
-  static async issueCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes)
+  static async sendCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes)
   : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
     return axios.post(url)

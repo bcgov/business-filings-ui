@@ -11,10 +11,5 @@ export enum Routes {
 
   // Digital Credential Routes for Pilot
   DIGITAL_CREDENTIALS = 'digital-credentials',
-  ISSUE = 'issue',
-
-  // DEPRECATED
-  DOWNLOAD_WALLET = 'download-wallet',
-  REGISTER_WALLET = 'register-wallet',
-  ISSUE_CREDENTIALS = 'issue-credentials'
+  ISSUE = 'issue'
 }

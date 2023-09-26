@@ -1,5 +1,2 @@
 export { default as CredentialsLanding } from './CredentialsLanding.vue'
-export { default as DigitalWalletDownload } from './DigitalWalletDownload.vue'
-export { default as RegisterWallet } from './RegisterWallet.vue'
-export { default as IssueCredentials } from './IssueCredentials.vue'
-export { default as CredentialsFooter } from './CredentialsFooter.vue'
+export { default as CredentialsStepper } from './CredentialsStepper.vue'
