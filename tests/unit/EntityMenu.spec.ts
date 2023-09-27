@@ -487,3 +487,69 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
     wrapper.destroy()
   })
 })
+
+describe('Entity Menu - Request AGM Extension click tests', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('displays the Request AGM Extension button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setState(EntityState.ACTIVE)
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.find('#agm-ext-list-item').exists()).toBe(true)
+    expect(wrapper.find('#agm-ext-list-item').text()).toBe('Request AGM Extension')
+    expect(wrapper.find('#agm-ext-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+
+    wrapper.destroy()
+  })
+})
+
+describe('Entity Menu - Request AGM Location Change click tests', () => {
+  const { assign } = window.location
+
+  beforeAll(() => {
+    // mock the window.location.assign function
+    delete window.location
+    window.location = { assign: vi.fn() } as any
+  })
+
+  afterAll(() => {
+    window.location.assign = assign
+  })
+
+  it('displays the Request AGM Location Change button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BC_COMPANY)
+    businessStore.setState(EntityState.ACTIVE)
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = mount(EntityMenu, {
+      vuetify,
+      mixins: [{ methods: { isAllowed: () => true } }],
+      propsData: { businessId: 'BC1234567' }
+    })
+
+    await wrapper.find('.menu-btn').trigger('click')
+    expect(wrapper.find('#aagm-loc-chg-list-item').exists()).toBe(true)
+    expect(wrapper.find('#aagm-loc-chg-list-item').text()).toBe('Request AGM Location Change')
+    expect(wrapper.find('#aagm-loc-chg-list-item').classes()).not.toContain('v-btn--disabled') // enabled
+
+    wrapper.destroy()
+  })
+})

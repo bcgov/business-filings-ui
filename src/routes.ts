@@ -1,4 +1,6 @@
 import Dashboard from '@/views/Dashboard.vue'
+import AgmExtension from '@/views/AgmExtension.vue'
+import AgmLocationChg from '@/views/AgmLocationChg.vue'
 import AnnualReport from '@/views/AnnualReport.vue'
 import StandaloneDirectorsFiling from '@/views/StandaloneDirectorsFiling.vue'
 import StandaloneOfficeAddressFiling from '@/views/StandaloneOfficeAddressFiling.vue'
@@ -17,6 +19,38 @@ export default [
     component: Dashboard,
     meta: {
       requiresAuth: true
+    }
+  },
+  {
+    path: '/agm-extension',
+    name: Routes.AGM_EXTENSION,
+    component: AgmExtension,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: `File ${FilingNames.AGM_EXTENSION}`,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.AGM_EXTENSION }
+        }
+      ]
+    }
+  },
+  {
+    path: '/agm-location-chg',
+    name: Routes.AGM_LOCATION_CHG,
+    component: AgmLocationChg,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: `File ${FilingNames.AGM_LOCATION_CHG}`,
+          disabled: false,
+          exact: true,
+          to: { name: Routes.AGM_LOCATION_CHG }
+        }
+      ]
     }
   },
   {

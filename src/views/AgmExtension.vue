@@ -1,26 +1,26 @@
 <template>
-  <div id="consent-continuation-out">
-    <ConfirmDialog
+  <div id="agm-extension">
+    <!-- <ConfirmDialog
       ref="confirm"
       attach="#consent-continuation-out"
-    />
+    /> -->
 
-    <PaymentErrorDialog
+    <!-- <PaymentErrorDialog
       attach="#consent-continuation-out"
       filingName="Consent to Continuation Out"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
       @exit="onPaymentErrorDialogExit()"
-    />
+    /> -->
 
-    <ResumeErrorDialog
+    <!-- <ResumeErrorDialog
       attach="#consent-continuation-out"
       :dialog="resumeErrorDialog"
       @exit="goToDashboard(true)"
-    />
+    /> -->
 
-    <SaveErrorDialog
+    <!-- <SaveErrorDialog
       attach="#consent-continuation-out"
       filingName="Consent to Continuation Out"
       :dialog="!!saveErrorReason"
@@ -30,16 +30,16 @@
       @exit="saveErrorReason=null"
       @retry="onSaveErrorDialogRetry()"
       @okay="onSaveErrorDialogOkay()"
-    />
+    /> -->
 
-    <StaffPaymentDialog
+    <!-- <StaffPaymentDialog
       :staffPaymentData.sync="staffPaymentData"
       attach="#consent-continuation-out"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
-    />
+    /> -->
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
@@ -70,16 +70,16 @@
           cols="12"
           lg="9"
         >
-          <article id="consent-article">
+          <article>
             <!-- Page Title -->
             <header>
-              <h1 id="consent-header">
-                Six-Month Consent to Continue Out
+              <h1>
+                AGM Extension
               </h1>
             </header>
 
             <!-- Ledger Detail -->
-            <section>
+            <!-- <section>
               <header>
                 <h2>Ledger Detail</h2>
                 <p class="grey-text">
@@ -120,10 +120,10 @@
                   </v-row>
                 </v-card>
               </div>
-            </section>
+            </section> -->
 
             <!--  Jurisdiction Information -->
-            <section>
+            <!-- <section>
               <header>
                 <h2>Jurisdiction Information</h2>
               </header>
@@ -146,10 +146,10 @@
                   />
                 </v-card>
               </div>
-            </section>
+            </section> -->
 
             <!-- Documents Delivery -->
-            <section>
+            <!-- <section>
               <header>
                 <h2>Documents Delivery</h2>
                 <p class="grey-text">
@@ -174,7 +174,7 @@
                   />
                 </v-card>
               </div>
-            </section>
+            </section> -->
 
             <!-- Certify -->
             <section>
@@ -201,7 +201,7 @@
             </section>
 
             <!-- Court Order and Plan of Arrangement -->
-            <section>
+            <!-- <section>
               <header>
                 <h2>Court Order and Plan of Arrangement</h2>
                 <p class="grey-text">
@@ -228,7 +228,7 @@
                   />
                 </v-card>
               </div>
-            </section>
+            </section> -->
           </article>
         </v-col>
 
@@ -239,7 +239,7 @@
         >
           <aside>
             <affix
-              relative-element-selector="#consent-article"
+              relative-element-selector=".article"
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
@@ -255,7 +255,7 @@
 
     <!-- Buttons -->
     <v-container
-      id="consent-buttons-container"
+      id="buttons-container"
       class="list-item"
     >
       <div class="buttons-left">
@@ -352,7 +352,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     StaffPaymentDialog
   }
 })
-export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixin,
+export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
@@ -1026,7 +1026,7 @@ h2 {
 }
 
 // Save & Filing Buttons
-#consent-buttons-container {
+#buttons-container {
   padding-top: 2rem;
   border-top: 1px solid $gray5;
 
