@@ -7,21 +7,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import {
-  CredentialsLanding,
-  CredentialsStepper
-} from '@/components/DigitalCredentials'
 import { Routes } from '@/enums'
 import { DigitalCredentialsIF } from '@/interfaces'
 import { LegalServices } from '@/services/'
 import { useBusinessStore } from '@/stores'
 
-@Component({
-  components: {
-    CredentialsLanding,
-    CredentialsStepper
-  }
-})
+@Component
 export default class DigitalCredentials extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string;
 

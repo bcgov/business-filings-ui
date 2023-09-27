@@ -34,10 +34,10 @@
                 </p>
                 <a
                   class="text-decoration-none"
-
                   href=""
                   target="_blank"
-                >Find solutions</a> to common issues people experience or contact us at
+                >Find solutions</a>
+                to common issues people experience or contact us at
                 <a
                   class="text-decoration-none"
                   href="mailto:BCRegistries@gov.bc.ca"
@@ -47,7 +47,7 @@
           </v-card>
         </v-col>
         <v-col>
-          <v-card>
+          <v-card v-if="!credentialConnection?.isActive">
             <v-card-text class="d-flex flex-column">
               <p class="mt-4 mb-8 justify-center text-center font-weight-bold word-wrap">
                 Scan this QR code with your BC Wallet app
@@ -59,17 +59,68 @@
                 :value="credentialConnection?.invitationUrl"
               />
               <p class="mt-8 justify-center text-center word-wrap">
-                QR code isn't scanning?<a
+                QR code isn't scanning?
+                <a
                   class="text-decoration-none"
                   href=""
                   target="_blank"
-                >&nbsp;Generate a new QR code.</a>
+                >Generate a new QR code</a>.
+              </p>
+            </v-card-text>
+          </v-card>
+          <v-card v-else>
+            <v-card-text
+              v-if="!issuedCredential"
+              class="d-flex flex-column"
+            >
+              <div
+                class="d-flex justify-self-center align-self-center justify-center align-center"
+                style="width: 200px; height: 200px"
+              >
+                <v-progress-circular
+
+                  color="primary"
+                  indeterminate
+                />
+              </div>
+              <p class="justify-center text-center font-weight-bold word-wrap">
+                Accept the request in your wallet
+              </p>
+              <a
+                class="text-decoration-none justify-center text-center word-wrap"
+                href=""
+                target="_blank"
+              >
+                I didn't receive anything
+              </a>
+            </v-card-text>
+            <v-card-text
+              v-else
+              class="d-flex flex-column"
+            >
+              <div
+                class="d-flex justify-self-center align-self-center justify-center align-center"
+                style="width: 200px; height: 200px"
+              >
+                <v-icon
+                  color="black"
+                  size="xxx-large"
+                >
+                  mdi-check-circle-outline
+                </v-icon>
+              </div>
+              <p class="justify-center text-center font-weight-bold word-wrap">
+                Your Business Card is now ready to use
               </p>
             </v-card-text>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+    <CredentialsWebSocket
+      @onConnection="handleConnection"
+      @onIssuedCredential="handleIssuedCredential"
+    />
   </section>
 </template>
 
@@ -80,14 +131,18 @@ import { useBusinessStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
+import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
 
 // Create a component that extends the Vue class called CredentialsStepper
-@Component({ components: { QrcodeVue } })
+@Component({ components: { QrcodeVue, CredentialsWebSocket } })
 export default class CredentialsStepper extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string;
 
+  credentialTypes = DigitalCredentialTypes;
   // TODO: Create the correct type for a Connection
   credentialConnection: any = null;
+  // TODO: Create the correct type for a Credential
+  issuedCredential: any = null;
   steps = [
     {
       id: 1,
@@ -137,12 +192,18 @@ export default class CredentialsStepper extends Vue {
   }
 
   async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
-    // TODO:
-    const { data: credentialIssued } = await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
-    console.log('credentialIssued', credentialIssued)
+    await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
+  }
+
+  async handleConnection (connection: any) {
+    this.credentialConnection = connection
+    await this.issueCredential(this.credentialTypes.BUSINESS)
+  }
+
+  async handleIssuedCredential (issuedCredential: any) {
+    this.issuedCredential = issuedCredential
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -153,7 +214,7 @@ export default class CredentialsStepper extends Vue {
 </style>
 
 <style scoped lang="scss">
-  .word-wrap {
-    word-break: normal;
-  }
+.word-wrap {
+  word-break: normal;
+}
 </style>
