@@ -1,28 +1,28 @@
 <template>
   <div id="agm-location-chg">
-    <!-- <ConfirmDialog
+    <ConfirmDialog
       ref="confirm"
-      attach="#consent-continuation-out"
-    /> -->
+      attach="#agm-location-chg"
+    />
 
-    <!-- <PaymentErrorDialog
-      attach="#consent-continuation-out"
-      filingName="Consent to Continuation Out"
+    <PaymentErrorDialog
+      attach="#agm-location-chg"
+      filingName="AGM Location Change"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
       @exit="onPaymentErrorDialogExit()"
-    /> -->
+    />
 
-    <!-- <ResumeErrorDialog
-      attach="#consent-continuation-out"
+    <ResumeErrorDialog
+      attach="#agm-location-chg"
       :dialog="resumeErrorDialog"
       @exit="goToDashboard(true)"
-    /> -->
+    />
 
-    <!-- <SaveErrorDialog
-      attach="#consent-continuation-out"
-      filingName="Consent to Continuation Out"
+    <SaveErrorDialog
+      attach="#agm-location-chg"
+      filingName="AGM Location Change"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -30,16 +30,16 @@
       @exit="saveErrorReason=null"
       @retry="onSaveErrorDialogRetry()"
       @okay="onSaveErrorDialogOkay()"
-    /> -->
+    />
 
-    <!-- <StaffPaymentDialog
+    <StaffPaymentDialog
       :staffPaymentData.sync="staffPaymentData"
-      attach="#consent-continuation-out"
+      attach="#agm-location-chg"
       :dialog="staffPaymentDialog"
       :loading="filingPaying"
       @exit="staffPaymentDialog=false"
       @submit="onClickFilePay(true)"
-    /> -->
+    />
 
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
@@ -70,7 +70,7 @@
           cols="12"
           lg="9"
         >
-          <article>
+          <article id="main-article">
             <!-- Page Title -->
             <header>
               <h1>
@@ -78,17 +78,17 @@
               </h1>
             </header>
 
-            <!-- Ledger Detail -->
-            <!-- <section>
+            <!-- Main Section -->
+            <section>
               <header>
-                <h2>Ledger Detail</h2>
+                <h2>Section Title</h2>
                 <p class="grey-text">
-                  Enter a detail that will appear on the ledger for this entity.
+                  Section subtext.
                 </p>
               </header>
               <div
-                id="detail-comment-section"
-                :class="{ 'invalid-section': !detailCommentValid && showErrors }"
+                id="main-section"
+                :class="{ 'invalid-section': !sectionValid && showErrors }"
               >
                 <v-card
                   flat
@@ -100,81 +100,18 @@
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
+                      <strong :class="{ 'app-red': !sectionValid && showErrors }">Subtitle</strong>
                     </v-col>
                     <v-col
                       cols="12"
                       sm="9"
                     >
-                      <p class="grey-text font-weight-bold">
-                        {{ defaultComment }}
-                      </p>
-                      <DetailComment
-                        ref="detailCommentRef"
-                        v-model="detailComment"
-                        placeholder="Add a Detail that will appear on the ledger for this entity."
-                        :maxLength="maxDetailCommentLength"
-                        @valid="detailCommentValid=$event"
-                      />
+                      <p>Section content goes here.</p>
                     </v-col>
                   </v-row>
                 </v-card>
               </div>
-            </section> -->
-
-            <!--  Jurisdiction Information -->
-            <!-- <section>
-              <header>
-                <h2>Jurisdiction Information</h2>
-              </header>
-              <div
-                id="foreign-jurisdiction-section"
-                :class="{ 'invalid-foreign-jurisdiction': !foreignJurisdictionValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="pt-6 px-4"
-                >
-                  <ForeignJurisdiction
-                    ref="foreignJurisdictionRef"
-                    :validateForm="showErrors"
-                    :draftCountry="draftCountry"
-                    :draftRegion="draftRegion"
-                    @update:country="selectedCountry=$event"
-                    @update:region="selectedRegion=$event"
-                    @valid="foreignJurisdictionValid=$event"
-                  />
-                </v-card>
-              </div>
-            </section> -->
-
-            <!-- Documents Delivery -->
-            <!-- <section>
-              <header>
-                <h2>Documents Delivery</h2>
-                <p class="grey-text">
-                  Copies of the consent to continue out documents will be sent to the email addresses listed below.
-                </p>
-              </header>
-              <div
-                id="document-delivery-section"
-                :class="{ 'invalid-section': !documentDeliveryValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <DocumentDelivery
-                    editableCompletingParty="true"
-                    :contactValue="getBusinessEmail"
-                    contactLabel="Business Office"
-                    :documentOptionalEmail="documentOptionalEmail"
-                    @update:optionalEmail="documentOptionalEmail=$event"
-                    @valid="documentDeliveryValid=$event"
-                  />
-                </v-card>
-              </div>
-            </section> -->
+            </section>
 
             <!-- Certify -->
             <section>
@@ -199,36 +136,6 @@
                 />
               </div>
             </section>
-
-            <!-- Court Order and Plan of Arrangement -->
-            <!-- <section>
-              <header>
-                <h2>Court Order and Plan of Arrangement</h2>
-                <p class="grey-text">
-                  If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
-                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.
-                </p>
-              </header>
-              <div
-                id="court-order-section"
-                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <CourtOrderPoa
-                    :autoValidation="showErrors"
-                    :courtOrderNumberRequired="false"
-                    :draftCourtOrderNumber="fileNumber"
-                    :hasDraftPlanOfArrangement="hasPlanOfArrangement"
-                    @emitCourtNumber="fileNumber=$event"
-                    @emitPoa="hasPlanOfArrangement=$event"
-                    @emitValid="courtOrderValid=$event"
-                  />
-                </v-card>
-              </div>
-            </section> -->
           </article>
         </v-col>
 
@@ -239,7 +146,7 @@
         >
           <aside>
             <affix
-              relative-element-selector=".article"
+              relative-element-selector="#main-article"
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
@@ -325,26 +232,20 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { Certify, DetailComment, ForeignJurisdiction } from '@/components/common'
+import { Certify } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
-  StaffPaymentOptions } from '@/enums'
+import { LegalServices } from '@/services/'
+import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
+  from '@/enums'
 import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
-import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
-import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
     Certify,
     ConfirmDialog,
-    CourtOrderPoa,
-    DetailComment,
-    DocumentDelivery,
-    ForeignJurisdiction,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -357,13 +258,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   // Refs
   $refs!: {
     confirm: ConfirmDialogType,
-    certifyRef: Certify,
-    detailCommentRef: DetailComment,
-    foreignJurisdictionRef: ForeignJurisdiction
+    certifyRef: Certify
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) isRoleStaff!: boolean
@@ -371,30 +269,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   // enum for template
   readonly FilingCodes = FilingCodes
 
-  // variables for DetailComment component
-  detailComment = ''
-  detailCommentValid = false
+  // variables for main section
+  sectionValid = false
 
   // variables for Certify component
   certifiedBy = ''
   isCertified = false
   certifyFormValid = false
-
-  // variables for Courder Order POA component
-  fileNumber = ''
-  hasPlanOfArrangement = false
-  courtOrderValid = true
-
-  // variables for Foreign Jurisdiction component
-  draftCountry = ''
-  draftRegion = ''
-  selectedCountry = ''
-  selectedRegion = ''
-  foreignJurisdictionValid = false
-
-  // variables for Document Delivery component
-  documentDeliveryValid = true
-  documentOptionalEmail = ''
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
@@ -426,17 +307,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
   }
 
-  /** Default comment (ie, the first line of the detail comment). */
-  get defaultComment (): string {
-    return 'Six Month Consent to Continue Out'
-  }
-
-  /** Maximum length of detail comment. */
-  get maxDetailCommentLength (): number {
-    // = (max size in db) - (default comment length) - (Carriage Return)
-    return 2000 - this.defaultComment.length - 1
-  }
-
   /** The Base URL string. */
   get baseUrl (): string {
     return sessionStorage.getItem('BASE_URL')
@@ -444,8 +314,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.certifyFormValid && this.foreignJurisdictionValid &&
-      this.documentDeliveryValid && this.courtOrderValid)
+    return (this.sectionValid && this.certifyFormValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -491,9 +360,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Consent to Continuation Out`
+      this.loadingMessage = `Resuming Your Request for AGM Location Change`
     } else {
-      this.loadingMessage = `Preparing Your Consent to Continuation Out`
+      this.loadingMessage = `Preparing Your Request for AGM Location Change`
     }
 
     // fetch draft (which may overwrite some properties)
@@ -503,10 +372,11 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     this.dataLoaded = true
 
+    // *** TODO: add new filing code
     // always include consent continue out code
     // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, this.staffPaymentData.isPriority,
-      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    // this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
+    //   (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
   /** Fetches the draft consent filing. */
@@ -517,8 +387,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       if (!filing) throw new Error('Missing filing')
       if (!filing.header) throw new Error('Missing header')
       if (!filing.business) throw new Error('Missing business')
-      if (!filing.consentContinuationOut) throw new Error('Missing consent continuation out object')
-      if (filing.header.name !== FilingTypes.CONSENT_CONTINUATION_OUT) throw new Error('Invalid filing type')
+      if (!filing.agmLocationChg) throw new Error('Missing agm location chg object')
+      if (filing.header.name !== FilingTypes.AGM_LOCATION_CHG) throw new Error('Invalid filing type')
       if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
       if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
@@ -549,26 +419,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
         this.staffPaymentData = {
           option: StaffPaymentOptions.NONE
         } as StaffPaymentIF
-      }
-
-      // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.consentContinuationOut.details || ''
-      this.detailComment = comment.split('\n').slice(1).join('\n')
-
-      const courtOrder = filing.consentContinuationOut.courtOrder
-      if (courtOrder) {
-        this.fileNumber = courtOrder.fileNumber
-        this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
-      }
-
-      const foreignJurisdiction = filing.consentContinuationOut.foreignJurisdiction
-      if (foreignJurisdiction) {
-        this.draftCountry = foreignJurisdiction.country
-        this.draftRegion = foreignJurisdiction.region
-      }
-
-      if (filing.header.documentOptionalEmail) {
-        this.documentOptionalEmail = filing.header.documentOptionalEmail
       }
     }).catch(error => {
       // eslint-disable-next-line no-console
@@ -668,9 +518,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      if (!this.detailCommentValid) {
+      // *** TODO: check for section errors here
+      if (!this.sectionValid) {
         // Show error message of detail comment text area if invalid
-        this.$refs.detailCommentRef.$refs.textarea.error = true
+        // this.$refs.detailCommentRef.$refs.textarea.error = true
       }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
@@ -772,13 +623,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       header: {
         name: FilingTypes.CONSENT_CONTINUATION_OUT,
         certifiedBy: this.certifiedBy || '',
-        email: this.getBusinessEmail,
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
-    }
-
-    if (this.documentOptionalEmail !== '') {
-      header.header.documentOptionalEmail = this.documentOptionalEmail
     }
 
     switch (this.staffPaymentData.option) {
@@ -812,19 +658,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
 
     const data: any = {
-      [FilingTypes.CONSENT_CONTINUATION_OUT]: {
-        details: `${this.defaultComment}\n${this.detailComment}`,
-        foreignJurisdiction: {
-          country: this.selectedCountry,
-          region: this.selectedRegion
-        }
-      }
-    }
-
-    if (this.fileNumber !== '') {
-      data[FilingTypes.CONSENT_CONTINUATION_OUT].courtOrder = {
-        fileNumber: this.fileNumber,
-        effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
+      [FilingTypes.AGM_LOCATION_CHG]: {
+        // properties go here
       }
     }
 
@@ -864,7 +699,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Consent to Continue Out. Do you want to exit your filing?',
+      'You have unsaved changes in your AGM Location Change. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
@@ -944,29 +779,20 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'detail-comment-section',
-    'foreign-jurisdiction-section',
-    'document-delivery-section',
-    'certify-form-section',
-    'court-order-section'
+    'main-section',
+    'certify-form-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      detailComment: this.detailCommentValid,
-      foreignJurisdiction: this.foreignJurisdictionValid,
-      documentDelivery: this.documentDeliveryValid,
-      certifyForm: this.certifyFormValid,
-      courtOrder: this.courtOrderValid
+      mainSection: this.sectionValid,
+      certifyForm: this.certifyFormValid
     }
   }
 
+  @Watch('sectionValid')
   @Watch('certifyFormValid')
-  @Watch('courtOrderValid')
-  @Watch('detailCommentValid')
-  @Watch('documentDeliveryValid')
-  @Watch('foreignJurisdictionValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -986,7 +812,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#consent-continuation-out {
+#agm-location-chg {
   /* Set "header-counter" to 0 */
   counter-reset: header-counter;
 }
@@ -1048,9 +874,11 @@ h2 {
 }
 
 // Fix font size and color to stay consistent.
-:deep(){
-  #document-delivery, #court-order-label, #poa-label {
-    font-size: $px-14;
+:deep() {
+  .invalid-foreign-jurisdiction {
+    .title-label {
+      color: $app-red;
+    }
   }
 
   .certify-clause, .certify-stmt, .grey-text {
@@ -1059,11 +887,6 @@ h2 {
 
   .invalid-certify {
     .certify-stmt, .title-label {
-      color: $app-red;
-    }
-  }
-  .invalid-foreign-jurisdiction {
-    .title-label {
       color: $app-red;
     }
   }

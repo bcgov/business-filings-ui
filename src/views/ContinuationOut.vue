@@ -1021,7 +1021,7 @@ h2 {
 }
 
 // Fix font size and color to stay consistent.
-:deep(){
+:deep() {
   #document-delivery, #court-order-label, #poa-label {
     font-size: $px-14;
   }

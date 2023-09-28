@@ -40,15 +40,13 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.AGM_EXTENSION: {
-        // NB: this feature is targeted via LaunchDarkly
-        const ff = !!GetFeatureFlag('enable-agm-extension')
-        return ff && this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
+        return true // *** FOR DEBUGGING ONLY
+        // return this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
       }
 
       case AllowableActions.AGM_LOCATION_CHG: {
-        // NB: this feature is targeted via LaunchDarkly
-        const ff = !!GetFeatureFlag('enable-agm-location-chg')
-        return ff && this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHG)
+        return true // *** FOR DEBUGGING ONLY
+        // return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHG)
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {

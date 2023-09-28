@@ -1,7 +1,7 @@
 <template>
   <v-file-input
-    class="file-upload-pdf"
     :key="count"
+    class="file-upload-pdf"
     dense
     filled
     show-size

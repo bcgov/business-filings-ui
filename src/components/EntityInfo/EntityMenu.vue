@@ -171,7 +171,7 @@
             >
               <template #activator="{ on }">
                 <v-list-item
-                  v-if="isBenBcCccUlc"
+                  v-if="!!GetFeatureFlag('enable-agm-extension')"
                   id="agm-ext-list-item"
                   :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
                   v-on="on"
@@ -192,7 +192,7 @@
             >
               <template #activator="{ on }">
                 <v-list-item
-                  v-if="isBenBcCccUlc"
+                  v-if="!!GetFeatureFlag('enable-agm-location-chg')"
                   id="agm-loc-chg-list-item"
                   :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
                   v-on="on"
@@ -219,13 +219,15 @@ import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import { AllowableActions, NigsMessage, Routes } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: { StaffComments }
 })
 export default class EntityMenu extends Mixins(AllowableActionsMixin) {
+  readonly GetFeatureFlag = GetFeatureFlag
+
   @Prop({ required: true }) readonly businessId!: string // may be null
 
   @Getter(useConfigurationStore) getEditUrl!: string
