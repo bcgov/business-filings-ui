@@ -78,23 +78,33 @@
               </h1>
             </header>
 
+            <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
+              <template #content>
+                Help text, or sub-component, goes here.
+              </template>
+            </ExpandableHelp>
+
             <!-- Extension Eligibility -->
-            <section>
+            <section class="mt-8">
               <header>
                 <h2>Extension Eligibility</h2>
-                <p class="grey-text">
+                <p>
                   Fill out the following section to evaluate the eligibility for extension.
                 </p>
               </header>
+
               <div
                 id="extension-eligibility-section"
                 :class="{ 'invalid-extension-eligibility': !extensionEligibilityValid && showErrors }"
               >
                 <v-card
                   flat
-                  class="py-8 px-5"
+                  class="py-4 px-5"
                 >
-                  <v-row no-gutters>
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
@@ -107,10 +117,17 @@
                     <v-col
                       cols="12"
                       sm="9"
-                    />
+                    >
+                      Yes
+                    </v-col>
                   </v-row>
 
-                  <v-row no-gutters>
+                  <v-divider />
+
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
@@ -123,10 +140,17 @@
                     <v-col
                       cols="12"
                       sm="9"
-                    />
+                    >
+                      (date goes here)
+                    </v-col>
                   </v-row>
 
-                  <v-row no-gutters>
+                  <v-divider />
+
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
@@ -139,10 +163,17 @@
                     <v-col
                       cols="12"
                       sm="9"
-                    />
+                    >
+                      (date goes here)
+                    </v-col>
                   </v-row>
 
-                  <v-row no-gutters>
+                  <v-divider />
+
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
@@ -155,10 +186,17 @@
                     <v-col
                       cols="12"
                       sm="9"
-                    />
+                    >
+                      (date picker goes here)
+                    </v-col>
                   </v-row>
 
-                  <v-row no-gutters>
+                  <v-divider />
+
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
@@ -171,23 +209,32 @@
                     <v-col
                       cols="12"
                       sm="9"
-                    />
+                    >
+                      (radio buttons go here)
+                    </v-col>
                   </v-row>
 
-                  <v-row no-gutters>
+                  <v-divider />
+
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
                       class="pr-4"
                     >
                       <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Was the above extension granc for the current AGM?
+                        Was the above extension grant for the current AGM?
                       </strong>
                     </v-col>
                     <v-col
                       cols="12"
                       sm="9"
-                    />
+                    >
+                      (radio buttons go here)
+                    </v-col>
                   </v-row>
                 </v-card>
               </div>
@@ -211,7 +258,7 @@
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  :message="certifyText(FilingCodes.AGM_EXTENSION)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -312,6 +359,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
@@ -326,6 +374,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
   components: {
     Certify,
     ConfirmDialog,
+    ExpandableHelp,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -452,11 +501,10 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
     this.dataLoaded = true
 
-    // *** TODO: add new filing code
     // always include consent continue out code
     // use existing Priority and Waive Fees flags
-    // this.updateFilingData('add', FilingCodes.AGM_EXTENSION, this.staffPaymentData.isPriority,
-    //   (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    this.updateFilingData('add', FilingCodes.AGM_EXTENSION, this.staffPaymentData.isPriority,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
   /** Fetches the draft consent filing. */
@@ -910,11 +958,6 @@ article {
   }
 }
 
-header p,
-section p {
-  color: $gray7;
-}
-
 section + section {
   margin-top: 3rem;
 }
@@ -929,6 +972,10 @@ h2 {
   margin-bottom: 0.25rem;
   margin-top: 3rem;
   font-size: 1.125rem;
+}
+
+strong {
+  color: $gray9;
 }
 
 // Save & Filing Buttons

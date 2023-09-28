@@ -78,23 +78,33 @@
               </h1>
             </header>
 
+            <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
+              <template #content>
+                Help text, or sub-component, goes here.
+              </template>
+            </ExpandableHelp>
+
             <!-- Main Section -->
-            <section>
+            <section class="mt-8">
               <header>
                 <h2>Section Title</h2>
                 <p class="grey-text">
                   Section subtext.
                 </p>
               </header>
+
               <div
                 id="main-section"
                 :class="{ 'invalid-section': !sectionValid && showErrors }"
               >
                 <v-card
                   flat
-                  class="py-8 px-5"
+                  class="py-4 px-5"
                 >
-                  <v-row no-gutters>
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
@@ -106,7 +116,7 @@
                       cols="12"
                       sm="9"
                     >
-                      <p>Section content goes here.</p>
+                      Section content goes here.
                     </v-col>
                   </v-row>
                 </v-card>
@@ -232,6 +242,7 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
@@ -246,6 +257,7 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
   components: {
     Certify,
     ConfirmDialog,
+    ExpandableHelp,
     PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
@@ -372,11 +384,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     this.dataLoaded = true
 
-    // *** TODO: add new filing code
     // always include consent continue out code
     // use existing Priority and Waive Fees flags
-    // this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
-    //   (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
   /** Fetches the draft consent filing. */

@@ -171,7 +171,7 @@
             >
               <template #activator="{ on }">
                 <v-list-item
-                  v-if="!!GetFeatureFlag('enable-agm-extension')"
+                  v-if="enableAgmExtension"
                   id="agm-ext-list-item"
                   :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
                   v-on="on"
@@ -182,17 +182,17 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              Submit a request for an AGM extension.
+              Request an AGM extension. The longest extension granted at one time is six months.
             </v-tooltip>
 
-            <!-- Request AGM Location Chang -->
+            <!-- Request AGM Location Change -->
             <v-tooltip
               right
               content-class="right-tooltip"
             >
               <template #activator="{ on }">
                 <v-list-item
-                  v-if="!!GetFeatureFlag('enable-agm-location-chg')"
+                  v-if="enableAgmLocationChg"
                   id="agm-loc-chg-list-item"
                   :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
                   v-on="on"
@@ -203,7 +203,7 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              Submit a request for an AGM location change.
+              Request an AGM location change.
             </v-tooltip>
           </v-list-item-group>
         </v-list>
@@ -226,8 +226,6 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
   components: { StaffComments }
 })
 export default class EntityMenu extends Mixins(AllowableActionsMixin) {
-  readonly GetFeatureFlag = GetFeatureFlag
-
   @Prop({ required: true }) readonly businessId!: string // may be null
 
   @Getter(useConfigurationStore) getEditUrl!: string
@@ -245,6 +243,14 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   /** Whether this entity is a business (and not a draft IA/Registration). */
   get isBusiness (): boolean {
     return !!this.businessId
+  }
+
+  get enableAgmExtension (): boolean {
+    return !!GetFeatureFlag('enable-agm-extension')
+  }
+
+  get enableAgmLocationChg (): boolean {
+    return !!GetFeatureFlag('enable-agm-location-chg')
   }
 
   /**
