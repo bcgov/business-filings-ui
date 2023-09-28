@@ -1,8 +1,9 @@
 <template>
-  <div
-    id="credentials-table"
-    class="mt-8"
-  >
+  <div>
+    <h1 class="mb-4">
+      My Credential Dashboard
+    </h1>
+
     <header class="credentials-table-header">
       <label class="font-weight-bold pl-2">Your Digital Credentials</label>
     </header>
@@ -25,6 +26,9 @@
         </template>
         <template #[`item.dateOfIssue`]="{ item }">
           {{ apiToPacificDate(item.dateOfIssue) || '-' }}
+        </template>
+        <template #[`item.action`]>
+          TODO
         </template>
       </v-data-table>
     </v-card>
@@ -64,6 +68,11 @@ export default class CredentialsTable extends Mixins(DateMixin) {
         class: 'column-lg',
         text: 'Date of Issue',
         value: 'dateOfIssue'
+      },
+      {
+        class: 'column-lg',
+        text: '',
+        value: 'action'
       }
     ]
   }

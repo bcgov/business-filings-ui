@@ -2,8 +2,11 @@
   <section id="credentials-stepper">
     <v-container>
       <v-row>
-        <v-col>
-          <v-card>
+        <v-col
+          cols="12"
+          md="8"
+        >
+          <v-card class="pa-3">
             <v-card-text>
               <h1 class="mb-4">
                 Steps to get your credentials:
@@ -46,7 +49,10 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-card v-if="!credentialConnection?.isActive">
             <v-card-text class="d-flex flex-column">
               <p class="mt-4 mb-8 justify-center text-center font-weight-bold word-wrap">
@@ -125,13 +131,17 @@
 </template>
 
 <script lang="ts">
-import { DigitalCredentialTypes } from '@/enums'
+import { DigitalCredentialTypes, Routes } from '@/enums'
 import { LegalServices } from '@/services'
 import { useBusinessStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
+
+Component.registerHooks([
+  'beforeRouteEnter'
+])
 
 // Create a component that extends the Vue class called CredentialsStepper
 @Component({ components: { QrcodeVue, CredentialsWebSocket } })
@@ -173,6 +183,19 @@ export default class CredentialsStepper extends Vue {
       `
     }
   ];
+
+  async beforeRouteEnter (to, from, next): Promise<void> {
+    next(async (_this) => {
+      const { data } = await LegalServices.fetchCredentials(_this.getIdentifier)
+      const issuedCredentials = data?.issuedCredentials
+
+      if (issuedCredentials?.length) {
+        next({ name: Routes.DIGITAL_CREDENTIALS })
+      } else {
+        next()
+      }
+    })
+  }
 
   async mounted (): Promise<void> {
     await this.getCredentialsConnection()
