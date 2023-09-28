@@ -137,6 +137,7 @@ import { useBusinessStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { Component, Vue } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
+import { DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
 
 Component.registerHooks([
@@ -149,10 +150,8 @@ export default class CredentialsStepper extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string;
 
   credentialTypes = DigitalCredentialTypes;
-  // TODO: Create the correct type for a Connection
-  credentialConnection: any = null;
-  // TODO: Create the correct type for a Credential
-  issuedCredential: any = null;
+  credentialConnection: WalletConnectionIF = null;
+  issuedCredential: DigitalCredentialIF = null;
   steps = [
     {
       id: 1,
@@ -218,12 +217,12 @@ export default class CredentialsStepper extends Vue {
     await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
   }
 
-  async handleConnection (connection: any) {
+  async handleConnection (connection: WalletConnectionIF) {
     this.credentialConnection = connection
     await this.issueCredential(this.credentialTypes.BUSINESS)
   }
 
-  async handleIssuedCredential (issuedCredential: any) {
+  async handleIssuedCredential (issuedCredential: DigitalCredentialIF) {
     this.issuedCredential = issuedCredential
   }
 }

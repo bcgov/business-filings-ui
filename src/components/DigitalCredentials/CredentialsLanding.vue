@@ -48,9 +48,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
 import { ImportantMessage } from '@/components/common'
 import { Routes } from '@/enums'
+import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
 
 @Component({
   components: {

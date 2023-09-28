@@ -22,13 +22,13 @@
           {{ formatCredentialType(item.credentialType) }}
         </template>
         <template #[`item.isIssued`]="{ item }">
-          {{ item.isIssued ? 'Issued' : 'Pending' }}
+          {{ item.isIssued ? "Issued" : "Pending" }}
         </template>
         <template #[`item.dateOfIssue`]="{ item }">
-          {{ apiToPacificDate(item.dateOfIssue) || '-' }}
+          {{ apiToPacificDate(item.dateOfIssue) || "-" }}
         </template>
         <template #[`item.action`]>
-          TODO
+          <CredentialsMenu />
         </template>
       </v-data-table>
     </v-card>
@@ -37,13 +37,18 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { DigitalCredentialsIF, TableHeaderIF } from '@/interfaces'
+import { DigitalCredentialIF, TableHeaderIF } from '@/interfaces'
 import { DigitalCredentialTypes } from '@/enums'
 import { DateMixin } from '@/mixins'
+import CredentialsMenu from '@/components/DigitalCredentials/CredentialsMenu.vue'
 
-@Component({})
+@Component({
+  components: {
+    CredentialsMenu
+  }
+})
 export default class CredentialsTable extends Mixins(DateMixin) {
-  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialsIF>
+  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialIF>;
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {
     // Do not display headers if there is table data
@@ -79,14 +84,16 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 
   formatCredentialType (credentialType: DigitalCredentialTypes): string {
     // Safety check
-    if (!credentialType) return 'Unknown'
+    if (!credentialType) {
+      return 'Unknown'
+    }
     return credentialType.charAt(0).toUpperCase() + credentialType.slice(1) + ' Credential'
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
+@import "@/assets/styles/theme.scss";
 
 .credentials-table-header {
   background-color: $BCgovBlue5O;
@@ -96,10 +103,13 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 
 // Vuetify overrides for Table Headers and Cells
 :deep() {
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th, td {
+
+  .v-data-table>.v-data-table__wrapper>table>thead>tr>th,
+  td {
     color: $gray7;
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
+
   .column-lg {
     width: 15rem !important;
   }

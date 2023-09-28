@@ -8,6 +8,7 @@ import { io } from 'socket.io-client'
 import { useConfigurationStore } from '@/stores'
 import { Getter } from 'pinia-class'
 import { WebSocketEvents, WebSocketTopics } from '@/enums'
+import { WalletConnectionIF, DigitalCredentialIF } from '@/interfaces'
 
 @Component
 export default class CredentialsWebSocket extends Vue {
@@ -38,12 +39,12 @@ export default class CredentialsWebSocket extends Vue {
   }
 
   @Emit('onConnection')
-  handleConnectionsMessage (connection: any): void {
+  handleConnectionsMessage (connection: WalletConnectionIF): WalletConnectionIF {
     return connection
   }
 
   @Emit('onIssuedCredential')
-  handleIssuedCredentialMessage (issuedCredential: any): void {
+  handleIssuedCredentialMessage (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
     return issuedCredential
   }
 }

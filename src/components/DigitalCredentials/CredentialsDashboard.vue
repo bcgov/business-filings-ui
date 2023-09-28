@@ -23,13 +23,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { useBusinessStore } from '@/stores'
+import { Getter } from 'pinia-class'
+import { DigitalCredentialIF } from '@/interfaces'
+import { LegalServices } from '@/services'
 import CredentialsInfo from '@/components/DigitalCredentials/CredentialsInfo.vue'
 import CredentialsLanding from '@/components/DigitalCredentials/CredentialsLanding.vue'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
-import { useBusinessStore } from '@/stores'
-import { Getter } from 'pinia-class'
-import { DigitalCredentialsIF } from '@/interfaces'
-import { LegalServices } from '@/services'
 
 @Component({
   components: {
@@ -41,7 +41,7 @@ import { LegalServices } from '@/services'
 export default class CredentialsDashboard extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string;
 
-  issuedCredentials: Array<DigitalCredentialsIF> = [];
+  issuedCredentials: Array<DigitalCredentialIF> = [];
 
   async mounted (): Promise<void> {
     await this.getCredentials()
