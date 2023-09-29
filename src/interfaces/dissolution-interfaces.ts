@@ -29,6 +29,7 @@ export interface DissolutionFilingIF {
     legalName: string
     identifier: string
     foundingDate: string
+    startDate: string
   }
   dissolution: DissolutionIF
 }

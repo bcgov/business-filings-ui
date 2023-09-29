@@ -27,6 +27,7 @@ export const useBusinessStore = defineStore('business', {
       nextAnnualReport: null,
       state: null,
       stateFiling: null,
+      startDate: null,
       warnings: []
     }
   }),
@@ -55,6 +56,11 @@ export const useBusinessStore = defineStore('business', {
     /** The founding date. */
     getFoundingDate (state: BusinessStateIF): Date {
       return DateUtilities.apiToDate(state.businessInfo.foundingDate)
+    },
+
+    /** The start date. */
+    getStartDate (state: BusinessStateIF): Date {
+      return DateUtilities.apiToDate(state.businessInfo.startDate)
     },
 
     /** The business identifier (aka Incorporation Number). */
@@ -216,6 +222,10 @@ export const useBusinessStore = defineStore('business', {
 
     setFoundingDate (val: string) {
       this.businessInfo.foundingDate = val
+    },
+
+    setStartDate (val: string) {
+      this.businessInfo.startDate = val
     },
 
     setGoodStanding (val: boolean) {
