@@ -32,7 +32,7 @@ export default class FilingMixin extends DateMixin {
   @Getter(useBusinessStore) getIdentifier!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getRegisteredOfficeAddress!: OfficeAddressIF
-  @Getter(useBusinessStore) getStartDate!: Date
+  @Getter(useBusinessStore) getStartDate!: string
 
   /**
    * Adds/removes filing code and/or sets flags in the Filing Data object.
@@ -130,7 +130,7 @@ export default class FilingMixin extends DateMixin {
         identifier: this.getIdentifier,
         legalName: this.entityName,
         legalType: this.getLegalType,
-        startDate: this.dateToApi(this.getStartDate)
+        startDate: this.getStartDate
 
       },
       dissolution: {

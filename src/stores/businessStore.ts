@@ -1,4 +1,4 @@
-import { AllowedActionsIF, ApiBusinessIF, BusinessStateIF, BusinessWarningIF } from '@/interfaces'
+import { AllowedActionsIF, ApiBusinessIF, ApiDateTimeUtc, BusinessStateIF, BusinessWarningIF } from '@/interfaces'
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityState } from '@/enums'
 import { DateUtilities, LegalServices } from '@/services/'
@@ -59,8 +59,8 @@ export const useBusinessStore = defineStore('business', {
     },
 
     /** The start date. */
-    getStartDate (state: BusinessStateIF): Date {
-      return DateUtilities.apiToDate(state.businessInfo.startDate)
+    getStartDate (state: BusinessStateIF): string {
+      return state.businessInfo.startDate
     },
 
     /** The business identifier (aka Incorporation Number). */
@@ -224,7 +224,7 @@ export const useBusinessStore = defineStore('business', {
       this.businessInfo.foundingDate = val
     },
 
-    setStartDate (val: string) {
+    setStartDate (val: ApiDateTimeUtc) {
       this.businessInfo.startDate = val
     },
 
