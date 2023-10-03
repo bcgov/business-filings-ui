@@ -163,6 +163,48 @@
               </template>
               Submit a Consent to Continue Out of the province of B.C.
             </v-tooltip>
+
+            <!-- Request AGM Extension -->
+            <v-tooltip
+              right
+              content-class="right-tooltip"
+            >
+              <template #activator="{ on }">
+                <v-list-item
+                  v-if="enableAgmExtension"
+                  id="agm-ext-list-item"
+                  :disabled="!isAllowed(AllowableActions.AGM_EXTENSION)"
+                  v-on="on"
+                  @click="goToAgmExtensionFiling()"
+                >
+                  <v-list-item-title>
+                    <span class="app-blue">Request AGM Extension</span>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              Request an AGM extension. The longest extension granted at one time is six months.
+            </v-tooltip>
+
+            <!-- Request AGM Location Change -->
+            <v-tooltip
+              right
+              content-class="right-tooltip"
+            >
+              <template #activator="{ on }">
+                <v-list-item
+                  v-if="enableAgmLocationChg"
+                  id="agm-loc-chg-list-item"
+                  :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
+                  v-on="on"
+                  @click="goToAgmLocationChgFiling()"
+                >
+                  <v-list-item-title>
+                    <span class="app-blue">Request AGM Location Change</span>
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+              Request an AGM location change.
+            </v-tooltip>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -177,7 +219,7 @@ import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import { AllowableActions, NigsMessage, Routes } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
-import { navigate } from '@/utils'
+import { GetFeatureFlag, navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -201,6 +243,14 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   /** Whether this entity is a business (and not a draft IA/Registration). */
   get isBusiness (): boolean {
     return !!this.businessId
+  }
+
+  get enableAgmExtension (): boolean {
+    return !!GetFeatureFlag('enable-agm-extension')
+  }
+
+  get enableAgmLocationChg (): boolean {
+    return !!GetFeatureFlag('enable-agm-location-chg')
   }
 
   /**
@@ -235,6 +285,16 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   goToConsentContinuationOutFiling (): void {
     // 0 means "new filing"
     this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
+  }
+
+  goToAgmExtensionFiling (): void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.AGM_EXTENSION, params: { filingId: '0' } })
+  }
+
+  goToAgmLocationChgFiling (): void {
+    // 0 means "new filing"
+    this.$router.push({ name: Routes.AGM_LOCATION_CHG, params: { filingId: '0' } })
   }
 
   /** Emits an event to confirm dissolution. */

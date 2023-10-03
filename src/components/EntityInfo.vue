@@ -70,13 +70,17 @@ export default class EntityInfo extends Vue {
   }
 
   /** Is True if this is on local filing pages. */
-  get isInLocalFilingPage (): string {
-    return this.$route?.name === Routes.ANNUAL_REPORT ||
-    this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
-    this.$route?.name === Routes.CONTINUATION_OUT ||
-    this.$route?.name === Routes.CORRECTION ||
-    this.$route?.name === Routes.STANDALONE_ADDRESSES ||
-    this.$route?.name === Routes.STANDALONE_DIRECTORS
+  get isInLocalFilingPage (): boolean {
+    return (
+      this.$route?.name === Routes.AGM_EXTENSION ||
+      this.$route?.name === Routes.AGM_LOCATION_CHG ||
+      this.$route?.name === Routes.ANNUAL_REPORT ||
+      this.$route?.name === Routes.CONSENT_CONTINUATION_OUT ||
+      this.$route?.name === Routes.CONTINUATION_OUT ||
+      this.$route?.name === Routes.CORRECTION ||
+      this.$route?.name === Routes.STANDALONE_ADDRESSES ||
+      this.$route?.name === Routes.STANDALONE_DIRECTORS
+    )
   }
 
   /** The Temporary Registration Number string (may be null). */

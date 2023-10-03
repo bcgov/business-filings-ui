@@ -1,19 +1,28 @@
 <template>
-  <div id="continuation-out">
+  <div id="agm-location-chg">
     <ConfirmDialog
       ref="confirm"
-      attach="#continuation-out"
+      attach="#agm-location-chg"
+    />
+
+    <PaymentErrorDialog
+      attach="#agm-location-chg"
+      filingName="AGM Location Change"
+      :dialog="paymentErrorDialog"
+      :errors="saveErrors"
+      :warnings="saveWarnings"
+      @exit="onPaymentErrorDialogExit()"
     />
 
     <ResumeErrorDialog
-      attach="#continuation-out"
+      attach="#agm-location-chg"
       :dialog="resumeErrorDialog"
       @exit="goToDashboard(true)"
     />
 
     <SaveErrorDialog
-      attach="#continuation-out"
-      filingName="Continuation Out"
+      attach="#agm-location-chg"
+      filingName="AGM Location Change"
       :dialog="!!saveErrorReason"
       :disableRetry="busySaving"
       :errors="saveErrors"
@@ -21,6 +30,15 @@
       @exit="saveErrorReason=null"
       @retry="onSaveErrorDialogRetry()"
       @okay="onSaveErrorDialogOkay()"
+    />
+
+    <StaffPaymentDialog
+      :staffPaymentData.sync="staffPaymentData"
+      attach="#agm-location-chg"
+      :dialog="staffPaymentDialog"
+      :loading="filingPaying"
+      @exit="staffPaymentDialog=false"
+      @submit="onClickFilePay(true)"
     />
 
     <!-- Initial Page Load Transition -->
@@ -45,7 +63,6 @@
     <!-- Main Body -->
     <v-container
       v-if="dataLoaded"
-      id="continue-out-container"
       class="view-container"
     >
       <v-row>
@@ -53,147 +70,55 @@
           cols="12"
           lg="9"
         >
-          <article id="continue-out-article">
+          <article id="main-article">
             <!-- Page Title -->
             <header>
-              <h1 id="continue-out-header">
-                Continuation Out
+              <h1>
+                AGM Location Change
               </h1>
             </header>
 
-            <!-- Ledger Detail -->
-            <section>
+            <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
+              <template #content>
+                Help text, or sub-component, goes here.
+              </template>
+            </ExpandableHelp>
+
+            <!-- Main Section -->
+            <section class="mt-8">
               <header>
-                <h2>Ledger Detail</h2>
+                <h2>Section Title</h2>
                 <p class="grey-text">
-                  Enter a detail that will appear on the ledger for this entity.
+                  Section subtext.
                 </p>
               </header>
+
               <div
-                id="detail-comment-section"
-                :class="{ 'invalid-section': !detailCommentValid && showErrors }"
+                id="main-section"
+                :class="{ 'invalid-section': !sectionValid && showErrors }"
               >
                 <v-card
                   flat
-                  class="py-8 px-5"
+                  class="py-4 px-5"
                 >
-                  <v-row no-gutters>
+                  <v-row
+                    no-gutters
+                    class="my-4"
+                  >
                     <v-col
                       cols="12"
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !detailCommentValid && showErrors }">Detail</strong>
+                      <strong :class="{ 'app-red': !sectionValid && showErrors }">Subtitle</strong>
                     </v-col>
                     <v-col
                       cols="12"
                       sm="9"
                     >
-                      <p class="grey-text font-weight-bold">
-                        {{ defaultComment }}
-                      </p>
-                      <DetailComment
-                        ref="detailCommentRef"
-                        v-model="detailComment"
-                        placeholder="Add a Detail that will appear on the ledger for this entity."
-                        :maxLength="maxDetailCommentLength"
-                        @valid="detailCommentValid=$event"
-                      />
+                      Section content goes here.
                     </v-col>
                   </v-row>
-                </v-card>
-              </div>
-            </section>
-
-            <!-- Effective Date of Continuation -->
-            <section>
-              <header>
-                <h2>Effective Date of Continuation</h2>
-              </header>
-              <div
-                id="effective-date-section"
-                :class="{ 'invalid-section': !effectiveDateValid && showErrors }"
-              >
-                <EffectiveDate
-                  ref="effectiveDateRef"
-                  :class="{ 'invalid-component': !effectiveDateValid && showErrors }"
-                  class="pt-6 px-4"
-                  :initialEffectiveDate="initialEffectiveDate"
-                  :validateForm="showErrors"
-                  @update:effectiveDate="effectiveDate=$event"
-                  @valid="effectiveDateValid=$event"
-                />
-              </div>
-            </section>
-
-            <!-- Jurisdiction Information -->
-            <section>
-              <header>
-                <h2>Jurisdiction Information</h2>
-              </header>
-              <div
-                id="jurisdiction-information-section"
-                :class="{ 'invalid-section': !foreignJurisdictionValid && showErrors }"
-              >
-                <ForeignJurisdiction
-                  ref="foreignJurisdictionRef"
-                  :class="{ 'invalid-component': !foreignJurisdictionValid && showErrors }"
-                  class="pt-6 px-4"
-                  :draftCountry="initialCountry"
-                  :draftRegion="initialRegion"
-                  :validateForm="showErrors"
-                  @update:country="selectedCountry=$event"
-                  @update:region="selectedRegion=$event"
-                  @valid="foreignJurisdictionValid=$event"
-                />
-              </div>
-            </section>
-
-            <!-- Business Information -->
-            <section>
-              <header>
-                <h2>Business Information</h2>
-              </header>
-              <div
-                id="business-information-section"
-                :class="{ 'invalid-section': !businessNameValid && showErrors }"
-              >
-                <BusinessNameForeign
-                  ref="businessNameForeignRef"
-                  :class="{ 'invalid-component': !businessNameValid && showErrors }"
-                  class="pt-6 px-4"
-                  :draftBusinessName="initialBusinessName"
-                  :validateForm="showErrors"
-                  @update:businessName="businessName=$event"
-                  @valid="businessNameValid=$event"
-                />
-              </div>
-            </section>
-
-            <!-- Documents Delivery -->
-            <section>
-              <header>
-                <h2>Documents Delivery</h2>
-                <p class="grey-text">
-                  Copies of the continue out documents will be sent to the email addresses listed below.
-                </p>
-              </header>
-              <div
-                id="document-delivery-section"
-                :class="{ 'invalid-section': !documentDeliveryValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <DocumentDelivery
-                    :editableCompletingParty="isRoleStaff"
-                    :contactValue="getBusinessEmail"
-                    contactLabel="Business Office"
-                    :documentOptionalEmail="documentOptionalEmail"
-                    @update:optionalEmail="documentOptionalEmail=$event"
-                    @valid="documentDeliveryValid=$event"
-                  />
                 </v-card>
               </div>
             </section>
@@ -214,41 +139,11 @@
                   ref="certifyRef"
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
-                  :class="{ 'invalid-component': !certifyFormValid && showErrors }"
+                  :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.CONTINUATION_OUT)"
+                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
                 />
-              </div>
-            </section>
-
-            <!-- Court Order and Plan of Arrangement -->
-            <section>
-              <header>
-                <h2>Court Order and Plan of Arrangement</h2>
-                <p class="grey-text">
-                  If this filing is pursuant to a court order, enter the court order number. If this filing is pursuant
-                  to a plan of arrangement, enter the court order number and select Plan of Arrangement.
-                </p>
-              </header>
-              <div
-                id="court-order-section"
-                :class="{ 'invalid-section': !courtOrderValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-8 px-5"
-                >
-                  <CourtOrderPoa
-                    :autoValidation="showErrors"
-                    :courtOrderNumberRequired="false"
-                    :draftCourtOrderNumber="fileNumber"
-                    :hasDraftPlanOfArrangement="hasPlanOfArrangement"
-                    @emitCourtNumber="fileNumber=$event"
-                    @emitPoa="hasPlanOfArrangement=$event"
-                    @emitValid="courtOrderValid=$event"
-                  />
-                </v-card>
               </div>
             </section>
           </article>
@@ -261,7 +156,7 @@
         >
           <aside>
             <affix
-              relative-element-selector="#continue-out-article"
+              relative-element-selector="#main-article"
               :offset="{ top: 120, bottom: 40 }"
             >
               <SbcFeeSummary
@@ -277,12 +172,12 @@
 
     <!-- Buttons -->
     <v-container
-      id="continue-out-buttons-container"
+      id="buttons-container"
       class="list-item"
     >
       <div class="buttons-left">
         <v-btn
-          id="continue-out-save-btn"
+          id="consent-save-btn"
           large
           :disabled="busySaving"
           :loading="saving"
@@ -291,7 +186,7 @@
           <span>Save</span>
         </v-btn>
         <v-btn
-          id="continue-out-save-resume-btn"
+          id="consent-save-resume-btn"
           large
           :disabled="busySaving"
           :loading="savingResuming"
@@ -313,7 +208,7 @@
               v-on="on"
             >
               <v-btn
-                id="continue-out-file-pay-btn"
+                id="consent-file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -329,7 +224,7 @@
         </v-tooltip>
 
         <v-btn
-          id="continue-out-cancel-btn"
+          id="consent-cancel-btn"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -347,46 +242,38 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { BusinessNameForeign, Certify, DetailComment, EffectiveDate, ForeignJurisdiction } from '@/components/common'
-import { ConfirmDialog, ResumeErrorDialog, SaveErrorDialog }
+import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
+import { Certify } from '@/components/common'
+import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
-import { EnumUtilities, LegalServices } from '@/services/'
-import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
-import { ConfirmDialogType } from '@/interfaces'
-import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
-import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
+import { LegalServices } from '@/services/'
+import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
+  from '@/enums'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
-    BusinessNameForeign,
     Certify,
     ConfirmDialog,
-    CourtOrderPoa,
-    DetailComment,
-    DocumentDelivery,
-    EffectiveDate,
-    ForeignJurisdiction,
+    ExpandableHelp,
+    PaymentErrorDialog,
     ResumeErrorDialog,
     SaveErrorDialog,
-    SbcFeeSummary
+    SbcFeeSummary,
+    StaffPaymentDialog
   }
 })
-export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
+export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    businessNameForeignRef: BusinessNameForeign,
     confirm: ConfirmDialogType,
-    certifyRef: Certify,
-    detailCommentRef: DetailComment,
-    effectiveDateRef: EffectiveDate,
-    foreignJurisdictionRef: ForeignJurisdiction,
+    certifyRef: Certify
   }
 
   @Getter(useConfigurationStore) getAuthWebUrl!: string
-  @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
   @Getter(useRootStore) isRoleStaff!: boolean
@@ -394,50 +281,28 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   // enum for template
   readonly FilingCodes = FilingCodes
 
-  // variables for DetailComment component
-  detailComment = ''
-  detailCommentValid = false
-
-  // variables for EffectiveDate component
-  initialEffectiveDate = ''
-  effectiveDate = ''
-  effectiveDateValid = false
-
-  // variables for ForeignJurisdiction component
-  initialCountry = ''
-  initialRegion = ''
-  selectedCountry = ''
-  selectedRegion = ''
-  foreignJurisdictionValid = false
-
-  // variables for BusinessNameForeign component
-  initialBusinessName = ''
-  businessName = ''
-  businessNameValid = false
+  // variables for main section
+  sectionValid = false
 
   // variables for Certify component
   certifiedBy = ''
   isCertified = false
   certifyFormValid = false
 
-  // variables for Courder Order POA component
-  fileNumber = ''
-  hasPlanOfArrangement = false
-  courtOrderValid = true
-
-  // variables for Document Delivery component
-  documentDeliveryValid = true
-  documentOptionalEmail = ''
+  // variables for staff payment
+  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
+  staffPaymentDialog = false
 
   // variables for displaying dialogs
   resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
+  paymentErrorDialog = false
 
   // other variables
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
-  filingId = 0 // id of this Continuation Out filing
+  filingId = 0 // id of this consent to continuation out filing
   savedFiling: any = null // filing during save
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
@@ -451,18 +316,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
   get showLoadingContainer (): boolean {
     // show loading container when data isn't yet loaded and when
     // no dialogs are displayed (otherwise dialogs may be hidden)
-    return (!this.dataLoaded && !this.saveErrorReason)
-  }
-
-  /** Default comment (ie, the first line of the detail comment). */
-  get defaultComment (): string {
-    return 'Continuation Out'
-  }
-
-  /** Maximum length of detail comment. */
-  get maxDetailCommentLength (): number {
-    // = (max size in db) - (default comment length) - (Carriage Return)
-    return 2000 - this.defaultComment.length - 1
+    return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
   }
 
   /** The Base URL string. */
@@ -472,10 +326,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.detailCommentValid && this.effectiveDateValid &&
-      this.foreignJurisdictionValid && this.businessNameValid &&
-      this.documentDeliveryValid && this.courtOrderValid &&
-      this.certifyFormValid)
+    return (this.sectionValid && this.certifyFormValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -491,12 +342,6 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** Called when component is created. */
   created (): void {
-    // Safety check to make sure Staff is filing the Continuation Out.
-    if (!this.isRoleStaff) {
-      this.resumeErrorDialog = true
-      throw new Error('This is a Staff only Filing.')
-    }
-
     // init
     this.setFilingData([])
 
@@ -527,10 +372,9 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     await this.$nextTick()
 
     if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Continuation Out`
+      this.loadingMessage = `Resuming Your Request for AGM Location Change`
     } else {
-      this.loadingMessage = `Preparing Your Continuation Out`
-      this.initialBusinessName = this.getLegalName
+      this.loadingMessage = `Preparing Your Request for AGM Location Change`
     }
 
     // fetch draft (which may overwrite some properties)
@@ -540,12 +384,13 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     this.dataLoaded = true
 
-    // always include continue out code
-    // clear Priority flag and set the Waive Fees flag to true
-    this.updateFilingData('add', FilingCodes.CONTINUATION_OUT, undefined, true)
+    // always include consent continue out code
+    // use existing Priority and Waive Fees flags
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
+      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
-  /** Fetches the draft continuation out filing. */
+  /** Fetches the draft consent filing. */
   async fetchDraftFiling (): Promise<void> {
     const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
     await LegalServices.fetchFiling(url).then(filing => {
@@ -553,8 +398,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       if (!filing) throw new Error('Missing filing')
       if (!filing.header) throw new Error('Missing header')
       if (!filing.business) throw new Error('Missing business')
-      if (!filing.continuationOut) throw new Error('Missing continuation out object')
-      if (filing.header.name !== FilingTypes.CONTINUATION_OUT) throw new Error('Invalid filing type')
+      if (!filing.agmLocationChg) throw new Error('Missing agm location chg object')
+      if (filing.header.name !== FilingTypes.AGM_LOCATION_CHG) throw new Error('Invalid filing type')
       if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
       if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
       if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
@@ -562,36 +407,29 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       // load Certified By (but not Date)
       this.certifiedBy = filing.header.certifiedBy
 
-      // load Detail Comment, removing the first line (default comment)
-      const comment: string = filing.continuationOut.details || ''
-      this.detailComment = comment.split('\n').slice(1).join('\n')
-
-      const courtOrder = filing.continuationOut.courtOrder
-      if (courtOrder) {
-        this.fileNumber = courtOrder.fileNumber
-        this.hasPlanOfArrangement = EnumUtilities.isEffectOfOrderPlanOfArrangement(courtOrder.effectOfOrder)
-      }
-
-      const continuationOutDate = filing.continuationOut.continuationOutDate
-      if (continuationOutDate) {
-        this.initialEffectiveDate = continuationOutDate
-      }
-
-      const foreignJurisdiction = filing.continuationOut.foreignJurisdiction
-      if (foreignJurisdiction) {
-        this.initialCountry = foreignJurisdiction.country
-        if (foreignJurisdiction.region) {
-          this.initialRegion = foreignJurisdiction.region
-        }
-      }
-
-      const legalName = filing.continuationOut.legalName
-      if (legalName) {
-        this.initialBusinessName = legalName
-      }
-
-      if (filing.header.documentOptionalEmail) {
-        this.documentOptionalEmail = filing.header.documentOptionalEmail
+      // load Staff Payment properties
+      if (filing.header.routingSlipNumber) {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.FAS,
+          routingSlipNumber: filing.header.routingSlipNumber,
+          isPriority: filing.header.priority
+        } as StaffPaymentIF
+      } else if (filing.header.bcolAccountNumber) {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.BCOL,
+          bcolAccountNumber: filing.header.bcolAccountNumber,
+          datNumber: filing.header.datNumber,
+          folioNumber: filing.header.folioNumber,
+          isPriority: filing.header.priority
+        } as StaffPaymentIF
+      } else if (filing.header.waiveFees) {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.NO_FEE
+        } as StaffPaymentIF
+      } else {
+        this.staffPaymentData = {
+          option: StaffPaymentOptions.NONE
+        } as StaffPaymentIF
       }
     }).catch(error => {
       // eslint-disable-next-line no-console
@@ -687,20 +525,19 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
    * or when user retries from Save Error dialog
    * or when user submits from Staff Payment dialog.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async onClickFilePay (staffPayment = false): Promise<void> {
+  async onClickFilePay (fromStaffPayment = false): Promise<void> {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-
-      // Show error messages of components if invalid
-      if (!this.detailCommentValid) {
-        this.$refs.detailCommentRef.$refs.textarea.error = true
+      // *** TODO: check for section errors here
+      if (!this.sectionValid) {
+        // Show error message of detail comment text area if invalid
+        // this.$refs.detailCommentRef.$refs.textarea.error = true
       }
       if (!this.certifyFormValid) {
+        // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
       }
-
       await this.validateAndScroll(this.validFlags, this.validComponents)
       return
     }
@@ -708,12 +545,22 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     // prevent double saving
     if (this.busySaving) return
 
+    // if this is a staff user clicking File and Pay (not Submit)
+    // then detour via Staff Payment dialog
+    if (this.isRoleStaff && !fromStaffPayment) {
+      this.staffPaymentDialog = true
+      return
+    }
+
     this.filingPaying = true
+
     // save final filing (not draft)
     this.savedFiling = await this.saveFiling(false).catch(error => {
       if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
         // changes were saved if a 402 is received, so clear flag
         this.haveChanges = false
+        // display payment error dialog
+        this.paymentErrorDialog = true
         // try to return filing (which should exist in this case)
         return error?.response?.data?.filing || null
       } else {
@@ -731,7 +578,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     // if there were no errors, finish file-pay process now
     // otherwise, dialogs may finish this later
-    if (!this.saveErrorReason) this.onClickFilePayFinish()
+    if (!this.paymentErrorDialog && !this.saveErrorReason) this.onClickFilePayFinish()
 
     this.filingPaying = false
   }
@@ -785,18 +632,32 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
     const header: any = {
       header: {
-        name: FilingTypes.CONTINUATION_OUT,
+        name: FilingTypes.CONSENT_CONTINUATION_OUT,
         certifiedBy: this.certifiedBy || '',
-        email: this.getBusinessEmail,
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
     }
 
-    if (this.documentOptionalEmail !== '') {
-      header.header.documentOptionalEmail = this.documentOptionalEmail
-    }
+    switch (this.staffPaymentData.option) {
+      case StaffPaymentOptions.FAS:
+        header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
+        header.header['priority'] = this.staffPaymentData.isPriority
+        break
 
-    header.header['waiveFees'] = true
+      case StaffPaymentOptions.BCOL:
+        header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
+        header.header['datNumber'] = this.staffPaymentData.datNumber
+        header.header['folioNumber'] = this.staffPaymentData.folioNumber
+        header.header['priority'] = this.staffPaymentData.isPriority
+        break
+
+      case StaffPaymentOptions.NO_FEE:
+        header.header['waiveFees'] = true
+        break
+
+      case StaffPaymentOptions.NONE: // should never happen
+        break
+    }
 
     const business: any = {
       business: {
@@ -808,21 +669,8 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     }
 
     const data: any = {
-      [FilingTypes.CONTINUATION_OUT]: {
-        details: `${this.defaultComment}\n${this.detailComment}`,
-        continuationOutDate: this.effectiveDate,
-        foreignJurisdiction: {
-          country: this.selectedCountry,
-          region: this.selectedRegion
-        },
-        legalName: this.businessName
-      }
-    }
-
-    if (this.fileNumber !== '') {
-      data[FilingTypes.CONTINUATION_OUT].courtOrder = {
-        fileNumber: this.fileNumber,
-        effectOfOrder: (this.hasPlanOfArrangement ? EffectOfOrderTypes.PLAN_OF_ARRANGEMENT : '') as string
+      [FilingTypes.AGM_LOCATION_CHG]: {
+        // properties go here
       }
     }
 
@@ -862,7 +710,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Unsaved Changes',
-      'You have unsaved changes in your Continue Out. Do you want to exit your filing?',
+      'You have unsaved changes in your AGM Location Change. Do you want to exit your filing?',
       {
         width: '45rem',
         persistent: true,
@@ -881,6 +729,20 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
       this.$router.push({ name: Routes.DASHBOARD })
         .catch(() => {}) // ignore error in case navigation was aborted
     })
+  }
+
+  /** Handles Exit event from Payment Error dialog. */
+  onPaymentErrorDialogExit (): void {
+    if (this.isRoleStaff) {
+      // close Payment Error dialog -- this
+      // leaves user on Staff Payment dialog
+      this.paymentErrorDialog = false
+    } else {
+      // close the dialog and go to dashboard --
+      // user will have to retry payment from there
+      this.paymentErrorDialog = false
+      this.goToDashboard(true)
+    }
   }
 
   /** Handles Retry events from Save Error dialog. */
@@ -928,33 +790,31 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'detail-comment-section',
-    'effective-date-section',
-    'jurisdiction-information-section',
-    'business-information-section',
-    'document-delivery-section',
-    'certify-form-section',
-    'court-order-section'
+    'main-section',
+    'certify-form-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      detailComment: this.detailCommentValid,
-      effectiveDate: this.effectiveDateValid,
-      foreignJurisdiction: this.foreignJurisdictionValid,
-      businessInformation: this.businessNameValid,
-      documentDelivery: this.documentDeliveryValid,
-      certifyForm: this.certifyFormValid,
-      courtOrder: this.courtOrderValid
+      mainSection: this.sectionValid,
+      certifyForm: this.certifyFormValid
     }
   }
 
+  @Watch('sectionValid')
   @Watch('certifyFormValid')
-  @Watch('courtOrderValid')
-  @Watch('detailCommentValid')
-  @Watch('documentDeliveryValid')
   onHaveChanges (): void {
+    this.haveChanges = true
+  }
+
+  @Watch('staffPaymentData')
+  onStaffPaymentDataChanged (val: StaffPaymentIF): void {
+    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
+
+    // add Waive Fees flag to all filing codes
+    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
+
     this.haveChanges = true
   }
 }
@@ -963,7 +823,7 @@ export default class ContinuationOut extends Mixins(CommonMixin, DateMixin,
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#continuation-out {
+#agm-location-chg {
   /* Set "header-counter" to 0 */
   counter-reset: header-counter;
 }
@@ -1003,7 +863,7 @@ h2 {
 }
 
 // Save & Filing Buttons
-#continue-out-buttons-container {
+#buttons-container {
   padding-top: 2rem;
   border-top: 1px solid $gray5;
 
@@ -1018,19 +878,25 @@ h2 {
   .v-btn + .v-btn {
     margin-left: 0.5rem;
   }
+
+  #consent-cancel-btn {
+    margin-left: 0.5rem;
+  }
 }
 
 // Fix font size and color to stay consistent.
 :deep() {
-  #document-delivery, #court-order-label, #poa-label {
-    font-size: $px-14;
+  .invalid-foreign-jurisdiction {
+    .title-label {
+      color: $app-red;
+    }
   }
 
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
   }
 
-  .invalid-component {
+  .invalid-certify {
     .certify-stmt, .title-label {
       color: $app-red;
     }

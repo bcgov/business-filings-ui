@@ -63,7 +63,6 @@
     <!-- Main Body -->
     <v-container
       v-if="dataLoaded"
-      id="consent-container"
       class="view-container"
     >
       <v-row>
@@ -123,7 +122,7 @@
               </div>
             </section>
 
-            <!--  Jurisdiction Information -->
+            <!-- Jurisdiction Information -->
             <section>
               <header>
                 <h2>Jurisdiction Information</h2>
@@ -1049,7 +1048,7 @@ h2 {
 }
 
 // Fix font size and color to stay consistent.
-:deep(){
+:deep() {
   #document-delivery, #court-order-label, #poa-label {
     font-size: $px-14;
   }
