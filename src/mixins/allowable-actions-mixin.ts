@@ -45,8 +45,8 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.AGM_LOCATION_CHG: {
-        return true // *** FOR DEBUGGING ONLY
-        // return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHG)
+        // return true // *** FOR DEBUGGING ONLY
+        return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHG)
       }
 
       case AllowableActions.BUSINESS_INFORMATION: {

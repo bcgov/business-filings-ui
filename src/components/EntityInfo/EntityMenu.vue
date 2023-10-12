@@ -192,17 +192,22 @@
                 content-class="right-tooltip"
               >
                 <template #activator="{ on }">
-                  <v-list-item
-                    v-if="enableAgmLocationChg"
-                    id="agm-loc-chg-list-item"
-                    :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
+                  <div
+                    class="d-inline-block"
                     v-on="on"
-                    @click="goToAgmLocationChgFiling()"
                   >
-                    <v-list-item-title>
-                      <span class="app-blue">Request AGM Location Change</span>
-                    </v-list-item-title>
-                  </v-list-item>
+                    <v-list-item
+                      v-if="enableAgmLocationChg"
+                      id="agm-loc-chg-list-item"
+                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
+                      v-on="on"
+                      @click="goToAgmLocationChgFiling()"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Request AGM Location Change</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
                 </template>
                 <span>{{ toolTipText }}</span>
               </v-tooltip>
@@ -256,12 +261,11 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
     return !!GetFeatureFlag('supported-agm-location-chg-entities')
   }
 
+  /** get tooltip text for AGM location chg list item. Text is different if action item is disabled  */
   get toolTipText (): string {
     if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHG)) {
-      console.log('Disabled')
       return 'The business must be in good standing to request an AGM location change.'
     } else {
-      console.log('Enabled')
       return 'Request an AGM location change.'
     }
   }

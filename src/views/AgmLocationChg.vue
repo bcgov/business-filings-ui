@@ -60,9 +60,24 @@
               </h1>
             </header>
 
+            <!-- Help -->
             <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
               <template #content>
-                Help text, or sub-component, goes here.
+                <section class="agm-location-change-help">
+                  <h3 class="text-center">
+                    AGM Location Change Help
+                  </h3>
+                  <div class="mt-6">
+                    <p class="ml-1">
+                      This request for location change is only needed if the meetings are fully in-person. In general,
+                      these meetings are required to be held in British Columbia. However, there are exceptions to this
+                      rule. If the company's articles permit it or if the members agree, the meeting can be conducted at
+                      a location outside British Columbia. If the meeting combines both in-person and online
+                      participation, the location requirement only applies to the in-person component. If the meeting is
+                      entirely conducted online, these location restrictions do not apply.
+                    </p>
+                  </div>
+                </section>
               </template>
             </ExpandableHelp>
 
@@ -80,6 +95,7 @@
                   flat
                   class="py-4 px-5"
                 >
+                  <!-- AGM Year -->
                   <v-row
                     no-gutters
                     class="my-6"
@@ -89,7 +105,7 @@
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !sectionValid && showErrors }">AGM Year</strong>
+                      <strong :class="{ 'app-red': !agmYearValid && showErrors }">AGM Year</strong>
                     </v-col>
                     <v-col
                       cols="12"
@@ -97,21 +113,22 @@
                     >
                       <div
                         id="agm-year-section"
-                        :class="{ 'invalid-section': !sectionValid && showErrors }"
+                        :class="{ 'invalid-section': !agmYearValid && showErrors }"
                       >
-                        <v-text-field
-                          id="agm-year"
-                          ref="agmYear"
+                        <AgmYear
+                          ref="agmYearRef"
                           v-model="agmYear"
-                          hide-spin-buttons
-                          type="number"
-                          filled
-                          label="AGM Year"
+                          :label="'AGM year'"
+                          :rules="agmYearRules"
+                          @valid="agmYearValid=$event"
                         />
                       </div>
                     </v-col>
                   </v-row>
+
                   <v-divider class="my-4" />
+
+                  <!-- Location address -->
                   <v-row
                     no-gutters
                     class="my-6"
@@ -211,7 +228,7 @@
               v-on="on"
             >
               <v-btn
-                id="consent-file-pay-btn"
+                id="agm-loctn-chg-file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -227,7 +244,7 @@
         </v-tooltip>
 
         <v-btn
-          id="consent-cancel-btn"
+          id="agm-loctn-chg-cancel-btn"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -253,13 +270,15 @@ import { ConfirmDialog, PaymentErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
 import { AddressIF, ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
 @Component({
   components: {
+    AgmYear,
     Certify,
     ConfirmDialog,
     ExpandableHelp,
@@ -274,7 +293,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   // Refs
   $refs!: {
     agmLocationAddressRef: BaseAddress,
-    agmYear: any,
+    agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
   }
@@ -290,8 +309,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   // variables for main section
   agmLocationAddress = {} as AddressIF
   agmLocationAddressValid = false
-  agmYear = null
-  sectionValid = false
+  agmYear = ''
+  agmYearValid = false
 
   // variables for Certify component
   certifiedBy = ''
@@ -311,7 +330,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
-  filingId = 0 // id of this consent to continuation out filing
+  filingId = 0 // id of this agm location change filing
   savedFiling: any = null // filing during save
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
@@ -338,7 +357,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.agmLocationAddressValid && this.certifyFormValid)
+    return (this.agmLocationAddressValid && this.agmYearValid && this.certifyFormValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -350,6 +369,27 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get isPayRequired (): boolean {
     // FUTURE: modify rule here as needed
     return (this.totalFee > 0)
+  }
+
+  /** Array of validations rules for AGM year. */
+  get agmYearRules (): Array<(val) => boolean | string> {
+    const rules = [] as Array<(val) => boolean | string>
+    rules.push(val => !!val || 'Agm year is required.')
+    rules.push(val => (val && +val > 0) || 'Number must be greater than 0')
+    rules.push(val => (val && val.toString().length === 4) || 'Number must be 4 digits')
+    rules.push(val => (val && +val <= this.followingYear) || 'Must be before on or before ' + this.followingYear)
+    rules.push(val => (val && +val >= this.previousYear) || 'Must be before on or after ' + this.previousYear)
+    return rules
+  }
+
+  get previousYear () : number {
+    const today = new Date()
+    return new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()).getFullYear()
+  }
+
+  get followingYear () : number {
+    const today = new Date()
+    return new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()).getFullYear()
   }
 
   /** Called when component is created. */
@@ -389,65 +429,12 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       this.loadingMessage = `Preparing Your Request for AGM Location Change`
     }
 
-    // fetch draft (which may overwrite some properties)
-    if (this.filingId > 0) {
-      await this.fetchDraftFiling()
-    }
-
     this.dataLoaded = true
 
-    // always include consent continue out code
+    // always include agm location change code
     // use existing Priority and Waive Fees flags
     this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-  }
-
-  /** Fetches the draft consent filing. */
-  async fetchDraftFiling (): Promise<void> {
-    const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-    await LegalServices.fetchFiling(url).then(filing => {
-      // verify data
-      if (!filing) throw new Error('Missing filing')
-      if (!filing.header) throw new Error('Missing header')
-      if (!filing.business) throw new Error('Missing business')
-      if (!filing.agmLocationChg) throw new Error('Missing agm location chg object')
-      if (filing.header.name !== FilingTypes.AGM_LOCATION_CHG) throw new Error('Invalid filing type')
-      if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-      if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
-
-      // load Certified By (but not Date)
-      this.certifiedBy = filing.header.certifiedBy
-
-      // load Staff Payment properties
-      if (filing.header.routingSlipNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.FAS,
-          routingSlipNumber: filing.header.routingSlipNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.bcolAccountNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.BCOL,
-          bcolAccountNumber: filing.header.bcolAccountNumber,
-          datNumber: filing.header.datNumber,
-          folioNumber: filing.header.folioNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.waiveFees) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NO_FEE
-        } as StaffPaymentIF
-      } else {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NONE
-        } as StaffPaymentIF
-      }
-    }).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchDraftFiling() error =', error)
-      this.resumeErrorDialog = true
-    })
   }
 
   updateLocationAddress (val: AddressIF): void {
@@ -463,10 +450,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      // *** TODO: check for section errors here
-      if (!this.sectionValid) {
-        // Show error message of address if invalid
-        // this.$refs.agmLocationAddressRef.$refs.addressForm.validate()
+      if (!this.agmYearValid) {
+        // Show error message of agm year if invalid
+        this.$refs.agmYearRef.$refs.textarea.error = true
       }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
@@ -602,9 +588,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       }
     }
 
+    console.log('this.agmYear', this.agmYear)
+    console.log('this.agmLocationAddress', this.agmLocationAddress)
+
     const data: any = {
       [FilingTypes.AGM_LOCATION_CHG]: {
-        // properties go here
+        year: this.agmYear,
+        newAgmLocation: this.agmLocationAddress
       }
     }
 
@@ -681,8 +671,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'location-section',
     'agm-year-section',
+    'location-section',
     'certify-form-section'
   ]
 
@@ -690,12 +680,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get validFlags (): object {
     return {
       // mainSection: this.sectionValid,
-      agmYear: this.sectionValid,
+      agmYear: this.agmYearValid,
       locationAddress: this.agmLocationAddressValid,
       certifyForm: this.certifyFormValid
     }
   }
 
+  @Watch('agmYearValid')
   @Watch('agmLocationAddressValid')
   @Watch('certifyFormValid')
   onHaveChanges (): void {
@@ -773,19 +764,13 @@ h2 {
     margin-left: 0.5rem;
   }
 
-  #consent-cancel-btn {
+  #agm-loctn-chg-cancel-btn {
     margin-left: 0.5rem;
   }
 }
 
 // Fix font size and color to stay consistent.
 :deep() {
-  .invalid-foreign-jurisdiction {
-    .title-label {
-      color: $app-red;
-    }
-  }
-
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
   }
