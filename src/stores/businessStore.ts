@@ -20,6 +20,7 @@ export const useBusinessStore = defineStore('business', {
       lastAnnualReportDate: null,
       lastDirectorChangeDate: null,
       legalName: null,
+      operatingName: null,
       legalType: null,
       naicsCode: null,
       naicsDescription: null,
@@ -86,6 +87,11 @@ export const useBusinessStore = defineStore('business', {
     /** The legal name. */
     getLegalName (state: BusinessStateIF): string {
       return state.businessInfo.legalName
+    },
+    
+    /** The operating name. */
+    getOperatingName (state: BusinessStateIF): string {
+      return state.businessInfo.operatingName
     },
 
     /** The legal type. */
@@ -252,6 +258,10 @@ export const useBusinessStore = defineStore('business', {
       this.businessInfo.legalName = val
     },
 
+    setOperatingName (val: string) {
+      this.businessInfo.operatingName = val
+    },
+
     setLegalType (val: CorpTypeCd) {
       this.businessInfo.legalType = val
     },
@@ -272,28 +282,33 @@ export const useBusinessStore = defineStore('business', {
      * Fetches the business object from the Legal API and, if successful, triggers some actions.
      * @param context the Vuex context (passed in automatically)
      */
-    loadBusinessInfo (): Promise<any> {
-      // need to return a promise because action is called via dispatch
+    loadBusinessInfo(): Promise<any> {
+      // Need to return a promise because the action is called via dispatch.
       return new Promise((resolve, reject) => {
-        const businessId = sessionStorage.getItem('BUSINESS_ID')
-
-        // if there is no business id, return error
+        const businessId = sessionStorage.getItem('BUSINESS_ID');
+    
+        // If there is no business id, return an error.
         if (!businessId) {
-          reject(new Error('Missing business id'))
-          return
+          reject(new Error('Missing business id'));
+          return;
         }
-
         LegalServices.fetchBusiness(businessId)
           .then(businessInfo => {
-            // set data to store
-            this.setBusinessInfo(businessInfo)
-            // return the business info object
-            resolve(businessInfo)
+            // Set data to store
+            this.setBusinessInfo(businessInfo);
+    
+            // Extract the operatingName from the businessInfo
+            const alternateName = businessInfo.alternateNames?.find(x => x.identifier === businessInfo.identifier)?.operatingName;
+            // Set the operatingName if it exists
+            if (alternateName) this.setOperatingName(alternateName);
+            // Return the business info object
+            resolve(businessInfo);
           })
           .catch(error => {
-            reject(error)
-          })
-      })
+            reject(error);
+          });
+      });
     }
+        
   }
 })

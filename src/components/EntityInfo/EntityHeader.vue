@@ -6,7 +6,7 @@
         id="entity-legal-name"
         aria-label="Entity Legal Name"
       >
-        {{ getEntityName || 'Unknown Name' }}
+        {{ getOperatingName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
@@ -75,7 +75,7 @@
         id="ia-reg-name"
         aria-label="Incorporation Application or Registration Entity Name"
       >
-        {{ getEntityName || 'Unknown Name' }}
+        {{ getOperatingName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
@@ -102,6 +102,7 @@ export default class EntityHeader extends Vue {
   @Prop({ required: true }) readonly tempRegNumber!: string // may be null
 
   @Getter(useBusinessStore) getEntityName!: string
+  @Getter(useBusinessStore) getOperatingName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
