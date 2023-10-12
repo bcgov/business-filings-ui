@@ -485,7 +485,7 @@ export default {
       ])
 
       if (!data || data.length !== 5) throw new Error('Incomplete business data')
-      
+
       // store data from calls above
       this.storeEntityInfo(data[0])
       this.storeTasks(data[2])
