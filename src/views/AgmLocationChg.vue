@@ -182,7 +182,7 @@
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.AGM_LOCATION_CHG)"
+                  :message="certifyText(FilingCodes.AGM_LOCATION_CHANGE)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -377,8 +377,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     rules.push(val => !!val || 'Agm year is required.')
     rules.push(val => (val && +val > 0) || 'Number must be greater than 0')
     rules.push(val => (val && val.toString().length === 4) || 'Number must be 4 digits')
-    rules.push(val => (val && +val <= this.followingYear) || 'Must be before on or before ' + this.followingYear)
-    rules.push(val => (val && +val >= this.previousYear) || 'Must be before on or after ' + this.previousYear)
+    rules.push(val => (val && +val <= this.followingYear) || 'Must be on or before ' + this.followingYear)
+    rules.push(val => (val && +val >= this.previousYear) || 'Must be on or after ' + this.previousYear)
     return rules
   }
 
@@ -433,7 +433,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     // always include agm location change code
     // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
@@ -452,7 +452,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       this.showErrors = true
       if (!this.agmYearValid) {
         // Show error message of agm year if invalid
-        this.$refs.agmYearRef.$refs.textarea.error = true
+        this.$refs.agmYearRef.$refs.textAreaRef.error = true
       }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
@@ -552,7 +552,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     const header: any = {
       header: {
-        name: FilingTypes.AGM_LOCATION_CHG,
+        name: FilingTypes.AGM_LOCATION_CHANGE,
         certifiedBy: this.certifiedBy || '',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
@@ -592,7 +592,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     console.log('this.agmLocationAddress', this.agmLocationAddress)
 
     const data: any = {
-      [FilingTypes.AGM_LOCATION_CHG]: {
+      [FilingTypes.AGM_LOCATION_CHANGE]: {
         year: this.agmYear,
         newAgmLocation: this.agmLocationAddress
       }

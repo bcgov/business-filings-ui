@@ -1,7 +1,7 @@
 <template>
   <v-text-field
     id="year-txt"
-    ref="textarea"
+    ref="textAreaRef"
     hide-spin-buttons
     type="number"
     filled
@@ -20,7 +20,7 @@ import { Debounce } from 'vue-debounce-decorator'
 export default class AgmYear extends Vue {
   // Refs
   $refs!: {
-    textarea: any
+    textAreaRef: any
   }
 
   @Prop({ default: '' }) readonly value!: string
@@ -31,7 +31,7 @@ export default class AgmYear extends Vue {
 
   @Prop({ default: false }) readonly validateForm!: boolean
 
-  agmYear = null
+  agmYear = ''
 
   /** Called when component is created. */
   created (): void {
@@ -49,8 +49,8 @@ export default class AgmYear extends Vue {
   @Watch('validateForm')
   validateAgmYear (): void {
     if (this.validateForm && !this.agmYear) {
-      this.$refs.textarea.validate()
-      this.$refs.textarea.error = true
+      this.$refs.textAreaRef.validate()
+      this.$refs.textAreaRef.error = true
     }
   }
 

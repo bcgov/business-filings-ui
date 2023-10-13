@@ -199,7 +199,7 @@
                     <v-list-item
                       v-if="enableAgmLocationChg"
                       id="agm-loc-chg-list-item"
-                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
+                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
                       v-on="on"
                       @click="goToAgmLocationChgFiling()"
                     >
@@ -263,7 +263,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** get tooltip text for AGM location chg list item. Text is different if action item is disabled  */
   get toolTipText (): string {
-    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHG)) {
+    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
       return 'The business must be in good standing to request an AGM location change.'
     } else {
       return 'Request an AGM location change.'
@@ -311,7 +311,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   goToAgmLocationChgFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.AGM_LOCATION_CHG, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, params: { filingId: '0' } })
   }
 
   /** Emits an event to confirm dissolution. */

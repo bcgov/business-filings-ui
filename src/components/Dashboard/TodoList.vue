@@ -991,6 +991,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     if (header) {
       switch (header.name) {
+        case FilingTypes.AGM_LOCATION_CHANGE:
+          await this.loadAgmLocationChange(task)
+          break
         case FilingTypes.ANNUAL_REPORT:
           await this.loadAnnualReport(task)
           break
@@ -1463,6 +1466,36 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         filingId: header.filingId,
         title: FilingNames.CONSENT_CONTINUATION_OUT,
         draftTitle: FilingNames.CONSENT_CONTINUATION_OUT,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        // FUTURE: ideally, this would come from the filing:
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
+      } as TodoItemIF
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  async loadAgmLocationChange (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const agmLocationChange = filing.agmLocationChange
+
+    if (header && agmLocationChange) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      const item = {
+        name: FilingTypes.AGM_LOCATION_CHANGE,
+        filingId: header.filingId,
+        title: FilingNames.AGM_LOCATION_CHANGE,
+        draftTitle: FilingNames.AGM_LOCATION_CHANGE,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
