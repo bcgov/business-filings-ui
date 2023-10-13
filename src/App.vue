@@ -237,7 +237,7 @@ export default {
 
     ...mapState(useBusinessStore,
       [
-        'getLegalName',
+        'getEntityName',
         'getLegalType',
         'getIdentifier'
       ]),
@@ -304,7 +304,7 @@ export default {
       const breadcrumbs = this.$route?.meta?.breadcrumb
       const crumbs: Array<BreadcrumbIF> = [
         {
-          text: this.getLegalName || 'Unknown Name',
+          text: this.getEntityName || 'Unknown Name',
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])

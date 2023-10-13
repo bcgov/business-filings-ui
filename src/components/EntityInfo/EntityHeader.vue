@@ -6,7 +6,7 @@
         id="entity-legal-name"
         aria-label="Entity Legal Name"
       >
-        {{ getLegalName || 'Unknown Name' }}
+        {{ getEntityName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
@@ -75,7 +75,7 @@
         id="ia-reg-name"
         aria-label="Incorporation Application or Registration Entity Name"
       >
-        {{ getLegalName || 'Unknown Name' }}
+        {{ getEntityName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
