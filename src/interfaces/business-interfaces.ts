@@ -56,7 +56,6 @@ export interface ApiBusinessIF {
   lastLedgerTimestamp?: ApiDateTimeUtc // not used
   lastModified?: ApiDateTimeUtc // not used
   legalName: string
-  operatingName: string
   legalType: CorpTypeCd
   naicsCode: string // firm only
   naicsDescription: string // firm only

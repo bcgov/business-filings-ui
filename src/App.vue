@@ -237,7 +237,7 @@ export default {
 
     ...mapState(useBusinessStore,
       [
-        'getOperatingName',
+        'getLegalName',
         'getLegalType',
         'getIdentifier'
       ]),
@@ -304,7 +304,7 @@ export default {
       const breadcrumbs = this.$route?.meta?.breadcrumb
       const crumbs: Array<BreadcrumbIF> = [
         {
-          text: this.getOperatingName || 'Unknown Name',
+          text: this.getLegalName || 'Unknown Name',
           to: { name: Routes.DASHBOARD }
         },
         ...(breadcrumbs || [])
@@ -481,7 +481,6 @@ export default {
         LegalServices.fetchTasks(this.businessId),
         this.loadFilings(this.businessId || this.tempRegNumber),
         LegalServices.fetchParties(this.businessId)
-
       ])
 
       if (!data || data.length !== 5) throw new Error('Incomplete business data')
