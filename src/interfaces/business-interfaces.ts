@@ -66,7 +66,8 @@ export interface ApiBusinessIF {
   startDate: ApiDateTimeUtc
   submitter?: string // not used
   taxId?: string // aka Business Number // may be absent
-  warnings: Array<BusinessWarningIF>
+  warnings: Array<BusinessWarningIF>,
+  operatingName?: string
 }
 
 /** The Business module state interface. */

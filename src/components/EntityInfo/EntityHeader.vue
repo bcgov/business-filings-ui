@@ -102,7 +102,6 @@ export default class EntityHeader extends Vue {
   @Prop({ required: true }) readonly tempRegNumber!: string // may be null
 
   @Getter(useBusinessStore) getEntityName!: string
-  @Getter(useBusinessStore) getLegalName!: string
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string

@@ -28,7 +28,8 @@ export const useBusinessStore = defineStore('business', {
       state: null,
       stateFiling: null,
       startDate: null,
-      warnings: []
+      warnings: [],
+      operatingName: null
     }
   }),
 
@@ -83,9 +84,13 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.lastDirectorChangeDate
     },
 
-    /** The legal name. */
+    /** The legal name, or operating name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return state.businessInfo.legalName
+      return this.isFirm ? state.businessInfo.operatingName : state.businessInfo.legalName
+    },
+
+    getOperatingName (state: BusinessStateIF): string {
+      return state.businessInfo.operatingName
     },
 
     /** The legal type. */
@@ -257,6 +262,10 @@ export const useBusinessStore = defineStore('business', {
       this.businessInfo.legalName = val
     },
 
+    setOperatingName (val: string) {
+      this.businessInfo.operatingName = val
+    },
+
     setLegalType (val: CorpTypeCd) {
       this.businessInfo.legalType = val
     },
@@ -291,14 +300,12 @@ export const useBusinessStore = defineStore('business', {
           .then(businessInfo => {
             // Set data to store
             this.setBusinessInfo(businessInfo)
-            if (this.isFirm) {
-              // Extract the operatingName from the businessInfo
-              const alternateName = businessInfo.alternateNames?.find(
-                x => x.identifier === businessInfo.identifier
-              )?.operatingName
-              // Set the operatingName if it exists
-              if (alternateName) this.setLegalName(alternateName)
-            }
+            // Extract the operatingName from the businessInfo
+            const alternateName = businessInfo.alternateNames?.find(
+              x => x.identifier === businessInfo.identifier
+            )?.operatingName
+            // Set the operatingName if it exists
+            if (alternateName) this.setOperatingName(alternateName)
             // Return the business info object
             resolve(businessInfo)
           })
