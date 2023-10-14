@@ -1970,6 +1970,7 @@ describe('App as a COMPLETED Registration Application', () => {
   it('fetches NR data properly', () => {
     expect(rootStore.getNameRequest.nrNum).toBe('NR 1234567')
     expect(businessStore.getLegalName).toBe('My Name Request')
+    expect(businessStore.getOperatingName).toBe('My Name Request')
   })
 
   it.skip('fetches Registration filing properly', () => {
