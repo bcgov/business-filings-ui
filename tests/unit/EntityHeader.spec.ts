@@ -41,6 +41,7 @@ describe('Entity Header - data', () => {
   it('displays Business entity info properly', async () => {
     // set store properties
     businessStore.setLegalName('My Business')
+    businessStore.setOperatingName('My Business')
     businessStore.setGoodStanding(true)
     businessStore.setLegalType(CorpTypeCd.COOP)
 
