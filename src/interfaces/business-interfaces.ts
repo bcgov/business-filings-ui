@@ -61,7 +61,6 @@ export interface ApiBusinessIF {
   naicsDescription: string // firm only
   naicsKey: string // firm only
   nextAnnualReport: ApiDateTimeUtc // BCOMP only
-  operatingName?: string
   state: EntityState
   stateFiling: string // the state filing URL
   startDate: ApiDateTimeUtc

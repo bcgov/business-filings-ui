@@ -25,7 +25,6 @@ export const useBusinessStore = defineStore('business', {
       naicsDescription: null,
       naicsKey: null,
       nextAnnualReport: null,
-      operatingName: null,
       state: null,
       stateFiling: null,
       startDate: null,
@@ -86,11 +85,13 @@ export const useBusinessStore = defineStore('business', {
 
     /** The legal name, or operating name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return (this.isFirm && this.getOperatingName) ? state.businessInfo.operatingName : state.businessInfo.legalName
+      return this.isFirm && this.getOperatingName ? this.getOperatingName : state.businessInfo.legalName
     },
 
     getOperatingName (state: BusinessStateIF): string {
-      return state.businessInfo.operatingName || GetCorpNumberedDescription(this.getLegalType)
+      const { alternateNames, identifier } = state.businessInfo
+      const operatingName = alternateNames?.find((x) => x.identifier === identifier)?.operatingName
+      return operatingName || null
     },
 
     /** The legal type. */
@@ -256,11 +257,7 @@ export const useBusinessStore = defineStore('business', {
     setLegalName (val: string) {
       this.businessInfo.legalName = val
     },
-
-    setOperatingName (val: string) {
-      this.businessInfo.operatingName = val
-    },
-
+    
     setLegalType (val: CorpTypeCd) {
       this.businessInfo.legalType = val
     },
@@ -295,12 +292,6 @@ export const useBusinessStore = defineStore('business', {
           .then(businessInfo => {
             // Set data to store
             this.setBusinessInfo(businessInfo)
-            // Extract the operatingName from the businessInfo
-            const alternateName = businessInfo.alternateNames?.find(
-              x => x.identifier === businessInfo.identifier
-            )?.operatingName
-            // Set the operatingName if it exists
-            if (alternateName) this.setOperatingName(alternateName)
             // Return the business info object
             resolve(businessInfo)
           })
