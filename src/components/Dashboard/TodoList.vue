@@ -1745,38 +1745,41 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         break
       }
 
-      case FilingTypes.RESTORATION: {
-        let restorationType: FilingSubTypes
-
-        /**
-         * Type assertion is done to fix TypeScript error.
-         * "This condition will always return 'false' since the types
-         * 'FilingSubTypes' and 'RestorationTypes' have no overlap."
-         */
-        if (item.filingSubType === FilingSubTypes.FULL_RESTORATION) {
-          restorationType = FilingSubTypes.FULL_RESTORATION
-        }
-
-        if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION) {
-          restorationType = FilingSubTypes.LIMITED_RESTORATION
-        }
-
-        if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
-          restorationType = FilingSubTypes.LIMITED_RESTORATION_EXTENSION
-        }
-
-        if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
-          restorationType = FilingSubTypes.LIMITED_RESTORATION_TO_FULL
-        }
-
-        navigate(this.buildRestorationUrl(item, restorationType))
+      case FilingTypes.RESTORATION:
+        navigateForResumeRestoration(item)
         break
-      }
 
       default:
         // eslint-disable-next-line no-console
         console.log('doResumeFiling(), invalid type for item =', item)
         break
+    }
+
+    /* Handles the restoration flow inside of doResumeFiling */
+    function navigateForResumeRestoration (item: TodoItemIF): void {
+      let restorationType: FilingSubTypes
+      /**
+       * Type assertion is done to fix TypeScript error.
+       * "This condition will always return 'false' since the types
+       * 'FilingSubTypes' and 'RestorationTypes' have no overlap."
+       */
+      if (item.filingSubType === FilingSubTypes.FULL_RESTORATION) {
+        restorationType = FilingSubTypes.FULL_RESTORATION
+      }
+
+      if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION) {
+        restorationType = FilingSubTypes.LIMITED_RESTORATION
+      }
+
+      if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) {
+        restorationType = FilingSubTypes.LIMITED_RESTORATION_EXTENSION
+      }
+
+      if (item.filingSubType === FilingSubTypes.LIMITED_RESTORATION_TO_FULL) {
+        restorationType = FilingSubTypes.LIMITED_RESTORATION_TO_FULL
+      }
+
+      navigate(this.buildRestorationUrl(item, restorationType))
     }
 
     function navigateToCorrectionEditUi (editUrl: string, identifier: string): void {
