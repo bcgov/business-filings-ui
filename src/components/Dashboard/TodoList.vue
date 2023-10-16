@@ -1677,8 +1677,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
           case FilingNames.CHANGE_OF_ADDRESS:
           case FilingNames.CHANGE_OF_DIRECTORS:
-            if (this.isBenBcCccUlc) {
-              // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
+            if (this.isBenBcCccUlc || this.isCoop) {
               navigateToCorrectionEditUi(this.getEditUrl, this.getIdentifier)
               break
             } else {
