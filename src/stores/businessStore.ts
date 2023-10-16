@@ -25,11 +25,11 @@ export const useBusinessStore = defineStore('business', {
       naicsDescription: null,
       naicsKey: null,
       nextAnnualReport: null,
+      operatingName: null,
       state: null,
       stateFiling: null,
       startDate: null,
-      warnings: [],
-      operatingName: null
+      warnings: []
     }
   }),
 
@@ -86,11 +86,11 @@ export const useBusinessStore = defineStore('business', {
 
     /** The legal name, or operating name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return this.isFirm ? state.businessInfo.operatingName : state.businessInfo.legalName
+      return (this.isFirm && this.getOperatingName) ? state.businessInfo.operatingName : state.businessInfo.legalName
     },
 
     getOperatingName (state: BusinessStateIF): string {
-      return state.businessInfo.operatingName
+      return state.businessInfo.operatingName || GetCorpNumberedDescription(this.getLegalType)
     },
 
     /** The legal type. */
@@ -189,11 +189,6 @@ export const useBusinessStore = defineStore('business', {
     /** Is True if business is historical (ie, dissolved). */
     isHistorical (): boolean {
       return (this.getBusinessState === EntityState.HISTORICAL)
-    },
-
-    /** Is True if entity is a Sole Proprietorship or General Partnership. */
-    isTypeFirm (): boolean {
-      return (this.isTypeSoleProp || this.isTypePartnership)
     },
 
     /** Is True if business is in liquidation. */

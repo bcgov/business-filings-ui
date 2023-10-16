@@ -61,13 +61,13 @@ export interface ApiBusinessIF {
   naicsDescription: string // firm only
   naicsKey: string // firm only
   nextAnnualReport: ApiDateTimeUtc // BCOMP only
+  operatingName?: string
   state: EntityState
   stateFiling: string // the state filing URL
   startDate: ApiDateTimeUtc
   submitter?: string // not used
   taxId?: string // aka Business Number // may be absent
-  warnings: Array<BusinessWarningIF>,
-  operatingName?: string
+  warnings: Array<BusinessWarningIF>
 }
 
 /** The Business module state interface. */
