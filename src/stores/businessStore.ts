@@ -257,7 +257,7 @@ export const useBusinessStore = defineStore('business', {
     setLegalName (val: string) {
       this.businessInfo.legalName = val
     },
-    
+
     setLegalType (val: CorpTypeCd) {
       this.businessInfo.legalType = val
     },
