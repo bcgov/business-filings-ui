@@ -316,7 +316,7 @@ describe('Entity Header - Operating Name', () => {
     const wrapper = shallowMount(EntityHeader, {
       vuetify,
       router,
-      propsData: { businessId: 'BEN1052377', tempRegNumber: null }
+      propsData: { businessId: 'BC1052377', tempRegNumber: null }
     })
     await Vue.nextTick()
     // verify displayed text
