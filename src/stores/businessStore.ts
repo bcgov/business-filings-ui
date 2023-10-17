@@ -85,7 +85,7 @@ export const useBusinessStore = defineStore('business', {
 
     /** The legal name, or operating name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return this.isFirm && this.getOperatingName ? this.getOperatingName : state.businessInfo.legalName
+      return (this.isFirm && this.getOperatingName) ? this.getOperatingName : state.businessInfo.legalName
     },
 
     getOperatingName (state: BusinessStateIF): string {
@@ -288,6 +288,7 @@ export const useBusinessStore = defineStore('business', {
           reject(new Error('Missing business id'))
           return
         }
+
         LegalServices.fetchBusiness(businessId)
           .then(businessInfo => {
             // Set data to store

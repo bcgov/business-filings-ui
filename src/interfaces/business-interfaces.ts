@@ -35,8 +35,8 @@ export interface BusinessWarningIF {
 // FUTURE: verify/indicate unused properties
 export interface ApiBusinessIF {
   adminFreeze: boolean
-  alternateNames?: Array<AlternateNameIF>
   allowedActions: AllowedActionsIF
+  alternateNames?: Array<AlternateNameIF>
   arMaxDate?: IsoDatePacific // not used
   arMinDate?: IsoDatePacific // not used
   associationType: string // COOP only
