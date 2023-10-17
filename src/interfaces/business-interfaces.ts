@@ -15,6 +15,15 @@ export interface AllowedActionsIF {
   }
 }
 
+/** The Alternate Name (aka operating name) object. */
+export interface AlternateNameIF {
+  entityType: CorpTypeCd
+  identifier: string
+  nameRegisteredDate: ApiDateTimeUtc
+  nameStartDate: IsoDatePacific
+  operatingName: string
+}
+
 export interface BusinessWarningIF {
   code: string // FUTURE: use an enum
   filing?: string // not used
@@ -27,6 +36,7 @@ export interface BusinessWarningIF {
 export interface ApiBusinessIF {
   adminFreeze: boolean
   allowedActions: AllowedActionsIF
+  alternateNames?: Array<AlternateNameIF>
   arMaxDate?: IsoDatePacific // not used
   arMinDate?: IsoDatePacific // not used
   associationType: string // COOP only

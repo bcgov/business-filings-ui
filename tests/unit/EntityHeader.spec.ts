@@ -271,3 +271,55 @@ describe('Entity Header - AUTHORIZED TO CONTINUE OUT badge', () => {
     })
   })
 })
+
+describe('Entity Header - Operating Name', () => {
+  const router = mockRouter.mock()
+  it('displays operating name if firm', async () => {
+    // set store properties
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'My Business',
+        alternateNames: [
+          {
+            operatingName: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.SOLE_PROP)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'FM1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Wayne Enterprises')
+  })
+
+  it('displays legal name if not firm', async () => {
+    businessStore.setBusinessInfo(
+      {
+        legalName: 'My Business',
+        alternateNames: [
+          {
+            operatingName: 'Wayne Enterprises'
+          }
+        ]
+      } as any
+    )
+    businessStore.setGoodStanding(true)
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(EntityHeader, {
+      vuetify,
+      router,
+      propsData: { businessId: 'BC1052377', tempRegNumber: null }
+    })
+    await Vue.nextTick()
+    // verify displayed text
+    expect(wrapper.find('#entity-legal-name').text()).toBe('My Business')
+  })
+})

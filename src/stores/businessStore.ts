@@ -83,9 +83,15 @@ export const useBusinessStore = defineStore('business', {
       return state.businessInfo.lastDirectorChangeDate
     },
 
-    /** The legal name. */
+    /** The legal name, or operating name if is firm. */
     getLegalName (state: BusinessStateIF): string {
-      return state.businessInfo.legalName
+      return (this.isFirm && this.getOperatingName) ? this.getOperatingName : state.businessInfo.legalName
+    },
+
+    getOperatingName (state: BusinessStateIF): string {
+      const { alternateNames, identifier } = state.businessInfo
+      const operatingName = alternateNames?.find((x) => x.identifier === identifier)?.operatingName
+      return operatingName || null
     },
 
     /** The legal type. */
@@ -277,7 +283,7 @@ export const useBusinessStore = defineStore('business', {
       return new Promise((resolve, reject) => {
         const businessId = sessionStorage.getItem('BUSINESS_ID')
 
-        // if there is no business id, return error
+        // If there is no business id, return an error.
         if (!businessId) {
           reject(new Error('Missing business id'))
           return
@@ -285,9 +291,9 @@ export const useBusinessStore = defineStore('business', {
 
         LegalServices.fetchBusiness(businessId)
           .then(businessInfo => {
-            // set data to store
+            // Set data to store
             this.setBusinessInfo(businessInfo)
-            // return the business info object
+            // Return the business info object
             resolve(businessInfo)
           })
           .catch(error => {
