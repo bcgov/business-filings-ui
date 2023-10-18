@@ -27,8 +27,11 @@
         <template #[`item.dateOfIssue`]="{ item }">
           {{ apiToPacificDate(item.dateOfIssue) || "-" }}
         </template>
-        <template #[`item.action`]>
-          <CredentialsMenu />
+        <template #[`item.action`]="{ item }">
+          <CredentialsMenu
+            :issuedCredential="item"
+            @onConfirmRevokeCredential="promptConfirmRevokeCredential"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -36,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Emit } from 'vue-property-decorator'
 import { DigitalCredentialIF, TableHeaderIF } from '@/interfaces'
 import { DigitalCredentialTypes } from '@/enums'
 import { DateMixin } from '@/mixins'
@@ -89,6 +92,12 @@ export default class CredentialsTable extends Mixins(DateMixin) {
     }
     return credentialType.charAt(0).toUpperCase() + credentialType.slice(1) + ' Credential'
   }
+
+  /** Emits an event to prompt confirmation to revoke credential. */
+  @Emit('onPromptConfirmRevokeCredential')
+  promptConfirmRevokeCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
+    return issuedCredential
+  }
 }
 </script>
 
@@ -103,7 +112,6 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 
 // Vuetify overrides for Table Headers and Cells
 :deep() {
-
   .v-data-table>.v-data-table__wrapper>table>thead>tr>th,
   td {
     color: $gray7;

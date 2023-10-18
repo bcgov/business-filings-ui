@@ -5,6 +5,8 @@ import CancelPaymentErrorDialog from './CancelPaymentErrorDialog.vue'
 import CoaWarningDialog from './CoaWarningDialog.vue'
 import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 import ConfirmDissolutionDialog from './ConfirmDissolutionDialog.vue'
+import ConfirmRevokeCredentialDialog from './ConfirmRevokeCredentialDialog.vue'
+import CredentialRevokedDialog from './CredentialRevokedDialog.vue'
 import DashboardUnavailableDialog from './DashboardUnavailableDialog.vue'
 import DeleteErrorDialog from './DeleteErrorDialog.vue'
 import DownloadErrorDialog from './DownloadErrorDialog.vue'
@@ -16,6 +18,7 @@ import NameRequestInvalidDialog from './NameRequestInvalidDialog.vue'
 import NotInGoodStandingDialog from '@/components/dialogs/NotInGoodStandingDialog.vue'
 import PaymentErrorDialog from './PaymentErrorDialog.vue'
 import ResumeErrorDialog from './ResumeErrorDialog.vue'
+import RevokeCredentialErrorDialog from './RevokeCredentialErrorDialog.vue'
 import SaveErrorDialog from './SaveErrorDialog.vue'
 import StaffPaymentDialog from './StaffPaymentDialog.vue'
 
@@ -27,6 +30,8 @@ export {
   CoaWarningDialog,
   ConfirmDialog,
   ConfirmDissolutionDialog,
+  ConfirmRevokeCredentialDialog,
+  CredentialRevokedDialog,
   DashboardUnavailableDialog,
   DeleteErrorDialog,
   DownloadErrorDialog,
@@ -38,6 +43,7 @@ export {
   NotInGoodStandingDialog,
   PaymentErrorDialog,
   ResumeErrorDialog,
+  RevokeCredentialErrorDialog,
   SaveErrorDialog,
   StaffPaymentDialog
 }

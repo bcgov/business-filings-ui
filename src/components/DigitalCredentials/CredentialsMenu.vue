@@ -30,46 +30,47 @@
 
     <v-list dense>
       <v-list-item-group color="primary">
-        <v-tooltip
-          right
-          content-class="right-tooltip"
+        <v-list-item>
+          <v-list-item-title>
+            <span class="app-blue">Replace Credential</span>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          :disabled="issuedCredential.isRevoked"
+          @click="handleConfirmRevokeCredential(issuedCredential)"
         >
-          <template #activator="{ on }">
-            <v-list-item
-              v-on="on"
-            >
-              <v-list-item-title>
-                <span class="app-blue">Reissue</span>
-              </v-list-item-title>
-            </v-list-item>
-          </template>
-          TODO
-        </v-tooltip>
-        <v-tooltip
-          right
-          content-class="right-tooltip"
-        >
-          <template #activator="{ on }">
-            <v-list-item
-              v-on="on"
-            >
-              <v-list-item-title>
-                <span class="app-blue">Revoke</span>
-              </v-list-item-title>
-            </v-list-item>
-          </template>
-          TODO
-        </v-tooltip>
+          <v-list-item-title>
+            <span class="app-blue">Revoke Credential</span>
+          </v-list-item-title>
+        </v-list-item>
       </v-list-item-group>
     </v-list>
   </v-menu>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { DigitalCredentialIF } from '@/interfaces'
+import { Component, Vue, Emit, Prop } from 'vue-property-decorator'
 
 @Component
 export default class CredentialsMenu extends Vue {
-    expand = false
+  @Prop({ default: () => null }) issuedCredential!: DigitalCredentialIF
+
+  expand = false
+
+  /** Emits an event to confirm revoke credential. */
+  @Emit('onConfirmRevokeCredential')
+  handleConfirmRevokeCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
+    return issuedCredential
+  }
 }
 </script>
+
+<!-- eslint-disable max-len -->
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+:deep(.theme--light.v-list-item--disabled) {
+  opacity: 0.38 !important;
+}
+</style>
