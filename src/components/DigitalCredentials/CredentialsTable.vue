@@ -22,7 +22,7 @@
           {{ formatCredentialType(item.credentialType) }}
         </template>
         <template #[`item.isIssued`]="{ item }">
-          {{ item.isIssued ? "Issued" : "Pending" }}
+          {{ item.isRevoked ? "Revoked" : item.isIssued ? "Issued" : "Pending" }}
         </template>
         <template #[`item.dateOfIssue`]="{ item }">
           {{ apiToPacificDate(item.dateOfIssue) || "-" }}
@@ -31,6 +31,7 @@
           <CredentialsMenu
             :issuedCredential="item"
             @onConfirmRevokeCredential="promptConfirmRevokeCredential"
+            @onConfirmReplaceCredential="promptConfirmReplaceCredential"
           />
         </template>
       </v-data-table>
@@ -96,6 +97,12 @@ export default class CredentialsTable extends Mixins(DateMixin) {
   /** Emits an event to prompt confirmation to revoke credential. */
   @Emit('onPromptConfirmRevokeCredential')
   promptConfirmRevokeCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
+    return issuedCredential
+  }
+
+  /** Emits an event to prompt confirmation to replace credential. */
+  @Emit('onPromptConfirmReplaceCredential')
+  promptConfirmReplaceCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
     return issuedCredential
   }
 }

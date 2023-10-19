@@ -170,13 +170,6 @@ export default class CredentialsStepper extends Vue {
     {
       id: 3,
       html: `
-        In your BC Wallet app, check your notifications. You should have one to get a Person Credential.
-        Go through the process of accepting it into your wallet.
-      `
-    },
-    {
-      id: 4,
-      html: `
         Check your Business Card credentials on the
         <router-link to="">Credential dashboard</router-link>.
       `

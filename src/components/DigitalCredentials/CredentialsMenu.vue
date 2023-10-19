@@ -30,7 +30,10 @@
 
     <v-list dense>
       <v-list-item-group color="primary">
-        <v-list-item>
+        <v-list-item
+          :disabled="issuedCredential.isDeleted"
+          @click="handleConfirmReplaceCredential(issuedCredential)"
+        >
           <v-list-item-title>
             <span class="app-blue">Replace Credential</span>
           </v-list-item-title>
@@ -61,6 +64,12 @@ export default class CredentialsMenu extends Vue {
   /** Emits an event to confirm revoke credential. */
   @Emit('onConfirmRevokeCredential')
   handleConfirmRevokeCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
+    return issuedCredential
+  }
+
+  /** Emits an event to confirm replace credential. */
+  @Emit('onConfirmReplaceCredential')
+  handleConfirmReplaceCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
     return issuedCredential
   }
 }

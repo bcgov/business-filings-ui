@@ -4,7 +4,7 @@
     width="45rem"
     persistent
     :attach="attach"
-    content-class="confirm-revoke-credential-dialog"
+    content-class="confirm-replace-credential-dialog"
   >
     <v-card class="pa-5">
       <v-card-subtitle
@@ -39,7 +39,7 @@
           id="dialog-text"
           class="warning-text"
         >
-          This will revoke the credential from your BC Wallet. It cannot be reversed. Do you still want to continue?
+          This will replace the credential in your BC Wallet. It cannot be reversed. Do you still want to continue?
         </p>
       </v-card-text>
 
@@ -63,7 +63,7 @@
             color="primary"
             @click="proceed()"
           >
-            Continue with Credential Revocation
+            Continue with Credential Replacement
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-row>
@@ -76,7 +76,7 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 
 @Component({})
-export default class ConfirmRevokeCredentialDialog extends Vue {
+export default class ConfirmReplaceCredentialDialog extends Vue {
     /** Prop to display the dialog. */
     @Prop({ default: false }) readonly dialog!: boolean
 

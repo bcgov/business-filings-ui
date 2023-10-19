@@ -8,6 +8,13 @@
       @proceed="revokeCredential(issuedCredential)"
     />
 
+    <ConfirmReplaceCredentialDialog
+      :dialog="confirmReplaceCredentialDialog"
+      attach="#app"
+      @close="hideConfirmReplaceCredentialDialog"
+      @proceed="replaceCredential(issuedCredential)"
+    />
+
     <CredentialRevokedDialog
       :dialog="credentialRevokedDialog"
       attach="#app"
@@ -17,7 +24,7 @@
     <RevokeCredentialErrorDialog
       :dialog="revokeCredentialErrorDialog"
       attach="#app"
-      @close="revokeCredentialErrorDialog=false"
+      @close="revokeCredentialErrorDialog = false"
     />
 
     <v-container>
@@ -30,6 +37,7 @@
             v-if="issuedCredentials?.length"
             :issuedCredentials="issuedCredentials"
             @onPromptConfirmRevokeCredential="displayConfirmRevokeCredentialDialog"
+            @onPromptConfirmReplaceCredential="displayConfirmReplaceCredentialDialog"
           />
           <CredentialsLanding v-else />
         </v-col>
@@ -53,9 +61,12 @@ import { LegalServices } from '@/services'
 import CredentialsInfo from '@/components/DigitalCredentials/CredentialsInfo.vue'
 import CredentialsLanding from '@/components/DigitalCredentials/CredentialsLanding.vue'
 import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.vue'
+import ConfirmReplaceCredentialDialog from '@/components/dialogs/ConfirmReplaceCredentialDialog.vue'
 import ConfirmRevokeCredentialDialog from '@/components/dialogs/ConfirmRevokeCredentialDialog.vue'
 import CredentialRevokedDialog from '@/components/dialogs/CredentialRevokedDialog.vue'
+import ReplaceCredentialErrorDialog from '@/components/dialogs/ReplaceCredentialErrorDialog.vue'
 import RevokeCredentialErrorDialog from '@/components/dialogs/RevokeCredentialErrorDialog.vue'
+import { Routes } from '@/enums'
 
 @Component({
   components: {
@@ -63,7 +74,9 @@ import RevokeCredentialErrorDialog from '@/components/dialogs/RevokeCredentialEr
     CredentialsLanding,
     CredentialsTable,
     ConfirmRevokeCredentialDialog,
+    ConfirmReplaceCredentialDialog,
     CredentialRevokedDialog,
+    ReplaceCredentialErrorDialog,
     RevokeCredentialErrorDialog
   }
 })
@@ -71,7 +84,9 @@ export default class CredentialsDashboard extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string;
 
   confirmRevokeCredentialDialog = false;
+  confirmReplaceCredentialDialog = false;
   credentialRevokedDialog = false;
+  replaceCredentialErrorDialog = false;
   revokeCredentialErrorDialog = false;
   issuedCredential: DigitalCredentialIF = null;
   issuedCredentials: Array<DigitalCredentialIF> = [];
@@ -95,6 +110,16 @@ export default class CredentialsDashboard extends Vue {
     this.confirmRevokeCredentialDialog = false
   }
 
+  displayConfirmReplaceCredentialDialog (issuedCredential: DigitalCredentialIF): void {
+    this.issuedCredential = issuedCredential
+    this.confirmReplaceCredentialDialog = true
+  }
+
+  hideConfirmReplaceCredentialDialog (): void {
+    this.issuedCredential = null
+    this.confirmReplaceCredentialDialog = false
+  }
+
   async revokeCredential (issuedCredential: DigitalCredentialIF): Promise<void> {
     const revoked = await LegalServices.revokeCredential(this.getIdentifier, issuedCredential.credentialId)
       .finally(() => {
@@ -106,6 +131,22 @@ export default class CredentialsDashboard extends Vue {
     } else {
       this.credentialRevokedDialog = true
       await this.getCredentials()
+    }
+  }
+
+  async replaceCredential (issuedCredential: DigitalCredentialIF): Promise<void> {
+    let revokedCredential = issuedCredential.isRevoked ? {} : null
+    if (!issuedCredential.isRevoked) {
+      revokedCredential = await LegalServices.revokeCredential(this.getIdentifier, issuedCredential.credentialId)
+    }
+    const removedCredential = await LegalServices.removeCredential(this.getIdentifier, issuedCredential.credentialId)
+    const removedConnection = await LegalServices.removeCredentialConnection(this.getIdentifier)
+
+    this.hideConfirmReplaceCredentialDialog()
+    if (!(revokedCredential && removedCredential && removedConnection)) {
+      this.replaceCredentialErrorDialog = true
+    } else {
+      this.$router.push({ name: Routes.ISSUE })
     }
   }
 }

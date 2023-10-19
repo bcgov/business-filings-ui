@@ -7,6 +7,7 @@ export interface DigitalCredentialIF {
   isIssued: boolean
   dateOfIssue: string
   isRevoked: boolean
+  isDeleted: boolean
 }
 
 export interface WalletConnectionIF {
