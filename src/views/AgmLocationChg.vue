@@ -63,7 +63,7 @@
             <!-- Help -->
             <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
               <template #content>
-                <aside class="agm-location-change-help">
+                <section class="agm-location-change-help">
                   <h3 class="text-center">
                     AGM Location Change Help
                   </h3>
@@ -77,7 +77,7 @@
                       entirely conducted online, these location restrictions do not apply.
                     </p>
                   </div>
-                </aside>
+                </section>
               </template>
             </ExpandableHelp>
 
@@ -90,7 +90,7 @@
                 </p>
               </header>
 
-              <div>
+              <div :class="{ 'invalid-section': !agmYearValid && showErrors }">
                 <v-card
                   flat
                   class="py-4"
@@ -98,7 +98,6 @@
                   <!-- AGM Year -->
                   <div
                     id="agm-year-section"
-                    :class="{ 'invalid-section': !agmYearValid && showErrors }"
                   >
                     <v-row
                       no-gutters

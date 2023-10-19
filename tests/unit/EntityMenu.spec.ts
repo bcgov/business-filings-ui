@@ -540,7 +540,7 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
 
     await wrapper.find('.menu-btn').trigger('click')
 
-    expect(wrapper.find('#agm-loc-chg-list-item').exists()).toEqual(true)
+    expect(wrapper.find('#agm-loc-chg-list-item').exists()).toBe(true)
     expect(wrapper.find('#agm-loc-chg-list-item').text()).toBe('Request AGM Location Change')
     expect(wrapper.find('#agm-loc-chg-list-item').classes()).not.toContain('v-btn--disabled') // enabled
 
