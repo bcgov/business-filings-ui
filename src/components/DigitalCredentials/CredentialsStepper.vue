@@ -11,24 +11,52 @@
               <h1 class="mb-4">
                 Steps to get your credentials:
               </h1>
-              <v-card
-                v-for="step in steps"
-                :key="step.id"
-                class="mb-2"
-              >
+              <v-card class="mb-2">
                 <v-card-text class="d-flex">
                   <span
                     class="credentials-stepper-number ml-n4 my-n4 px-8
                     font-weight-bold align-self-stretch d-flex rounded-l"
                   >
-                    <div class="align-self-center">
-                      {{ step.id }}
-                    </div>
+                    <div class="align-self-center">1</div>
                   </span>
+                  <span class="ml-8">
+                    Have the
+                    <a
+                      class="text-decoration-none"
+                      href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-wallet"
+                      target="_blank"
+                    >
+                      BC Wallet app</a>
+                    installed on your mobile phone.
+                  </span>
+                </v-card-text>
+              </v-card>
+              <v-card class="mb-2">
+                <v-card-text class="d-flex">
                   <span
-                    class="ml-8"
-                    v-html="step.html"
-                  />
+                    class="credentials-stepper-number ml-n4 my-n4 px-8
+                    font-weight-bold align-self-stretch d-flex rounded-l"
+                  >
+                    <div class="align-self-center">2</div>
+                  </span>
+                  <span class="ml-8">
+                    Scan the QR code with your BC Wallet to get your Business Card Credential and accept in your BC
+                    Wallet app.
+                  </span>
+                </v-card-text>
+              </v-card>
+              <v-card class="mb-2">
+                <v-card-text class="d-flex">
+                  <span
+                    class="credentials-stepper-number ml-n4 my-n4 px-8
+                    font-weight-bold align-self-stretch d-flex rounded-l"
+                  >
+                    <div class="align-self-center">3</div>
+                  </span>
+                  <span class="ml-8">
+                    Check your Business Card credentials on the
+                    <router-link to="/digital-credentials">Credential dashboard</router-link>.
+                  </span>
                 </v-card-text>
               </v-card>
               <div class="mt-4">
@@ -84,7 +112,6 @@
                 style="width: 200px; height: 200px"
               >
                 <v-progress-circular
-
                   color="primary"
                   indeterminate
                 />
@@ -140,9 +167,7 @@ import QrcodeVue from 'qrcode.vue'
 import { DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
 
-Component.registerHooks([
-  'beforeRouteEnter'
-])
+Component.registerHooks(['beforeRouteEnter'])
 
 // Create a component that extends the Vue class called CredentialsStepper
 @Component({ components: { QrcodeVue, CredentialsWebSocket } })
@@ -152,29 +177,6 @@ export default class CredentialsStepper extends Vue {
   credentialTypes = DigitalCredentialTypes;
   credentialConnection: WalletConnectionIF = null;
   issuedCredential: DigitalCredentialIF = null;
-  steps = [
-    {
-      id: 1,
-      html: `
-        Have the <a class="text-decoration-none"
-        href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-wallet" target="_blank">
-        BC Wallet app</a> installed on your mobile phone.
-    `
-    },
-    {
-      id: 2,
-      html: `
-        Scan the QR code with your BC Wallet to get your Business Card Credential and accept in your BC Wallet app.
-      `
-    },
-    {
-      id: 3,
-      html: `
-        Check your Business Card credentials on the
-        <router-link to="">Credential dashboard</router-link>.
-      `
-    }
-  ];
 
   async beforeRouteEnter (to, from, next): Promise<void> {
     next(async (_this) => {
