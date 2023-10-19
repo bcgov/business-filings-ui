@@ -193,11 +193,11 @@
               >
                 <template #activator="{ on }">
                   <div
+                    v-if="enableAgmLocationChg"
                     class="d-inline-block"
                     v-on="on"
                   >
                     <v-list-item
-                      v-if="enableAgmLocationChg"
                       id="agm-loc-chg-list-item"
                       :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
                       v-on="on"
@@ -258,7 +258,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   get enableAgmLocationChg (): boolean {
-    return !!GetFeatureFlag('supported-agm-location-chg-entities')?.includes(this.getLegalType)
+    return !!GetFeatureFlag('supported-agm-location-chg-entities').includes(this.getLegalType)
   }
 
   /** get tooltip text for AGM location chg list item. Text is different if action item is disabled  */
