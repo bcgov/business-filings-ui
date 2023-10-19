@@ -8,6 +8,7 @@
     :label="label"
     :rules="rules"
     :value="value"
+    validate-on-blur
     @input="emitInput($event)"
   />
 </template>

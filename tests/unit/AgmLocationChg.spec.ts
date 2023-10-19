@@ -229,7 +229,7 @@ describe('AGM Location Chg view', () => {
 
     expect(vm.isPageValid).toEqual(true)
 
-    // make sure a fee is required
+    // fee is set to 0
     vm.totalFee = 0
 
     // sanity check
