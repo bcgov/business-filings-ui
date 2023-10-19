@@ -693,7 +693,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
     // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, val.isPriority, waiveFees)
 
     this.haveChanges = true
   }
