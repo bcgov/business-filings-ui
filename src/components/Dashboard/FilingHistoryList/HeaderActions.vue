@@ -125,7 +125,8 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
       !EnumUtilities.isStatusCompleted(this.filing) &&
       !EnumUtilities.isStatusCorrected(this.filing)
     )
-    conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) && !this.isBenBcCccUlc)
+    conditions[3] = () => (EnumUtilities.isTypeIncorporationApplication(this.filing) &&
+      !this.isBenBcCccUlc && !this.isCoop)
     conditions[4] = () => (EnumUtilities.isTypeChangeOfRegistration(this.filing) && !this.isFirm)
     conditions[5] = () => (EnumUtilities.isTypeCorrection(this.filing) &&
       !this.isFirm && !this.isBenBcCccUlc &&
@@ -153,9 +154,8 @@ export default class HeaderActions extends Mixins(AllowableActionsMixin) {
 
       case FilingTypes.CHANGE_OF_ADDRESS:
       case FilingTypes.CHANGE_OF_DIRECTORS:
-        if (this.isBenBcCccUlc) {
-          // correction via Edit UI if current type is BC, CC, ULC, or BEN
-          // To-Do for the future: Revisit this when we do Coop corrections in Edit UI
+        if (this.isBenBcCccUlc || this.isCoop) {
+          // correction via Edit UI if current type is BC, CC, ULC, BEN or COOP
           this.setCurrentFiling(filing)
           this.setFileCorrectionDialog(true)
           break

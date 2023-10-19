@@ -53,6 +53,7 @@ export interface ApiBusinessIF {
   nextAnnualReport: ApiDateTimeUtc // BCOMP only
   state: EntityState
   stateFiling: string // the state filing URL
+  startDate: ApiDateTimeUtc
   submitter?: string // not used
   taxId?: string // aka Business Number // may be absent
   warnings: Array<BusinessWarningIF>

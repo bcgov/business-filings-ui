@@ -9,43 +9,44 @@ describe('Configuration Actions', () => {
   setActivePinia(createPinia())
   const configurationStore = useConfigurationStore()
 
-  // init environment variable
-  import.meta.env.BASE_URL = '/business/'
-  import.meta.env.VUE_APP_PATH = '/business'
-  import.meta.env.VUE_APP_ADDRESS_COMPLETE_KEY = 'address complete key'
-  import.meta.env.VUE_APP_AUTH_API_URL = 'auth api url'
-  import.meta.env.VUE_APP_AUTH_API_VERSION = '/auth api version'
-  import.meta.env.VUE_APP_AUTH_WEB_URL = 'auth web url'
-  import.meta.env.VUE_APP_BUSINESSES_URL = 'businesses url'
-  import.meta.env.VUE_APP_BUSINESS_CREATE_URL = 'business create url'
-  import.meta.env.VUE_APP_BUSINESS_EDIT_URL = 'business edit url'
-  import.meta.env.VUE_APP_BUSINESS_FILING_LD_CLIENT_ID = 'business filing ld client id'
-  import.meta.env.VUE_APP_DASHBOARD_URL = 'dashboard url'
-  import.meta.env.VUE_APP_LEGAL_API_URL = 'legal api url'
-  import.meta.env.VUE_APP_LEGAL_API_VERSION_2 = '/legal api version 2'
-  import.meta.env.VUE_APP_PAY_API_URL = 'pay api url'
-  import.meta.env.VUE_APP_PAY_API_VERSION = '/pay api version'
-  import.meta.env.VUE_APP_REGISTRY_HOME_URL = 'registry home url'
-  import.meta.env.VUE_APP_SENTRY_DSN = 'sentry dsn'
-  import.meta.env.VUE_APP_SITEMINDER_LOGOUT_URL = 'siteminder logout url'
-  import.meta.env.VUE_APP_STATUS_API_URL = 'status api url'
-  import.meta.env.VUE_APP_STATUS_API_VERSION = '/status api version'
-  import.meta.env.VUE_APP_KEYCLOAK_AUTH_URL = 'keycloak url'
-  import.meta.env.VUE_APP_KEYCLOAK_REALM = 'keycloak realm'
-  import.meta.env.VUE_APP_KEYCLOAK_CLIENTID = 'keycloak clientid'
+  // create environment variable object for testing
+  const env = {
+    BASE_URL: '/business/',
+    VUE_APP_PATH: '/business',
+    VUE_APP_ADDRESS_COMPLETE_KEY: 'address complete key',
+    VUE_APP_AUTH_API_URL: 'auth api url',
+    VUE_APP_AUTH_API_VERSION: '/auth api version',
+    VUE_APP_AUTH_WEB_URL: 'auth web url',
+    VUE_APP_BUSINESSES_URL: 'businesses url',
+    VUE_APP_BUSINESS_CREATE_URL: 'business create url',
+    VUE_APP_BUSINESS_EDIT_URL: 'business edit url',
+    VUE_APP_BUSINESS_FILING_LD_CLIENT_ID: 'business filing ld client id',
+    VUE_APP_DASHBOARD_URL: 'dashboard url',
+    VUE_APP_LEGAL_API_URL: 'legal api url',
+    VUE_APP_LEGAL_API_VERSION_2: '/legal api version 2',
+    VUE_APP_PAY_API_URL: 'pay api url',
+    VUE_APP_PAY_API_VERSION: '/pay api version',
+    VUE_APP_REGISTRY_HOME_URL: 'registry home url',
+    VUE_APP_SENTRY_DSN: 'sentry dsn',
+    VUE_APP_SITEMINDER_LOGOUT_URL: 'siteminder logout url',
+    VUE_APP_STATUS_API_URL: 'status api url',
+    VUE_APP_STATUS_API_VERSION: '/status api version',
+    VUE_APP_KEYCLOAK_AUTH_URL: 'keycloak url',
+    VUE_APP_KEYCLOAK_REALM: 'keycloak realm',
+    VUE_APP_KEYCLOAK_CLIENTID: 'keycloak clientid'
+  } as any
 
   it('fetches and loads the configuration to the store', async () => {
     // mock window.location getters
     delete window.location
-    window.location = {
-      origin: 'http://localhost',
-      pathname: '/business/CP1234567',
-      search: '?accountid=2288'
-    } as any
+    Object.defineProperty(window, 'location', {
+      value: new URL('http://localhost/business/CP1234567?accountid=2288'),
+      configurable: true
+    })
 
     // call method
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await configurationStore.loadConfiguration()
+    await configurationStore.loadConfiguration(env)
     expect(configurationStore.getAddressCompleteKey).toBe('address complete key')
     expect(configurationStore.getAuthApiUrl).toBe('auth api url/auth api version/')
     expect(configurationStore.getAuthWebUrl).toBe('auth web url')
@@ -64,15 +65,14 @@ describe('Configuration Actions', () => {
   it('fetches and loads the configuration to session variables', async () => {
     // mock window.location getters
     delete window.location
-    window.location = {
-      origin: 'http://localhost',
-      pathname: '/business/CP1234567',
-      search: '?accountid=2288'
-    } as any
+    Object.defineProperty(window, 'location', {
+      value: new URL('http://localhost/business/CP1234567?accountid=2288'),
+      configurable: true
+    })
 
     // call method
     setBaseRouteAndBusinessId('CP1234567', '/business/', window.location.origin)
-    await configurationStore.loadConfiguration()
+    await configurationStore.loadConfiguration(env)
     expect(sessionStorage.getItem('VUE_ROUTER_BASE')).toBe('/business/CP1234567/')
     expect(sessionStorage.getItem('BASE_URL')).toBe('http://localhost/business/CP1234567/')
   })
@@ -88,10 +88,10 @@ describe('Configuration Actions', () => {
     it(`sets business id correctly for ${test.pathname}`, async () => {
       // mock window.location getters
       delete window.location
-      window.location = {
-        origin: 'http://localhost',
-        pathname: test.pathname
-      } as any
+      Object.defineProperty(window, 'location', {
+        value: new URL(`http://localhost${test.pathname}`),
+        configurable: true
+      })
 
       // call method
       const pathnameComponents = window.location.pathname.split('/')
@@ -105,10 +105,10 @@ describe('Configuration Actions', () => {
   it('sets temp reg number correctly', async () => {
     // mock window.location getters
     delete window.location
-    window.location = {
-      origin: 'http://localhost',
-      pathname: '/business/T1234567'
-    } as any
+    Object.defineProperty(window, 'location', {
+      value: new URL('http://localhost/business/T1234567'),
+      configurable: true
+    })
 
     // call method
     setBaseRouteAndBusinessId('T1234567', '/business/', window.location.origin)
@@ -120,10 +120,10 @@ describe('Configuration Actions', () => {
   it('throws error on invalid id', async () => {
     // mock window.location getters
     delete window.location
-    window.location = {
-      origin: 'http://localhost',
-      pathname: '/business/ZZ1234567'
-    } as any
+    Object.defineProperty(window, 'location', {
+      value: new URL('http://localhost/business/ZZ1234567'),
+      configurable: true
+    })
 
     // call method
     expect(() => {
@@ -132,7 +132,7 @@ describe('Configuration Actions', () => {
   })
 
   it('sessions variables correctly set for the SBC header', async () => {
-    configurationStore.loadConfiguration()
+    configurationStore.loadConfiguration(env)
     expect(sessionStorage.getItem('REGISTRY_HOME_URL')).toBe('registry home url')
     expect(sessionStorage.getItem('AUTH_WEB_URL')).toBe('auth web url')
     expect(sessionStorage.getItem('AUTH_API_URL')).toBe('auth api url/auth api version/')

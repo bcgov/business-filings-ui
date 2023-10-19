@@ -39,6 +39,16 @@ export default class AllowableActionsMixin extends Vue {
         return this.isAllowedFiling(FilingTypes.ANNUAL_REPORT)
       }
 
+      case AllowableActions.AGM_EXTENSION: {
+        return true // *** FOR DEBUGGING ONLY
+        // return this.isAllowedFiling(FilingTypes.AGM_EXTENSION)
+      }
+
+      case AllowableActions.AGM_LOCATION_CHG: {
+        return true // *** FOR DEBUGGING ONLY
+        // return this.isAllowedFiling(FilingTypes.AGM_LOCATION_CHG)
+      }
+
       case AllowableActions.BUSINESS_INFORMATION: {
         if (this.isCoop) {
           // NB: this feature is targeted via LaunchDarkly
