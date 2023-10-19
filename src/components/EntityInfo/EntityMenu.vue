@@ -258,7 +258,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   get enableAgmLocationChg (): boolean {
-    return !!GetFeatureFlag('supported-agm-location-chg-entities')
+    return !!GetFeatureFlag('supported-agm-location-chg-entities')?.includes(this.getLegalType)
   }
 
   /** get tooltip text for AGM location chg list item. Text is different if action item is disabled  */

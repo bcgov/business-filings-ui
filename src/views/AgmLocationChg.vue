@@ -63,7 +63,7 @@
             <!-- Help -->
             <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
               <template #content>
-                <section class="agm-location-change-help">
+                <aside class="agm-location-change-help">
                   <h3 class="text-center">
                     AGM Location Change Help
                   </h3>
@@ -77,7 +77,7 @@
                       entirely conducted online, these location restrictions do not apply.
                     </p>
                   </div>
-                </section>
+                </aside>
               </template>
             </ExpandableHelp>
 
@@ -93,38 +93,39 @@
               <div>
                 <v-card
                   flat
-                  class="py-4 px-5"
+                  class="py-4"
                 >
                   <!-- AGM Year -->
-                  <v-row
-                    no-gutters
-                    class="my-6"
+                  <div
+                    id="agm-year-section"
+                    :class="{ 'invalid-section': !agmYearValid && showErrors }"
                   >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
+                    <v-row
+                      no-gutters
+                      class="my-6"
                     >
-                      <strong :class="{ 'app-red': !agmYearValid && showErrors }">AGM Year</strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="4"
-                    >
-                      <div
-                        id="agm-year-section"
-                        :class="{ 'invalid-section': !agmYearValid && showErrors }"
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4 pr-4"
+                      >
+                        <strong :class="{ 'app-red': !agmYearValid && showErrors }">AGM Year</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
                       >
                         <AgmYear
                           ref="agmYearRef"
                           v-model="agmYear"
-                          :label="'AGM year'"
+                          validateForm="showErrors"
+                          label="AGM year"
                           :rules="agmYearRules"
                           @valid="agmYearValid=$event"
                         />
-                      </div>
-                    </v-col>
-                  </v-row>
+                      </v-col>
+                    </v-row>
+                  </div>
 
                   <v-divider class="my-4" />
 
@@ -374,9 +375,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   /** Array of validations rules for AGM year. */
   get agmYearRules (): Array<(val) => boolean | string> {
     const rules = [] as Array<(val) => boolean | string>
-    rules.push(val => !!val || 'Agm year is required.')
-    rules.push(val => (val && +val > 0) || 'Number must be greater than 0')
-    rules.push(val => (val && val.toString().length === 4) || 'Number must be 4 digits')
+    rules.push(val => !!val || 'AGM year is required.')
     rules.push(val => (val && +val <= this.followingYear) || 'Must be on or before ' + this.followingYear)
     rules.push(val => (val && +val >= this.previousYear) || 'Must be on or after ' + this.previousYear)
     return rules
@@ -384,7 +383,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   get previousYear () : number {
     const today = new Date()
-    return new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()).getFullYear()
+    return new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate()).getFullYear()
   }
 
   get followingYear () : number {
@@ -587,9 +586,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
         legalType: this.getLegalType
       }
     }
-
-    console.log('this.agmYear', this.agmYear)
-    console.log('this.agmLocationAddress', this.agmLocationAddress)
 
     const data: any = {
       [FilingTypes.AGM_LOCATION_CHANGE]: {

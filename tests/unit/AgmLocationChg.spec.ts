@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocationChg from '@/views/AgmLocationChg.vue'
@@ -224,7 +224,7 @@ describe('AGM Location Chg view', () => {
       certifyFormValid: true
     })
 
-    wrapper.vm.$data.dataLoaded = true
+    await wrapper.setData({ dataLoaded: true })
     await Vue.nextTick()
 
     expect(vm.isPageValid).toEqual(true)
