@@ -1,15 +1,8 @@
 // Libraries
 import axios from '@/axios-auth'
 import { AxiosResponse } from 'axios'
-import {
-  ApiBusinessIF,
-  ApiFilingIF,
-  CommentIF,
-  DocumentIF,
-  FetchDocumentsIF,
-  NameRequestIF,
-  PresignedUrlIF
-} from '@/interfaces'
+import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF,
+  PresignedUrlIF } from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
 
 /**
@@ -23,15 +16,16 @@ export default class LegalServices {
    */
   static async fetchBusiness (businessId: string): Promise<ApiBusinessIF> {
     const url = `businesses/${businessId}`
-    return axios.get(url).then((response) => {
-      const businessInfo = response?.data?.business as ApiBusinessIF
-      if (!businessInfo) {
-        // eslint-disable-next-line no-console
-        console.log('fetchBusiness() error - invalid response =', response)
-        throw new Error('Invalid business info')
-      }
-      return businessInfo
-    })
+    return axios.get(url)
+      .then(response => {
+        const businessInfo = response?.data?.business as ApiBusinessIF
+        if (!businessInfo) {
+          // eslint-disable-next-line no-console
+          console.log('fetchBusiness() error - invalid response =', response)
+          throw new Error('Invalid business info')
+        }
+        return businessInfo
+      })
   }
 
   /**
@@ -51,15 +45,16 @@ export default class LegalServices {
    */
   static async fetchFilings (businessId: string): Promise<ApiFilingIF[]> {
     const url = `businesses/${businessId}/filings`
-    return axios.get(url).then((response) => {
-      const filings = response?.data?.filings as ApiFilingIF[]
-      if (!filings) {
-        // eslint-disable-next-line no-console
-        console.log('fetchFilings() error - invalid response =', response)
-        throw new Error('Invalid filings list')
-      }
-      return filings
-    })
+    return axios.get(url)
+      .then(response => {
+        const filings = response?.data?.filings as ApiFilingIF[]
+        if (!filings) {
+          // eslint-disable-next-line no-console
+          console.log('fetchFilings() error - invalid response =', response)
+          throw new Error('Invalid filings list')
+        }
+        return filings
+      })
   }
 
   /**
@@ -94,12 +89,9 @@ export default class LegalServices {
    */
   static async fetchDraftApp (tempRegNumber: string): Promise<any> {
     const url = `businesses/${tempRegNumber}/filings`
-    return (
-      axios
-        .get(url)
-        // workaround because data is at "response.data.data"
-        .then((response) => response?.data)
-    )
+    return axios.get(url)
+      // workaround because data is at "response.data.data"
+      .then(response => response?.data)
   }
 
   /**
@@ -109,12 +101,9 @@ export default class LegalServices {
    */
   static async fetchNameRequest (nrNumber: string): Promise<NameRequestIF> {
     const url = `nameRequests/${nrNumber}`
-    return (
-      axios
-        .get(url)
-        // workaround because data is at "response.data.data"
-        .then((response) => response?.data)
-    )
+    return axios.get(url)
+      // workaround because data is at "response.data.data"
+      .then(response => response?.data)
   }
 
   /**
@@ -123,15 +112,16 @@ export default class LegalServices {
    * @returns the filing object
    */
   static async fetchFiling (url: string): Promise<any> {
-    return axios.get(url).then((response) => {
-      const filing = response?.data?.filing
-      if (!filing) {
-        // eslint-disable-next-line no-console
-        console.log('fetchFiling() error - invalid response =', response)
-        throw new Error('Invalid filing')
-      }
-      return filing
-    })
+    return axios.get(url)
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('fetchFiling() error - invalid response =', response)
+          throw new Error('Invalid filing')
+        }
+        return filing
+      })
   }
 
   /**
@@ -146,15 +136,16 @@ export default class LegalServices {
     if (isDraft) {
       url += '?draft=true'
     }
-    return axios.post(url, { filing }).then((response) => {
-      const filing = response?.data?.filing
-      if (!filing) {
-        // eslint-disable-next-line no-console
-        console.log('createFiling() error - invalid response =', response)
-        throw new Error('Invalid filing')
-      }
-      return filing
-    })
+    return axios.post(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('createFiling() error - invalid response =', response)
+          throw new Error('Invalid filing')
+        }
+        return filing
+      })
   }
 
   /**
@@ -170,15 +161,16 @@ export default class LegalServices {
     if (isDraft) {
       url += '?draft=true'
     }
-    return axios.put(url, { filing }).then((response) => {
-      const filing = response?.data?.filing
-      if (!filing) {
-        // eslint-disable-next-line no-console
-        console.log('updateFiling() error - invalid response =', response)
-        throw new Error('Invalid filing')
-      }
-      return filing
-    })
+    return axios.put(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('updateFiling() error - invalid response =', response)
+          throw new Error('Invalid filing')
+        }
+        return filing
+      })
   }
 
   /**
@@ -187,15 +179,16 @@ export default class LegalServices {
    * @returns the comments array
    */
   static async fetchComments (url: string): Promise<CommentIF[]> {
-    return axios.get(url).then((response) => {
-      const comments = response?.data?.comments
-      if (!comments) {
-        // eslint-disable-next-line no-console
-        console.log('fetchComments() error - invalid response =', response)
-        throw new Error('Invalid comments')
-      }
-      return comments
-    })
+    return axios.get(url)
+      .then(response => {
+        const comments = response?.data?.comments
+        if (!comments) {
+          // eslint-disable-next-line no-console
+          console.log('fetchComments() error - invalid response =', response)
+          throw new Error('Invalid comments')
+        }
+        return comments
+      })
   }
 
   /**
@@ -204,15 +197,16 @@ export default class LegalServices {
    * @returns the fetch documents object
    */
   static async fetchDocuments (url: string): Promise<FetchDocumentsIF> {
-    return axios.get(url).then((response) => {
-      const documents = response?.data?.documents
-      if (!documents) {
-        // eslint-disable-next-line no-console
-        console.log('fetchDocuments() error - invalid response =', response)
-        throw new Error('Invalid documents')
-      }
-      return documents
-    })
+    return axios.get(url)
+      .then(response => {
+        const documents = response?.data?.documents
+        if (!documents) {
+          // eslint-disable-next-line no-console
+          console.log('fetchDocuments() error - invalid response =', response)
+          throw new Error('Invalid documents')
+        }
+        return documents
+      })
   }
 
   /**
@@ -227,11 +221,11 @@ export default class LegalServices {
     }
 
     const config = {
-      headers: { Accept: 'application/pdf' },
+      headers: { 'Accept': 'application/pdf' },
       responseType: 'blob' as 'json'
     }
 
-    return axios.get(document.link, config).then((response) => {
+    return axios.get(document.link, config).then(response => {
       if (!response) throw new Error('Null response')
 
       /* solution from https://github.com/axios/axios/issues/1392 */
@@ -268,9 +262,9 @@ export default class LegalServices {
    * @returns True if there are any non-NEW tasks, else False
    */
   static async hasPendingTasks (businessId: string): Promise<boolean> {
-    return this.fetchTasks(businessId).then((response) => {
+    return this.fetchTasks(businessId).then(response => {
       const tasks = response?.data?.tasks || []
-      return tasks.some((task) => {
+      return tasks.some(task => {
         if (task?.task?.filing?.header) {
           if (task.task.filing.header.status !== FilingStatus.NEW) {
             return true
@@ -287,7 +281,8 @@ export default class LegalServices {
    */
   static async getPresignedUrl (fileName: string): Promise<PresignedUrlIF> {
     const url = `documents/${fileName}/signatures`
-    return axios.get(url).then((response) => response?.data)
+    return axios.get(url)
+      .then(response => response?.data)
   }
 
   /**
@@ -313,63 +308,67 @@ export default class LegalServices {
   //
 
   /**
-   * Fetches digital credential information.
+   * Fetches digital credentials for a business.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
   static async fetchCredentials (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials`
-    return axios.get(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.get(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 
   /**
-   * Creates a digital credentials invitation.
+   * Creates a wallet connection invitation.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
   static async createCredentialInvitation (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/invitation`
-    return axios.post(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 
   /**
-   * Fetches a list of digital credential connections.
+   * Fetches a list of wallet connections for a business.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
   static async fetchCredentialConnections (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/connections`
-    return axios.get(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.get(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 
   /**
-   * Removes a credential connection
+   * Removes a credential wallet connection.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
   static async removeCredentialConnection (businessId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/connection`
-    return axios.delete(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 
   /**
-   * Sends a digital credentials offer.
+   * Sends a digital credential offer.
    * @param businessId The business identifier (aka entity inc no)
    * @param credentialType The credential offer type
    * @returns the axios response
@@ -379,11 +378,12 @@ export default class LegalServices {
     credentialType: DigitalCredentialTypes)
     : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
-    return axios.post(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 
   /**
@@ -394,11 +394,12 @@ export default class LegalServices {
    */
   static async revokeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialId}/revoke`
-    return axios.post(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 
   /**
@@ -409,10 +410,11 @@ export default class LegalServices {
    */
   static async removeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialId}`
-    return axios.delete(url).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error.message)
-      return null
-    })
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
   }
 }
