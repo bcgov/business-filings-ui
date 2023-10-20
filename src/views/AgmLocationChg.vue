@@ -14,24 +14,6 @@
       @exit="onPaymentErrorDialogExit()"
     />
 
-    <ResumeErrorDialog
-      attach="#agm-location-chg"
-      :dialog="resumeErrorDialog"
-      @exit="goToDashboard(true)"
-    />
-
-    <SaveErrorDialog
-      attach="#agm-location-chg"
-      filingName="AGM Location Change"
-      :dialog="!!saveErrorReason"
-      :disableRetry="busySaving"
-      :errors="saveErrors"
-      :warnings="saveWarnings"
-      @exit="saveErrorReason=null"
-      @retry="onSaveErrorDialogRetry()"
-      @okay="onSaveErrorDialogOkay()"
-    />
-
     <StaffPaymentDialog
       :staffPaymentData.sync="staffPaymentData"
       attach="#agm-location-chg"
@@ -78,45 +60,104 @@
               </h1>
             </header>
 
+            <!-- Help -->
             <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
               <template #content>
-                Help text, or sub-component, goes here.
+                <section class="agm-location-change-help">
+                  <h3 class="text-center">
+                    AGM Location Change Help
+                  </h3>
+                  <div class="mt-6">
+                    <p class="ml-1">
+                      This request for location change is only needed if the meetings are fully in-person. In general,
+                      these meetings are required to be held in British Columbia. However, there are exceptions to this
+                      rule. If the company's articles permit it or if the members agree, the meeting can be conducted at
+                      a location outside British Columbia. If the meeting combines both in-person and online
+                      participation, the location requirement only applies to the in-person component. If the meeting is
+                      entirely conducted online, these location restrictions do not apply.
+                    </p>
+                  </div>
+                </section>
               </template>
             </ExpandableHelp>
 
             <!-- Main Section -->
             <section class="mt-8">
               <header>
-                <h2>Section Title</h2>
+                <h2>AGM Location Detail</h2>
                 <p class="grey-text">
-                  Section subtext.
+                  Enter the new AGM location detail including any
                 </p>
               </header>
 
-              <div
-                id="main-section"
-                :class="{ 'invalid-section': !sectionValid && showErrors }"
-              >
+              <div :class="{ 'invalid-section': !agmYearValid && showErrors }">
                 <v-card
                   flat
-                  class="py-4 px-5"
+                  class="py-4"
                 >
+                  <!-- AGM Year -->
+                  <div
+                    id="agm-year-section"
+                  >
+                    <v-row
+                      no-gutters
+                      class="my-6"
+                    >
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4 pr-4"
+                      >
+                        <strong :class="{ 'app-red': !agmYearValid && showErrors }">AGM Year</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                      >
+                        <AgmYear
+                          ref="agmYearRef"
+                          v-model="agmYear"
+                          validateForm="showErrors"
+                          label="AGM year"
+                          :rules="agmYearRules"
+                          @valid="agmYearValid=$event"
+                        />
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <v-divider class="my-4" />
+
+                  <!-- Location address -->
                   <v-row
                     no-gutters
-                    class="my-4"
+                    class="my-6"
                   >
                     <v-col
                       cols="12"
                       sm="3"
                       class="pr-4"
                     >
-                      <strong :class="{ 'app-red': !sectionValid && showErrors }">Subtitle</strong>
+                      <strong :class="{ 'app-red': !agmLocationAddressValid && showErrors }">New AGM Location</strong>
                     </v-col>
                     <v-col
                       cols="12"
                       sm="9"
                     >
-                      Section content goes here.
+                      <div
+                        id="location-section"
+                        :class="{ 'invalid-section': !agmLocationAddressValid && showErrors }"
+                      >
+                        <AgmLocationAddress
+                          ref="agmLocationAddressRef"
+                          :editing="true"
+                          :schema="locationAddressSchema"
+                          :excludeBC="true"
+                          :deliveryInstructionsText="'Additional location details'"
+                          @update:address="updateLocationAddress"
+                          @valid="agmLocationAddressValid=$event"
+                        />
+                      </div>
                     </v-col>
                   </v-row>
                 </v-card>
@@ -141,7 +182,7 @@
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  :message="certifyText(FilingCodes.AGM_LOCATION_CHANGE)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -175,27 +216,6 @@
       id="buttons-container"
       class="list-item"
     >
-      <div class="buttons-left">
-        <v-btn
-          id="consent-save-btn"
-          large
-          :disabled="busySaving"
-          :loading="saving"
-          @click="onClickSave()"
-        >
-          <span>Save</span>
-        </v-btn>
-        <v-btn
-          id="consent-save-resume-btn"
-          large
-          :disabled="busySaving"
-          :loading="savingResuming"
-          @click="onClickSaveResume()"
-        >
-          <span>Save and Resume Later</span>
-        </v-btn>
-      </div>
-
       <div class="buttons-right">
         <v-tooltip
           top
@@ -208,7 +228,7 @@
               v-on="on"
             >
               <v-btn
-                id="consent-file-pay-btn"
+                id="agm-loctn-chg-file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -224,7 +244,7 @@
         </v-tooltip>
 
         <v-btn
-          id="consent-cancel-btn"
+          id="agm-loctn-chg-cancel-btn"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -242,25 +262,28 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { locationAddressSchema } from '@/schemas'
+import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
+import { ConfirmDialog, PaymentErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { AddressIF, ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
 @Component({
   components: {
+    AgmYear,
     Certify,
     ConfirmDialog,
     ExpandableHelp,
+    AgmLocationAddress: BaseAddress,
     PaymentErrorDialog,
-    ResumeErrorDialog,
-    SaveErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
   }
@@ -269,6 +292,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
+    agmLocationAddressRef: BaseAddress,
+    agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
   }
@@ -282,7 +307,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   readonly FilingCodes = FilingCodes
 
   // variables for main section
-  sectionValid = false
+  agmLocationAddress = {} as AddressIF
+  agmLocationAddressValid = false
+  agmYear = ''
+  agmYearValid = false
 
   // variables for Certify component
   certifiedBy = ''
@@ -302,7 +330,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
-  filingId = 0 // id of this consent to continuation out filing
+  filingId = 0 // id of this agm location change filing
   savedFiling: any = null // filing during save
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
@@ -311,6 +339,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   haveChanges = false
   saveErrors = []
   saveWarnings = []
+
+  /** The Address schema containing Vuelidate rules. */
+  locationAddressSchema = locationAddressSchema
 
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
@@ -326,7 +357,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.sectionValid && this.certifyFormValid)
+    return (this.agmLocationAddressValid && this.agmYearValid && this.certifyFormValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -338,6 +369,25 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get isPayRequired (): boolean {
     // FUTURE: modify rule here as needed
     return (this.totalFee > 0)
+  }
+
+  /** Array of validations rules for AGM year. */
+  get agmYearRules (): Array<(val) => boolean | string> {
+    const rules = [] as Array<(val) => boolean | string>
+    rules.push(val => !!val || 'AGM year is required.')
+    rules.push(val => (val && +val <= this.followingYear) || 'Must be on or before ' + this.followingYear)
+    rules.push(val => (val && +val >= this.previousYear) || 'Must be on or after ' + this.previousYear)
+    return rules
+  }
+
+  get previousYear () : number {
+    const today = new Date()
+    return new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate()).getFullYear()
+  }
+
+  get followingYear () : number {
+    const today = new Date()
+    return new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()).getFullYear()
   }
 
   /** Called when component is created. */
@@ -377,147 +427,16 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       this.loadingMessage = `Preparing Your Request for AGM Location Change`
     }
 
-    // fetch draft (which may overwrite some properties)
-    if (this.filingId > 0) {
-      await this.fetchDraftFiling()
-    }
-
     this.dataLoaded = true
 
-    // always include consent continue out code
+    // always include agm location change code
     // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
-  /** Fetches the draft consent filing. */
-  async fetchDraftFiling (): Promise<void> {
-    const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-    await LegalServices.fetchFiling(url).then(filing => {
-      // verify data
-      if (!filing) throw new Error('Missing filing')
-      if (!filing.header) throw new Error('Missing header')
-      if (!filing.business) throw new Error('Missing business')
-      if (!filing.agmLocationChg) throw new Error('Missing agm location chg object')
-      if (filing.header.name !== FilingTypes.AGM_LOCATION_CHG) throw new Error('Invalid filing type')
-      if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-      if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
-
-      // load Certified By (but not Date)
-      this.certifiedBy = filing.header.certifiedBy
-
-      // load Staff Payment properties
-      if (filing.header.routingSlipNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.FAS,
-          routingSlipNumber: filing.header.routingSlipNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.bcolAccountNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.BCOL,
-          bcolAccountNumber: filing.header.bcolAccountNumber,
-          datNumber: filing.header.datNumber,
-          folioNumber: filing.header.folioNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.waiveFees) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NO_FEE
-        } as StaffPaymentIF
-      } else {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NONE
-        } as StaffPaymentIF
-      }
-    }).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchDraftFiling() error =', error)
-      this.resumeErrorDialog = true
-    })
-  }
-
-  /**
-   * Called when user clicks Save button
-   * or when user retries from Save Error dialog.
-   */
-  async onClickSave (): Promise<void> {
-    // prevent double saving
-    if (this.busySaving) return
-
-    this.saving = true
-
-    // save draft filing
-    this.savedFiling = await this.saveFiling(true).catch(error => {
-      this.saveErrorReason = SaveErrorReasons.SAVE
-      // try to return filing (which may exist depending on save error)
-      return error?.response?.data?.filing || null
-    })
-
-    const filingId = +this.savedFiling?.header?.filingId || 0
-    if (filingId > 0) {
-      // save filing ID for possible future updates
-      this.filingId = filingId
-    }
-
-    // if there was no error, finish save process now
-    // otherwise, dialog may finish this later
-    if (!this.saveErrorReason) this.onClickSaveFinish()
-
-    this.saving = false
-  }
-
-  onClickSaveFinish (): void {
-    // safety check
-    if (this.filingId > 0) {
-      // changes were saved, so clear flag
-      this.haveChanges = false
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('onClickSaveFinish(): invalid filing ID, filing =', null)
-    }
-  }
-
-  /**
-   * Called when user clicks Save and Resume later button
-   * or when user retries from Save Error dialog.
-   */
-  async onClickSaveResume (): Promise<void> {
-    // prevent double saving
-    if (this.busySaving) return
-
-    this.savingResuming = true
-
-    // save draft filing
-    this.savedFiling = await this.saveFiling(true).catch(error => {
-      this.saveErrorReason = SaveErrorReasons.SAVE_RESUME
-      // try to return filing (which may exist depending on save error)
-      return error?.response?.data?.filing || null
-    })
-
-    const filingId = +this.savedFiling?.header?.filingId || 0
-    if (filingId > 0) {
-      // save filing ID for possible future updates
-      this.filingId = filingId
-    }
-
-    // if there was no error, finish save-resume process now
-    // otherwise, dialog may finish this later
-    if (!this.saveErrorReason) this.onClickSaveResumeFinish()
-
-    this.savingResuming = false
-  }
-
-  onClickSaveResumeFinish (): void {
-    // safety check
-    if (this.filingId > 0) {
-      // changes were saved, so go to dashboard
-      this.goToDashboard(true)
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('onClickSaveResumeFinish(): invalid filing ID, filing =', null)
-    }
+  updateLocationAddress (val: AddressIF): void {
+    this.agmLocationAddress = val
   }
 
   /**
@@ -529,10 +448,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      // *** TODO: check for section errors here
-      if (!this.sectionValid) {
-        // Show error message of detail comment text area if invalid
-        // this.$refs.detailCommentRef.$refs.textarea.error = true
+      if (!this.agmYearValid) {
+        // Show error message of agm year if invalid
+        this.$refs.agmYearRef.$refs.textAreaRef.error = true
       }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
@@ -632,7 +550,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     const header: any = {
       header: {
-        name: FilingTypes.CONSENT_CONTINUATION_OUT,
+        name: FilingTypes.AGM_LOCATION_CHANGE,
         certifiedBy: this.certifiedBy || '',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
@@ -669,8 +587,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
 
     const data: any = {
-      [FilingTypes.AGM_LOCATION_CHG]: {
-        // properties go here
+      [FilingTypes.AGM_LOCATION_CHANGE]: {
+        year: this.agmYear,
+        newAgmLocation: this.agmLocationAddress
       }
     }
 
@@ -745,64 +664,25 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
   }
 
-  /** Handles Retry events from Save Error dialog. */
-  async onSaveErrorDialogRetry (): Promise<void> {
-    switch (this.saveErrorReason) {
-      case SaveErrorReasons.SAVE:
-        // close the dialog and retry save
-        this.saveErrorReason = null
-        await this.onClickSave()
-        break
-      case SaveErrorReasons.SAVE_RESUME:
-        // close the dialog and retry save-resume
-        this.saveErrorReason = null
-        await this.onClickSaveResume()
-        break
-      case SaveErrorReasons.FILE_PAY:
-        // close the dialog and retry file-pay
-        this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
-        else await this.onClickFilePay()
-        break
-    }
-  }
-
-  /** Handles Okay events from Save Error dialog. */
-  onSaveErrorDialogOkay (): void {
-    switch (this.saveErrorReason) {
-      case SaveErrorReasons.SAVE:
-        // close the dialog and finish save process
-        this.saveErrorReason = null
-        this.onClickSaveFinish()
-        break
-      case SaveErrorReasons.SAVE_RESUME:
-        // close the dialog and finish save-resume process
-        this.saveErrorReason = null
-        this.onClickSaveResumeFinish()
-        break
-      case SaveErrorReasons.FILE_PAY:
-        // close the dialog and finish file-pay process
-        this.saveErrorReason = null
-        this.onClickFilePayFinish()
-        break
-    }
-  }
-
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'main-section',
+    'agm-year-section',
+    'location-section',
     'certify-form-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      mainSection: this.sectionValid,
+      // mainSection: this.sectionValid,
+      agmYear: this.agmYearValid,
+      locationAddress: this.agmLocationAddressValid,
       certifyForm: this.certifyFormValid
     }
   }
 
-  @Watch('sectionValid')
+  @Watch('agmYearValid')
+  @Watch('agmLocationAddressValid')
   @Watch('certifyFormValid')
   onHaveChanges (): void {
     this.haveChanges = true
@@ -813,7 +693,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
     // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, val.isPriority, waiveFees)
 
     this.haveChanges = true
   }
@@ -879,19 +759,13 @@ h2 {
     margin-left: 0.5rem;
   }
 
-  #consent-cancel-btn {
+  #agm-loctn-chg-cancel-btn {
     margin-left: 0.5rem;
   }
 }
 
 // Fix font size and color to stay consistent.
 :deep() {
-  .invalid-foreign-jurisdiction {
-    .title-label {
-      color: $app-red;
-    }
-  }
-
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
   }

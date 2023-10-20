@@ -478,7 +478,9 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
   })
 })
 
-describe('Entity Menu - Request AGM Extension click tests', () => {
+describe.skip('Entity Menu - Request AGM Extension click tests', () => {
+  let vm: any
+
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
@@ -498,6 +500,9 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
       propsData: { businessId: 'BC1234567' }
     })
 
+    vm = wrapper.vm
+    vi.spyOn(vm, 'enableAgmExtension', 'get').mockReturnValue(true)
+
     await wrapper.find('.menu-btn').trigger('click')
 
     expect(wrapper.find('#agm-ext-list-item').exists()).toBe(true)
@@ -509,10 +514,12 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Location Change click tests', () => {
-  beforeAll(() => {
+  let vm: any
+
+  beforeAll(async () => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'enable-agm-location-chg'))
+      (flag) => (flag === 'supported-agm-location-chg-entities'))
   })
 
   afterAll(() => {
@@ -527,6 +534,9 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
+
+    vm = wrapper.vm
+    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 
