@@ -36,7 +36,7 @@ export default class DetailComment extends Vue {
   get rules (): Array<(val) => boolean | string> {
     // include whitespace in maximum length check
     return [
-      val => (val && val.trim().length > 0) || 'Detail is required.',
+      val => (val && val.trim().length > 0) || this.textRequiredErrorMsg,
       val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
     ]
   }
@@ -60,6 +60,9 @@ export default class DetailComment extends Vue {
 
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
+
+  /** Text is required error message. */
+  @Prop({ default: 'Detail is required.' }) readonly textRequiredErrorMsg!: string
 
   detailedComment = ''
 
@@ -113,7 +116,6 @@ export default class DetailComment extends Vue {
   // Move the placeholder and input text from the edges.
   :deep() {
     .theme--light.v-input input, .theme--light.v-input textarea {
-      background-color: $gray1;
       padding-top: 0.5rem;
       padding-left: 0.5rem;
     }
