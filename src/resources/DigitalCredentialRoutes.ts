@@ -22,15 +22,15 @@ export const DigitalCredentialRoutes = {
       }
     },
     {
-      path: Routes.ISSUE,
-      name: Routes.ISSUE,
+      path: Routes.ISSUE_CREDENTIAL,
+      name: Routes.ISSUE_CREDENTIAL,
       component: CredentialsStepper,
       meta: {
         breadcrumb: [
           getDigitalCredentialBreadcrumb(),
           {
             text: 'Issue Credentials',
-            to: { name: Routes.ISSUE }
+            to: { name: Routes.ISSUE_CREDENTIAL }
           }
         ]
       }

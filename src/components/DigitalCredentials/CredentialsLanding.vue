@@ -5,11 +5,9 @@
         <v-container>
           <v-row>
             <v-col class="d-flex align-center">
-              <v-img
-                src="/src/assets/images/digital_credentials.svg"
-              />
-            <!-- FIXME: Path aliases don't seem to be working -->
-            <!-- <v-img
+              <v-img src="/src/assets/images/digital_credentials.svg" />
+              <!-- FIXME: Path aliases don't seem to be working -->
+              <!-- <v-img
                         src="@/assets/images/digital_credentials.svg"
                       /> -->
             </v-col>
@@ -28,13 +26,8 @@
                 credential, you use the digital wallet app to show it.
               </p>
               <div class="d-flex justify-center justify-sm-start">
-                <v-btn
-                  id="add-credential-btn"
-                  color="primary"
-                  class="mt-4 font-weight-bold pa-6"
-                  large
-                  @click="issueCredentials()"
-                >
+                <v-btn id="add-credential-btn" color="primary" class="mt-4 font-weight-bold pa-6" large
+                  @click="issueCredentials()">
                   <span>Get your Business Card Credential</span>
                 </v-btn>
               </div>
@@ -59,8 +52,8 @@ import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.v
   }
 })
 export default class CredentialsLanding extends Vue {
-  issueCredentials (): void {
-    this.$router.push({ name: Routes.ISSUE })
+  issueCredentials(): void {
+    this.$router.push({ name: Routes.ISSUE_CREDENTIAL })
   }
 }
 </script>
