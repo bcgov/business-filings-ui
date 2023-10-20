@@ -1,26 +1,50 @@
 <template>
   <div>
     <!-- Dialogs -->
-    <ConfirmRevokeCredentialDialog :dialog="confirmRevokeCredentialDialog" attach="#app"
-      @close="hideConfirmRevokeCredentialDialog" @proceed="revokeCredential(issuedCredential)" />
+    <ConfirmRevokeCredentialDialog
+      :dialog="confirmRevokeCredentialDialog"
+      attach="#app"
+      @close="hideConfirmRevokeCredentialDialog"
+      @proceed="revokeCredential(issuedCredential)"
+    />
 
-    <ConfirmReplaceCredentialDialog :dialog="confirmReplaceCredentialDialog" attach="#app"
-      @close="hideConfirmReplaceCredentialDialog" @proceed="replaceCredential(issuedCredential)" />
+    <ConfirmReplaceCredentialDialog
+      :dialog="confirmReplaceCredentialDialog"
+      attach="#app"
+      @close="hideConfirmReplaceCredentialDialog"
+      @proceed="replaceCredential(issuedCredential)"
+    />
 
-    <CredentialRevokedDialog :dialog="credentialRevokedDialog" attach="#app" @close="credentialRevokedDialog = false" />
+    <CredentialRevokedDialog
+      :dialog="credentialRevokedDialog"
+      attach="#app"
+      @close="credentialRevokedDialog = false"
+    />
 
-    <RevokeCredentialErrorDialog :dialog="revokeCredentialErrorDialog" attach="#app"
-      @close="revokeCredentialErrorDialog = false" />
+    <RevokeCredentialErrorDialog
+      :dialog="revokeCredentialErrorDialog"
+      attach="#app"
+      @close="revokeCredentialErrorDialog = false"
+    />
 
     <v-container>
       <v-row>
-        <v-col cols="12" md="8">
-          <CredentialsTable v-if="issuedCredentials?.length" :issuedCredentials="issuedCredentials"
+        <v-col
+          cols="12"
+          md="8"
+        >
+          <CredentialsTable
+            v-if="issuedCredentials?.length"
+            :issuedCredentials="issuedCredentials"
             @onPromptConfirmRevokeCredential="displayConfirmRevokeCredentialDialog"
-            @onPromptConfirmReplaceCredential="displayConfirmReplaceCredentialDialog" />
+            @onPromptConfirmReplaceCredential="displayConfirmReplaceCredentialDialog"
+          />
           <CredentialsLanding v-else />
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col
+          cols="12"
+          md="4"
+        >
           <CredentialsInfo />
         </v-col>
       </v-row>
@@ -67,36 +91,36 @@ export default class CredentialsDashboard extends Vue {
   issuedCredential: DigitalCredentialIF = null;
   issuedCredentials: Array<DigitalCredentialIF> = [];
 
-  async mounted(): Promise<void> {
+  async mounted (): Promise<void> {
     await this.getCredentials()
   }
 
-  async getCredentials(): Promise<void> {
+  async getCredentials (): Promise<void> {
     const { data } = await LegalServices.fetchCredentials(this.getIdentifier)
     this.issuedCredentials = data?.issuedCredentials
   }
 
-  displayConfirmRevokeCredentialDialog(issuedCredential: DigitalCredentialIF): void {
+  displayConfirmRevokeCredentialDialog (issuedCredential: DigitalCredentialIF): void {
     this.issuedCredential = issuedCredential
     this.confirmRevokeCredentialDialog = true
   }
 
-  hideConfirmRevokeCredentialDialog(): void {
+  hideConfirmRevokeCredentialDialog (): void {
     this.issuedCredential = null
     this.confirmRevokeCredentialDialog = false
   }
 
-  displayConfirmReplaceCredentialDialog(issuedCredential: DigitalCredentialIF): void {
+  displayConfirmReplaceCredentialDialog (issuedCredential: DigitalCredentialIF): void {
     this.issuedCredential = issuedCredential
     this.confirmReplaceCredentialDialog = true
   }
 
-  hideConfirmReplaceCredentialDialog(): void {
+  hideConfirmReplaceCredentialDialog (): void {
     this.issuedCredential = null
     this.confirmReplaceCredentialDialog = false
   }
 
-  async revokeCredential(issuedCredential: DigitalCredentialIF): Promise<void> {
+  async revokeCredential (issuedCredential: DigitalCredentialIF): Promise<void> {
     const revoked = await LegalServices.revokeCredential(this.getIdentifier, issuedCredential.credentialId)
       .finally(() => {
         this.hideConfirmRevokeCredentialDialog()
@@ -110,7 +134,7 @@ export default class CredentialsDashboard extends Vue {
     }
   }
 
-  async replaceCredential(issuedCredential: DigitalCredentialIF): Promise<void> {
+  async replaceCredential (issuedCredential: DigitalCredentialIF): Promise<void> {
     let revokedCredential = issuedCredential.isRevoked ? {} : null
     if (!issuedCredential.isRevoked) {
       revokedCredential = await LegalServices.revokeCredential(this.getIdentifier, issuedCredential.credentialId)
