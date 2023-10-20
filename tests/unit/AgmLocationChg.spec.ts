@@ -9,6 +9,7 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
+import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
@@ -58,6 +59,7 @@ describe('AGM Location Chg view', () => {
     businessStore.setLegalName('My Test Entity')
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.filingData = []
     rootStore.keycloakRoles = ['user']
 
@@ -201,7 +203,6 @@ describe('AGM Location Chg view', () => {
 
   it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
-
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 

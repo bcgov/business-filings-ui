@@ -595,6 +595,9 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
       propsData: { businessId: 'BC1234567' }
     })
 
+    vm = wrapper.vm
+    vi.spyOn(vm, 'enableAgmExtension', 'get').mockReturnValue(true)
+
     await wrapper.find('.menu-btn').trigger('click')
 
     expect(wrapper.find('#agm-ext-list-item').exists()).toBe(true)
@@ -633,6 +636,9 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
+
+    vm = wrapper.vm
+    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 
