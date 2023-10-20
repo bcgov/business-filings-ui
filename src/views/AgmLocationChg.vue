@@ -163,7 +163,7 @@
                           v-model="reason"
                           :class="{ 'invalid-component': !reasonValid && showErrors }"
                           placeholder="Reason"
-                          maxLength="1994"
+                          maxLength="2000"
                           textRequiredErrorMsg="Reason is required."
                           :validateForm="showErrors"
                           @valid="reasonValid=$event"
