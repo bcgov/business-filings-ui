@@ -37,7 +37,7 @@
           </template>
         </v-checkbox>
         <p class="certify-clause signature-date">
-          <strong>Date:</strong> {{ getCurrentDate }}
+          <strong>Date:</strong> {{ formattedCurrentDate }}
         </p>
         <p class="certify-clause">
           {{ message }}
@@ -50,6 +50,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
+import { DateUtilities } from '@/services'
 import { useRootStore } from '@/stores'
 
 @Component({})
@@ -85,6 +86,11 @@ export default class Certify extends Vue {
   created (): void {
     // inform parent of initial validity
     this.emitValid(!!this.trimmedCertifiedBy && this.isCertified)
+  }
+
+  get formattedCurrentDate (): string {
+    const date = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
+    return (DateUtilities.dateToPacificDate(date, true) || 'Unknown')
   }
 
   /** The trimmed "Certified By" string (may be ''). */

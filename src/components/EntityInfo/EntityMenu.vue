@@ -186,25 +186,33 @@
             </v-tooltip>
 
             <!-- Request AGM Location Change -->
-            <v-tooltip
-              right
-              content-class="right-tooltip"
-            >
-              <template #activator="{ on }">
-                <v-list-item
-                  v-if="enableAgmLocationChg"
-                  id="agm-loc-chg-list-item"
-                  :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHG)"
-                  v-on="on"
-                  @click="goToAgmLocationChgFiling()"
-                >
-                  <v-list-item-title>
-                    <span class="app-blue">Request AGM Location Change</span>
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-              Request an AGM location change.
-            </v-tooltip>
+            <div>
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <div
+                    v-if="enableAgmLocationChg"
+                    class="d-inline-block"
+                    v-on="on"
+                  >
+                    <v-list-item
+                      id="agm-loc-chg-list-item"
+                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
+                      v-on="on"
+                      @click="goToAgmLocationChgFiling()"
+                    >
+                      <v-list-item-title>
+                        <span class="app-blue">Request AGM Location Change</span>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </div>
+                </template>
+                <span>{{ toolTipText }}</span>
+              </v-tooltip>
+            </div>
+
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -250,7 +258,16 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   get enableAgmLocationChg (): boolean {
-    return !!GetFeatureFlag('enable-agm-location-chg')
+    return !!GetFeatureFlag('supported-agm-location-chg-entities').includes(this.getLegalType)
+  }
+
+  /** get tooltip text for AGM location chg list item. Text is different if action item is disabled  */
+  get toolTipText (): string {
+    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
+      return 'The business must be in good standing to request an AGM location change.'
+    } else {
+      return 'Request an AGM location change.'
+    }
   }
 
   /**
@@ -294,7 +311,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   goToAgmLocationChgFiling (): void {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.AGM_LOCATION_CHG, params: { filingId: '0' } })
+    this.$router.push({ name: Routes.AGM_LOCATION_CHANGE, params: { filingId: '0' } })
   }
 
   /** Emits an event to confirm dissolution. */

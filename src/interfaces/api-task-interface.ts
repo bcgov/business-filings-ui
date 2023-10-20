@@ -36,6 +36,7 @@ export interface ApiHeaderIF {
  * Note that only `business` and `header` are required.
  */
 export interface TaskTodoIF {
+  agmLocationChange?: any
   alteration?: AlterationIF
   annualReport?: any
   business: ApiBusinessIF

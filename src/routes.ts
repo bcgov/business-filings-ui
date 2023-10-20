@@ -39,16 +39,16 @@ export default [
   },
   {
     path: '/agm-location-chg',
-    name: Routes.AGM_LOCATION_CHG,
+    name: Routes.AGM_LOCATION_CHANGE,
     component: AgmLocationChg,
     meta: {
       requiresAuth: true,
       breadcrumb: [
         {
-          text: `File ${FilingNames.AGM_LOCATION_CHG}`,
+          text: `File ${FilingNames.AGM_LOCATION_CHANGE}`,
           disabled: false,
           exact: true,
-          to: { name: Routes.AGM_LOCATION_CHG }
+          to: { name: Routes.AGM_LOCATION_CHANGE }
         }
       ]
     }
