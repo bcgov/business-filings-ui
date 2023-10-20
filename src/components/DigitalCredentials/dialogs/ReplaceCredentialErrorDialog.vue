@@ -59,6 +59,8 @@ export default class ReplaceCredentialErrorDialog extends Vue {
     @Prop({ default: '' }) readonly attach!: string
 
     // Pass click event to parent.
-    @Emit() close () {}
+    @Emit() close (): void {
+      return undefined
+    }
 }
 </script>

@@ -77,15 +77,19 @@ import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class ConfirmReplaceCredentialDialog extends Vue {
-    /** Prop to display the dialog. */
-    @Prop({ default: false }) readonly dialog!: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog!: boolean
 
-    /** Prop to provide attachment selector. */
-    @Prop({ default: '' }) readonly attach!: string
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach!: string
 
-    // Pass click events to parent.
-    @Emit() close () { }
-    @Emit() proceed () { }
+  // Pass click events to parent.
+  @Emit() close (): void {
+    return undefined
+  }
+  @Emit() proceed (): void {
+    return undefined
+  }
 }
 </script>
 
@@ -93,31 +97,31 @@ export default class ConfirmReplaceCredentialDialog extends Vue {
 @import '@/assets/styles/theme.scss';
 
 .close-btn {
-    position: absolute;
-    right: 2rem;
+  position: absolute;
+  right: 2rem;
 }
 
 .action-btn {
-    min-height: 44px;
+  min-height: 44px;
 }
 
 .warning-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: $gray9;
-    text-align: center;
-    line-height: 2.125rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: $gray9;
+  text-align: center;
+  line-height: 2.125rem;
 }
 
 .warning-text {
-    font-weight: normal;
-    font-size: $px-16;
-    color: $gray7;
-    line-height: 1.5rem;
+  font-weight: normal;
+  font-size: $px-16;
+  color: $gray7;
+  line-height: 1.5rem;
 }
 
 // Vuetify overrides
 :deep(.v-dialog .v-card .v-card__text) {
-    padding-top: 0 !important;
+  padding-top: 0 !important;
 }
 </style>
