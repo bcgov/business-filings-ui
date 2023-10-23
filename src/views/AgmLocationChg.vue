@@ -418,7 +418,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get agmLocationRules (): Array<(val) => boolean | string> {
     const rules = [] as Array<(val) => boolean | string>
     rules.push(val => !!val || 'AGM location is required.')
-    rules.push(val => (val.length <= 100) || 'Must be less than 100 characters.')
+    rules.push(val => (val.length <= 100) || 'Must be 100 characters or less.')
     return rules
   }
 
