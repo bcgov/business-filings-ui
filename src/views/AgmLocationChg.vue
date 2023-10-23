@@ -293,7 +293,6 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
     ConfirmDialog,
     DetailComment,
     ExpandableHelp,
-    AgmLocationAddress: BaseAddress,
     PaymentErrorDialog,
     SbcFeeSummary
   }
@@ -302,7 +301,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    agmLocationAddressRef: BaseAddress,
     agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
