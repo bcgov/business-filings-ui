@@ -1,64 +1,60 @@
 <template>
   <v-text-field
-    id="year-txt"
+    id="agm-location"
     ref="textAreaRef"
-    hide-spin-buttons
-    type="number"
     filled
-    :label="label"
+    :label="textFieldlabel"
     :rules="rules"
-    :value="value"
-    validate-on-blur
+    :value="locationValue"
     @input="emitInput($event)"
   />
 </template>
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
-import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
-export default class AgmYear extends Vue {
+export default class AgmLocation extends Vue {
   // Refs
   $refs!: {
     textAreaRef: any
   }
 
-  @Prop({ default: '' }) readonly value!: string
+  /** The AGM location text field value. */
+  @Prop({ default: '' }) readonly locationValue!: string
 
-  @Prop({ default: 'Year' }) readonly label!: string
+  /** The AGM location text field label. */
+  @Prop({ default: 'AGM Location' }) readonly textFieldlabel!: string
 
+  /** The AGM location text field rules. */
   @Prop({ default: () => [] }) readonly rules!: any[]
 
+  /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
-  agmYear = ''
+  agmLocation = ''
 
   /** Called when component is created. */
   created (): void {
     // inform parent of initial validity
-    this.emitValid(this.value)
+    this.emitValid(this.locationValue)
   }
 
-  @Watch('value')
-  @Debounce(300)
-  onValueChanged (val: string): void {
-    this.emitValid(val)
-  }
-
-  /** Validate AGM year field */
+  /** Validate the AGM location text field */
   @Watch('validateForm')
-  validateAgmYear (): void {
-    if (this.validateForm && !this.agmYear) {
+  validateAgmLocation (): void {
+    if (this.validateForm && !this.agmLocation) {
       this.$refs.textAreaRef.validate()
       this.$refs.textAreaRef.error = true
     }
   }
 
   /** Emits an event with the changed input (ie, updated v-model). */
-  @Emit('input')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitInput (val: string): void {}
+  @Emit('update:agmLocation')
+  emitInput (val: string): void {
+    this.emitValid(val)
+    this.$refs.textAreaRef.error = false
+  }
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')
@@ -67,5 +63,4 @@ export default class AgmYear extends Vue {
     return this.rules.every(rule => rule(val) === true)
   }
 }
-
 </script>
