@@ -61,7 +61,7 @@
             </header>
 
             <!-- Help -->
-            <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
+            <ExpandableHelp helpLabel="Help with Annual General Meeting Location Change">
               <template #content>
                 <h3 class="text-center">
                   AGM Location Change Help
@@ -92,9 +92,9 @@
             <!-- Main Section -->
             <section class="mt-8">
               <header>
-                <h2>AGM Location Detail</h2>
+                <h2>Location Change Detail</h2>
                 <p class="grey-text">
-                  Enter the new AGM location detail including any
+                  Enter the calendar year the AGM is for and AGM location outside B.C.
                 </p>
               </header>
 
@@ -400,7 +400,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.agmLocationValid && this.agmYearValid && this.certifyFormValid)
+    return (this.agmLocationValid && this.agmYearValid && this.certifyFormValid && this.reasonValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
