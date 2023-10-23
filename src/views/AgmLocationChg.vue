@@ -69,12 +69,22 @@
                   </h3>
                   <div class="mt-6">
                     <p class="ml-1">
-                      This request for location change is only needed if the meetings are fully in-person. In general,
-                      these meetings are required to be held in British Columbia. However, there are exceptions to this
-                      rule. If the company's articles permit it or if the members agree, the meeting can be conducted at
-                      a location outside British Columbia. If the meeting combines both in-person and online
-                      participation, the location requirement only applies to the in-person component. If the meeting is
-                      entirely conducted online, these location restrictions do not apply.
+                      Generally, company meetings must be in British Columbia (BC). However, there are exceptions to
+                      this rule. A company must request a location change if the meeting will be fully or partially
+                      in-person and none of the exceptions listed below apply. Partially in-person meetings combine
+                      both in-person and online participation. The location change request only applies to
+                      the in-person participants.
+                      <br><br>
+                      Exceptions to the requirement for a location change request include the following:
+                      <br><br>
+                      <ul>
+                        <li>The meeting will be fully online;</li>
+                        <li>The company's articles permit a location outside BC;</li>
+                        <li>
+                          Nothing in the articles restrict a location change approved by
+                          resolution or by ordinary resolution, as the case may be.
+                        </li>
+                      </ul>
                     </p>
                   </div>
                 </section>
@@ -90,7 +100,7 @@
                 </p>
               </header>
 
-              <div :class="{ 'invalid-section': !agmYearValid && showErrors }">
+              <div>
                 <v-card
                   flat
                   class="py-4"
@@ -98,6 +108,7 @@
                   <!-- AGM Year -->
                   <div
                     id="agm-year-section"
+                    :class="{ 'invalid-section': !agmYearValid && showErrors }"
                   >
                     <v-row
                       no-gutters
@@ -128,38 +139,70 @@
 
                   <v-divider class="my-4" />
 
-                  <!-- Location address -->
-                  <v-row
-                    no-gutters
-                    class="my-6"
+                  <!-- Reason -->
+                  <div
+                    id="reason-section"
+                    :class="{ 'invalid-section': !reasonValid && showErrors }"
                   >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
+                    <v-row
+                      no-gutters
+                      class="my-6"
                     >
-                      <strong :class="{ 'app-red': !agmLocationAddressValid && showErrors }">New AGM Location</strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      <div
-                        id="location-section"
-                        :class="{ 'invalid-section': !agmLocationAddressValid && showErrors }"
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4 pt-4"
                       >
-                        <AgmLocationAddress
-                          ref="agmLocationAddressRef"
-                          :editing="true"
-                          :schema="locationAddressSchema"
-                          :excludeBC="true"
-                          :deliveryInstructionsText="'Additional location details'"
-                          @update:address="updateLocationAddress"
-                          @valid="agmLocationAddressValid=$event"
+                        <strong :class="{ 'app-red': !reasonValid && showErrors }">Reason</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <DetailComment
+                          v-model="reason"
+                          :class="{ 'invalid-component': !reasonValid && showErrors }"
+                          placeholder="Reason"
+                          maxLength="2000"
+                          textRequiredErrorMsg="Reason is required."
+                          :validateForm="showErrors"
+                          @valid="reasonValid=$event"
                         />
-                      </div>
-                    </v-col>
-                  </v-row>
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <v-divider class="my-4" />
+
+                  <!-- Location address -->
+                  <div
+                    id="location-section"
+                    :class="{ 'invalid-section': !agmLocationAddressValid && showErrors }"
+                  >
+                    <v-row
+                      no-gutters
+                      class="my-6"
+                    >
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4 pr-4"
+                      >
+                        <strong :class="{ 'app-red': !agmLocationAddressValid && showErrors }">AGM Location</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="9"
+                      >
+                        <v-col
+                          cols="12"
+                          sm="8"
+                        >
+                          <!-- Placeholder for the new AGM location component that I'll create in the next PR -->
+                        </v-col>
+                      </v-col>
+                    </v-row>
+                  </div>
                 </v-card>
               </div>
             </section>
@@ -263,12 +306,11 @@ import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { locationAddressSchema } from '@/schemas'
-import { BaseAddress } from '@bcrs-shared-components/base-address'
-import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { Certify } from '@/components/common'
+import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
@@ -281,8 +323,8 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
     AgmYear,
     Certify,
     ConfirmDialog,
+    DetailComment,
     ExpandableHelp,
-    AgmLocationAddress: BaseAddress,
     PaymentErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
@@ -292,7 +334,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    agmLocationAddressRef: BaseAddress,
     agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
@@ -316,6 +357,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   certifiedBy = ''
   isCertified = false
   certifyFormValid = false
+
+  // variables for DetailComment component
+  reason = ''
+  reasonValid = false
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
@@ -375,19 +420,19 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get agmYearRules (): Array<(val) => boolean | string> {
     const rules = [] as Array<(val) => boolean | string>
     rules.push(val => !!val || 'AGM year is required.')
-    rules.push(val => (val && +val <= this.followingYear) || 'Must be on or before ' + this.followingYear)
-    rules.push(val => (val && +val >= this.previousYear) || 'Must be on or after ' + this.previousYear)
+    rules.push(val => (val && +val <= this.maxAgmYear) || 'Must be on or before ' + this.maxAgmYear)
+    rules.push(val => (val && +val >= this.minAgmYear) || 'Must be on or after ' + this.minAgmYear)
     return rules
   }
 
-  get previousYear () : number {
+  get minAgmYear () : number {
     const today = new Date()
-    return new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate()).getFullYear()
+    return (today.getFullYear() - 2)
   }
 
-  get followingYear () : number {
+  get maxAgmYear () : number {
     const today = new Date()
-    return new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()).getFullYear()
+    return (today.getFullYear() + 1)
   }
 
   /** Called when component is created. */
@@ -667,6 +712,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
     'agm-year-section',
+    'reason-section',
     'location-section',
     'certify-form-section'
   ]
@@ -676,6 +722,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     return {
       // mainSection: this.sectionValid,
       agmYear: this.agmYearValid,
+      reason: this.reasonValid,
       locationAddress: this.agmLocationAddressValid,
       certifyForm: this.certifyFormValid
     }
@@ -684,6 +731,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   @Watch('agmYearValid')
   @Watch('agmLocationAddressValid')
   @Watch('certifyFormValid')
+  @Watch('resonValid')
   onHaveChanges (): void {
     this.haveChanges = true
   }
@@ -772,6 +820,12 @@ h2 {
 
   .invalid-certify {
     .certify-stmt, .title-label {
+      color: $app-red;
+    }
+  }
+
+  .invalid-component {
+    .title-label {
       color: $app-red;
     }
   }
