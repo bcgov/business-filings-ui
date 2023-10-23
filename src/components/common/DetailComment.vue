@@ -32,20 +32,6 @@ export default class DetailComment extends Vue {
     textarea: any
   }
 
-  /** Array of validations rules for the textarea. */
-  get rules (): Array<(val) => boolean | string> {
-    // include whitespace in maximum length check
-    return [
-      val => (val && val.trim().length > 0) || this.textRequiredErrorMsg,
-      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
-    ]
-  }
-
-  /** Public method to reset Vuetify validation on textarea. */
-  resetValidation (): void {
-    (this.$refs.textarea as any).resetValidation()
-  }
-
   /** Comment (v-model) passed into this component (required). */
   @Prop({ default: '' }) readonly value!: string
 
@@ -65,6 +51,20 @@ export default class DetailComment extends Vue {
   @Prop({ default: 'Detail is required.' }) readonly textRequiredErrorMsg!: string
 
   detailedComment = ''
+
+  /** Array of validations rules for the textarea. */
+  get rules (): Array<(val) => boolean | string> {
+    // include whitespace in maximum length check
+    return [
+      val => (val && val.trim().length > 0) || this.textRequiredErrorMsg,
+      val => (val && val.length <= this.maxLength) || 'Maximum characters exceeded.'
+    ]
+  }
+
+  /** Public method to reset Vuetify validation on textarea. */
+  resetValidation (): void {
+    (this.$refs.textarea as any).resetValidation()
+  }
 
   /** Called when component is created. */
   created (): void {

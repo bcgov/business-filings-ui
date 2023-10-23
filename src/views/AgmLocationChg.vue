@@ -70,7 +70,7 @@
                   <div class="mt-6">
                     <p class="ml-1">
                       Generally, company meetings must be in British Columbia (BC). However, there are exceptions to
-                      this rule. A company must request a location change if the metting will be fully or partially
+                      this rule. A company must request a location change if the meeting will be fully or partially
                       in-person and none of the exceptions listed below apply. Partially in-person meetings combine
                       both in-person and online participation. The location change request only applies to
                       the in-person participants.
