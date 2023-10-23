@@ -306,7 +306,6 @@ import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { locationAddressSchema } from '@/schemas'
-import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
@@ -326,7 +325,6 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
     ConfirmDialog,
     DetailComment,
     ExpandableHelp,
-    AgmLocationAddress: BaseAddress,
     PaymentErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
@@ -336,7 +334,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    agmLocationAddressRef: BaseAddress,
     agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
@@ -423,19 +420,19 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get agmYearRules (): Array<(val) => boolean | string> {
     const rules = [] as Array<(val) => boolean | string>
     rules.push(val => !!val || 'AGM year is required.')
-    rules.push(val => (val && +val <= this.followingYear) || 'Must be on or before ' + this.followingYear)
-    rules.push(val => (val && +val >= this.previousYear) || 'Must be on or after ' + this.previousYear)
+    rules.push(val => (val && +val <= this.maxAgmYear) || 'Must be on or before ' + this.maxAgmYear)
+    rules.push(val => (val && +val >= this.minAgmYear) || 'Must be on or after ' + this.minAgmYear)
     return rules
   }
 
-  get previousYear () : number {
+  get minAgmYear () : number {
     const today = new Date()
-    return new Date(today.getFullYear() - 2, today.getMonth() + 1, today.getDate()).getFullYear()
+    return (today.getFullYear() - 2)
   }
 
-  get followingYear () : number {
+  get maxAgmYear () : number {
     const today = new Date()
-    return new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()).getFullYear()
+    return (today.getFullYear() + 1)
   }
 
   /** Called when component is created. */
