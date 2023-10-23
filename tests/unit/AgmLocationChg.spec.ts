@@ -9,7 +9,6 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
-import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
@@ -136,7 +135,6 @@ describe('AGM Location Chg view', () => {
     await Vue.nextTick()
 
     // verify sub-components
-    expect(wrapper.findComponent(BaseAddress).exists()).toBe(true)
     expect(wrapper.findComponent(AgmYear).exists()).toBe(true)
     expect(wrapper.findComponent(Certify).exists()).toBe(true)
 
