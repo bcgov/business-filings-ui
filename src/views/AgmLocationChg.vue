@@ -61,42 +61,40 @@
             </header>
 
             <!-- Help -->
-            <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
+            <ExpandableHelp helpLabel="Help with Annual General Meeting Location Change">
               <template #content>
-                <section class="agm-location-change-help">
-                  <h3 class="text-center">
-                    AGM Location Change Help
-                  </h3>
-                  <div class="mt-6">
-                    <p class="ml-1">
-                      Generally, company meetings must be in British Columbia (BC). However, there are exceptions to
-                      this rule. A company must request a location change if the meeting will be fully or partially
-                      in-person and none of the exceptions listed below apply. Partially in-person meetings combine
-                      both in-person and online participation. The location change request only applies to
-                      the in-person participants.
-                      <br><br>
-                      Exceptions to the requirement for a location change request include the following:
-                      <br><br>
-                      <ul>
-                        <li>The meeting will be fully online;</li>
-                        <li>The company's articles permit a location outside BC;</li>
-                        <li>
-                          Nothing in the articles restrict a location change approved by
-                          resolution or by ordinary resolution, as the case may be.
-                        </li>
-                      </ul>
-                    </p>
-                  </div>
-                </section>
+                <h3 class="text-center">
+                  AGM Location Change Help
+                </h3>
+                <div class="mt-6">
+                  <p class="ml-1">
+                    Generally, company meetings must be in British Columbia (BC). However, there are exceptions to
+                    this rule. A company must request a location change if the meeting will be fully or partially
+                    in-person and none of the exceptions listed below apply. Partially in-person meetings combine
+                    both in-person and online participation. The location change request only applies to
+                    the in-person participants.
+                    <br><br>
+                    Exceptions to the requirement for a location change request include the following:
+                    <br><br>
+                    <ul>
+                      <li>The meeting will be fully online;</li>
+                      <li>The company's articles permit a location outside BC;</li>
+                      <li>
+                        Nothing in the articles restrict a location change approved by
+                        resolution or by ordinary resolution, as the case may be.
+                      </li>
+                    </ul>
+                  </p>
+                </div>
               </template>
             </ExpandableHelp>
 
             <!-- Main Section -->
             <section class="mt-8">
               <header>
-                <h2>AGM Location Detail</h2>
+                <h2>Location Change Detail</h2>
                 <p class="grey-text">
-                  Enter the new AGM location detail including any
+                  Enter the calendar year the AGM is for and AGM location outside B.C.
                 </p>
               </header>
 
@@ -117,7 +115,7 @@
                       <v-col
                         cols="12"
                         sm="3"
-                        class="pl-4 pr-4"
+                        class="pl-4"
                       >
                         <strong :class="{ 'app-red': !agmYearValid && showErrors }">AGM Year</strong>
                       </v-col>
@@ -126,9 +124,8 @@
                         sm="4"
                       >
                         <AgmYear
-                          ref="agmYearRef"
                           v-model="agmYear"
-                          validateForm="showErrors"
+                          :validateForm="showErrors"
                           label="AGM year"
                           :rules="agmYearRules"
                           @valid="agmYearValid=$event"
@@ -177,29 +174,33 @@
                   <!-- Location address -->
                   <div
                     id="location-section"
-                    :class="{ 'invalid-section': !agmLocationAddressValid && showErrors }"
+                    :class="{ 'invalid-section': !agmLocationValid && showErrors }"
                   >
                     <v-row
                       no-gutters
-                      class="my-6"
+                      class="mt-6"
                     >
                       <v-col
                         cols="12"
                         sm="3"
-                        class="pl-4 pr-4"
+                        class="pl-4 pt-4"
                       >
-                        <strong :class="{ 'app-red': !agmLocationAddressValid && showErrors }">AGM Location</strong>
+                        <strong :class="{ 'app-red': !agmLocationValid && showErrors }">AGM Location</strong>
                       </v-col>
                       <v-col
                         cols="12"
-                        sm="9"
+                        sm="8"
                       >
-                        <v-col
-                          cols="12"
-                          sm="8"
-                        >
-                          <!-- Placeholder for the new AGM location component that I'll create in the next PR -->
-                        </v-col>
+                        <p>
+                          Enter the AGM location not in B.C. Include the city, province or state equivalent, and country.
+                          E.g. "Red Deer, Alberta, Canada"
+                        </p>
+                        <AgmLocation
+                          v-model="agmLocation"
+                          :rules="agmLocationRules"
+                          :validateForm="showErrors"
+                          @valid="agmLocationValid=$event"
+                        />
                       </v-col>
                     </v-row>
                   </div>
@@ -305,7 +306,6 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { locationAddressSchema } from '@/schemas'
 import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog, StaffPaymentDialog }
   from '@/components/dialogs'
@@ -314,12 +314,14 @@ import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
   from '@/enums'
-import { AddressIF, ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
 @Component({
   components: {
+    AgmLocation,
     AgmYear,
     Certify,
     ConfirmDialog,
@@ -334,7 +336,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
   }
@@ -348,8 +349,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   readonly FilingCodes = FilingCodes
 
   // variables for main section
-  agmLocationAddress = {} as AddressIF
-  agmLocationAddressValid = false
+  agmLocation = ''
+  agmLocationValid = false
   agmYear = ''
   agmYearValid = false
 
@@ -385,9 +386,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   saveErrors = []
   saveWarnings = []
 
-  /** The Address schema containing Vuelidate rules. */
-  locationAddressSchema = locationAddressSchema
-
   /** True if loading container should be shown, else False. */
   get showLoadingContainer (): boolean {
     // show loading container when data isn't yet loaded and when
@@ -402,7 +400,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.agmLocationAddressValid && this.agmYearValid && this.certifyFormValid)
+    return (this.agmLocationValid && this.agmYearValid && this.certifyFormValid && this.reasonValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -414,6 +412,14 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get isPayRequired (): boolean {
     // FUTURE: modify rule here as needed
     return (this.totalFee > 0)
+  }
+
+  /** Array of validations rules for AGM location. */
+  get agmLocationRules (): Array<(val) => boolean | string> {
+    const rules = [] as Array<(val) => boolean | string>
+    rules.push(val => !!val || 'AGM location is required.')
+    rules.push(val => (val.length <= 100) || 'Must be 100 characters or less.')
+    return rules
   }
 
   /** Array of validations rules for AGM year. */
@@ -480,10 +486,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
   }
 
-  updateLocationAddress (val: AddressIF): void {
-    this.agmLocationAddress = val
-  }
-
   /**
    * Called when user clicks File and Pay button
    * or when user retries from Save Error dialog
@@ -493,10 +495,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      if (!this.agmYearValid) {
-        // Show error message of agm year if invalid
-        this.$refs.agmYearRef.$refs.textAreaRef.error = true
-      }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
@@ -634,7 +632,8 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     const data: any = {
       [FilingTypes.AGM_LOCATION_CHANGE]: {
         year: this.agmYear,
-        newAgmLocation: this.agmLocationAddress
+        reason: this.reason,
+        agmLocation: this.agmLocation
       }
     }
 
@@ -723,13 +722,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       // mainSection: this.sectionValid,
       agmYear: this.agmYearValid,
       reason: this.reasonValid,
-      locationAddress: this.agmLocationAddressValid,
+      location: this.agmLocationValid,
       certifyForm: this.certifyFormValid
     }
   }
 
   @Watch('agmYearValid')
-  @Watch('agmLocationAddressValid')
+  @Watch('agmLocationValid')
   @Watch('certifyFormValid')
   @Watch('resonValid')
   onHaveChanges (): void {
