@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
-import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
 export default class AgmYear extends Vue {
@@ -40,12 +39,6 @@ export default class AgmYear extends Vue {
     this.emitValid(this.value)
   }
 
-  @Watch('value')
-  @Debounce(300)
-  onValueChanged (val: string): void {
-    this.emitValid(val)
-  }
-
   /** Validate AGM year field */
   @Watch('validateForm')
   validateAgmYear (): void {
@@ -57,8 +50,9 @@ export default class AgmYear extends Vue {
 
   /** Emits an event with the changed input (ie, updated v-model). */
   @Emit('input')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitInput (val: string): void {}
+  emitInput (val: string): void {
+    this.emitValid(val)
+  }
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')
