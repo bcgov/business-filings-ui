@@ -301,7 +301,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   EnumMixin, FilingMixin, ResourceLookupMixin) {
   // Refs
   $refs!: {
-    agmYearRef: AgmYear,
     confirm: ConfirmDialogType,
     certifyRef: Certify
   }
