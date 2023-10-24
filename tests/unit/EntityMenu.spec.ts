@@ -9,6 +9,7 @@ import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
 import { AllowableActions, CorpTypeCd, EntityState, EntityStatus } from '@/enums'
 import * as utils from '@/utils'
+import * as FeatureFlags from '@/utils/feature-flags'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -499,12 +500,10 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-
     vm = wrapper.vm
-    vi.spyOn(vm, 'enableAgmExtension', 'get').mockReturnValue(true)
 
-    // Fix TypeError: GetFeatureFlag(...).includes is not a function test error (unrelated to extensions)
-    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
+    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(CorpTypeCd.BENEFIT_COMPANY)
+    vi.spyOn(vm, 'enableAgmExtension', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 
