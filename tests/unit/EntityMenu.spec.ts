@@ -478,7 +478,7 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
   })
 })
 
-describe.skip('Entity Menu - Request AGM Extension click tests', () => {
+describe('Entity Menu - Request AGM Extension click tests', () => {
   let vm: any
 
   beforeAll(() => {
@@ -502,6 +502,9 @@ describe.skip('Entity Menu - Request AGM Extension click tests', () => {
 
     vm = wrapper.vm
     vi.spyOn(vm, 'enableAgmExtension', 'get').mockReturnValue(true)
+
+    // Fix TypeError: GetFeatureFlag(...).includes is not a function test error (unrelated to extensions)
+    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 
