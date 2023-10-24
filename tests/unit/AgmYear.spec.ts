@@ -11,13 +11,13 @@ document.body.setAttribute('data-app', 'true')
 
 describe('AgmYear', () => {
   /** Array of validations rules for AGM Year with min and max AGM year. */
-    const today = new Date()
-    const minAgmYear = today.getFullYear() - 2
-    const maxAgmYear = today.getFullYear() + 1
-    const rules = [] as Array<(val) => boolean | string>
-    rules.push(val => !!val || 'AGM year is required.')
-    rules.push(val => (val && +val <= maxAgmYear) || 'Must be on or before ' + maxAgmYear)
-    rules.push(val => (val && +val >= minAgmYear) || 'Must be on or after ' + minAgmYear)
+  const today = new Date()
+  const minAgmYear = today.getFullYear() - 2
+  const maxAgmYear = today.getFullYear() + 1
+  const rules = [] as Array<(val) => boolean | string>
+  rules.push(val => !!val || 'AGM year is required.')
+  rules.push(val => (val && +val <= maxAgmYear) || 'Must be on or before ' + maxAgmYear)
+  rules.push(val => (val && +val >= minAgmYear) || 'Must be on or after ' + minAgmYear)
 
   it('initializes correctly', () => {
     const wrapper = mount(AgmYear,
