@@ -186,27 +186,38 @@ describe('AGM Location Chg view', () => {
     expect(!!vm.isPayRequired).toBe(true)
 
     // verify "validated" - all true
-    vm.agmLocationAddressValid = true
+    vm.agmLocationValid = true
     vm.agmYearValid = true
     vm.certifyFormValid = true
+    vm.reasonValid = true
     expect(!!vm.isPageValid).toBe(true)
 
-    // verify "validated" - invalid Location change form
-    vm.agmLocationAddressValid = false
-    vm.agmYearValid = true
-    vm.certifyFormValid = true
-    expect(!!vm.isPageValid).toBe(false)
-
     // verify "validated" - invalid agm year
-    vm.agmLocationAddressValid = true
+    vm.agmLocationValid = true
     vm.agmYearValid = false
     vm.certifyFormValid = true
+    vm.reasonValid = true
+    expect(!!vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid reason
+    vm.agmLocationValid = true
+    vm.agmYearValid = true
+    vm.certifyFormValid = true
+    vm.reasonValid = false
+    expect(!!vm.isPageValid).toBe(false)
+
+    // verify "validated" - invalid Location change form
+    vm.agmLocationValid = false
+    vm.agmYearValid = true
+    vm.certifyFormValid = true
+    vm.reasonValid = true
     expect(!!vm.isPageValid).toBe(false)
 
     // verify "validated" - invalid Certify form
-    vm.agmLocationAddressValid = true
+    vm.agmLocationValid = true
     vm.agmYearValid = true
     vm.certifyFormValid = false
+    vm.reasonValid = true
     expect(!!vm.isPageValid).toBe(false)
   })
 
@@ -217,9 +228,10 @@ describe('AGM Location Chg view', () => {
 
     // make sure form is validated
     await wrapper.setData({
-      agmLocationAddressValid: true,
+      agmLocationValid: true,
       agmYearValid: true,
-      certifyFormValid: true
+      certifyFormValid: true,
+      reasonValid: true
     })
 
     await wrapper.setData({ dataLoaded: true })
