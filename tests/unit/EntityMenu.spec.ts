@@ -478,13 +478,15 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
   })
 })
 
-describe.skip('Entity Menu - Request AGM Extension click tests', () => {
+describe('Entity Menu - Request AGM Extension click tests', () => {
   let vm: any
 
   beforeAll(() => {
     // override feature flag
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'enable-agm-extension'))
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-agm-extension') return true
+      if (flag === 'supported-agm-location-chg-entities') return 'BEN'
+    })
   })
 
   afterAll(() => {
@@ -499,9 +501,6 @@ describe.skip('Entity Menu - Request AGM Extension click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-
-    vm = wrapper.vm
-    vi.spyOn(vm, 'enableAgmExtension', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 
