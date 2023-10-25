@@ -80,15 +80,8 @@ describe('AGM Location Chg view', () => {
               filing: {
                 agmLocationChange: {
                   year: '2023',
-                  newAgmLocation: {
-                    streetAddress: 'Peter Griffin delivery street address',
-                    streetAddressAdditional: null,
-                    addressCity: 'deliv address city',
-                    addressCountry: 'deliv country',
-                    postalCode: 'H0H0H0',
-                    addressRegion: 'MB',
-                    deliveryInstructions: 'Test notes'
-                  }
+                  agmLocation: 'Toronto, Ontario, Canada',
+                  reason: 'Test Reason'
                 },
                 business: {
                   foundingDate: '2007-04-08T00:00:00+00:00',

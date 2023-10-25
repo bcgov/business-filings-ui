@@ -192,8 +192,8 @@
                         sm="8"
                       >
                         <p>
-                          Enter the AGM location not in B.C. Include the city, province or state equivalent, and country.
-                          E.g. "Red Deer, Alberta, Canada"
+                          Enter the AGM location not in B.C. Include the city, province or state equivalent,
+                          and country. E.g. "Red Deer, Alberta, Canada"
                         </p>
                         <AgmLocation
                           v-model="agmLocation"
