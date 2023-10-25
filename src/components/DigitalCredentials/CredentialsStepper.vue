@@ -1,5 +1,5 @@
 <template>
-  <section id="credentials-stepper">
+  <div id="credentials-stepper">
     <v-container>
       <v-row>
         <v-col
@@ -8,10 +8,8 @@
         >
           <v-card class="pa-3">
             <v-card-text>
-              <h1 class="mb-4">
-                Steps to get your credentials:
-              </h1>
-              <v-card class="mb-2">
+              <h1>Steps to get your credentials:</h1>
+              <v-card class="mt-4">
                 <v-card-text class="d-flex">
                   <span
                     class="credentials-stepper-number ml-n4 my-n4 px-8
@@ -31,7 +29,7 @@
                   </span>
                 </v-card-text>
               </v-card>
-              <v-card class="mb-2">
+              <v-card class="mt-2">
                 <v-card-text class="d-flex">
                   <span
                     class="credentials-stepper-number ml-n4 my-n4 px-8
@@ -45,7 +43,7 @@
                   </span>
                 </v-card-text>
               </v-card>
-              <v-card class="mb-2">
+              <v-card class="mt-2">
                 <v-card-text class="d-flex">
                   <span
                     class="credentials-stepper-number ml-n4 my-n4 px-8
@@ -59,12 +57,12 @@
                   </span>
                 </v-card-text>
               </v-card>
-              <div class="mt-4">
-                <p class="mb-0 font-weight-bold word-wrap">
+              <div class="mt-6">
+                <p class="font-weight-bold word-break-normal">
                   Need more help?
                 </p>
                 <a
-                  class="text-decoration-none"
+                  class="text-decoration-none mt-0"
                   href=""
                   target="_blank"
                 >Find solutions</a>
@@ -83,16 +81,16 @@
         >
           <v-card v-if="!credentialConnection?.isActive">
             <v-card-text class="d-flex flex-column">
-              <p class="mt-4 mb-8 justify-center text-center font-weight-bold word-wrap">
+              <p class="mt-4 justify-center text-center font-weight-bold word-break-normal">
                 Scan this QR code with your BC Wallet app
               </p>
               <QrcodeVue
-                class="d-flex justify-center"
+                class="d-flex justify-center mt-8"
                 render-as="svg"
                 size="200"
                 :value="credentialConnection?.invitationUrl"
               />
-              <p class="mt-8 justify-center text-center word-wrap">
+              <p class="mt-8 justify-center text-center word-break-normal">
                 QR code isn't scanning?
                 <a
                   class="text-decoration-none"
@@ -116,11 +114,11 @@
                   indeterminate
                 />
               </div>
-              <p class="justify-center text-center font-weight-bold word-wrap">
+              <p class="justify-center text-center font-weight-bold word-break-normal">
                 Accept the request in your wallet
               </p>
               <a
-                class="text-decoration-none justify-center text-center word-wrap"
+                class="text-decoration-none justify-center text-center word-break-normal"
                 href=""
                 target="_blank"
               >
@@ -142,7 +140,7 @@
                   mdi-check-circle-outline
                 </v-icon>
               </div>
-              <p class="justify-center text-center font-weight-bold word-wrap">
+              <p class="justify-center text-center font-weight-bold word-break-normal">
                 Your Business Card is now ready to use
               </p>
             </v-card-text>
@@ -151,10 +149,10 @@
       </v-row>
     </v-container>
     <CredentialsWebSocket
-      @onConnection="handleConnection"
-      @onIssuedCredential="handleIssuedCredential"
+      @onConnection="handleConnection($event)"
+      @onIssuedCredential="handleIssuedCredential($event)"
     />
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -172,11 +170,11 @@ Component.registerHooks(['beforeRouteEnter'])
 // Create a component that extends the Vue class called CredentialsStepper
 @Component({ components: { QrcodeVue, CredentialsWebSocket } })
 export default class CredentialsStepper extends Vue {
-  @Getter(useBusinessStore) getIdentifier!: string;
+  @Getter(useBusinessStore) getIdentifier!: string
 
-  credentialTypes = DigitalCredentialTypes;
-  credentialConnection: WalletConnectionIF = null;
-  issuedCredential: DigitalCredentialIF = null;
+  credentialTypes = DigitalCredentialTypes
+  credentialConnection: WalletConnectionIF = null
+  issuedCredential: DigitalCredentialIF = null
 
   async beforeRouteEnter (to, from, next): Promise<void> {
     next(async (_this) => {
@@ -205,7 +203,7 @@ export default class CredentialsStepper extends Vue {
 
   async getCredentialsConnection (): Promise<void> {
     const { data } = await LegalServices.fetchCredentialConnections(this.getIdentifier)
-    this.credentialConnection = data?.connections?.[0]
+    this.credentialConnection = data?.connections?.[0] || null
   }
 
   async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
@@ -224,14 +222,10 @@ export default class CredentialsStepper extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.credentials-stepper-number {
-  color: rgb(255, 255, 255);
-  background-color: rgb(22, 105, 187);
-}
-</style>
+@import "@/assets/styles/theme.scss";
 
-<style scoped lang="scss">
-.word-wrap {
-  word-break: normal;
+.credentials-stepper-number {
+  color: white;
+  background-color: $app-blue;
 }
 </style>

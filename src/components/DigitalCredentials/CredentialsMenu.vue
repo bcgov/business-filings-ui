@@ -1,5 +1,6 @@
 <template>
   <v-menu
+    id="credentials-menu"
     v-model="expand"
     offset-y
     transition="slide-y-transition"
@@ -32,7 +33,7 @@
       <v-list-item-group color="primary">
         <v-list-item
           :disabled="issuedCredential.isDeleted"
-          @click="handleConfirmReplaceCredential(issuedCredential)"
+          @click="handleConfirmReplaceCredential()"
         >
           <v-list-item-title>
             <span class="app-blue">Replace Credential</span>
@@ -40,7 +41,7 @@
         </v-list-item>
         <v-list-item
           :disabled="issuedCredential.isRevoked"
-          @click="handleConfirmRevokeCredential(issuedCredential)"
+          @click="handleConfirmRevokeCredential()"
         >
           <v-list-item-title>
             <span class="app-blue">Revoke Credential</span>
@@ -63,14 +64,14 @@ export default class CredentialsMenu extends Vue {
 
   /** Emits an event to confirm revoke credential. */
   @Emit('onConfirmRevokeCredential')
-  handleConfirmRevokeCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
-    return issuedCredential
+  handleConfirmRevokeCredential (): DigitalCredentialIF {
+    return this.issuedCredential
   }
 
   /** Emits an event to confirm replace credential. */
   @Emit('onConfirmReplaceCredential')
-  handleConfirmReplaceCredential (issuedCredential: DigitalCredentialIF): DigitalCredentialIF {
-    return issuedCredential
+  handleConfirmReplaceCredential (): DigitalCredentialIF {
+    return this.issuedCredential
   }
 }
 </script>

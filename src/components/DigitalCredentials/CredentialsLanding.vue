@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="credentials-landing">
     <v-card>
       <v-card-text>
         <v-container>
@@ -12,11 +12,9 @@
                       /> -->
             </v-col>
             <v-col>
-              <h1 class="mb-4">
-                Business Card Credentials
-              </h1>
-              <p>
-                A digital credential is the digital equivalent of paper-based credential like a drivers license.
+              <h1>Business Card Credentials</h1>
+              <p class="mt-4">
+                A digital credential is the digital equivalent of a paper-based credential like a driver's license.
                 It works as proof of qualification used to get services such as opening a bank account, or
                 getting your business license.
               </p>

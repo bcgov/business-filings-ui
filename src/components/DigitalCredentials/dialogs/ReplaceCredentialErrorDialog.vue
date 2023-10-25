@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    id="replace-credential-error-dialog"
     v-model="dialog"
     width="45rem"
     persistent

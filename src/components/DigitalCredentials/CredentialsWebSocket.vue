@@ -1,5 +1,5 @@
 <template>
-  <div />
+  <div id="credentials-web-socket" />
 </template>
 
 <script lang="ts">

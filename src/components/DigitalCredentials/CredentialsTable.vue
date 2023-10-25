@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <h1 class="mb-4">
-      My Credential Dashboard
-    </h1>
+  <div id="credentials-table">
+    <h1>My Credential Dashboard</h1>
 
-    <header class="credentials-table-header">
+    <header class="credentials-table-header mt-4">
       <label class="font-weight-bold pl-2">Your Digital Credentials</label>
     </header>
 
@@ -30,8 +28,8 @@
         <template #[`item.action`]="{ item }">
           <CredentialsMenu
             :issuedCredential="item"
-            @onConfirmRevokeCredential="promptConfirmRevokeCredential"
-            @onConfirmReplaceCredential="promptConfirmReplaceCredential"
+            @onConfirmRevokeCredential="promptConfirmRevokeCredential($event)"
+            @onConfirmReplaceCredential="promptConfirmReplaceCredential($event)"
           />
         </template>
       </v-data-table>
@@ -52,10 +50,10 @@ import CredentialsMenu from '@/components/DigitalCredentials/CredentialsMenu.vue
   }
 })
 export default class CredentialsTable extends Mixins(DateMixin) {
-  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialIF>;
+  @Prop({ default: () => [] }) readonly issuedCredentials!: Array<DigitalCredentialIF>
 
   get credentialsTableHeaders (): Array<TableHeaderIF> {
-    // Do not display headers if there is table data
+    // Do not display headers if there is no table data
     if (this.issuedCredentials.length === 0) return []
     return [
       {
@@ -119,10 +117,11 @@ export default class CredentialsTable extends Mixins(DateMixin) {
 
 // Vuetify overrides for Table Headers and Cells
 :deep() {
+
   .v-data-table>.v-data-table__wrapper>table>thead>tr>th,
   td {
     color: $gray7;
-    font-size: 0.875rem;
+    font-size: $px-14;
   }
 
   .column-lg {

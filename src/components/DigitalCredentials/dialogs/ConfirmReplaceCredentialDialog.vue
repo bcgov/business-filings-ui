@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    id="confirm-revoke-credential-dialog"
     v-model="dialog"
     width="45rem"
     persistent
@@ -98,7 +99,7 @@ export default class ConfirmReplaceCredentialDialog extends Vue {
 
 .close-btn {
   position: absolute;
-  right: 2rem;
+  right: $px-32;
 }
 
 .action-btn {
@@ -106,18 +107,18 @@ export default class ConfirmReplaceCredentialDialog extends Vue {
 }
 
 .warning-title {
-  font-size: 1.5rem;
+  font-size: $px-24;
   font-weight: bold;
   color: $gray9;
   text-align: center;
-  line-height: 2.125rem;
+  line-height: $px-34;
 }
 
 .warning-text {
   font-weight: normal;
   font-size: $px-16;
   color: $gray7;
-  line-height: 1.5rem;
+  line-height: $px-24;
 }
 
 // Vuetify overrides
