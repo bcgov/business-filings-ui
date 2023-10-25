@@ -403,7 +403,7 @@
                   </v-btn>
                   <v-btn
                     v-else
-                    :class="{ 'btn-resume-payment': !isAgmLocationChange(item) }"
+                    :class="{ 'btn-resume-payment': !isCancellableTodoItem(item) }"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -413,7 +413,7 @@
 
                   <!-- dropdown menu -->
                   <v-menu
-                    v-if="!isAgmLocationChange(item)"
+                    v-if="!isCancellableTodoItem(item)"
                     offset-y
                     left
                   >
@@ -825,8 +825,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     })
   }
 
-  /** Check if todo item is an AGM Location change. */
-  isAgmLocationChange (item: TodoItemIF): boolean {
+  /** Check if todo item is cancellable (has a draft). */
+  isCancellableTodoItem(item: TodoItemIF): boolean {
     return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
   }
 
