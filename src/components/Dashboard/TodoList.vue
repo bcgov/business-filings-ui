@@ -672,7 +672,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   // for template
   readonly EnumUtilities = EnumUtilities
   readonly FilingStatus = FilingStatus
-  readonly FilingTypes = FilingTypes
 
   /** Whether a COA is pending. */
   get isCoaPending (): boolean {
