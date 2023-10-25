@@ -1,5 +1,5 @@
 import { CorpTypeCd, EffectOfOrderTypes, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { AddressIF, ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
+import { ApiDateTimeUtc, CommentIF, DocumentIF, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
   from '@/interfaces'
 
 /**
@@ -43,7 +43,8 @@ export interface ApiFilingIF {
 
     agmLocationChange?: {
       year: string,
-      newAgmLocation: AddressIF
+      reason: string,
+      agmLocation: string
     }
 
     // alteration filings only

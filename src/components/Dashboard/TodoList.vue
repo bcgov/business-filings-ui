@@ -403,7 +403,7 @@
                   </v-btn>
                   <v-btn
                     v-else
-                    class="btn-resume-payment"
+                    :class="{ 'btn-resume-payment': !isAgmLocationChange(item) }"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -413,6 +413,7 @@
 
                   <!-- dropdown menu -->
                   <v-menu
+                    v-if="!isAgmLocationChange(item)"
                     offset-y
                     left
                   >
@@ -671,6 +672,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   // for template
   readonly EnumUtilities = EnumUtilities
   readonly FilingStatus = FilingStatus
+  readonly FilingTypes = FilingTypes
 
   /** Whether a COA is pending. */
   get isCoaPending (): boolean {
@@ -821,6 +823,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.checkIfCompleted(id, count)
       }, 1000)
     })
+  }
+
+  /** Check if todo item is an AGM Location change. */
+  isAgmLocationChange (item: TodoItemIF): boolean {
+    return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
   }
 
   /** Loads a todo item into the Todo Items array. */
