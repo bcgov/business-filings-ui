@@ -89,8 +89,8 @@ describe('AgmLocation', () => {
       })
 
     const input = wrapper.find('#agm-location')
-    let a = 'a'
-    let a101 = a.repeat(101)
+    const a = 'a'
+    const a101 = a.repeat(101)
     await input.setValue(a101)
 
     expect(wrapper.emitted('update:agmLocation').pop()[0]).toBe(a101)

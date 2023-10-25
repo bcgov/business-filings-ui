@@ -9,7 +9,6 @@ import { StaffComments } from '@bcrs-shared-components/staff-comments'
 import mockRouter from './mockRouter'
 import { AllowableActions, CorpTypeCd, EntityState, EntityStatus } from '@/enums'
 import * as utils from '@/utils'
-import * as FeatureFlags from '@/utils/feature-flags'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
