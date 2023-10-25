@@ -826,7 +826,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   }
 
   /** Check if task item is cancellable (has a draft). */
-  isCancellableTodoItem(item: TodoItemIF): boolean {
+  isCancellableTodoItem (item: TodoItemIF): boolean {
     return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
   }
 
