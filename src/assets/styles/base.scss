@@ -4,40 +4,29 @@
   font-family: 'BCSans';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/BCSans/BCSans-Regular.woff2') format('woff2'),
-    /* Optimized for very modern browsers */
-    url('../fonts/BCSans/BCSans-Regular.woff') format('woff');
-  /* Modern Browsers */
+  src: url('../fonts/BCSans/BCSans-Regular.woff2') format('woff2'), /* Optimized for very modern browsers */
+       url('../fonts/BCSans/BCSans-Regular.woff') format('woff'); /* Modern Browsers */
 }
-
 @font-face {
   font-family: 'BCSans';
   font-style: italic;
   font-weight: 400;
-  src: url('../fonts/BCSans/BCSans-Italic.woff2') format('woff2'),
-    /* Optimized for very modern browsers */
-    url('../fonts/BCSans/BCSans-Italic.woff') format('woff');
-  /* Modern Browsers */
+  src: url('../fonts/BCSans/BCSans-Italic.woff2') format('woff2'), /* Optimized for very modern browsers */
+       url('../fonts/BCSans/BCSans-Italic.woff') format('woff'); /* Modern Browsers */
 }
-
 @font-face {
   font-family: 'BCSans';
   font-style: normal;
   font-weight: 700;
-  src: url('../fonts/BCSans/BCSans-Bold.woff2') format('woff2'),
-    /* Modern Browsers */
-    url('../fonts/BCSans/BCSans-Bold.woff') format('woff');
-  /* Optimized for very modern browsers */
+  src: url('../fonts/BCSans/BCSans-Bold.woff2') format('woff2'), /* Modern Browsers */
+       url('../fonts/BCSans/BCSans-Bold.woff') format('woff'); /* Optimized for very modern browsers */
 }
-
 @font-face {
   font-family: 'BCSans';
   font-style: italic;
   font-weight: 700;
-  src: url('../fonts/BCSans/BCSans-BoldItalic.woff2') format('woff2'),
-    /* Modern Browsers */
-    url('../fonts/BCSans/BCSans-BoldItalic.woff') format('woff');
-  /* Optimized for very modern browsers */
+  src: url('../fonts/BCSans/BCSans-BoldItalic.woff2') format('woff2'), /* Modern Browsers */
+       url('../fonts/BCSans/BCSans-BoldItalic.woff') format('woff'); /* Optimized for very modern browsers */
 }
 
 .font-11 {
@@ -69,16 +58,11 @@ body {
   @extend .font-16; // default font size
 }
 
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
   color: $gray9;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
   letter-spacing: -0.04rem;
   font-weight: 700;
 }
@@ -209,12 +193,10 @@ p {
   0% {
     opacity: 1;
   }
-
   80% {
     opacity: 1;
     display: block;
   }
-
   100% {
     opacity: 0;
     display: none;
@@ -237,7 +219,7 @@ ul.list {
   line-height: 1.25rem;
 }
 
-.list-item+.list-item {
+.list-item + .list-item {
   border-top: 1px solid $gray3;
 }
 
