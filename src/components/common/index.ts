@@ -13,6 +13,7 @@ import OfficeAddresses from './OfficeAddresses.vue'
 import Stepper from '@/components/common/Stepper.vue'
 import SummaryDirectors from './SummaryDirectors.vue'
 import SummaryOfficeAddresses from './SummaryOfficeAddresses.vue'
+import VcardTemplate from './VcardTemplate.vue'
 import WarningPopover from './WarningPopover.vue'
 
 // NB: importing/exporting Directors gives us weird errors,
@@ -34,5 +35,6 @@ export {
   Stepper,
   SummaryDirectors,
   SummaryOfficeAddresses,
+  VcardTemplate,
   WarningPopover
 }

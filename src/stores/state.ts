@@ -1,6 +1,6 @@
-import { StateIF } from '@/interfaces'
+import { RootStateIF } from '@/interfaces'
 
-export const state: StateIF = {
+export const state: RootStateIF = {
   authRoles: [],
   currentDate: null,
   currentJsDate: null,
@@ -28,5 +28,6 @@ export const state: StateIF = {
   parties: [],
   recordsAddress: null,
   registeredAddress: null,
-  tasks: []
+  tasks: [],
+  userInfo: null
 }
