@@ -13,7 +13,7 @@ describe('AgmLocation', () => {
   /** Array of validations rules for AGM location to be passed as a prop. */
   const rules = [] as Array<(val) => boolean | string>
   rules.push(val => !!val || 'AGM location is required.')
-  rules.push(val => (val.length <= 100) || 'Must be 100 characters or less.')
+  rules.push(val => (val.length <= 400) || 'Must be 400 characters or less.')
 
   it('initializes correctly', () => {
     const wrapper = mount(AgmLocation,
@@ -89,10 +89,10 @@ describe('AgmLocation', () => {
       })
 
     const input = wrapper.find('#agm-location')
-    const a101 = 'a'.repeat(101)
-    await input.setValue(a101)
+    const a401 = 'a'.repeat(401)
+    await input.setValue(a401)
 
-    expect(wrapper.emitted('update:agmLocation').pop()[0]).toBe(a101)
+    expect(wrapper.emitted('update:agmLocation').pop()[0]).toBe(a401)
     expect(wrapper.emitted('valid').pop()[0]).toBe(false)
     wrapper.destroy()
   })

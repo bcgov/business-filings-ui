@@ -394,7 +394,10 @@
                 <template v-else-if="isStatusPending(item)">
                   <v-btn
                     v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
-                    class="btn-change-payment-type"
+                    :class="
+                      [
+                        !isCancellableTodoItem(item) ? 'btn-change-payment-type' : 'btn-change-payment-type-cancellable'
+                      ]"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -403,7 +406,7 @@
                   </v-btn>
                   <v-btn
                     v-else
-                    :class="{ 'btn-resume-payment': !isCancellableTodoItem(item) }"
+                    :class="[!isCancellableTodoItem(item) ? 'btn-resume-payment' : 'btn-resume-payment-cancellable']"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
