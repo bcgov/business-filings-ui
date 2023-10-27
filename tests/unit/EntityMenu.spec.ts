@@ -383,19 +383,21 @@ describe('Entity Menu - Business Summary click tests', () => {
   })
 })
 
-describe('Entity Menu - Business Digital Credentials click tests', () => {
-  it('displays the Business Digital Credentials button', async () => {
+describe('Entity Menu - Digital Business Cards click tests', () => {
+  it('displays the Digital Business Cards button', async () => {
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
+
+    await wrapper.find('.menu-btn').trigger('click')
 
     const button = wrapper.find('#view-add-digital-credentials-button')
+    console.log(button)
     expect(button.exists()).toBe(true)
-    expect(button.text()).toBe('Business Digital Credentials')
+    expect(button.text()).toBe('Digital Business Cards')
 
     wrapper.destroy()
   })
@@ -407,7 +409,8 @@ describe('Entity Menu - Business Digital Credentials click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-    await Vue.nextTick()
+
+    await wrapper.find('.menu-btn').trigger('click')
 
     // click the button and verify emitted event
     await wrapper.find('#view-add-digital-credentials-button').trigger('click')

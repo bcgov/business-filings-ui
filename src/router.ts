@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import routes from '@/routes'
-import { Routes } from '@/enums'
+import { Routes, DCRoutes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { GetFeatureFlag } from '@/utils'
 
@@ -56,7 +56,7 @@ export function getVueRouter () {
     // See DIGITAL_CREDENTIALS in Allowable Actions Mixin.
     return (
       !GetFeatureFlag('enable-digital-credentials') &&
-      [Routes.DIGITAL_CREDENTIALS].includes(route.name as Routes)
+      [Routes.DIGITAL_CREDENTIALS].includes(route.name as DCRoutes)
     )
   }
 

@@ -76,7 +76,6 @@ export default class CredentialsMenu extends Vue {
 }
 </script>
 
-<!-- eslint-disable max-len -->
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
