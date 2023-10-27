@@ -4,7 +4,6 @@ import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
-import { Routes as DCRoutes } from '@/components/DigitalCredentials/enums/routes'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -95,8 +94,7 @@ export default class AllowableActionsMixin extends Vue {
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
-        const isDCRoute = this.$route.matched.some(route => route.name === DCRoutes.DIGITAL_CREDENTIALS)
-        return (ff && !isDCRoute && this.isSoleProp && !this.isRoleStaff)
+        return (ff && this.isSoleProp && !this.isRoleStaff)
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {
