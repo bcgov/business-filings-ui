@@ -93,7 +93,6 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.DIGITAL_CREDENTIALS: {
-        // return true // *** FOR DEBUGGING ONLY
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
         const isDCRoute = this.$route.matched.some(route => route.name === DCRoutes.DIGITAL_CREDENTIALS)
