@@ -1,5 +1,13 @@
 <template>
   <div id="credentials-stepper">
+    <!-- Dialogs -->
+    <ConfirmCredentialsTermsOfUseDialog
+      :dialog="confirmCredentialsTermsOfUseDialog"
+      attach="#app"
+      @close="goToCredentialsDashboard()"
+      @proceed="hideConfirmCredentialsTermsOfUseDialog()"
+    />
+
     <v-container>
       <v-row>
         <v-col
@@ -164,14 +172,23 @@ import { Component, Vue } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
 import { DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
+import ConfirmCredentialsTermsOfUseDialog
+  from '@/components/DigitalCredentials/dialogs/ConfirmCredentialsTermsofUseDialog.vue'
 
 Component.registerHooks(['beforeRouteEnter'])
 
 // Create a component that extends the Vue class called CredentialsStepper
-@Component({ components: { QrcodeVue, CredentialsWebSocket } })
+@Component({
+  components: {
+    QrcodeVue,
+    CredentialsWebSocket,
+    ConfirmCredentialsTermsOfUseDialog
+  }
+})
 export default class CredentialsStepper extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
 
+  confirmCredentialsTermsOfUseDialog = false
   credentialTypes = DigitalCredentialTypes
   credentialConnection: WalletConnectionIF = null
   issuedCredential: DigitalCredentialIF = null
@@ -184,12 +201,18 @@ export default class CredentialsStepper extends Vue {
       if (issuedCredentials?.length) {
         next({ name: Routes.DIGITAL_CREDENTIALS })
       } else {
+        _this.confirmCredentialsTermsOfUseDialog = true
         next()
       }
     })
   }
 
-  async mounted (): Promise<void> {
+  async hideConfirmCredentialsTermsOfUseDialog (): Promise<void> {
+    this.confirmCredentialsTermsOfUseDialog = false
+    await this.setupConnection()
+  }
+
+  async setupConnection (): Promise<void> {
     await this.getCredentialsConnection()
     if (!this.credentialConnection) {
       await this.addCredentialInvitation()
@@ -217,6 +240,10 @@ export default class CredentialsStepper extends Vue {
 
   async handleIssuedCredential (issuedCredential: DigitalCredentialIF) {
     this.issuedCredential = issuedCredential
+  }
+
+  goToCredentialsDashboard (): void {
+    this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
   }
 }
 </script>
