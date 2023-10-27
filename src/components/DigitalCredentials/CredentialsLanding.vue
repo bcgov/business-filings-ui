@@ -4,24 +4,35 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col class="d-flex align-center">
-              <v-img src="/src/assets/images/digital_credentials.svg" />
-              <!-- FIXME: Path aliases don't seem to be working -->
-              <!-- <v-img
-                        src="@/assets/images/digital_credentials.svg"
-                      /> -->
+            <v-col
+              class="d-flex align-center align-content-center"
+              cols="12"
+              sm="4"
+              md="5"
+              lg="6"
+            >
+              <img
+                width="100%"
+                src="@/assets/images/business_card_feature.png"
+                :alt="imageAltText"
+              >
             </v-col>
-            <v-col>
+            <v-col
+              cols="12"
+              sm="8"
+              md="7"
+              lg="6"
+            >
               <h1>Business Card Credentials</h1>
               <p class="mt-4">
-                A digital credential is the digital equivalent of a paper-based credential like a driver's license.
-                It works as proof of qualification used to get services such as opening a bank account, or
-                getting your business license.
+                Use your business information to generate the Digital Business Card. You save digital credentials on
+                your phone using the BC Wallet app. When a service provider asks for a digital credential, you use the
+                BC Wallet app to show it.
               </p>
               <p>
-                Use your business information to generate the Business Card Credential. You save digital
-                credentials on your phone using a digital wallet app. When a service provider asks for a digital
-                credential, you use the digital wallet app to show it.
+                A digital credential is the digital equivalent of a paper-based credential like a driver's licence. It
+                works as proof of qualification used to get services such as opening a bank account, or getting your
+                business licence.
               </p>
               <div class="d-flex justify-center justify-sm-start">
                 <v-btn
@@ -31,7 +42,7 @@
                   large
                   @click="issueCredentials()"
                 >
-                  <span>Get your Business Card Credential</span>
+                  <span>Get your Business Card Credential <v-icon>mdi-chevron-right</v-icon></span>
                 </v-btn>
               </div>
             </v-col>
@@ -55,6 +66,9 @@ import CredentialsTable from '@/components/DigitalCredentials/CredentialsTable.v
   }
 })
 export default class CredentialsLanding extends Vue {
+  imageAltText = 'Two mobile phones one behind the other. The top left one is showing your business card ' +
+  'credential details, the bottom right one is showing your business card. Both are in the BC Wallet app.'
+
   issueCredentials (): void {
     this.$router.push({ name: Routes.ISSUE_CREDENTIAL })
   }

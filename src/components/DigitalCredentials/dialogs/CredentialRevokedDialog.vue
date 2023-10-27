@@ -33,7 +33,7 @@
             color="primary"
             @click="close()"
           >
-            Go Back to My Credentials
+            Go back to My Credentials
           </v-btn>
         </v-row>
       </v-card-actions>

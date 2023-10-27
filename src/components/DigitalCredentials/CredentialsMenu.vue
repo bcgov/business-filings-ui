@@ -13,7 +13,7 @@
         class="menu-btn"
         v-on="on"
       >
-        <span class="font-13 ml-1">Manage Credential</span>
+        <span class="font-13 ml-1">Credential Options</span>
         <v-icon
           v-if="expand"
           medium

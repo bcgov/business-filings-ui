@@ -40,7 +40,7 @@
           id="dialog-text"
           class="warning-text"
         >
-          This will revoke the credential from your BC Wallet. It cannot be reversed. Do you still want to continue?
+          This will revoke the credential from a BC Wallet. It cannot be reversed. Do you still wish to continue?
         </p>
       </v-card-text>
 
@@ -64,8 +64,7 @@
             color="primary"
             @click="proceed()"
           >
-            Continue with Credential Revocation
-            <v-icon>mdi-chevron-right</v-icon>
+            Revoke Credential
           </v-btn>
         </v-row>
       </v-card-actions>

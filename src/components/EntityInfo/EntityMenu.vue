@@ -69,30 +69,6 @@
       </v-tooltip>
     </span>
 
-    <!-- View/Add Digital Credentials -->
-    <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
-      <v-tooltip
-        top
-        content-class="top-tooltip"
-        transition="fade-transition"
-      >
-        <template #activator="{ on }">
-          <v-btn
-            id="view-add-digital-credentials-button"
-            small
-            text
-            color="primary"
-            @click="emitViewAddDigitalCredentials()"
-            v-on="on"
-          >
-            <v-icon medium>mdi-file-certificate-outline</v-icon>
-            <span class="font-13 ml-1">Business Digital Credentials</span>
-          </v-btn>
-        </template>
-        Manage the digital credentials generated for the business.
-      </v-tooltip>
-    </span>
-
     <!-- More Actions -->
     <span v-if="isBusiness && !isHistorical">
       <v-menu
@@ -122,6 +98,28 @@
 
         <v-list dense>
           <v-list-item-group color="primary">
+            <!-- View/Add Digital Credentials -->
+            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
+              <v-tooltip
+                right
+                content-class="right-tooltip"
+              >
+                <template #activator="{ on }">
+                  <v-btn
+                    id="view-add-digital-credentials-button"
+                    small
+                    text
+                    color="primary"
+                    @click="emitViewAddDigitalCredentials()"
+                    v-on="on"
+                  >
+                    <span class="font-13 ml-1">Digital Business Cards</span>
+                  </v-btn>
+                </template>
+                Manage the digital cards generated for the business.
+              </v-tooltip>
+            </span>
+
             <!-- Dissolve Business -->
             <v-tooltip
               right
