@@ -105,16 +105,15 @@
                 content-class="right-tooltip"
               >
                 <template #activator="{ on }">
-                  <v-btn
+                  <v-list-item
                     id="view-add-digital-credentials-button"
-                    small
-                    text
-                    color="primary"
                     @click="emitViewAddDigitalCredentials()"
                     v-on="on"
                   >
-                    <span class="font-13 ml-1">Digital Business Cards</span>
-                  </v-btn>
+                    <v-list-item-title>
+                      <span class="app-blue">Digital Business Cards</span>
+                    </v-list-item-title>
+                  </v-list-item>
                 </template>
                 Manage the digital cards generated for the business.
               </v-tooltip>
