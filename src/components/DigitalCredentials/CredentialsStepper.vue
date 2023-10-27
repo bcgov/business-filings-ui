@@ -8,6 +8,25 @@
       @proceed="hideConfirmCredentialsTermsOfUseDialog()"
     />
 
+    <!-- Initial Page Load Transition -->
+    <v-fade-transition>
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
+        <div class="loading__content">
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
+        </div>
+      </div>
+    </v-fade-transition>
+
     <v-container>
       <v-row>
         <v-col
@@ -188,6 +207,8 @@ Component.registerHooks(['beforeRouteEnter'])
 export default class CredentialsStepper extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
 
+  loadingMessage = 'Loading'
+  showLoadingContainer = true
   confirmCredentialsTermsOfUseDialog = false
   credentialTypes = DigitalCredentialTypes
   credentialConnection: WalletConnectionIF = null
@@ -217,6 +238,7 @@ export default class CredentialsStepper extends Vue {
     if (!this.credentialConnection) {
       await this.addCredentialInvitation()
     }
+    this.showLoadingContainer = false
   }
 
   async addCredentialInvitation (): Promise<void> {
@@ -254,5 +276,9 @@ export default class CredentialsStepper extends Vue {
 .credentials-stepper-number {
   color: white;
   background-color: $app-blue;
+}
+
+.loading-container {
+  z-index: 1;
 }
 </style>

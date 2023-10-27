@@ -33,6 +33,25 @@
       @close="replaceCredentialErrorDialog = false"
     />
 
+    <!-- Initial Page Load Transition -->
+    <v-fade-transition>
+      <div
+        v-show="showLoadingContainer"
+        class="loading-container"
+      >
+        <div class="loading__content">
+          <v-progress-circular
+            color="primary"
+            :size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            {{ loadingMessage }}
+          </div>
+        </div>
+      </div>
+    </v-fade-transition>
+
     <v-container>
       <CredentialsTable
         v-if="issuedCredentials?.length"
@@ -89,6 +108,8 @@ import { Routes } from '@/enums'
 export default class CredentialsDashboard extends Vue {
   @Getter(useBusinessStore) getIdentifier!: string
 
+  loadingMessage = 'Loading'
+  showLoadingContainer = true
   confirmRevokeCredentialDialog = false
   confirmReplaceCredentialDialog = false
   credentialRevokedDialog = false
@@ -99,6 +120,7 @@ export default class CredentialsDashboard extends Vue {
 
   async mounted (): Promise<void> {
     await this.getCredentials()
+    this.showLoadingContainer = false
   }
 
   async getCredentials (): Promise<void> {
@@ -159,3 +181,9 @@ export default class CredentialsDashboard extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.loading-container {
+  z-index: 1;
+}
+</style>
