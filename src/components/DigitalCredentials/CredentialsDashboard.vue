@@ -34,18 +34,18 @@
     />
 
     <v-container>
-      <v-row>
+      <CredentialsTable
+        v-if="issuedCredentials?.length"
+        :issuedCredentials="issuedCredentials"
+        @onPromptConfirmRevokeCredential="displayConfirmRevokeCredentialDialog($event)"
+        @onPromptConfirmReplaceCredential="displayConfirmReplaceCredentialDialog($event)"
+      />
+      <v-row v-else>
         <v-col
           cols="12"
           md="8"
         >
-          <CredentialsTable
-            v-if="issuedCredentials?.length"
-            :issuedCredentials="issuedCredentials"
-            @onPromptConfirmRevokeCredential="displayConfirmRevokeCredentialDialog($event)"
-            @onPromptConfirmReplaceCredential="displayConfirmReplaceCredentialDialog($event)"
-          />
-          <CredentialsLanding v-else />
+          <CredentialsLanding />
         </v-col>
         <v-col
           cols="12"

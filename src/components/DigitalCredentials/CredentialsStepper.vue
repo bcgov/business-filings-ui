@@ -68,7 +68,7 @@
         >
           <v-card
             v-if="!credentialConnection?.isActive"
-            class="pt-3"
+            class="pt-3 px-3"
           >
             <v-card-text class="d-flex flex-column">
               <p class="justify-center text-center font-weight-bold word-break-normal">
