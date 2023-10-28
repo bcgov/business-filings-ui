@@ -149,6 +149,7 @@ export default class CredentialsDashboard extends Vue {
   }
 
   async revokeCredential (): Promise<void> {
+    this.showLoadingContainer = true
     const revoked = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
       .finally(() => {
         this.hideConfirmRevokeCredentialDialog()
@@ -160,9 +161,11 @@ export default class CredentialsDashboard extends Vue {
       this.credentialRevokedDialog = true
       await this.getCredentials()
     }
+    this.showLoadingContainer = false
   }
 
   async replaceCredential (): Promise<void> {
+    this.showLoadingContainer = true
     let revokedCredential = this.issuedCredential.isRevoked ? {} : null
     if (!this.issuedCredential.isRevoked) {
       revokedCredential = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
@@ -170,7 +173,7 @@ export default class CredentialsDashboard extends Vue {
     const removedCredential =
       await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     const removedConnection =
-      await LegalServices.removeCredentialConnection(this.getIdentifier)
+      await LegalServices.removeActiveCredentialConnection(this.getIdentifier)
 
     this.hideConfirmReplaceCredentialDialog()
     if (!(revokedCredential && removedCredential && removedConnection)) {
@@ -178,6 +181,7 @@ export default class CredentialsDashboard extends Vue {
     } else {
       this.$router.push({ name: Routes.ISSUE_CREDENTIAL })
     }
+    this.showLoadingContainer = false
   }
 }
 </script>

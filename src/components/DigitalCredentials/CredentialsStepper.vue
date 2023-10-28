@@ -8,6 +8,14 @@
       @proceed="hideConfirmCredentialsTermsOfUseDialog()"
     />
 
+    <CredentialNotReceivedDialog
+      :dialog="credentialNotReceivedDialog"
+      attach="#app"
+      @close="credentialNotReceivedDialog = false"
+      @onResendOffer="resendOffer()"
+      @onResetOffer="resetOffer()"
+    />
+
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
       <div
@@ -110,9 +118,11 @@
               <p class="mt-8 justify-center text-center word-break-normal">
                 QR code isn't scanning?
                 <a
-                  href=""
-                  target="_blank"
-                >Generate a new QR code</a>.
+                  href="#"
+                  @click.prevent="handleGenegerateNewQRCode()"
+                >
+                  Generate a new QR code
+                </a>.
               </p>
             </v-card-text>
           </v-card>
@@ -121,7 +131,7 @@
             class="pt-3 px-3"
           >
             <v-card-text
-              v-if="!issuedCredential"
+              v-if="!issuedCredential?.isIssued"
               class="d-flex flex-column"
             >
               <p class="justify-center text-center font-weight-bold word-break-normal">
@@ -138,8 +148,8 @@
               </div>
               <p class="justify-center text-center word-break-normal pt-8">
                 <a
-                  href=""
-                  target="_blank"
+                  href="#"
+                  @click.prevent="handleNoCredentialOfferReceived()"
                 >
                   I didn't receive anything
                 </a>
@@ -193,6 +203,7 @@ import { DigitalCredentialIF, WalletConnectionIF } from '@/interfaces'
 import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWebSocket.vue'
 import ConfirmCredentialsTermsOfUseDialog
   from '@/components/DigitalCredentials/dialogs/ConfirmCredentialsTermsofUseDialog.vue'
+import CredentialNotReceivedDialog from './dialogs/CredentialNotReceivedDialog.vue'
 
 Component.registerHooks(['beforeRouteEnter'])
 
@@ -201,7 +212,8 @@ Component.registerHooks(['beforeRouteEnter'])
   components: {
     QrcodeVue,
     CredentialsWebSocket,
-    ConfirmCredentialsTermsOfUseDialog
+    ConfirmCredentialsTermsOfUseDialog,
+    CredentialNotReceivedDialog
   }
 })
 export default class CredentialsStepper extends Vue {
@@ -210,6 +222,7 @@ export default class CredentialsStepper extends Vue {
   loadingMessage = 'Loading'
   showLoadingContainer = true
   confirmCredentialsTermsOfUseDialog = false
+  credentialNotReceivedDialog = false
   credentialTypes = DigitalCredentialTypes
   credentialConnection: WalletConnectionIF = null
   issuedCredential: DigitalCredentialIF = null
@@ -228,17 +241,27 @@ export default class CredentialsStepper extends Vue {
     })
   }
 
-  async hideConfirmCredentialsTermsOfUseDialog (): Promise<void> {
-    this.confirmCredentialsTermsOfUseDialog = false
-    await this.setupConnection()
-  }
-
   async setupConnection (): Promise<void> {
     await this.getCredentialsConnection()
     if (!this.credentialConnection) {
       await this.addCredentialInvitation()
     }
     this.showLoadingContainer = false
+  }
+
+  async hideConfirmCredentialsTermsOfUseDialog (): Promise<void> {
+    this.confirmCredentialsTermsOfUseDialog = false
+    await this.setupConnection()
+  }
+
+  async handleGenegerateNewQRCode (): Promise<void> {
+    this.showLoadingContainer = true
+    await LegalServices.removeCredentialConnection(this.getIdentifier, this.credentialConnection.connectionId)
+    await this.setupConnection()
+  }
+
+  async handleNoCredentialOfferReceived (): Promise<void> {
+    this.credentialNotReceivedDialog = true
   }
 
   async addCredentialInvitation (): Promise<void> {
@@ -252,7 +275,8 @@ export default class CredentialsStepper extends Vue {
   }
 
   async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
-    await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
+    const { data: issuedCredential } = await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
+    this.issuedCredential = issuedCredential
   }
 
   async handleConnection (connection: WalletConnectionIF) {
@@ -266,6 +290,22 @@ export default class CredentialsStepper extends Vue {
 
   goToCredentialsDashboard (): void {
     this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
+  }
+
+  async resendOffer (): Promise<void> {
+    this.credentialNotReceivedDialog = false
+    this.showLoadingContainer = true
+    await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+    await this.issueCredential(this.credentialTypes.BUSINESS)
+    this.showLoadingContainer = false
+  }
+
+  async resetOffer (): Promise<void> {
+    this.credentialNotReceivedDialog = false
+    this.showLoadingContainer = true
+    await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+    await LegalServices.removeCredentialConnection(this.getIdentifier, this.credentialConnection.connectionId)
+    await this.setupConnection()
   }
 }
 </script>

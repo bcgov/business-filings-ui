@@ -353,12 +353,28 @@ export default class LegalServices {
   }
 
   /**
-   * Removes a credential wallet connection.
+   * Removes an active credential wallet connection.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
-  static async removeCredentialConnection (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connection`
+  static async removeActiveCredentialConnection (businessId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/activeConnection`
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Removes a credential wallet connection.
+   * @param businessId the business identifier (aka entity inc no)
+   * @param connectionId the connection identifier
+   * @returns the axios response
+   */
+  static async removeCredentialConnection (businessId: string, connectionId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections/${connectionId}`
     return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
