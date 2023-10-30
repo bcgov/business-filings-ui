@@ -305,7 +305,7 @@ export default class CredentialsStepper extends Vue {
   async resetOffer (): Promise<void> {
     this.credentialNotReceivedDialog = false
     this.showLoadingContainer = true
-    if (this.issueCredential) {
+    if (this.issuedCredential) {
       await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
     if (this.credentialConnection) {
