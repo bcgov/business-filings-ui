@@ -157,7 +157,7 @@
                     </v-row>
                   </div>
 
-                  <v-divider/>
+                  <v-divider />
 
                   <!-- Location address -->
                   <div
