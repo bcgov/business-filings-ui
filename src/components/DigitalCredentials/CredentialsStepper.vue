@@ -295,7 +295,9 @@ export default class CredentialsStepper extends Vue {
   async resendOffer (): Promise<void> {
     this.credentialNotReceivedDialog = false
     this.showLoadingContainer = true
-    await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+    if (this.issueCredential) {
+      await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+    }
     await this.issueCredential(this.credentialTypes.BUSINESS)
     this.showLoadingContainer = false
   }
@@ -303,8 +305,12 @@ export default class CredentialsStepper extends Vue {
   async resetOffer (): Promise<void> {
     this.credentialNotReceivedDialog = false
     this.showLoadingContainer = true
-    await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
-    await LegalServices.removeCredentialConnection(this.getIdentifier, this.credentialConnection.connectionId)
+    if (this.issueCredential) {
+      await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+    }
+    if (this.credentialConnection) {
+      await LegalServices.removeCredentialConnection(this.getIdentifier, this.credentialConnection.connectionId)
+    }
     await this.setupConnection()
   }
 }
