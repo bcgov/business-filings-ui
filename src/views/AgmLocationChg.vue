@@ -772,5 +772,17 @@ h2 {
       color: $app-red;
     }
   }
+
+  // Setting the top and bottom red borders (error) radii to 0.
+  .v-card > *:first-child:not(.v-btn):not(.v-chip):not(.v-avatar),
+  .v-card > .v-card__progress + *:not(.v-btn):not(.v-chip):not(.v-avatar) {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+  }
+
+  .v-card > *:last-child:not(.v-btn):not(.v-chip):not(.v-avatar) {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
 }
 </style>
