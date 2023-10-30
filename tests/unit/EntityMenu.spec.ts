@@ -479,8 +479,6 @@ describe('Entity Menu - Consent to Continuation click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Extension click tests', () => {
-  let vm: any
-
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {

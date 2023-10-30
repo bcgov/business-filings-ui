@@ -395,6 +395,7 @@
                   <v-btn
                     v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
                     class="btn-change-payment-type"
+                    :class="{ 'cancellable' : isCancellableTodoItem(item) }"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -404,6 +405,7 @@
                   <v-btn
                     v-else
                     class="btn-resume-payment"
+                    :class="{ 'cancellable' : isCancellableTodoItem(item) }"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -413,6 +415,7 @@
 
                   <!-- dropdown menu -->
                   <v-menu
+                    v-if="isCancellableTodoItem(item)"
                     offset-y
                     left
                   >
@@ -821,6 +824,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         this.checkIfCompleted(id, count)
       }, 1000)
     })
+  }
+
+  /** Check if task item is cancellable (has a draft). */
+  isCancellableTodoItem (item: TodoItemIF): boolean {
+    return (item.name !== FilingTypes.AGM_LOCATION_CHANGE)
   }
 
   /** Loads a todo item into the Todo Items array. */
@@ -2099,8 +2107,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     border-bottom-right-radius: 0;
   }
 
-  .btn-change-payment-type,
-  .btn-resume-payment {
+  .btn-change-payment-type.cancellable,
+  .btn-resume-payment.cancellable {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
