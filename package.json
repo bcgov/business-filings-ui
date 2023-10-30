@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "6.9.2",
+  "version": "7.0.0",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -45,6 +45,7 @@
     "regenerator-runtime": "^0.13.11",
     "register-service-worker": "^1.7.2",
     "sbc-common-components": "3.0.8",
+    "socket.io-client": "^4.7.2",
     "vue": "2.7.14",
     "vue-affix": "^0.5.2",
     "vue-hotjar": "^1.4.0",
@@ -85,6 +86,7 @@
     "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
     "vuelidate-property-decorators": "1.0.28",
     "vuex-class": "^0.3.2",
-    "vuex-module-decorators": "^1.2.0"
+    "vuex-module-decorators": "^1.2.0",
+    "wscat": "^5.2.0"
   }
 }

@@ -18,6 +18,8 @@ export * from './routes'
 export * from './saveErrorReasons'
 export * from './digitalCredentialTypes'
 export * from './affiliationInvitation'
+export * from './webSocketEvents'
+export * from './webSocketTopics'
 
 // external enums
 export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'

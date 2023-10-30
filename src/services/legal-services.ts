@@ -308,7 +308,7 @@ export default class LegalServices {
   //
 
   /**
-   * Fetches digital credential information.
+   * Fetches digital credentials for a business.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
@@ -323,7 +323,7 @@ export default class LegalServices {
   }
 
   /**
-   * Creates a digital credentials invitation.
+   * Creates a wallet connection invitation.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
@@ -338,12 +338,12 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches a digital credentials connection information.
+   * Fetches a list of wallet connections for a business.
    * @param businessId the business identifier (aka entity inc no)
    * @returns the axios response
    */
-  static async fetchCredentialConnection (businessId: string): Promise<AxiosResponse> {
-    const url = `businesses/${businessId}/digitalCredentials/connection`
+  static async fetchCredentialConnections (businessId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections`
     return axios.get(url)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -353,15 +353,80 @@ export default class LegalServices {
   }
 
   /**
-   * Issues a digital credentials offer.
+   * Removes an active credential wallet connection.
+   * @param businessId the business identifier (aka entity inc no)
+   * @returns the axios response
+   */
+  static async removeActiveCredentialConnection (businessId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/activeConnection`
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Removes a credential wallet connection.
+   * @param businessId the business identifier (aka entity inc no)
+   * @param connectionId the connection identifier
+   * @returns the axios response
+   */
+  static async removeCredentialConnection (businessId: string, connectionId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/connections/${connectionId}`
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Sends a digital credential offer.
    * @param businessId The business identifier (aka entity inc no)
    * @param credentialType The credential offer type
    * @returns the axios response
    */
-  static async issueCredentialOffer (businessId: string, credentialType: DigitalCredentialTypes)
-  : Promise<AxiosResponse> {
+  static async sendCredentialOffer (
+    businessId: string,
+    credentialType: DigitalCredentialTypes)
+    : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialType}`
     return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Revokes a digital credential.
+   * @param businessId The business identifier (aka entity inc no)
+   * @param credentialId The credential identifier
+   * @returns the axios response
+   */
+  static async revokeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/${credentialId}/revoke`
+    return axios.post(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error.message)
+        return null
+      })
+  }
+
+  /**
+   * Removes a digital credential.
+   * @param businessId The business identifier (aka entity inc no)
+   * @param credentialId The credential identifier
+   * @returns the axios response
+   */
+  static async removeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
+    const url = `businesses/${businessId}/digitalCredentials/${credentialId}`
+    return axios.delete(url)
       .catch(error => {
         // eslint-disable-next-line no-console
         console.log(error.message)
