@@ -180,7 +180,7 @@ export default class Certify extends Vue {
     border-radius: 0%;
     height: 19px;
     width: 19px;
-    left: -1px;
+    left: -1.5px;
     margin: 4px;
   }
 }
