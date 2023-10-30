@@ -266,7 +266,7 @@ export default class CredentialsStepper extends Vue {
 
   async addCredentialInvitation (): Promise<void> {
     const { data: connection } = await LegalServices.createCredentialInvitation(this.getIdentifier)
-    this.credentialConnection = connection
+    this.credentialConnection = connection || null
   }
 
   async getCredentialsConnection (): Promise<void> {
@@ -276,7 +276,7 @@ export default class CredentialsStepper extends Vue {
 
   async issueCredential (credentialType: DigitalCredentialTypes): Promise<void> {
     const { data: issuedCredential } = await LegalServices.sendCredentialOffer(this.getIdentifier, credentialType)
-    this.issuedCredential = issuedCredential
+    this.issuedCredential = issuedCredential || null
   }
 
   async handleConnection (connection: WalletConnectionIF) {
