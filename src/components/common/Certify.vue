@@ -174,4 +174,14 @@ export default class Certify extends Vue {
     margin-top: -1.25rem;
   }
 }
+
+:deep() {
+  .v-input--selection-controls__ripple {
+    border-radius: 0%;
+    height: 19px;
+    width: 19px;
+    left: -1px;
+    margin: 4px;
+  }
+}
 </style>

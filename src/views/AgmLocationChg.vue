@@ -90,10 +90,7 @@
               </header>
 
               <div>
-                <v-card
-                  flat
-                  class="py-4"
-                >
+                <v-card flat>
                   <!-- AGM Year -->
                   <div
                     id="agm-year-section"
@@ -101,7 +98,7 @@
                   >
                     <v-row
                       no-gutters
-                      class="my-6"
+                      class="pt-8 pb-2"
                     >
                       <v-col
                         cols="12"
@@ -125,7 +122,7 @@
                     </v-row>
                   </div>
 
-                  <v-divider class="my-4" />
+                  <v-divider />
 
                   <!-- Reason -->
                   <div
@@ -134,7 +131,7 @@
                   >
                     <v-row
                       no-gutters
-                      class="my-6"
+                      class="py-6"
                     >
                       <v-col
                         cols="12"
@@ -160,7 +157,7 @@
                     </v-row>
                   </div>
 
-                  <v-divider class="my-4" />
+                  <v-divider/>
 
                   <!-- Location address -->
                   <div
@@ -169,7 +166,7 @@
                   >
                     <v-row
                       no-gutters
-                      class="mt-6"
+                      class="pt-6"
                     >
                       <v-col
                         cols="12"
