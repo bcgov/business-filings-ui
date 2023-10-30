@@ -190,6 +190,7 @@
                           v-model="agmLocation"
                           :rules="agmLocationRules"
                           :validateForm="showErrors"
+                          @update:agmLocation="agmLocation=$event"
                           @valid="agmLocationValid=$event"
                         />
                       </v-col>
