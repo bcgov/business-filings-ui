@@ -14,15 +14,6 @@
       @exit="onPaymentErrorDialogExit()"
     />
 
-    <StaffPaymentDialog
-      :staffPaymentData.sync="staffPaymentData"
-      attach="#agm-location-chg"
-      :dialog="staffPaymentDialog"
-      :loading="filingPaying"
-      @exit="staffPaymentDialog=false"
-      @submit="onClickFilePay(true)"
-    />
-
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
       <div
@@ -307,14 +298,12 @@ import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { Certify, DetailComment } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, StaffPaymentDialog }
-  from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
-import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
-  from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
+import { ConfirmDialogType } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
@@ -328,8 +317,7 @@ import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
     DetailComment,
     ExpandableHelp,
     PaymentErrorDialog,
-    SbcFeeSummary,
-    StaffPaymentDialog
+    SbcFeeSummary
   }
 })
 export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
@@ -362,10 +350,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   // variables for DetailComment component
   reason = ''
   reasonValid = false
-
-  // variables for staff payment
-  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  staffPaymentDialog = false
 
   // variables for displaying dialogs
   resumeErrorDialog = false
@@ -481,17 +465,15 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     this.dataLoaded = true
 
     // always include agm location change code
-    // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, this.staffPaymentData.isPriority,
-      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    // clear Priority flag and set the Waive Fees flag to true
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, undefined, true)
   }
 
   /**
    * Called when user clicks File and Pay button
    * or when user retries from Save Error dialog
-   * or when user submits from Staff Payment dialog.
    */
-  async onClickFilePay (fromStaffPayment = false): Promise<void> {
+  async onClickFilePay (): Promise<void> {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
@@ -505,13 +487,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     // prevent double saving
     if (this.busySaving) return
-
-    // if this is a staff user clicking File and Pay (not Submit)
-    // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
-      this.staffPaymentDialog = true
-      return
-    }
 
     this.filingPaying = true
 
@@ -599,26 +574,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       }
     }
 
-    switch (this.staffPaymentData.option) {
-      case StaffPaymentOptions.FAS:
-        header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.BCOL:
-        header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
-        header.header['datNumber'] = this.staffPaymentData.datNumber
-        header.header['folioNumber'] = this.staffPaymentData.folioNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.NO_FEE:
-        header.header['waiveFees'] = true
-        break
-
-      case StaffPaymentOptions.NONE: // should never happen
-        break
-    }
+    header.header['waiveFees'] = true
 
     const business: any = {
       business: {
@@ -732,16 +688,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   @Watch('certifyFormValid')
   @Watch('resonValid')
   onHaveChanges (): void {
-    this.haveChanges = true
-  }
-
-  @Watch('staffPaymentData')
-  onStaffPaymentDataChanged (val: StaffPaymentIF): void {
-    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
-
-    // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, val.isPriority, waiveFees)
-
     this.haveChanges = true
   }
 }
