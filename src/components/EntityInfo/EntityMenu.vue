@@ -251,7 +251,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   get isDCRoute (): boolean {
-    return this.$route.matched.some(route => route.name === DCRoutes.DIGITAL_CREDENTIALS)
+    return this.$route.matched.some(route => route.path.includes(DCRoutes.DIGITAL_CREDENTIALS))
   }
 
   /**
