@@ -99,7 +99,7 @@
         <v-list dense>
           <v-list-item-group color="primary">
             <!-- View/Add Digital Credentials -->
-            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS)">
+            <span v-if="isAllowed(AllowableActions.DIGITAL_CREDENTIALS) && !isDCRoute">
               <v-tooltip
                 right
                 content-class="right-tooltip"
@@ -214,7 +214,7 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import axios from '@/axios-auth'
 import { StaffComments } from '@bcrs-shared-components/staff-comments'
-import { AllowableActions, NigsMessage, Routes } from '@/enums'
+import { AllowableActions, DCRoutes, NigsMessage, Routes } from '@/enums'
 import { AllowableActionsMixin } from '@/mixins'
 import { GetFeatureFlag, navigate } from '@/utils'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -248,6 +248,10 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   get enableAgmLocationChg (): boolean {
     return !!GetFeatureFlag('enable-agm-location-chg')
+  }
+
+  get isDCRoute (): boolean {
+    return this.$route.matched.some(route => route.name === DCRoutes.DIGITAL_CREDENTIALS)
   }
 
   /**

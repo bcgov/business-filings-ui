@@ -22,13 +22,13 @@
           Credential offers can take up to a minute, depending on your internet connection. Try the following:
           <ul>
             <li>
-              <p>Check your intenet connection</p>
+              <p>Check your internet connection</p>
             </li>
             <li>
               <p>Try using your mobile data if available</p>
             </li>
             <li>
-              <p>Close the wallet on your phone and open it agin</p>
+              <p>Close the wallet on your phone and open it again</p>
             </li>
             <li>
               <p>
