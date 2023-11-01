@@ -3,39 +3,95 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Vue } from 'vue-property-decorator'
-import { io } from 'socket.io-client'
-import { useConfigurationStore } from '@/stores'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
+import { useBusinessStore, useConfigurationStore } from '@/stores'
 import { Getter } from 'pinia-class'
-import { WebSocketEvents, WebSocketTopics } from '@/enums'
 import { WalletConnectionIF, DigitalCredentialIF } from '@/interfaces'
+import { Observable, Subscription, interval, of } from 'rxjs'
+import { catchError, map, switchMap } from 'rxjs/operators'
+import { LegalServices } from '@/services'
 
 @Component
 export default class CredentialsWebSocket extends Vue {
-  @Getter(useConfigurationStore) getLegalApiBaseUrl!: string
+  @Getter(useConfigurationStore) getLegalApiUrl!: string
+  @Getter(useBusinessStore) getIdentifier!: string
 
-  socket: any = null
+  @Prop({ default: null }) readonly connection!: WalletConnectionIF;
+  @Prop({ default: null }) readonly issuedCredential!: DigitalCredentialIF;
+
+  connectionsSubscription: Subscription;
+  issueCredentialV20Subscription: Subscription;
+
+  connections$: Observable<WalletConnectionIF | null>;
+  issueCredentialV20$: Observable<DigitalCredentialIF | null>;
 
   mounted (): void {
-    this.socket = io(this.getLegalApiBaseUrl)
+    this.connections$ =
+      interval(1000)
+        .pipe(
+          switchMap(() => LegalServices.fetchCredentialConnections(this.getIdentifier)),
+          map(({ data }) => data?.connections[0] || null),
+          catchError(() => of(null))
+        )
 
-    this.socket.on(WebSocketEvents.CONNECT, this.handleConnect)
-    this.socket.on(WebSocketEvents.DISCONNECT, this.handleDisconnect)
-
-    this.socket.on(WebSocketTopics.CONNECTIONS, this.handleConnectionsMessage)
-    this.socket.on(WebSocketTopics.ISSUE_CREDENTIAL_V2_0, this.handleIssuedCredentialMessage)
+    this.issueCredentialV20$ =
+      interval(1000)
+        .pipe(
+          switchMap(() => LegalServices.fetchCredentials(this.getIdentifier)),
+          map(({ data }) => data?.issuedCredentials[0] || null),
+          catchError(() => of(null))
+        )
   }
 
   destroyed (): void {
-    this.socket.disconnect()
+    this.unsubscribeConnections()
+    this.unsubscribeIssueCredentialV20()
   }
 
-  handleConnect (): void {
-    console.log('Socket connected:', this.socket.id)
+  subscribeConnections (): void {
+    this.connectionsSubscription = this.connections$
+      .subscribe((connection) => {
+        if (connection) {
+          this.handleConnectionsMessage(connection)
+        }
+      })
   }
 
-  handleDisconnect (): void {
-    console.log('Socket disconnected')
+  subscribeIssueCredentialV20 (): void {
+    this.issueCredentialV20Subscription = this.issueCredentialV20$
+      .subscribe((issuedCredential) => {
+        if (issuedCredential) {
+          this.handleIssuedCredentialMessage(issuedCredential)
+        }
+      })
+  }
+
+  unsubscribeConnections (): void {
+    if (this.connectionsSubscription && !this.connectionsSubscription.closed) {
+      this.connectionsSubscription.unsubscribe()
+    }
+  }
+
+  unsubscribeIssueCredentialV20 (): void {
+    if (this.issueCredentialV20Subscription && !this.issueCredentialV20Subscription.closed) {
+      this.issueCredentialV20Subscription.unsubscribe()
+    }
+  }
+
+  @Watch('connection', { immediate: true })
+  onConnectionChanged (connection: WalletConnectionIF): void {
+    this.unsubscribeConnections()
+    if (connection && !connection.isActive) {
+      this.subscribeConnections()
+    }
+  }
+
+  @Watch('issuedCredential', { immediate: true })
+  onIssuedCredentialChanged (issuedCredential: DigitalCredentialIF): void {
+    this.unsubscribeIssueCredentialV20()
+    if (issuedCredential && !issuedCredential.isIssued) {
+      this.subscribeIssueCredentialV20()
+    }
   }
 
   @Emit('onConnection')
