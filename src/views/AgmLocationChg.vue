@@ -299,7 +299,7 @@ import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { LegalServices } from '@/services/'
+import { AuthServices, LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
 import { ConfirmDialogType } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -326,6 +326,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     certifyRef: Certify
   }
 
+  @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
@@ -453,6 +454,12 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // wait until entire view is rendered (including all child components)
     // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
     await this.$nextTick()
+
+    // Pre-populate the certified block with the logged in user's name (if not staff)
+    if (!this.isRoleStaff) {
+      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl).then(response => response?.data)
+      this.certifiedBy = userInfo?.firstname + ' ' + userInfo?.lastname
+    }
 
     if (this.filingId > 0) {
       this.loadingMessage = `Resuming Your Request for AGM Location Change`
