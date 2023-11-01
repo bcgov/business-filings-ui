@@ -16,14 +16,14 @@ export default class CredentialsWebSocket extends Vue {
   @Getter(useConfigurationStore) getLegalApiUrl!: string
   @Getter(useBusinessStore) getIdentifier!: string
 
-  @Prop({ default: null }) readonly connection!: WalletConnectionIF;
-  @Prop({ default: null }) readonly issuedCredential!: DigitalCredentialIF;
+  @Prop({ default: null }) readonly connection!: WalletConnectionIF
+  @Prop({ default: null }) readonly issuedCredential!: DigitalCredentialIF
 
-  connectionsSubscription: Subscription;
-  issueCredentialV20Subscription: Subscription;
+  connectionsSubscription: Subscription
+  issueCredentialV20Subscription: Subscription
 
-  connections$: Observable<WalletConnectionIF | null>;
-  issueCredentialV20$: Observable<DigitalCredentialIF | null>;
+  connections$: Observable<WalletConnectionIF | null>
+  issueCredentialV20$: Observable<DigitalCredentialIF | null>
 
   mounted (): void {
     this.connections$ =

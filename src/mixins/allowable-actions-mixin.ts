@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, DCRoutes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
 
