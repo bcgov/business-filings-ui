@@ -282,7 +282,6 @@ export default class CredentialsStepper extends Vue {
   }
 
   async handleConnection (connection: WalletConnectionIF) {
-    console.log(connection)
     this.credentialConnection = connection
     if (this.credentialConnection?.isActive) {
       await this.issueCredential(this.credentialTypes.BUSINESS)
