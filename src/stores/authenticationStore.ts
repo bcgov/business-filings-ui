@@ -20,6 +20,11 @@ export const useAuthenticationStore = defineStore('authentication', {
       return useRootStore().userKeycloakGuid
     },
 
+    /** The user's Full Name. */
+    getUserFullName (): string {
+      return useRootStore().userFullName
+    },
+
     /** The user's Keycloak Bearer Token. */
     getKeycloakToken (rootState: RootStateIF): string {
       return rootState.auth.token

@@ -14,6 +14,7 @@ export const useRootStore = defineStore('root', {
     entityStatus: null,
     keycloakRoles: [],
     stateFiling: null,
+    userFullName: null,
     userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
@@ -269,6 +270,10 @@ export const useRootStore = defineStore('root', {
 
     setUserKeycloakGuid (userKeycloakGuid: string) {
       this.userKeycloakGuid = userKeycloakGuid
+    },
+
+    setUserFullName (userFullName: string) {
+      this.userFullName = userFullName
     },
 
     /** Set the app permissions. */

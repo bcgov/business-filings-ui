@@ -19,6 +19,7 @@ export interface StateIF {
   entityStatus: EntityStatus // for draft app only
   keycloakRoles: Array<string>
   stateFiling: StateFilingIF // the state filing object
+  userFullName: string
   userKeycloakGuid: string
 
   // entity info from auth db

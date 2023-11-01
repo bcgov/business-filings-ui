@@ -299,10 +299,10 @@ import { Certify, DetailComment } from '@/components/common'
 import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { AuthServices, LegalServices } from '@/services/'
+import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
 import { ConfirmDialogType } from '@/interfaces'
-import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
@@ -326,10 +326,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     certifyRef: Certify
   }
 
-  @Getter(useConfigurationStore) getAuthApiUrl!: string
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useAuthenticationStore) getUserFullName!: string
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
@@ -457,8 +457,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     // Pre-populate the certified block with the logged in user's name (if not staff)
     if (!this.isRoleStaff) {
-      const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl).then(response => response?.data)
-      this.certifiedBy = userInfo?.firstname + ' ' + userInfo?.lastname
+      this.certifiedBy = this.getUserFullName
     }
 
     if (this.filingId > 0) {
