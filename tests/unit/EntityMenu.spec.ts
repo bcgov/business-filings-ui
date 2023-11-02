@@ -539,6 +539,7 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Location Change click tests', () => {
+  let vm: any
   const router = mockRouter.mock()
 
   beforeAll(() => {
