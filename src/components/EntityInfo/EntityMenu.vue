@@ -182,37 +182,34 @@
                   </v-list-item-title>
                 </v-list-item>
               </template>
-              Request an AGM extension. The longest extension granted at one time is six months.
+              <span>{{ agmExtensionToolTipText }}</span>
             </v-tooltip>
 
             <!-- Request AGM Location Change -->
-            <div>
-              <v-tooltip
-                right
-                content-class="right-tooltip"
-              >
-                <template #activator="{ on }">
-                  <div
-                    v-if="enableAgmLocationChg"
-                    class="d-inline-block"
+            <v-tooltip
+              right
+              content-class="right-tooltip"
+            >
+              <template #activator="{ on }">
+                <div
+                  v-if="enableAgmLocationChg"
+                  class="d-inline-block"
+                  v-on="on"
+                >
+                  <v-list-item
+                    id="agm-loc-chg-list-item"
+                    :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
                     v-on="on"
+                    @click="goToAgmLocationChgFiling()"
                   >
-                    <v-list-item
-                      id="agm-loc-chg-list-item"
-                      :disabled="!isAllowed(AllowableActions.AGM_LOCATION_CHANGE)"
-                      v-on="on"
-                      @click="goToAgmLocationChgFiling()"
-                    >
-                      <v-list-item-title>
-                        <span class="app-blue">Request AGM Location Change</span>
-                      </v-list-item-title>
-                    </v-list-item>
-                  </div>
-                </template>
-                <span>{{ toolTipText }}</span>
-              </v-tooltip>
-            </div>
-
+                    <v-list-item-title>
+                      <span class="app-blue">Request AGM Location Change</span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </div>
+              </template>
+              <span>{{ agmLocationChgToolTipText }}</span>
+            </v-tooltip>
           </v-list-item-group>
         </v-list>
       </v-menu>
@@ -254,15 +251,24 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   }
 
   get enableAgmExtension (): boolean {
-    return !!GetFeatureFlag('enable-agm-extension')
+    return !!GetFeatureFlag('supported-agm-extension-entities').includes(this.getLegalType)
   }
 
   get enableAgmLocationChg (): boolean {
     return !!GetFeatureFlag('supported-agm-location-chg-entities').includes(this.getLegalType)
   }
 
-  /** get tooltip text for AGM location chg list item. Text is different if action item is disabled  */
-  get toolTipText (): string {
+  /** The tooltip text for AGM Extension list item. Text is different if action item is disabled. */
+  get agmExtensionToolTipText (): string {
+    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
+      return 'The business must be in good standing to request an AGM extension.'
+    } else {
+      return 'Request an AGM extension. The longest extension granted at one time is six months.'
+    }
+  }
+
+  /** The tooltip text for AGM Location Change list item. Text is different if action item is disabled. */
+  get agmLocationChgToolTipText (): string {
     if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
       return 'The business must be in good standing to request an AGM location change.'
     } else {

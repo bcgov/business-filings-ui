@@ -14,12 +14,6 @@
       @exit="onPaymentErrorDialogExit()"
     />
 
-    <ResumeErrorDialog
-      attach="#agm-extension"
-      :dialog="resumeErrorDialog"
-      @exit="goToDashboard(true)"
-    />
-
     <SaveErrorDialog
       attach="#agm-extension"
       filingName="AGM Extension"
@@ -41,30 +35,8 @@
       @submit="onClickFilePay(true)"
     />
 
-    <!-- Initial Page Load Transition -->
-    <v-fade-transition>
-      <div
-        v-show="showLoadingContainer"
-        class="loading-container"
-      >
-        <div class="loading__content">
-          <v-progress-circular
-            color="primary"
-            :size="50"
-            indeterminate
-          />
-          <div class="loading-msg">
-            {{ loadingMessage }}
-          </div>
-        </div>
-      </div>
-    </v-fade-transition>
-
     <!-- Main Body -->
-    <v-container
-      v-if="dataLoaded"
-      class="view-container"
-    >
+    <v-container class="view-container">
       <v-row>
         <v-col
           cols="12"
@@ -72,176 +44,44 @@
         >
           <article id="main-article">
             <!-- Page Title -->
-            <header>
-              <h1>
-                AGM Extension
-              </h1>
-            </header>
+            <h1>AGM Extension</h1>
 
             <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
               <template #content>
-                Help text, or sub-component, goes here.
+                <AgmExtensionHelp />
               </template>
             </ExpandableHelp>
 
-            <!-- Extension Eligibility -->
-            <section class="mt-8">
-              <header>
-                <h2>Extension Eligibility</h2>
-                <p>
-                  Fill out the following section to evaluate the eligibility for extension.
-                </p>
-              </header>
+            <header>
+              <h2>Extension Detail</h2>
+              <p class="grey-text">
+              Enter the details about the extension request to evaluate eligibility.
+              </p>
+            </header>
 
-              <div
-                id="extension-eligibility-section"
-                :class="{ 'invalid-extension-eligibility': !extensionEligibilityValid && showErrors }"
-              >
-                <v-card
-                  flat
-                  class="py-4 px-5"
-                >
-                  <v-row
-                    no-gutters
-                    class="my-4"
-                  >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Business in Good Standing
-                      </strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      Yes
-                    </v-col>
-                  </v-row>
+            <!-- About the Business -->
+            <AboutTheBusiness
+              class="mt-6"
+              :data.sync="data"
+            />
 
-                  <v-divider />
+            <!-- Extension Request -->
+            <ExtensionRequest
+              class="mt-8"
+              :data.sync="data"
+            />
 
-                  <v-row
-                    no-gutters
-                    class="my-4"
-                  >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Date of Incorporation
-                      </strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      (date goes here)
-                    </v-col>
-                  </v-row>
+            <!-- AGM Extension Evaluation -->
+            <AgmExtensionEvaluation
+              class="mt-8"
+              :data.sync="data"
+            />
 
-                  <v-divider />
-
-                  <v-row
-                    no-gutters
-                    class="my-4"
-                  >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Date of the Last Extension Grant on Record
-                      </strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      (date goes here)
-                    </v-col>
-                  </v-row>
-
-                  <v-divider />
-
-                  <v-row
-                    no-gutters
-                    class="my-4"
-                  >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Date the Annual General Meeting is intended to be held
-                      </strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      (date picker goes here)
-                    </v-col>
-                  </v-row>
-
-                  <v-divider />
-
-                  <v-row
-                    no-gutters
-                    class="my-4"
-                  >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Date of Previous Annual General Meeting
-                      </strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      (radio buttons go here)
-                    </v-col>
-                  </v-row>
-
-                  <v-divider />
-
-                  <v-row
-                    no-gutters
-                    class="my-4"
-                  >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
-                    >
-                      <strong :class="{ 'app-red': !extensionEligibilityValid && showErrors }">
-                        Was the above extension grant for the current AGM?
-                      </strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
-                    >
-                      (radio buttons go here)
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </div>
-            </section>
+            <!-- delete this debugging code -->
+            <pre class="mt-8">data: {{ data }}</pre>
 
             <!-- Certify -->
-            <section>
+            <section class="mt-8">
               <header>
                 <h2>Certify</h2>
                 <p class="grey-text">
@@ -292,27 +132,6 @@
       id="buttons-container"
       class="list-item"
     >
-      <div class="buttons-left">
-        <v-btn
-          id="consent-save-btn"
-          large
-          :disabled="busySaving"
-          :loading="saving"
-          @click="onClickSave()"
-        >
-          <span>Save</span>
-        </v-btn>
-        <v-btn
-          id="consent-save-resume-btn"
-          large
-          :disabled="busySaving"
-          :loading="savingResuming"
-          @click="onClickSaveResume()"
-        >
-          <span>Save and Resume Later</span>
-        </v-btn>
-      </div>
-
       <div class="buttons-right">
         <v-tooltip
           top
@@ -361,22 +180,27 @@ import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
-  from '@/components/dialogs'
+import { ConfirmDialog, PaymentErrorDialog, SaveErrorDialog, StaffPaymentDialog } from '@/components/dialogs'
+import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
+import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
+import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
+import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
-  from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
+import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval, StaffPaymentIF } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
   components: {
+    AboutTheBusiness,
+    AgmExtensionEvaluation,
+    AgmExtensionHelp,
     Certify,
     ConfirmDialog,
     ExpandableHelp,
+    ExtensionRequest,
     PaymentErrorDialog,
-    ResumeErrorDialog,
     SaveErrorDialog,
     SbcFeeSummary,
     StaffPaymentDialog
@@ -393,48 +217,41 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getUserInfo!: any
+  @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
   readonly FilingCodes = FilingCodes
+
+  // evaluation object
+  data = { ...EmptyAgmExtEval } as AgmExtEvalIF
 
   // variables for Certify component
   certifiedBy = ''
   isCertified = false
   certifyFormValid = false
 
-  // variables for Extension Eligiblity section
-  extensionEligibilityValid = false
+  // variables for Extension Request section
+  extensionRequestValid = false
 
   // variables for staff payment
   staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
   staffPaymentDialog = false
 
   // variables for displaying dialogs
-  resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
   paymentErrorDialog = false
 
   // other variables
   totalFee = 0
-  dataLoaded = false
-  loadingMessage = ''
-  filingId = 0 // id of this consent to continuation out filing
+  filingId = 0 // id of this agm extension filing
   savedFiling: any = null // filing during save
-  saving = false // true only when saving
-  savingResuming = false // true only when saving and resuming
   showErrors = false // true when we press on File and Pay (trigger validation)
   filingPaying = false // true only when filing and paying
   haveChanges = false
   saveErrors = []
   saveWarnings = []
-
-  /** True if loading container should be shown, else False. */
-  get showLoadingContainer (): boolean {
-    // show loading container when data isn't yet loaded and when
-    // no dialogs are displayed (otherwise dialogs may be hidden)
-    return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
-  }
 
   /** The Base URL string. */
   get baseUrl (): string {
@@ -443,12 +260,12 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.certifyFormValid && this.extensionEligibilityValid)
+    return (this.extensionRequestValid && this.certifyFormValid)
   }
 
-  /** True when saving, saving and resuming, or filing and paying. */
+  /** True when filing and paying. */
   get busySaving (): boolean {
-    return (this.saving || this.savingResuming || this.filingPaying)
+    return (this.filingPaying)
   }
 
   /** True if payment is required, else False. */
@@ -472,169 +289,29 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
     }
 
     // this is the id of THIS filing
-    // if 0, this is a new filing
-    // otherwise it's a draft filing
+    // it must be 0 (meaning new filing) -- we do not support resuming a draft filing
     this.filingId = +this.$route.params.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || isNaN(this.filingId)) {
+    if (!this.getIdentifier || this.filingId !== 0) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }
 
   /** Called when component is mounted. */
-  async mounted (): Promise<void> {
-    // wait until entire view is rendered (including all child components)
-    // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
-    await this.$nextTick()
+  mounted (): void {
+    this.data.isGoodStanding = this.isGoodStanding
+    this.data.incorporationDate = this.getFoundingDate
 
-    if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Request for AGM Extension`
-    } else {
-      this.loadingMessage = `Preparing Your Request for AGM Extension`
+    // Pre-populate the certified block with the logged in user's name (if not staff)
+    if (!this.isRoleStaff && this.getUserInfo) {
+      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
-
-    // fetch draft (which may overwrite some properties)
-    if (this.filingId > 0) {
-      await this.fetchDraftFiling()
-    }
-
-    this.dataLoaded = true
 
     // always include consent continue out code
     // use existing Priority and Waive Fees flags
     this.updateFilingData('add', FilingCodes.AGM_EXTENSION, this.staffPaymentData.isPriority,
       (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-  }
-
-  /** Fetches the draft consent filing. */
-  async fetchDraftFiling (): Promise<void> {
-    const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-    await LegalServices.fetchFiling(url).then(filing => {
-      // verify data
-      if (!filing) throw new Error('Missing filing')
-      if (!filing.header) throw new Error('Missing header')
-      if (!filing.business) throw new Error('Missing business')
-      if (!filing.agmExtension) throw new Error('Missing agm extension object')
-      if (filing.header.name !== FilingTypes.AGM_EXTENSION) throw new Error('Invalid filing type')
-      if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-      if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
-
-      // load Certified By (but not Date)
-      this.certifiedBy = filing.header.certifiedBy
-
-      // load Staff Payment properties
-      if (filing.header.routingSlipNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.FAS,
-          routingSlipNumber: filing.header.routingSlipNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.bcolAccountNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.BCOL,
-          bcolAccountNumber: filing.header.bcolAccountNumber,
-          datNumber: filing.header.datNumber,
-          folioNumber: filing.header.folioNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.waiveFees) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NO_FEE
-        } as StaffPaymentIF
-      } else {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NONE
-        } as StaffPaymentIF
-      }
-    }).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchDraftFiling() error =', error)
-      this.resumeErrorDialog = true
-    })
-  }
-
-  /**
-   * Called when user clicks Save button
-   * or when user retries from Save Error dialog.
-   */
-  async onClickSave (): Promise<void> {
-    // prevent double saving
-    if (this.busySaving) return
-
-    this.saving = true
-
-    // save draft filing
-    this.savedFiling = await this.saveFiling(true).catch(error => {
-      this.saveErrorReason = SaveErrorReasons.SAVE
-      // try to return filing (which may exist depending on save error)
-      return error?.response?.data?.filing || null
-    })
-
-    const filingId = +this.savedFiling?.header?.filingId || 0
-    if (filingId > 0) {
-      // save filing ID for possible future updates
-      this.filingId = filingId
-    }
-
-    // if there was no error, finish save process now
-    // otherwise, dialog may finish this later
-    if (!this.saveErrorReason) this.onClickSaveFinish()
-
-    this.saving = false
-  }
-
-  onClickSaveFinish (): void {
-    // safety check
-    if (this.filingId > 0) {
-      // changes were saved, so clear flag
-      this.haveChanges = false
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('onClickSaveFinish(): invalid filing ID, filing =', null)
-    }
-  }
-
-  /**
-   * Called when user clicks Save and Resume later button
-   * or when user retries from Save Error dialog.
-   */
-  async onClickSaveResume (): Promise<void> {
-    // prevent double saving
-    if (this.busySaving) return
-
-    this.savingResuming = true
-
-    // save draft filing
-    this.savedFiling = await this.saveFiling(true).catch(error => {
-      this.saveErrorReason = SaveErrorReasons.SAVE_RESUME
-      // try to return filing (which may exist depending on save error)
-      return error?.response?.data?.filing || null
-    })
-
-    const filingId = +this.savedFiling?.header?.filingId || 0
-    if (filingId > 0) {
-      // save filing ID for possible future updates
-      this.filingId = filingId
-    }
-
-    // if there was no error, finish save-resume process now
-    // otherwise, dialog may finish this later
-    if (!this.saveErrorReason) this.onClickSaveResumeFinish()
-
-    this.savingResuming = false
-  }
-
-  onClickSaveResumeFinish (): void {
-    // safety check
-    if (this.filingId > 0) {
-      // changes were saved, so go to dashboard
-      this.goToDashboard(true)
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('onClickSaveResumeFinish(): invalid filing ID, filing =', null)
-    }
   }
 
   /**
@@ -647,7 +324,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
     if (!this.isPageValid) {
       this.showErrors = true
       // *** TODO: check for section errors here
-      if (!this.extensionEligibilityValid) {
+      if (!this.extensionRequestValid) {
         // Show error message of detail comment text area if invalid
         // this.$refs.detailCommentRef.$refs.textarea.error = true
       }
@@ -749,7 +426,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
     const header: any = {
       header: {
-        name: FilingTypes.CONSENT_CONTINUATION_OUT,
+        name: FilingTypes.AGM_EXTENSION,
         certifiedBy: this.certifiedBy || '',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
@@ -864,73 +541,55 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
   /** Handles Retry events from Save Error dialog. */
   async onSaveErrorDialogRetry (): Promise<void> {
-    switch (this.saveErrorReason) {
-      case SaveErrorReasons.SAVE:
-        // close the dialog and retry save
-        this.saveErrorReason = null
-        await this.onClickSave()
-        break
-      case SaveErrorReasons.SAVE_RESUME:
-        // close the dialog and retry save-resume
-        this.saveErrorReason = null
-        await this.onClickSaveResume()
-        break
-      case SaveErrorReasons.FILE_PAY:
-        // close the dialog and retry file-pay
-        this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
-        else await this.onClickFilePay()
-        break
+    if (this.saveErrorReason === SaveErrorReasons.FILE_PAY) {
+      // close the dialog and retry file-pay
+      this.saveErrorReason = null
+      await this.onClickFilePay(this.isRoleStaff)
     }
   }
 
   /** Handles Okay events from Save Error dialog. */
   onSaveErrorDialogOkay (): void {
-    switch (this.saveErrorReason) {
-      case SaveErrorReasons.SAVE:
-        // close the dialog and finish save process
-        this.saveErrorReason = null
-        this.onClickSaveFinish()
-        break
-      case SaveErrorReasons.SAVE_RESUME:
-        // close the dialog and finish save-resume process
-        this.saveErrorReason = null
-        this.onClickSaveResumeFinish()
-        break
-      case SaveErrorReasons.FILE_PAY:
-        // close the dialog and finish file-pay process
-        this.saveErrorReason = null
-        this.onClickFilePayFinish()
-        break
+    if (this.saveErrorReason === SaveErrorReasons.FILE_PAY) {
+      // close the dialog and finish file-pay process
+      this.saveErrorReason = null
+      this.onClickFilePayFinish()
     }
   }
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'extension-eligibility-section',
+    'extension-request-vcard',
     'certify-form-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      extensionEligibility: this.extensionEligibilityValid,
+      extensionEligibility: this.extensionRequestValid,
       certifyForm: this.certifyFormValid
     }
   }
 
-  @Watch('extensionEligibilityValid')
-  @Watch('certifyFormValid')
-  onHaveChanges (): void {
+  /** Watches all data properties to keep track of changes. */
+  @Watch('data.isFirstAgm')
+  @Watch('data.agmYear')
+  @Watch('data.prevAgmDate')
+  @Watch('data.isPrevExtension')
+  @Watch('data.prevExpiryDate')
+  @Watch('data.intendedAgmDate')
+  @Watch('certifiedBy')
+  @Watch('isCertified')
+  private onHaveChanges (): void {
     this.haveChanges = true
   }
 
   @Watch('staffPaymentData')
-  onStaffPaymentDataChanged (val: StaffPaymentIF): void {
+  private onStaffPaymentDataChanged (val: StaffPaymentIF): void {
     const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
 
     // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
+    this.updateFilingData('add', FilingCodes.AGM_EXTENSION, val.isPriority, waiveFees)
 
     this.haveChanges = true
   }
@@ -951,17 +610,6 @@ h2::before {
   content: counter(header-counter) '. ';
 }
 
-article {
-  .v-card {
-    line-height: 1.2rem;
-    font-size: $px-14;
-  }
-}
-
-section + section {
-  margin-top: 3rem;
-}
-
 h1 {
   margin-bottom: 1.25rem;
   line-height: 2rem;
@@ -972,10 +620,6 @@ h2 {
   margin-bottom: 0.25rem;
   margin-top: 3rem;
   font-size: 1.125rem;
-}
-
-strong {
-  color: $gray9;
 }
 
 // Save & Filing Buttons
@@ -1002,12 +646,6 @@ strong {
 
 // Fix font size and color to stay consistent.
 :deep() {
-  .invalid-extension-eligibility {
-    .title-label {
-      color: $app-red;
-    }
-  }
-
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
   }

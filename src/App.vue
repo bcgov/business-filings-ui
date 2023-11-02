@@ -104,7 +104,7 @@
       type="warning"
     >
       <div
-        class="mb-0 text-center colour-dk-text"
+        class="mb-0 text-center color-dk-text"
         v-html="bannerText"
       />
     </v-alert>
@@ -437,13 +437,14 @@ export default {
       // fetch user info and update Launch Darkly
       // and save user's Keycloak GUID
       try {
-        const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl).then(response => response?.data)
+        const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl)
         this.setUserInfo(userInfo)
         await this.updateLaunchDarkly(userInfo)
         this.setUserKeycloakGuid(userInfo.keycloakGuid)
       } catch (error) {
         // just log the error -- no need to halt app
-        console.log('Error updating Launch Darkly =', error) // eslint-disable-line no-console
+        // eslint-disable-next-line no-console
+        console.log('Error fetching user info or updating Launch Darkly =', error)
       }
 
       // is this a business entity?

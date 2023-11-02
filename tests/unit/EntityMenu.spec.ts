@@ -482,8 +482,9 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'enable-agm-extension') return true
-      if (flag === 'supported-agm-location-chg-entities') return 'BEN'
+      if (flag === 'supported-agm-extension-entities') return 'BEN'
+      if (flag === 'supported-agm-location-chg-entities') return ''
+      return null
     })
   })
 
@@ -493,6 +494,8 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
   })
 
   it('displays the Request AGM Extension button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
@@ -511,12 +514,13 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Location Change click tests', () => {
-  let vm: any
-
   beforeAll(async () => {
     // override feature flag
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'supported-agm-location-chg-entities'))
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'supported-agm-extension-entities') return ''
+      if (flag === 'supported-agm-location-chg-entities') return 'BEN'
+      return null
+    })
   })
 
   afterAll(() => {
@@ -525,15 +529,14 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
   })
 
   it('displays the Request AGM Location Change button', async () => {
+    businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
+
     // mount the component and wait for everything to stabilize
     const wrapper = mount(EntityMenu, {
       vuetify,
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
-
-    vm = wrapper.vm
-    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 

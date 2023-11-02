@@ -11,15 +11,16 @@ export type { AlterationIF, ContactPointIF, NameTranslationIF, ShareStructureIF,
   IncorporationApplicationIF, IncorporationAddressIf, ShareClassIF, CommentIF, ConfirmDialogType, StaffPaymentIF,
   ApiDateTimeUtc, FormattedDateTimeGmt, IsoDatePacific, SpecialResolutionIF }
 
-// must come before other interfaces that use it
-export * from './officer-interface'
+export * from './officer-interface' // must come before other interfaces that use it
 export * from './address-interfaces'
 export * from './affiliation-invitation-interface'
+export * from './agm-ext-eval-interface'
 export * from './alert-message-interface'
 export * from './api-filing-interface'
 export * from './api-task-interface'
+export * from './authentication-state-interface'
 export * from './breadcrumb-interface'
-export * from './business-interfaces'
+export * from './business-state-interfaces'
 export * from './component-interface'
 export * from './configuration-state-interface'
 export * from './correction-filing-interface'
@@ -44,7 +45,6 @@ export * from './presigned-url-interface'
 export * from './restoration-interfaces'
 export * from './role-interface'
 export * from './root-state-interface'
-export * from './state-interface'
 export * from './steps-interface'
 export * from './table-header-interface'
 export * from './todo-item-interface'

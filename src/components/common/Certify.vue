@@ -79,11 +79,11 @@ export default class Certify extends Vue {
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
 
-    /** Disable Text Input field. */
-    @Prop({ default: false }) readonly disableEdit!: boolean
+  /** Whether to disable the Certified By input field. */
+  @Prop({ default: false }) readonly disableEdit!: boolean
 
+  // local properties
   certifyName = ''
-
   checkboxState = false
 
   /** Called when component is created. */
@@ -179,6 +179,7 @@ export default class Certify extends Vue {
   }
 }
 
+// vertically align the ripple circle with the check box
 :deep() {
   .v-input--selection-controls__ripple {
     margin-top: -3px;

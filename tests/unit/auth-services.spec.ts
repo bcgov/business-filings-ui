@@ -48,7 +48,7 @@ describe('Auth Services', () => {
     const response = await AuthServices.fetchUserInfo('')
 
     // verify data
-    expect(response).toEqual({ data: USER_INFO })
+    expect(response).toEqual(USER_INFO)
   })
 
   it('fetches entity info correctly', async () => {

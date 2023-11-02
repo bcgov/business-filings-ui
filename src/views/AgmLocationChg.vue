@@ -14,30 +14,8 @@
       @exit="onPaymentErrorDialogExit()"
     />
 
-    <!-- Initial Page Load Transition -->
-    <v-fade-transition>
-      <div
-        v-show="showLoadingContainer"
-        class="loading-container"
-      >
-        <div class="loading__content">
-          <v-progress-circular
-            color="primary"
-            :size="50"
-            indeterminate
-          />
-          <div class="loading-msg">
-            {{ loadingMessage }}
-          </div>
-        </div>
-      </div>
-    </v-fade-transition>
-
     <!-- Main Body -->
-    <v-container
-      v-if="dataLoaded"
-      class="view-container"
-    >
+    <v-container class="view-container">
       <v-row>
         <v-col
           cols="12"
@@ -357,24 +335,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   // other variables
   totalFee = 0
-  dataLoaded = false
-  loadingMessage = ''
   filingId = 0 // id of this agm location change filing
   savedFiling: any = null // filing during save
-  saving = false // true only when saving
-  savingResuming = false // true only when saving and resuming
   showErrors = false // true when we press on File and Pay (trigger validation)
   filingPaying = false // true only when filing and paying
   haveChanges = false
   saveErrors = []
   saveWarnings = []
-
-  /** True if loading container should be shown, else False. */
-  get showLoadingContainer (): boolean {
-    // show loading container when data isn't yet loaded and when
-    // no dialogs are displayed (otherwise dialogs may be hidden)
-    return (!this.dataLoaded && !this.saveErrorReason && !this.paymentErrorDialog)
-  }
 
   /** The Base URL string. */
   get baseUrl (): string {
@@ -388,7 +355,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True when saving, saving and resuming, or filing and paying. */
   get busySaving (): boolean {
-    return (this.saving || this.savingResuming || this.filingPaying)
+    return (this.filingPaying)
   }
 
   /** True if payment is required, else False. */
@@ -439,36 +406,21 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
 
     // this is the id of THIS filing
-    // if 0, this is a new filing
-    // otherwise it's a draft filing
+    // it must be 0 (meaning new filing) -- we do not support resuming a draft filing
     this.filingId = +this.$route.params.filingId // number or NaN
 
     // if required data isn't set, go back to dashboard
-    if (!this.getIdentifier || isNaN(this.filingId)) {
+    if (!this.getIdentifier || this.filingId !== 0) {
       this.$router.push({ name: Routes.DASHBOARD })
     }
   }
 
   /** Called when component is mounted. */
-  async mounted (): Promise<void> {
-    // wait until entire view is rendered (including all child components)
-    // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
-    await this.$nextTick()
-
+  mounted (): void {
     // Pre-populate the certified block with the logged in user's name (if not staff)
     if (!this.isRoleStaff && this.getUserInfo) {
-      const firstName = this.getUserInfo?.firstname
-      const lastName = this.getUserInfo?.lastname
-      this.certifiedBy = firstName + ' ' + lastName
+      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastName
     }
-
-    if (this.filingId > 0) {
-      this.loadingMessage = `Resuming Your Request for AGM Location Change`
-    } else {
-      this.loadingMessage = `Preparing Your Request for AGM Location Change`
-    }
-
-    this.dataLoaded = true
 
     // always include agm location change code
     // clear Priority flag and set the Waive Fees flag to true
@@ -689,11 +641,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
   }
 
-  @Watch('agmYearValid')
-  @Watch('agmLocationValid')
-  @Watch('certifyFormValid')
-  @Watch('resonValid')
-  onHaveChanges (): void {
+  /** Watches all data properties to keep track of changes. */
+  @Watch('agmYear')
+  @Watch('agmLocation')
+  @Watch('certifiedBy')
+  @Watch('isCertified')
+  @Watch('reason')
+  private onHaveChanges (): void {
     this.haveChanges = true
   }
 }

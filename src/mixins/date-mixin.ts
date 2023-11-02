@@ -94,6 +94,16 @@ export default class DateMixin extends Vue {
   }
 
   /**
+   * Converts a date string (YYYY-MM-DD) to a date string (Month Day, Year) in Pacific timezone.
+   * @param longMonth whether to show long month name (eg, December vs Dec)
+   * @param showWeekday whether to show the weekday name (eg, Thursday)
+   * @example "2021-01-01" -> "Thursday, December 31, 2020"
+   */
+  yyyyMmDdToPacificDate (dateStr: IsoDatePacific, longMonth = false, showWeekday = false): string {
+    return DateUtilities.dateToPacificDate(this.yyyyMmDdToDate(dateStr), longMonth, showWeekday)
+  }
+
+  /**
    * DEPRECATED - call resources/date-utilities instead
    * Converts a Date object to an API datetime string.
    * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
