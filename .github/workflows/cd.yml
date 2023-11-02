@@ -1,9 +1,9 @@
-name: BUSINESS FILINGS UI CD
+name: BUSINESS FILINGS UI CD - legal name
 
 on:
   push:
     branches:
-      - main
+      - feature-legal-name
   workflow_dispatch:
     inputs:
       environment:
@@ -27,6 +27,6 @@ jobs:
       environment: ${{ inputs.environment }}
       tagname: ${{ inputs.tagname }}
     secrets:
-      APP_NAME: "business-filings"
+      APP_NAME: "business-filings-le"
       OP_CONNECT_URL: ${{ secrets.OP_CONNECT_URL }}
       OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
