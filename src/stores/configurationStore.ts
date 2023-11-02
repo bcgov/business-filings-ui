@@ -40,11 +40,6 @@ export const useConfigurationStore = defineStore('configuration', {
       return state.configuration.VUE_APP_BUSINESS_EDIT_URL
     },
 
-    getLegalApiBaseUrl (state: ConfigurationStateIF): string {
-      const configuration = state.configuration
-      return configuration.VUE_APP_LEGAL_API_URL
-    },
-
     getLegalApiUrl (state: ConfigurationStateIF): string {
       const configuration = state.configuration
       return configuration.VUE_APP_LEGAL_API_URL + configuration.VUE_APP_LEGAL_API_VERSION_2 + '/'

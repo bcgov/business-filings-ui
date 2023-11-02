@@ -186,6 +186,8 @@
       </v-row>
     </v-container>
     <CredentialsWebSocket
+      :connection="credentialConnection"
+      :issuedCredential="issuedCredential"
       @onConnection="handleConnection($event)"
       @onIssuedCredential="handleIssuedCredential($event)"
     />
@@ -281,7 +283,9 @@ export default class CredentialsStepper extends Vue {
 
   async handleConnection (connection: WalletConnectionIF) {
     this.credentialConnection = connection
-    await this.issueCredential(this.credentialTypes.BUSINESS)
+    if (this.credentialConnection?.isActive) {
+      await this.issueCredential(this.credentialTypes.BUSINESS)
+    }
   }
 
   async handleIssuedCredential (issuedCredential: DigitalCredentialIF) {

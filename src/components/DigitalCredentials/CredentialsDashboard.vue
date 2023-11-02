@@ -150,12 +150,13 @@ export default class CredentialsDashboard extends Vue {
 
   async revokeCredential (): Promise<void> {
     this.showLoadingContainer = true
-    const revoked = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
-      .finally(() => {
-        this.hideConfirmRevokeCredentialDialog()
-      })
+    let revokeCredential = this.issuedCredential.isRevoked ? {} : null
+    if (this.issuedCredential.isIssued && !this.issuedCredential.isRevoked) {
+      revokeCredential = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+    }
 
-    if (!revoked) {
+    this.hideConfirmRevokeCredentialDialog()
+    if (!revokeCredential) {
       this.revokeCredentialErrorDialog = true
     } else {
       this.credentialRevokedDialog = true
@@ -166,8 +167,8 @@ export default class CredentialsDashboard extends Vue {
 
   async replaceCredential (): Promise<void> {
     this.showLoadingContainer = true
-    let revokedCredential = this.issuedCredential.isRevoked ? {} : null
-    if (!this.issuedCredential.isRevoked) {
+    let revokedCredential = !this.issuedCredential.isIssued || this.issuedCredential.isRevoked ? {} : null
+    if (this.issuedCredential.isIssued && !this.issuedCredential.isRevoked) {
       revokedCredential = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
     const removedCredential =
