@@ -393,6 +393,7 @@ export default {
         'setRecordsAddress',
         'setRegisteredAddress',
         'setTasks',
+        'setUserInfo',
         'setUserKeycloakGuid'
       ]),
 
@@ -437,6 +438,7 @@ export default {
       // and save user's Keycloak GUID
       try {
         const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl).then(response => response?.data)
+        this.setUserInfo(userInfo)
         await this.updateLaunchDarkly(userInfo)
         this.setUserKeycloakGuid(userInfo.keycloakGuid)
       } catch (error) {

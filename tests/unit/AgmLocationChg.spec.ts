@@ -13,6 +13,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { FilingStatus } from '@/enums'
+import { waitForUpdate } from 'tests/wait-for-update'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -144,7 +145,7 @@ describe('AGM Location Chg view', () => {
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
     wrapper.vm.$data.dataLoaded = true
-    await Vue.nextTick()
+    await waitForUpdate(2)
 
     const vm: any = wrapper.vm
 

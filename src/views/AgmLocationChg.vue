@@ -90,10 +90,7 @@
               </header>
 
               <div>
-                <v-card
-                  flat
-                  class="py-4"
-                >
+                <v-card flat>
                   <!-- AGM Year -->
                   <div
                     id="agm-year-section"
@@ -101,7 +98,7 @@
                   >
                     <v-row
                       no-gutters
-                      class="my-6"
+                      class="pt-8 pb-2"
                     >
                       <v-col
                         cols="12"
@@ -125,7 +122,7 @@
                     </v-row>
                   </div>
 
-                  <v-divider class="my-4" />
+                  <v-divider />
 
                   <!-- Reason -->
                   <div
@@ -134,7 +131,7 @@
                   >
                     <v-row
                       no-gutters
-                      class="my-6"
+                      class="py-6"
                     >
                       <v-col
                         cols="12"
@@ -160,7 +157,7 @@
                     </v-row>
                   </div>
 
-                  <v-divider class="my-4" />
+                  <v-divider />
 
                   <!-- Location address -->
                   <div
@@ -169,7 +166,7 @@
                   >
                     <v-row
                       no-gutters
-                      class="mt-6"
+                      class="pt-6"
                     >
                       <v-col
                         cols="12"
@@ -332,6 +329,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getUserInfo!: any
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
@@ -456,6 +454,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     // wait until entire view is rendered (including all child components)
     // see https://v3.vuejs.org/api/options-lifecycle-hooks.html#mounted
     await this.$nextTick()
+
+    // Pre-populate the certified block with the logged in user's name (if not staff)
+    if (!this.isRoleStaff && this.getUserInfo) {
+      const firstName = this.getUserInfo?.firstname
+      const lastName = this.getUserInfo?.lastname
+      this.certifiedBy = firstName + ' ' + lastName
+    }
 
     if (this.filingId > 0) {
       this.loadingMessage = `Resuming Your Request for AGM Location Change`
@@ -774,6 +779,18 @@ h2 {
     .title-label {
       color: $app-red;
     }
+  }
+
+  // Setting the top and bottom red borders (error) radii to 0.
+  .v-card > *:first-child:not(.v-btn):not(.v-chip):not(.v-avatar),
+  .v-card > .v-card__progress + *:not(.v-btn):not(.v-chip):not(.v-avatar) {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+  }
+
+  .v-card > *:last-child:not(.v-btn):not(.v-chip):not(.v-avatar) {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 }
 </style>

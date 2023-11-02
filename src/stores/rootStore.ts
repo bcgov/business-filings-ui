@@ -14,6 +14,7 @@ export const useRootStore = defineStore('root', {
     entityStatus: null,
     keycloakRoles: [],
     stateFiling: null,
+    userInfo: null,
     userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
@@ -184,6 +185,11 @@ export const useRootStore = defineStore('root', {
       return state.corpTypeCd
     },
 
+    /** The user's full info. */
+    getUserInfo (state: StateIF): any {
+      return state.userInfo
+    },
+
     //
     // State Filing getters
     //
@@ -269,6 +275,10 @@ export const useRootStore = defineStore('root', {
 
     setUserKeycloakGuid (userKeycloakGuid: string) {
       this.userKeycloakGuid = userKeycloakGuid
+    },
+
+    setUserInfo (userInfo: any) {
+      this.userInfo = userInfo
     },
 
     /** Set the app permissions. */
