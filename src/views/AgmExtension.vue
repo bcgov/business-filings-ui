@@ -97,6 +97,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
+                  :disableEdit="!isRoleStaff"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.AGM_EXTENSION)"
                   @valid="certifyFormValid=$event"
