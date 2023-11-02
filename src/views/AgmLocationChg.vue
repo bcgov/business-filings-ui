@@ -456,7 +456,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     await this.$nextTick()
 
     // Pre-populate the certified block with the logged in user's name (if not staff)
-    if (!this.isRoleStaff) {
+    if (!this.isRoleStaff && this.getUserInfo) {
       const firstName = this.getUserInfo?.firstname
       const lastName = this.getUserInfo?.lastname
       this.certifiedBy = firstName + ' ' + lastName
