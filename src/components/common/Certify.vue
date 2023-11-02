@@ -20,6 +20,7 @@
           filled
           persistent-hint
           label="Person's legal name"
+          :disabled="disableEdit"
           :value="certifiedBy"
           :rules="[ v => !!v || 'A person\'s legal name is required.']"
           @input="emitCertifiedBy($event)"
@@ -77,6 +78,9 @@ export default class Certify extends Vue {
 
   /** Prompt the validations. Used for global validations. */
   @Prop({ default: false }) readonly validateForm!: boolean
+
+    /** Disable Text Input field. */
+    @Prop({ default: false }) readonly disableEdit!: boolean
 
   certifyName = ''
 
@@ -172,6 +176,12 @@ export default class Certify extends Vue {
 .v-input--checkbox::v-deep {
   .v-icon {
     margin-top: -1.25rem;
+  }
+}
+
+:deep() {
+  .v-input--selection-controls__ripple {
+    margin-top: -3px;
   }
 }
 </style>
