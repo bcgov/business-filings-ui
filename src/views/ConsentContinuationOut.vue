@@ -193,6 +193,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
+                  :disableEdit="!isRoleStaff"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
                   @valid="certifyFormValid=$event"
@@ -332,7 +333,7 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { EnumUtilities, LegalServices } from '@/services/'
 import { EffectOfOrderTypes, FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons,
   StaffPaymentOptions } from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { ConfirmDialogType, CurrentUserIF, StaffPaymentIF } from '@/interfaces'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { DocumentDelivery } from '@bcrs-shared-components/document-delivery'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
@@ -366,6 +367,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
   @Getter(useRootStore) getBusinessEmail!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
+  @Getter(useRootStore) getUserInfo!: CurrentUserIF
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
@@ -502,6 +504,13 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
     }
 
     this.dataLoaded = true
+
+    // Pre-populate the certified block with the logged in user's name (if not staff)
+    if (!this.isRoleStaff) {
+      const firstName = this.getUserInfo?.firstname
+      const lastName = this.getUserInfo?.lastname
+      this.certifiedBy = firstName + ' ' + lastName
+    }
 
     // always include consent continue out code
     // use existing Priority and Waive Fees flags
