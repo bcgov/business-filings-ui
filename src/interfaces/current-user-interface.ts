@@ -1,11 +1,10 @@
 /** The Current User (aka: Keycloak) interface. */
 export interface CurrentUserIF {
   email: string
-  firstName: string
-  fullName: string
+  firstname: string
   keycloakGuid: string
-  lastName: string
+  lastname: string
   loginSource: string
   roles: Array<string>
-  userName: string
+  type: string
 }

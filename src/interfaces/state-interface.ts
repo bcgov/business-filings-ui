@@ -1,5 +1,5 @@
 import { CorpTypeCd, EntityStatus, FilingStatus } from '@/enums'
-import { ApiHeaderIF, ApiTaskIF, FilingDataIF, OfficeAddressIF, PartyIF } from '@/interfaces'
+import { ApiHeaderIF, ApiTaskIF, CurrentUserIF, FilingDataIF, OfficeAddressIF, PartyIF } from '@/interfaces'
 
 export interface StateFilingIF {
   business: any
@@ -19,7 +19,7 @@ export interface StateIF {
   entityStatus: EntityStatus // for draft app only
   keycloakRoles: Array<string>
   stateFiling: StateFilingIF // the state filing object
-  userFullName: string
+  userInfo: CurrentUserIF
   userKeycloakGuid: string
 
   // entity info from auth db

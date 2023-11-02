@@ -393,7 +393,7 @@ export default {
         'setRecordsAddress',
         'setRegisteredAddress',
         'setTasks',
-        'setUserFullName',
+        'setUserInfo',
         'setUserKeycloakGuid'
       ]),
 
@@ -438,6 +438,7 @@ export default {
       // and save user's Keycloak GUID
       try {
         const userInfo = await AuthServices.fetchUserInfo(this.getAuthApiUrl).then(response => response?.data)
+        this.setUserInfo(userInfo)
         await this.updateLaunchDarkly(userInfo)
         this.setUserKeycloakGuid(userInfo.keycloakGuid)
       } catch (error) {
@@ -574,21 +575,16 @@ export default {
       }
     },
 
-    /**
-     * Updates Launch Darkly with current user info.
-     * Set the full name in the Authentication store.
-     */
+    /** Updates Launch Darkly with current user info. */
     async updateLaunchDarkly (userInfo: any): Promise<void> {
       // since username is unique, use it as the user key
       const key: string = userInfo.username
       const email: string = userInfo.contacts[0]?.email || userInfo.email
       const firstName: string = userInfo?.firstname
       const lastName: string = userInfo?.lastname
-      const fullName: string = firstName + ' ' + lastName
       // store Keycloak roles in custom object
       const custom = { roles: this.getKeycloakRoles } as any
 
-      this.setUserFullName(fullName)
       await UpdateLdUser(key, email, firstName, lastName, custom)
     },
 

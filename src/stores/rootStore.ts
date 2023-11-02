@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, StateIF,
+import { ApiTaskIF, CurrentUserIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, StateIF,
   TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { useBusinessStore } from './businessStore'
@@ -14,7 +14,7 @@ export const useRootStore = defineStore('root', {
     entityStatus: null,
     keycloakRoles: [],
     stateFiling: null,
-    userFullName: null,
+    userInfo: null,
     userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
@@ -185,6 +185,11 @@ export const useRootStore = defineStore('root', {
       return state.corpTypeCd
     },
 
+    /** The user's full info. */
+    getUserInfo (state: StateIF): CurrentUserIF {
+      return state.userInfo
+    },
+
     //
     // State Filing getters
     //
@@ -272,8 +277,8 @@ export const useRootStore = defineStore('root', {
       this.userKeycloakGuid = userKeycloakGuid
     },
 
-    setUserFullName (userFullName: string) {
-      this.userFullName = userFullName
+    setUserInfo (userInfo: CurrentUserIF) {
+      this.userInfo = userInfo
     },
 
     /** Set the app permissions. */

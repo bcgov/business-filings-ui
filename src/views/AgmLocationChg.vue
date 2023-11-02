@@ -301,8 +301,8 @@ import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } f
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
 import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
-import { ConfirmDialogType } from '@/interfaces'
-import { useAuthenticationStore, useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import { ConfirmDialogType, CurrentUserIF } from '@/interfaces'
+import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
@@ -329,7 +329,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   @Getter(useConfigurationStore) getAuthWebUrl!: string
   @Getter(useBusinessStore) getLegalName!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useAuthenticationStore) getUserFullName!: string
+  @Getter(useRootStore) getUserInfo!: CurrentUserIF
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // enum for template
@@ -457,7 +457,9 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     // Pre-populate the certified block with the logged in user's name (if not staff)
     if (!this.isRoleStaff) {
-      this.certifiedBy = this.getUserFullName
+      const firstName = this.getUserInfo.firstname
+      const lastName = this.getUserInfo.lastname
+      this.certifiedBy = firstName + ' ' + lastName
     }
 
     if (this.filingId > 0) {
