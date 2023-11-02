@@ -192,6 +192,7 @@
                   :isCertified.sync="isCertified"
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
+                  :disableEdit="!isRoleStaff"
                   :entityDisplay="displayName()"
                   :message="certifyText(FilingCodes.AGM_LOCATION_CHANGE)"
                   @valid="certifyFormValid=$event"
@@ -419,7 +420,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   mounted (): void {
     // Pre-populate the certified block with the logged in user's name (if not staff)
     if (!this.isRoleStaff && this.getUserInfo) {
-      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastName
+      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
     // always include agm location change code

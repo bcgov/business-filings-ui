@@ -507,9 +507,7 @@ export default class ConsentContinuationOut extends Mixins(CommonMixin, DateMixi
 
     // Pre-populate the certified block with the logged in user's name (if not staff)
     if (!this.isRoleStaff && this.getUserInfo) {
-      const firstName = this.getUserInfo?.firstname
-      const lastName = this.getUserInfo?.lastname
-      this.certifiedBy = firstName + ' ' + lastName
+      this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
     // always include consent continue out code
