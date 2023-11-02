@@ -395,6 +395,7 @@
                   <v-btn
                     v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
                     class="btn-change-payment-type"
+                    :class="{ 'cancellable' : isCancellableTodoItem(item) }"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -404,6 +405,7 @@
                   <v-btn
                     v-else
                     class="btn-resume-payment"
+                    :class="{ 'cancellable' : isCancellableTodoItem(item) }"
                     color="primary"
                     :disabled="!item.enabled"
                     @click.native.stop="doResumePayment(item)"
@@ -413,6 +415,7 @@
 
                   <!-- dropdown menu -->
                   <v-menu
+                    v-if="isCancellableTodoItem(item)"
                     offset-y
                     left
                   >
@@ -823,6 +826,11 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     })
   }
 
+  /** Check if task item is cancellable (has a draft). */
+  isCancellableTodoItem (item: TodoItemIF): boolean {
+    return (item.name !== FilingTypes.AGM_LOCATION_CHANGE)
+  }
+
   /** Loads a todo item into the Todo Items array. */
   loadTodoItem (task: ApiTaskIF): void {
     const todo = task.task.todo // already checked for not falsey in loadData()
@@ -991,6 +999,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     if (header) {
       switch (header.name) {
+        case FilingTypes.AGM_LOCATION_CHANGE:
+          await this.loadAgmLocationChange(task)
+          break
         case FilingTypes.ANNUAL_REPORT:
           await this.loadAnnualReport(task)
           break
@@ -1463,6 +1474,36 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         filingId: header.filingId,
         title: FilingNames.CONSENT_CONTINUATION_OUT,
         draftTitle: FilingNames.CONSENT_CONTINUATION_OUT,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        // FUTURE: ideally, this would come from the filing:
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
+      } as TodoItemIF
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  async loadAgmLocationChange (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const agmLocationChange = filing.agmLocationChange
+
+    if (header && agmLocationChange) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      const item = {
+        name: FilingTypes.AGM_LOCATION_CHANGE,
+        filingId: header.filingId,
+        title: FilingNames.AGM_LOCATION_CHANGE,
+        draftTitle: FilingNames.AGM_LOCATION_CHANGE,
         status: header.status,
         enabled: task.enabled,
         order: task.order,
@@ -2066,8 +2107,8 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     border-bottom-right-radius: 0;
   }
 
-  .btn-change-payment-type,
-  .btn-resume-payment {
+  .btn-change-payment-type.cancellable,
+  .btn-resume-payment.cancellable {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
