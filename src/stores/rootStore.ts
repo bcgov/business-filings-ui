@@ -1,20 +1,19 @@
 import { defineStore } from 'pinia'
 import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
-import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, StateIF,
+import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, RootStateIF,
   TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { useBusinessStore } from './businessStore'
 import { useFilingHistoryListStore } from './filingHistoryListStore'
 
 export const useRootStore = defineStore('root', {
-  state: (): StateIF => ({
+  state: (): RootStateIF => ({
     authRoles: [],
     currentDate: null,
     currentJsDate: null,
     entityStatus: null,
     keycloakRoles: [],
     stateFiling: null,
-    userInfo: null,
     userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
@@ -33,12 +32,13 @@ export const useRootStore = defineStore('root', {
     parties: [],
     recordsAddress: null,
     registeredAddress: null,
-    tasks: []
+    tasks: [],
+    userInfo: null
   }),
 
   getters: {
     /** The list of tasks from the API. */
-    getTasks (state: StateIF): ApiTaskIF[] {
+    getTasks (state: RootStateIF): ApiTaskIF[] {
       return state.tasks
     },
 
@@ -47,7 +47,7 @@ export const useRootStore = defineStore('root', {
      * NB: internally this is stored as UTC
      * NB: use date mixins to display this
      */
-    getCurrentJsDate (state: StateIF): Date {
+    getCurrentJsDate (state: RootStateIF): Date {
       return state.currentJsDate
     },
 
@@ -55,22 +55,22 @@ export const useRootStore = defineStore('root', {
      * The current date (YYYY-MM-DD), which was refreshed when the dashload loaded,
      * in Pacific timezone.
      */
-    getCurrentDate (state: StateIF): IsoDatePacific {
+    getCurrentDate (state: RootStateIF): IsoDatePacific {
       return state.currentDate
     },
 
     /** The current year. */
-    getCurrentYear (state: StateIF): number {
+    getCurrentYear (state: RootStateIF): number {
       return (state.currentDate ? +state.currentDate.substring(0, 4) : 0)
     },
 
     /** The business email. */
-    getBusinessEmail (state: StateIF): string {
+    getBusinessEmail (state: RootStateIF): string {
       return state.businessEmail
     },
 
     /** The business phone number and optional extension. */
-    getFullPhoneNumber (state: StateIF): string {
+    getFullPhoneNumber (state: RootStateIF): string {
       const phone = state.businessPhone
       const ext = state.businessPhoneExtension
 
@@ -81,24 +81,24 @@ export const useRootStore = defineStore('root', {
     },
 
     /** The roles from the Keycloak token (JWT). */
-    getKeycloakRoles (state: StateIF): Array<string> {
+    getKeycloakRoles (state: RootStateIF): Array<string> {
       return state.keycloakRoles
     },
 
     /** Is True if Staff role is set.
      * DEPRECATED - use authentication/isKeycloakRoleStaff() instead
      */
-    isRoleStaff (state: StateIF): boolean {
+    isRoleStaff (state: RootStateIF): boolean {
       return state.keycloakRoles.includes('staff')
     },
 
     /** Is True if app permissions includes Edit role. */
-    isRoleEdit (state: StateIF): boolean {
+    isRoleEdit (state: RootStateIF): boolean {
       return state.authRoles.includes('edit')
     },
 
     /** Is True if app permission includes View role. */
-    isRoleView (state: StateIF): boolean {
+    isRoleView (state: RootStateIF): boolean {
       return state.authRoles.includes('view')
     },
 
@@ -108,25 +108,25 @@ export const useRootStore = defineStore('root', {
     },
 
     /** Is True if this is a Draft Application. */
-    isAppTask (state: StateIF): boolean {
+    isAppTask (state: RootStateIF): boolean {
       return (state.entityStatus === EntityStatus.DRAFT_APP)
     },
 
     /** Is True if this is a Paid or Completed Application. */
-    isAppFiling (state: StateIF): boolean {
+    isAppFiling (state: RootStateIF): boolean {
       return (state.entityStatus === EntityStatus.FILED_APP)
     },
 
     /** The Name Request (may be null). */
-    getNameRequest (state: StateIF): any {
+    getNameRequest (state: RootStateIF): any {
       return (state.nameRequest)
     },
 
-    isCurrentFilingEditable (state: StateIF): boolean {
+    isCurrentFilingEditable (state: RootStateIF): boolean {
       return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
     },
 
-    getReportState (state: StateIF): string {
+    getReportState (state: RootStateIF): string {
       switch (state.currentFilingStatus) {
         case FilingStatus.NEW: return ''
         case FilingStatus.DRAFT: return 'Draft'
@@ -135,7 +135,7 @@ export const useRootStore = defineStore('root', {
     },
 
     /** Whether to show the Fetching Data spinner. */
-    showFetchingDataSpinner (state: StateIF): boolean {
+    showFetchingDataSpinner (state: RootStateIF): boolean {
       return state.fetchingDataSpinner
     },
 
@@ -143,7 +143,7 @@ export const useRootStore = defineStore('root', {
      * This is used to show Legal Obligations only for a new business
      * that has no tasks and hasn't filed anything yet (except their IA).
      **/
-    isBusinessWithNoMaintenanceFilings (state: StateIF): boolean {
+    isBusinessWithNoMaintenanceFilings (state: RootStateIF): boolean {
       const filingHistoryListStore = useFilingHistoryListStore()
       return (
         // no todo items
@@ -157,36 +157,36 @@ export const useRootStore = defineStore('root', {
     },
 
     /** The entity registered office address. */
-    getRegisteredOfficeAddress (state: StateIF): OfficeAddressIF {
+    getRegisteredOfficeAddress (state: RootStateIF): OfficeAddressIF {
       return state.registeredAddress
     },
 
     /** The parties list from the API. */
-    getParties (state: StateIF): Array<PartyIF> {
+    getParties (state: RootStateIF): Array<PartyIF> {
       return state.parties
     },
 
     /** The entity business address. */
-    getBusinessAddress (state: StateIF): OfficeAddressIF {
+    getBusinessAddress (state: RootStateIF): OfficeAddressIF {
       return state.businessAddress
     },
 
     /** The entity resource text for confirmation modal. */
-    getDissolutionConfirmationResource (state: StateIF): DissolutionConfirmationResourceIF {
+    getDissolutionConfirmationResource (state: RootStateIF): DissolutionConfirmationResourceIF {
       return state.configObject?.dissolutionConfirmation
     },
     /** The entity TodoList resources. */
-    getTodoListResource (state: StateIF): TodoListResourceIF {
+    getTodoListResource (state: RootStateIF): TodoListResourceIF {
       return state.configObject?.todoList
     },
 
     /** The corp type code from Auth db (may be null). */
-    getCorpTypeCd (state: StateIF): CorpTypeCd {
+    getCorpTypeCd (state: RootStateIF): CorpTypeCd {
       return state.corpTypeCd
     },
 
-    /** The user's full info. */
-    getUserInfo (state: StateIF): any {
+    /** The user info from Auth db (may be null). */
+    getUserInfo (state: RootStateIF): any {
       return state.userInfo
     },
 
@@ -195,7 +195,7 @@ export const useRootStore = defineStore('root', {
     //
 
     /** The filing that changed the business state, if there is one. */
-    getStateFiling (state: StateIF): StateFilingIF {
+    getStateFiling (state: RootStateIF): StateFilingIF {
       return state.stateFiling
     },
 
@@ -277,8 +277,8 @@ export const useRootStore = defineStore('root', {
       this.userKeycloakGuid = userKeycloakGuid
     },
 
-    setUserInfo (userInfo: any) {
-      this.userInfo = userInfo
+    setUserInfo (val: any) {
+      this.userInfo = val
     },
 
     /** Set the app permissions. */

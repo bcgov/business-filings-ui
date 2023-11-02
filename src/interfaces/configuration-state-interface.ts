@@ -1,4 +1,4 @@
-/** The Configuration module state interface. */
+/** The state model interface for the Configuration Store. */
 export interface ConfigurationStateIF {
   configuration: {
     VUE_APP_ADDRESS_COMPLETE_KEY: string,
