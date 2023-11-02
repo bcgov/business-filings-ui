@@ -634,9 +634,6 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
       propsData: { businessId: 'BC1234567' }
     })
 
-    vm = wrapper.vm
-    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
-
     await wrapper.find('.menu-btn').trigger('click')
 
     expect(wrapper.find('#agm-loc-chg-list-item').exists()).toBe(true)
