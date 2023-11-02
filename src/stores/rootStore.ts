@@ -14,6 +14,7 @@ export const useRootStore = defineStore('root', {
     entityStatus: null,
     keycloakRoles: [],
     stateFiling: null,
+    userInfo: null,
     userKeycloakGuid: null,
     businessEmail: null,
     businessPhone: null,
