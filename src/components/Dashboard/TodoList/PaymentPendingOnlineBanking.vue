@@ -12,6 +12,12 @@
         outstanding balance on your BC Registries and Online Services account.
       </li>
       <li>
+        Enter <strong>"BC Registries and Online Services"</strong> as payee.
+      </li>
+      <li>
+        Enter the following account number: <strong>{{ cfsAccountId }}</strong>
+      </li>
+      <li>
         Once submitted through your bank, Online Banking payments can take <strong>2 to 5 days to
           be processed</strong>.
       </li>
@@ -30,15 +36,25 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { PayServices } from '@/services/'
+import { Getter } from 'pinia-class'
+import { useConfigurationStore } from '@/stores'
 
 @Component({})
 export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: any
+  @Getter(useConfigurationStore) getPayApiUrl!: string
+  cfsAccountId = null
 
   /** The draft title of the subject filing. */
   get draftTitle (): string {
     return this.filing?.draftTitle || 'filing'
+  }
+
+  async mounted () {
+    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    this.cfsAccountId = await PayServices.fetchCfsAccountId(this.getPayApiUrl, accountId)
   }
 }
 </script>
