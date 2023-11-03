@@ -8,6 +8,7 @@ import EntityInfo from '@/components/EntityInfo.vue'
 import EntityDefinitions from '@/components/EntityInfo/EntityDefinitions.vue'
 import EntityHeader from '@/components/EntityInfo/EntityHeader.vue'
 import EntityMenu from '@/components/EntityInfo/EntityMenu.vue'
+import mockRouter from './mockRouter'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -18,6 +19,8 @@ const businessStore = useBusinessStore()
 const rootStore = useRootStore()
 
 describe('Entity Info component', () => {
+  const router = mockRouter.mock()
+
   it('renders sub-components', async () => {
     // session storage must be set before mounting component
     sessionStorage.clear()
@@ -28,7 +31,7 @@ describe('Entity Info component', () => {
     rootStore.entityStatus = null
     businessStore.setTaxId(null)
 
-    const wrapper = shallowMount(EntityInfo, { vuetify })
+    const wrapper = shallowMount(EntityInfo, { vuetify, router })
     await Vue.nextTick()
 
     expect(wrapper.findComponent(EntityDefinitions).exists()).toBe(true)

@@ -1,55 +1,36 @@
 import { Routes } from '@/enums'
 import DigitalCredentials from '@/views/DigitalCredentials.vue'
 import { getDigitalCredentialBreadcrumb } from '@/resources/BreadcrumbResources'
-import { DigitalWalletDownload, IssueCredentials, RegisterWallet } from '@/components/DigitalCredentials'
+import { CredentialsDashboard, CredentialsStepper } from '@/components/DigitalCredentials'
 
 export const DigitalCredentialRoutes = {
   path: `/${Routes.DIGITAL_CREDENTIALS}`,
-  name: Routes.DIGITAL_CREDENTIALS,
   component: DigitalCredentials,
   meta: {
     requiresAuth: true,
-    breadcrumb: [ getDigitalCredentialBreadcrumb() ]
+    breadcrumb: [getDigitalCredentialBreadcrumb()]
   },
   children: [
     {
-      name: Routes.DOWNLOAD_WALLET,
-      path: Routes.DOWNLOAD_WALLET,
-      component: DigitalWalletDownload,
+      path: '',
+      name: Routes.DIGITAL_CREDENTIALS,
+      component: CredentialsDashboard,
       meta: {
         breadcrumb: [
-          getDigitalCredentialBreadcrumb(),
-          {
-            text: 'Download Wallet',
-            to: { name: Routes.DOWNLOAD_WALLET }
-          }
+          getDigitalCredentialBreadcrumb()
         ]
       }
     },
     {
-      name: Routes.REGISTER_WALLET,
-      path: Routes.REGISTER_WALLET,
-      component: RegisterWallet,
-      meta: {
-        breadcrumb: [
-          getDigitalCredentialBreadcrumb(),
-          {
-            text: 'Register Wallet',
-            to: { name: Routes.REGISTER_WALLET }
-          }
-        ]
-      }
-    },
-    {
-      name: Routes.ISSUE_CREDENTIALS,
-      path: Routes.ISSUE_CREDENTIALS,
-      component: IssueCredentials,
+      path: Routes.ISSUE_CREDENTIAL,
+      name: Routes.ISSUE_CREDENTIAL,
+      component: CredentialsStepper,
       meta: {
         breadcrumb: [
           getDigitalCredentialBreadcrumb(),
           {
             text: 'Issue Credentials',
-            to: { name: Routes.ISSUE_CREDENTIALS }
+            to: { name: Routes.ISSUE_CREDENTIAL }
           }
         ]
       }
