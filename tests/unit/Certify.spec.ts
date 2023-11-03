@@ -31,7 +31,7 @@ const statementSelector = '.certify-stmt'
 
 const trimmedCertifier = 'Some Certifier'
 const whitespaceCertifier = '  Some  Certifier  '
-const defaultDate = '2019-01-01'
+const defaultDate = 'July 15, 2023'
 
 /**
  * Returns the last event for a given name, to be used for testing event propagation in response to component changes.
@@ -62,11 +62,12 @@ function createComponent (
   isCertified: boolean = undefined,
   currentDate: string = defaultDate
 ): Wrapper<Certify> {
-  rootStore.currentDate = currentDate
+  rootStore.currentDate = '2023-07-15'
 
   return mount(Certify, {
     vuetify,
     propsData: {
+      currentDate,
       certifiedBy,
       isCertified
     }

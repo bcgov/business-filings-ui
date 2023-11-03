@@ -41,6 +41,12 @@ export interface ApiFilingIF {
       freeze: boolean
     }
 
+    agmLocationChange?: {
+      year: string,
+      reason: string,
+      agmLocation: string
+    }
+
     // alteration filings only
     alteration?: {
       fromLegalType?: CorpTypeCd

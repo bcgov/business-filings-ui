@@ -14,33 +14,6 @@
       @exit="onPaymentErrorDialogExit()"
     />
 
-    <ResumeErrorDialog
-      attach="#agm-location-chg"
-      :dialog="resumeErrorDialog"
-      @exit="goToDashboard(true)"
-    />
-
-    <SaveErrorDialog
-      attach="#agm-location-chg"
-      filingName="AGM Location Change"
-      :dialog="!!saveErrorReason"
-      :disableRetry="busySaving"
-      :errors="saveErrors"
-      :warnings="saveWarnings"
-      @exit="saveErrorReason=null"
-      @retry="onSaveErrorDialogRetry()"
-      @okay="onSaveErrorDialogOkay()"
-    />
-
-    <StaffPaymentDialog
-      :staffPaymentData.sync="staffPaymentData"
-      attach="#agm-location-chg"
-      :dialog="staffPaymentDialog"
-      :loading="filingPaying"
-      @exit="staffPaymentDialog=false"
-      @submit="onClickFilePay(true)"
-    />
-
     <!-- Initial Page Load Transition -->
     <v-fade-transition>
       <div
@@ -78,47 +51,151 @@
               </h1>
             </header>
 
-            <ExpandableHelp helpLabel="Help with Annual General Meeting Extension">
+            <!-- Help -->
+            <ExpandableHelp helpLabel="Help with Annual General Meeting Location Change">
               <template #content>
-                Help text, or sub-component, goes here.
+                <h3 class="text-center">
+                  AGM Location Change Help
+                </h3>
+                <div class="mt-6">
+                  <p class="ml-1">
+                    Generally, company meetings must be in British Columbia (BC). However, there are exceptions to
+                    this rule. A company must request a location change if the meeting will be fully or partially
+                    in-person and none of the exceptions listed below apply. Partially in-person meetings combine
+                    both in-person and online participation. The location change request only applies to
+                    the in-person participants.
+                    <br><br>
+                    Exceptions to the requirement for a location change request include the following:
+                    <br><br>
+                    <ul>
+                      <li>The meeting will be fully online;</li>
+                      <li>The company's articles permit a location outside BC;</li>
+                      <li>
+                        Nothing in the articles restrict a location change approved by
+                        resolution or by ordinary resolution, as the case may be.
+                      </li>
+                    </ul>
+                  </p>
+                </div>
               </template>
             </ExpandableHelp>
 
             <!-- Main Section -->
             <section class="mt-8">
               <header>
-                <h2>Section Title</h2>
+                <h2>Location Change Detail</h2>
                 <p class="grey-text">
-                  Section subtext.
+                  Enter the calendar year the AGM is for and AGM location outside B.C.
                 </p>
               </header>
 
-              <div
-                id="main-section"
-                :class="{ 'invalid-section': !sectionValid && showErrors }"
-              >
+              <div>
                 <v-card
                   flat
-                  class="py-4 px-5"
+                  class="py-4"
                 >
-                  <v-row
-                    no-gutters
-                    class="my-4"
+                  <!-- AGM Year -->
+                  <div
+                    id="agm-year-section"
+                    :class="{ 'invalid-section': !agmYearValid && showErrors }"
                   >
-                    <v-col
-                      cols="12"
-                      sm="3"
-                      class="pr-4"
+                    <v-row
+                      no-gutters
+                      class="my-6"
                     >
-                      <strong :class="{ 'app-red': !sectionValid && showErrors }">Subtitle</strong>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="9"
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4"
+                      >
+                        <strong :class="{ 'app-red': !agmYearValid && showErrors }">AGM Year</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                      >
+                        <AgmYear
+                          v-model="agmYear"
+                          :validateForm="showErrors"
+                          label="AGM year"
+                          :rules="agmYearRules"
+                          @valid="agmYearValid=$event"
+                        />
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <v-divider class="my-4" />
+
+                  <!-- Reason -->
+                  <div
+                    id="reason-section"
+                    :class="{ 'invalid-section': !reasonValid && showErrors }"
+                  >
+                    <v-row
+                      no-gutters
+                      class="my-6"
                     >
-                      Section content goes here.
-                    </v-col>
-                  </v-row>
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4 pt-4"
+                      >
+                        <strong :class="{ 'app-red': !reasonValid && showErrors }">Reason</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <DetailComment
+                          v-model="reason"
+                          :class="{ 'invalid-component': !reasonValid && showErrors }"
+                          placeholder="Reason"
+                          maxLength="2000"
+                          textRequiredErrorMsg="Reason is required."
+                          :validateForm="showErrors"
+                          @valid="reasonValid=$event"
+                        />
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <v-divider class="my-4" />
+
+                  <!-- Location address -->
+                  <div
+                    id="location-section"
+                    :class="{ 'invalid-section': !agmLocationValid && showErrors }"
+                  >
+                    <v-row
+                      no-gutters
+                      class="mt-6"
+                    >
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        class="pl-4 pt-4"
+                      >
+                        <strong :class="{ 'app-red': !agmLocationValid && showErrors }">AGM Location</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="8"
+                      >
+                        <p>
+                          Enter the AGM location not in B.C. Include the city, province or state equivalent,
+                          and country. E.g. "Red Deer, Alberta, Canada"
+                        </p>
+                        <AgmLocation
+                          v-model="agmLocation"
+                          :rules="agmLocationRules"
+                          :validateForm="showErrors"
+                          @update:agmLocation="agmLocation=$event"
+                          @valid="agmLocationValid=$event"
+                        />
+                      </v-col>
+                    </v-row>
+                  </div>
                 </v-card>
               </div>
             </section>
@@ -141,7 +218,7 @@
                   :certifiedBy.sync="certifiedBy"
                   :class="{ 'invalid-certify': !certifyFormValid && showErrors }"
                   :entityDisplay="displayName()"
-                  :message="certifyText(FilingCodes.ANNUAL_REPORT_OT)"
+                  :message="certifyText(FilingCodes.AGM_LOCATION_CHANGE)"
                   @valid="certifyFormValid=$event"
                 />
               </div>
@@ -175,27 +252,6 @@
       id="buttons-container"
       class="list-item"
     >
-      <div class="buttons-left">
-        <v-btn
-          id="consent-save-btn"
-          large
-          :disabled="busySaving"
-          :loading="saving"
-          @click="onClickSave()"
-        >
-          <span>Save</span>
-        </v-btn>
-        <v-btn
-          id="consent-save-resume-btn"
-          large
-          :disabled="busySaving"
-          :loading="savingResuming"
-          @click="onClickSaveResume()"
-        >
-          <span>Save and Resume Later</span>
-        </v-btn>
-      </div>
-
       <div class="buttons-right">
         <v-tooltip
           top
@@ -208,7 +264,7 @@
               v-on="on"
             >
               <v-btn
-                id="consent-file-pay-btn"
+                id="agm-loctn-chg-file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -224,7 +280,7 @@
         </v-tooltip>
 
         <v-btn
-          id="consent-cancel-btn"
+          id="agm-loctn-chg-cancel-btn"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -242,27 +298,27 @@ import { Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
-import { Certify } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, ResumeErrorDialog, SaveErrorDialog, StaffPaymentDialog }
-  from '@/components/dialogs'
+import { Certify, DetailComment } from '@/components/common'
+import { ConfirmDialog, PaymentErrorDialog } from '@/components/dialogs'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
+import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { LegalServices } from '@/services/'
-import { FilingCodes, FilingStatus, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions }
-  from '@/enums'
-import { ConfirmDialogType, StaffPaymentIF } from '@/interfaces'
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
+import { ConfirmDialogType } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
+import AgmLocation from '@/components/AgmLocationChange/AgmLocation.vue'
+import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 
 @Component({
   components: {
+    AgmLocation,
+    AgmYear,
     Certify,
     ConfirmDialog,
+    DetailComment,
     ExpandableHelp,
     PaymentErrorDialog,
-    ResumeErrorDialog,
-    SaveErrorDialog,
-    SbcFeeSummary,
-    StaffPaymentDialog
+    SbcFeeSummary
   }
 })
 export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
@@ -282,16 +338,19 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   readonly FilingCodes = FilingCodes
 
   // variables for main section
-  sectionValid = false
+  agmLocation = ''
+  agmLocationValid = false
+  agmYear = ''
+  agmYearValid = false
 
   // variables for Certify component
   certifiedBy = ''
   isCertified = false
   certifyFormValid = false
 
-  // variables for staff payment
-  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  staffPaymentDialog = false
+  // variables for DetailComment component
+  reason = ''
+  reasonValid = false
 
   // variables for displaying dialogs
   resumeErrorDialog = false
@@ -302,7 +361,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   totalFee = 0
   dataLoaded = false
   loadingMessage = ''
-  filingId = 0 // id of this consent to continuation out filing
+  filingId = 0 // id of this agm location change filing
   savedFiling: any = null // filing during save
   saving = false // true only when saving
   savingResuming = false // true only when saving and resuming
@@ -326,7 +385,7 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
   /** True if page is valid, else False. */
   get isPageValid (): boolean {
-    return (this.sectionValid && this.certifyFormValid)
+    return (this.agmLocationValid && this.agmYearValid && this.certifyFormValid && this.reasonValid)
   }
 
   /** True when saving, saving and resuming, or filing and paying. */
@@ -338,6 +397,33 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   get isPayRequired (): boolean {
     // FUTURE: modify rule here as needed
     return (this.totalFee > 0)
+  }
+
+  /** Array of validations rules for AGM location. */
+  get agmLocationRules (): Array<(val) => boolean | string> {
+    const rules = [] as Array<(val) => boolean | string>
+    rules.push(val => !!val || 'AGM location is required.')
+    rules.push(val => (val.length <= 400) || 'Must be 400 characters or less.')
+    return rules
+  }
+
+  /** Array of validations rules for AGM year. */
+  get agmYearRules (): Array<(val) => boolean | string> {
+    const rules = [] as Array<(val) => boolean | string>
+    rules.push(val => !!val || 'AGM year is required.')
+    rules.push(val => (val && +val <= this.maxAgmYear) || 'Must be on or before ' + this.maxAgmYear)
+    rules.push(val => (val && +val >= this.minAgmYear) || 'Must be on or after ' + this.minAgmYear)
+    return rules
+  }
+
+  get minAgmYear () : number {
+    const today = new Date()
+    return (today.getFullYear() - 2)
+  }
+
+  get maxAgmYear () : number {
+    const today = new Date()
+    return (today.getFullYear() + 1)
   }
 
   /** Called when component is created. */
@@ -377,163 +463,21 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
       this.loadingMessage = `Preparing Your Request for AGM Location Change`
     }
 
-    // fetch draft (which may overwrite some properties)
-    if (this.filingId > 0) {
-      await this.fetchDraftFiling()
-    }
-
     this.dataLoaded = true
 
-    // always include consent continue out code
-    // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHG, this.staffPaymentData.isPriority,
-      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
-  }
-
-  /** Fetches the draft consent filing. */
-  async fetchDraftFiling (): Promise<void> {
-    const url = `businesses/${this.getIdentifier}/filings/${this.filingId}`
-    await LegalServices.fetchFiling(url).then(filing => {
-      // verify data
-      if (!filing) throw new Error('Missing filing')
-      if (!filing.header) throw new Error('Missing header')
-      if (!filing.business) throw new Error('Missing business')
-      if (!filing.agmLocationChg) throw new Error('Missing agm location chg object')
-      if (filing.header.name !== FilingTypes.AGM_LOCATION_CHG) throw new Error('Invalid filing type')
-      if (filing.header.status !== FilingStatus.DRAFT) throw new Error('Invalid filing status')
-      if (filing.business.identifier !== this.getIdentifier) throw new Error('Invalid business identifier')
-      if (filing.business.legalName !== this.getLegalName) throw new Error('Invalid business legal name')
-
-      // load Certified By (but not Date)
-      this.certifiedBy = filing.header.certifiedBy
-
-      // load Staff Payment properties
-      if (filing.header.routingSlipNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.FAS,
-          routingSlipNumber: filing.header.routingSlipNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.bcolAccountNumber) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.BCOL,
-          bcolAccountNumber: filing.header.bcolAccountNumber,
-          datNumber: filing.header.datNumber,
-          folioNumber: filing.header.folioNumber,
-          isPriority: filing.header.priority
-        } as StaffPaymentIF
-      } else if (filing.header.waiveFees) {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NO_FEE
-        } as StaffPaymentIF
-      } else {
-        this.staffPaymentData = {
-          option: StaffPaymentOptions.NONE
-        } as StaffPaymentIF
-      }
-    }).catch(error => {
-      // eslint-disable-next-line no-console
-      console.log('fetchDraftFiling() error =', error)
-      this.resumeErrorDialog = true
-    })
-  }
-
-  /**
-   * Called when user clicks Save button
-   * or when user retries from Save Error dialog.
-   */
-  async onClickSave (): Promise<void> {
-    // prevent double saving
-    if (this.busySaving) return
-
-    this.saving = true
-
-    // save draft filing
-    this.savedFiling = await this.saveFiling(true).catch(error => {
-      this.saveErrorReason = SaveErrorReasons.SAVE
-      // try to return filing (which may exist depending on save error)
-      return error?.response?.data?.filing || null
-    })
-
-    const filingId = +this.savedFiling?.header?.filingId || 0
-    if (filingId > 0) {
-      // save filing ID for possible future updates
-      this.filingId = filingId
-    }
-
-    // if there was no error, finish save process now
-    // otherwise, dialog may finish this later
-    if (!this.saveErrorReason) this.onClickSaveFinish()
-
-    this.saving = false
-  }
-
-  onClickSaveFinish (): void {
-    // safety check
-    if (this.filingId > 0) {
-      // changes were saved, so clear flag
-      this.haveChanges = false
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('onClickSaveFinish(): invalid filing ID, filing =', null)
-    }
-  }
-
-  /**
-   * Called when user clicks Save and Resume later button
-   * or when user retries from Save Error dialog.
-   */
-  async onClickSaveResume (): Promise<void> {
-    // prevent double saving
-    if (this.busySaving) return
-
-    this.savingResuming = true
-
-    // save draft filing
-    this.savedFiling = await this.saveFiling(true).catch(error => {
-      this.saveErrorReason = SaveErrorReasons.SAVE_RESUME
-      // try to return filing (which may exist depending on save error)
-      return error?.response?.data?.filing || null
-    })
-
-    const filingId = +this.savedFiling?.header?.filingId || 0
-    if (filingId > 0) {
-      // save filing ID for possible future updates
-      this.filingId = filingId
-    }
-
-    // if there was no error, finish save-resume process now
-    // otherwise, dialog may finish this later
-    if (!this.saveErrorReason) this.onClickSaveResumeFinish()
-
-    this.savingResuming = false
-  }
-
-  onClickSaveResumeFinish (): void {
-    // safety check
-    if (this.filingId > 0) {
-      // changes were saved, so go to dashboard
-      this.goToDashboard(true)
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('onClickSaveResumeFinish(): invalid filing ID, filing =', null)
-    }
+    // always include agm location change code
+    // clear Priority flag and set the Waive Fees flag to true
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, undefined, true)
   }
 
   /**
    * Called when user clicks File and Pay button
    * or when user retries from Save Error dialog
-   * or when user submits from Staff Payment dialog.
    */
-  async onClickFilePay (fromStaffPayment = false): Promise<void> {
+  async onClickFilePay (): Promise<void> {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      // *** TODO: check for section errors here
-      if (!this.sectionValid) {
-        // Show error message of detail comment text area if invalid
-        // this.$refs.detailCommentRef.$refs.textarea.error = true
-      }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
         this.$refs.certifyRef.$refs.certifyTextfieldRef.error = true
@@ -544,13 +488,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     // prevent double saving
     if (this.busySaving) return
-
-    // if this is a staff user clicking File and Pay (not Submit)
-    // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
-      this.staffPaymentDialog = true
-      return
-    }
 
     this.filingPaying = true
 
@@ -632,32 +569,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
 
     const header: any = {
       header: {
-        name: FilingTypes.CONSENT_CONTINUATION_OUT,
+        name: FilingTypes.AGM_LOCATION_CHANGE,
         certifiedBy: this.certifiedBy || '',
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
     }
 
-    switch (this.staffPaymentData.option) {
-      case StaffPaymentOptions.FAS:
-        header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.BCOL:
-        header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
-        header.header['datNumber'] = this.staffPaymentData.datNumber
-        header.header['folioNumber'] = this.staffPaymentData.folioNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.NO_FEE:
-        header.header['waiveFees'] = true
-        break
-
-      case StaffPaymentOptions.NONE: // should never happen
-        break
-    }
+    header.header['waiveFees'] = true
 
     const business: any = {
       business: {
@@ -669,8 +587,10 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
 
     const data: any = {
-      [FilingTypes.AGM_LOCATION_CHG]: {
-        // properties go here
+      [FilingTypes.AGM_LOCATION_CHANGE]: {
+        year: this.agmYear,
+        reason: this.reason,
+        agmLocation: this.agmLocation
       }
     }
 
@@ -745,76 +665,30 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
   }
 
-  /** Handles Retry events from Save Error dialog. */
-  async onSaveErrorDialogRetry (): Promise<void> {
-    switch (this.saveErrorReason) {
-      case SaveErrorReasons.SAVE:
-        // close the dialog and retry save
-        this.saveErrorReason = null
-        await this.onClickSave()
-        break
-      case SaveErrorReasons.SAVE_RESUME:
-        // close the dialog and retry save-resume
-        this.saveErrorReason = null
-        await this.onClickSaveResume()
-        break
-      case SaveErrorReasons.FILE_PAY:
-        // close the dialog and retry file-pay
-        this.saveErrorReason = null
-        if (this.isRoleStaff) await this.onClickFilePay(true)
-        else await this.onClickFilePay()
-        break
-    }
-  }
-
-  /** Handles Okay events from Save Error dialog. */
-  onSaveErrorDialogOkay (): void {
-    switch (this.saveErrorReason) {
-      case SaveErrorReasons.SAVE:
-        // close the dialog and finish save process
-        this.saveErrorReason = null
-        this.onClickSaveFinish()
-        break
-      case SaveErrorReasons.SAVE_RESUME:
-        // close the dialog and finish save-resume process
-        this.saveErrorReason = null
-        this.onClickSaveResumeFinish()
-        break
-      case SaveErrorReasons.FILE_PAY:
-        // close the dialog and finish file-pay process
-        this.saveErrorReason = null
-        this.onClickFilePayFinish()
-        break
-    }
-  }
-
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'main-section',
+    'agm-year-section',
+    'reason-section',
+    'location-section',
     'certify-form-section'
   ]
 
   /** Object of valid flags. Must match validComponents. */
   get validFlags (): object {
     return {
-      mainSection: this.sectionValid,
+      // mainSection: this.sectionValid,
+      agmYear: this.agmYearValid,
+      reason: this.reasonValid,
+      location: this.agmLocationValid,
       certifyForm: this.certifyFormValid
     }
   }
 
-  @Watch('sectionValid')
+  @Watch('agmYearValid')
+  @Watch('agmLocationValid')
   @Watch('certifyFormValid')
+  @Watch('resonValid')
   onHaveChanges (): void {
-    this.haveChanges = true
-  }
-
-  @Watch('staffPaymentData')
-  onStaffPaymentDataChanged (val: StaffPaymentIF): void {
-    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
-
-    // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.CONSENT_CONTINUATION_OUT, val.isPriority, waiveFees)
-
     this.haveChanges = true
   }
 }
@@ -879,25 +753,25 @@ h2 {
     margin-left: 0.5rem;
   }
 
-  #consent-cancel-btn {
+  #agm-loctn-chg-cancel-btn {
     margin-left: 0.5rem;
   }
 }
 
 // Fix font size and color to stay consistent.
 :deep() {
-  .invalid-foreign-jurisdiction {
-    .title-label {
-      color: $app-red;
-    }
-  }
-
   .certify-clause, .certify-stmt, .grey-text {
     color: $gray7;
   }
 
   .invalid-certify {
     .certify-stmt, .title-label {
+      color: $app-red;
+    }
+  }
+
+  .invalid-component {
+    .title-label {
       color: $app-red;
     }
   }

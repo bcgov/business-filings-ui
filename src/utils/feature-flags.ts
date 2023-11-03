@@ -17,7 +17,8 @@ const defaultFlagSet: LDFlagSet = {
   'supported-business-summary-entities': [],
   'supported-correction-entities': [],
   'supported-dissolution-entities': [],
-  'supported-consent-continuation-out-entities': []
+  'supported-consent-continuation-out-entities': [],
+  'supported-agm-location-chg-entities': []
 }
 
 /**

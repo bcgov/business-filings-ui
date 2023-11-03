@@ -508,8 +508,10 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 
   beforeAll(() => {
     // override feature flag
-    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'enable-agm-extension'))
+    vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
+      if (flag === 'enable-agm-extension') return true
+      if (flag === 'supported-agm-location-chg-entities') return 'BEN'
+    })
   })
 
   afterAll(() => {
@@ -537,12 +539,13 @@ describe('Entity Menu - Request AGM Extension click tests', () => {
 })
 
 describe('Entity Menu - Request AGM Location Change click tests', () => {
+  let vm: any
   const router = mockRouter.mock()
 
   beforeAll(() => {
     // override feature flag
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(
-      (flag) => (flag === 'enable-agm-location-chg'))
+      (flag) => (flag === 'supported-agm-location-chg-entities'))
   })
 
   afterAll(() => {
@@ -558,6 +561,9 @@ describe('Entity Menu - Request AGM Location Change click tests', () => {
       mixins: [{ methods: { isAllowed: () => true } }],
       propsData: { businessId: 'BC1234567' }
     })
+
+    vm = wrapper.vm
+    vi.spyOn(vm, 'enableAgmLocationChg', 'get').mockReturnValue(true)
 
     await wrapper.find('.menu-btn').trigger('click')
 
