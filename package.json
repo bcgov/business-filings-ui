@@ -1,6 +1,6 @@
 {
   "name": "business-filings-ui",
-  "version": "6.9.6",
+  "version": "7.0.0",
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
@@ -29,6 +29,7 @@
     "@bcrs-shared-components/staff-comments": "1.3.11",
     "@bcrs-shared-components/staff-payment": "2.1.11",
     "@mdi/font": "^5.9.55",
+    "@reactivex/rxjs": "^6.6.7",
     "@sentry/integrations": "^7.50.0",
     "@sentry/vue": "^7.50.0",
     "axios": "^0.27.2",
@@ -45,6 +46,7 @@
     "qrcode.vue": "1.7.0",
     "regenerator-runtime": "^0.13.11",
     "register-service-worker": "^1.7.2",
+    "rxjs": "^7.8.1",
     "sbc-common-components": "3.0.8",
     "vue": "2.7.14",
     "vue-affix": "^0.5.2",
