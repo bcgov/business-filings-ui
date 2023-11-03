@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Routes } from '@/enums'
+import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
 
@@ -9,9 +9,9 @@ import { useBusinessStore, useRootStore } from '@/stores'
 export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) getAllowedActions!: AllowedActionsIF
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
-  @Getter(useBusinessStore) isBComp!: boolean
   @Getter(useBusinessStore) isCoop!: boolean
   @Getter(useBusinessStore) isFirm!: boolean
+  @Getter(useBusinessStore) isSoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
@@ -93,8 +93,7 @@ export default class AllowableActionsMixin extends Vue {
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
-        const isNotaDcRoute = !(this.$route.matched.some(route => route.name === Routes.DIGITAL_CREDENTIALS))
-        return (ff && isNotaDcRoute && this.isGoodStanding && this.isBComp && !this.isRoleStaff)
+        return (ff && this.isSoleProp && !this.isRoleStaff)
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {

@@ -91,7 +91,7 @@ export const useConfigurationStore = defineStore('configuration', {
     },
 
     setSessionVariables (data: any) {
-    // The following four session variables are used by SBC Header (a common component):
+      // The following four session variables are used by SBC Header (a common component):
       sessionStorage.setItem('AUTH_WEB_URL', data.VUE_APP_AUTH_WEB_URL)
       sessionStorage.setItem('BUSINESSES_URL', data.VUE_APP_BUSINESSES_URL)
       sessionStorage.setItem('REGISTRY_HOME_URL', data.VUE_APP_REGISTRY_HOME_URL)
