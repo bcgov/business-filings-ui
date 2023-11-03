@@ -315,6 +315,20 @@ ul.list {
   border-left: 1px solid $gray6;
 }
 
+.message-box {
+  background-color: $BCgovGold0 !important;
+  border-color: $BCgovGold5 !important;
+  border-radius: 0;
+
+  p {
+    margin: 1.25rem;
+    padding: 0;
+    font-size: $px-14;
+    letter-spacing: 0.01rem;
+    color: $gray7;
+  }
+}
+
 .color-dk-text {
   color: $gray9 !important;
 }

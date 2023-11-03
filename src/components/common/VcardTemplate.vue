@@ -11,7 +11,7 @@
         </h2>
       </header>
 
-      <div>
+      <div class="content">
         <slot name="content" />
       </div>
     </section>

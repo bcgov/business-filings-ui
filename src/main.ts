@@ -123,16 +123,11 @@ async function start () {
 
 // execution and error handling
 start().catch(error => {
-  // log any error after configuring sentry.
-  // it helps to identify configuration issues specific to the environment.
-  // note that it won't log anything related to `fetchConfig()` since sentry is depending on a config value.
+  // Log any error after configuring sentry.
+  // It helps to identify configuration issues specific to the environment.
+  // Note that it won't log anything related to `fetchConfig()` since sentry is depending on a config value.
   Sentry.captureException(error)
-  console.log(error) // eslint-disable-line no-console
-  // bypass alert if this specific error
-  if (!error?.message?.startsWith('Missing or invalid')) {
-    alert('There was an error starting this page. (See console for details.)\n' +
-      'Please try again later.')
-  }
+  alert(error)
   // try to navigate to Business Registry home page
   navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })
