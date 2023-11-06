@@ -98,6 +98,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
     const foreignJusrisdictionCountry = this.filing.data?.consentContinuationOut?.country
     const country = this.getCountryName(this.filing.data?.consentContinuationOut?.country)
     const region = this.getRegionNameFromCode(this.filing.data?.consentContinuationOut?.region)
+
     if (foreignJusrisdictionCountry === 'CA' || foreignJusrisdictionCountry === 'US') {
       return region + ', ' + country
     } else {
