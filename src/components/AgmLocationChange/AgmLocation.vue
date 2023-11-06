@@ -52,6 +52,7 @@ export default class AgmLocation extends Vue {
   /** Emits an event with the changed input (ie, updated v-model). */
   @Emit('update:agmLocation')
   emitInput (val: string): void {
+    this.agmLocation = val
     this.emitValid(val)
     this.$refs.textAreaRef.error = false
   }
