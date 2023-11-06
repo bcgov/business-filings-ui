@@ -112,10 +112,6 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
   }
 
   private getRegionNameFromCode (short: string): string {
-    if (short === 'FEDERAL') {
-      return 'Federal';
-    }
-
     const region = this.canadaUsaRegions?.find(region => region.short === short)
     return region?.name
   }
