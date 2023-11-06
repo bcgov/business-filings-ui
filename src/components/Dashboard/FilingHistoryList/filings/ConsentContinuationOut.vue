@@ -98,7 +98,6 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
     const foreignJusrisdictionCountry = this.filing.data?.consentContinuationOut?.country
     const country = this.getCountryName(this.filing.data?.consentContinuationOut?.country)
     const region = this.getRegionNameFromCode(this.filing.data?.consentContinuationOut?.region)
-    
     if (foreignJusrisdictionCountry === 'CA' || foreignJusrisdictionCountry === 'US') {
       return region + ', ' + country
     } else {
@@ -113,7 +112,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
 
   private getRegionNameFromCode (short: string): string {
     if (short === 'FEDERAL') {
-      return 'Federal';
+      return 'Federal'
     }
 
     const region = this.canadaUsaRegions?.find(region => region.short === short)
