@@ -128,7 +128,7 @@ describe('Configuration Actions', () => {
     // call method
     expect(() => {
       setBaseRouteAndBusinessId('ZZ1234567', '/business/', window.location.origin)
-    }).toThrow('Missing or invalid Business ID or Temp Reg Number.')
+    }).toThrow('Missing or invalid Business ID or Temporary Registration Number.')
   })
 
   it('sessions variables correctly set for the SBC header', async () => {

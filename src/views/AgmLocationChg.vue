@@ -330,7 +330,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
   reasonValid = false
 
   // variables for displaying dialogs
-  resumeErrorDialog = false
   saveErrorReason: SaveErrorReasons = null
   paymentErrorDialog = false
 
@@ -424,13 +423,13 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
     }
 
     // always include agm location change code
-    // clear Priority flag and set the Waive Fees flag to true
-    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, undefined, true)
+    // (no Priority flag and no Waive Fees flag)
+    this.updateFilingData('add', FilingCodes.AGM_LOCATION_CHANGE, undefined, undefined)
   }
 
   /**
    * Called when user clicks File and Pay button
-   * or when user retries from Save Error dialog
+   * or when user retries from Save Error dialog.
    */
   async onClickFilePay (): Promise<void> {
     // if there is an invalid component, scroll to it
@@ -532,8 +531,6 @@ export default class AgmLocationChg extends Mixins(CommonMixin, DateMixin,
         date: this.getCurrentDate // NB: API will reassign this date according to its clock
       }
     }
-
-    header.header['waiveFees'] = true
 
     const business: any = {
       business: {
