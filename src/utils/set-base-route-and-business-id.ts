@@ -23,7 +23,7 @@ export function setBaseRouteAndBusinessId (pathname: string, processEnvBaseUrl: 
     // ensure we don't already have a Business ID in scope
     sessionStorage.removeItem('BUSINESS_ID')
   } else {
-    throw new Error('Missing or invalid Business ID or Temp Reg Number.')
+    throw new Error('Missing or invalid Business ID or Temporary Registration Number.')
   }
 
   // set Base for Vue Router

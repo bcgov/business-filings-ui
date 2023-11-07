@@ -46,22 +46,22 @@ import { Getter } from 'pinia-class'
 import { ContactInfo } from '@/components/common'
 import { useRootStore } from '@/stores'
 
-  @Component({
-    components: { ContactInfo }
-  })
+@Component({
+  components: { ContactInfo }
+})
 export default class ReplaceCredentialErrorDialog extends Vue {
-    // Getter to check if logged in user is Staff.
-    @Getter(useRootStore) isRoleStaff!: boolean
+  // Getter to check if logged in user is Staff.
+  @Getter(useRootStore) isRoleStaff!: boolean
 
-    /** Prop to display the dialog. */
-    @Prop({ default: false }) readonly dialog!: boolean
+  /** Prop to display the dialog. */
+  @Prop({ default: false }) readonly dialog!: boolean
 
-    /** Prop to provide attachment selector. */
-    @Prop({ default: '' }) readonly attach!: string
+  /** Prop to provide attachment selector. */
+  @Prop({ default: '' }) readonly attach!: string
 
-    // Pass click event to parent.
-    @Emit() close (): void {
-      return undefined
-    }
+  // Pass click event to parent.
+  @Emit() close (): void {
+    return undefined
+  }
 }
 </script>
