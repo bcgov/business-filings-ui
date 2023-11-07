@@ -1,35 +1,57 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { mount } from '@vue/test-utils'
+import VueRouter from 'vue-router'
+import { shallowMount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { useBusinessStore } from '@/stores'
 import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
+import mockRouter from './mockRouter'
+import { AgmExtEvalIF } from '@/interfaces'
+import { DateUtilities } from '@/services'
 
 Vue.use(Vuetify)
-const vuetify = new Vuetify({})
+Vue.use(VueRouter)
 
-describe('AboutTheBusiness', () => {
-  it('displays normally', () => {
-    const wrapper = mount(AboutTheBusiness, {
+const vuetify = new Vuetify({})
+setActivePinia(createPinia())
+const businessStore = useBusinessStore()
+
+describe('About The Business component', () => {
+  const router = mockRouter.mock()
+
+  it('handles empty data', async () => {
+    const wrapper = shallowMount(AboutTheBusiness, {
+      vuetify,
+      router,
+      propsData: { data: null }
+    })
+    await Vue.nextTick()
+
+    expect(wrapper.find('#entity-in-good-standing').exists()).toBe(false)
+    expect(wrapper.find('#entity-date-of-incorporation').exists()).toBe(false)
+  })
+
+  it('displays business info properly', async () => {
+    // set store properties
+    businessStore.setGoodStanding(true)
+    businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
+
+    // mount the component and wait for everything to stabilize
+    const wrapper = shallowMount(AboutTheBusiness, {
+      vuetify,
+      router,
       propsData: {
         data: {
-          isGoodStanding: true,
-          incorporationDate: new Date('2023-12-31T08:00:00.000Z')
-        }
-      },
-      vuetify
+          isGoodStanding: businessStore.isGoodStanding,
+          incorporationDate: businessStore.getFoundingDate
+        } as unknown as AgmExtEvalIF
+      }
     })
+    await Vue.nextTick()
 
-    expect(wrapper.find('.v-card').attributes('id')).toBe('about-the-business')
-    expect(wrapper.find('header i').attributes('class')).toContain('mdi-domain')
-    expect(wrapper.find('header h2').text()).toBe('About the Business')
-
-    const rows = wrapper.findAll('.content > .row')
-
-    expect(rows.at(0).find('.col-sm-3').text()).toBe('Business in Good Standing')
-    expect(rows.at(0).find('.col-sm-9').text()).toBe('Yes')
-
-    expect(rows.at(1).find('.col-sm-3').text()).toBe('Date of Incorporation')
-    expect(rows.at(1).find('.col-sm-9').text()).toBe('December 31, 2023')
-
-    wrapper.destroy()
+    // verify displayed text
+    expect(wrapper.find('#entity-in-good-standing').text()).toBe('Yes')
+    expect(wrapper.find('#entity-date-of-incorporation').text())
+      .toBe(DateUtilities.dateToPacificDate(businessStore.getFoundingDate, true))
   })
 })
