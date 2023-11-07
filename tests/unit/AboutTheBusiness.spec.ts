@@ -44,10 +44,7 @@ describe('About The Business component', () => {
 
     // verify displayed text
     expect(wrapper.find('#entity-in-good-standing').text()).toBe('Yes')
-    expect(wrapper.find('#entity-date-of-incorporation').text())
-      .toBe(DateUtilities.dateToPacificDate(
-        new Date('2023-12-31T08:00:00.000Z'), true
-      ))
+    expect(wrapper.find('#entity-date-of-incorporation').text()).toBe('December 31, 2023')
 
     wrapper.destroy()
   })
