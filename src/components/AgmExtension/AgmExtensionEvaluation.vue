@@ -10,6 +10,7 @@
 
     <template #content>
       <v-card
+        v-if="!isEligible"
         outlined
         class="message-box rounded-0 mt-6 mx-6"
       >
@@ -33,7 +34,7 @@
           cols="12"
           sm="9"
         >
-          {{ data.agmYear || '' }}
+          {{ data.agmYear || agmYearText }}
         </v-col>
       </v-row>
 
@@ -51,7 +52,7 @@
           cols="12"
           sm="9"
         >
-          {{ data.extensionDuration || 'Unknown' }}
+          {{ data.extensionDuration || extensionDurationText }}
         </v-col>
       </v-row>
 
@@ -69,7 +70,7 @@
           cols="12"
           sm="9"
         >
-          {{ data.agmDueDate || 'Unknown' }}
+          {{ data.agmDueDate || dueDateText }}
         </v-col>
       </v-row>
     </template>
@@ -88,5 +89,13 @@ import { AgmExtEvalIF } from '@/interfaces'
 })
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
+
+  @Prop({ default: false }) readonly isEligible!: boolean
+
+  @Prop({ default: '' }) readonly agmYearText!: string
+
+  @Prop({ default: '' }) readonly extensionDurationText!: string
+
+  @Prop({ default: '' }) readonly dueDateText!: string
 }
 </script>
