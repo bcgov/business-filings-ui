@@ -10,6 +10,7 @@ export interface AgmExtEvalIF {
   intendedAgmDate?: string // YYYY-MM-DD
   extensionDuration: number // in months
   agmDueDate: string // YYYY-MM-DD
+  isEligible: boolean
 }
 
 /** An empty AGM Extension Evaluation object. Note: don't assign this - make a copy instead. */
@@ -19,5 +20,6 @@ export const EmptyAgmExtEval: AgmExtEvalIF = {
   isFirstAgm: null,
   agmYear: null,
   extensionDuration: NaN,
-  agmDueDate: null
+  agmDueDate: null,
+  isEligible: false
 }
