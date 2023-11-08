@@ -1,14 +1,11 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
-import { useRootStore } from '@/stores'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-setActivePinia(createPinia())
 
 describe('ExtensionEvaluation', () => {
   it('displays normally', () => {
@@ -95,6 +92,34 @@ describe('ExtensionEvaluation', () => {
   })
 
   it('is not eligible', () => {
+    // init store
+
+    const wrapper = mount(AgmExtensionEvaluation, {
+      propsData: {
+        data: {
+          agmYear: 2023,
+          isEligible: false
+        },
+        extensionDurationText: 'The business has reached maximum possible extension for this AGM.',
+        dueDateText: 'The business is overdue for this AGM and extension cannot be requested.'
+      },
+      vuetify
+    })
+
+    const rows = wrapper.findAll('.content .row')
+
+    expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
+
+    expect(rows.at(1).find('.col-sm-9').text()).toBe(
+      'The business has reached maximum possible extension for this AGM.')
+
+    expect(rows.at(2).find('.col-sm-9').text()).toBe(
+      'The business is overdue for this AGM and extension cannot be requested.')
+
+    wrapper.destroy()
+  })
+
+  it('is not eligible yellow-box verification', () => {
     // init store
 
     const wrapper = mount(AgmExtensionEvaluation, {
