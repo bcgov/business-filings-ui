@@ -37,15 +37,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { PayServices } from '@/services/'
-import { Getter } from 'pinia-class'
-import { useConfigurationStore } from '@/stores'
 
 @Component({})
 export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: any
-  @Getter(useConfigurationStore) getPayApiUrl!: string
-  cfsAccountId = null
+  @Prop({ required: true }) readonly getPayApiUrl!: string
+
+  cfsAccountId: string | null = null;
 
   /** The draft title of the subject filing. */
   get draftTitle (): string {

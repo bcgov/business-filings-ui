@@ -541,6 +541,7 @@
             <PaymentPendingOnlineBanking
               v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
               :filing="item"
+              :getPayApiUrl="getPayApiUrl"
               class="mb-6"
             />
             <PaymentPending v-else />
