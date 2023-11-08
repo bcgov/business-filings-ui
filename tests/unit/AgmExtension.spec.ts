@@ -192,7 +192,6 @@ describe('AGM Extension view', () => {
     expect(LegalServices.createFiling).toHaveBeenCalled()
 
     // verify payload (filing JSON)
-    businessStore.setFoundingDate('2000-01-01T08:00:00-00:00')
     const data = {
       agmExtension: {
         agmDueDate: null,
