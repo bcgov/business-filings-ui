@@ -9,12 +9,10 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 setActivePinia(createPinia())
-const rootStore = useRootStore()
 
 describe('ExtensionEvaluation', () => {
   it('displays normally', () => {
     // init store
-    rootStore.keycloakRoles = ['']
 
     const wrapper = mount(AgmExtensionEvaluation, {
       propsData: {
@@ -46,7 +44,6 @@ describe('ExtensionEvaluation', () => {
 
   it('is eligible', () => {
     // init store
-    rootStore.keycloakRoles = ['']
 
     const wrapper = mount(AgmExtensionEvaluation, {
       propsData: {
@@ -73,7 +70,6 @@ describe('ExtensionEvaluation', () => {
 
   it('is eligible, setting the extensionDurationText and dueDateText', () => {
     // init store
-    rootStore.keycloakRoles = ['']
 
     const wrapper = mount(AgmExtensionEvaluation, {
       propsData: {
@@ -100,7 +96,6 @@ describe('ExtensionEvaluation', () => {
 
   it('is not eligible', () => {
     // init store
-    rootStore.keycloakRoles = ['']
 
     const wrapper = mount(AgmExtensionEvaluation, {
       propsData: {
