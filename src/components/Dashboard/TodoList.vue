@@ -541,7 +541,7 @@
             <PaymentPendingOnlineBanking
               v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
               :filing="item"
-              :getPayApiUrl="getPayApiUrl"
+              :payApiUrl="getPayApiUrl"
               :accountId="accountId"
               class="mb-6"
             />

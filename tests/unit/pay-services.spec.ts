@@ -45,6 +45,7 @@ describe('Pay Services', () => {
 
     const response = await PayServices.fetchCfsAccountId('', 123)
 
+    sinon.assert.called(get)
     // verify data
     expect(response).toEqual('99')
   })

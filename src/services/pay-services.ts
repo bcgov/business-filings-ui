@@ -22,11 +22,11 @@ export default class PayServices {
   /**
    * Fetches the CFS account ID from the pay-api.
    * @param payApiUrl the URL of the pay-api
-   * @param orgId the organization ID for which to fetch the CFS account ID
+   * @param accountId the ID for which to fetch the CFS account ID
    * @returns the CFS account ID
    */
-  static async fetchCfsAccountId (payApiUrl: string, orgId: number): Promise<string> {
-    const url = `${payApiUrl}accounts/${orgId}`
+  static async fetchCfsAccountId (payApiUrl: string, accountId: number): Promise<string> {
+    const url = `${payApiUrl}accounts/${accountId}`
     try {
       const response = await axios.get(url)
       return response?.data?.cfsAccount?.cfsAccountNumber
