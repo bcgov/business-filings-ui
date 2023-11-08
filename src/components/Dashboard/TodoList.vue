@@ -542,6 +542,7 @@
               v-if="EnumUtilities.isPayMethodOnlineBanking(item)"
               :filing="item"
               :getPayApiUrl="getPayApiUrl"
+              :accountId="accountId"
               class="mb-6"
             />
             <PaymentPending v-else />
@@ -660,6 +661,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   inProcessFiling: number = null
   fetchAffiliationInvitationsErrorDialog = false
   authorizeAffiliationInvitationErrorDialog = false
+  accountId: number = null
 
   @Prop({ default: null }) readonly highlightId!: number
 
@@ -961,9 +963,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     }
 
     // load all the invitations here and push them into todo items
-    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+    this.accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
     const response =
-      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, accountId)
+      await AuthServices.fetchAffiliationInvitations(this.getAuthApiUrl, this.getIdentifier, this.accountId)
         .catch((err) => {
           console.log('Error fetching affiliation invitations for todo', err) // eslint-disable-line no-console
           this.fetchAffiliationInvitationsErrorDialog = true

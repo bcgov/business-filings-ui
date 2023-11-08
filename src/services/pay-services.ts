@@ -29,7 +29,7 @@ export default class PayServices {
     const url = `${payApiUrl}accounts/${orgId}`
     try {
       const response = await axios.get(url)
-      return response?.data.cfsAccount.cfsAccountNumber
+      return response?.data?.cfsAccount?.cfsAccountNumber
     } catch (error) {
       console.error('Error fetching data from Pay API:', error)
       throw error

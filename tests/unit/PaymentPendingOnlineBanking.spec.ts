@@ -25,7 +25,7 @@ describe('Payment Pending Online Banking', () => {
     expect(listItems.at(2).text()).toContain('Enter the following account number:')
     expect(listItems.at(3).text()).toContain('Once submitted through your bank')
     expect(listItems.at(4).text()).toContain('Changes based on this filing')
-    expect(listItems.at(4).text()).toContain('for this filing is received')
+    expect(listItems.at(4).text()).toContain('until the payment for this filing')
     expect(listItems.at(5).text()).toContain('You can use a credit card')
     expect(listItems.at(5).text()).toContain('for this filing immediately')
 
@@ -48,10 +48,10 @@ describe('Payment Pending Online Banking', () => {
     expect(listItems.at(1).text()).toContain('Enter "BC Registries and Online Services"')
     expect(listItems.at(2).text()).toContain('Enter the following account number:')
     expect(listItems.at(3).text()).toContain('Once submitted through your bank')
-    expect(listItems.at(4).text()).toContain('Changes based on this filing')
-    expect(listItems.at(4).text()).toContain('for this filing is received')
+    expect(listItems.at(4).text()).toContain('Changes based on this Director Change')
+    expect(listItems.at(4).text()).toContain('until the payment for this Director Change')
     expect(listItems.at(5).text()).toContain('You can use a credit card')
-    expect(listItems.at(5).text()).toContain('for this filing immediately')
+    expect(listItems.at(5).text()).toContain('for this Director Change immediately')
 
     wrapper.destroy()
   })

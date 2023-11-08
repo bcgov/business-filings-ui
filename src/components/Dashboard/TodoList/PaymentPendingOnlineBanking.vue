@@ -43,8 +43,9 @@ export default class PaymentPendingOnlineBanking extends Vue {
   /** The subject filing. */
   @Prop({ required: true }) readonly filing!: any
   @Prop({ required: true }) readonly getPayApiUrl!: string
+  @Prop({ required: true }) readonly accountId!: any
 
-  cfsAccountId: string | null = null;
+  cfsAccountId: string = null;
 
   /** The draft title of the subject filing. */
   get draftTitle (): string {
@@ -52,8 +53,7 @@ export default class PaymentPendingOnlineBanking extends Vue {
   }
 
   async mounted () {
-    const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
-    this.cfsAccountId = await PayServices.fetchCfsAccountId(this.getPayApiUrl, accountId)
+    this.cfsAccountId = await PayServices.fetchCfsAccountId(this.getPayApiUrl, this.accountId)
   }
 }
 </script>
