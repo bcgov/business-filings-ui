@@ -10,7 +10,7 @@
 
     <template #content>
       <v-card
-        v-if="!isEligible"
+        v-if="!data.isEligible"
         outlined
         class="message-box rounded-0 mt-6 mx-6"
       >
@@ -34,7 +34,7 @@
           cols="12"
           sm="9"
         >
-          {{ data.agmYear || agmYearText }}
+          {{ data.agmYear }}
         </v-col>
       </v-row>
 
@@ -49,10 +49,18 @@
           <strong>Duration of Extension</strong>
         </v-col>
         <v-col
+          v-if="!data.isEligible"
           cols="12"
           sm="9"
         >
-          {{ data.extensionDuration || extensionDurationText }}
+          {{ extensionDurationText }}
+        </v-col>
+        <v-col
+          v-else
+          cols="12"
+          sm="9"
+        >
+          {{ data.extensionDuration }} months
         </v-col>
       </v-row>
 
@@ -67,10 +75,18 @@
           <strong>Due date for this AGM</strong>
         </v-col>
         <v-col
+          v-if="!data.isEligible"
           cols="12"
           sm="9"
         >
-          {{ data.agmDueDate || dueDateText }}
+          {{ dueDateText }}
+        </v-col>
+        <v-col
+          v-else
+          cols="12"
+          sm="9"
+        >
+          {{ dueDateString }}
         </v-col>
       </v-row>
     </template>
@@ -81,6 +97,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { VcardTemplate } from '@/components/common'
 import { AgmExtEvalIF } from '@/interfaces'
+import { DateUtilities } from '@/services'
 
 @Component({
   components: {
@@ -90,12 +107,12 @@ import { AgmExtEvalIF } from '@/interfaces'
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
 
-  @Prop({ default: false }) readonly isEligible!: boolean
-
-  @Prop({ default: '' }) readonly agmYearText!: string
-
   @Prop({ default: '' }) readonly extensionDurationText!: string
 
   @Prop({ default: '' }) readonly dueDateText!: string
+
+  get dueDateString (): string {
+    return (DateUtilities.formatYyyyMmDd(this.data.agmDueDate))
+  }
 }
 </script>

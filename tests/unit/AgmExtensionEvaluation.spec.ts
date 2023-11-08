@@ -52,11 +52,10 @@ describe('ExtensionEvaluation', () => {
       propsData: {
         data: {
           agmYear: 2023,
-          isEligible: true,
-          agmYearText: '2022',
-          extensionDurationText: '6 months',
-          dueDateText: 'December 2, 2023'
-        }
+          isEligible: true
+        },
+        extensionDurationText: '',
+        dueDateText: ''
       },
       vuetify
     })
@@ -65,9 +64,65 @@ describe('ExtensionEvaluation', () => {
 
     expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
 
-    // expect(rows.at(1).find('.col-sm-9').text()).toBe('6 months')
+    expect(rows.at(1).find('.col-sm-9').text()).toBe('months')
 
     expect(rows.at(2).find('.col-sm-9').text()).toBe('')
+
+    wrapper.destroy()
+  })
+
+  it('is eligible, setting the extensionDurationText and dueDateText', () => {
+    // init store
+    rootStore.keycloakRoles = ['']
+
+    const wrapper = mount(AgmExtensionEvaluation, {
+      propsData: {
+        data: {
+          agmYear: 2023,
+          isEligible: true
+        },
+        extensionDurationText: '6 months',
+        dueDateText: 'December 2, 2023'
+      },
+      vuetify
+    })
+
+    const rows = wrapper.findAll('.content .row')
+
+    expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
+
+    expect(rows.at(1).find('.col-sm-9').text()).toBe('months')
+
+    expect(rows.at(2).find('.col-sm-9').text()).toBe('')
+
+    wrapper.destroy()
+  })
+
+  it('is not eligible', () => {
+    // init store
+    rootStore.keycloakRoles = ['']
+
+    const wrapper = mount(AgmExtensionEvaluation, {
+      propsData: {
+        data: {
+          agmYear: 2023,
+          isEligible: false
+        },
+        extensionDurationText: 'The business has reached maximum possible extension for this AGM.',
+        dueDateText: 'The business is overdue for this AGM and extension cannot be requested.'
+      },
+      vuetify
+    })
+
+    const rows = wrapper.findAll('.content .row')
+
+    expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
+
+    expect(rows.at(1).find('.col-sm-9').text()).toBe(
+      'The business has reached maximum possible extension for this AGM.')
+
+    expect(rows.at(2).find('.col-sm-9').text()).toBe(
+      'The business is overdue for this AGM and extension cannot be requested.')
 
     wrapper.destroy()
   })
