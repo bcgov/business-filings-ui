@@ -20,6 +20,7 @@
           <strong>Business in Good Standing</strong>
         </v-col>
         <v-col
+          id="entity-in-good-standing"
           cols="12"
           sm="9"
         >
@@ -40,6 +41,7 @@
           <strong>Date of Incorporation</strong>
         </v-col>
         <v-col
+          id="entity-date-of-incorporation"
           cols="12"
           sm="9"
         >
