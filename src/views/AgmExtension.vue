@@ -63,8 +63,6 @@
             <AgmExtensionEvaluation
               class="mt-8"
               :data.sync="data"
-              :isEligible="false"
-              :agmYearText="''"
               :extensionDurationText="''"
               :dueDateText="''"
             />
