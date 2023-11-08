@@ -169,7 +169,8 @@ export default class CredentialsDashboard extends Vue {
     this.showLoadingContainer = true
     let revokedCredential = !this.issuedCredential.isIssued || this.issuedCredential.isRevoked ? {} : null
     if (this.issuedCredential.isIssued && !this.issuedCredential.isRevoked) {
-      revokedCredential = await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+      revokedCredential =
+        await LegalServices.revokeCredential(this.getIdentifier, this.issuedCredential.credentialId, true)
     }
     const removedCredential =
       await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)

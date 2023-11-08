@@ -292,15 +292,11 @@ export default class CredentialsStepper extends Vue {
     this.issuedCredential = issuedCredential
   }
 
-  goToCredentialsDashboard (): void {
-    this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
-  }
-
   async resendOffer (): Promise<void> {
     this.credentialNotReceivedDialog = false
     this.showLoadingContainer = true
     if (this.issuedCredential) {
-      await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+      await this.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
     await this.issueCredential(this.credentialTypes.BUSINESS)
     this.showLoadingContainer = false
@@ -310,12 +306,26 @@ export default class CredentialsStepper extends Vue {
     this.credentialNotReceivedDialog = false
     this.showLoadingContainer = true
     if (this.issuedCredential) {
-      await LegalServices.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
+      await this.removeCredential(this.getIdentifier, this.issuedCredential.credentialId)
     }
     if (this.credentialConnection) {
-      await LegalServices.removeCredentialConnection(this.getIdentifier, this.credentialConnection.connectionId)
+      await this.removeConnection(this.getIdentifier, this.credentialConnection.connectionId)
     }
     await this.setupConnection()
+  }
+
+  async removeCredential (identifier: string, credentialId: string): Promise<void> {
+    await LegalServices.removeCredential(identifier, credentialId)
+    this.issuedCredential = null
+  }
+
+  async removeConnection (identifier: string, connectionId: string): Promise<void> {
+    await LegalServices.removeCredentialConnection(identifier, connectionId)
+    this.credentialConnection = null
+  }
+
+  goToCredentialsDashboard (): void {
+    this.$router.push({ name: Routes.DIGITAL_CREDENTIALS })
   }
 }
 </script>

@@ -408,9 +408,13 @@ export default class LegalServices {
    * @param credentialId The credential identifier
    * @returns the axios response
    */
-  static async revokeCredential (businessId: string, credentialId: string): Promise<AxiosResponse> {
+  static async revokeCredential (
+    businessId: string,
+    credentialId: string,
+    reissue = false)
+    : Promise<AxiosResponse> {
     const url = `businesses/${businessId}/digitalCredentials/${credentialId}/revoke`
-    return axios.post(url)
+    return axios.post(url, { reissue })
       .catch(error => {
         // eslint-disable-next-line no-console
         console.log(error.message)
