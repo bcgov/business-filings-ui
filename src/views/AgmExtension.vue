@@ -53,7 +53,6 @@
             <!-- Extension Request -->
             <ExtensionRequest
               class="mt-8"
-              :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
               :data.sync="data"
               :showErrors="showErrors"
               @valid="extensionRequestValid=$event"

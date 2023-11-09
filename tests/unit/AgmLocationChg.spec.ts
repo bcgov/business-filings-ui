@@ -202,6 +202,7 @@ describe('AGM Location Chg view', () => {
 
   it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
+
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
