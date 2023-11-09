@@ -83,7 +83,6 @@
 </template>
 
 <script lang="ts">
-
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DissolutionConfirmationResourceIF } from '@/interfaces'
