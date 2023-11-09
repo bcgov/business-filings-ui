@@ -1,6 +1,8 @@
 export { default as CredentialsDashboard } from './CredentialsDashboard.vue'
+export { default as CredentialsDetailSteps } from './CredentialsDetailSteps.vue'
 export { default as CredentialsInfo } from './CredentialsInfo.vue'
 export { default as CredentialsLanding } from './CredentialsLanding.vue'
+export { default as CredentialsSimpleSteps } from './CredentialsSimpleSteps.vue'
 export { default as CredentialsStepper } from './CredentialsStepper.vue'
 export { default as CredentialsTable } from './CredentialsTable.vue'
 export { default as CredentialsWebSocket } from './CredentialsWebSocket.vue'

@@ -43,7 +43,7 @@
                 <a
                   href="#"
                   @click.prevent="handleResetOffer()"
-                >Refresh the page</a> and scan it again
+                >Refresh the page</a> and scan the QR code again
               </p>
             </li>
           </ul>
