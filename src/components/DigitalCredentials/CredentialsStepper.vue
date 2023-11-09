@@ -41,61 +41,15 @@
           cols="12"
           md="8"
         >
-          <v-card class="pa-3">
-            <v-card-text>
-              <h1>Steps to get your credential:</h1>
-              <v-card class="mt-6">
-                <v-card-text class="d-flex">
-                  <span
-                    class="credentials-stepper-number ml-n4 my-n4 px-8
-                    font-weight-bold align-self-stretch d-flex rounded-l"
-                  >
-                    <div class="align-self-center">1</div>
-                  </span>
-                  <span class="ml-8">
-                    Have the
-                    <a
-                      href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-wallet"
-                      target="_blank"
-                    >
-                      BC Wallet app<v-icon
-                        small
-                        color="primary"
-                      >mdi-open-in-new</v-icon></a>
-                    installed on your mobile phone.
-                  </span>
-                </v-card-text>
-              </v-card>
-              <v-card class="mt-2">
-                <v-card-text class="d-flex">
-                  <span
-                    class="credentials-stepper-number ml-n4 my-n4 px-8
-                    font-weight-bold align-self-stretch d-flex rounded-l"
-                  >
-                    <div class="align-self-center">2</div>
-                  </span>
-                  <span class="ml-8">
-                    Scan the QR code with your BC Wallet to get your Digital Business Card and accept it in your BC
-                    Wallet app.
-                  </span>
-                </v-card-text>
-              </v-card>
-              <v-card class="mt-2">
-                <v-card-text class="d-flex">
-                  <span
-                    class="credentials-stepper-number ml-n4 my-n4 px-8
-                    font-weight-bold align-self-stretch d-flex rounded-l"
-                  >
-                    <div class="align-self-center">3</div>
-                  </span>
-                  <span class="ml-8">
-                    Check your Digital Business Cards on the
-                    <router-link to="/digital-credentials">credential dashboard</router-link>.
-                  </span>
-                </v-card-text>
-              </v-card>
-            </v-card-text>
-          </v-card>
+          <CredentialsDetailSteps
+            v-if="showDetailSteps"
+            @onHideDetailSteps="showDetailSteps = false"
+          />
+          <CredentialsSimpleSteps
+            v-else
+            @onShowDetailSteps="showDetailSteps = true"
+            @onGoToCredentialsDashboard="goToCredentialsDashboard()"
+          />
         </v-col>
         <v-col
           cols="12"
@@ -206,6 +160,8 @@ import CredentialsWebSocket from '@/components/DigitalCredentials/CredentialsWeb
 import ConfirmCredentialsTermsOfUseDialog
   from '@/components/DigitalCredentials/dialogs/ConfirmCredentialsTermsofUseDialog.vue'
 import CredentialNotReceivedDialog from './dialogs/CredentialNotReceivedDialog.vue'
+import CredentialsSimpleSteps from '@/components/DigitalCredentials/CredentialsSimpleSteps.vue'
+import CredentialsDetailSteps from '@/components/DigitalCredentials/CredentialsDetailSteps.vue'
 
 Component.registerHooks(['beforeRouteEnter'])
 
@@ -215,7 +171,9 @@ Component.registerHooks(['beforeRouteEnter'])
     QrcodeVue,
     CredentialsWebSocket,
     ConfirmCredentialsTermsOfUseDialog,
-    CredentialNotReceivedDialog
+    CredentialNotReceivedDialog,
+    CredentialsSimpleSteps,
+    CredentialsDetailSteps
   }
 })
 export default class CredentialsStepper extends Vue {
@@ -223,6 +181,7 @@ export default class CredentialsStepper extends Vue {
 
   loadingMessage = 'Loading'
   showLoadingContainer = true
+  showDetailSteps = false
   confirmCredentialsTermsOfUseDialog = false
   credentialNotReceivedDialog = false
   credentialTypes = DigitalCredentialTypes
@@ -331,13 +290,6 @@ export default class CredentialsStepper extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/theme.scss";
-
-.credentials-stepper-number {
-  color: white;
-  background-color: $app-blue;
-}
-
 .loading-container {
   z-index: 1;
 }

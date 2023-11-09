@@ -55,7 +55,7 @@
             <header>
               <h2>Extension Detail</h2>
               <p class="grey-text">
-              Enter the details about the extension request to evaluate eligibility.
+                Enter the details about the extension request to evaluate eligibility.
               </p>
             </header>
 
