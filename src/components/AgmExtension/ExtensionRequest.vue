@@ -80,33 +80,14 @@
             cols="12"
             sm="9"
           >
-            <v-menu
-              v-model="previousAgmDateMenu"
-              :close-on-content-click="false"
-              min-width="0"
-              nudge-right="50"
-              transition="scale-transition"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="previousAgmDateText"
-                  class="pt-2 pl-4"
-                  :rules="dateRules"
-                  label="Previous AGM date or a reference date"
-                  append-icon="mdi-calendar"
-                  readonly
-                  v-bind="attrs"
-                  filled
-                  v-on="on"
-                />
-              </template>
-              <v-date-picker
-                v-model="datePickerPreviousAgm"
-                no-title
-                @input="previousAgmDateMenu=false"
-                @change="onPreviousAgmDatePickerChanged($event)"
-              />
-            </v-menu>
+            <DatePicker
+              class="pt-2 pl-4"
+              title="Previous AGM date or a reference date"
+              nudge-right="40"
+              :inputRules="dateRules"
+              @emitDate="previousAgmDateText = $event"
+              @emitCancel="previousAgmDateText = ''"
+            />
           </v-col>
         </v-row>
 
@@ -129,36 +110,17 @@
                 label="Yes - Specify the date the extension expires"
                 :value="true"
               />
-              <v-menu
-                v-model="extensionDateMenu"
-                :close-on-content-click="false"
-                min-width="0"
-                nudge-right="50"
-                transition="scale-transition"
-              >
-                <template #activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="extensionExpiryDateText"
-                    class="pt-2 pl-8"
-                    :disabled="!data.isPrevExtension"
-                    :rules="dateRules"
-                    label="Date of extension expiry"
-                    append-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    filled
-                    v-on="on"
-                  />
-                </template>
-                <v-date-picker
-                  v-model="datePickerExtensionExpiry"
-                  no-title
-                  :min="extensionExpiryMin"
-                  :max="extensionExpiryMax"
-                  @input="extensionDateMenu=false"
-                  @change="onExtensionDatePickerChanged($event)"
-                />
-              </v-menu>
+              <DatePicker
+                class="pt-2 pl-8"
+                title="Date of extension expiry"
+                nudge-right="40"
+                :inputRules="dateRules"
+                :disablePicker="!data.isPrevExtension"
+                :minDate="extensionExpiryMin"
+                :maxDate="extensionExpiryMax"
+                @emitDate="extensionExpiryDateText = $event"
+                @emitCancel="extensionExpiryDateText = ''"
+              />
               <v-radio
                 label="No - this is the first extension request for this AGM"
                 :value="false"
@@ -185,33 +147,14 @@
             cols="12"
             sm="9"
           >
-            <v-menu
-              v-model="intendedAgmDateMenu"
-              :close-on-content-click="false"
-              min-width="0"
-              nudge-right="50"
-              transition="scale-transition"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="intendedAgmDateText"
-                  class="pt-2 pl-4"
-                  :rules="dateRules"
-                  label="Intended date this AGM will be held"
-                  append-icon="mdi-calendar"
-                  readonly
-                  v-bind="attrs"
-                  filled
-                  v-on="on"
-                />
-              </template>
-              <v-date-picker
-                v-model="datePickerIntendedAgm"
-                no-title
-                @input="intendedAgmDateMenu=false"
-                @change="onAgmIntendedDatePickerChanged($event)"
-              />
-            </v-menu>
+            <DatePicker
+              class="pt-2 pl-4"
+              title="Intended date this AGM will be held"
+              nudge-right="40"
+              :inputRules="dateRules"
+              @emitDate="intendedAgmDateText = $event"
+              @emitCancel="intendedAgmDateText = ''"
+            />
           </v-col>
         </v-row>
       </div>
@@ -238,6 +181,7 @@ import { DateUtilities } from '@/services'
 })
 export default class ExtensionRequest extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
+
   @Prop({ default: false }) readonly showErrors!: boolean
 
   @Getter(useRootStore) getCurrentDate!: string
@@ -320,26 +264,20 @@ export default class ExtensionRequest extends Vue {
   }
 
   /** Called when extension date picker changes. */
+  @Watch('extensionExpiryDateText')
   onExtensionDatePickerChanged (val: string): void {
-    // update text field
-    this.extensionExpiryDateText = val
     this.data.prevExpiryDate = val
-    // update parent
-    // this.emitAgmDate()
-    // this.emitValid()
   }
 
+  @Watch('intendedAgmDateText')
   /** Called when intended AGM date picker changes. */
   onAgmIntendedDatePickerChanged (val: string): void {
-    // update text field
-    this.intendedAgmDateText = val
     this.data.intendedAgmDate = val
   }
 
+  @Watch('previousAgmDateText')
   /** Called when previous AGM date picker changes. */
   onPreviousAgmDatePickerChanged (val: string): void {
-    // update text field
-    this.previousAgmDateText = val
     this.data.prevAgmDate = val
   }
 
