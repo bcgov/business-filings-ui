@@ -53,7 +53,6 @@
             <!-- Extension Request -->
             <ExtensionRequest
               class="mt-8"
-              :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
               :data.sync="data"
               :showErrors="showErrors"
               @valid="extensionRequestValid=$event"
@@ -321,6 +320,12 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
       return
     }
 
+    // if not eligible, display dialog
+    if (!this.data.isEligible) {
+      this.notEligibleExtensionDialog = true
+      return
+    }
+
     // prevent double saving
     if (this.busySaving) return
 
@@ -421,7 +426,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
     const data: any = {
       [FilingTypes.AGM_EXTENSION]: {
-        // properties go here
+        ...this.data
       }
     }
 
@@ -498,7 +503,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'extension-request-vcard',
+    'extension-request',
     'certify-form-section'
   ]
 
@@ -553,10 +558,6 @@ h2 {
 #buttons-container {
   padding-top: 2rem;
   border-top: 1px solid $gray5;
-
-  // .buttons-left {
-  //   width: 50%;
-  // }
 
   .buttons-right {
     margin-left: auto;
