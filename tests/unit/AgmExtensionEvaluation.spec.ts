@@ -139,7 +139,7 @@ describe('ExtensionEvaluation', () => {
     const yellowEvalBox = wrapper.find('.message-box')
 
     expect(yellowEvalBox.exists()).toBe(true)
-    expect(yellowEvalBox.isVisible())
+    expect(yellowEvalBox.isVisible()).toBe(true)
 
     expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
 
