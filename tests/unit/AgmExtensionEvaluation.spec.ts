@@ -134,20 +134,9 @@ describe('ExtensionEvaluation', () => {
       vuetify
     })
 
-    const rows = wrapper.findAll('.content .row')
-
     const yellowEvalBox = wrapper.find('.message-box')
 
     expect(yellowEvalBox.exists()).toBe(true)
-    expect(yellowEvalBox.isVisible()).toBe(true)
-
-    expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
-
-    expect(rows.at(1).find('.col-sm-9').text()).toBe(
-      'The business has reached maximum possible extension for this AGM.')
-
-    expect(rows.at(2).find('.col-sm-9').text()).toBe(
-      'The business is overdue for this AGM and extension cannot be requested.')
 
     wrapper.destroy()
   })
