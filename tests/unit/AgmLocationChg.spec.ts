@@ -13,7 +13,6 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import sinon from 'sinon'
 import axios from '@/axios-auth'
 import { FilingStatus } from '@/enums'
-import { waitForUpdate } from 'tests/wait-for-update'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -68,43 +67,39 @@ describe('AGM Location Chg view', () => {
     sinon
       .stub(axios, 'get')
       .withArgs('businesses/BC0007291/tasks')
-      .returns(new Promise(resolve => resolve({ data: { tasks: [] } })))
+      .returns(Promise.resolve({ data: { tasks: [] } }))
 
     // mock "save and file" endpoint
     sinon
       .stub(axios, 'post')
       .withArgs('businesses/BC0007291/filings')
-      .returns(
-        new Promise(resolve =>
-          resolve({
-            data: {
-              filing: {
-                agmLocationChange: {
-                  year: '2023',
-                  agmLocation: 'Toronto, Ontario, Canada',
-                  reason: 'Test Reason'
-                },
-                business: {
-                  foundingDate: '2007-04-08T00:00:00+00:00',
-                  identifier: 'BC0007291',
-                  legalName: 'Legal Name - BC0007291'
-                },
-                header: {
-                  name: 'agmLocationChange',
-                  date: '2017-06-06',
-                  submitter: 'bc0007291',
-                  status: 'PENDING',
-                  filingId: 123,
-                  certifiedBy: 'Full Name',
-                  email: 'no_one@never.get',
-                  paymentToken: '321',
-                  isPaymentActionRequired: true
-                }
-              }
+      .returns(Promise.resolve({
+        data: {
+          filing: {
+            agmLocationChange: {
+              year: '2023',
+              agmLocation: 'Toronto, Ontario, Canada',
+              reason: 'Test Reason'
+            },
+            business: {
+              foundingDate: '2007-04-08T00:00:00+00:00',
+              identifier: 'BC0007291',
+              legalName: 'Legal Name - BC0007291'
+            },
+            header: {
+              name: 'agmLocationChange',
+              date: '2017-06-06',
+              submitter: 'bc0007291',
+              status: 'PENDING',
+              filingId: 123,
+              certifiedBy: 'Full Name',
+              email: 'no_one@never.get',
+              paymentToken: '321',
+              isPaymentActionRequired: true
             }
-          })
-        )
-      )
+          }
+        }
+      }))
   })
 
   afterEach(() => {
@@ -116,17 +111,14 @@ describe('AGM Location Chg view', () => {
     window.location.assign = assign
   })
 
-  it('mounts the sub-components properly', async () => {
-    const $route = { params: { filingId: '0' } }
-
+  it('mounts the sub-components properly', () => {
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
+    const $route = { params: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
-    wrapper.vm.$data.dataLoaded = true
-    await Vue.nextTick()
 
     // verify sub-components
     expect(wrapper.findComponent(AgmYear).exists()).toBe(true)
@@ -135,18 +127,14 @@ describe('AGM Location Chg view', () => {
     wrapper.destroy()
   })
 
-  it('sets filing data properly', async () => {
-    const $route = { params: { filingId: '0' } }
-
+  it('sets filing data properly', () => {
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
+    const $route = { params: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
-    wrapper.vm.$data.dataLoaded = true
-    await waitForUpdate(2)
-
     const vm: any = wrapper.vm
 
     // verify initial Filing Data
@@ -160,13 +148,11 @@ describe('AGM Location Chg view', () => {
   })
 
   it('sets computed states properly', () => {
-    // mock $route
-    const $route = { params: { filingId: '0' } }
-
     // create local Vue and mock router
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const $router = mockRouter.mock()
+    const $route = { params: { filingId: '0' } }
 
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route, $router } })
     const vm: any = wrapper.vm
@@ -217,6 +203,7 @@ describe('AGM Location Chg view', () => {
 
   it('saves a new filing and redirects to Pay URL when the File & Pay button is clicked', async () => {
     const $route = { params: { filingId: '0' } } // new filing id
+
     const wrapper = shallowMount(AgmLocationChg, { mocks: { $route }, vuetify })
     const vm: any = wrapper.vm
 
@@ -227,9 +214,6 @@ describe('AGM Location Chg view', () => {
       certifyFormValid: true,
       reasonValid: true
     })
-
-    await wrapper.setData({ dataLoaded: true })
-    await Vue.nextTick()
 
     expect(vm.isPageValid).toEqual(true)
 
