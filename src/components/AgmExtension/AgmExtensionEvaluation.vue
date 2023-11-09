@@ -57,7 +57,7 @@
               The business has reached maximum possible extension for this AGM.
             </template>
             <template v-else-if="!data.alreadyExtended && data.requestExpired">
-              The period to request an extension has expired.
+              The period to request an extension for this AGM has expired.
             </template>
             <template v-else-if="data.alreadyExtended && data.requestExpired">
               The business has reached maximum possible extension for this AGM.
