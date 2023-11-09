@@ -167,11 +167,9 @@ export default class NameRequestInfo extends Mixins(DateMixin, EnumMixin, NameRe
   /** The applicant's name. */
   get applicantName (): string {
     let name: string
-    if (this.applicant?.middleName) {
-      name = `${this.applicant?.firstName} ${this.applicant?.middleName} ${this.applicant?.lastName}`
-    } else {
-      name = `${this.applicant?.firstName} ${this.applicant?.lastName}`
-    }
+    const firstName = this.applicant?.firstName ? this.applicant.firstName + ' ' : ''
+    const middleName = this.applicant?.middleName ? this.applicant.middleName + ' ' : ''
+    name = `${firstName}${middleName}${this.applicant?.lastName}`
     return name
   }
 

@@ -9,6 +9,16 @@
     </template>
 
     <template #content>
+      <v-card
+        outlined
+        class="message-box rounded-0 mt-6 mx-6"
+      >
+        <p>
+          <strong>Evaluation Result:</strong> Based on the information provided above,
+          an extension cannot be granted.
+        </p>
+      </v-card>
+
       <v-row
         no-gutters
         class="px-6 pt-7"
@@ -23,7 +33,7 @@
           cols="12"
           sm="9"
         >
-          {{ data.agmYear || 'Unknown' }}
+          {{ data.agmYear || '' }}
         </v-col>
       </v-row>
 

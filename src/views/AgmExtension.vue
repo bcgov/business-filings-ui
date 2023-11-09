@@ -14,25 +14,10 @@
       @exit="onPaymentErrorDialogExit()"
     />
 
-    <SaveErrorDialog
+    <NotEligibleExtensionDialog
       attach="#agm-extension"
-      filingName="AGM Extension"
-      :dialog="!!saveErrorReason"
-      :disableRetry="busySaving"
-      :errors="saveErrors"
-      :warnings="saveWarnings"
-      @exit="saveErrorReason=null"
-      @retry="onSaveErrorDialogRetry()"
-      @okay="onSaveErrorDialogOkay()"
-    />
-
-    <StaffPaymentDialog
-      :staffPaymentData.sync="staffPaymentData"
-      attach="#agm-extension"
-      :dialog="staffPaymentDialog"
-      :loading="filingPaying"
-      @exit="staffPaymentDialog=false"
-      @submit="onClickFilePay(true)"
+      :dialog="notEligibleExtensionDialog"
+      @okay="notEligibleExtensionDialog = false"
     />
 
     <!-- Main Body -->
@@ -55,7 +40,7 @@
             <header>
               <h2>Extension Detail</h2>
               <p class="grey-text">
-                Enter the details about the extension request to evaluate eligibility.
+                Enter the details about the extension request to evaluate the eligibility.
               </p>
             </header>
 
@@ -69,6 +54,8 @@
             <ExtensionRequest
               class="mt-8"
               :data.sync="data"
+              :showErrors="showErrors"
+              @valid="extensionRequestValid=$event"
             />
 
             <!-- AGM Extension Evaluation -->
@@ -145,7 +132,7 @@
               v-on="on"
             >
               <v-btn
-                id="consent-file-pay-btn"
+                id="file-pay-btn"
                 color="primary"
                 large
                 :disabled="busySaving"
@@ -161,7 +148,8 @@
         </v-tooltip>
 
         <v-btn
-          id="consent-cancel-btn"
+          id="cancel-btn"
+          class="ml-2"
           large
           :disabled="busySaving"
           @click="goToDashboard()"
@@ -181,15 +169,15 @@ import { navigate } from '@/utils'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { ExpandableHelp } from '@bcrs-shared-components/expandable-help'
 import { Certify } from '@/components/common'
-import { ConfirmDialog, PaymentErrorDialog, SaveErrorDialog, StaffPaymentDialog } from '@/components/dialogs'
+import { ConfirmDialog, NotEligibleExtensionDialog, PaymentErrorDialog } from '@/components/dialogs'
 import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import AgmExtensionEvaluation from '@/components/AgmExtension/AgmExtensionEvaluation.vue'
 import AgmExtensionHelp from '@/components/AgmExtension/AgmExtensionHelp.vue'
 import ExtensionRequest from '@/components/AgmExtension/ExtensionRequest.vue'
 import { CommonMixin, DateMixin, EnumMixin, FilingMixin, ResourceLookupMixin } from '@/mixins'
 import { LegalServices } from '@/services/'
-import { FilingCodes, FilingTypes, Routes, SaveErrorReasons, StaffPaymentOptions } from '@/enums'
-import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval, StaffPaymentIF } from '@/interfaces'
+import { FilingCodes, FilingTypes, Routes, SaveErrorReasons } from '@/enums'
+import { AgmExtEvalIF, ConfirmDialogType, EmptyAgmExtEval } from '@/interfaces'
 import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
 
 @Component({
@@ -201,10 +189,9 @@ import { useBusinessStore, useConfigurationStore, useRootStore } from '@/stores'
     ConfirmDialog,
     ExpandableHelp,
     ExtensionRequest,
+    NotEligibleExtensionDialog,
     PaymentErrorDialog,
-    SaveErrorDialog,
-    SbcFeeSummary,
-    StaffPaymentDialog
+    SbcFeeSummary
   }
 })
 export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
@@ -236,10 +223,6 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   // variables for Extension Request section
   extensionRequestValid = false
 
-  // variables for staff payment
-  staffPaymentData = { option: StaffPaymentOptions.NONE } as StaffPaymentIF
-  staffPaymentDialog = false
-
   // variables for displaying dialogs
   saveErrorReason: SaveErrorReasons = null
   paymentErrorDialog = false
@@ -253,6 +236,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   haveChanges = false
   saveErrors = []
   saveWarnings = []
+  notEligibleExtensionDialog = false
 
   /** The Base URL string. */
   get baseUrl (): string {
@@ -309,25 +293,24 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
       this.certifiedBy = this.getUserInfo.firstname + ' ' + this.getUserInfo.lastname
     }
 
-    // always include consent continue out code
-    // use existing Priority and Waive Fees flags
-    this.updateFilingData('add', FilingCodes.AGM_EXTENSION, this.staffPaymentData.isPriority,
-      (this.staffPaymentData.option === StaffPaymentOptions.NO_FEE))
+    // always include agm extension code
+    // (no Priority flag and no Waive Fees flag)
+    this.updateFilingData('add', FilingCodes.AGM_EXTENSION, undefined, undefined)
   }
 
   /**
    * Called when user clicks File and Pay button
-   * or when user retries from Save Error dialog
-   * or when user submits from Staff Payment dialog.
+   * or when user retries from Save Error dialog.
    */
-  async onClickFilePay (fromStaffPayment = false): Promise<void> {
+  async onClickFilePay (): Promise<void> {
     // if there is an invalid component, scroll to it
     if (!this.isPageValid) {
       this.showErrors = true
-      // *** TODO: check for section errors here
+      //
+      // FUTURE: check for section errors here
+      //
       if (!this.extensionRequestValid) {
-        // Show error message of detail comment text area if invalid
-        // this.$refs.detailCommentRef.$refs.textarea.error = true
+        // nothing to do here -- "showErrors" will do it all
       }
       if (!this.certifyFormValid) {
         // Show error message of legal name text field if invalid
@@ -337,15 +320,14 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
       return
     }
 
-    // prevent double saving
-    if (this.busySaving) return
-
-    // if this is a staff user clicking File and Pay (not Submit)
-    // then detour via Staff Payment dialog
-    if (this.isRoleStaff && !fromStaffPayment) {
-      this.staffPaymentDialog = true
+    // if not eligible, display dialog
+    if (!this.data.isEligible) {
+      this.notEligibleExtensionDialog = true
       return
     }
+
+    // prevent double saving
+    if (this.busySaving) return
 
     this.filingPaying = true
 
@@ -433,27 +415,6 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
       }
     }
 
-    switch (this.staffPaymentData.option) {
-      case StaffPaymentOptions.FAS:
-        header.header['routingSlipNumber'] = this.staffPaymentData.routingSlipNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.BCOL:
-        header.header['bcolAccountNumber'] = this.staffPaymentData.bcolAccountNumber
-        header.header['datNumber'] = this.staffPaymentData.datNumber
-        header.header['folioNumber'] = this.staffPaymentData.folioNumber
-        header.header['priority'] = this.staffPaymentData.isPriority
-        break
-
-      case StaffPaymentOptions.NO_FEE:
-        header.header['waiveFees'] = true
-        break
-
-      case StaffPaymentOptions.NONE: // should never happen
-        break
-    }
-
     const business: any = {
       business: {
         foundingDate: this.dateToApi(this.getFoundingDate),
@@ -465,7 +426,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
     const data: any = {
       [FilingTypes.AGM_EXTENSION]: {
-        // properties go here
+        ...this.data
       }
     }
 
@@ -540,27 +501,9 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
     }
   }
 
-  /** Handles Retry events from Save Error dialog. */
-  async onSaveErrorDialogRetry (): Promise<void> {
-    if (this.saveErrorReason === SaveErrorReasons.FILE_PAY) {
-      // close the dialog and retry file-pay
-      this.saveErrorReason = null
-      await this.onClickFilePay(this.isRoleStaff)
-    }
-  }
-
-  /** Handles Okay events from Save Error dialog. */
-  onSaveErrorDialogOkay (): void {
-    if (this.saveErrorReason === SaveErrorReasons.FILE_PAY) {
-      // close the dialog and finish file-pay process
-      this.saveErrorReason = null
-      this.onClickFilePayFinish()
-    }
-  }
-
   /** Array of valid components. Must match validFlags. */
   readonly validComponents = [
-    'extension-request-vcard',
+    'extension-request',
     'certify-form-section'
   ]
 
@@ -579,19 +522,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
   @Watch('data.isPrevExtension')
   @Watch('data.prevExpiryDate')
   @Watch('data.intendedAgmDate')
-  @Watch('certifiedBy')
-  @Watch('isCertified')
   private onHaveChanges (): void {
-    this.haveChanges = true
-  }
-
-  @Watch('staffPaymentData')
-  private onStaffPaymentDataChanged (val: StaffPaymentIF): void {
-    const waiveFees = (val.option === StaffPaymentOptions.NO_FEE)
-
-    // add Waive Fees flag to all filing codes
-    this.updateFilingData('add', FilingCodes.AGM_EXTENSION, val.isPriority, waiveFees)
-
     this.haveChanges = true
   }
 }
@@ -628,20 +559,8 @@ h2 {
   padding-top: 2rem;
   border-top: 1px solid $gray5;
 
-  .buttons-left {
-    width: 50%;
-  }
-
   .buttons-right {
     margin-left: auto;
-  }
-
-  .v-btn + .v-btn {
-    margin-left: 0.5rem;
-  }
-
-  #consent-cancel-btn {
-    margin-left: 0.5rem;
   }
 }
 

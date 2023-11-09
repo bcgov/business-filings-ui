@@ -57,8 +57,9 @@ export default class AgmYear extends Vue {
 
   /** Emits an event with the changed input (ie, updated v-model). */
   @Emit('input')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  emitInput (val: string): void {}
+  emitInput (val: string): void {
+    this.agmYear = val
+  }
 
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')

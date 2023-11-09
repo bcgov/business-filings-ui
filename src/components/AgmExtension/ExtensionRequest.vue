@@ -9,7 +9,10 @@
     </template>
 
     <template #content>
-      <div class="px-6 py-7">
+      <div
+        class="px-6 py-7"
+        :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
+      >
         <v-row no-gutters>
           <v-col
             cols="12"
@@ -62,7 +65,10 @@
 
       <v-divider class="mx-4" />
 
-      <div class="px-6 py-7">
+      <div
+        class="px-6 py-7"
+        :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
+      >
         <v-row no-gutters>
           <v-col
             cols="12"
@@ -96,7 +102,10 @@
 
       <v-divider class="mx-4" />
 
-      <div class="px-6 py-7">
+      <div
+        class="px-6 py-7"
+        :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
+      >
         <v-row no-gutters>
           <v-col
             cols="12"
@@ -130,10 +139,15 @@ import { DatePicker } from '@bcrs-shared-components/date-picker'
 })
 export default class ExtensionRequest extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
+  @Prop({ default: false }) readonly showErrors!: boolean
 
   @Emit('update:data')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitData (data: AgmExtEvalIF): void {}
+
+  get extensionRequestValid (): boolean {
+    return false // *** TODO: implement this
+  }
 
   get agmYear (): string {
     return this.data.agmYear
