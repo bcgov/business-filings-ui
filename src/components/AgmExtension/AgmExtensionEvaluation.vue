@@ -49,18 +49,25 @@
           <strong>Duration of Extension</strong>
         </v-col>
         <v-col
-          v-if="!data.isEligible"
           cols="12"
           sm="9"
         >
-          {{ extensionDurationText }}
+          <template v-if="!data.isEligible">
+            <template v-if="data.alreadyExtended && !data.requestExpired">
+              The business has reached maximum possible extension for this AGM.
+            </template>
+            <template v-else-if="data.requestExpired && !data.alreadyExtended">
+              The period to request an extension has expired.
+            </template>
+            <template v-else-if="data.requestExpired && data.alreadyExtended">
+              The business has reached maximum possible extension for this AGM.
+              The period to request an extension has expired.
+            </template>
+          </template>
+          <template v-else>
+            {{ data.extensionDuration }} months
+          </template>
         </v-col>
-        <v-col
-          v-else
-          cols="12"
-          sm="9"
-        >
-          {{ data.extensionDuration }} months
         </v-col>
       </v-row>
 
@@ -75,18 +82,24 @@
           <strong>Due date for this AGM</strong>
         </v-col>
         <v-col
-          v-if="!data.isEligible"
           cols="12"
           sm="9"
         >
-          {{ dueDateText }}
-        </v-col>
-        <v-col
-          v-else
-          cols="12"
-          sm="9"
-        >
-          {{ dueDateString }}
+          <template v-if="!data.isEligible">
+            <template v-if="data.alreadyExtended && !data.requestExpired">
+              The due date for this AGM cannot be set since extension has already been requested.
+            </template>
+            <template v-else-if="data.requestExpired && !data.alreadyExtended">
+              The due date for this AGM cannot be set since the request for extension has expired.
+            </template>
+            <template v-else-if="data.requestExpired && data.alreadyExtended">
+              The due date for this AGM cannot be set since extension has already been requested and the request
+              for extension has expired.
+            </template>
+          </template>
+          <template v-else>
+            {{ dueDateString }}
+          </template>
         </v-col>
       </v-row>
     </template>
