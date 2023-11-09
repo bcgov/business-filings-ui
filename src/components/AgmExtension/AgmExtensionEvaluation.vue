@@ -56,10 +56,10 @@
             <template v-if="data.alreadyExtended && !data.requestExpired">
               The business has reached maximum possible extension for this AGM.
             </template>
-            <template v-else-if="data.requestExpired && !data.alreadyExtended">
+            <template v-else-if="!data.alreadyExtended && data.requestExpired">
               The period to request an extension has expired.
             </template>
-            <template v-else-if="data.requestExpired && data.alreadyExtended">
+            <template v-else-if="data.alreadyExtended && data.requestExpired">
               The business has reached maximum possible extension for this AGM.
               The period to request an extension has expired.
             </template>
@@ -67,7 +67,6 @@
           <template v-else>
             {{ data.extensionDuration }} months
           </template>
-        </v-col>
         </v-col>
       </v-row>
 
@@ -89,10 +88,10 @@
             <template v-if="data.alreadyExtended && !data.requestExpired">
               The due date for this AGM cannot be set since extension has already been requested.
             </template>
-            <template v-else-if="data.requestExpired && !data.alreadyExtended">
+            <template v-else-if="!data.alreadyExtended && data.requestExpired">
               The due date for this AGM cannot be set since the request for extension has expired.
             </template>
-            <template v-else-if="data.requestExpired && data.alreadyExtended">
+            <template v-else-if="data.alreadyExtended && data.requestExpired">
               The due date for this AGM cannot be set since extension has already been requested and the request
               for extension has expired.
             </template>
