@@ -186,20 +186,14 @@ export default class ExtensionRequest extends Vue {
 
   @Getter(useRootStore) getCurrentDate!: string
 
-  // Has extension been requested variables
-  datePickerExtensionExpiry = '' // value in date of extension expiry date picker
-  extensionDateMenu = false // whether extension date calendar menu is visible
-  extensionExpiryDateText = '' // value in the text field
+  // Has extension been requested date text
+  extensionExpiryDateText = ''
 
-  // Intended date this AGM will be held variables
-  datePickerIntendedAgm = '' // value in date of intended AGM date picker
-  intendedAgmDateMenu = false // whether intended AGM calendar menu is visible
-  intendedAgmDateText = '' // value in the text field
+  // Intended date this AGM will be held date text
+  intendedAgmDateText = ''
 
-  // Previous AGM date (reference date) variables
-  datePickerPreviousAgm = '' // value in date of intended AGM date picker
-  previousAgmDateMenu = false // whether intended AGM calendar menu is visible
-  previousAgmDateText = '' // value in the text field
+  // Previous AGM date (reference date) date text
+  previousAgmDateText = ''
 
   isEligible = false // whether the extension can be granted.
 
