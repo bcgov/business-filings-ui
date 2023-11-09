@@ -119,10 +119,6 @@ import { DateUtilities } from '@/services'
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
 
-  @Prop({ default: '' }) readonly extensionDurationText!: string
-
-  @Prop({ default: '' }) readonly dueDateText!: string
-
   get dueDateString (): string {
     return (DateUtilities.formatYyyyMmDd(this.data.agmDueDate))
   }
