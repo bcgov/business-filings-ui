@@ -329,25 +329,25 @@ export default class DateUtilities {
   }
 
   /**
-   * Returns the number of days that 'date' is from today in Pacific timezone.
+   * Returns the number of days that 'date' is from 'initialDate' in Pacific timezone.
    * @returns -1 for yesterday
    * @returns 0 for today
    * @returns +1 for tomorrow
    * @returns NaN in case of error
    */
-  static daysFromToday (today: Date, date: Date): number {
+  static daysBetweenTwoDates (initialDate: Date, date: Date): number {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return NaN
 
     // set "date" to 12:00 am Pacific
     date.setHours(0, 0, 0, 0)
 
-    // compute "today" at 12:00 am Pacific
-    today.setHours(0, 0, 0, 0)
+    // compute "initialDate" at 12:00 am Pacific
+    initialDate.setHours(0, 0, 0, 0)
 
-    // calculate difference between "date" and "today"
+    // calculate difference between "date" and "initialDate"
     // (result should be a whole number)
-    const diff = (date.valueOf() - today.valueOf()) / MS_IN_A_DAY
+    const diff = (date.valueOf() - initialDate.valueOf()) / MS_IN_A_DAY
     return Math.round(diff)
   }
 
@@ -359,5 +359,46 @@ export default class DateUtilities {
   /** Whether the subject date string is in the future. */
   static isDateFuture (date: FormattedDateTimeGmt): boolean {
     return (new Date(date) > new Date())
+  }
+
+  /**
+   * Add a number of months to a date and return "YYYY-MM-DD".
+   * Date must be in the format of "YYYY-MM-DD" and months is a number
+   * @example (3, 2023-02-03) -> "2023-05-03"
+   * @example (18, 2023-02-03) -> "2024-08-03"
+   */
+  static addMonthsToDate (month: number, date: string): string {
+    if (!date) {
+      date = '2023-01-01'
+    }
+    const temp = this.yyyyMmDdToDate(date)
+    temp.setMonth(temp.getMonth() + month)
+    const dateAfterAddition = this.dateToYyyyMmDd(temp)
+    return dateAfterAddition
+  }
+
+  /**
+   * Decrease one date from another and return number of months as the difference.
+   * Dates must be in the "YYYY-MM-DD" format
+   * @example (2023-02-03, 2024-08-03) -> 18
+   * @example (2023-02-03, 2023-04-03) -> 2
+   */
+  static subtractDates (dateFrom: string, dateTo: string): number {
+    if (!dateFrom) {
+      dateFrom = '2023-01-01'
+    }
+    if (!dateTo) {
+      dateTo = this.addMonthsToDate(24, dateFrom)
+    }
+    const expiryDate = this.yyyyMmDdToDate(dateTo)
+    const currDate = this.yyyyMmDdToDate(dateFrom)
+    const monthDiff = expiryDate.getMonth() - currDate.getMonth()
+    const yearDiff = (12 * (expiryDate.getFullYear() - currDate.getFullYear()))
+    let difference = monthDiff + yearDiff
+    // For example if Jan 31st and March 1, difference is 1 not 2
+    if ((expiryDate.getDate() + 25) < currDate.getDate()) {
+      difference--
+    }
+    return difference
   }
 }

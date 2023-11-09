@@ -73,7 +73,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
   /** Check if Consent is Expired. */
   get isConsentExpired (): boolean {
     const date = DateUtilities.apiToDate(this.filing.data?.consentContinuationOut?.expiry)
-    const daysToExpire = DateUtilities.daysFromToday(new Date(), date)
+    const daysToExpire = DateUtilities.daysBetweenTwoDates(new Date(), date)
     if (isNaN(daysToExpire) || daysToExpire < 0) {
       return true
     }
