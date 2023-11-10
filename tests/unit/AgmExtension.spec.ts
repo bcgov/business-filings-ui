@@ -201,7 +201,7 @@ describe('AGM Extension view', () => {
         isEligible: true,
         isFirstAgm: null,
         isGoodStanding: true,
-        alreadyExists: null,
+        alreadyExtended: null,
         requestExpired: null
       },
       business: {
