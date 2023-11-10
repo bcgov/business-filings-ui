@@ -62,8 +62,6 @@
             <AgmExtensionEvaluation
               class="mt-8"
               :data.sync="data"
-              :extensionDurationText="''"
-              :dueDateText="''"
             />
 
             <!-- delete this debugging code -->
