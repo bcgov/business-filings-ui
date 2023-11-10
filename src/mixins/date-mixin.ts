@@ -211,6 +211,6 @@ export default class DateMixin extends Vue {
    * @returns NaN in case of error
    */
   daysFromToday (date: Date): number {
-    return DateUtilities.daysFromToday(this.getCurrentJsDate, date)
+    return DateUtilities.daysBetweenTwoDates(this.getCurrentJsDate, date)
   }
 }
