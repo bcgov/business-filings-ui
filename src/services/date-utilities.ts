@@ -384,12 +384,6 @@ export default class DateUtilities {
    * @example (2023-02-03, 2023-04-03) -> 2
    */
   static subtractDates (dateFrom: string, dateTo: string): number {
-    if (!dateFrom) {
-      dateFrom = '2023-01-01'
-    }
-    if (!dateTo) {
-      dateTo = this.addMonthsToDate(24, dateFrom)
-    }
     const expiryDate = this.yyyyMmDdToDate(dateTo)
     const currDate = this.yyyyMmDdToDate(dateFrom)
     const monthDiff = expiryDate.getMonth() - currDate.getMonth()
