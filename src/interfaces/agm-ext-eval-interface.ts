@@ -21,5 +21,5 @@ export const EmptyAgmExtEval: AgmExtEvalIF = {
   agmYear: null,
   extensionDuration: NaN,
   agmDueDate: null,
-  isEligible: null
+  isEligible: false
 }

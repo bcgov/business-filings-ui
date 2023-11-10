@@ -66,31 +66,32 @@
         class="px-6 py-7"
         :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
       >
-        <v-row
-          v-if="!isFirstAgm"
-          no-gutters
-        >
-          <v-col
-            cols="12"
-            sm="3"
+        <v-expand-transition>
+          <v-row
+            v-if="!isFirstAgm"
+            no-gutters
           >
-            <strong>Previous AGM date or a reference date</strong>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="9"
-          >
-            <DatePicker
-              class="pt-2 pl-4"
-              title="Previous AGM date or a reference date"
-              nudge-right="40"
-              :inputRules="dateRules"
-              @emitDate="previousAgmDateText = $event"
-              @emitCancel="previousAgmDateText = ''"
-            />
-          </v-col>
-        </v-row>
-
+            <v-col
+              cols="12"
+              sm="3"
+            >
+              <strong>Previous AGM date or a reference date</strong>
+            </v-col>
+            <v-col
+              cols="12"
+              sm="9"
+            >
+              <DatePicker
+                class="pt-2 pl-4"
+                title="Previous AGM date or a reference date"
+                nudge-right="40"
+                :inputRules="dateRules"
+                @emitDate="previousAgmDateText = $event"
+                @emitCancel="previousAgmDateText = ''"
+              />
+            </v-col>
+          </v-row>
+        </v-expand-transition>
         <v-row no-gutters>
           <v-col
             cols="12"
@@ -186,13 +187,13 @@ export default class ExtensionRequest extends Vue {
 
   @Getter(useRootStore) getCurrentDate!: string
 
-  // Has extension been requested date text
+  /** The extension expiry date text. */ 
   extensionExpiryDateText = ''
 
-  // Intended date this AGM will be held date text
+  /** The intended date this AGM will be held date text. */
   intendedAgmDateText = ''
 
-  // Previous AGM date (reference date) date text
+  /** The previous AGM date (reference date) date text. */
   previousAgmDateText = ''
 
   isEligible = false // whether the extension can be granted.
@@ -223,16 +224,20 @@ export default class ExtensionRequest extends Vue {
 
   get extensionExpiryMax (): string {
     if (this.isFirstAgm) {
+      // For first AGM, max shouldn't be later than Incorporation date + 18 months + 12 months
       return DateUtilities.addMonthsToDate(30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
+      // For subsequent AGMs, max shouldn't be later than reference date + 15 months + 12 months
       return 'placeholder for future work'
     }
   }
 
   get extensionExpiryMin (): string {
     if (this.isFirstAgm) {
+      // For first AGM, min shouldn't be later than Incorporation date + 18 months + 1 month
       return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
+      // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
       return 'placeholder for future work'
     }
   }
@@ -277,28 +282,38 @@ export default class ExtensionRequest extends Vue {
 
   @Watch('data.isPrevExtension')
   @Watch('extensionExpiryDateText')
-  onIsPrevExtensionChanged (val: boolean): void {
+  onIsPrevExtensionChanged (): void {
     this.data.isEligible = null
-    if (!val && this.isFirstAgm && this.isFirstAgm !== null) { // This is the first extension request for this AGM
+    if (!this.data.isPrevExtension && this.isFirstAgm) { // This is the first extension request for this AGM
+      // cutOffDate is the date where eligibility will be false if passed in a particular rule.
+      // IF First AGM and has an extension been request for this AGM year already is false
       const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
         18, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
       const cutOffDate = DateUtilities.yyyyMmDdToDate(cutOffYyyyMmDd)
       const currentDate = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
+      // IF CurrentDate > (IncorporationDate + 18 Months + 5 days) --> INELIGIBLE
+      // ELSE --> ELIGIBLE --> Extension Duration = 6 months
       if ((DateUtilities.daysBetweenTwoDates(cutOffDate, currentDate) - 5) > 0) {
         this.data.isEligible = false
       } else {
         this.data.isEligible = true
         this.data.extensionDuration = 6
       }
-    } else if (val && this.isFirstAgm && this.isFirstAgm !== null && this.extensionExpiryDateText) {
+    } else if (this.data.isPrevExtension && this.isFirstAgm && this.extensionExpiryDateText) {
       // Yes - Specify the date the extension expires
+      // IF First AGM and has an extension been request for this AGM year already is true
       const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
         30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
       const cutOffDate = DateUtilities.yyyyMmDdToDate(cutOffYyyyMmDd)
       const expiryDate = DateUtilities.yyyyMmDdToDate(this.extensionExpiryDateText)
+      // IF ExpirationDate >= (IncorporationDate + 18 months + 12 months) --> INELIGIBLE
+      // ELSE --> Check ELSE BLOCK
       if ((DateUtilities.daysBetweenTwoDates(cutOffDate, expiryDate)) >= 0) {
         this.data.isEligible = false
       } else {
+        // IF CurrentDate > (ExpirationDate + 5 days) --> INELIGIBLE
+        // ELSE --> ELIGIBLE --> ExtensionDuration = MIN(6, 12 - totalExtensionApproved)
+        // totalExtensionApproved = (ExpirationDate - 18 months - IncorporationDate) in months
         const currentDate = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
         if ((DateUtilities.daysBetweenTwoDates(expiryDate, currentDate)) > 5) {
           this.data.isEligible = false
