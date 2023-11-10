@@ -187,7 +187,7 @@ export default class ExtensionRequest extends Vue {
 
   @Getter(useRootStore) getCurrentDate!: string
 
-  /** The extension expiry date text. */ 
+  /** The extension expiry date text. */
   extensionExpiryDateText = ''
 
   /** The intended date this AGM will be held date text. */
