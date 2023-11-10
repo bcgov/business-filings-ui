@@ -200,7 +200,9 @@ describe('AGM Extension view', () => {
         incorporationDate: new Date('2000-01-01T08:00:00.000Z'),
         isEligible: true,
         isFirstAgm: null,
-        isGoodStanding: true
+        isGoodStanding: true,
+        alreadyExists: null,
+        requestExpired: null
       },
       business: {
         foundingDate: '2000-01-01T08:00:00.000+00:00',
