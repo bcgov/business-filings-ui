@@ -250,6 +250,7 @@ export default class ExtensionRequest extends Vue {
     return this.data.isFirstAgm
   }
 
+  /** Called when isFirstAgm radio group changes. */
   @Watch('data.isFirstAgm')
   onIsFirstAgmChanged (val: boolean): void {
     if (val) {
