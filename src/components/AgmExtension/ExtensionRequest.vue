@@ -165,10 +165,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
 import { VcardTemplate } from '@/components/common'
 import { AgmExtEvalIF } from '@/interfaces'
-import { useRootStore } from '@/stores'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 import { DateUtilities } from '@/services'
@@ -184,8 +182,6 @@ export default class ExtensionRequest extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
 
   @Prop({ default: false }) readonly showErrors!: boolean
-
-  @Getter(useRootStore) getCurrentDate!: string
 
   /** The extension expiry date text. */
   extensionExpiryDateText = ''
@@ -280,18 +276,23 @@ export default class ExtensionRequest extends Vue {
     this.data.prevAgmDate = val
   }
 
+  @Watch('data.currentDate')
   @Watch('data.isPrevExtension')
   @Watch('previousAgmDateText')
   @Watch('extensionExpiryDateText')
   onIsPrevExtensionChanged (): void {
     /* eslint-disable brace-style */
-    const currentDate = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
+    const currentDate = DateUtilities.yyyyMmDdToDate(this.data.currentDate)
     this.data.isEligible = null
     this.data.extensionDuration = null
 
     // IF first AGM extension
     // AND NOT extension requested this year
-    if (this.isFirstAgm && !this.data.isPrevExtension) {
+    if (
+      this.isFirstAgm &&
+      !this.data.isPrevExtension &&
+      this.data.incorporationDate
+    ) {
       // cutOffDate: the date where eligibility will be false if passed in a particular rule.
       const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
         18, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
@@ -314,7 +315,8 @@ export default class ExtensionRequest extends Vue {
     else if (
       this.isFirstAgm &&
       this.data.isPrevExtension &&
-      this.extensionExpiryDateText
+      this.extensionExpiryDateText &&
+      this.data.incorporationDate
     ) {
       const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
         30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
