@@ -239,22 +239,23 @@ export default class ExtensionRequest extends Vue {
     }
   }
 
-  /**
-   * Whether to disable the editing of AGM Year field.
-   * Editable (false) when Is this first AGM is set to No.
-   * Non-Editable (true) when we first load (null) or Is first AGM is Yes.
-   * Set the agmYear as incorporation date if not null and true.
-   */
+  /** Whether to disable the editing of AGM Year field. */
   get isFirstAgm (): boolean {
-    if (this.data.isFirstAgm !== null) {
-      if (this.data.isFirstAgm) {
-        this.data.agmYear = this.data.incorporationDate.getFullYear().toString()
-        return true
-      } else {
-        return false
-      }
-    } else {
+    // Field disabled on first load when value is null
+    if (this.data.isFirstAgm == null) {
       return true
+    }
+
+    // Field disabled when it is first agm
+    return this.data.isFirstAgm
+  }
+
+  @Watch('data.isFirstAgm')
+  onIsFirstAgmChanged (val: boolean): void {
+    if (val) {
+      this.data.agmYear = this.data.incorporationDate.getFullYear().toString()
+    } else {
+      this.data.agmYear = ''
     }
   }
 
@@ -264,14 +265,14 @@ export default class ExtensionRequest extends Vue {
     this.data.prevExpiryDate = val
   }
 
-  @Watch('intendedAgmDateText')
   /** Called when intended AGM date picker changes. */
+  @Watch('intendedAgmDateText')
   onAgmIntendedDatePickerChanged (val: string): void {
     this.data.intendedAgmDate = val
   }
 
-  @Watch('previousAgmDateText')
   /** Called when previous AGM date picker changes. */
+  @Watch('previousAgmDateText')
   onPreviousAgmDatePickerChanged (val: string): void {
     this.data.prevAgmDate = val
   }
