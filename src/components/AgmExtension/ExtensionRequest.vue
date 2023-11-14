@@ -172,6 +172,7 @@ import { useRootStore } from '@/stores'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 import { DateUtilities } from '@/services'
+import { CONSOLE_LEVELS } from '@sentry/utils'
 
 @Component({
   components: {
@@ -218,6 +219,7 @@ export default class ExtensionRequest extends Vue {
   }
 
   set agmYear (value: string) {
+    this.data.agmYear = value
     const data = { ...this.data, agmYear: value }
     this.emitData(data)
   }
@@ -228,7 +230,7 @@ export default class ExtensionRequest extends Vue {
       return DateUtilities.addMonthsToDate(30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
       // For subsequent AGMs, max shouldn't be later than reference date + 15 months + 12 months
-      return 'placeholder for future work'
+      return DateUtilities.addMonthsToDate(27, this.data.prevAgmDate)
     }
   }
 
@@ -238,23 +240,17 @@ export default class ExtensionRequest extends Vue {
       return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
       // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
-      return 'placeholder for future work'
+      return DateUtilities.addMonthsToDate(19, this.data.prevAgmDate)
     }
   }
 
-  /**
-   * Whether to disable the editing of AGM Year field.
-   * Editable (false) when Is this first AGM is set to No.
-   * Non-Editable (true) when we first load (null) or Is first AGM is Yes.
-   * Set the agmYear as incorporation date if not null and true.
-   */
+  /** Whether to disable the editing of AGM Year field. */
   get isFirstAgm (): boolean {
     if (this.data.isFirstAgm !== null) {
       if (this.data.isFirstAgm) {
         this.data.agmYear = this.data.incorporationDate.getFullYear().toString()
         return true
       } else {
-        this.data.agmYear = ''
         return false
       }
     } else {
@@ -281,48 +277,117 @@ export default class ExtensionRequest extends Vue {
   }
 
   @Watch('data.isPrevExtension')
+  @Watch('previousAgmDateText')
   @Watch('extensionExpiryDateText')
   onIsPrevExtensionChanged (): void {
+    /* eslint-disable brace-style */
+    const currentDate = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
     this.data.isEligible = null
-    if (!this.data.isPrevExtension && this.isFirstAgm) { // This is the first extension request for this AGM
-      // cutOffDate is the date where eligibility will be false if passed in a particular rule.
-      // IF First AGM and has an extension been request for this AGM year already is false
+    this.data.extensionDuration = null
+
+    // IF first AGM extension
+    // AND NOT extension requested this year
+    if (this.isFirstAgm && !this.data.isPrevExtension) {
+      // cutOffDate: the date where eligibility will be false if passed in a particular rule.
       const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
         18, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
       const cutOffDate = DateUtilities.yyyyMmDdToDate(cutOffYyyyMmDd)
-      const currentDate = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
-      // IF CurrentDate > (IncorporationDate + 18 Months + 5 days) --> INELIGIBLE
-      // ELSE --> ELIGIBLE --> Extension Duration = 6 months
+
+      // IF CurrentDate > (IncorporationDate + 18 Months + 5 days)
+      // THEN NOT ELIGIBLE
       if ((DateUtilities.daysBetweenTwoDates(cutOffDate, currentDate) - 5) > 0) {
         this.data.isEligible = false
-      } else {
+      }
+      // ELSE ELIGIBLE, ExtensionDuration = 6 months
+      else {
         this.data.isEligible = true
         this.data.extensionDuration = 6
       }
-    } else if (this.data.isPrevExtension && this.isFirstAgm && this.extensionExpiryDateText) {
-      // Yes - Specify the date the extension expires
-      // IF First AGM and has an extension been request for this AGM year already is true
+    }
+
+    // ELSE IF first AGM extension
+    // AND extension requested this year
+    else if (
+      this.isFirstAgm &&
+      this.data.isPrevExtension &&
+      this.extensionExpiryDateText
+    ) {
       const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
         30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
       const cutOffDate = DateUtilities.yyyyMmDdToDate(cutOffYyyyMmDd)
       const expiryDate = DateUtilities.yyyyMmDdToDate(this.extensionExpiryDateText)
-      // IF ExpirationDate >= (IncorporationDate + 18 months + 12 months) --> INELIGIBLE
-      // ELSE --> Check ELSE BLOCK
+
+      // IF ExpirationDate >= (IncorporationDate + 18 months + 12 months)
+      // THEN NOT ELIGIBLE
       if ((DateUtilities.daysBetweenTwoDates(cutOffDate, expiryDate)) >= 0) {
         this.data.isEligible = false
-      } else {
-        // IF CurrentDate > (ExpirationDate + 5 days) --> INELIGIBLE
-        // ELSE --> ELIGIBLE --> ExtensionDuration = MIN(6, 12 - totalExtensionApproved)
-        // totalExtensionApproved = (ExpirationDate - 18 months - IncorporationDate) in months
-        const currentDate = DateUtilities.yyyyMmDdToDate(this.getCurrentDate)
-        if ((DateUtilities.daysBetweenTwoDates(expiryDate, currentDate)) > 5) {
-          this.data.isEligible = false
-        } else {
-          this.data.isEligible = true
-          const totalExtensionApproved = DateUtilities.subtractDates(
-            DateUtilities.dateToYyyyMmDd(this.data.incorporationDate), this.extensionExpiryDateText) - 18
-          this.data.extensionDuration = Math.min(6, (12 - totalExtensionApproved))
-        }
+      }
+      // ELSE IF CurrentDate > (ExpirationDate + 5 days)
+      // THEN NOT ELIGIBLE
+      else if ((DateUtilities.daysBetweenTwoDates(expiryDate, currentDate)) > 5) {
+        this.data.isEligible = false
+      }
+      // ELSE ELIGIBLE, ExtensionDuration = MIN(6, 12 - totalExtensionApproved)
+      else {
+        this.data.isEligible = true
+        // totalExtensionApproved: (ExpirationDate - 18 months - IncorporationDate) in months
+        const totalExtensionApproved = DateUtilities.subtractDates(
+          DateUtilities.dateToYyyyMmDd(this.data.incorporationDate), this.extensionExpiryDateText) - 18
+        this.data.extensionDuration = Math.min(6, (12 - totalExtensionApproved))
+      }
+    }
+
+    // ELSE IF NOT first agm extension
+    // AND NOT extension requested this year
+    else if (
+      !this.isFirstAgm &&
+      !this.data.isPrevExtension &&
+      this.previousAgmDateText
+    ) {
+      const cutOffYyyyMmDd = DateUtilities.addMonthsToDate(
+        15, this.previousAgmDateText)
+      const cutOffDate = DateUtilities.yyyyMmDdToDate(cutOffYyyyMmDd)
+
+      // IF CurrentDate > (PrevAgmDate + 15 Months + 5 days)
+      // THEN NOT ELIGIBLE
+      if ((DateUtilities.daysBetweenTwoDates(cutOffDate, currentDate) - 5) > 0) {
+        this.data.isEligible = false
+      }
+      // ELSE ELIGIBLE, ExtensionDuration = 6 months
+      else {
+        this.data.isEligible = true
+        this.data.extensionDuration = 6
+      }
+    }
+
+    // ELSE IF NOT first agm extension
+    // AND extension requested this year
+    else if (
+      !this.isFirstAgm &&
+      this.data.isPrevExtension &&
+      this.previousAgmDateText &&
+      this.extensionExpiryDateText
+    ) {
+      const cutOffDate = DateUtilities.yyyyMmDdToDate(this.previousAgmDateText)
+      const expiryDate = DateUtilities.yyyyMmDdToDate(this.extensionExpiryDateText)
+
+      // IF CurrentDate > (ExpirationDate + 5 days)
+      // THEN NOT ELIGIBLE
+      if ((DateUtilities.daysBetweenTwoDates(expiryDate, currentDate)) > 5) {
+        this.data.isEligible = false
+      }
+      // ELSE IF (ExpirationDate - PrevAgmDate) > 12 months
+      // THEN NOT ELIGIBLE
+      else if ((DateUtilities.daysBetweenTwoDates(cutOffDate, expiryDate)) > 365) {
+        this.data.isEligible = false
+      }
+      // ELSE ELIGIBLE, ExtensionDuration = 12 months - ExpiryDate - PrevAgmDate
+      else {
+        this.data.isEligible = true
+        this.data.extensionDuration = 12 - DateUtilities.subtractDates(
+          this.previousAgmDateText,
+          this.extensionExpiryDateText
+        )
       }
     }
   }
