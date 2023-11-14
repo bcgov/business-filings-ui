@@ -239,7 +239,7 @@ export default class ExtensionRequest extends Vue {
       return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
       // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
-      return DateUtilities.addMonthsToDate(19, this.data.prevAgmDate)
+      return DateUtilities.addMonthsToDate(16, this.data.prevAgmDate)
     }
   }
 
@@ -255,20 +255,6 @@ export default class ExtensionRequest extends Vue {
     } else {
       return true
     }
-    // // Field disabled on first load when value is null
-    // if (this.data.isFirstAgm == null) {
-    //   return true
-    // }
-
-    // // Set agmYear as incorporation date if not null and true
-    // if (this.data.isFirstAgm) {
-    //   this.data.agmYear = this.data.incorporationDate.getFullYear().toString()
-    // } else {
-    //   this.data.agmYear = ''
-    // }
-
-    // // Field disabled when true
-    // return this.isFirstAgm
   }
 
   /** Called when extension date picker changes. */
