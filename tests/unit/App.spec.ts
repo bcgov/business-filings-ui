@@ -910,7 +910,7 @@ describe('App as a Draft IA with approved NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1032,7 +1032,7 @@ describe('App as a Draft IA with conditional-not required NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1135,7 +1135,7 @@ describe('App as a Draft IA with conditional-received NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1238,7 +1238,7 @@ describe('App as a Draft IA with conditional-waived NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1341,7 +1341,7 @@ describe('App as a PAID (pending) Incorporation Application', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1488,7 +1488,7 @@ describe('App as a COMPLETED Incorporation Application', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1769,7 +1769,7 @@ describe('App as a Draft Registration with approved NR', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
@@ -1892,7 +1892,7 @@ describe('App as a COMPLETED Registration Application', () => {
       })))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({
         data: {
           applicants: {},
