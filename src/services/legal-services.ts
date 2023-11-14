@@ -4,6 +4,7 @@ import { AxiosResponse } from 'axios'
 import { ApiBusinessIF, ApiFilingIF, CommentIF, DocumentIF, FetchDocumentsIF, NameRequestIF,
   PresignedUrlIF } from '@/interfaces'
 import { DigitalCredentialTypes, FilingStatus, Roles } from '@/enums'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Class that provides integration with the Legal API.
@@ -95,15 +96,33 @@ export default class LegalServices {
   }
 
   /**
-   * Fetches a Name Request.
-   * @param filingId the NR number
-   * @returns the name request object
+   * Fetches name request data.
+   * @param nrNumber the name request number (eg, NR 1234567) to fetch
+   * @param phone the name request phone (eg, 12321232)
+   * @param email the name request email (eg, nr@example.com)
+   * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string): Promise<NameRequestIF> {
-    const url = `nameRequests/${nrNumber}`
+  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
+    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
+
     return axios.get(url)
-      // workaround because data is at "response.data.data"
-      .then(response => response?.data)
+      .then(response => {
+        if (response?.data) {
+          return response.data
+        }
+        // eslint-disable-next-line no-console
+        console.log('fetchNameRequest() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      }).catch(error => {
+        if (error?.response?.status === StatusCodes.NOT_FOUND) {
+          return null // NR not found (not an error)
+        } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
+          throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
+        } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
+          throw new Error('Not sent email or phone number.') // Not sent the email or phone
+        }
+        throw error
+      })
   }
 
   /**
