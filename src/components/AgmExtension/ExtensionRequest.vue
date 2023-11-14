@@ -172,7 +172,6 @@ import { useRootStore } from '@/stores'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import AgmYear from '@/components/AgmLocationChange/AgmYear.vue'
 import { DateUtilities } from '@/services'
-import { CONSOLE_LEVELS } from '@sentry/utils'
 
 @Component({
   components: {
@@ -256,6 +255,20 @@ export default class ExtensionRequest extends Vue {
     } else {
       return true
     }
+    // // Field disabled on first load when value is null
+    // if (this.data.isFirstAgm == null) {
+    //   return true
+    // }
+
+    // // Set agmYear as incorporation date if not null and true
+    // if (this.data.isFirstAgm) {
+    //   this.data.agmYear = this.data.incorporationDate.getFullYear().toString()
+    // } else {
+    //   this.data.agmYear = ''
+    // }
+
+    // // Field disabled when true
+    // return this.isFirstAgm
   }
 
   /** Called when extension date picker changes. */
