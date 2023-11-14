@@ -1,5 +1,7 @@
 /** Object that stores AGM Extension evaluation fields. */
 export interface AgmExtEvalIF {
+  alreadyExtended: boolean
+  requestExpired: boolean
   isGoodStanding: boolean
   incorporationDate: Date
   isFirstAgm: boolean
@@ -15,6 +17,8 @@ export interface AgmExtEvalIF {
 
 /** An empty AGM Extension Evaluation object. Note: don't assign this - make a copy instead. */
 export const EmptyAgmExtEval: AgmExtEvalIF = {
+  alreadyExtended: null,
+  requestExpired: null,
   isGoodStanding: null,
   incorporationDate: null,
   isFirstAgm: null,
