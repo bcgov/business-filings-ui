@@ -368,8 +368,8 @@ export default class DateUtilities {
    * @example (18, 2023-02-03) -> "2024-08-03"
    */
   static addMonthsToDate (month: number, date: string): string {
-    if (!date) {
-      date = '2023-01-01'
+    if (!month || !date) {
+      return null
     }
     const temp = this.yyyyMmDdToDate(date)
     temp.setMonth(temp.getMonth() + month)

@@ -196,6 +196,7 @@ describe('AGM Extension view', () => {
       agmExtension: {
         agmDueDate: null,
         agmYear: null,
+        currentDate: '2023-11-06',
         extensionDuration: NaN,
         incorporationDate: new Date('2000-01-01T08:00:00.000Z'),
         isEligible: true,

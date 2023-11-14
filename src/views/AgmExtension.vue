@@ -285,6 +285,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
   /** Called when component is mounted. */
   mounted (): void {
+    this.data.currentDate = this.getCurrentDate
     this.data.isGoodStanding = this.isGoodStanding
     this.data.incorporationDate = this.getFoundingDate
 
