@@ -243,7 +243,12 @@ export default class ExtensionRequest extends Vue {
     }
   }
 
-  /** Whether to disable the editing of AGM Year field. */
+  /**
+   * Whether to disable the editing of AGM Year field.
+   * Editable (false) when Is this first AGM is set to No.
+   * Non-Editable (true) when we first load (null) or Is first AGM is Yes.
+   * Set the agmYear as incorporation date if not null and true.
+   */
   get isFirstAgm (): boolean {
     if (this.data.isFirstAgm !== null) {
       if (this.data.isFirstAgm) {
