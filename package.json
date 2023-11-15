@@ -1,6 +1,10 @@
 {
   "name": "business-filings-ui",
+<<<<<<< HEAD
   "version": "7.0.10",
+=======
+  "version": "7.0.11",
+>>>>>>> dd613e803eef943547dc21d4821279c27b9c395e
   "private": true,
   "appName": "Filings UI",
   "sbcName": "SBC Common Components",
