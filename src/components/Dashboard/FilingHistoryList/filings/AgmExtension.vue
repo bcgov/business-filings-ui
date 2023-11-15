@@ -1,6 +1,6 @@
 <template>
   <FilingTemplate
-    class="consent-continuation-out"
+    class="agm-extension"
     :filing="filing"
     :index="index"
   >
@@ -10,7 +10,7 @@
           v-if="isFilingComplete && !isConsentExpired"
           class="mt-4"
         >
-          This consent to continue out to {{ foreignJurisdiction }} is valid <strong>until {{ expiry }}</strong>.
+          This consent to continue out to XXX is valid <strong>until {{ expiry }}</strong>.
         </p>
         <p
           v-if="isConsentExpired"
@@ -31,18 +31,6 @@
           class="mt-4"
           v-html="orderDetails"
         />
-        <p
-          v-if="fileNumber"
-          class="mt-4 mb-0"
-        >
-          Court Order Number: {{ fileNumber }}
-        </p>
-        <p
-          v-if="hasEffectOfOrder"
-          class="mt-0"
-        >
-          Pursuant to a Plan of Arrangement
-        </p>
       </div>
     </template>
   </FilingTemplate>
@@ -84,28 +72,6 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
     return this.filing.data?.order?.orderDetails?.replaceAll('\n', '<br/>')
   }
 
-  /** The court order file number. */
-  get fileNumber (): string {
-    return this.filing.data?.order?.fileNumber
-  }
-
-  /** Whether the court order has an effect of order. */
-  get hasEffectOfOrder (): boolean {
-    return Boolean(this.filing.data?.order?.effectOfOrder)
-  }
-
-  get foreignJurisdiction (): string {
-    const foreignJusrisdictionCountry = this.filing.data?.consentContinuationOut?.country
-    const country = this.getCountryName(this.filing.data?.consentContinuationOut?.country)
-    const region = this.getRegionNameFromCode(this.filing.data?.consentContinuationOut?.region)
-
-    if (foreignJusrisdictionCountry === 'CA' || foreignJusrisdictionCountry === 'US') {
-      return region + ', ' + country
-    } else {
-      return country
-    }
-  }
-
   /** Whether the filing is complete. */
   get isFilingComplete (): boolean {
     return EnumUtilities.isStatusCompleted(this.filing)
@@ -145,4 +111,5 @@ p {
 .warn-icon {
     margin-bottom: 6px;
 }
+
 </style>
