@@ -134,8 +134,9 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isAllowed(AllowableActions.RESTORATION)"
+              v-if="isHistorical"
               data-type="restoration"
+              :disabled="!isAllowed(AllowableActions.RESTORATION)"
               @click="goToRestorationFiling(ApplicationTypes.CREATE_UI, FilingSubTypes.FULL_RESTORATION)"
             >
               <v-list-item-title>
@@ -314,7 +315,6 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
     try {
       // show spinner since the network calls below can take a few seconds
       this.setFetchingDataSpinner(true)
-
       // create restoration draft filing
       const restoration = this.buildRestorationFiling(restorationType)
       const filing = await LegalServices.createFiling(this.getIdentifier, restoration, true)

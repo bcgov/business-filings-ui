@@ -133,10 +133,12 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.RESTORATION: {
         // full restoration or limited restoration
-        // but not limited restoration extension or limited restoration to full
+        // but not limited restoration extension or limited restoration to full test
+        const ff = !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType)
         return (
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)
+          (this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)) &&
+          ff
         )
       }
 
