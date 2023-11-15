@@ -83,7 +83,12 @@
           cols="12"
           sm="9"
         >
-          {{ dueDateString }}
+          <template v-if="!data.isEligible">
+            {{ dueDateString }}
+          </template>
+          <template v-else>
+            {{ expDateString }}
+          </template>
         </v-col>
       </v-row>
     </template>
@@ -105,7 +110,16 @@ export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
 
   get dueDateString (): string {
-    return (DateUtilities.formatYyyyMmDd(this.data.agmDueDate))
+    const date = (DateUtilities.yyyyMmDdToDate(this.data.agmDueDate))
+    const pacificDate = DateUtilities.dateToPacificDate(date, true)
+    if (pacificDate) return `${pacificDate} at 11:59 pm Pacific time`
+    return ''
+  }
+  get expDateString (): string {
+    const date = (DateUtilities.yyyyMmDdToDate(this.data.prevExpiryDate))
+    const pacificExpDate = DateUtilities.dateToPacificDate(date, true)
+    if (pacificExpDate) return `${pacificExpDate} at 11:59 pm Pacific time`
+    return ''
   }
 }
 </script>
