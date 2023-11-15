@@ -112,13 +112,14 @@ export default class AgmExtensionEvaluation extends Vue {
   get dueDateString (): string {
     const date = (DateUtilities.yyyyMmDdToDate(this.data.agmDueDate))
     const pacificDate = DateUtilities.dateToPacificDate(date, true)
-    if (pacificDate) return `${pacificDate} at 11:59 pm Pacific time`
+    if (pacificDate) return pacificDate
     return ''
   }
+
   get expDateString (): string {
     const date = (DateUtilities.yyyyMmDdToDate(this.data.prevExpiryDate))
     const pacificExpDate = DateUtilities.dateToPacificDate(date, true)
-    if (pacificExpDate) return `${pacificExpDate} at 11:59 pm Pacific time`
+    if (pacificExpDate) return pacificExpDate
     return ''
   }
 }
