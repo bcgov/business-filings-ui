@@ -257,7 +257,7 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
 
   /** The tooltip text for AGM Extension list item. Text is different if action item is disabled. */
   get agmExtensionToolTipText (): string {
-    if (!this.isAllowed(AllowableActions.AGM_LOCATION_CHANGE)) {
+    if (!this.isAllowed(AllowableActions.AGM_EXTENSION)) {
       return 'The business must be in good standing to request an AGM extension.'
     } else {
       return 'Request an AGM extension. The longest extension granted at one time is six months.'

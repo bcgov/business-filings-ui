@@ -22,8 +22,10 @@ import StaffFiling from '@/components/Dashboard/FilingHistoryList/filings/StaffF
 import LimitedRestoration from '@/components/Dashboard/FilingHistoryList/filings/LimitedRestoration.vue'
 import ConsentContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ConsentContinuationOut.vue'
 import ContinuationOut from '@/components/Dashboard/FilingHistoryList/filings/ContinuationOut.vue'
-import { CorpTypeCd, FilingTypes } from '@bcrs-shared-components/enums'
-import { FilingStatus, FilingSubTypes } from '@/enums'
+import DefaultFiling from '@/components/Dashboard/FilingHistoryList/filings/DefaultFiling.vue'
+import AgmExtension from '@/components/Dashboard/FilingHistoryList/filings/AgmExtension.vue'
+import { FilingTypes } from '@bcrs-shared-components/enums'
+import { CorpTypeCd, FilingStatus, FilingSubTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -2480,8 +2482,8 @@ describe('Filing History List - without documents', () => {
   })
 })
 
-describe('Filing History List - expands Consent to continue out', () => {
-  it('expands Consent to continue out', async () => {
+describe('Filing History List - expands Consent to Continue Out', () => {
+  it('expands Consent to Continue Out', async () => {
     // init store
     businessStore.setIdentifier('BC1234567')
     filingHistoryListStore.setFilings([
@@ -2526,8 +2528,8 @@ describe('Filing History List - expands Consent to continue out', () => {
   })
 })
 
-describe('Filing History List - Expands Continuation Out', () => {
-  it('expands to continue out', async () => {
+describe('Filing History List - expands Continuation Out', () => {
+  it('expands Continuation Out', async () => {
     // init store
     businessStore.setIdentifier('BC1234567')
     filingHistoryListStore.setFilings([
@@ -2566,6 +2568,98 @@ describe('Filing History List - Expands Continuation Out', () => {
     // verify details
     expect(vm.getPanel).toBe(0) // first row is expanded
     expect(wrapper.findComponent(ContinuationOut).exists()).toBe(true)
+
+    vi.resetAllMocks()
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - expands AGM Location Change', () => {
+  it('expands AGM Location Change', async () => {
+    // init store
+    businessStore.setIdentifier('BC1234567')
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'BC1234567',
+        commentsCount: 0,
+        displayName: 'Request for AGM Location Change',
+        effectiveDate: '2022-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: FilingTypes.AGM_LOCATION_CHANGE,
+        status: FilingStatus.COMPLETED,
+        submittedDate: '2022-11-20 22:17:54 GMT',
+        submitter: 'BCREGTEST',
+        documentsLink: 'http://test'
+      } as any
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    const vm = wrapper.vm as any
+
+    vi.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand panel
+    await button.trigger('click')
+    await flushPromises() // wait for expansion transition
+
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+
+    // verify details
+    expect(vm.getPanel).toBe(0) // first row is expanded
+    expect(wrapper.findComponent(DefaultFiling).exists()).toBe(true)
+
+    vi.resetAllMocks()
+    wrapper.destroy()
+  })
+})
+
+describe('Filing History List - expands AGM Extension', () => {
+  it('expands AGM Extension', async () => {
+    // init store
+    businessStore.setIdentifier('BC1234567')
+    filingHistoryListStore.setFilings([
+      {
+        availableOnPaperOnly: false,
+        businessIdentifier: 'BC1234567',
+        commentsCount: 0,
+        displayName: 'Request for AGM Extension',
+        effectiveDate: '2022-11-20 22:17:54 GMT',
+        filingId: 111,
+        isFutureEffective: false,
+        name: FilingTypes.AGM_EXTENSION,
+        status: FilingStatus.COMPLETED,
+        submittedDate: '2022-11-20 22:17:54 GMT',
+        submitter: 'BCREGTEST',
+        documentsLink: 'http://test'
+      } as any
+    ])
+
+    const wrapper = mount(FilingHistoryList, { vuetify })
+    const vm = wrapper.vm as any
+
+    vi.spyOn(vm, 'getPanel', 'get').mockReturnValue(0)
+
+    // verify View Documents button
+    const button = wrapper.find('.expand-btn')
+    expect(button.text()).toContain('View Documents')
+
+    // expand panel
+    await button.trigger('click')
+    await flushPromises() // wait for expansion transition
+
+    // verify Hide Documents button
+    expect(wrapper.find('.expand-btn').text()).toContain('Hide Documents')
+
+    // verify details
+    expect(vm.getPanel).toBe(0) // first row is expanded
+    expect(wrapper.findComponent(AgmExtension).exists()).toBe(true)
 
     vi.resetAllMocks()
     wrapper.destroy()
