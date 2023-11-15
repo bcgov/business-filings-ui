@@ -314,6 +314,7 @@ export default class StaffNotation extends Mixins(AllowableActionsMixin, FilingM
     let url: string
     try {
       // show spinner since the network calls below can take a few seconds
+
       this.setFetchingDataSpinner(true)
       // create restoration draft filing
       const restoration = this.buildRestorationFiling(restorationType)
