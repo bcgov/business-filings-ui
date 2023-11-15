@@ -41,9 +41,21 @@ export interface ApiFilingIF {
       freeze: boolean
     }
 
+    agmExtension?: {
+      year: string // YYYY-MM-DD
+      isFirstAgm: boolean
+      prevAgmRefDate: string // YYYY-MM-DD
+      extReqForAgmYear: boolean
+      expireDateCurrExt: string // YYYY-MM-DD
+      intendedAgmDate: string // YYYY-MM-DD
+      totalApprovedExt: number // in months
+      extensionDuration: number // in months
+      expireDateApprovedExt: string // YYYY-MM-DD
+    }
+
     agmLocationChange?: {
-      year: string,
-      reason: string,
+      year: string
+      reason: string
       agmLocation: string
     }
 
