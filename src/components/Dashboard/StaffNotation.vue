@@ -187,7 +187,8 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)"
+              v-if="isHistorical"
+              :disabled="!isAllowed(AllowableActions.LIMITED_RESTORATION_EXTENSION)"
               data-type="extend-limited-restoration"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)"
             >
@@ -197,7 +198,8 @@
             </v-list-item>
 
             <v-list-item
-              v-if="isAllowed(AllowableActions.LIMITED_RESTORATION_TO_FULL)"
+              v-if="isHistorical"
+              :disabled="!isAllowed(AllowableActions.LIMITED_RESTORATION_TO_FULL)"
               data-type="convert-full-restoration"
               @click="goToRestorationFiling(ApplicationTypes.EDIT_UI, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)"
             >

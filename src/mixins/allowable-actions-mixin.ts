@@ -108,11 +108,13 @@ export default class AllowableActionsMixin extends Vue {
       }
 
       case AllowableActions.LIMITED_RESTORATION_EXTENSION: {
-        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
+        return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
+        this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_EXTENSION)
       }
 
       case AllowableActions.LIMITED_RESTORATION_TO_FULL: {
-        return this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
+        return !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType) &&
+        this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION_TO_FULL)
       }
 
       case AllowableActions.PUT_BACK_ON: {
@@ -133,12 +135,12 @@ export default class AllowableActionsMixin extends Vue {
 
       case AllowableActions.RESTORATION: {
         // full restoration or limited restoration
-        // but not limited restoration extension or limited restoration to full test
+        // but not limited restoration extension or limited restoration to full
         const ff = !!GetFeatureFlag('supported-restoration-entities')?.includes(this.getLegalType)
         return (
+          ff &&
           (this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.FULL_RESTORATION) ||
-          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION)) &&
-          ff
+          this.isAllowedFiling(FilingTypes.RESTORATION, FilingSubTypes.LIMITED_RESTORATION))
         )
       }
 
