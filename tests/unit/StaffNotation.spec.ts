@@ -260,7 +260,7 @@ describe('StaffNotation', () => {
 
   it('renders drop down menu correctly - historical', async () => {
     vi.spyOn(utils, 'GetFeatureFlag').mockImplementation(flag => {
-      if (flag === 'supported-restoration-entities') return ''
+      if (flag === 'supported-restoration-entities') return 'SP'
       return null
     })
     businessStore.setState(EntityState.HISTORICAL)
