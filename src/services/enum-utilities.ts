@@ -67,6 +67,16 @@ export default class EnumUtilities {
   // Filing Type helpers
   //
 
+  /** Returns True if filing is an AGM Extension. */
+  static isTypeAgmExtension (item: any): boolean {
+    return (item.name === FilingTypes.AGM_EXTENSION)
+  }
+
+  /** Returns True if filing is an AGM Location Change. */
+  static isTypeAgmLocationChange (item: any): boolean {
+    return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
+  }
+
   /** Returns True if filing is an Alteration. */
   static isTypeAlteration (item: any): boolean {
     return (item.name === FilingTypes.ALTERATION)
