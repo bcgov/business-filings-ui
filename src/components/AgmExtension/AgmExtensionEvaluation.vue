@@ -57,11 +57,10 @@
               The business has reached maximum possible extension for this AGM.
             </template>
             <template v-else-if="!data.alreadyExtended && data.requestExpired">
-              The period to request an extension for this AGM has expired.
+              The business is outside of the time window to request an extension.
             </template>
             <template v-else-if="data.alreadyExtended && data.requestExpired">
-              The business has reached maximum possible extension for this AGM.
-              The period to request an extension has expired.
+              The AGM due date from the previous extension has passed.
             </template>
           </template>
           <template v-else>
@@ -85,19 +84,10 @@
           sm="9"
         >
           <template v-if="!data.isEligible">
-            <template v-if="data.alreadyExtended && !data.requestExpired">
-              The due date for this AGM cannot be set since extension has already been requested.
-            </template>
-            <template v-else-if="!data.alreadyExtended && data.requestExpired">
-              The due date for this AGM cannot be set since the request for extension has expired.
-            </template>
-            <template v-else-if="data.alreadyExtended && data.requestExpired">
-              The due date for this AGM cannot be set since extension has already been requested and the request
-              for extension has expired.
-            </template>
+            {{ formattedDate(data.agmDueDate) }}
           </template>
           <template v-else>
-            {{ dueDateString }}
+            {{ formattedDate(data.prevExpiryDate) }}
           </template>
         </v-col>
       </v-row>
@@ -119,8 +109,11 @@ import { DateUtilities } from '@/services'
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
 
-  get dueDateString (): string {
-    return (DateUtilities.formatYyyyMmDd(this.data.agmDueDate))
+  formattedDate (val: string): string {
+    const date = (DateUtilities.yyyyMmDdToDate(val))
+    const pacificDate = DateUtilities.dateToPacificDate(date, true)
+    if (pacificDate) return pacificDate
+    return ''
   }
 }
 </script>
