@@ -1,3 +1,4 @@
+export { default as AgmExtension } from './AgmExtension.vue'
 export { default as AlterationFiling } from './AlterationFiling.vue'
 export { default as ChangeOfAddress } from './ChangeOfAddress.vue'
 export { default as ConsentContinuationOut } from './ConsentContinuationOut.vue'

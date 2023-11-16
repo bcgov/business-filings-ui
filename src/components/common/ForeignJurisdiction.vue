@@ -80,7 +80,7 @@ export default class ForeignJurisdiction extends Mixins(CountriesProvincesMixin)
   }
 
   /** Get the respective regions of the country selected as an array of objects. */
-  get canadaUsaRegions (): Array<object> {
+  get canadaUsaRegions (): Array<any> {
     if (this.selectedCountryName === 'Canada') {
       let regions = this.getCountryRegions('CA')
       regions = regions.filter(province => province.short !== 'BC')
