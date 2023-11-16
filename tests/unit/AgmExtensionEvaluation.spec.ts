@@ -166,7 +166,7 @@ describe('ExtensionEvaluation', () => {
       'The business has reached maximum possible extension for this AGM.')
 
     expect(rows.at(2).find('.col-sm-9').text()).toBe(
-      'The due date for this AGM cannot be set since extension has already been requested.')
+      '')
 
     wrapper.destroy()
   })
@@ -191,10 +191,10 @@ describe('ExtensionEvaluation', () => {
     expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
 
     expect(rows.at(1).find('.col-sm-9').text()).toBe(
-      'The period to request an extension for this AGM has expired.')
+      'The business is outside of the time window to request an extension.')
 
     expect(rows.at(2).find('.col-sm-9').text()).toBe(
-      'The due date for this AGM cannot be set since the request for extension has expired.')
+      '')
 
     wrapper.destroy()
   })
@@ -219,12 +219,10 @@ describe('ExtensionEvaluation', () => {
     expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
 
     expect(rows.at(1).find('.col-sm-9').text()).toBe(
-      'The business has reached maximum possible extension for this AGM. ' +
-      'The period to request an extension has expired.')
+      'The AGM due date from the previous extension has passed.')
 
     expect(rows.at(2).find('.col-sm-9').text()).toBe(
-      'The due date for this AGM cannot be set since extension has already been requested ' +
-      'and the request for extension has expired.')
+      '')
 
     wrapper.destroy()
   })
