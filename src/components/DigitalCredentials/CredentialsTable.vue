@@ -23,7 +23,7 @@
           {{ item.isRevoked ? "Revoked" : item.isIssued ? "Issued" : "Pending" }}
         </template>
         <template #[`item.dateOfIssue`]="{ item }">
-          {{ apiToPacificDate(item.dateOfIssue) || "-" }}
+          {{ apiToPacificDateTime(item.dateOfIssue) || "-" }}
         </template>
         <template #[`item.action`]="{ item }">
           <CredentialsMenu
@@ -73,7 +73,7 @@ export default class CredentialsTable extends Mixins(DateMixin) {
       },
       {
         class: 'column-lg',
-        text: 'Date of Issue',
+        text: 'Issue Date',
         value: 'dateOfIssue'
       },
       {

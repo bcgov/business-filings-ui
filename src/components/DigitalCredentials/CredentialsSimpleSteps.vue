@@ -34,7 +34,7 @@
               <div class="align-self-center">2</div>
             </span>
             <span class="ml-8">
-              Scan the QR code with your BC Wallet to get your Digital Business Card and accept it in your BC
+              Scan the QR code with your BC Wallet app to get your Digital Business Card and accept it in your BC
               Wallet app.
             </span>
           </v-card-text>
