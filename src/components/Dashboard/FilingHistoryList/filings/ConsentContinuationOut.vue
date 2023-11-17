@@ -73,7 +73,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
   /** Check if Consent is Expired. */
   get isConsentExpired (): boolean {
     const date = DateUtilities.apiToDate(this.filing.data?.consentContinuationOut?.expiry)
-    const daysToExpire = DateUtilities.daysFromToday(new Date(), date)
+    const daysToExpire = DateUtilities.daysBetweenTwoDates(new Date(), date)
     if (isNaN(daysToExpire) || daysToExpire < 0) {
       return true
     }
@@ -121,7 +121,7 @@ export default class ConsentContinuationOut extends Mixins(CountriesProvincesMix
   }
 
   /** Get the respective regions of the country selected as an array of objects. */
-  get canadaUsaRegions (): Array<object> {
+  get canadaUsaRegions (): Array<any> {
     const foreignJusrisdictionCountry = this.filing.data?.consentContinuationOut?.country
     if (foreignJusrisdictionCountry === 'CA') {
       return this.getCountryRegions('CA')
@@ -145,5 +145,4 @@ p {
 .warn-icon {
     margin-bottom: 6px;
 }
-
 </style>

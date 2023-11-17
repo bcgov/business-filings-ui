@@ -36,14 +36,13 @@ describe('ExtensionRequest', () => {
     expect(rows.at(1).find('.col-sm-3').text()).toBe('AGM Year')
     expect(rows.at(1).find('.col-sm-9 .v-text-field').exists()).toBe(true)
 
-    expect(rows.at(2).find('.col-sm-3').text()).toBe('Previous AGM date or a reference date')
-    expect(rows.at(2).find('.col-sm-9').findComponent(DatePicker).exists()).toBe(true)
+    expect(rows.at(2).find('.col-sm-3').text()).toBe('Has an extension been requested for this AGM year already?')
+    expect(rows.at(2).find('.col-sm-9').text())
+      .toContain('Yes - Specify the date the extension expiresDate of extension expiry')
+    expect(rows.at(2).find('.col-sm-9').text()).toContain('No - this is the first extension request for this AGM')
 
-    expect(rows.at(3).find('.col-sm-3').text()).toBe('Has an extension been requested for this AGM year already?')
-    expect(rows.at(3).find('.col-sm-9').text()).toBe('(future)')
-
-    expect(rows.at(4).find('.col-sm-3').text()).toBe('Intended date this AGM will be held')
-    expect(rows.at(4).find('.col-sm-9').findComponent(DatePicker).exists()).toBe(true)
+    expect(rows.at(3).find('.col-sm-3').text()).toBe('Intended date this AGM will be held')
+    expect(rows.at(3).find('.col-sm-9').findComponent(DatePicker).exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -643,7 +643,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   enableCheckbox: Array<any> = []
   confirmEnabled = false
   panel: number = null // currently expanded panel
-  checkTimer: number = null
+  checkTimer = null // may be type number or NodeJS.Timeout
   inProcessFiling: number = null
   fetchAffiliationInvitationsErrorDialog = false
   authorizeAffiliationInvitationErrorDialog = false
@@ -663,7 +663,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   @Getter(useRootStore) getTasks!: Array<ApiTaskIF>
   @Getter(useRootStore) getTodoListResource!: TodoListResourceIF
   @Getter(useBusinessStore) isBenBcCccUlc!: boolean
-  @Getter(useBusinessStore) isSoleProp!: boolean
 
   @Action(useRootStore) setARFilingYear!: (x: number) => void
   @Action(useRootStore) setArMinDate!: (x: string) => void
@@ -828,7 +827,10 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
   /** Check if task item is cancellable (has a draft). */
   isCancellableTodoItem (item: TodoItemIF): boolean {
-    return (item.name !== FilingTypes.AGM_LOCATION_CHANGE)
+    return (
+      (item.name !== FilingTypes.AGM_EXTENSION) &&
+      (item.name !== FilingTypes.AGM_LOCATION_CHANGE)
+    )
   }
 
   /** Loads a todo item into the Todo Items array. */
@@ -999,6 +1001,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     if (header) {
       switch (header.name) {
+        case FilingTypes.AGM_EXTENSION:
+          await this.loadAgmExtension(task)
+          break
         case FilingTypes.AGM_LOCATION_CHANGE:
           await this.loadAgmLocationChange(task)
           break
@@ -1474,6 +1479,36 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
         filingId: header.filingId,
         title: FilingNames.CONSENT_CONTINUATION_OUT,
         draftTitle: FilingNames.CONSENT_CONTINUATION_OUT,
+        status: header.status,
+        enabled: task.enabled,
+        order: task.order,
+        paymentMethod: header.paymentMethod || null,
+        paymentToken: header.paymentToken || null,
+        payErrorObj,
+        // FUTURE: ideally, this would come from the filing:
+        warnings: this.getBusinessWarnings.map(warning => warning.message)
+      } as TodoItemIF
+      this.todoItems.push(item)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('ERROR - invalid header or business in filing =', filing)
+    }
+  }
+
+  async loadAgmExtension (task: ApiTaskIF): Promise<void> {
+    const filing = task.task.filing
+    const header = filing.header
+    const agmLocationChange = filing.agmLocationChange
+
+    if (header && agmLocationChange) {
+      const paymentStatusCode = header.paymentStatusCode
+      const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
+
+      const item = {
+        name: FilingTypes.AGM_EXTENSION,
+        filingId: header.filingId,
+        title: FilingNames.AGM_EXTENSION,
+        draftTitle: FilingNames.AGM_EXTENSION,
         status: header.status,
         enabled: task.enabled,
         order: task.order,

@@ -196,11 +196,21 @@ describe('AGM Extension view', () => {
       agmExtension: {
         agmDueDate: null,
         agmYear: null,
+        alreadyExtended: null,
+        currentDate: '2023-11-06',
+        expireDateApprovedExt: null,
+        expireDateCurrExt: undefined,
+        extReqForAgmYear: undefined,
         extensionDuration: NaN,
         incorporationDate: new Date('2000-01-01T08:00:00.000Z'),
+        intendedAgmDate: undefined,
         isEligible: true,
         isFirstAgm: null,
-        isGoodStanding: true
+        isGoodStanding: true,
+        prevAgmRefDate: undefined,
+        requestExpired: null,
+        totalApprovedExt: NaN,
+        year: null
       },
       business: {
         foundingDate: '2000-01-01T08:00:00.000+00:00',

@@ -137,7 +137,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('nameRequests/NR1234567')
+    get.withArgs('nameRequests/NR1234567/validate?phone=&email=')
       .returns(new Promise(resolve => resolve({ data: NR })))
 
     // call method

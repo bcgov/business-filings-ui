@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import AboutTheBusiness from '@/components/AgmExtension/AboutTheBusiness.vue'
 import { AgmExtEvalIF, EmptyAgmExtEval } from '@/interfaces'
-import { DateUtilities } from '@/services'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

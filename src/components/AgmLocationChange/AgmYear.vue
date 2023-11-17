@@ -5,6 +5,7 @@
     hide-spin-buttons
     type="number"
     filled
+    :disabled="disableEdit"
     :label="label"
     :rules="rules"
     :value="value"
@@ -31,6 +32,9 @@ export default class AgmYear extends Vue {
   @Prop({ default: () => [] }) readonly rules!: any[]
 
   @Prop({ default: false }) readonly validateForm!: boolean
+
+  /** Whether to disable the AGM year input field. */
+  @Prop({ default: false }) readonly disableEdit!: boolean
 
   agmYear = ''
 
