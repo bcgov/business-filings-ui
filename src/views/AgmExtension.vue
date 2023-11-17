@@ -67,7 +67,6 @@
 
             <!-- delete this debugging code -->
             <pre class="mt-8">data: {{ data }}</pre>
-            <pre class="mt-8">evaluateResult: {{ extensionRequestValid }}</pre>
 
             <!-- Certify -->
             <section class="mt-8">
