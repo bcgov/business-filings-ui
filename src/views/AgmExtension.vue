@@ -285,6 +285,7 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
   /** Called when component is mounted. */
   mounted (): void {
+    this.data.currentDate = this.getCurrentDate
     this.data.isGoodStanding = this.isGoodStanding
     this.data.incorporationDate = this.getFoundingDate
 
@@ -426,6 +427,16 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
     const data: any = {
       [FilingTypes.AGM_EXTENSION]: {
+        // convert local properties into API/schema properties
+        year: this.data.agmYear,
+        isFirstAgm: this.data.isFirstAgm,
+        prevAgmRefDate: this.data.prevAgmDate,
+        extReqForAgmYear: this.data.isPrevExtension,
+        expireDateCurrExt: this.data.prevExpiryDate,
+        intendedAgmDate: this.data.intendedAgmDate,
+        totalApprovedExt: this.data.extensionDuration,
+        expireDateApprovedExt: this.data.agmDueDate,
+        // add in remaining local properties for future auditing
         ...this.data
       }
     }

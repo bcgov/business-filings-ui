@@ -10,6 +10,7 @@
 
     <template #content>
       <v-card
+        v-if="!data.isEligible"
         outlined
         class="message-box rounded-0 mt-6 mx-6"
       >
@@ -33,7 +34,7 @@
           cols="12"
           sm="9"
         >
-          {{ data.agmYear || '' }}
+          {{ data.agmYear }}
         </v-col>
       </v-row>
 
@@ -51,7 +52,20 @@
           cols="12"
           sm="9"
         >
-          {{ data.extensionDuration || 'Unknown' }}
+          <template v-if="!data.isEligible">
+            <template v-if="data.alreadyExtended && !data.requestExpired">
+              The business has reached maximum possible extension for this AGM.
+            </template>
+            <template v-else-if="!data.alreadyExtended && data.requestExpired">
+              The business is outside of the time window to request an extension.
+            </template>
+            <template v-else-if="data.alreadyExtended && data.requestExpired">
+              The AGM due date from the previous extension has passed.
+            </template>
+          </template>
+          <template v-else>
+            {{ data.extensionDuration }} months
+          </template>
         </v-col>
       </v-row>
 
@@ -69,7 +83,12 @@
           cols="12"
           sm="9"
         >
-          {{ data.agmDueDate || 'Unknown' }}
+          <template v-if="!data.isEligible">
+            {{ formattedDate(data.agmDueDate) }}
+          </template>
+          <template v-else>
+            {{ formattedDate(data.prevExpiryDate) }}
+          </template>
         </v-col>
       </v-row>
     </template>
@@ -80,6 +99,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { VcardTemplate } from '@/components/common'
 import { AgmExtEvalIF } from '@/interfaces'
+import { DateUtilities } from '@/services'
 
 @Component({
   components: {
@@ -88,5 +108,12 @@ import { AgmExtEvalIF } from '@/interfaces'
 })
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
+
+  formattedDate (val: string): string {
+    const date = (DateUtilities.yyyyMmDdToDate(val))
+    const pacificDate = DateUtilities.dateToPacificDate(date, true)
+    if (pacificDate) return pacificDate
+    return ''
+  }
 }
 </script>

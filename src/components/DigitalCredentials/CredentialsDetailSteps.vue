@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="credentials-detail-steps">
     <h1>Steps to get your credential</h1>
     <v-card class="mt-6">
       <v-card-text class="d-flex">

@@ -67,6 +67,16 @@ export default class EnumUtilities {
   // Filing Type helpers
   //
 
+  /** Returns True if filing is an AGM Extension. */
+  static isTypeAgmExtension (item: any): boolean {
+    return (item.name === FilingTypes.AGM_EXTENSION)
+  }
+
+  /** Returns True if filing is an AGM Location Change. */
+  static isTypeAgmLocationChange (item: any): boolean {
+    return (item.name === FilingTypes.AGM_LOCATION_CHANGE)
+  }
+
   /** Returns True if filing is an Alteration. */
   static isTypeAlteration (item: any): boolean {
     return (item.name === FilingTypes.ALTERATION)
@@ -299,6 +309,8 @@ export default class EnumUtilities {
       case FilingTypes.ADMIN_FREEZE:
         // FUTURE: add freeze/unfreeze checks here
         return FilingNames.ADMIN_FREEZE
+      case FilingTypes.AGM_EXTENSION: return FilingNames.AGM_EXTENSION
+      case FilingTypes.AGM_LOCATION_CHANGE: return FilingNames.AGM_LOCATION_CHANGE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
@@ -332,13 +344,15 @@ export default class EnumUtilities {
   }
 
   /**
-   * Converts a string in "camelCase" (or "PascalCase") to separate, title-case words,
+   * Converts a string in "camelCase" (or "PascalCase") to a string of separate, title-case words,
    * suitable for a title or proper name.
    * @param s the string to convert
    * @returns the converted string
    */
   static camelCaseToWords (s: string): string {
-    return s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
+    const words = s?.split(/(?=[A-Z])/).join(' ').replace(/^\w/, c => c.toUpperCase()) || ''
+    // SPECIAL CASE: convert 'Agm' to uppercase
+    return words.replace('Agm', 'AGM')
   }
 
   /**

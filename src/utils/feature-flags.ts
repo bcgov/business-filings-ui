@@ -17,7 +17,8 @@ const defaultFlagSet: LDFlagSet = {
   'supported-dissolution-entities': [],
   'supported-consent-continuation-out-entities': [],
   'supported-agm-extension-entities': [],
-  'supported-agm-location-chg-entities': []
+  'supported-agm-location-chg-entities': [],
+  'supported-restoration-entities': []
 }
 
 /**
