@@ -196,7 +196,7 @@ export default class ExtensionRequest extends Vue {
   /** Whether AGM year field is valid. */
   agmYearValid = false
 
-  /** The array of validations rule(s) for the AGM radio groups. */
+  /** The array of validations rule(s) for the AGM Date text field. */
   get dateRules (): Array<(v) => boolean | string> {
     return [
       v => !!v || 'A date is required.'
