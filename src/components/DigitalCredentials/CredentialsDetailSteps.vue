@@ -27,7 +27,13 @@
                 >mdi-open-in-new</v-icon></a> is a digital identity wallet. It lets you receive, store and present
                 digital credentials such as memberships, permits, and ID cards.
               </p>
-              <div>
+              <div class="d-flex">
+                <img
+                  src="@/assets/images/bc_wallet_app.png"
+                  width="36px"
+                  alt="BC Wallet app icon"
+                  class="mr-2"
+                >
                 <v-btn
                   color="primary"
                   href="https://www2.gov.bc.ca/gov/content/governments/government-id/bc-wallet#get"

@@ -71,12 +71,8 @@
               />
               <p class="mt-8 justify-center text-center word-break-normal">
                 QR code isn't scanning?
-                <a
-                  href="#"
-                  @click.prevent="handleGenegerateNewQRCode()"
-                >
-                  Generate a new QR code
-                </a>.
+                <!-- eslint-disable vue/max-attributes-per-line -->
+                <a href="#" @click.prevent="handleGenegerateNewQRCode()">Generate a new QR code</a>.
               </p>
             </v-card-text>
           </v-card>
@@ -129,9 +125,8 @@
               </div>
               <p class="justify-center text-center word-break-normal pt-8">
                 Go to your
-                <router-link to="/digital-credentials">
-                  credential dashboard
-                </router-link>
+                <!-- eslint-disable vue/singleline-html-element-content-newline -->
+                <router-link to="/digital-credentials">credential dashboard</router-link>
                 to see details and make changes.
               </p>
             </v-card-text>
