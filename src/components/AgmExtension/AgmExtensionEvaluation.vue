@@ -10,7 +10,7 @@
 
     <template #content>
       <v-card
-        v-if="!data.isEligible"
+        v-if="evaluateResult && !data.isEligible"
         outlined
         class="message-box rounded-0 mt-6 mx-6"
       >
@@ -52,7 +52,7 @@
           cols="12"
           sm="9"
         >
-          <template v-if="!data.isEligible">
+          <template v-if="evaluateResult && !data.isEligible">
             <template v-if="data.alreadyExtended && !data.requestExpired">
               The business has reached maximum possible extension for this AGM.
             </template>
@@ -63,7 +63,7 @@
               The AGM due date from the previous extension has passed.
             </template>
           </template>
-          <template v-else>
+          <template v-else-if="evaluateResult && !!data.extensionDuration">
             {{ data.extensionDuration }} months
           </template>
         </v-col>
@@ -83,10 +83,10 @@
           cols="12"
           sm="9"
         >
-          <template v-if="!data.isEligible">
+          <template v-if="evaluateResult && !data.isEligible">
             {{ formattedDate(data.agmDueDate) }}
           </template>
-          <template v-else>
+          <template v-else-if="evaluateResult">
             {{ formattedDate(data.prevExpiryDate) }}
           </template>
         </v-col>
@@ -108,6 +108,7 @@ import { DateUtilities } from '@/services'
 })
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
+  @Prop({ default: false }) readonly evaluateResult!: boolean
 
   formattedDate (val: string): string {
     const date = (DateUtilities.yyyyMmDdToDate(val))
