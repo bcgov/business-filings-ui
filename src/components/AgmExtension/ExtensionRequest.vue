@@ -205,9 +205,9 @@ export default class ExtensionRequest extends Vue {
 
   /** Whether the extension request is valid or not */
   get extensionRequestValid (): boolean {
-    const isFirstAgmValid = this.isFirstAgm && !!this.data.agmYear
+    const isFirstAgmValid = this.data.isFirstAgm && !!this.data.agmYear
     const isSubsequentAgmValid = (
-      this.isFirstAgm === false &&
+      this.data.isFirstAgm === false &&
       !!this.data.agmYear &&
       !!this.data.prevAgmDate
     )
