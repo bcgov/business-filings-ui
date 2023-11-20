@@ -40,7 +40,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item
-          :disabled="issuedCredential.isRevoked"
+          :disabled="!issuedCredential.isIssued || issuedCredential.isRevoked"
           @click="handleConfirmRevokeCredential()"
         >
           <v-list-item-title>

@@ -410,7 +410,6 @@ describe('Entity Menu - Digital Business Cards click tests', () => {
     await wrapper.find('.menu-btn').trigger('click')
 
     const button = wrapper.find('#view-add-digital-credentials-button')
-    console.log(button)
     expect(button.exists()).toBe(true)
     expect(button.text()).toBe('Digital Business Cards')
 
@@ -476,6 +475,19 @@ describe('Entity Menu - More actions click tests', () => {
     expect(wrapper.find('.menu-btn').exists()).toBe(false)
     wrapper.destroy()
   })
+})
+
+it('renders More actions if historical and digital credential feature is allowed', async () => {
+  businessStore.setState(EntityState.HISTORICAL)
+
+  const wrapper = mount(EntityMenu, {
+    vuetify,
+    mixins: [{ methods: { isAllowed: () => true } }],
+    propsData: { businessId: 'BC1234567' }
+  })
+
+  expect(wrapper.find('.menu-btn').exists()).toBe(true)
+  wrapper.destroy()
 })
 
 describe('Entity Menu - Consent to Continuation click tests', () => {
