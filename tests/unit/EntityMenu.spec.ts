@@ -478,6 +478,19 @@ describe('Entity Menu - More actions click tests', () => {
   })
 })
 
+it('renders More actions if historical and digital credential feature is allowed', async () => {
+  businessStore.setState(EntityState.HISTORICAL)
+
+  const wrapper = mount(EntityMenu, {
+    vuetify,
+    mixins: [{ methods: { isAllowed: () => true } }],
+    propsData: { businessId: 'BC1234567' }
+  })
+
+  expect(wrapper.find('.menu-btn').exists()).toBe(true)
+  wrapper.destroy()
+})
+
 describe('Entity Menu - Consent to Continuation click tests', () => {
   const router = mockRouter.mock()
 
