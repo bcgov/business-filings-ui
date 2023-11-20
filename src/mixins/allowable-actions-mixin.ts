@@ -4,6 +4,7 @@ import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
+import { LoginSource } from 'sbc-common-components/src/util/constants'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -14,6 +15,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isSoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useRootStore) getUserInfo!: any
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -89,10 +91,16 @@ export default class AllowableActionsMixin extends Vue {
         return (isBusiness && this.isRoleStaff)
       }
 
+      /**
+       * DBC feature is only available to self-registered owners of an SP
+       * who are logged in via BCSC.
+       */
       case AllowableActions.DIGITAL_CREDENTIALS: {
         // NB: this feature is targeted via LaunchDarkly
         const ff = !!GetFeatureFlag('enable-digital-credentials')
-        return (ff && this.isSoleProp && !this.isRoleStaff)
+        const { loginSource } = this.getUserInfo
+        const isLoginSourceBCSC = loginSource === LoginSource.BCSC
+        return (ff && isLoginSourceBCSC && this.isSoleProp && !this.isRoleStaff)
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {
