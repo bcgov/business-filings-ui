@@ -196,7 +196,7 @@
                   <div
                     v-if="enableAgmLocationChg"
                     v-on="on"
-                    @click="goToAgmLocationChgFiling()"
+                    @click="promptDissolve()"
                   >
                     <v-list-item
                       id="agm-loc-chg-list-item"

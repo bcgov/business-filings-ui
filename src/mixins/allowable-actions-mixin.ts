@@ -4,6 +4,7 @@ import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
 import { AllowedActionsIF } from '@/interfaces'
 import { useBusinessStore, useRootStore } from '@/stores'
+import { LoginSource } from 'sbc-common-components/src/util/constants'
 
 @Component({})
 export default class AllowableActionsMixin extends Vue {
@@ -14,6 +15,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isSoleProp!: boolean
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
+  @Getter(useRootStore) getUserInfo!: any
 
   /**
    * Returns True if the specified action is allowed, else False.
