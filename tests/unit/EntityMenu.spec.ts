@@ -410,7 +410,6 @@ describe('Entity Menu - Digital Business Cards click tests', () => {
     await wrapper.find('.menu-btn').trigger('click')
 
     const button = wrapper.find('#view-add-digital-credentials-button')
-    console.log(button)
     expect(button.exists()).toBe(true)
     expect(button.text()).toBe('Digital Business Cards')
 
