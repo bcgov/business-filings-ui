@@ -70,7 +70,7 @@
     </span>
 
     <!-- More Actions -->
-    <span v-if="isBusiness && (!isHistorical || isAllowed(AllowableActions.DIGITAL_CREDENTIALS))">
+    <span v-if="isBusiness && areMoreActionsAvailable">
       <v-menu
         v-model="expand"
         offset-y
@@ -247,6 +247,13 @@ export default class EntityMenu extends Mixins(AllowableActionsMixin) {
   /** Whether this entity is a business (and not a draft IA/Registration). */
   get isBusiness (): boolean {
     return !!this.businessId
+  }
+
+  /**
+   * More actions should only display if an entity is not historical or if the Digital Credentials
+   * feature is available, otherwise an empty menu will display for historical entities. */
+  get areMoreActionsAvailable (): boolean {
+    return !this.isHistorical || this.isAllowed(AllowableActions.DIGITAL_CREDENTIALS)
   }
 
   get enableAgmExtension (): boolean {
