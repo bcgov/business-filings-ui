@@ -9,7 +9,6 @@
               cols="12"
               sm="4"
               md="5"
-              lg="6"
             >
               <img
                 width="100%"
@@ -21,7 +20,6 @@
               cols="12"
               sm="8"
               md="7"
-              lg="6"
             >
               <h1>Business Card Credentials</h1>
               <p class="mt-4">
@@ -42,7 +40,9 @@
                   large
                   @click="issueCredentials()"
                 >
-                  <span>Get your Business Card Credential <v-icon>mdi-chevron-right</v-icon></span>
+                  <span>Get your Digital Business Card
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </span>
                 </v-btn>
               </div>
             </v-col>
