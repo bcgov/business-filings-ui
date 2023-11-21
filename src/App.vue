@@ -370,6 +370,7 @@ export default {
     ...mapActions(useFilingHistoryListStore,
       [
         'loadFilings',
+        'loadRegistrationFiling',
         'setFilings'
       ]),
 
@@ -495,6 +496,9 @@ export default {
 
       // now that we have business info, load state filing
       await this.loadStateFiling()
+
+      // now that we have business info, load the registration filing
+      await this.loadRegistrationFiling()
 
       // now that we know entity type, store config object
       this.storeConfigObject()

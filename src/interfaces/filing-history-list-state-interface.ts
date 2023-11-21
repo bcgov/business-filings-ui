@@ -1,4 +1,5 @@
 import { ApiFilingIF } from '@/interfaces'
+import { FilingRegistraionIF } from './filing-registration-interface'
 
 /** The state model interface for the Filing History List Store. */
 export interface FilingHistoryListStateIF {
@@ -11,5 +12,6 @@ export interface FilingHistoryListStateIF {
   loadCorrectionDialog: boolean
   loadingOne: boolean
   loadingOneIndex: number
-  panel: number
+  panel: number,
+  registrationFiling: FilingRegistraionIF
 }

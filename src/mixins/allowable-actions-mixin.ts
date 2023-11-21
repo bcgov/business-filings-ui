@@ -1,9 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
-import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes } from '@/enums'
-import { AllowedActionsIF } from '@/interfaces'
-import { useBusinessStore, useRootStore } from '@/stores'
+import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Roles } from '@/enums'
+import { AllowedActionsIF, FilingRegistraionIF } from '@/interfaces'
+import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { LoginSource } from 'sbc-common-components/src/util/constants'
 
 @Component({})
@@ -16,6 +16,33 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useRootStore) getUserInfo!: any
+  @Getter(useFilingHistoryListStore) getRegistrationFiling!: any
+
+  /**
+   * Checks if the user is a self-registered owner/operator.
+   */
+  private get isSelfRegisteredOwnerOperator (): boolean {
+    const filing = this.getRegistrationFiling
+    if (!filing) return false
+
+    const { parties } = filing?.registration as FilingRegistraionIF
+    if (!parties) return false
+
+    const { officer: completingParty } =
+      parties.find(party => party.roles.find(role => role.roleType === Roles.COMPLETING_PARTY))
+    const { officer: proprietor } =
+      parties.find(party => party.roles.find(role => role.roleType === Roles.PROPRIETOR))
+    if (!completingParty || !proprietor) return false
+
+    const { firstname: userFirstName, lastname: userLastName } = this.getUserInfo
+
+    return (
+      completingParty.firstName === proprietor.firstName &&
+      completingParty.lastName === proprietor.lastName &&
+      proprietor.firstName === userFirstName &&
+      proprietor.lastName === userLastName
+    )
+  }
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -100,7 +127,7 @@ export default class AllowableActionsMixin extends Vue {
         const ff = !!GetFeatureFlag('enable-digital-credentials')
         const { loginSource } = this.getUserInfo
         const isLoginSourceBCSC = loginSource === LoginSource.BCSC
-        return (ff && isLoginSourceBCSC && this.isSoleProp && !this.isRoleStaff)
+        return (ff && isLoginSourceBCSC && this.isSoleProp && this.isSelfRegisteredOwnerOperator && !this.isRoleStaff)
       }
 
       case AllowableActions.DIRECTOR_CHANGE: {

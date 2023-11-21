@@ -16,7 +16,8 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
     loadCorrectionDialog: false,
     loadingOne: false,
     loadingOneIndex: -1,
-    panel: null
+    panel: null,
+    registrationFiling: null
   }),
 
   getters: {
@@ -67,6 +68,10 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
           DateUtilities.isDateFuture(filing.effectiveDate)
         )
       })
+    },
+
+    getRegistrationFiling (state: FilingHistoryListStateIF): any | undefined {
+      return state.registrationFiling
     },
 
     /** Whether the Add Comment dialog should be displayed. */
@@ -156,19 +161,32 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
      * @param context the Vuex context (passed in automatically)
      * @param id a business id or temporary registration number
      */
-    loadFilings (id: string): Promise<any> {
-      // need to return a promise
-      return new Promise((resolve, reject) => {
-        LegalServices.fetchFilings(id)
-          .then(filings => {
-            this.setFilings(filings)
-            // return the filings list
-            resolve(filings)
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
+    async loadFilings (id: string): Promise<any> {
+      try {
+        const filings = await LegalServices.fetchFilings(id)
+        this.setFilings(filings)
+        return filings
+      } catch (error) {
+        console.log('loadFilings() error =', error)
+      }
+    },
+
+    /**
+     * Loads a specific filing from the Legal API and,
+     * if successful, saves it in the store.
+     * @param context the Vuex context (passed in automatically)
+     * @param filing the filing to load
+     */
+    async loadRegistrationFiling (): Promise<any> {
+      try {
+        const registration = this.getFilings.find((filing: ApiFilingIF) =>
+          filing.data?.legalFilings?.includes(FilingTypes.REGISTRATION))
+        const filing = await LegalServices.fetchFiling(registration.filingLink)
+        this.setRegistrationFiling(filing)
+        return filing
+      } catch (error) {
+        console.log('loadRegistrationFiling() error =', error)
+      }
     },
 
     setFilings (val: ApiFilingIF[]): void {
@@ -182,6 +200,17 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
         }
       })
       this.filings = filings
+    },
+
+    setRegistrationFiling (val: ApiFilingIF): void {
+      // add some properties to each filing
+      // so they're not null (and therefore non-reactive)
+      const filing = {
+        ...val,
+        comments: val?.comments || null,
+        documents: val?.documents || null
+      }
+      this.registrationFiling = filing
     },
 
     /** Closes current panel or opens new panel and loads comments and documents. */
