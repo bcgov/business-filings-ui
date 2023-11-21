@@ -335,7 +335,6 @@ export default class AgmExtension extends Mixins(CommonMixin, DateMixin,
 
     // save final filing (not draft)
     this.savedFiling = await this.saveFiling(false).catch(error => {
-      console.log(error)
       if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
         // changes were saved if a 402 is received, so clear flag
         this.haveChanges = false
