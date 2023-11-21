@@ -161,7 +161,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
      * @param context the Vuex context (passed in automatically)
      * @param id a business id or temporary registration number
      */
-    async loadFilings (id: string): Promise<any> {
+    async loadFilings (id: string): Promise<ApiFilingIF[]> {
       try {
         const filings = await LegalServices.fetchFilings(id)
         this.setFilings(filings)
@@ -177,7 +177,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
      * @param context the Vuex context (passed in automatically)
      * @param filing the filing to load
      */
-    async loadRegistrationFiling (): Promise<any> {
+    async loadRegistrationFiling (): Promise<ApiFilingIF> {
       try {
         const registration = this.getFilings.find((filing: ApiFilingIF) =>
           filing.data?.legalFilings?.includes(FilingTypes.REGISTRATION))
