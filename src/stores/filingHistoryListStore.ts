@@ -175,7 +175,6 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
      * Loads a specific filing from the Legal API and,
      * if successful, saves it in the store.
      * @param context the Vuex context (passed in automatically)
-     * @param filing the filing to load
      */
     async loadRegistrationFiling (): Promise<ApiFilingIF> {
       try {
