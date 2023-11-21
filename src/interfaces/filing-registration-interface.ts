@@ -1,7 +1,7 @@
 import { PartyIF } from './party-interface'
 
 /** A filing's registration object from the API, ie, `filing.registration`. */
-export interface FilingRegistraionIF {
+export interface FilingRegistrationIF {
   business: any,
   businessType: string,
   businessTypeConfirm: boolean,
@@ -10,5 +10,5 @@ export interface FilingRegistraionIF {
   nameRequest: any,
   offices: any,
   parties: PartyIF[],
-  startDate: string,
+  startDate: string
 }
