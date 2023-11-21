@@ -7,10 +7,10 @@ export interface AgmExtEvalIF {
   incorporationDate: Date
   isFirstAgm: boolean
   agmYear: string // YYYY
-  prevAgmDate?: string // YYYY-MM-DD
-  isPrevExtension?: boolean
-  prevExpiryDate?: string // YYYY-MM-DD
-  intendedAgmDate?: string // YYYY-MM-DD
+  prevAgmDate: string // YYYY-MM-DD
+  isPrevExtension: boolean
+  prevExpiryDate: string // YYYY-MM-DD
+  intendedAgmDate: string // YYYY-MM-DD
   extensionDuration: number // in months
   agmDueDate: string // YYYY-MM-DD
   isEligible: boolean
