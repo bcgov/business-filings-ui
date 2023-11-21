@@ -12,6 +12,6 @@ export interface FilingHistoryListStateIF {
   loadCorrectionDialog: boolean
   loadingOne: boolean
   loadingOneIndex: number
-  panel: number,
+  panel: number
   registrationFiling: FilingRegistrationIF
 }
