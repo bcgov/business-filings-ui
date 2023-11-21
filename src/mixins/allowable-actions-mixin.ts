@@ -19,32 +19,6 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useFilingHistoryListStore) getRegistrationFiling!: any
 
   /**
-   * Checks if the user is a self-registered owner/operator.
-   */
-  private get isSelfRegisteredOwnerOperator (): boolean {
-    const filing = this.getRegistrationFiling
-    if (!filing) return false
-
-    const { parties } = filing?.registration as FilingRegistraionIF
-    if (!parties) return false
-
-    const { officer: completingParty } =
-      parties.find(party => party.roles.find(role => role.roleType === Roles.COMPLETING_PARTY))
-    const { officer: proprietor } =
-      parties.find(party => party.roles.find(role => role.roleType === Roles.PROPRIETOR))
-    if (!completingParty || !proprietor) return false
-
-    const { firstname: userFirstName, lastname: userLastName } = this.getUserInfo
-
-    return (
-      completingParty.firstName === proprietor.firstName &&
-      completingParty.lastName === proprietor.lastName &&
-      proprietor.firstName === userFirstName &&
-      proprietor.lastName === userLastName
-    )
-  }
-
-  /**
    * Returns True if the specified action is allowed, else False.
    * @param action the action to check
    */
@@ -211,5 +185,31 @@ export default class AllowableActionsMixin extends Vue {
       if (type && ft.type !== type) return false
       return true
     })
+  }
+
+  /**
+   * Checks if the user is a self-registered owner/operator.
+   */
+  private get isSelfRegisteredOwnerOperator (): boolean {
+    const filing = this.getRegistrationFiling
+    if (!filing) return false
+
+    const { parties } = filing?.registration as FilingRegistraionIF
+    if (!parties) return false
+
+    const { officer: completingParty } =
+        parties.find(party => party.roles.find(role => role.roleType === Roles.COMPLETING_PARTY))
+    const { officer: proprietor } =
+        parties.find(party => party.roles.find(role => role.roleType === Roles.PROPRIETOR))
+    if (!completingParty || !proprietor) return false
+
+    const { firstname: userFirstName, lastname: userLastName } = this.getUserInfo
+
+    return (
+      completingParty.firstName === proprietor.firstName &&
+        completingParty.lastName === proprietor.lastName &&
+        proprietor.firstName === userFirstName &&
+        proprietor.lastName === userLastName
+    )
   }
 }
