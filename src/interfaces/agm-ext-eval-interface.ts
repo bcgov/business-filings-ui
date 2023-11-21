@@ -25,7 +25,11 @@ export const EmptyAgmExtEval: AgmExtEvalIF = {
   incorporationDate: null,
   isFirstAgm: null,
   agmYear: null,
+  prevAgmDate: null,
+  isPrevExtension: null,
+  prevExpiryDate: null,
+  intendedAgmDate: null,
   extensionDuration: NaN,
   agmDueDate: null,
-  isEligible: false
+  isEligible: null
 }
