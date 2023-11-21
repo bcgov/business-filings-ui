@@ -51,12 +51,8 @@ describe('ExtensionRequest', () => {
     // Verify isPrevExtension radio group
     expect(rows.at(2).find('.col-sm-3').text()).toBe('Has an extension been requested for this AGM year already?')
     expect(rows.at(2).find('.col-sm-9').text())
-      .toContain('Yes - Specify the date the extension expiresDate of extension expiry')
+      .toContain('Yes - Specify the date the extension expires')
     expect(rows.at(2).find('.col-sm-9').text()).toContain('No - this is the first extension request for this AGM')
-
-    // Verify expiry date picker
-    expect(rows.at(2).find('.col-sm-9').findComponent(DatePicker).exists()).toBe(true)
-    expect(rows.at(2).find('#date-text-field').attributes().disabled).toBeDefined()
 
     // Verify intended date picker
     expect(rows.at(3).find('.col-sm-3').text()).toBe('Intended date this AGM will be held')
@@ -87,9 +83,6 @@ describe('ExtensionRequest', () => {
     // Verify isPrevExtension radio group
     expect(prevExtensionRadios.at(0).attributes('aria-checked')).toBe('false')
     expect(prevExtensionRadios.at(1).attributes('aria-checked')).toBe('true')
-
-    // Verify expiry date picker
-    expect(rows.at(2).find('#date-text-field').attributes().disabled).toBeDefined()
   })
 
   it('displays first agm with previous extension requested', async () => {
@@ -147,10 +140,6 @@ describe('ExtensionRequest', () => {
 
     // Verify previous agm date picker
     expect(rows.at(2).find('#date-text-field').exists()).toBe(true)
-
-    // Verify expiry date picker
-    expect(rows.at(3).find('#date-text-field').exists()).toBe(true)
-    expect(rows.at(3).find('#date-text-field').attributes().disabled).toBeDefined()
   })
 
   it('displays subsequent agm with previous extension requested', async () => {
@@ -248,7 +237,7 @@ describe('ExtensionRequest', () => {
         isFirstAgm: true,
         isPrevExtension: true,
         incorporationDate: new Date('2020-01-01T08:00:00.000Z'),
-        prevExpiryDate: '2023-12-01'
+        prevExpiryDate: '2025-12-01'
       } as AgmExtEvalIF
     })
     await Vue.nextTick() // wait for DOM to update

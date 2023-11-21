@@ -30,7 +30,6 @@
             <v-radio-group
               id="first-agm-radio-group"
               v-model="data.isFirstAgm"
-              validate-on="submit"
               class="mt-0 pt-0"
             >
               <v-radio
@@ -57,7 +56,7 @@
             sm="9"
           >
             <AgmYear
-              v-model="agmYear"
+              v-model="data.agmYear"
               label="AGM year"
               :rules="agmYearRules"
               :disableEdit="isFirstAgm"
@@ -264,14 +263,6 @@ export default class ExtensionRequest extends Vue {
     } else {
       return false
     }
-  }
-
-  get agmYear (): string {
-    return this.data.agmYear
-  }
-
-  set agmYear (value: string) {
-    this.data.agmYear = value
   }
 
   /** Extension expiry maximum date allowed */

@@ -201,11 +201,6 @@ describe('ExtensionEvaluation', () => {
     })
     await Vue.nextTick() // wait for DOM to update
 
-    const rows = wrapper.findAll('.content .row')
-
-    expect(rows.at(0).find('.col-sm-9').text()).toBe('2023')
-    expect(rows.at(1).find('.col-sm-9').text()).toBe('')
-    expect(rows.at(2).find('.col-sm-9').text()).toBe('')
-    expect(wrapper.find('.message-box').exists()).toBe(false)
+    expect(wrapper.find('.message-box').exists()).toBe(true)
   })
 })

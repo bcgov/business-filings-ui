@@ -9,7 +9,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint . --ext .js,.ts,.vue",
-    "test:unit": "vitest run ExtensionRequest --silent=false",
+    "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage --silent"
   },
   "dependencies": {
