@@ -11,9 +11,12 @@
     <template #content>
       <div
         class="px-6 py-7"
-        :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
+        :class="{ 'invalid-section': !firstSectionValid && showErrors }"
       >
-        <v-row no-gutters>
+        <v-row
+          v-if="!is30MonthsAfterIncorp"
+          no-gutters
+        >
           <v-col
             cols="12"
             sm="3"
@@ -27,6 +30,7 @@
             <v-radio-group
               id="first-agm-radio-group"
               v-model="data.isFirstAgm"
+              validate-on="submit"
               class="mt-0 pt-0"
             >
               <v-radio
@@ -55,6 +59,7 @@
             <AgmYear
               v-model="agmYear"
               label="AGM year"
+              :rules="agmYearRules"
               :disableEdit="isFirstAgm"
               @valid="agmYearValid=$event"
             />
@@ -66,7 +71,7 @@
 
       <div
         class="px-6 py-7"
-        :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
+        :class="{ 'invalid-section': !secondSectionValid && showErrors }"
       >
         <v-expand-transition>
           <v-row
@@ -88,8 +93,10 @@
                 title="Previous AGM date or a reference date"
                 nudge-right="40"
                 :inputRules="dateRules"
-                @emitDate="previousAgmDateText = $event"
-                @emitCancel="previousAgmDateText = ''"
+                :minDate="incorporationDateText"
+                :maxDate="data.currentDate"
+                @emitDate="data.prevAgmDate = $event"
+                @emitCancel="data.prevAgmDate = ''"
               />
             </v-col>
           </v-row>
@@ -114,17 +121,21 @@
                 label="Yes - Specify the date the extension expires"
                 :value="true"
               />
-              <DatePicker
-                class="pt-2 pl-8"
-                title="Date of extension expiry"
-                nudge-right="40"
-                :inputRules="dateRules"
-                :disablePicker="!data.isPrevExtension"
-                :minDate="extensionExpiryMin"
-                :maxDate="extensionExpiryMax"
-                @emitDate="extensionExpiryDateText = $event"
-                @emitCancel="extensionExpiryDateText = ''"
-              />
+              <v-expand-transition>
+                <DatePicker
+                  v-if="data.isPrevExtension"
+                  class="pt-2 pl-8"
+                  title="Date of extension expiry"
+                  nudge-right="40"
+                  :inputRules="dateRules"
+                  :disablePicker="!data.isPrevExtension"
+                  :showCurrent="prevExpiryDateMin"
+                  :minDate="prevExpiryDateMin"
+                  :maxDate="prevExpiryDateMax"
+                  @emitDate="data.prevExpiryDate = $event"
+                  @emitCancel="data.prevExpiryDate = ''"
+                />
+              </v-expand-transition>
               <v-radio
                 label="No - this is the first extension request for this AGM"
                 :value="false"
@@ -138,7 +149,7 @@
 
       <div
         class="px-6 py-7"
-        :class="{ 'invalid-section': !extensionRequestValid && showErrors }"
+        :class="{ 'invalid-section': !thirdSectionValid && showErrors }"
       >
         <v-row no-gutters>
           <v-col
@@ -156,8 +167,9 @@
               title="Intended date this AGM will be held"
               nudge-right="40"
               :inputRules="dateRules"
-              @emitDate="intendedAgmDateText = $event"
-              @emitCancel="intendedAgmDateText = ''"
+              :minDate="data.currentDate"
+              @emitDate="data.intendedAgmDate = $event"
+              @emitCancel="data.intendedAgmDate = ''"
             />
           </v-col>
         </v-row>
@@ -185,74 +197,46 @@ export default class ExtensionRequest extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
   @Prop({ default: false }) readonly showErrors!: boolean
 
-  /** The component DatePicker date texts. */
-  extensionExpiryDateText = ''
-  intendedAgmDateText = ''
-  previousAgmDateText = ''
-
-  /** Whether the extension can be granted. */
-  isEligible = false
-
-  /** Whether AGM year field is valid. */
+  /** Variables for validation rules. */
+  isValid = false
   agmYearValid = false
 
-  /** The array of validations rule(s) for the AGM Date text field. */
+  get firstSectionValid (): boolean {
+    return this.data.isFirstAgm != null && this.agmYearValid
+  }
+
+  get secondSectionValid (): boolean {
+    const isPrevExtensionValid = (
+      (this.data.isPrevExtension && !!this.data.prevExpiryDate) ||
+      (this.data.isPrevExtension === false)
+    )
+
+    if (this.isFirstAgm) {
+      return isPrevExtensionValid
+    } else {
+      return this.data.prevAgmDate && isPrevExtensionValid
+    }
+  }
+
+  get thirdSectionValid (): boolean {
+    return !!this.data.intendedAgmDate
+  }
+
+  /** The array of validations rule(s) for the AGM Year text field. */
+  get agmYearRules (): Array<(v) => boolean | string> {
+    return [
+      v => !!v || 'A date is required.',
+      v => (!!v && v.length === 4) || 'Please enter a valid date.',
+      v => parseInt(v) >= this.data.incorporationDate?.getFullYear() ||
+        'Date cannot be before incorporation date.'
+    ]
+  }
+
+  /** The array of validations rule(s) for the  date fields. */
   get dateRules (): Array<(v) => boolean | string> {
     return [
       v => !!v || 'A date is required.'
     ]
-  }
-
-  /** Whether the extension request is valid or not */
-  get extensionRequestValid (): boolean {
-    const isFirstAgmValid = this.data.isFirstAgm && !!this.data.agmYear
-    const isSubsequentAgmValid = (
-      this.data.isFirstAgm === false &&
-      !!this.data.agmYear &&
-      !!this.data.prevAgmDate
-    )
-    const isPrevExtensionValid = (
-      this.data.isPrevExtension &&
-      !!this.data.prevExpiryDate
-    )
-    const isNotPrevExtensionValid = this.data.isPrevExtension === false
-
-    return (
-      (isFirstAgmValid || isSubsequentAgmValid) &&
-      (isPrevExtensionValid || isNotPrevExtensionValid) &&
-      this.agmYearValid &&
-      !!this.data.intendedAgmDate
-    )
-  }
-
-  get agmYear (): string {
-    return this.data.agmYear
-  }
-
-  set agmYear (value: string) {
-    this.data.agmYear = value
-    this.emitData()
-    this.emitValid()
-  }
-
-  get extensionExpiryMax (): string {
-    if (this.isFirstAgm) {
-      // For first AGM, max shouldn't be later than Incorporation date + 18 months + 12 months
-      return DateUtilities.addMonthsToDate(30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
-    } else {
-      // For subsequent AGMs, max shouldn't be later than reference date + 15 months + 12 months
-      return DateUtilities.addMonthsToDate(27, this.data.prevAgmDate)
-    }
-  }
-
-  get extensionExpiryMin (): string {
-    if (this.isFirstAgm) {
-      // For first AGM, min shouldn't be later than Incorporation date + 18 months + 1 month
-      return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
-    } else {
-      // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
-      return DateUtilities.addMonthsToDate(16, this.data.prevAgmDate)
-    }
   }
 
   /** Whether to disable the editing of AGM Year field. */
@@ -266,54 +250,88 @@ export default class ExtensionRequest extends Vue {
     return this.data.isFirstAgm
   }
 
+  /** Hide isFirstAgm question if IncorporationDate >= 30 months ago */
+  get is30MonthsAfterIncorp (): boolean {
+    if (
+      DateUtilities.subtractDates(
+        DateUtilities.dateToYyyyMmDd(this.data.incorporationDate),
+        this.data.currentDate
+      ) >= 30
+    ) {
+      this.data.isFirstAgm = false
+      return true
+    } else {
+      return false
+    }
+  }
+
+  get agmYear (): string {
+    return this.data.agmYear
+  }
+
+  set agmYear (value: string) {
+    this.data.agmYear = value
+  }
+
+  /** Extension expiry maximum date allowed */
+  get prevExpiryDateMax (): string {
+    if (this.isFirstAgm) {
+      // For first AGM, max shouldn't be later than Incorporation date + 18 months + 12 months
+      return DateUtilities.addMonthsToDate(30, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
+    } else {
+      // For subsequent AGMs, max shouldn't be later than reference date + 15 months + 12 months
+      return DateUtilities.addMonthsToDate(27, this.data.prevAgmDate)
+    }
+  }
+
+  /** Extension expiry minimum date allowed */
+  get prevExpiryDateMin (): string {
+    if (this.isFirstAgm) {
+      // For first AGM, min shouldn't be later than Incorporation date + 18 months + 1 month
+      return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
+    } else {
+      // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
+      return DateUtilities.addMonthsToDate(16, this.data.prevAgmDate)
+    }
+  }
+
+  /** Incorporation date as text. */
+  get incorporationDateText (): string {
+    return DateUtilities.dateToYyyyMmDd(
+      this.data?.incorporationDate
+    )
+  }
+
   /** Called when isFirstAgm radio group changes. */
   @Watch('data.isFirstAgm')
   onIsFirstAgmChanged (val: boolean): void {
     if (val) {
       this.data.agmYear = this.data.incorporationDate.getFullYear().toString()
-      this.previousAgmDateText = ''
       this.data.prevAgmDate = null
     } else {
       this.data.agmYear = ''
     }
-    this.checkEligibility()
   }
 
   /** Called when isPrevExtension radio group changes. */
   @Watch('data.isPrevExtension')
-  onIsPrevExtensionChanged (): void {
-    if (!this.data.isPrevExtension) {
-      this.extensionExpiryDateText = ''
+  onIsPrevExtensionChanged (val: boolean): void {
+    if (!val) {
       this.data.prevExpiryDate = null
     }
-    this.checkEligibility()
   }
 
-  /** Called when extension date picker changes. */
-  @Watch('extensionExpiryDateText')
-  onExtensionDatePickerChanged (val: string): void {
-    this.data.prevExpiryDate = val
-    this.checkEligibility()
-  }
-
-  /** Called when previous AGM date picker changes. */
-  @Watch('previousAgmDateText')
-  onPreviousAgmDatePickerChanged (val: string): void {
-    this.data.prevAgmDate = val
-    this.checkEligibility()
-  }
-
-  /** Called when intended AGM date picker changes. */
-  @Watch('intendedAgmDateText')
-  onAgmIntendedDatePickerChanged (val: string): void {
-    this.data.intendedAgmDate = val
-    this.checkEligibility()
-  }
-
-  /** Called when current date changes. */
+  /** Watches all data properties to keep track of changes. */
+  @Watch('data.isFirstAgm')
+  @Watch('data.prevAgmDate')
+  @Watch('data.isPrevExtension')
+  @Watch('data.prevExpiryDate')
+  @Watch('data.intendedAgmDate')
   @Watch('data.currentDate')
-  onCurrentDateChanged (): void {
+  @Watch('agmYearValid')
+  private onHaveChanges (): void {
     this.checkEligibility()
+    this.checkValidity()
   }
 
   /** Eligibility for first agm with no extension requested this year */
@@ -333,6 +351,10 @@ export default class ExtensionRequest extends Vue {
     else {
       this.data.isEligible = true
       this.data.extensionDuration = 6
+      this.data.agmDueDate = DateUtilities.addMonthsToDate(
+        this.data.extensionDuration,
+        cutOffYyyyMmDd
+      )
     }
   }
 
@@ -361,6 +383,10 @@ export default class ExtensionRequest extends Vue {
       const totalExtensionApproved = DateUtilities.subtractDates(
         DateUtilities.dateToYyyyMmDd(this.data.incorporationDate), this.data.prevExpiryDate) - 18
       this.data.extensionDuration = Math.min(6, (12 - totalExtensionApproved))
+      this.data.agmDueDate = DateUtilities.addMonthsToDate(
+        this.data.extensionDuration + totalExtensionApproved,
+        cutOffYyyyMmDd
+      )
     }
   }
 
@@ -380,6 +406,10 @@ export default class ExtensionRequest extends Vue {
     else {
       this.data.isEligible = true
       this.data.extensionDuration = 6
+      this.data.agmDueDate = DateUtilities.addMonthsToDate(
+        this.data.extensionDuration,
+        cutOffYyyyMmDd
+      )
     }
   }
 
@@ -406,6 +436,10 @@ export default class ExtensionRequest extends Vue {
         this.data.prevAgmDate,
         this.data.prevExpiryDate
       )
+      this.data.agmDueDate = DateUtilities.addMonthsToDate(
+        this.data.extensionDuration,
+        this.data.prevExpiryDate
+      )
     }
   }
 
@@ -413,6 +447,7 @@ export default class ExtensionRequest extends Vue {
   checkEligibility (): void {
     this.data.isEligible = false
     this.data.extensionDuration = null
+    this.data.agmDueDate = null
     this.data.alreadyExtended = false
     this.data.requestExpired = false
 
@@ -459,9 +494,21 @@ export default class ExtensionRequest extends Vue {
     }
 
     this.emitData()
+  }
+  /* eslint-enable brace-style */
+
+  /** Whether the extension request is valid or not */
+  checkValidity (): void {
+    this.isValid = (
+      this.firstSectionValid &&
+      this.secondSectionValid &&
+      this.thirdSectionValid
+    )
+
     this.emitValid()
   }
 
+  /** Emits an event of the updated data object. */
   @Emit('update:data')
   private emitData (): AgmExtEvalIF {
     return this.data
@@ -470,7 +517,7 @@ export default class ExtensionRequest extends Vue {
   /** Emits an event indicating whether or not this component is valid. */
   @Emit('valid')
   private emitValid (): boolean {
-    return this.extensionRequestValid
+    return this.isValid
   }
 }
 </script>
