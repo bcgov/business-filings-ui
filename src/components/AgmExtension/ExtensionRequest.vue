@@ -360,6 +360,7 @@ export default class ExtensionRequest extends Vue {
 
     // IF ExpirationDate >= (IncorporationDate + 18 months + 12 months)
     if ((DateUtilities.daysBetweenTwoDates(cutOffDate, expiryDate)) >= 0) {
+      // Shouldn't get here
       this.data.isEligible = false
       this.data.alreadyExtended = true
     }

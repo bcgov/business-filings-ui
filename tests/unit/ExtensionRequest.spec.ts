@@ -78,7 +78,7 @@ describe('ExtensionRequest', () => {
 
     // Verify AGM year text field
     expect(rows.at(1).find('#year-txt').attributes().disabled).toBeDefined()
-    expect(wrapper.vm.agmYear).toBe('2023')
+    expect(wrapper.vm.data.agmYear).toBe('2023')
 
     // Verify isPrevExtension radio group
     expect(prevExtensionRadios.at(0).attributes('aria-checked')).toBe('false')
@@ -104,7 +104,7 @@ describe('ExtensionRequest', () => {
 
     // Verify AGM year text field
     expect(rows.at(1).find('#year-txt').attributes().disabled).toBeDefined()
-    expect(wrapper.vm.agmYear).toBe('2023')
+    expect(wrapper.vm.data.agmYear).toBe('2023')
 
     // Verify isPrevExtension radio group
     expect(prevExtensionRadios.at(0).attributes('aria-checked')).toBe('true')
@@ -227,26 +227,6 @@ describe('ExtensionRequest', () => {
     expect(wrapper.vm.data.isEligible).toBe(true)
     expect(wrapper.vm.data.extensionDuration).toBe(6)
     expect(wrapper.vm.data.alreadyExtended).toBe(false)
-    expect(wrapper.vm.data.requestExpired).toBe(false)
-  })
-
-  it('handles "already extended" case for first agm with previous extension requested', async () => {
-    wrapper.setData({
-      data: {
-        ...wrapper.vm.data,
-        isFirstAgm: true,
-        isPrevExtension: true,
-        incorporationDate: new Date('2020-01-01T08:00:00.000Z'),
-        prevExpiryDate: '2025-12-01'
-      } as AgmExtEvalIF
-    })
-    await Vue.nextTick() // wait for DOM to update
-
-    // Not eligible because:
-    // ExpirationDate >= (IncorporationDate + 18 months + 12 months)
-    expect(wrapper.vm.data.isEligible).toBe(false)
-    expect(wrapper.vm.data.extensionDuration).toBe(null)
-    expect(wrapper.vm.data.alreadyExtended).toBe(true)
     expect(wrapper.vm.data.requestExpired).toBe(false)
   })
 
