@@ -228,7 +228,8 @@ export default class ExtensionRequest extends Vue {
       v => !!v || 'A date is required.',
       v => (!!v && v.length === 4) || 'Please enter a valid date.',
       v => parseInt(v) >= this.data.incorporationDate?.getFullYear() ||
-        'Date cannot be before incorporation date.'
+        'Date cannot be before incorporation date.',
+      v => !DateUtilities.isDateFuture(v) || 'Date cannot be in the future.'
     ]
   }
 
