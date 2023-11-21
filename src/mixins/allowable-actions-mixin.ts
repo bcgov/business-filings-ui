@@ -194,7 +194,7 @@ export default class AllowableActionsMixin extends Vue {
     const filing = this.getRegistrationFiling
     if (!filing) return false
 
-    const { parties } = filing?.registration as FilingRegistraionIF
+    const { parties } = filing?.registration as FilingRegistrationIF
     if (!parties) return false
 
     const { officer: completingParty } =
