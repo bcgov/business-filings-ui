@@ -2,7 +2,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils'
 import { AllowableActions, CorpTypeCd, FilingSubTypes, FilingTypes, Roles } from '@/enums'
-import { AllowedActionsIF, FilingRegistraionIF } from '@/interfaces'
+import { AllowedActionsIF, FilingRegistrationIF } from '@/interfaces'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
 import { LoginSource } from 'sbc-common-components/src/util/constants'
 
