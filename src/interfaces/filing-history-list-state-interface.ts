@@ -13,5 +13,5 @@ export interface FilingHistoryListStateIF {
   loadingOne: boolean
   loadingOneIndex: number
   panel: number,
-  registrationFiling: FilingRegistraionIF
+  registrationFiling: FilingRegistrationIF
 }
