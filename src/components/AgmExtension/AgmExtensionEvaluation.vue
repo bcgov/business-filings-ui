@@ -21,7 +21,7 @@
       </v-card>
       <div
         v-else-if="!evaluateResult"
-        style="overflow: auto;"
+        class="overflow-auto"
       >
         <v-card
           outlined
