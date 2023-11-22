@@ -192,9 +192,9 @@ export default class AllowableActionsMixin extends Vue {
    */
   private get isSelfRegisteredOwnerOperator (): boolean {
     const filing = this.getRegistrationFiling
-    if (!filing) return false
+    if (!(filing && filing.registration)) return false
 
-    const { parties } = filing?.registration
+    const { parties } = filing.registration
     if (!parties) return false
 
     const { officer: completingParty } =
