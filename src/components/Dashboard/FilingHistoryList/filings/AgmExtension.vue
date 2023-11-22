@@ -23,7 +23,7 @@ import { DateUtilities, EnumUtilities } from '@/services'
 @Component({
   components: { FilingTemplate }
 })
-export default class ConsentContinuationOut extends Vue {
+export default class AgmExtension extends Vue {
   @Prop({ required: true }) readonly filing!: ApiFilingIF
   @Prop({ required: true }) readonly index!: number
 
