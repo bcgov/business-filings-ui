@@ -62,6 +62,7 @@
             <AgmExtensionEvaluation
               class="mt-8"
               :data.sync="data"
+              :evaluateResult="extensionRequestValid"
             />
 
             <!-- delete this debugging code -->

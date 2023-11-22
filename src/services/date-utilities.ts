@@ -337,6 +337,7 @@ export default class DateUtilities {
    */
   static daysBetweenTwoDates (initialDate: Date, date: Date): number {
     // safety check
+    if (!isDate(initialDate) || isNaN(initialDate.getTime())) return NaN
     if (!isDate(date) || isNaN(date.getTime())) return NaN
 
     // set "date" to 12:00 am Pacific
@@ -368,9 +369,10 @@ export default class DateUtilities {
    * @example (18, 2023-02-03) -> "2024-08-03"
    */
   static addMonthsToDate (month: number, date: string): string {
-    if (!month || !date) {
-      return null
-    }
+    // safety checks
+    if (month == null || !date) return null
+    if (date?.length !== 10) return null
+
     const temp = this.yyyyMmDdToDate(date)
     temp.setMonth(temp.getMonth() + month)
     const dateAfterAddition = this.dateToYyyyMmDd(temp)
@@ -384,6 +386,11 @@ export default class DateUtilities {
    * @example (2023-02-03, 2023-04-03) -> 2
    */
   static subtractDates (dateFrom: string, dateTo: string): number {
+    // safety checks
+    if (!dateFrom || !dateTo) return null
+    if (dateFrom?.length !== 10) return null
+    if (dateTo?.length !== 10) return null
+
     const expiryDate = this.yyyyMmDdToDate(dateTo)
     const currDate = this.yyyyMmDdToDate(dateFrom)
     const monthDiff = expiryDate.getMonth() - currDate.getMonth()
