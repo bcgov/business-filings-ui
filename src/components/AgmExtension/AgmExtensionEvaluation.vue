@@ -10,7 +10,7 @@
 
     <template #content>
       <v-card
-        v-if="!data.isEligible"
+        v-if="evaluateResult && !data.isEligible"
         outlined
         class="message-box rounded-0 mt-6 mx-6"
       >
@@ -19,78 +19,93 @@
           an extension cannot be granted.
         </p>
       </v-card>
-
-      <v-row
-        no-gutters
-        class="px-6 pt-7"
+      <div
+        v-else-if="!evaluateResult"
+        class="overflow-auto"
       >
-        <v-col
-          cols="12"
-          sm="3"
+        <v-card
+          outlined
+          class="message-box rounded-0 my-6 mx-6"
         >
-          <strong>AGM Year</strong>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="9"
-        >
-          {{ data.agmYear }}
-        </v-col>
-      </v-row>
+          <p>
+            Fill out the extension request details above to display.
+          </p>
+        </v-card>
+      </div>
 
-      <v-row
-        no-gutters
-        class="px-6 py-4"
-      >
-        <v-col
-          cols="12"
-          sm="3"
+      <template v-if="evaluateResult">
+        <v-row
+          no-gutters
+          class="px-6 pt-7"
         >
-          <strong>Duration of Extension</strong>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="9"
-        >
-          <template v-if="!data.isEligible">
-            <template v-if="data.alreadyExtended && !data.requestExpired">
-              The business has reached maximum possible extension for this AGM.
-            </template>
-            <template v-else-if="!data.alreadyExtended && data.requestExpired">
-              The business is outside of the time window to request an extension.
-            </template>
-            <template v-else-if="data.alreadyExtended && data.requestExpired">
-              The AGM due date from the previous extension has passed.
-            </template>
-          </template>
-          <template v-else>
-            {{ data.extensionDuration }} months
-          </template>
-        </v-col>
-      </v-row>
+          <v-col
+            cols="12"
+            sm="3"
+          >
+            <strong>AGM Year</strong>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="9"
+          >
+            {{ data.agmYear }}
+          </v-col>
+        </v-row>
 
-      <v-row
-        no-gutters
-        class="px-6 pb-7"
-      >
-        <v-col
-          cols="12"
-          sm="3"
+        <v-row
+          no-gutters
+          class="px-6 py-4"
         >
-          <strong>Due date for this AGM</strong>
-        </v-col>
-        <v-col
-          cols="12"
-          sm="9"
+          <v-col
+            cols="12"
+            sm="3"
+          >
+            <strong>Duration of Extension</strong>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="9"
+          >
+            <template v-if="!data.isEligible">
+              <template v-if="data.alreadyExtended && !data.requestExpired">
+                The business has reached maximum possible extension for this AGM.
+              </template>
+              <template v-else-if="!data.alreadyExtended && data.requestExpired">
+                The business is outside of the time window to request an extension.
+              </template>
+              <template v-else-if="data.alreadyExtended && data.requestExpired">
+                The AGM due date from the previous extension has passed.
+              </template>
+            </template>
+            <template v-else-if="!!data.extensionDuration">
+              {{ data.extensionDuration }} months
+            </template>
+          </v-col>
+        </v-row>
+
+        <v-row
+          no-gutters
+          class="px-6 pb-7"
         >
-          <template v-if="!data.isEligible">
-            {{ formattedDate(data.agmDueDate) }}
-          </template>
-          <template v-else>
-            {{ formattedDate(data.prevExpiryDate) }}
-          </template>
-        </v-col>
-      </v-row>
+          <v-col
+            cols="12"
+            sm="3"
+          >
+            <strong>Due date for this AGM</strong>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="9"
+          >
+            <template v-if="data.isEligible">
+              {{ formattedDate(data.agmDueDate) }}
+            </template>
+            <template v-else>
+              {{ formattedDate(data.prevExpiryDate) }}
+            </template>
+          </v-col>
+        </v-row>
+      </template>
     </template>
   </VcardTemplate>
 </template>
@@ -108,6 +123,7 @@ import { DateUtilities } from '@/services'
 })
 export default class AgmExtensionEvaluation extends Vue {
   @Prop({ required: true }) readonly data!: AgmExtEvalIF
+  @Prop({ default: false }) readonly evaluateResult!: boolean
 
   formattedDate (val: string): string {
     const date = (DateUtilities.yyyyMmDdToDate(val))
