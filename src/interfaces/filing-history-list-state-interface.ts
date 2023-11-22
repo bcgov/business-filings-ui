@@ -1,5 +1,4 @@
-import { ApiFilingIF } from '@/interfaces'
-import { FilingRegistrationIF } from './filing-registration-interface'
+import { ApiFilingIF, FilingRegistrationIF } from '@/interfaces'
 
 /** The state model interface for the Filing History List Store. */
 export interface FilingHistoryListStateIF {

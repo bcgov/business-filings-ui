@@ -1,4 +1,4 @@
-import { ApiFilingIF, CommentIF, DocumentIF, FilingHistoryListStateIF } from '@/interfaces'
+import { ApiFilingIF, CommentIF, DocumentIF, FilingHistoryListStateIF, FilingRegistrationIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { defineStore } from 'pinia'
@@ -70,7 +70,7 @@ export const useFilingHistoryListStore = defineStore('filingHistoryList', {
       })
     },
 
-    getRegistrationFiling (state: FilingHistoryListStateIF): any | undefined {
+    getRegistrationFiling (state: FilingHistoryListStateIF): FilingRegistrationIF | undefined {
       return state.registrationFiling
     },
 

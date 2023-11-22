@@ -16,7 +16,7 @@ export default class AllowableActionsMixin extends Vue {
   @Getter(useBusinessStore) isGoodStanding!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
   @Getter(useRootStore) getUserInfo!: any
-  @Getter(useFilingHistoryListStore) getRegistrationFiling!: any
+  @Getter(useFilingHistoryListStore) getRegistrationFiling!: FilingRegistrationIF
 
   /**
    * Returns True if the specified action is allowed, else False.
@@ -194,7 +194,7 @@ export default class AllowableActionsMixin extends Vue {
     const filing = this.getRegistrationFiling
     if (!filing) return false
 
-    const { parties } = filing?.registration as FilingRegistrationIF
+    const { parties } = filing?.registration
     if (!parties) return false
 
     const { officer: completingParty } =

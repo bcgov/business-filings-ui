@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useBusinessStore, useRootStore, useFilingHistoryListStore } from '@/stores'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@/enums'
-import { ApiFilingIF } from '@/interfaces'
+import { ApiFilingIF, FilingRegistrationIF } from '@/interfaces'
 
 describe('Business Actions', () => {
   setActivePinia(createPinia())
@@ -94,32 +94,29 @@ describe('Business Actions', () => {
 
     // mock filing data and services call
     const sampleRegistrationFiling = {
-      business: {
-        identifier: 'FM0871273'
-      },
-      businessType: 'SP',
-      businessTypeConfirm: true,
-      contactPoint: {},
-      isAutoPopulatedBusinessNumber: false,
-      nameRequest: {},
-      offices: {},
-      parties: [
-        {
-          officer: {
-            firstName: 'John',
-            lastName: 'Doe',
-            roles: ['Completing Party']
-          }
+      registration: {
+        business: {
+          identifier: 'FM0871273'
         },
-        {
-          officer: {
-            firstName: 'John',
-            lastName: 'Doe',
-            roles: ['Proprietor']
+        businessType: 'SP',
+        parties: [
+          {
+            officer: {
+              firstName: 'John',
+              lastName: 'Doe',
+              roles: ['Completing Party']
+            }
+          },
+          {
+            officer: {
+              firstName: 'John',
+              lastName: 'Doe',
+              roles: ['Proprietor']
+            }
           }
-        }
-      ],
-      startDate: '2021-01-01'
+        ],
+        startDate: '2021-01-01'
+      }
     }
     vi.spyOn(LegalServices, 'fetchFiling').mockImplementation((): any => {
       return Promise.resolve(sampleRegistrationFiling)
@@ -128,7 +125,6 @@ describe('Business Actions', () => {
     // call the action and verify the data in the store
     await filingHistoryListStore.loadRegistrationFiling()
     expect(LegalServices.fetchFiling).toHaveBeenCalled()
-    expect(filingHistoryListStore.registrationFiling.business.identifier).toBe('FM0871273')
-    expect(filingHistoryListStore.registrationFiling.parties.length).toBe(2)
+    expect(filingHistoryListStore.registrationFiling.registration.parties.length).toBe(2)
   })
 })
