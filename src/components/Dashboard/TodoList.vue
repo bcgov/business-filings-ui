@@ -1498,9 +1498,9 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
   async loadAgmExtension (task: ApiTaskIF): Promise<void> {
     const filing = task.task.filing
     const header = filing.header
-    const agmLocationChange = filing.agmLocationChange
+    const agmExtension = filing.agmExtension
 
-    if (header && agmLocationChange) {
+    if (header && agmExtension) {
       const paymentStatusCode = header.paymentStatusCode
       const payErrorObj = paymentStatusCode && await PayServices.getPayErrorObj(this.getPayApiUrl, paymentStatusCode)
 
@@ -1521,7 +1521,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       this.todoItems.push(item)
     } else {
       // eslint-disable-next-line no-console
-      console.log('ERROR - invalid header or business in filing =', filing)
+      console.log('ERROR - invalid header or agmExtension in filing =', filing)
     }
   }
 
