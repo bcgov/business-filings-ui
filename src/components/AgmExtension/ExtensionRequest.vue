@@ -581,8 +581,8 @@ export default class ExtensionRequest extends Vue {
       // For first AGM, min shouldn't be later than Incorporation date + 18 months + 1 month
       return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
-      // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
-      return DateUtilities.addMonthsToDate(16, this.data.prevAgmDate)
+      // For subsequent AGMs, min shouldn't be later than reference date + 15 months
+      return DateUtilities.addMonthsToDate(15, this.data.prevAgmDate)
     }
   }
 
