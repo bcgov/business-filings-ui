@@ -38,6 +38,7 @@
               />
               <v-radio
                 label="No - Specify AGM Year below"
+                class="pt-2"
                 :value="false"
               />
             </v-radio-group>
@@ -80,18 +81,18 @@
             <v-col
               cols="12"
               sm="3"
+              class="pr-4"
             >
-              <strong>Previous AGM date or a reference date</strong>
+              <strong>Most recent annual reference date or AGM date</strong>
             </v-col>
             <v-col
               cols="12"
               sm="9"
             >
               <DatePicker
-                class="pt-2 pl-4"
+                class="pt-2"
                 title="Previous AGM date or a reference date"
                 nudge-right="40"
-                :inputRules="dateRules"
                 :minDate="incorporationDateText"
                 :maxDate="data.currentDate"
                 @emitDate="data.prevAgmDate = $event"
@@ -104,6 +105,7 @@
           <v-col
             cols="12"
             sm="3"
+            class="pr-4"
           >
             <strong>Has an extension been requested for this AGM year already?</strong>
           </v-col>
@@ -114,7 +116,7 @@
             <v-radio-group
               id="prev-extension-radio-group"
               v-model="data.isPrevExtension"
-              class="mt-0 pt-0 pl-5"
+              class="mt-0 pt-0"
             >
               <v-radio
                 label="Yes - Specify the date the extension expires"
@@ -126,7 +128,6 @@
                   class="pt-2 pl-8"
                   title="Date of extension expiry"
                   nudge-right="40"
-                  :inputRules="dateRules"
                   :disablePicker="!data.isPrevExtension"
                   :showCurrent="prevExpiryDateMin"
                   :minDate="prevExpiryDateMin"
@@ -137,6 +138,7 @@
               </v-expand-transition>
               <v-radio
                 label="No - this is the first extension request for this AGM"
+                class="pt-2"
                 :value="false"
               />
             </v-radio-group>
@@ -154,6 +156,7 @@
           <v-col
             cols="12"
             sm="3"
+            class="pr-4"
           >
             <strong>Intended date this AGM will be held</strong>
           </v-col>
@@ -162,10 +165,9 @@
             sm="9"
           >
             <DatePicker
-              class="pt-2 pl-4"
+              class="pt-2"
               title="Intended date this AGM will be held"
               nudge-right="40"
-              :inputRules="dateRules"
               :minDate="data.currentDate"
               @emitDate="data.intendedAgmDate = $event"
               @emitCancel="data.intendedAgmDate = ''"
@@ -224,18 +226,11 @@ export default class ExtensionRequest extends Vue {
   /** The array of validations rule(s) for the AGM Year text field. */
   get agmYearRules (): Array<(v) => boolean | string> {
     return [
-      v => !!v || 'A date is required.',
-      v => (!!v && v.length === 4) || 'Please enter a valid date.',
+      v => !!v || 'A year is required.',
+      v => (!!v && v.length === 4) || 'Please enter a valid year.',
       v => parseInt(v) >= this.data.incorporationDate?.getFullYear() ||
-        'Date cannot be before incorporation date.',
-      v => !DateUtilities.isDateFuture(v) || 'Date cannot be in the future.'
-    ]
-  }
-
-  /** The array of validations rule(s) for the  date fields. */
-  get dateRules (): Array<(v) => boolean | string> {
-    return [
-      v => !!v || 'A date is required.'
+        'Year cannot be before incorporation date.',
+      v => !DateUtilities.isDateFuture(v) || 'Year cannot be in the future.'
     ]
   }
 
@@ -279,11 +274,11 @@ export default class ExtensionRequest extends Vue {
   /** Extension expiry minimum date allowed */
   get prevExpiryDateMin (): string {
     if (this.isFirstAgm) {
-      // For first AGM, min shouldn't be later than Incorporation date + 18 months + 1 month
-      return DateUtilities.addMonthsToDate(19, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
+      // For first AGM, min shouldn't be later than Incorporation date + 18 months
+      return DateUtilities.addMonthsToDate(18, DateUtilities.dateToYyyyMmDd(this.data.incorporationDate))
     } else {
-      // For subsequent AGMs, min shouldn't be later than reference date + 15 months + 1 month
-      return DateUtilities.addMonthsToDate(16, this.data.prevAgmDate)
+      // For subsequent AGMs, min shouldn't be later than reference date + 15 months
+      return DateUtilities.addMonthsToDate(15, this.data.prevAgmDate)
     }
   }
 
@@ -517,10 +512,6 @@ export default class ExtensionRequest extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.col-12 {
-  font-size: $px-16;
-}
 
 .agm-year-textfield {
   max-width: 50%;
