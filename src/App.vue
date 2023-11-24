@@ -526,7 +526,7 @@ export default {
 
       const draft = await LegalServices.fetchDraftApp(this.tempRegNumber)
 
-      // handle draft appliation
+      // handle draft application
       this.storeDraftApp(draft)
 
       // if this app is a task (not a filing), and it has a NR, load it
