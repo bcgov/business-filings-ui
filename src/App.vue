@@ -162,7 +162,6 @@ import {
   TaskTodoIF
 } from '@/interfaces'
 import {
-  CorpTypeCd,
   EntityStatus,
   FilingStatus,
   FilingTypes,
@@ -170,6 +169,7 @@ import {
   NigsMessage,
   Routes
 } from '@/enums'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from './stores'
 
@@ -245,6 +245,7 @@ export default {
     ...mapState(useRootStore,
       [
         'getKeycloakRoles',
+        'isAppTask',
         'isRoleStaff',
         'showFetchingDataSpinner'
       ]),
@@ -525,11 +526,11 @@ export default {
 
       const draft = await LegalServices.fetchDraftApp(this.tempRegNumber)
 
-      // Handle Draft filings
+      // handle draft appliation
       this.storeDraftApp(draft)
 
-      // if the draft has a NR, load it
-      if (this.localNrNumber) {
+      // if this app is a task (not a filing), and it has a NR, load it
+      if (this.isAppTask && this.localNrNumber) {
         const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
         this.storeNrData(nr, draft)
       }
@@ -668,7 +669,7 @@ export default {
         case FilingStatus.PAID:
           // this is a filed application
           this.setEntityStatus(EntityStatus.FILED_APP)
-          this.storeFiledApp(application)
+          this.storeDraftAppFiling(application)
           break
 
         default:
@@ -688,7 +689,7 @@ export default {
     },
 
     /** Stores filed application as a filing in the Filing History List. */
-    storeFiledApp (filedApplication: any): void {
+    storeDraftAppFiling (filedApplication: any): void {
       const filing = filedApplication.filing as TaskTodoIF
       // NB: these were already validated in storeDraftApp()
       const header = filing.header
@@ -700,13 +701,16 @@ export default {
       // Set parties
       this.storeParties({ data: { parties: application.parties || [] } })
 
+      const description = GetCorpFullDescription(this.getLegalType)
+      const name = EnumUtilities.filingTypeToName(header.name)
+
       // add this as a filing (for Filing History List)
       const filingItem = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: this.getIdentifier,
         commentsCount: filedApplication.commentsCount,
         commentsLink: filedApplication.commentsLink,
-        displayName: EnumUtilities.filingTypeToName(header.name),
+        displayName: `${description} ${name}`,
         documentsLink: filedApplication.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
