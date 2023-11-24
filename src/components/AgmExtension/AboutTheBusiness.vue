@@ -16,6 +16,7 @@
         <v-col
           cols="12"
           sm="3"
+          class="pr-4"
         >
           <strong>Business in Good Standing</strong>
         </v-col>
