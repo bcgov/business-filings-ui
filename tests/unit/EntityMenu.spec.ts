@@ -90,7 +90,7 @@ describe('Entity Menu - entities', () => {
     // set store properties
     businessStore.setLegalName('My Named Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
     rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
@@ -124,7 +124,7 @@ describe('Entity Menu - entities', () => {
     // set store properties
     businessStore.setLegalName('My Future Company')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.FILED_APP
+    rootStore.entityStatus = EntityStatus.FILED_INCORP_APP
     rootStore.keycloakRoles = ['staff']
 
     // mock isAllowed mixin method
@@ -173,13 +173,13 @@ describe('Entity Menu - View and Change Business Information button', () => {
     },
     { // 2
       businessId: null,
-      state: 'DRAFT_APP',
+      state: 'DRAFT_INCORP_APP',
       isAllowed: false,
       buttonExists: false
     },
     { // 3
       businessId: null,
-      state: 'FILED_APP',
+      state: 'FILED_INCORP_APP',
       isAllowed: false,
       buttonExists: false
     },

@@ -39,6 +39,7 @@ export interface TaskTodoIF {
   agmExtension?: any
   agmLocationChange?: any
   alteration?: AlterationIF
+  amalgamation?: any
   annualReport?: any
   business: ApiBusinessIF
   changeOfAddress?: any

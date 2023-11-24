@@ -1666,9 +1666,6 @@ describe('TodoList - Click Tests', () => {
     expect(button.text()).toContain('File Annual Report')
     await button.trigger('click')
 
-    // verify that filing status was set
-    expect(rootStore.currentFilingStatus).toBe('NEW')
-
     // verify routing to Annual Report page with id=0
     expect(vm.$route.name).toBe('annual-report')
     expect(vm.$route.params.filingId).toBe('0')
@@ -1721,9 +1718,6 @@ describe('TodoList - Click Tests', () => {
     const button = wrapper.find('.list-item .list-item__actions .v-btn')
     expect(button.text()).toContain('Resume')
     await button.trigger('click')
-
-    // verify that filing status was set
-    expect(rootStore.currentFilingStatus).toBe('DRAFT')
 
     // verify routing to Annual Report page with id=123
     expect(vm.$route.name).toBe('annual-report')
@@ -2023,9 +2017,6 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     // click File Now button
     await fileNowButton.click()
 
-    // verify that filing status was set
-    expect(rootStore.currentFilingStatus).toBe('NEW')
-
     // verify routing to Annual Report page with id=0
     expect(vm.$route.name).toBe('annual-report')
     expect(vm.$route.params.filingId).toBe('0')
@@ -2075,9 +2066,6 @@ describe('TodoList - Click Tests - BCOMPs', () => {
     expect(button.querySelector('.v-btn__content').textContent).toContain('Resume')
 
     await button.click()
-
-    // verify that filing status was set
-    expect(rootStore.currentFilingStatus).toBe('DRAFT')
 
     // verify routing to Annual Report page with id=123
     expect(vm.$route.name).toBe('annual-report')
@@ -2233,7 +2221,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
       }
     ]
     rootStore.nameRequest = { nrNum: 'NR 1234567' }
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -2277,7 +2265,7 @@ describe('TodoList - Click Tests - NRs and Incorp Apps', () => {
       }
     ]
     rootStore.nameRequest = null
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
 
     const wrapper = mount(TodoList, { vuetify, mixins: [AllowableActionsMixin] })
     const vm = wrapper.vm as any
@@ -2667,7 +2655,7 @@ describe('TodoList - Delete Draft', () => {
     sessionStorage.setItem('TEMP_REG_NUMBER', 'T123456789')
     businessStore.setIdentifier('T123456789')
     businessStore.setLegalType(CorpTypeCd.BENEFIT_COMPANY)
-    rootStore.entityStatus = EntityStatus.DRAFT_APP
+    rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
     rootStore.tasks = [
       {
         'task': {
@@ -2916,7 +2904,7 @@ describe('TodoList - Click Tests - Full and Limited Restoration', () => {
       ]
 
       rootStore.keycloakRoles = ['staff']
-      rootStore.entityStatus = EntityStatus.DRAFT_APP
+      rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
 
       const wrapper = mount(TodoList, { vuetify })
       const vm = wrapper.vm as any
@@ -2998,7 +2986,7 @@ describe('TodoList - Click Tests - Extension and Coversion Restoration', () => {
       ]
 
       rootStore.keycloakRoles = ['staff']
-      rootStore.entityStatus = EntityStatus.DRAFT_APP
+      rootStore.entityStatus = EntityStatus.DRAFT_INCORP_APP
 
       const wrapper = mount(TodoList, { vuetify })
       const vm = wrapper.vm as any

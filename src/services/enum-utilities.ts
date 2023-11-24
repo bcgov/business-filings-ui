@@ -127,6 +127,41 @@ export default class EnumUtilities {
     return (item.name === FilingTypes.CORRECTION)
   }
 
+  /** Returns True if filing is an Amalgamation. */
+  static isTypeAmalgamation (item: any): boolean {
+    return (item.name === FilingTypes.AMALGAMATION)
+  }
+
+  /** Returns True if filing is a Regular Amalgamation. */
+  static isTypeAmalgamationRegular (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_REGULAR ||
+      // the property in a state filing:
+      item.restoration?.type === FilingSubTypes.AMALGAMATION_REGULAR
+    )
+  }
+
+  /** Returns True if filing is a Horizontal Amalgamation. */
+  static isTypeAmalgamationHorizontal (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_HORIZONTAL ||
+      // the property in a state filing:
+      item.restoration?.type === FilingSubTypes.AMALGAMATION_HORIZONTAL
+    )
+  }
+
+  /** Returns True if filing is a Vertical Amalgamation. */
+  static isTypeAmalgamationVertical (item: any): boolean {
+    return (
+      // the property in a todo item or filing item:
+      item.filingSubType === FilingSubTypes.AMALGAMATION_VERTICAL ||
+      // the property in a state filing:
+      item.restoration?.type === FilingSubTypes.AMALGAMATION_VERTICAL
+    )
+  }
+
   /** Returns True if filing is an Incorporation Application. */
   static isTypeIncorporationApplication (item: any): boolean {
     return (item.name === FilingTypes.INCORPORATION_APPLICATION)
@@ -312,6 +347,11 @@ export default class EnumUtilities {
       case FilingTypes.AGM_EXTENSION: return FilingNames.AGM_EXTENSION
       case FilingTypes.AGM_LOCATION_CHANGE: return FilingNames.AGM_LOCATION_CHANGE
       case FilingTypes.ALTERATION: return FilingNames.ALTERATION
+      case FilingTypes.AMALGAMATION:
+        if (subType === FilingSubTypes.AMALGAMATION_HORIZONTAL) return `${FilingNames.AMALGAMATION} - Horizontal`
+        if (subType === FilingSubTypes.AMALGAMATION_REGULAR) return `${FilingNames.AMALGAMATION} - Regular`
+        if (subType === FilingSubTypes.AMALGAMATION_VERTICAL) return `${FilingNames.AMALGAMATION} - Vertical`
+        return FilingNames.AMALGAMATION
       case FilingTypes.ANNUAL_REPORT: return FilingNames.ANNUAL_REPORT + (agmYear ? ` (${agmYear})` : '')
       case FilingTypes.CHANGE_OF_ADDRESS: return FilingNames.CHANGE_OF_ADDRESS
       case FilingTypes.CHANGE_OF_COMPANY_INFO: return FilingNames.CHANGE_OF_COMPANY_INFO
@@ -334,7 +374,7 @@ export default class EnumUtilities {
         if (subType === FilingSubTypes.LIMITED_RESTORATION_EXTENSION) return FilingNames.RESTORATION_EXTENSION
         if (subType === FilingSubTypes.FULL_RESTORATION) return FilingNames.RESTORATION_FULL
         if (subType === FilingSubTypes.LIMITED_RESTORATION) return FilingNames.RESTORATION_LIMITED
-        return FilingNames.UNKNOWN
+        return FilingNames.RESTORATION_APPLICATION
       case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
       case FilingTypes.TRANSITION: return FilingNames.TRANSITION_APPLICATION
       case FilingTypes.PUT_BACK_ON: return FilingNames.PUT_BACK_ON

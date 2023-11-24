@@ -72,16 +72,16 @@
     <template v-if="!!tempRegNumber">
       <!-- Title -->
       <div
-        id="ia-reg-name"
-        aria-label="Incorporation Application or Registration Entity Name"
+        id="app-name"
+        aria-label="Application Name or Future Entity Name"
       >
         {{ getEntityName || 'Unknown Name' }}
       </div>
 
       <!-- Subtitle -->
       <div
-        id="ia-reg-description"
-        aria-label="Incorporation Application or Registration Description"
+        id="app-description"
+        aria-label="Amalgamation, Incorporation or Registration Description"
       >
         {{ iaRegDescription }}
       </div>
@@ -106,6 +106,8 @@ export default class EntityHeader extends Vue {
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
+  @Getter(useRootStore) isDraftAmalgamation!: boolean
+  @Getter(useRootStore) isFiledAmalgamation!: boolean
   @Getter(useBusinessStore) isHistorical!: boolean
   @Getter(useRootStore) isInLimitedRestoration!: boolean
   @Getter(useBusinessStore) isSoleProp!: boolean
@@ -122,6 +124,12 @@ export default class EntityHeader extends Vue {
 
   /** The incorporation application or registration description. */
   get iaRegDescription (): string {
+    if (this.isDraftAmalgamation || this.isFiledAmalgamation) {
+      // *** TODO: fetch subtype from amalgamation draft
+      const subtype = 'Regular'
+      return `${FilingNames.AMALGAMATION} - ${subtype}`
+    }
+
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getLegalType)
       ? FilingNames.REGISTRATION
       : FilingNames.INCORPORATION_APPLICATION
@@ -136,7 +144,7 @@ export default class EntityHeader extends Vue {
 @import '@/assets/styles/theme.scss';
 
 #entity-legal-name,
-#ia-reg-name {
+#app-name {
   display: inline-block;
   color: $gray9;
   letter-spacing: -0.01rem;
@@ -148,7 +156,7 @@ export default class EntityHeader extends Vue {
 #business-description,
 #limited-restoration,
 #active-util,
-#ia-reg-description {
+#app-description {
   font-size: $px-14;
   color: $gray7;
 }

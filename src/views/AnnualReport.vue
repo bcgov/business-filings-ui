@@ -106,9 +106,9 @@
                 <h1 id="annual-report-header">
                   File {{ ARFilingYear }} Annual Report
                   <span
-                    v-if="getReportState"
+                    v-if="filingId > 0"
                     class="font-italic"
-                  > &mdash; {{ getReportState }}</span>
+                  > &mdash; Draft</span>
                 </h1>
                 <p>
                   Select your Annual General Meeting date, then verify or change your Office Addresses
@@ -201,9 +201,9 @@
                 <h1 id="annual-report-header-BC">
                   File {{ ARFilingYear }} Annual Report
                   <span
-                    v-if="getReportState"
-                    style="font-style: italic"
-                  > &mdash; {{ getReportState }}</span>
+                    v-if="filingId > 0"
+                    class="font-italic"
+                  > &mdash; Draft</span>
                 </h1>
                 <p>Please review all the information before you file and pay</p>
               </header>
@@ -306,7 +306,6 @@
     >
       <div class="buttons-left">
         <v-btn
-          v-if="isCurrentFilingEditable"
           id="ar-save-btn"
           large
           :disabled="busySaving"
@@ -316,7 +315,6 @@
           <span>Save</span>
         </v-btn>
         <v-btn
-          v-if="isCurrentFilingEditable"
           id="ar-save-resume-btn"
           large
           :disabled="busySaving"
@@ -339,7 +337,6 @@
               v-on="on"
             >
               <v-btn
-                v-if="isCurrentFilingEditable"
                 id="ar-file-pay-btn"
                 color="primary"
                 large
@@ -472,9 +469,7 @@ export default class AnnualReport extends Mixins(CommonMixin, DateMixin, FilingM
   @Getter(useBusinessStore) getLastAnnualReportDate!: string
   @Getter(useBusinessStore) getLastDirectorChangeDate!: string
   @Getter(useConfigurationStore) getPayApiUrl!: string
-  @Getter(useRootStore) getReportState!: string
   @Getter(useBusinessStore) isCoop!: boolean
-  @Getter(useRootStore) isCurrentFilingEditable!: boolean
   @Getter(useRootStore) isRoleStaff!: boolean
 
   // variables for AgmDate component

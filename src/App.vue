@@ -245,6 +245,8 @@ export default {
     ...mapState(useRootStore,
       [
         'getKeycloakRoles',
+        'isAppFiling',
+        'isAppTask',
         'isRoleStaff',
         'showFetchingDataSpinner'
       ]),
@@ -463,7 +465,7 @@ export default {
         }
       }
 
-      // is this a draft app entity?
+      // is this a draft app entity (incorporation/registration/amalgamation)?
       if (this.tempRegNumber) {
         try {
           await this.fetchDraftAppData() // throws on error
@@ -525,7 +527,7 @@ export default {
 
       const draft = await LegalServices.fetchDraftApp(this.tempRegNumber)
 
-      // Handle Draft filings
+      // handle draft filings
       this.storeDraftApp(draft)
 
       // if the draft has a NR, load it
@@ -610,21 +612,52 @@ export default {
       }
     },
 
-    /** Verifies and stores a draft applications data. */
+    /** Verifies and stores a draft application's data. */
     storeDraftApp (application: any): void {
       const filing = application?.filing
       const filingName = filing.header?.name as FilingTypes
+
       if (!filing || !filing.header || !filingName) {
         throw new Error(`Invalid ${filingName} filing`)
-      }
-
-      if (![FilingTypes.INCORPORATION_APPLICATION, FilingTypes.REGISTRATION].includes(filingName)) {
-        throw new Error(`Invalid ${filingName} filing - filing name`)
       }
 
       const status = filing.header.status as FilingStatus
       if (!status) {
         throw new Error(`Invalid ${filingName} filing - filing status`)
+      }
+
+      let entityStatus: EntityStatus
+      switch (status) {
+        case FilingStatus.DRAFT:
+        case FilingStatus.PENDING:
+          // this is a draft application
+          if (filingName === FilingTypes.AMALGAMATION) {
+            entityStatus = EntityStatus.DRAFT_AMALGAMATION
+          } else if (filingName === FilingTypes.INCORPORATION_APPLICATION) {
+            entityStatus = EntityStatus.DRAFT_INCORP_APP
+          } else if (filingName === FilingTypes.REGISTRATION) {
+            entityStatus = EntityStatus.DRAFT_REGISTRATION
+          } else {
+            throw new Error(`Invalid ${filingName} filing - filing name`)
+          }
+          break
+
+        case FilingStatus.COMPLETED:
+        case FilingStatus.PAID:
+          // this is a filed application
+          if (filingName === FilingTypes.AMALGAMATION) {
+            entityStatus = EntityStatus.FILED_AMALGAMATION
+          } else if (filingName === FilingTypes.INCORPORATION_APPLICATION) {
+            entityStatus = EntityStatus.FILED_INCORP_APP
+          } else if (filingName === FilingTypes.REGISTRATION) {
+            entityStatus = EntityStatus.FILED_REGISTRATION
+          } else {
+            throw new Error(`Invalid ${filingName} filing - filing name`)
+          }
+          break
+
+        default:
+          throw new Error(`Invalid ${filingName} filing - filing status`)
       }
 
       // NB: different object from actual NR
@@ -644,11 +677,10 @@ export default {
       }
 
       // store business info
+      this.setEntityStatus(entityStatus)
       this.setIdentifier(this.tempRegNumber)
       this.setLegalType(legalType)
-
-      // Draft Applications are always in good standing
-      this.setGoodStanding(true)
+      this.setGoodStanding(true) // draft apps are always in good standing
 
       // save local NR Number if present
       this.localNrNumber = nameRequest.nrNumber || null
@@ -656,24 +688,10 @@ export default {
       // store Legal Name if present
       if (nameRequest.legalName) this.setLegalName(nameRequest.legalName)
 
-      switch (status) {
-        case FilingStatus.DRAFT:
-        case FilingStatus.PENDING:
-          // this is a draft application
-          this.setEntityStatus(EntityStatus.DRAFT_APP)
-          this.storeDraftAppTask(application)
-          break
-
-        case FilingStatus.COMPLETED:
-        case FilingStatus.PAID:
-          // this is a filed application
-          this.setEntityStatus(EntityStatus.FILED_APP)
-          this.storeFiledApp(application)
-          break
-
-        default:
-          throw new Error(`Invalid ${filingName} filing - filing status`)
-      }
+      // store the application in the right list
+      if (this.isAppTask) this.storeDraftAppTask(application)
+      else if (this.isAppFiling) this.storeFiledApp(application)
+      else throw new Error(`Invalid ${filingName} filing - filing status`)
     },
 
     /** Stores draft application as a task in the Todo List. */

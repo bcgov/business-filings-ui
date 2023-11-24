@@ -231,7 +231,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions, mapState } from 'pinia'
+import { mapState } from 'pinia'
 import { navigate } from '@/utils'
 import AddressListSm from '@/components/Dashboard/AddressListSm.vue'
 import CustodianListSm from '@/components/Dashboard/CustodianListSm.vue'
@@ -246,7 +246,7 @@ import { CoaWarningDialog } from '@/components/dialogs'
 import MissingInformation from '@/components/Dashboard/Alerts/MissingInformation.vue'
 import NotInCompliance from '@/components/Dashboard/Alerts/NotInCompliance.vue'
 import NotInGoodStanding from '@/components/Dashboard/Alerts/NotInGoodStanding.vue'
-import { FilingStatus, Routes, AllowableActions, Roles } from '@/enums'
+import { Routes, AllowableActions, Roles } from '@/enums'
 import { PartyIF } from '@/interfaces'
 import { AllowableActionsMixin, CommonMixin, DateMixin, EnumMixin } from '@/mixins'
 import { useBusinessStore, useConfigurationStore, useFilingHistoryListStore, useRootStore } from '@/stores'
@@ -384,10 +384,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(useRootStore, ['setCurrentFilingStatus']),
-
     goToStandaloneDirectors () {
-      this.setCurrentFilingStatus(FilingStatus.NEW)
       this.$router.push({ name: Routes.STANDALONE_DIRECTORS, params: { filingId: 0 } }) // 0 means "new COD filing"
     },
 
@@ -397,7 +394,6 @@ export default {
     },
 
     goToStandaloneAddresses () {
-      this.setCurrentFilingStatus(FilingStatus.NEW)
       this.$router.push({ name: Routes.STANDALONE_ADDRESSES, params: { filingId: 0 } }) // 0 means "new COA filing"
     },
 

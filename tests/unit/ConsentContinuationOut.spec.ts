@@ -16,7 +16,6 @@ import flushPromises from 'flush-promises'
 import mockRouter from './mockRouter'
 import VueRouter from 'vue-router'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { FilingStatus } from '@/enums'
 
 // suppress various warnings:
 // - "Unknown custom element <affix>" warnings
@@ -313,7 +312,6 @@ describe('Consent to Continue Out for general user and IAs only', () => {
     businessStore.setLegalName('My Test Entity')
     businessStore.setIdentifier('BC0007291')
     businessStore.setFoundingDate('1971-05-12T00:00:00-00:00')
-    rootStore.setCurrentFilingStatus(FilingStatus.NEW)
     rootStore.filingData = []
     rootStore.keycloakRoles = ['user']
 

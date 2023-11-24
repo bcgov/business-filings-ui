@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { CorpTypeCd, EntityStatus, FilingStatus, FilingSubTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd, EntityStatus, FilingSubTypes, FilingTypes } from '@/enums'
 import { ApiTaskIF, DissolutionConfirmationResourceIF, FilingDataIF, OfficeAddressIF, PartyIF, RootStateIF,
   TodoListResourceIF, IsoDatePacific, StateFilingIF } from '@/interfaces'
 import { DateUtilities, EnumUtilities, LegalServices } from '@/services'
@@ -25,7 +25,6 @@ export const useRootStore = defineStore('root', {
     nextARDate: null,
     businessAddress: null,
     configObject: null,
-    currentFilingStatus: null,
     fetchingDataSpinner: false,
     filingData: [],
     nameRequest: null,
@@ -85,7 +84,8 @@ export const useRootStore = defineStore('root', {
       return state.keycloakRoles
     },
 
-    /** Is True if Staff role is set.
+    /**
+     * Is True if Staff role is set.
      * DEPRECATED - use authentication/isKeycloakRoleStaff() instead
      */
     isRoleStaff (state: RootStateIF): boolean {
@@ -107,31 +107,51 @@ export const useRootStore = defineStore('root', {
       return false // FUTURE: implement this
     },
 
-    /** Is True if this is a Draft Application. */
-    isAppTask (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.DRAFT_APP)
+    getEntityStatus (state: RootStateIF): EntityStatus {
+      return state.entityStatus
     },
 
-    /** Is True if this is a Paid or Completed Application. */
-    isAppFiling (state: RootStateIF): boolean {
-      return (state.entityStatus === EntityStatus.FILED_APP)
+    isDraftAmalgamation (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_AMALGAMATION)
+    },
+
+    isDraftIncorpApp (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_INCORP_APP)
+    },
+
+    isDraftRegistration (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.DRAFT_REGISTRATION)
+    },
+
+    isFiledAmalgamation (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_AMALGAMATION)
+    },
+
+    isFiledIncorpApp (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_INCORP_APP)
+    },
+
+    isFiledRegistration (state: RootStateIF): boolean {
+      return (state.entityStatus === EntityStatus.FILED_REGISTRATION)
+    },
+
+    /** Is True if this is a Draft or Pending application. */
+    isAppTask (): boolean {
+      return (
+        this.isDraftAmalgamation || this.isDraftIncorpApp || this.isDraftRegistration
+      )
+    },
+
+    /** Is True if this is a Completed or Paid application. */
+    isAppFiling (): boolean {
+      return (
+        this.isFiledAmalgamation || this.isFiledIncorpApp || this.isFiledRegistration
+      )
     },
 
     /** The Name Request (may be null). */
     getNameRequest (state: RootStateIF): any {
       return (state.nameRequest)
-    },
-
-    isCurrentFilingEditable (state: RootStateIF): boolean {
-      return (state.currentFilingStatus === FilingStatus.NEW || state.currentFilingStatus === FilingStatus.DRAFT)
-    },
-
-    getReportState (state: RootStateIF): string {
-      switch (state.currentFilingStatus) {
-        case FilingStatus.NEW: return ''
-        case FilingStatus.DRAFT: return 'Draft'
-      }
-      return state.currentFilingStatus
     },
 
     /** Whether to show the Fetching Data spinner. */
@@ -328,10 +348,6 @@ export const useRootStore = defineStore('root', {
 
     setBusinessPhoneExtension (businessPhoneExtension: string) {
       this.businessPhoneExtension = businessPhoneExtension
-    },
-
-    setCurrentFilingStatus (currentFilingStatus: FilingStatus) {
-      this.currentFilingStatus = currentFilingStatus
     },
 
     setTasks (tasks: Array<ApiTaskIF>) {
