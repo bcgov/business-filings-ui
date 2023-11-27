@@ -627,38 +627,37 @@ export default {
         throw new Error(`Invalid ${filingName} filing - filing status`)
       }
 
+      const isAmalgamation = (filingName === FilingTypes.AMALGAMATION)
+      const isIncorporationApplication = (filingName === FilingTypes.INCORPORATION_APPLICATION)
+      const isRegistration = (filingName === FilingTypes.REGISTRATION)
+
       let entityStatus: EntityStatus
       switch (status) {
         case FilingStatus.DRAFT:
         case FilingStatus.PENDING:
           // this is a draft application
-          if (filingName === FilingTypes.AMALGAMATION) {
-            entityStatus = EntityStatus.DRAFT_AMALGAMATION
-          } else if (filingName === FilingTypes.INCORPORATION_APPLICATION) {
-            entityStatus = EntityStatus.DRAFT_INCORP_APP
-          } else if (filingName === FilingTypes.REGISTRATION) {
-            entityStatus = EntityStatus.DRAFT_REGISTRATION
-          } else {
-            throw new Error(`Invalid ${filingName} filing - filing name`)
-          }
+          if (isAmalgamation) entityStatus = EntityStatus.DRAFT_AMALGAMATION
+          else if (isIncorporationApplication) entityStatus = EntityStatus.DRAFT_INCORP_APP
+          else if (isRegistration) entityStatus = EntityStatus.DRAFT_REGISTRATION
+          else throw new Error(`Invalid ${filingName} filing - filing name`)
           break
 
         case FilingStatus.COMPLETED:
         case FilingStatus.PAID:
           // this is a filed application
-          if (filingName === FilingTypes.AMALGAMATION) {
-            entityStatus = EntityStatus.FILED_AMALGAMATION
-          } else if (filingName === FilingTypes.INCORPORATION_APPLICATION) {
-            entityStatus = EntityStatus.FILED_INCORP_APP
-          } else if (filingName === FilingTypes.REGISTRATION) {
-            entityStatus = EntityStatus.FILED_REGISTRATION
-          } else {
-            throw new Error(`Invalid ${filingName} filing - filing name`)
-          }
+          if (isAmalgamation) entityStatus = EntityStatus.FILED_AMALGAMATION
+          else if (isIncorporationApplication) entityStatus = EntityStatus.FILED_INCORP_APP
+          else if (isRegistration) entityStatus = EntityStatus.FILED_REGISTRATION
+          else throw new Error(`Invalid ${filingName} filing - filing name`)
           break
 
         default:
           throw new Error(`Invalid ${filingName} filing - filing status`)
+      }
+
+      // special check for amalgamation application
+      if (isAmalgamation && !filing.amalgamation.type) {
+        throw new Error('Missing amalgamation type')
       }
 
       // NB: different object from actual NR
