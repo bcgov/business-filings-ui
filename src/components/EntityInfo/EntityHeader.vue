@@ -83,7 +83,7 @@
         id="app-description"
         aria-label="Amalgamation, Incorporation or Registration Description"
       >
-        {{ iaRegDescription }}
+        {{ appDescription }}
       </div>
     </template>
   </header>
@@ -95,6 +95,7 @@ import { Getter } from 'pinia-class'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { FilingNames } from '@/enums'
 import { useBusinessStore, useFilingHistoryListStore, useRootStore } from '@/stores'
+import { ApiFilingIF, ApiTaskIF } from '@/interfaces'
 
 @Component({})
 export default class EntityHeader extends Vue {
@@ -102,9 +103,11 @@ export default class EntityHeader extends Vue {
   @Prop({ required: true }) readonly tempRegNumber!: string // may be null
 
   @Getter(useBusinessStore) getEntityName!: string
+  @Getter(useFilingHistoryListStore) getFilings!: ApiFilingIF[]
   @Getter(useBusinessStore) getLegalType!: CorpTypeCd
   @Getter(useRootStore) getLimitedRestorationActiveUntil!: string
   @Getter(useRootStore) getReasonText!: string
+  @Getter(useRootStore) getTasks!: ApiTaskIF[]
   @Getter(useFilingHistoryListStore) isAuthorizedToContinueOut!: boolean
   @Getter(useRootStore) isDraftAmalgamation!: boolean
   @Getter(useRootStore) isFiledAmalgamation!: boolean
@@ -122,12 +125,13 @@ export default class EntityHeader extends Vue {
     }
   }
 
-  /** The incorporation application or registration description. */
-  get iaRegDescription (): string {
-    if (this.isDraftAmalgamation || this.isFiledAmalgamation) {
-      // *** TODO: fetch subtype from amalgamation draft
-      const subtype = 'Regular'
-      return `${FilingNames.AMALGAMATION} - ${subtype}`
+  /** The incorporation/registration/amalgamation application description. */
+  get appDescription (): string {
+    if (this.isDraftAmalgamation) {
+      return this.getTasks[0]?.task.filing.displayName
+    }
+    if (this.isFiledAmalgamation) {
+      return this.getFilings[0]?.displayName
     }
 
     const filingName = [CorpTypeCd.SOLE_PROP, CorpTypeCd.PARTNERSHIP].includes(this.getLegalType)

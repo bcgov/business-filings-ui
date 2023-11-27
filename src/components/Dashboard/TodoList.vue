@@ -1309,10 +1309,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
     const amalgamation = filing.amalgamation
 
     if (header && amalgamation) {
-      // *** TODO: if using NR, prepend entity type to title
-      // *** TODO: append amalgamation type to title
-      const title = EnumUtilities.filingTypeToName(FilingTypes.AMALGAMATION, null, amalgamation.type)
-
       // set subtitle only if DRAFT IA
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
@@ -1337,7 +1333,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.AMALGAMATION,
         filingId: header.filingId,
-        title,
+        title: filing.displayName,
         subtitle,
         draftTitle: FilingNames.AMALGAMATION,
         status: header.status,
@@ -1363,8 +1359,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     // NB: don't check "incorporationApplication" as it may be empty
     if (header) {
-      const title = `${GetCorpFullDescription(this.getLegalType)} Incorporation Application`
-
       // set subtitle only if DRAFT IA
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
@@ -1389,7 +1383,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.INCORPORATION_APPLICATION,
         filingId: header.filingId,
-        title,
+        title: filing.displayName,
         subtitle,
         draftTitle: FilingNames.INCORPORATION_APPLICATION,
         status: header.status,
@@ -1415,11 +1409,6 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
 
     // NB: don't check "registration" as it may be empty
     if (header) {
-      const corpFullDescription = GetCorpFullDescription(this.getLegalType)
-      const title = this.isSoleProp
-        ? `${corpFullDescription} / Doing Business As (DBA) ${FilingNames.REGISTRATION}`
-        : `${corpFullDescription} ${FilingNames.REGISTRATION}`
-
       // set subtitle only if DRAFT
       let subtitle: string = null
       if (this.isStatusDraft(header)) {
@@ -1444,7 +1433,7 @@ export default class TodoList extends Mixins(AllowableActionsMixin, DateMixin, E
       const item: TodoItemIF = {
         name: FilingTypes.REGISTRATION,
         filingId: header.filingId,
-        title,
+        title: filing.displayName,
         subtitle,
         draftTitle: FilingNames.REGISTRATION,
         status: header.status,

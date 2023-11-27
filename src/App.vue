@@ -239,7 +239,8 @@ export default {
       [
         'getEntityName',
         'getLegalType',
-        'getIdentifier'
+        'getIdentifier',
+        'isSoleProp'
       ]),
 
     ...mapState(useRootStore,
@@ -525,15 +526,15 @@ export default {
     async fetchDraftAppData (): Promise<void> {
       this.nameRequestInvalidType = null // reset for new fetches
 
-      const draft = await LegalServices.fetchDraftApp(this.tempRegNumber)
+      const application = await LegalServices.fetchDraftApp(this.tempRegNumber)
 
       // handle draft application
-      this.storeDraftApp(draft)
+      this.storeDraftApp(application)
 
       // if this app is a task (not a filing), and it has a NR, load it
       if (this.isAppTask && this.localNrNumber) {
         const nr = await LegalServices.fetchNameRequest(this.localNrNumber)
-        this.storeNrData(nr, draft)
+        this.storeNrData(nr, application)
       }
     },
 
@@ -697,6 +698,18 @@ export default {
     /** Stores draft application as a task in the Todo List. */
     storeDraftAppTask (application: any): void {
       const filing = application.filing as TaskTodoIF
+      // NB: these were already validated in storeDraftApp()
+      const header = filing.header
+      const data = filing[header.name]
+
+      const description = GetCorpFullDescription(data.nameRequest.legalType)
+      const dba = this.isSoleProp ? ' / Doing Business As (DBA) ' : ' '
+      const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
+
+      // save display name for later
+      filing.displayName = `${description}${dba}${filingName}`
+
+      // add this as a task item
       const taskItem: ApiTaskIF = {
         enabled: true,
         order: 1,
@@ -706,32 +719,32 @@ export default {
     },
 
     /** Stores filed application as a filing in the Filing History List. */
-    storeDraftAppFiling (filedApplication: any): void {
-      const filing = filedApplication.filing as TaskTodoIF
+    storeDraftAppFiling (application: any): void {
+      const filing = application.filing as TaskTodoIF
       // NB: these were already validated in storeDraftApp()
       const header = filing.header
-      const application = filing[header.name]
+      const data = filing[header.name]
 
       // set addresses
-      this.storeAddresses({ data: application.offices || [] })
+      this.storeAddresses({ data: data.offices || [] })
 
       // set parties
-      this.storeParties({ data: { parties: application.parties || [] } })
+      this.storeParties({ data: { parties: data.parties || [] } })
 
-      const description = GetCorpFullDescription(this.getLegalType)
-      const name = EnumUtilities.filingTypeToName(header.name)
-      // add this as a filing (for Filing History List)
+      const description = GetCorpFullDescription(data.nameRequest.legalType)
+      const filingName = EnumUtilities.filingTypeToName(header.name, null, data.type)
 
+      // add this as a filing item
       const filingItem = {
         availableOnPaperOnly: header.availableOnPaperOnly,
         businessIdentifier: this.getIdentifier,
-        commentsCount: filedApplication.commentsCount,
-        commentsLink: filedApplication.commentsLink,
-        displayName: `${description} ${name}`,
-        documentsLink: filedApplication.documentsLink,
+        commentsCount: application.commentsCount,
+        commentsLink: application.commentsLink,
+        displayName: `${description} ${filingName}`,
+        documentsLink: application.documentsLink,
         effectiveDate: this.apiToUtcString(header.effectiveDate),
         filingId: header.filingId,
-        filingLink: filedApplication.filingLink,
+        filingLink: application.filingLink,
         isFutureEffective: header.isFutureEffective,
         name: header.name,
         status: header.status,
